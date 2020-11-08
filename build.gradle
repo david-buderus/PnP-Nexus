@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-def version_nr = 1.8
+def versionNumber = "v1.0.0"
 sourceCompatibility = 11
 
 repositories {
@@ -10,16 +10,21 @@ repositories {
 }
 
 def currentOS = org.gradle.internal.os.OperatingSystem.current()
-def platform = 'other'
-if (currentOS.isWindows()) {
-    platform = 'win'
-} else if (currentOS.isLinux()) {
-    platform = 'linux'
-} else if (currentOS.isMacOsX()) {
-    platform = 'mac'
+
+if (!project.hasProperty("platform")) {
+    ext.platform = 'other'
+
+    if (currentOS.isWindows()) {
+        platform = 'win'
+    } else if (currentOS.isLinux()) {
+        platform = 'linux'
+    } else if (currentOS.isMacOsX()) {
+        platform = 'mac'
+    }
 }
 
-version = platform + '-' + version_nr
+
+version = platform + '-' + versionNumber
 
 dependencies {
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
