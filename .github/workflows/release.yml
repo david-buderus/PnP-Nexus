@@ -40,6 +40,13 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
+        
+    - name: Set Paths to Artificats
+      run: |
+        windowsPath="./build/libs/P&P-Manager-win-${GITHUB_REF#refs/tags/}"
+        linuxPath="./build/libs/P&P-Manager-linux-${GITHUB_REF#refs/tags/}"
+        echo ::set-env name=ARTIFACT_PATHNAME_WINDOWS::${windowsPath}
+        echo ::set-env name=ARTIFACT_PATHNAME_LINUX::${linuxPath}
     
     - name: Upload Release Asset for Windows
       id: upload-release-asset-windows
@@ -48,7 +55,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/libs/P&P-Manager-win-${GITHUB_REF#refs/tags/}
+        asset_path: ${{ env.ARTIFACT_PATHNAME_WINDOWS }}
         asset_name: 'P&P-Manager Windows'
         asset_content_type: application/java-archive
             
@@ -59,6 +66,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/libs/P&P-Manager-linux-${GITHUB_REF#refs/tags/}
+        asset_path: ${{ env.ARTIFACT_PATHNAME_LINUX }}
         asset_name: 'P&P-Manager Linux'
         asset_content_type: application/java-archive
