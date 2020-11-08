@@ -26,11 +26,18 @@ jobs:
     
     - name: Build with Gradle for Windows
       run: ./gradlew jar -P platform=win
+    
+    - name: Upload Windows Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: 'P&P-Manager Windows'
+        path: build/libs/*win*
       
     - name: Build with Gradle for Linux
       run: ./gradlew jar -P platform=linux
     
-    - uses: actions/upload-artifact@v2
+    - name: Upload Linux Artifact
+      uses: actions/upload-artifact@v2
       with:
-        path: build/libs/*
-    
+        name: 'P&P-Manager Linux'
+        path: build/libs/*linux*    
