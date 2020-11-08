@@ -43,8 +43,8 @@ jobs:
         
     - name: Set Paths to Artificats
       run: |
-        windowsPath="/build/libs/P&P-Manager-win-${GITHUB_REF#refs/tags/}"
-        linuxPath="/build/libs/P&P-Manager-linux-${GITHUB_REF#refs/tags/}"
+        windowsPath="./build/libs/P&P-Manager-win-${GITHUB_REF#refs/tags/}.jar"
+        linuxPath="./build/libs/P&P-Manager-linux-${GITHUB_REF#refs/tags/}.jar"
         echo "ARTIFACT_PATHNAME_WINDOWS=${windowsPath}" >> $GITHUB_ENV
         echo "ARTIFACT_PATHNAME_LINUX=${linuxPath}" >> $GITHUB_ENV
     
