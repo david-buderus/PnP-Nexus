@@ -43,10 +43,10 @@ jobs:
         
     - name: Set Paths to Artificats
       run: |
-        windowsPath="./build/libs/P&P-Manager-win-${GITHUB_REF#refs/tags/}"
-        linuxPath="./build/libs/P&P-Manager-linux-${GITHUB_REF#refs/tags/}"
-        echo ::set-env name=ARTIFACT_PATHNAME_WINDOWS::${windowsPath}
-        echo ::set-env name=ARTIFACT_PATHNAME_LINUX::${linuxPath}
+        windowsPath="/build/libs/P&P-Manager-win-${GITHUB_REF#refs/tags/}"
+        linuxPath="/build/libs/P&P-Manager-linux-${GITHUB_REF#refs/tags/}"
+        echo "ARTIFACT_PATHNAME_WINDOWS=${windowsPath}" >> $GITHUB_ENV
+        echo "ARTIFACT_PATHNAME_LINUX=${linuxPath}" >> $GITHUB_ENV
     
     - name: Upload Release Asset for Windows
       id: upload-release-asset-windows
