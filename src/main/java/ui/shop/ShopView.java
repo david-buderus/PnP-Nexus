@@ -59,14 +59,14 @@ public abstract class ShopView extends View {
         vBox.getChildren().add(input);
 
         if (Item.class.isAssignableFrom(clazz)){
-            TableColumn<Object, Integer> column = new TableColumn<>("Menge");
+            TableColumn<Object, Float> column = new TableColumn<>("Menge");
             column.setMaxWidth(400);
             column.setCellValueFactory(c -> ((Item) c.getValue()).amountProperty().asObject());
             column.setCellFactory(col -> new TableCell<>() {
                 @Override
-                public void updateItem(Integer integer, boolean empty) {
-                    super.updateItem(integer, empty);
-                    String item = empty ? "" : String.valueOf(integer);
+                public void updateItem(Float f, boolean empty) {
+                    super.updateItem(f, empty);
+                    String item = empty ? "" : String.valueOf(f);
 
                     BorderPane back = new BorderPane();
 

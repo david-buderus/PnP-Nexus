@@ -102,8 +102,8 @@ public class LootView extends View{
             for (Loot l : lootTable.getItems()) {
                 Item item = l.getItem();
 
-                if(item.getCostAsCopper() > 0){
-                    itemValue += item.getCostAsCopper() * l.getAmount();
+                if(item.getCostOfOneAsCopper() > 0){
+                    itemValue += item.getCostOfOneAsCopper() * l.getAmount();
                 } else {
                     switch (item.getName()){
                         case "Kupfer":

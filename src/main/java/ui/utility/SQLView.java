@@ -61,8 +61,8 @@ public class SQLView extends ViewPart {
 
         root.getTabs().add(createTab("Zauber", labels, names, Utility.spellList, Spell.class));
 
-        labels = new String[]{"Name", "Stufe", "Ziel", "Effekt", "Slots", "Kosten", "Mana", "Material 1", "Material 2", "Material 3", "Material 4"};
-        names = new String[]{"name", "level", "target", "effect", "slots", "cost", "mana", "material1", "material2", "material3", "material4"};
+        labels = new String[]{"Name", "Stufe", "Ziel", "Effekt", "Slots", "Kosten", "Mana", "Materials"};
+        names = new String[]{"name", "level", "target", "effect", "slots", "cost", "mana", "materials"};
 
         root.getTabs().add(createTab("Verbesserungen", labels, names, Utility.upgradeModelList, UpgradeModel.class));
 

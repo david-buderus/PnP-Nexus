@@ -10,17 +10,16 @@ import java.util.Random;
 
 public class UpgradeFactory {
 
-    private static Random rand = new Random();
+    private static final Random rand = new Random();
 
     private String name;
     private String target;
     private int slots;
-    private String[] requirements = new String[1];
-    private String[] costList = new String[1];
-    private String[] manaList = new String[1];
-    private String[] effectList = new String[1];
-    private int[][] amountList = new int[1][4];
-    private Item[][] materialList = new Item[1][4];
+    private String[] requirements = new String[0];
+    private String[] costList = new String[0];
+    private String[] manaList = new String[0];
+    private String[] effectList = new String[0];
+    private ItemList[] materialsList = new ItemList[0];
 
     public String getName() {
         return name;
@@ -63,13 +62,9 @@ public class UpgradeFactory {
         System.arraycopy(effectList, 0, effList, 0, effectList.length);
         effectList = effList;
 
-        int[][] amList = new int[maxLevel][4];
-        System.arraycopy(amountList, 0, amList, 0, amountList.length);
-        amountList = amList;
-
-        Item[][] matList = new Item[maxLevel][4];
-        System.arraycopy(materialList, 0, matList, 0, materialList.length);
-        materialList = matList;
+        ItemList[] matList = new ItemList[maxLevel];
+        System.arraycopy(materialsList, 0, matList, 0, materialsList.length);
+        materialsList = matList;
     }
 
     public int getSlots() {
@@ -135,28 +130,20 @@ public class UpgradeFactory {
         return manaList[level-1];
     }
 
-    public String getEffect(int level) {
-        return effectList[level-1];
-    }
-
     public void setEffect(int level, String effect) {
         this.effectList[level-1] = effect;
     }
 
-    public Item[] getMaterial(int level){
-        return this.materialList[level-1];
+    public String getEffect(int level) {
+        return effectList[level-1];
     }
 
-    public void setMaterial(int level, Item[] material){
-        this.materialList[level-1] = material;
+    public void setMaterials(int level, ItemList materials) {
+        this.materialsList[level-1] = materials;
     }
 
-    public int[] getAmount(int level){
-        return this.amountList[level-1];
-    }
-
-    public void setAmount(int level, int[] amount){
-        this.amountList[level-1] = amount;
+    public ItemList getMaterials(int level) {
+        return materialsList[level-1];
     }
 
     @JsonIgnore
@@ -169,14 +156,7 @@ public class UpgradeFactory {
         ItemList items = new ItemList();
 
         for(int l=from; l<=to; l++){
-            for(int i=0; i<4; i++){
-                if(this.getMaterial(l)[i] == null){
-                    continue;
-                }
-                Item item = this.getMaterial(l)[i].copy();
-                item.setAmount(this.getAmount(l)[i]);
-                items.add(item);
-            }
+            items.addAll(getMaterials(l));
         }
 
         return items;
@@ -220,9 +200,8 @@ public class UpgradeFactory {
             model.setLevel(i);
             model.setRequirement(this.getRequirement(i));
 
-            for (int x=0; x<4; x++){
-                Item item = this.getMaterial(i)[x];
-                model.setMaterial(x, item != null ? this.getAmount(i)[x] + " " + item.getName() : "");
+            for (Item item : getMaterials(i)) {
+                model.addMaterial(item != null ? item.getPrettyAmount() + " " + item.getName() : "");
             }
 
             list.add(model);

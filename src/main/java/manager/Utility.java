@@ -18,6 +18,7 @@ import ui.utility.MemoryView;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 public abstract class Utility {
@@ -65,11 +66,19 @@ public abstract class Utility {
         });
     }
 
-    public static Item getItem(String name){
-		Item item = new Item();
+    public static Item getItem(String name) {
+		return getItem(name, new Item());
+	}
+
+    public static Item getItem(String name, Item item){
 		item.setName(name);
 		return itemList.stream().filter(x -> x.getName().toLowerCase().equals(name.toLowerCase()))
 				.findFirst().orElse(item);
+	}
+
+	public static Item getItemWithoutDefault(String name) throws NoSuchElementException {
+		return itemList.stream().filter(x -> x.getName().trim().toLowerCase().equals(name.trim().toLowerCase()))
+				.findFirst().orElseThrow();
 	}
 
 	public static String getRarity() {

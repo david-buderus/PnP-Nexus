@@ -23,19 +23,19 @@ import java.util.stream.Stream;
 
 public class PlantView extends ViewPart {
 
-	private StringProperty name;
-	private StringProperty typ;
-	private StringProperty rarity;
-	private StringProperty location;
-	private StringProperty chosenLocation;
-	private ListProperty<Plant> list;
-	private ListProperty<String> names;
-	private ListProperty<String> types;
-	private ListProperty<String> locations;
-	private ListProperty<String> chosenLocations;
-	private BooleanProperty disabled;
-	private IntegerProperty searchCount;
-	private Random rand;
+	private final StringProperty name;
+	private final StringProperty typ;
+	private final StringProperty rarity;
+	private final StringProperty location;
+	private final StringProperty chosenLocation;
+	private final ListProperty<Plant> list;
+	private final ListProperty<String> names;
+	private final ListProperty<String> types;
+	private final ListProperty<String> locations;
+	private final ListProperty<String> chosenLocations;
+	private final BooleanProperty disabled;
+	private final IntegerProperty searchCount;
+	private final Random rand;
 
 	public PlantView(IView parent) {
 		super("Pflanzen", parent);
@@ -77,7 +77,7 @@ public class PlantView extends ViewPart {
 		searchTable.itemsProperty().bindBidirectional(list);
 		searchTable.setPrefWidth(770);
 		
-		TableColumn<Plant, Integer> amountC = new TableColumn<>("#");
+		TableColumn<Plant, Float> amountC = new TableColumn<>("#");
 		amountC.setCellValueFactory(val -> val.getValue().amountProperty().asObject());
 		amountC.setPrefWidth(20);
 		amountC.setMaxWidth(25);

@@ -2,6 +2,8 @@ package model.upgrade;
 
 import manager.Utility;
 
+import java.util.ArrayList;
+
 public class UpgradeModel {
     private String name;
     private String target;
@@ -9,7 +11,7 @@ public class UpgradeModel {
     private String cost;
     private String mana;
     private String effect;
-    private String[] materialList = new String[4];
+    private final ArrayList<String> materialList = new ArrayList<>();
     private int level;
     private String requirement;
 
@@ -61,40 +63,14 @@ public class UpgradeModel {
         this.effect = effect;
     }
 
-    public String getMaterial1(){
-        return materialList[0];
+    public void setMaterials(String empty) { }
+
+    public String getMaterials(){
+        return String.join("\n", materialList);
     }
 
-    public String getMaterial2(){
-        return materialList[1];
-    }
-
-    public String getMaterial3(){
-        return materialList[2];
-    }
-
-    public String getMaterial4(){
-        return materialList[3];
-    }
-
-    public void setMaterial1(String material){
-        this.materialList[0] = material;
-    }
-
-    public void setMaterial2(String material){
-        this.materialList[1] = material;
-    }
-
-    public void setMaterial3(String material){
-        this.materialList[2] = material;
-    }
-
-    public void setMaterial4(String material){
-        this.materialList[3] = material;
-    }
-
-    public void setMaterial(int i, String material){
-        this.materialList[i] = material;
+    public void addMaterial(String material){
+        this.materialList.add(material);
     }
 
     public int getLevel() {

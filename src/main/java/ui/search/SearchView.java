@@ -31,7 +31,7 @@ public abstract class SearchView<Typ> extends ViewPart {
     protected ListProperty<Typ> showingList;
     protected ListProperty<Typ> fullList;
     protected Class<Typ> typClass;
-    private ArrayList<FilterContainer> filterContainers;
+    private final ArrayList<FilterContainer> filterContainers;
 
     public SearchView(String title, IView parent, Class<Typ> typClass) {
         super(title, parent);
@@ -98,14 +98,14 @@ public abstract class SearchView<Typ> extends ViewPart {
     }
 
     private void createCounter(TableView<Typ> table, HBox input) {
-        TableColumn<Typ, Integer> column = new TableColumn<>("Menge");
+        TableColumn<Typ, Float> column = new TableColumn<>("Menge");
         column.setMaxWidth(400);
         column.setCellValueFactory(c -> ((Item) c.getValue()).amountProperty().asObject());
         column.setCellFactory(col -> new TableCell<>() {
             @Override
-            public void updateItem(Integer integer, boolean empty) {
-                super.updateItem(integer, empty);
-                String item = empty ? "" : String.valueOf(integer);
+            public void updateItem(Float f, boolean empty) {
+                super.updateItem(f, empty);
+                String item = empty ? "" : String.valueOf(f);
 
                 Text text = new Text(item);
                 text.setStyle(" -fx-text-wrap: true;");

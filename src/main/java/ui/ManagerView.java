@@ -40,6 +40,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class ManagerView extends View {
@@ -263,6 +264,7 @@ public class ManagerView extends View {
 
             Platform.runLater(() -> Utility.jewelleryList.set(jewelleryList));
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Schmuck konnte nicht geladen werden.");
         }
 
@@ -287,9 +289,11 @@ public class ManagerView extends View {
 
             Platform.runLater(() -> Utility.plantList.set(plantList));
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Pflanzen konnten nicht geladen werden.");
         }
 
+        Thread loadingThread = Thread.currentThread();
 
         //Item
         try (ResultSet itemSet = statement.executeQuery("SELECT * FROM Items WHERE Typ NOT IN (\"Waffe\", \"Rüstung\", \"Schmuck\", \"Pflanze\")")) {
@@ -313,11 +317,18 @@ public class ManagerView extends View {
                 Utility.itemList.addAll(Utility.armorList);
                 Utility.itemList.addAll(Utility.jewelleryList);
                 Utility.itemList.addAll(Utility.plantList);
+                loadingThread.interrupt();
             });
 
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Items konnten nicht geladen werden.");
         }
+
+        try {
+            //Time to let the itemList be refreshed
+            Thread.sleep(10000);
+        } catch (InterruptedException ignored) { }
 
         //Spell
         try (ResultSet spellSet = statement.executeQuery("SELECT * FROM Zauber")) {
@@ -338,6 +349,7 @@ public class ManagerView extends View {
 
             Platform.runLater(() -> Utility.spellList.set(spellList));
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Zauber konnten nicht geladen werden.");
         }
 
@@ -361,17 +373,17 @@ public class ManagerView extends View {
                     exist.setMana(level, getString(upgradeSet, "Mana"));
                     exist.setRequirement(level, getString(upgradeSet, "Benötigt"));
 
-                    int[] amount = new int[4];
-                    Item[] item = new Item[4];
-                    for (int i = 1; i <= 4; i++) {
-                        amount[i - 1] = upgradeSet.getInt("Anzahl " + i);
-                        String mat = getString(upgradeSet, "Material " + i);
-                        item[i - 1] = Utility.itemList.stream()
-                                .filter(x -> x.getName().toLowerCase().equals(mat.toLowerCase()))
-                                .findFirst().orElse(null);
+                    ItemList materials = new ItemList();
+                    ResultSet materialSet = statement.executeQuery("SELECT * FROM Verbesserungsmaterial " +
+                            "WHERE Bezeichnung=\"" + name  + "\" AND Stufe=" + level);
+                    while (materialSet.next()) {
+                        String mat = getString(materialSet, "Material");
+                        float amount = materialSet.getFloat("Anzahl");
+                        Item material = Utility.getItemWithoutDefault(mat).copy();
+                        material.setAmount(amount);
+                        materials.add(material);
                     }
-                    exist.setAmount(level, amount);
-                    exist.setMaterial(level, item);
+                    exist.setMaterials(level, materials);
 
                 } else {
                     UpgradeFactory upgradeFactory = new UpgradeFactory();
@@ -384,17 +396,17 @@ public class ManagerView extends View {
                     upgradeFactory.setCost(level, getString(upgradeSet, "Preis"));
                     upgradeFactory.setMana(level, getString(upgradeSet, "Mana"));
 
-                    int[] amount = new int[4];
-                    Item[] item = new Item[4];
-                    for (int i = 1; i <= 4; i++) {
-                        amount[i - 1] = upgradeSet.getInt("Anzahl " + i);
-                        String mat = getString(upgradeSet, "Material " + i);
-                        item[i - 1] = Utility.itemList.stream()
-                                .filter(x -> x.getName().toLowerCase().equals(mat.toLowerCase()))
-                                .findFirst().orElse(null);
+                    ItemList materials = new ItemList();
+                    ResultSet materialSet = statement.executeQuery("SELECT * FROM Verbesserungsmaterial " +
+                            "WHERE Bezeichnung=\"" + name  + "\" AND Stufe=" + level);
+                    while (materialSet.next()) {
+                        String mat = getString(materialSet, "Material");
+                        float amount = materialSet.getFloat("Anzahl");
+                        Item material = Utility.getItemWithoutDefault(mat).copy();
+                        material.setAmount(amount);
+                        materials.add(material);
                     }
-                    upgradeFactory.setAmount(level, amount);
-                    upgradeFactory.setMaterial(level, item);
+                    upgradeFactory.setMaterials(level, materials);
 
                     upgradeList.add(upgradeFactory);
                 }
@@ -402,7 +414,11 @@ public class ManagerView extends View {
 
             Platform.runLater(() -> Utility.upgradeList.set(upgradeList));
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Verbesserungen konnten nicht geladen werden.");
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            info.add("Verbesserungen konnten nicht geladen werden. Ein Material existierte nicht.");
         }
 
         TypTranslation.addStandards();
@@ -425,6 +441,7 @@ public class ManagerView extends View {
 
             Platform.runLater(() -> Utility.dungeonLootList.set(lootList));
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Loot konnte nicht geladen werden.");
         }
 
@@ -448,6 +465,7 @@ public class ManagerView extends View {
 
             Platform.runLater(() -> Utility.eventList.set(eventList));
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Events konnten nicht geladen werden.");
         }
 
@@ -466,6 +484,7 @@ public class ManagerView extends View {
 
             Platform.runLater(() -> Utility.craftingBonusList.set(craftingBonusList));
         } catch (SQLException e) {
+            e.printStackTrace();
             info.add("Herstellungsverbesserungen konnten nicht geladen werden.");
         }
 
@@ -483,17 +502,18 @@ public class ManagerView extends View {
                 fabrication.setSideProductAmount(fabricationSet.getInt("Anzahl  Neben"));
                 fabrication.setSideProductName(getString(fabricationSet, "Nebenprodukt"));
 
-                int[] amount = new int[10];
-                Item[] item = new Item[10];
-                for (int i = 1; i <= 10; i++) {
-                    amount[i - 1] = fabricationSet.getInt("Anzahl " + i);
-                    String mat = getString(fabricationSet, "Material " + i);
-                    item[i - 1] = Utility.itemList.stream()
-                            .filter(x -> x.getName().toLowerCase().equals(mat.toLowerCase()))
-                            .findFirst().orElse(null);
+                int id = fabricationSet.getInt("ID");
+
+                ItemList materials = new ItemList();
+                ResultSet materialSet = statement.executeQuery("SELECT * FROM Herstellungsmaterial WHERE ID=" + id);
+                while (materialSet.next()) {
+                    String mat = getString(materialSet, "Material");
+                    float amount = materialSet.getFloat("Anzahl");
+                    Item material = Utility.getItemWithoutDefault(mat).copy();
+                    material.setAmount(amount);
+                    materials.add(material);
                 }
-                fabrication.setAmountList(amount);
-                fabrication.setMaterialList(item);
+                fabrication.setMaterials(materials);
 
                 fabricationList.add(fabrication);
             }
@@ -513,11 +533,9 @@ public class ManagerView extends View {
 
                 int cost = 0;
 
-                for (int i = 0; i < 4; i++) {
-                    Item item = upgrade.getMaterial(level)[i];
-
+                for(Item item : upgrade.getMaterials(level)) {
                     if (item != null) {
-                        cost += item.getCostAsCopper() * upgrade.getAmount(level)[i];
+                        cost += item.getCostAsCopper();
                     }
                 }
 
@@ -528,13 +546,10 @@ public class ManagerView extends View {
                     inconsistency.setInconsistency(Utility.visualiseSell(cost) + " > " + Utility.visualiseSell(actualCost));
 
                     ArrayList<String> info = new ArrayList<>();
-                    for (int i = 0; i < upgrade.getMaterial(level).length; i++) {
-                        float amount = upgrade.getAmount(level)[i];
-                        Item material = upgrade.getMaterial(level)[i];
-
+                    for(Item material : upgrade.getMaterials(level)) {
                         if (material != null) {
-                            String matCost = Utility.visualiseSell(Math.round(amount * material.getCostAsCopper()));
-                            info.add(amount + " " + material + " (" + matCost + ")");
+                            String matCost = Utility.visualiseSell(Math.round(material.getCostAsCopper()));
+                            info.add(material.getPrettyAmount() + " " + material + " (" + matCost + ")");
                         }
                     }
                     inconsistency.setInfo(info);
@@ -549,17 +564,15 @@ public class ManagerView extends View {
             if (fabrication.getProduct().isTradeable()) {
                 int cost = 0;
 
-                for (int i = 0; i < 4; i++) {
-                    Item item = fabrication.getMaterialList()[i];
-
+                for(Item item : fabrication.getMaterials()) {
                     if (item != null) {
-                        cost += item.getCostAsCopper() * fabrication.getAmountList()[i];
+                        cost += item.getCostAsCopper();
                     }
                 }
 
                 cost /= fabrication.getProductAmount();
 
-                int actualCost = fabrication.getProduct().getCostAsCopper();
+                int actualCost = fabrication.getProduct().getCostOfOneAsCopper() * fabrication.getProductAmount();
                 if (cost > actualCost) {
                     Inconsistency inconsistency = new Inconsistency();
                     inconsistency.setName(fabrication.getProduct().getName());
@@ -567,13 +580,10 @@ public class ManagerView extends View {
                             + " > " + Utility.visualiseSell(actualCost));
 
                     ArrayList<String> info = new ArrayList<>();
-                    for (int i = 0; i < fabrication.getMaterialList().length; i++) {
-                        float amount = fabrication.getAmountList()[i];
-                        Item material = fabrication.getMaterialList()[i];
-
+                    for(Item material : fabrication.getMaterials()) {
                         if (material != null) {
-                            String matCost = Utility.visualiseSell(Math.round(amount * material.getCostAsCopper()));
-                            info.add(amount + " " + material + " (" + matCost + ")");
+                            String matCost = Utility.visualiseSell(Math.round(material.getCostAsCopper()));
+                            info.add(material.getAmount() + " " + material + " (" + matCost + ")");
                         }
                     }
                     inconsistency.setInfo(info);
@@ -582,7 +592,7 @@ public class ManagerView extends View {
                 }
             }
         }
-		Platform.runLater(() ->Utility.inconsistencyList.set(inconsistencyList));
+		Platform.runLater(() -> Utility.inconsistencyList.set(inconsistencyList));
 
         statement.close();
     }

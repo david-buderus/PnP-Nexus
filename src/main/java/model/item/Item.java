@@ -1,7 +1,6 @@
 package model.item;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.*;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -15,7 +14,7 @@ public class Item {
 	protected String rarity = "";
 	protected String cost = "";
 	protected int tier = 1;
-	protected IntegerProperty amount = new SimpleIntegerProperty(1);
+	protected FloatProperty amount = new SimpleFloatProperty(1);
 
 	public Item() { }
 
@@ -87,23 +86,36 @@ public class Item {
 		this.tier = tier;
 	}
 
-	public int getAmount() {
+	public float getAmount() {
 		return amount.get();
 	}
 
-	public void setAmount(int amount) {
+	public String getPrettyAmount() {
+		float amount = getAmount();
+		if (amount == (int) amount) {
+			return Integer.toString((int) amount);
+		} else {
+			return Float.toString(amount);
+		}
+	}
+
+	public void setAmount(float amount) {
 		this.amount.set(amount);
 	}
 
-	public void addAmount(int amount) {
+	public void addAmount(float amount) {
 		this.amount.set(getAmount() + amount);
 	}
 
-	public IntegerProperty amountProperty() {
+	public FloatProperty amountProperty() {
 		return this.amount;
 	}
 
-	public int getCostAsCopper(){
+	public int getCostAsCopper() {
+		return Math.round(getCostOfOneAsCopper() * getAmount());
+	}
+
+	public int getCostOfOneAsCopper() {
 		int value = 0;
 		StringBuilder number = new StringBuilder();
 

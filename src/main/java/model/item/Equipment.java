@@ -79,8 +79,8 @@ public abstract class Equipment extends Item {
 	}
 
 	@Override
-	public int getCostAsCopper(){
-		int cost = super.getCostAsCopper();
+	public int getCostOfOneAsCopper(){
+		int cost = super.getCostOfOneAsCopper();
 
 		for (Upgrade upgrade : upgrades) {
 			cost += upgrade.getCost();

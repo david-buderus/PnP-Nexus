@@ -73,9 +73,9 @@ public class ItemList extends ArrayList<Item> {
         return true;
     }
 
-    public int difference(Item item) {
+    public float difference(Item item) {
         if (this.contains(item)) {
-            int existing = this.get(this.indexOf(item)).getAmount();
+            float existing = this.get(this.indexOf(item)).getAmount();
             if (existing < item.getAmount()) {
                 return item.getAmount() - existing;
             }
@@ -88,7 +88,7 @@ public class ItemList extends ArrayList<Item> {
         ItemList items = new ItemList();
 
         for (Item item : collection) {
-            int difference = difference(item);
+            float difference = difference(item);
             if (difference > 0) {
                 Item dif = item.copy();
                 dif.setAmount(difference);
