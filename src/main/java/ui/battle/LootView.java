@@ -22,7 +22,7 @@ import java.util.Collection;
 
 public class LootView extends View{
 
-    public LootView(Collection<Loot> loot, Collection<EXP> exp) {
+    public LootView(Collection<Loot> loot, Collection<EXP> exp, int playerCount) {
         super();
 
         stage.setTitle("Raubgut");
@@ -119,7 +119,9 @@ public class LootView extends View{
                 }
             }
 
-            coinLabel.setText(Utility.visualiseSell(Math.round(itemValue * 0.8f) + coinValue));
+            int sellValue = Math.round(itemValue * 0.8f) + coinValue;
+            coinLabel.setText(Utility.visualiseSell(sellValue) + "\tPro Spieler: " +
+                    Utility.visualiseSell(sellValue/playerCount));
         });
 
         stage.setScene(scene);

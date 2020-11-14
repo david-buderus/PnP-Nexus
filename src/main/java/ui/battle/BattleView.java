@@ -405,7 +405,7 @@ public class BattleView extends ViewPart {
             expCollection.add(exp);
         }
 
-        new LootView(lootTable.getLoot(), expCollection);
+        new LootView(lootTable.getLoot(), expCollection, battle.playersProperty().getSize());
     }
 
     private void removeMember() {
