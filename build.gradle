@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-def versionNumber = "v1.0.0"
+def versionNumber = "v1.1.0"
 sourceCompatibility = 11
 
 repositories {
