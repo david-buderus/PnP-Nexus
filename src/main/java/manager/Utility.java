@@ -16,275 +16,398 @@ import model.upgrade.UpgradeFactory;
 import model.upgrade.UpgradeModel;
 import ui.utility.MemoryView;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.NoSuchElementException;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Utility {
 
-	private static final Random rand = new Random();
+    private static final Random rand = new Random();
 
-	public static final Collection<String> rarities = Arrays.asList("gew\u00f6hnlich", "selten", "episch", "legend\u00e4r");
-	public static final ListProperty<Armor> armorList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<DungeonLootFactory> dungeonLootList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Event> eventList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Jewellery> jewelleryList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Plant> plantList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Spell> spellList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Weapon> weaponList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<UpgradeFactory> upgradeList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<UpgradeModel> upgradeModelList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Item> itemList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<CraftingBonus> craftingBonusList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Fabrication> fabricationList = new SimpleListProperty<>(FXCollections.observableArrayList());
-	public static final ListProperty<Inconsistency> inconsistencyList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final Collection<String> rarities = Arrays.asList("gew\u00f6hnlich", "selten", "episch", "legend\u00e4r");
+    public static final ListProperty<Armor> armorList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<DungeonLootFactory> dungeonLootList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Event> eventList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Jewellery> jewelleryList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Plant> plantList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Spell> spellList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Weapon> weaponList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<UpgradeFactory> upgradeList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<UpgradeModel> upgradeModelList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Item> itemList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<CraftingBonus> craftingBonusList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Fabrication> fabricationList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Inconsistency> inconsistencyList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-	public static final MapProperty<UpgradeModel, UpgradeFactory> upgradeMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
+    public static final MapProperty<UpgradeModel, UpgradeFactory> upgradeMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
 
-	public static final ListProperty<Town> townList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Town> townList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-	public static MemoryView memoryView;
+    public static MemoryView memoryView;
 
-	public static final BooleanBinding inconsistent = Bindings.isEmpty(inconsistencyList).not();
+    public static final BooleanBinding inconsistent = Bindings.isEmpty(inconsistencyList).not();
 
-	public static void init(){
-	    upgradeList.addListener((ob, o, n) ->{
-	    	upgradeMap.clear();
+    public static void init() {
+        upgradeList.addListener((ob, o, n) -> {
+            upgradeMap.clear();
             ObservableList<UpgradeModel> list = FXCollections.observableArrayList();
 
-            for (UpgradeFactory factory : n){
+            for (UpgradeFactory factory : n) {
                 Collection<UpgradeModel> models = factory.getModels();
-            	list.addAll(models);
+                list.addAll(models);
 
-            	for(UpgradeModel model : models){
-            		upgradeMap.put(model, factory);
-				}
+                for (UpgradeModel model : models) {
+                    upgradeMap.put(model, factory);
+                }
             }
 
             upgradeModelList.set(list);
         });
     }
 
+    /**
+     * If an item with the given name exists in the {@link #itemList},
+     * it returns that item.
+     * If there is no item, it returns an item with the name and the suffix
+     * "(Nicht in  der Datenbank)".
+     *
+     * @param name of the searched item
+     * @return a more ore less matching item
+     */
     public static Item getItem(String name) {
-		return getItem(name, new Item());
-	}
+        Item item = new Item();
+        item.setName(name + " (Nicht in  der Datenbank)");
+        return getItemOrElse(name, item);
+    }
 
-    public static Item getItem(String name, Item item){
-		item.setName(name);
-		return itemList.stream().filter(x -> x.getName().toLowerCase().equals(name.toLowerCase()))
-				.findFirst().orElse(item);
-	}
+    /**
+     * If an item with the given name exists in the {@link #itemList},
+     * it returns that item.
+     * If there is no item, it returns the item specified in the
+     * parameters.
+     *
+     * @param name of the searched item
+     * @param item fallback item
+     * @return a matching item or the fallback
+     */
+    public static Item getItemOrElse(String name, Item item) {
+        return itemList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
+                .findFirst().orElse(item);
+    }
 
-	public static Item getItemWithoutDefault(String name) throws NoSuchElementException {
-		return itemList.stream().filter(x -> x.getName().trim().toLowerCase().equals(name.trim().toLowerCase()))
-				.findFirst().orElseThrow();
-	}
+    /**
+     * If an item with the given name exists in the {@link #itemList},
+     * it returns that item.
+     * If there is no item, it throws a {@link NoSuchElementException}.
+     *
+     * @param name of the searched item
+     * @return an matching item
+     * @throws NoSuchElementException if there is no item with the given name
+     */
+    public static Item getItemWithoutDefault(String name) throws NoSuchElementException {
+        return itemList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
+                .findFirst().orElseThrow();
+    }
 
-	public static String getRarity() {
-		double percent = rand.nextDouble();
+    /**
+     * Generates a string that represents
+     * a rarity of the database
+     *
+     * @return a rarity matching the chance
+     */
+    public static String getRandomRarity() {
+        double percent = rand.nextDouble();
 
-		if (percent < 0.01) {
-			return "legend\u00e4r";
-		}
-		if (percent < 0.05) {
-			return "episch";
-		}
-		if (percent < 0.20) {
-			return "selten";
-		}
-		return "gew\u00f6hnlich";
-	}
+        if (percent < getChanceOfRarity("legendär")) {
+            return "legendär";
+        }
+        if (percent < getChanceOfRarity("episch")) {
+            return "episch";
+        }
+        if (percent < getChanceOfRarity("selten")) {
+            return "selten";
+        }
+        return "gewöhnlich";
+    }
 
-	public static double getRarity(String rarity) {
-		if (rarity.equals("legend\u00e4r")) {
-			return 0.01;
-		}
-		if (rarity.equals("episch")) {
-			return 0.05;
-		}
-		if (rarity.equals("selten")) {
-			return 0.20;
-		}
-		return 1;
-	}
+    /**
+     * Returns the chance to find an item
+     * of the given rarity
+     *
+     * @param rarity of which the chance is needed
+     * @return a double in [0,1]
+     */
+    public static double getChanceOfRarity(String rarity) {
+        if (rarity.equals("legendär")) {
+            return 0.01;
+        }
+        if (rarity.equals("episch")) {
+            return 0.05;
+        }
+        if (rarity.equals("selten")) {
+            return 0.20;
+        }
+        return 1;
+    }
 
-	public static Collection<String> getMaterial() {
-		double percent = rand.nextDouble();
+    /**
+     * Generates a Collection of String which
+     * represents materials of the database.
+     *
+     * @return a list of materials of a specific tier
+     */
+    public static Collection<String> getRandomMaterial() {
+        switch (getRandomTier()) {
+            case 1:
+                return Arrays.asList("Eisen", "Silber", "Leder", "Holz", "Papier", "Stoff");
+            case 2:
+                return Arrays.asList("Stahl", "Gold", "Verstärktes Leder", "Verzaubertes Holz", "Pergament", "Verzauberter Stoff");
+            case 3:
+                return Arrays.asList("Mithril", "Platin", "Bestienleder", "Entholz", "Verzaubertes Papier", "Seide");
+            case 4:
+                return Arrays.asList("Orichalcum", "Wei\u00dfgold", "Verstärktes Bestienleder", "Verzaubertes Entholz", "Verzaubertes Pergament", "Verzauberte Seide");
+            case 5:
+                return Arrays.asList("Adamantium", "Drachenschuppe", "Weltenholz", "Gesegnetes Pergament", "Magiestoff");
+            default:
+                return Collections.emptyList();
+        }
+    }
 
-		if (percent < 0.01) {
-			return Arrays.asList("Adamantium", "Drachenschuppe", "Weltenholz");
-		}
-		if (percent < 0.1) {
-			return Arrays.asList("Orichalcum", "Wei\u00dfgold", "Verzaubertes Entholz", "Magisches Pergament", "Verstärktes Bestienleder");
-		}
-		if (percent < 0.25) {
-			return Arrays.asList("Mithril", "Platin", "Entholz", "Magisches Papier", "Bestienleder");
-		}
-		if (percent < 0.5) {
-			return Arrays.asList("Stahl", "Gold", "Verzaubertes Holz", "Verzauberter Stoffballen", "Verstärktes Leder");
-		}
-		if (percent < 0.9) {
-			return Arrays.asList("Eisen", "Silber", "Leder", "Pergament");
-		}
-		return Arrays.asList("Stein", "Holz", "Stoff", "Papier");
-	}
+    /**
+     * Generates a random number in [1, 5]
+     * with a higher chance to generate a low number.
+     *
+     * @return a random generated Tier
+     */
+    public static int getRandomTier() {
+        double percent = rand.nextDouble();
 
-	public static String asRomanNumber(int x){
-		String in = String.valueOf(x);
-		StringBuilder out = new StringBuilder();
+        if (percent < 0.01) {
+            return 5;
+        }
+        if (percent < 0.1) {
+            return 4;
+        }
+        if (percent < 0.25) {
+            return 3;
+        }
+        if (percent < 0.5) {
+            return 2;
+        }
+        return 1;
+    }
 
-		for(int i=0; i<in.length(); i++){
-			String[] symbols = getSymbols((int) Math.pow(10, i));
-			int digit = Integer.parseInt(String.valueOf(in.charAt(in.length()-1-i)));
+    /**
+     * Converts an int into a representation
+     * in a roman number
+     *
+     * @param x which gets converted
+     * @return a string that represents the matching roman number
+     */
+    public static String asRomanNumber(int x) {
+        String in = String.valueOf(x);
+        StringBuilder out = new StringBuilder();
 
-			if(digit == 4) {
-				out.insert(0,symbols[0] + symbols[1]);
-				continue;
-			}
-			if(digit == 9) {
-				out.insert(0,symbols[0] + symbols[2]);
-				continue;
-			}
-			if(digit > 4){
-				for(int j=5; j<digit; j++){
-					out.insert(0, symbols[0]);
-				}
-				out.insert(0, symbols[1]);
-				continue;
-			}
-			for(int j=0; j<digit; j++){
-				out.insert(0, symbols[0]);
-			}
-		}
-		return out.toString();
-	}
+        for (int i = 0; i < in.length(); i++) {
+            String[] symbols = getSymbols((int) Math.pow(10, i));
+            int digit = Integer.parseInt(String.valueOf(in.charAt(in.length() - 1 - i)));
 
-	private static String[] getSymbols(int pot){
-		switch (pot){
-			case 1: return new String[]{"I", "V", "X"};
-			case 10: return new String[]{"X", "L", "C"};
-			case 100: return new String[]{"C", "D", "M"};
-			default: return new String[]{"", "", ""};
-		}
-	}
+            if (digit == 4) {
+                out.insert(0, symbols[0] + symbols[1]);
+                continue;
+            }
+            if (digit == 9) {
+                out.insert(0, symbols[0] + symbols[2]);
+                continue;
+            }
+            if (digit > 4) {
+                for (int j = 5; j < digit; j++) {
+                    out.insert(0, symbols[0]);
+                }
+                out.insert(0, symbols[1]);
+                continue;
+            }
+            for (int j = 0; j < digit; j++) {
+                out.insert(0, symbols[0]);
+            }
+        }
+        return out.toString();
+    }
 
-	/**
-	 * Visualises the amount of copper coins
-	 * ins copper, silver and gold
-	 *
-	 * @param cost amount of copper coins
-	 * @return human-readable format
-	 */
-	public static String visualiseSell(int cost){
-		String copper = cost % 100 + "K";
-		cost /= 100;
-		String silver = cost % 100 + "S";
-		cost /= 100;
-		String gold = cost + "G";
+    private static String[] getSymbols(int pot) {
+        switch (pot) {
+            case 1:
+                return new String[]{"I", "V", "X"};
+            case 10:
+                return new String[]{"X", "L", "C"};
+            case 100:
+                return new String[]{"C", "D", "M"};
+            default:
+                return new String[]{"", "", ""};
+        }
+    }
 
-		StringBuilder result = new StringBuilder();
+    /**
+     * Visualises the amount of copper coins
+     * ins copper, silver and gold
+     *
+     * @param cost amount of copper coins
+     * @return human-readable format
+     */
+    public static String visualiseSell(int cost) {
+        String copper = cost % 100 + "K";
+        cost /= 100;
+        String silver = cost % 100 + "S";
+        cost /= 100;
+        String gold = cost + "G";
 
-		if(!gold.equals("0G")){
-			result.append(gold).append(" ");
-		}
-		if(!silver.equals("0S")){
-			result.append(silver).append(" ");
-		}
-		if(!copper.equals("0K")){
-			result.append(copper);
-		}
+        StringBuilder result = new StringBuilder();
 
-		if(result.length() == 0){
-			return "0K";
-		}
+        if (!gold.equals("0G")) {
+            result.append(gold).append(" ");
+        }
+        if (!silver.equals("0S")) {
+            result.append(silver).append(" ");
+        }
+        if (!copper.equals("0K")) {
+            result.append(copper);
+        }
 
-		return result.toString();
-	}
+        if (result.length() == 0) {
+            return "0K";
+        }
 
-	public static int calculateWeaponDamage(int tier, int step, int startValue){
-		if(tier < 1){
-			return startValue - step;
-		} else if(tier < 4){
-			return calculateWeaponDamage(tier-1, step, startValue) + step;
-		} else {
-			return calculateWeaponDamage(tier-1, step, startValue) + 2*step;
-		}
-	}
+        return result.toString();
+    }
 
-	public static Armor generateCommonHeavyArmor(int tier, String name, String position){
-		return generateCommonHeavyArmor(tier, name, position, 0);
-	}
+    /**
+     * Calculates the base damage of a weapon with the specific values would have.
+     *
+     * @param tier       of the weapon
+     * @param step       that the weapon damage does from Tier 1 to Tier 2
+     * @param startValue the base damage of the weapon at Tier 1
+     * @return the calculated base damage
+     */
+    public static int calculateWeaponDamage(int tier, int step, int startValue) {
+        if (tier < 1) {
+            return startValue - step;
+        } else if (tier < 4) {
+            return calculateWeaponDamage(tier - 1, step, startValue) + step;
+        } else {
+            return calculateWeaponDamage(tier - 1, step, startValue) + 2 * step;
+        }
+    }
 
-	public static Armor generateCommonHeavyArmor(int tier, String name, String position, int weight){
-		Armor armor = new Armor();
-		armor.setName(name);
-		armor.setWeight(weight);
-		armor.setTier(tier);
-		armor.setSubTyp(position);
-		armor.setProtection(Utility.calculateHeavyArmorProtection(tier, position));
-		armor.setRarity("gewöhnlich");
-		return armor;
-	}
+    /**
+     * Generates a heavy armor for the given tier and position with weight of 0.
+     *
+     * @param tier     of the armor
+     * @param name     of the generated armor item
+     * @param position of the armor
+     * @return the generated armor with matching stats
+     */
+    public static Armor generateCommonHeavyArmor(int tier, String name, String position) {
+        return generateCommonHeavyArmor(tier, name, position, 0);
+    }
 
-	private static int calculateHeavyArmorProtection(int tier, String position){
-		switch (position){
-			case "Kopf":
-			case "Arme":
-				return calculateHeavyArmorProtection(tier, 3);
-			case "Oberkörper":
-				return calculateHeavyArmorProtection(tier, 5);
-			case "Beine":
-				return calculateHeavyArmorProtection(tier, 4);
-		}
-		return 0;
-	}
+    /**
+     * Generates a heavy armor for the given tier and position.
+     *
+     * @param tier     of the armor
+     * @param name     of the generated armor item
+     * @param position of the armor
+     * @param weight   of the generated armor item
+     * @return the generated armor with matching stats
+     */
+    public static Armor generateCommonHeavyArmor(int tier, String name, String position, int weight) {
+        Armor armor = new Armor();
+        armor.setName(name);
+        armor.setWeight(weight);
+        armor.setTier(tier);
+        armor.setSubTyp(position);
+        armor.setProtection(Utility.calculateHeavyArmorProtection(tier, position));
+        armor.setRarity("gewöhnlich");
+        return armor;
+    }
 
-	private static int calculateHeavyArmorProtection(int tier, int startValue){
-		if(tier < 1){
-			return startValue - 2;
-		} else if(tier == 3){
-			return calculateHeavyArmorProtection(tier-1, startValue);
-		} else {
-			return calculateHeavyArmorProtection(tier-1, startValue) + 2;
-		}
-	}
+    private static int calculateHeavyArmorProtection(int tier, String position) {
+        switch (position) {
+            case "Kopf":
+            case "Arme":
+                return calculateHeavyArmorProtection(tier, 3);
+            case "Oberkörper":
+                return calculateHeavyArmorProtection(tier, 5);
+            case "Beine":
+                return calculateHeavyArmorProtection(tier, 4);
+        }
+        return 0;
+    }
 
-	public static Armor generateCommonLightArmor(int tier, String name, String position){
-		return generateCommonLightArmor(tier, name, position, 0);
-	}
+    private static int calculateHeavyArmorProtection(int tier, int startValue) {
+        if (tier < 1) {
+            return startValue - 2;
+        } else if (tier == 3) {
+            return calculateHeavyArmorProtection(tier - 1, startValue);
+        } else {
+            return calculateHeavyArmorProtection(tier - 1, startValue) + 2;
+        }
+    }
 
-	public static Armor generateCommonLightArmor(int tier, String name, String position, int weight){
-		Armor armor = new Armor();
-		armor.setName(name);
-		armor.setWeight(weight);
-		armor.setTier(tier);
-		armor.setSubTyp(position);
-		armor.setProtection(Utility.calculateLightArmorProtection(tier, position));
-		armor.setRarity("gewöhnlich");
-		return armor;
-	}
+    /**
+     * Generates a light armor for the given tier and position with weight of 0.
+     *
+     * @param tier     of the armor
+     * @param name     of the generated armor item
+     * @param position of the armor
+     * @return the generated armor with matching stats
+     */
+    public static Armor generateCommonLightArmor(int tier, String name, String position) {
+        return generateCommonLightArmor(tier, name, position, 0);
+    }
 
-	public static int calculateLightArmorProtection(int tier, String position){
-		switch (position){
-			case "Kopf":
-			case "Arme":
-				return calculateLightArmorProtection(tier, 1);
-			case "Oberkörper":
-				return calculateLightArmorProtection(tier, 3);
-			case "Beine":
-				return calculateLightArmorProtection(tier, 2);
-		}
-		return 0;
-	}
+    /**
+     * Generates a light armor for the given tier and position.
+     *
+     * @param tier     of the armor
+     * @param name     of the generated armor item
+     * @param position of the armor
+     * @param weight   of the generated armor item
+     * @return the generated armor with matching stats
+     */
+    public static Armor generateCommonLightArmor(int tier, String name, String position, int weight) {
+        Armor armor = new Armor();
+        armor.setName(name);
+        armor.setWeight(weight);
+        armor.setTier(tier);
+        armor.setSubTyp(position);
+        armor.setProtection(Utility.calculateLightArmorProtection(tier, position));
+        armor.setRarity("gewöhnlich");
+        return armor;
+    }
 
-	private static int calculateLightArmorProtection(int tier, int startValue){
-		if(tier < 1){
-			return startValue - 1;
-		} else if(tier == 5){
-			return calculateLightArmorProtection(tier-1, startValue) + 2;
-		} else {
-			return calculateLightArmorProtection(tier-1, startValue) + 1;
-		}
-	}
+    private static int calculateLightArmorProtection(int tier, String position) {
+        switch (position) {
+            case "Kopf":
+            case "Arme":
+                return calculateLightArmorProtection(tier, 1);
+            case "Oberkörper":
+                return calculateLightArmorProtection(tier, 3);
+            case "Beine":
+                return calculateLightArmorProtection(tier, 2);
+        }
+        return 0;
+    }
+
+    private static int calculateLightArmorProtection(int tier, int startValue) {
+        if (tier < 1) {
+            return startValue - 1;
+        } else if (tier == 5) {
+            return calculateLightArmorProtection(tier - 1, startValue) + 2;
+        } else {
+            return calculateLightArmorProtection(tier - 1, startValue) + 1;
+        }
+    }
+
+    private static String trimSpaces(String string) {
+        return Arrays.stream(string.split(" ")).map(String::trim).collect(Collectors.joining(" "));
+    }
 }

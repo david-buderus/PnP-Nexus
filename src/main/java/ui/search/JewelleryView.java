@@ -133,8 +133,8 @@ public class JewelleryView extends SearchView<Jewellery> {
 
 	private void search() {
 		for (int i = 0; i < searchCount.intValue(); i++) {
-			String rarity = this.rarity.get().equals("Seltenheit") ? Utility.getRarity() : this.rarity.get();
-			Collection<String> material = this.material.get().equals("Material") ? Utility.getMaterial()
+			String rarity = this.rarity.get().equals("Seltenheit") ? Utility.getRandomRarity() : this.rarity.get();
+			Collection<String> material = this.material.get().equals("Material") ? Utility.getRandomMaterial()
 					: Collections.singletonList(this.material.get());
 
 			Stream<Jewellery> stream = Utility.jewelleryList.stream().filter(w -> w.getRarity().equals(rarity));

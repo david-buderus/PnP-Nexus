@@ -1,5 +1,6 @@
 package model.loot;
 
+import manager.Utility;
 import model.item.Item;
 
 import java.util.ArrayList;
@@ -14,13 +15,13 @@ public class LootTable {
 	}
 
 	public void add(String name, int amount, double chance) {
-		list.add(new LootFactory(new Item(name), amount, chance));
+		list.add(new LootFactory(Utility.getItem(name), amount, chance));
 	}
 
 	public void add(Item item, int amount, double chance) {
 		list.add(new LootFactory(item, amount, chance));
 	}
-	
+
 	public void add(LootTable other) {
 		this.list.addAll(other.list);
 	}
@@ -33,10 +34,10 @@ public class LootTable {
 			Loot loot = factory.getLoot();
 			Loot own = getLoot(factory.getItem(), lootList);
 
-			if(own != null){
+			if (own != null) {
 				own.addAmount(loot.getAmount());
 			} else {
-				if(loot.getAmount() > 0){
+				if (loot.getAmount() > 0) {
 					lootList.add(loot);
 				}
 			}
