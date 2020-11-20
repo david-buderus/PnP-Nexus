@@ -16,7 +16,7 @@ import ui.View;
 
 public class TownView extends View {
 
-    public TownView(Town town){
+    public TownView(Town town) {
         super();
         this.stage.setTitle("Stadtansicht");
 
@@ -32,7 +32,7 @@ public class TownView extends View {
 
         root.getChildren().add(top);
 
-        for(Shop shop : town.getShops()){
+        for (Shop shop : town.getShops()) {
 
             HBox line = new HBox();
 
@@ -51,7 +51,7 @@ public class TownView extends View {
             root.getChildren().add(line);
         }
 
-        if(town.hasBlackMarket()) {
+        if (town.hasBlackMarket()) {
             BorderPane middle = new BorderPane();
 
             Label market = new Label("Schwarzmarkt");
@@ -59,7 +59,7 @@ public class TownView extends View {
 
             root.getChildren().add(middle);
 
-            for(Shop shop : town.getBlackMarket()){
+            for (Shop shop : town.getBlackMarket()) {
 
                 HBox line = new HBox();
 
@@ -73,7 +73,7 @@ public class TownView extends View {
                     town.removeBlackMarketShop(shop);
                     root.getChildren().remove(line);
 
-                    if(!town.hasBlackMarket()){
+                    if (!town.hasBlackMarket()) {
                         root.getChildren().remove(middle);
                     }
                 });

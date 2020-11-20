@@ -1,28 +1,27 @@
 package manager;
 
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
-
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
-
 public class CopyService extends Service<File> {
 
-	private File file;
+    private File file;
 
-	public File getFile() {
-		return file;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	public void setFile(File file) {
-		this.file = file;
-	}
+    public void setFile(File file) {
+        this.file = file;
+    }
 
-	@Override
-	protected Task<File> createTask() {
-		return new Task<>() {
+    @Override
+    protected Task<File> createTask() {
+        return new Task<>() {
 
             @Override
             protected File call() {
@@ -38,6 +37,6 @@ public class CopyService extends Service<File> {
             }
 
         };
-	}
+    }
 
 }

@@ -13,7 +13,7 @@ public class Tank extends FightingType {
         super(name);
     }
 
-    public Tank(){
+    public Tank() {
         this("Tank");
     }
 

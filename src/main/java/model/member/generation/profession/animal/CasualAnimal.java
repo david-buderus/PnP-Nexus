@@ -1,8 +1,8 @@
 package model.member.generation.profession.animal;
 
 import model.member.generation.fightingtype.FightingType;
-import model.member.generation.fightingtype.physical.animal.MeleeAnimal;
 import model.member.generation.fightingtype.physical.animal.FastMeleeAnimal;
+import model.member.generation.fightingtype.physical.animal.MeleeAnimal;
 import model.member.generation.profession.Profession;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ public class CasualAnimal extends Profession {
         super(name);
     }
 
-    public CasualAnimal(){
+    public CasualAnimal() {
         this("Normales Wildtier");
     }
 

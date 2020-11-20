@@ -1,15 +1,16 @@
 package model.map.object.room;
 
-import javafx.util.Pair;
 import model.map.RotationPoint;
 import model.map.object.MapObject;
 import model.map.object.MapObjectPart;
-import model.map.object.loot.LootObject;
 import model.map.specification.MapSpecification;
 import model.map.specification.texture.TextureHandler;
 import ui.map.IMapCanvas;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class RoomObject extends MapObject {
@@ -36,7 +37,7 @@ public abstract class RoomObject extends MapObject {
             if (!usedEntries.contains(key)) {
                 RotationPoint point = entries.get(key);
                 canvas.drawPerspectiveImage(textureHandler.getWall(), this, point.getX(), point.getY(), point.getZ(),
-                        1, 1,1, (point.getRotation() + 2) % 4);
+                        1, 1, 1, (point.getRotation() + 2) % 4);
             }
         }
     }

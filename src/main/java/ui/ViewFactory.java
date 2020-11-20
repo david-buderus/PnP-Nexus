@@ -12,7 +12,7 @@ import ui.part.NumberField;
 
 public abstract class ViewFactory {
 
-    public static HBox labelTextField(String text, StringProperty property){
+    public static HBox labelTextField(String text, StringProperty property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -29,7 +29,7 @@ public abstract class ViewFactory {
     }
 
 
-    public static HBox labelTextField(String text, IntegerProperty property){
+    public static HBox labelTextField(String text, IntegerProperty property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -45,7 +45,7 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelShortTextField(String text, IntegerProperty property){
+    public static HBox labelShortTextField(String text, IntegerProperty property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -61,7 +61,7 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelShortTextField(String text, ReadOnlyIntegerProperty property, IntegerProperty modifier){
+    public static HBox labelShortTextField(String text, ReadOnlyIntegerProperty property, IntegerProperty modifier) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -83,7 +83,7 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelTextField(String text, IntegerProperty property1, IntegerProperty property2){
+    public static HBox labelTextField(String text, IntegerProperty property1, IntegerProperty property2) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -114,7 +114,7 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelRegion(String text, Region region){
+    public static HBox labelRegion(String text, Region region) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -128,7 +128,7 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelRegion(String text, int space1, Region region1, int space2, Region region2){
+    public static HBox labelRegion(String text, int space1, Region region1, int space2, Region region2) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 

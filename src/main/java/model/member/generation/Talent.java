@@ -157,10 +157,10 @@ public enum Talent {
             case death:
                 return new PrimaryAttribute[]{PrimaryAttribute.charisma, PrimaryAttribute.resilience, PrimaryAttribute.resilience};
 
-             case dodge:
-                 return new PrimaryAttribute[]{PrimaryAttribute.maneuverability, PrimaryAttribute.maneuverability, PrimaryAttribute.endurance};
+            case dodge:
+                return new PrimaryAttribute[]{PrimaryAttribute.maneuverability, PrimaryAttribute.maneuverability, PrimaryAttribute.endurance};
             case instinct:
-                if(member.isMage()){
+                if (member.isMage()) {
                     return new PrimaryAttribute[]{PrimaryAttribute.charisma, PrimaryAttribute.charisma, PrimaryAttribute.precision};
                 } else {
                     return new PrimaryAttribute[]{PrimaryAttribute.strength, PrimaryAttribute.strength, PrimaryAttribute.precision};
@@ -199,11 +199,11 @@ public enum Talent {
         return new PrimaryAttribute[]{};
     }
 
-    public boolean isMagicTalent(){
+    public boolean isMagicTalent() {
         return getMagicTalents().contains(this);
     }
 
-    public static Collection<Talent> getMagicTalents(){
+    public static Collection<Talent> getMagicTalents() {
         Collection<Talent> collection = new HashSet<>();
         collection.add(arkan);
         collection.add(illusion);
@@ -221,7 +221,7 @@ public enum Talent {
         return collection;
     }
 
-    public static Collection<Talent> getPureWeaponTalents(){
+    public static Collection<Talent> getPureWeaponTalents() {
         Collection<Talent> collection = new HashSet<>();
         collection.add(oneHandBlade);
         collection.add(twoHandBlade);

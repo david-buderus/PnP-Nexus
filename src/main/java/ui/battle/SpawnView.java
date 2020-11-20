@@ -17,8 +17,8 @@ import model.member.generation.characterisation.Characterisation;
 import model.member.generation.fightingtype.FightingType;
 import model.member.generation.profession.Profession;
 import model.member.generation.race.Race;
-import ui.part.NumStringConverter;
 import ui.View;
+import ui.part.NumStringConverter;
 
 import java.util.ArrayList;
 import java.util.Collection;

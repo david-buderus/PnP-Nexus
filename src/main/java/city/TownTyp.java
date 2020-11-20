@@ -4,7 +4,7 @@ public enum TownTyp {
     bigTown, town, smallTown, bigVillage, village, smallVillage;
 
     @Override
-    public String toString(){
+    public String toString() {
         switch (this) {
             case bigTown:
                 return "Große Stadt";
@@ -22,7 +22,7 @@ public enum TownTyp {
         return "Nichts";
     }
 
-    public int getAverage(){
+    public int getAverage() {
         switch (this) {
             case bigTown:
                 return 25000;
@@ -40,20 +40,20 @@ public enum TownTyp {
         return 0;
     }
 
-    public static TownTyp getTownTyp(int population){
-        if(population > bigTown.getAverage()/2){
+    public static TownTyp getTownTyp(int population) {
+        if (population > bigTown.getAverage() / 2) {
             return bigTown;
         }
-        if(population > town.getAverage()/2){
+        if (population > town.getAverage() / 2) {
             return town;
         }
-        if(population > smallTown.getAverage()/2){
+        if (population > smallTown.getAverage() / 2) {
             return smallTown;
         }
-        if(population > bigVillage.getAverage()/2){
+        if (population > bigVillage.getAverage() / 2) {
             return bigVillage;
         }
-        if(population > village.getAverage()/2){
+        if (population > village.getAverage() / 2) {
             return village;
         }
         return smallVillage;

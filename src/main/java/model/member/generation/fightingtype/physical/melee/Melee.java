@@ -2,14 +2,13 @@ package model.member.generation.fightingtype.physical.melee;
 
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
-import model.member.generation.SpecificType;
 import model.member.generation.fightingtype.PhysicalFighter;
 
 import java.util.Collection;
 
 public abstract class Melee extends PhysicalFighter {
 
-    protected Melee(String name){
+    protected Melee(String name) {
         super(name);
     }
 

@@ -358,13 +358,13 @@ public class MapCanvas extends Pane implements IMapCanvas {
 
             infoContext.setFill(Color.DARKGRAY);
             infoContext.fillPolygon(new double[]{x, x + 20, x + 20}, new double[]{y, y, y + 20}, 3);
-            infoContext.fillRoundRect(x + 10, y, 100, 40 + 15*lines, 20, 20);
+            infoContext.fillRoundRect(x + 10, y, 100, 40 + 15 * lines, 20, 20);
             infoContext.setFill(Color.LIGHTGRAY);
-            infoContext.fillRoundRect(x + 13, y + 3, 94, 34 + 15*lines, 17, 17);
+            infoContext.fillRoundRect(x + 13, y + 3, 94, 34 + 15 * lines, 17, 17);
             infoContext.setFill(Color.DARKGRAY);
             infoContext.fillRect(x + 15, y + 24, 90, 2);
             infoContext.setFill(Color.BLACK);
-            infoContext.fillText(loot.getContainer(),x + 20, y + 20, 80);
+            infoContext.fillText(loot.getContainer(), x + 20, y + 20, 80);
             infoContext.fillText(infoText, x + 20, y + 40, 80);
         }
     }

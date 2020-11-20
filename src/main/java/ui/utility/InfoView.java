@@ -13,7 +13,7 @@ public class InfoView extends View {
 
     private StringProperty info;
 
-    public InfoView(String title){
+    public InfoView(String title) {
         super();
         this.stage.setTitle(title);
         this.info = new SimpleStringProperty("");
@@ -30,11 +30,11 @@ public class InfoView extends View {
         this.stage.setScene(scene);
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return info.get().isEmpty();
     }
 
-    public void add(String s){
+    public void add(String s) {
         info.set(info.get() + s + "\n");
     }
 }

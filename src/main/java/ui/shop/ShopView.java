@@ -34,13 +34,13 @@ public abstract class ShopView extends View {
     private final Collection<TableView<?>> tables = new ArrayList<>();
     private final BooleanProperty filtered = new SimpleBooleanProperty();
 
-    protected void refresh(){
-        for(TableView<?> table : tables){
+    protected void refresh() {
+        for (TableView<?> table : tables) {
             table.refresh();
         }
     }
 
-    protected TableBox createTable(Collection<?> list, String[] labels, String[] names, Class<?> clazz){
+    protected TableBox createTable(Collection<?> list, String[] labels, String[] names, Class<?> clazz) {
 
         TableBox vBox = new TableBox(5);
         vBox.setPadding(new Insets(10, 20, 20, 20));
@@ -58,7 +58,7 @@ public abstract class ShopView extends View {
         HBox input = new HBox();
         vBox.getChildren().add(input);
 
-        if (Item.class.isAssignableFrom(clazz)){
+        if (Item.class.isAssignableFrom(clazz)) {
             TableColumn<Object, Float> column = new TableColumn<>("Menge");
             column.setMaxWidth(400);
             column.setCellValueFactory(c -> ((Item) c.getValue()).amountProperty().asObject());
@@ -73,7 +73,7 @@ public abstract class ShopView extends View {
                     Text text = new Text(item);
                     back.setLeft(text);
 
-                    if(this.getTableRow() != null) {
+                    if (this.getTableRow() != null) {
                         format(this.getTableRow().getItem(), text);
                     }
 
@@ -82,7 +82,7 @@ public abstract class ShopView extends View {
                     plus.setPrefSize(25, 25);
                     plus.setMaxSize(25, 25);
                     plus.setOnMouseClicked(ev -> {
-                        if(this.getTableRow() != null) {
+                        if (this.getTableRow() != null) {
                             ((Item) this.getTableRow().getItem()).addAmount(ctrlValues(ev));
                             refresh();
                         }
@@ -93,14 +93,14 @@ public abstract class ShopView extends View {
                     minus.setPrefSize(25, 25);
                     minus.setMaxSize(25, 25);
                     minus.setOnMouseClicked(ev -> {
-                        if(this.getTableRow() != null) {
+                        if (this.getTableRow() != null) {
                             ((Item) this.getTableRow().getItem()).addAmount(-ctrlValues(ev));
                             refresh();
                         }
                     });
                     box.getChildren().add(minus);
 
-                    if(!empty) {
+                    if (!empty) {
                         back.setRight(box);
                     }
 
@@ -118,11 +118,11 @@ public abstract class ShopView extends View {
             input.getChildren().add(filterBox);
         }
 
-        for (int i = 0; i < labels.length; i++){
+        for (int i = 0; i < labels.length; i++) {
             TableColumn<Object, Object> column = new TableColumn<>(labels[i]);
             column.setMaxWidth(400);
             column.setCellValueFactory(new PropertyValueFactory<>(names[i]));
-            column.setCellFactory(col -> new TableCell<>(){
+            column.setCellFactory(col -> new TableCell<>() {
                 @Override
                 public void updateItem(Object object, boolean empty) {
                     super.updateItem(object, empty);
@@ -130,17 +130,17 @@ public abstract class ShopView extends View {
 
                     Text text = new Text(item);
 
-                    if(this.getTableRow() != null) {
+                    if (this.getTableRow() != null) {
                         format(this.getTableRow().getItem(), text);
                     }
 
                     calculateSize(text);
-                    this.widthProperty().addListener((ob, o ,n) -> calculateSize(text));
+                    this.widthProperty().addListener((ob, o, n) -> calculateSize(text));
 
                     this.setGraphic(text);
                 }
 
-                private void calculateSize(Text text){
+                private void calculateSize(Text text) {
                     text.setWrappingWidth(0);
                     double width = text.getLayoutBounds().getWidth() > this.getTableColumn().getMaxWidth() ?
                             this.getWidth() - 25 : this.getWidth();
@@ -190,12 +190,13 @@ public abstract class ShopView extends View {
         }
     }
 
-    protected void format(Object object, Text text){}
+    protected void format(Object object, Text text) {
+    }
 
-    protected void update(Collection<FilterContainer> filterContainers, Collection<?> fullList, ListProperty<Object> filteredList){
+    protected void update(Collection<FilterContainer> filterContainers, Collection<?> fullList, ListProperty<Object> filteredList) {
         Stream<?> stream = fullList.stream();
 
-        for (FilterContainer container : filterContainers){
+        for (FilterContainer container : filterContainers) {
             stream = stream.filter(x -> {
                 try {
                     return (String.valueOf(container.method.invoke(x))).toLowerCase().contains(container.textField.getText().toLowerCase());
@@ -207,7 +208,7 @@ public abstract class ShopView extends View {
         }
 
         stream = stream.filter(o -> {
-            if(filtered.get() && o instanceof Item){
+            if (filtered.get() && o instanceof Item) {
                 return ((Item) o).getAmount() > 0;
             }
             return true;
@@ -216,11 +217,11 @@ public abstract class ShopView extends View {
         filteredList.set(stream.collect(Collectors.toCollection(FXCollections::observableArrayList)));
     }
 
-    protected static class TableBox extends VBox{
+    protected static class TableBox extends VBox {
 
         private TableView<?> table;
 
-        public TableBox(int space){
+        public TableBox(int space) {
             super(space);
         }
 
@@ -233,7 +234,7 @@ public abstract class ShopView extends View {
         }
     }
 
-    protected static class FilterContainer{
+    protected static class FilterContainer {
         protected TextField textField;
         protected Method method;
     }

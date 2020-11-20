@@ -3,91 +3,91 @@ package model;
 import model.member.generation.Talent;
 
 public class Spell {
-	
-	private String name;
-	private String effect;
-	private String typ;
-	private String cost;
-	private String castTime;
-	private int tier;
 
-	public int getTier() {
-		return tier;
-	}
+    private String name;
+    private String effect;
+    private String typ;
+    private String cost;
+    private String castTime;
+    private int tier;
 
-	public void setTier(int tier) {
-		this.tier = tier;
-	}
+    public int getTier() {
+        return tier;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setTier(int tier) {
+        this.tier = tier;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getEffect() {
-		return effect;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setEffect(String effect) {
-		this.effect = effect;
-	}
+    public String getEffect() {
+        return effect;
+    }
 
-	public String getTyp() {
-		return typ;
-	}
+    public void setEffect(String effect) {
+        this.effect = effect;
+    }
 
-	public void setTyp(String typ) {
-		this.typ = typ;
-	}
+    public String getTyp() {
+        return typ;
+    }
 
-	public String getCost() {
-		return cost;
-	}
+    public void setTyp(String typ) {
+        this.typ = typ;
+    }
 
-	public void setCost(String cost) {
-		this.cost = cost;
-	}
+    public String getCost() {
+        return cost;
+    }
 
-	public String getCastTime() {
-		return castTime;
-	}
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
 
-	public void setCastTime(String castTime) {
-		this.castTime = castTime;
-	}
+    public String getCastTime() {
+        return castTime;
+    }
 
-	public Talent getTalent(){
+    public void setCastTime(String castTime) {
+        this.castTime = castTime;
+    }
 
-		switch (getTyp()){
-			case "Arkan":
-				return Talent.arkan;
-			case "Illusion":
-				return Talent.illusion;
-			case "Licht":
-				return Talent.light;
-			case "Finsternis":
-				return Talent.darkness;
-			case "Feuer":
-				return Talent.fire;
-			case "Wasser":
-				return Talent.water;
-			case "Luft":
-				return Talent.air;
-			case "Erde":
-				return Talent.earth;
-			case "Sturm":
-				return Talent.storm;
-			case "Frost":
-				return Talent.ice;
-			case "Natur":
-				return Talent.nature;
-			case "Tot":
-				return Talent.death;
-		}
+    public Talent getTalent() {
 
-		return Talent.knowledge;
-	}
+        switch (getTyp()) {
+            case "Arkan":
+                return Talent.arkan;
+            case "Illusion":
+                return Talent.illusion;
+            case "Licht":
+                return Talent.light;
+            case "Finsternis":
+                return Talent.darkness;
+            case "Feuer":
+                return Talent.fire;
+            case "Wasser":
+                return Talent.water;
+            case "Luft":
+                return Talent.air;
+            case "Erde":
+                return Talent.earth;
+            case "Sturm":
+                return Talent.storm;
+            case "Frost":
+                return Talent.ice;
+            case "Natur":
+                return Talent.nature;
+            case "Tot":
+                return Talent.death;
+        }
+
+        return Talent.knowledge;
+    }
 }

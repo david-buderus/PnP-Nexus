@@ -19,7 +19,7 @@ public class NumberField extends TextField {
         this.validInput = new SimpleBooleanProperty(true);
         this.textProperty().bindBidirectional(this.number, new NumStringConverter());
         this.textProperty().addListener((ob, o, n) -> {
-            if(NumberUtils.isNumber(n)) {
+            if (NumberUtils.isNumber(n)) {
                 this.setStyle("");
                 this.validInput.set(true);
             } else {

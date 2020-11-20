@@ -24,7 +24,7 @@ public class Elf extends Civilized {
 
     @Override
     public Collection<Talent> getForbiddenTalents() {
-        Collection<Talent> collection =  super.getForbiddenTalents();
+        Collection<Talent> collection = super.getForbiddenTalents();
         collection.add(Talent.fly);
         collection.add(Talent.gun);
         return collection;

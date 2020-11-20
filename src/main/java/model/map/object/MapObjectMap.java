@@ -33,7 +33,7 @@ public class MapObjectMap<MOjb extends MapObject> {
             object.setRotation(rotation);
             object.setCoordinates(x, y, z);
 
-            if(object instanceof LootObject) {
+            if (object instanceof LootObject) {
                 System.out.println(points);
             }
 
@@ -91,7 +91,7 @@ public class MapObjectMap<MOjb extends MapObject> {
     }
 
     public MOjb get(int x, int y, int z) {
-        if(inBounds(x, y, z)) {
+        if (inBounds(x, y, z)) {
             return isEmpty(x, y, z) ? null : map[x][y][z];
         } else {
             return null;

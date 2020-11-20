@@ -31,7 +31,7 @@ public class CraftingView extends SearchView<CraftingBonus> {
     private IntegerProperty amount;
     private StringProperty info;
 
-    public CraftingView(IView parent){
+    public CraftingView(IView parent) {
         super("Herstellungsbonus", parent, CraftingBonus.class);
         this.target = new SimpleStringProperty("");
         this.amount = new SimpleIntegerProperty(1);
@@ -84,7 +84,7 @@ public class CraftingView extends SearchView<CraftingBonus> {
         infoText.textProperty().bindBidirectional(info);
         bottomLayer.getChildren().add(infoText);
 
-       this.setContent(root);
+        this.setContent(root);
     }
 
     private void search() {
@@ -92,14 +92,14 @@ public class CraftingView extends SearchView<CraftingBonus> {
         ArrayList<CraftingBonus> bonuses = Utility.craftingBonusList.stream()
                 .filter(x -> targets.contains(x.getTarget())).collect(Collectors.toCollection(ArrayList::new));
 
-        if(bonuses.size() > 0){
+        if (bonuses.size() > 0) {
             for (int i = 0; i < amount.get(); i++) {
                 fullList.add(bonuses.get(random.nextInt(bonuses.size())));
             }
         }
     }
 
-    private void update(String target){
+    private void update(String target) {
         StringBuilder text = new StringBuilder();
 
         for (String part : TypTranslation.getAllTypes(target)) {

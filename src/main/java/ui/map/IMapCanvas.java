@@ -3,7 +3,6 @@ package ui.map;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import model.map.object.IPosition;
-import model.map.object.room.RoomObject;
 
 public interface IMapCanvas {
 

@@ -22,7 +22,7 @@ public class MemoryView extends ViewPart {
 
     private ObservableList<Loot> loots;
 
-    public MemoryView(IView parent){
+    public MemoryView(IView parent) {
         super("Merkliste", parent);
         this.loots = FXCollections.observableArrayList();
 
@@ -49,7 +49,7 @@ public class MemoryView extends ViewPart {
         root.getChildren().add(lootTable);
 
         BorderPane buttonPane = new BorderPane();
-        buttonPane.setPadding(new Insets(10,0,0,0));
+        buttonPane.setPadding(new Insets(10, 0, 0, 0));
         root.getChildren().add(buttonPane);
 
         Button remove = new Button("Entfernen");
@@ -72,18 +72,18 @@ public class MemoryView extends ViewPart {
             for (Loot l : loots) {
                 Item item = l.getItem();
 
-                if(item.getCostOfOneAsCopper() > 0){
+                if (item.getCostOfOneAsCopper() > 0) {
                     itemValue += item.getCostOfOneAsCopper() * l.getAmount();
                 } else {
-                    switch (item.getName()){
+                    switch (item.getName()) {
                         case "Kupfer":
                             coinValue += l.getAmount();
                             break;
                         case "Silber":
-                            coinValue += l.getAmount()*100;
+                            coinValue += l.getAmount() * 100;
                             break;
                         case "Gold":
-                            coinValue += l.getAmount()*10000;
+                            coinValue += l.getAmount() * 10000;
                             break;
                     }
                 }
@@ -95,7 +95,7 @@ public class MemoryView extends ViewPart {
         this.setContent(root);
     }
 
-    public void add(Loot loot){
+    public void add(Loot loot) {
         this.loots.add(loot);
     }
 }

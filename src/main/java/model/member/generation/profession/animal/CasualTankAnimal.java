@@ -12,7 +12,7 @@ public class CasualTankAnimal extends Profession {
         super(name);
     }
 
-    public CasualTankAnimal(){
+    public CasualTankAnimal() {
         this("Tank Wildtier");
     }
 

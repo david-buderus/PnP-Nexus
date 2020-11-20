@@ -34,7 +34,7 @@ public class RotationPoint extends Point {
     }
 
     @Override
-    public RotationPoint multiply(int factor){
+    public RotationPoint multiply(int factor) {
         return new RotationPoint(this.x * factor, this.y * factor, this.z * factor, rotation);
     }
 
@@ -49,10 +49,10 @@ public class RotationPoint extends Point {
         return rotate(0, 0, rotation);
     }
 
-    public RotationPoint rotate(int centerX, int centerZ, int rotation){
-        double radians = Math.toRadians(rotation*90);
-        int newX = (int) Math.round(centerX + (x-centerX)*Math.cos(radians) - (z-centerZ)*Math.sin(radians));
-        int newZ = (int) Math.round(centerZ + (x-centerX)*Math.sin(radians) + (z-centerZ)*Math.cos(radians));
+    public RotationPoint rotate(int centerX, int centerZ, int rotation) {
+        double radians = Math.toRadians(rotation * 90);
+        int newX = (int) Math.round(centerX + (x - centerX) * Math.cos(radians) - (z - centerZ) * Math.sin(radians));
+        int newZ = (int) Math.round(centerZ + (x - centerX) * Math.sin(radians) + (z - centerZ) * Math.cos(radians));
 
         return new RotationPoint(newX, y, newZ, (((rotation + this.rotation) % 4) + 4) % 4);
     }
@@ -68,7 +68,7 @@ public class RotationPoint extends Point {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof RotationPoint) {
+        if (obj instanceof RotationPoint) {
             RotationPoint other = (RotationPoint) obj;
             return super.equals(other) && other.rotation == rotation;
         } else {

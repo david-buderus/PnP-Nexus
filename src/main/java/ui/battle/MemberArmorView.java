@@ -8,8 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import model.member.data.ArmorPiece;
 import model.member.BattleMember;
+import model.member.data.ArmorPiece;
 import ui.View;
 
 import static ui.ViewFactory.labelTextField;

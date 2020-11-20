@@ -23,7 +23,7 @@ public class WeaponTrader extends Shop {
         });
     }
 
-    public ItemList getWeapons(){
+    public ItemList getWeapons() {
         return weapons;
     }
 
@@ -34,7 +34,7 @@ public class WeaponTrader extends Shop {
 
     @Override
     public double getSpawnChance() {
-        switch (town.getTyp()){
+        switch (town.getTyp()) {
 
             case bigTown:
                 return 1;

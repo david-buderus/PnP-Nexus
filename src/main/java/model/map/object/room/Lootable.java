@@ -6,6 +6,8 @@ import java.util.Collection;
 
 public interface Lootable {
 
-    /** Creates a collection of LootObjects */
+    /**
+     * Creates a collection of LootObjects
+     */
     Collection<LootObject> generateLoot();
 }

@@ -42,13 +42,13 @@ public class UpgradeFactory {
     }
 
     public void setMaxLevel(int maxLevel) {
-        if(maxLevel < getMaxLevel()){
+        if (maxLevel < getMaxLevel()) {
             return;
         }
 
         String[] regList = new String[maxLevel];
-        System.arraycopy(requirements, 0, regList , 0, requirements.length);
-        requirements = regList ;
+        System.arraycopy(requirements, 0, regList, 0, requirements.length);
+        requirements = regList;
 
         String[] cosList = new String[maxLevel];
         System.arraycopy(costList, 0, cosList, 0, costList.length);
@@ -76,14 +76,14 @@ public class UpgradeFactory {
     }
 
     public void setCost(int level, String cost) {
-        this.costList[level-1] = cost;
+        this.costList[level - 1] = cost;
     }
 
     public String getCost(int level) {
-        return costList[level-1];
+        return costList[level - 1];
     }
 
-    public int getFullCostAsCopper(int level){
+    public int getFullCostAsCopper(int level) {
         int value = 0;
 
         for (int i = 1; i <= level; i++) {
@@ -97,12 +97,12 @@ public class UpgradeFactory {
         int value = 0;
         StringBuilder number = new StringBuilder();
 
-        for (int i = 0; i < costList[level-1].length(); i++) {
-            char c = costList[level-1].charAt(i);
-            if(Character.isDigit(c)){
+        for (int i = 0; i < costList[level - 1].length(); i++) {
+            char c = costList[level - 1].charAt(i);
+            if (Character.isDigit(c)) {
                 number.append(c);
             } else {
-                switch (c){
+                switch (c) {
                     case 'K':
                         value += Integer.parseInt(number.toString());
                         number = new StringBuilder();
@@ -123,39 +123,39 @@ public class UpgradeFactory {
     }
 
     public void setMana(int level, String mana) {
-        this.manaList[level-1] = mana;
+        this.manaList[level - 1] = mana;
     }
 
     public String getMana(int level) {
-        return manaList[level-1];
+        return manaList[level - 1];
     }
 
     public void setEffect(int level, String effect) {
-        this.effectList[level-1] = effect;
+        this.effectList[level - 1] = effect;
     }
 
     public String getEffect(int level) {
-        return effectList[level-1];
+        return effectList[level - 1];
     }
 
     public void setMaterials(int level, ItemList materials) {
-        this.materialsList[level-1] = materials;
+        this.materialsList[level - 1] = materials;
     }
 
     public ItemList getMaterials(int level) {
-        return materialsList[level-1];
+        return materialsList[level - 1];
     }
 
     @JsonIgnore
-    public ItemList getMaterialList(){
+    public ItemList getMaterialList() {
         return this.getMaterialList(1, this.getMaxLevel());
     }
 
     @JsonIgnore
-    public ItemList getMaterialList(int from, int to){
+    public ItemList getMaterialList(int from, int to) {
         ItemList items = new ItemList();
 
-        for(int l=from; l<=to; l++){
+        for (int l = from; l <= to; l++) {
             items.addAll(getMaterials(l));
         }
 
@@ -163,7 +163,7 @@ public class UpgradeFactory {
     }
 
     @JsonIgnore
-    public Upgrade getUpgrade(){
+    public Upgrade getUpgrade() {
         Upgrade upgrade = new Upgrade();
         upgrade.setName(getName());
         upgrade.setTarget(getTarget());
@@ -175,21 +175,21 @@ public class UpgradeFactory {
         return upgrade;
     }
 
-    private int calculateLevel(int i){
-        if(getMaxLevel() < i){
+    private int calculateLevel(int i) {
+        if (getMaxLevel() < i) {
             return getMaxLevel();
         }
-        if(rand.nextDouble() < 0.5){
-            return calculateLevel(i+1);
+        if (rand.nextDouble() < 0.5) {
+            return calculateLevel(i + 1);
         }
         return i;
     }
 
     @JsonIgnore
-    public Collection<UpgradeModel> getModels(){
+    public Collection<UpgradeModel> getModels() {
         ArrayList<UpgradeModel> list = new ArrayList<>();
 
-        for(int i=1; i <= this.getMaxLevel(); i++){
+        for (int i = 1; i <= this.getMaxLevel(); i++) {
             UpgradeModel model = new UpgradeModel();
             model.setName(this.getName());
             model.setTarget(this.getTarget());
@@ -211,11 +211,11 @@ public class UpgradeFactory {
     }
 
     public String getRequirement(int level) {
-        return requirements[level-1];
+        return requirements[level - 1];
     }
 
     public void setRequirement(int level, String requirement) {
-        this.requirements[level-1] = requirement;
+        this.requirements[level - 1] = requirement;
     }
 
 }

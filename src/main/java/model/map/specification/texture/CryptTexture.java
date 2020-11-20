@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 
 public class CryptTexture extends TextureHandler {
 
-    public CryptTexture(){
+    public CryptTexture() {
         this.corridor = new Image("map/crypt/CryptCorridor.png");
         this.turningCorridor = new Image("map/crypt/CryptTurningCorridor.png");
         this.corridorCrossing = new Image("map/crypt/CryptCorridorCrossing.png");

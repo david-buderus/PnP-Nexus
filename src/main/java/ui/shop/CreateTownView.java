@@ -19,7 +19,7 @@ public class CreateTownView extends View {
 
     private ObjectProperty<Town> selectedTown;
 
-    public CreateTownView(){
+    public CreateTownView() {
         super();
         this.stage.setTitle("Erstelle Stadt");
         this.selectedTown = new SimpleObjectProperty<>();
@@ -44,9 +44,9 @@ public class CreateTownView extends View {
         Button popCreate = new Button("Erstellen");
         popCreate.setPrefWidth((double) width / 2 - 5);
         popCreate.setOnAction(ev -> {
-            try{
+            try {
                 createTown(name.getText(), Integer.parseInt(populationField.getText()));
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 populationField.setText("Keine Zahl");
             }
         });
@@ -101,22 +101,22 @@ public class CreateTownView extends View {
         stage.show();
     }
 
-    private void createTown(String name, int population){
+    private void createTown(String name, int population) {
         Town town = new Town(name, population);
         Utility.townList.add(town);
         new TownView(town);
         this.stage.close();
     }
 
-    private void createTown(String name, TownTyp typ){
+    private void createTown(String name, TownTyp typ) {
         Town town = new Town(name, typ);
         Utility.townList.add(town);
         new TownView(town);
         this.stage.close();
     }
 
-    private void choseTown(){
-        if(selectedTown.get() != null){
+    private void choseTown() {
+        if (selectedTown.get() != null) {
             new TownView(selectedTown.get());
             this.stage.close();
         }

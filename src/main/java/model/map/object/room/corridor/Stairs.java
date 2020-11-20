@@ -1,8 +1,8 @@
 package model.map.object.room.corridor;
 
 import model.map.RotationPoint;
-import model.map.object.room.RoomObject;
 import model.map.object.MapObjectPart;
+import model.map.object.room.RoomObject;
 import model.map.specification.MapSpecification;
 import model.map.specification.texture.TextureHandler;
 import ui.map.IMapCanvas;

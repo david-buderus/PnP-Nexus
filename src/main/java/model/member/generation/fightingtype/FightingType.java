@@ -17,19 +17,19 @@ public abstract class FightingType extends GenerationBase<SpecificType> {
         super(name);
     }
 
-    public boolean usesAlwaysShield(){
+    public boolean usesAlwaysShield() {
         return false;
     }
 
-    public Collection<PrimaryAttribute> getPrimaryAttributes(){
+    public Collection<PrimaryAttribute> getPrimaryAttributes() {
         return new HashSet<>();
     }
 
-    public Collection<SecondaryAttribute> getSecondaryAttributes(){
+    public Collection<SecondaryAttribute> getSecondaryAttributes() {
         return new HashSet<>();
     }
 
-    public boolean isMage(){
+    public boolean isMage() {
         return false;
     }
 }

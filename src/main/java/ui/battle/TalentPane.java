@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TalentPane extends HBox {
 
-    public TalentPane(ExtendedBattleMember battleMember, Talent talent){
+    public TalentPane(ExtendedBattleMember battleMember, Talent talent) {
         this.setPadding(new Insets(5));
         this.setAlignment(Pos.CENTER);
 

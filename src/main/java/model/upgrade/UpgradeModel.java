@@ -63,13 +63,14 @@ public class UpgradeModel {
         this.effect = effect;
     }
 
-    public void setMaterials(String empty) { }
+    public void setMaterials(String empty) {
+    }
 
-    public String getMaterials(){
+    public String getMaterials() {
         return String.join("\n", materialList);
     }
 
-    public void addMaterial(String material){
+    public void addMaterial(String material) {
         this.materialList.add(material);
     }
 
@@ -89,7 +90,7 @@ public class UpgradeModel {
         this.requirement = requirement;
     }
 
-    public String getFullName(){
+    public String getFullName() {
         return getName() + " " + Utility.asRomanNumber(getLevel());
     }
 }

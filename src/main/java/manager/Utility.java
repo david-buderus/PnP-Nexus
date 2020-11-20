@@ -248,7 +248,7 @@ public abstract class Utility {
 
     /**
      * Visualises the amount of copper coins
-     * ins copper, silver and gold
+     * in copper, silver and gold
      *
      * @param cost amount of copper coins
      * @return human-readable format
@@ -276,7 +276,7 @@ public abstract class Utility {
             return "0K";
         }
 
-        return result.toString();
+        return result.toString().trim();
     }
 
     /**

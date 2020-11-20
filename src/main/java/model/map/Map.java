@@ -7,7 +7,6 @@ import model.map.object.loot.LootObject;
 import model.map.object.room.Lootable;
 import model.map.object.room.RoomObject;
 import model.map.object.room.room.Entrance;
-import model.map.object.room.room.Room;
 import model.map.specification.CryptSpecification;
 import model.map.specification.MapSpecification;
 import ui.map.IMapCanvas;
@@ -170,8 +169,8 @@ public class Map {
             for (Point point : current.getPossibleExtensions().values()) {
                 RoomObject next = roomMap.get(point);
 
-                if(next != null) {
-                    
+                if (next != null) {
+
                 }
             }
         }

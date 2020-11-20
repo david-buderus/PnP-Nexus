@@ -73,19 +73,19 @@ public class Fabrication {
         this.sideProductAmount = sideProductAmount;
     }
 
-    public String getProductName(){
+    public String getProductName() {
         return Objects.requireNonNullElse(product.getName(), "");
     }
 
-    public void setProductName(String itemName){
+    public void setProductName(String itemName) {
         product = Utility.getItem(itemName);
     }
 
-    public String getSideProductName(){
+    public String getSideProductName() {
         return Objects.requireNonNullElse(sideProduct.getName(), "");
     }
 
-    public void setSideProductName(String itemName){
+    public void setSideProductName(String itemName) {
         sideProduct = Utility.getItem(itemName);
     }
 

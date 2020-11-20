@@ -10,14 +10,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import model.member.MemberState;
 
-public class MemberStatePane extends VBox{
+public class MemberStatePane extends VBox {
 
     private static final Image ICONS = new Image("Icons.png");
 
     private final MemberState state;
     private boolean selected;
 
-    public MemberStatePane(MemberState state){
+    public MemberStatePane(MemberState state) {
         this.selected = false;
         this.state = state;
 
@@ -33,7 +33,7 @@ public class MemberStatePane extends VBox{
         iconCanvas.setWidth(13);
         nameBox.getChildren().add(iconCanvas);
         iconCanvas.getGraphicsContext2D().drawImage(ICONS,
-                state.getEffect().getImageID()*13, 0, 13, 13, 0, 0, 13, 13);
+                state.getEffect().getImageID() * 13, 0, 13, 13, 0, 0, 13, 13);
 
         Label name = new Label(state.getName());
         nameBox.getChildren().add(name);
@@ -41,8 +41,8 @@ public class MemberStatePane extends VBox{
         ProgressBar durationBar = new ProgressBar();
         durationBar.setStyle("-fx-accent: #ff0000;");
         state.durationProperty().addListener((ob, o, n) ->
-                durationBar.setProgress((double) state.getDuration()/state.getMaxDuration()));
-        durationBar.setProgress((double) state.getDuration()/state.getMaxDuration());
+                durationBar.setProgress((double) state.getDuration() / state.getMaxDuration()));
+        durationBar.setProgress((double) state.getDuration() / state.getMaxDuration());
         this.getChildren().add(durationBar);
 
         Label strength = new Label("Stärke: " + state.getPowerAsString());
@@ -54,10 +54,10 @@ public class MemberStatePane extends VBox{
         this.getChildren().add(duration);
     }
 
-    public void setSelected(boolean bool){
+    public void setSelected(boolean bool) {
         selected = bool;
 
-        if(selected){
+        if (selected) {
             this.setPadding(new Insets(4));
             this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,
                     CornerRadii.EMPTY, BorderWidths.DEFAULT)));

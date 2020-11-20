@@ -1,8 +1,8 @@
 package model.member.generation.race.animal;
 
 import model.member.generation.Talent;
-import model.member.generation.profession.animal.CasualAnimal;
 import model.member.generation.profession.Profession;
+import model.member.generation.profession.animal.CasualAnimal;
 import model.member.generation.race.Race;
 
 import java.util.Collection;
@@ -26,7 +26,7 @@ public class Wolf extends Race {
 
     @Override
     public Collection<Talent> getForbiddenTalents() {
-        Collection<Talent> collection =  super.getForbiddenTalents();
+        Collection<Talent> collection = super.getForbiddenTalents();
         collection.add(Talent.fly);
         return collection;
     }

@@ -12,9 +12,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import model.member.data.AttackTypes;
 import model.member.BattleMember;
 import model.member.MemberState;
+import model.member.data.AttackTypes;
 import model.member.data.MemberStateEffect;
 import ui.View;
 
@@ -29,7 +29,7 @@ public class MemberStateView extends View {
     private final HashMap<MemberState, MemberStatePane> panes;
     private final ObjectProperty<MemberStatePane> selected;
 
-    public MemberStateView(BattleMember target, BattleMember source){
+    public MemberStateView(BattleMember target, BattleMember source) {
         this.stage.setTitle("Effekte");
         this.panes = new HashMap<>();
         this.selected = new SimpleObjectProperty<>();
@@ -46,7 +46,7 @@ public class MemberStateView extends View {
         headline.setFont(Font.font("", FontWeight.EXTRA_BOLD, 20));
         headlineBox.getChildren().add(headline);
 
-        if(source != null){
+        if (source != null) {
             headline.textProperty().bind(
                     new ReadOnlyStringWrapper("Status von ").concat(target.nameProperty())
                             .concat(". Angreifer: ").concat(source.nameProperty()));
@@ -72,7 +72,7 @@ public class MemberStateView extends View {
         memberLists.getChildren().add(states);
 
         target.statesProperty().addListener((ListChangeListener<? super MemberState>) change -> {
-            while(change.next()) {
+            while (change.next()) {
 
                 for (MemberState state : change.getAddedSubList()) {
                     MemberStatePane pane = new MemberStatePane(state);
@@ -82,14 +82,14 @@ public class MemberStateView extends View {
                     states.getChildren().add(pane);
                 }
 
-                for(MemberState member : change.getRemoved()) {
+                for (MemberState member : change.getRemoved()) {
                     states.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
             }
         });
 
-        for (MemberState state : target.statesProperty()){
+        for (MemberState state : target.statesProperty()) {
             MemberStatePane pane = new MemberStatePane(state);
             pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
             panes.put(state, pane);
@@ -148,7 +148,7 @@ public class MemberStateView extends View {
             info.getChildren().add(effectBox);
 
 
-            switch (effect){
+            switch (effect) {
                 case damage:
                     info.getChildren().add(powerBox);
                     info.getChildren().add(typeBox);
@@ -175,9 +175,9 @@ public class MemberStateView extends View {
             createButton.setPrefWidth(215);
             createButton.setOnAction(ev ->
                     target.addState(
-                    new MemberState(name.get(), effectComboBox.getValue(), Integer.parseInt(durationField.getText()),
-                            activeComboBox.getValue().equals("aktive Runden"), Double.parseDouble(powerField.getText()),
-                            randomComboBox.getValue().equals("D"), typeComboBox.getValue(), Objects.requireNonNullElse(source, target))));
+                            new MemberState(name.get(), effectComboBox.getValue(), Integer.parseInt(durationField.getText()),
+                                    activeComboBox.getValue().equals("aktive Runden"), Double.parseDouble(powerField.getText()),
+                                    randomComboBox.getValue().equals("D"), typeComboBox.getValue(), Objects.requireNonNullElse(source, target))));
             info.getChildren().add(createButton);
         });
         effectComboBox.getSelectionModel().selectFirst();
@@ -189,7 +189,7 @@ public class MemberStateView extends View {
         Button removeButton = new Button("Entfernen");
         buttonPane.setCenter(removeButton);
         removeButton.setOnAction(ev -> {
-            if(selected.get() != null){
+            if (selected.get() != null) {
                 target.removeState(selected.get().getState());
             }
         });
@@ -199,11 +199,11 @@ public class MemberStateView extends View {
         show();
     }
 
-    private void select(MemberStatePane pane){
-        if(selected.isNotNull().get()){
+    private void select(MemberStatePane pane) {
+        if (selected.isNotNull().get()) {
             selected.get().setSelected(false);
         }
-        if(pane != null) {
+        if (pane != null) {
             pane.setSelected(true);
         }
         selected.set(pane);

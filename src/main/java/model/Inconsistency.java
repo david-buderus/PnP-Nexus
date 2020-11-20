@@ -1,7 +1,6 @@
 package model;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class Inconsistency {
 
@@ -33,7 +32,7 @@ public class Inconsistency {
         this.info = info;
     }
 
-    public String getInfoAsString(){
+    public String getInfoAsString() {
         return String.join(", ", info);
     }
 }

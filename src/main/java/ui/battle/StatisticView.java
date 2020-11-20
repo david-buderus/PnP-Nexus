@@ -15,7 +15,7 @@ import ui.View;
 
 public class StatisticView extends View {
 
-    public StatisticView(ObservableList<BattleMember> members, Battle battle){
+    public StatisticView(ObservableList<BattleMember> members, Battle battle) {
 
         stage.setTitle("Statistik");
 
@@ -39,7 +39,7 @@ public class StatisticView extends View {
         TableColumn<BattleMember, Double> damagePRC = new TableColumn<>("Schaden pro Runde");
         damagePRC.setCellValueFactory(b ->
                 new ReadOnlyDoubleWrapper(
-                        round((double) battle.getDamageDealt(b.getValue())/battle.roundProperty().get()))
+                        round((double) battle.getDamageDealt(b.getValue()) / battle.roundProperty().get()))
                         .asObject());
         battleView.getColumns().add(damagePRC);
 
@@ -50,7 +50,7 @@ public class StatisticView extends View {
         TableColumn<BattleMember, Double> healPRC = new TableColumn<>("Heilung pro Runde");
         healPRC.setCellValueFactory(b ->
                 new ReadOnlyDoubleWrapper(
-                        round((double) battle.getDamageHealed(b.getValue())/battle.roundProperty().get()))
+                        round((double) battle.getDamageHealed(b.getValue()) / battle.roundProperty().get()))
                         .asObject());
         battleView.getColumns().add(healPRC);
 

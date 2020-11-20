@@ -11,7 +11,7 @@ public class PhysicalFighter extends FightingType {
     @Override
     public LootTable getLootTable(ExtendedBattleMember member) {
         LootTable lootTable = super.getLootTable(member);
-        switch (member.getTier()){
+        switch (member.getTier()) {
             case 4:
                 lootTable.add("Starker Heiltrank", 1, 0.05);
             case 3:

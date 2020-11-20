@@ -15,7 +15,7 @@ public class BanditWithoutMagic extends Profession {
         super("Bandit ohne Magie");
     }
 
-    protected BanditWithoutMagic(String name){
+    protected BanditWithoutMagic(String name) {
         super(name);
     }
 

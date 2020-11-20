@@ -14,11 +14,11 @@ public class MapObjectPart {
         this.depth = depth;
     }
 
-    public MapObjectPart(int width, int height, int depth){
+    public MapObjectPart(int width, int height, int depth) {
         this(0, 0, 0, width, height, depth);
     }
 
-    public MapObjectPart(int width, int depth){
+    public MapObjectPart(int width, int depth) {
         this(width, 1, depth);
     }
 

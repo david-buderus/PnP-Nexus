@@ -13,7 +13,7 @@ public class Scorpion extends Race {
         super(name);
     }
 
-    public Scorpion(){
+    public Scorpion() {
         this("Skorpion");
     }
 
@@ -26,7 +26,7 @@ public class Scorpion extends Race {
 
     @Override
     public Collection<Talent> getForbiddenTalents() {
-        Collection<Talent> collection =  super.getForbiddenTalents();
+        Collection<Talent> collection = super.getForbiddenTalents();
         collection.add(Talent.fly);
         return collection;
     }

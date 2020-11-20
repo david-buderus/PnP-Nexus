@@ -13,9 +13,9 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import model.Battle;
-import model.member.data.AttackTypes;
 import model.member.BattleMember;
 import model.member.MemberState;
+import model.member.data.AttackTypes;
 import model.member.data.MemberStateEffect;
 import ui.View;
 
@@ -29,7 +29,7 @@ public class AllMemberStateView extends View {
     private HashMap<BattleMember, BattleMemberPane> panes;
     private ListProperty<BattleMemberPane> selected;
 
-    public AllMemberStateView(Battle battle, BattleMember source){
+    public AllMemberStateView(Battle battle, BattleMember source) {
         this.stage.setTitle("Effekte");
         this.panes = new HashMap<>();
         this.selected = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -46,7 +46,7 @@ public class AllMemberStateView extends View {
         headline.setFont(Font.font("", FontWeight.EXTRA_BOLD, 20));
         headlineBox.getChildren().add(headline);
 
-        if(source != null){
+        if (source != null) {
             headline.textProperty().bind(
                     new ReadOnlyStringWrapper("Statusverteilung von ").concat(source.nameProperty()));
         } else {
@@ -70,7 +70,7 @@ public class AllMemberStateView extends View {
         memberLists.getChildren().add(players);
 
         battle.playersProperty().addListener((ListChangeListener<? super BattleMember>) change -> {
-            while(change.next()) {
+            while (change.next()) {
 
                 for (BattleMember member : change.getAddedSubList()) {
                     BattleMemberPane pane = new BattleMemberPane(member);
@@ -80,7 +80,7 @@ public class AllMemberStateView extends View {
                     players.getChildren().add(pane);
                 }
 
-                for(BattleMember member : change.getRemoved()) {
+                for (BattleMember member : change.getRemoved()) {
                     players.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
@@ -103,7 +103,7 @@ public class AllMemberStateView extends View {
         memberLists.getChildren().add(enemies);
 
         battle.enemiesProperty().addListener((ListChangeListener<? super BattleMember>) change -> {
-            while(change.next()) {
+            while (change.next()) {
 
                 for (BattleMember member : change.getAddedSubList()) {
                     BattleMemberPane pane = new BattleMemberPane(member);
@@ -113,7 +113,7 @@ public class AllMemberStateView extends View {
                     enemies.getChildren().add(pane);
                 }
 
-                for(BattleMember member : change.getRemoved()) {
+                for (BattleMember member : change.getRemoved()) {
                     enemies.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
@@ -179,7 +179,7 @@ public class AllMemberStateView extends View {
             info.getChildren().add(effectBox);
 
 
-            switch (effect){
+            switch (effect) {
                 case damage:
                     info.getChildren().add(powerBox);
                     info.getChildren().add(typeBox);
@@ -205,7 +205,7 @@ public class AllMemberStateView extends View {
             Button createButton = new Button("Hinzufügen");
             createButton.setPrefWidth(215);
             createButton.setOnAction(ev -> {
-                for(BattleMemberPane pane : selected){
+                for (BattleMemberPane pane : selected) {
                     pane.getBattleMember().addState(
                             new MemberState(name.get(), effectComboBox.getValue(), Integer.parseInt(durationField.getText()),
                                     activeComboBox.getValue().equals("aktive Runden"), Double.parseDouble(powerField.getText()),
@@ -225,9 +225,9 @@ public class AllMemberStateView extends View {
         show();
     }
 
-    private void select(BattleMemberPane pane){
+    private void select(BattleMemberPane pane) {
         pane.setPrimarySelected(!pane.isPrimarySelected());
-        if(pane.isPrimarySelected()){
+        if (pane.isPrimarySelected()) {
             selected.add(pane);
         } else {
             selected.remove(pane);

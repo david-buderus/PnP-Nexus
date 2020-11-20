@@ -47,7 +47,7 @@ public class BattleView extends ViewPart {
     private final FlowPane players;
     private final FlowPane enemies;
 
-    public BattleView(IView parent){
+    public BattleView(IView parent) {
         super("Kampfhelfer", parent);
         this.battle = new Battle();
         this.panes = new HashMap<>();
@@ -67,7 +67,7 @@ public class BattleView extends ViewPart {
         root.setTop(headlineBox);
 
         Label headline = new Label("Kampf in Runde 1");
-        battle.roundProperty().addListener((ob, o ,n) -> headline.setText("Kampf in Runde " + n.intValue()));
+        battle.roundProperty().addListener((ob, o, n) -> headline.setText("Kampf in Runde " + n.intValue()));
         headline.setFont(Font.font("", FontWeight.EXTRA_BOLD, 20));
         headlineBox.getChildren().add(headline);
 
@@ -95,12 +95,12 @@ public class BattleView extends ViewPart {
         memberLists.getChildren().add(players);
 
         battle.playersProperty().addListener((ListChangeListener<? super BattleMember>) change -> {
-            while(change.next()) {
+            while (change.next()) {
 
                 for (BattleMember member : change.getAddedSubList()) {
                     BattleMemberPane pane = new BattleMemberPane(member);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-                        if(event.isControlDown()){
+                        if (event.isControlDown()) {
                             selectSource(pane);
                         } else {
                             selectTarget(pane);
@@ -111,7 +111,7 @@ public class BattleView extends ViewPart {
                     players.getChildren().add(pane);
                 }
 
-                for(BattleMember member : change.getRemoved()) {
+                for (BattleMember member : change.getRemoved()) {
                     players.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
@@ -126,12 +126,12 @@ public class BattleView extends ViewPart {
         memberLists.getChildren().add(enemies);
 
         battle.enemiesProperty().addListener((ListChangeListener<? super BattleMember>) change -> {
-            while(change.next()) {
+            while (change.next()) {
 
                 for (BattleMember member : change.getAddedSubList()) {
                     BattleMemberPane pane = new BattleMemberPane(member);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-                        if(event.isControlDown()){
+                        if (event.isControlDown()) {
                             selectSource(pane);
                         } else {
                             selectTarget(pane);
@@ -142,7 +142,7 @@ public class BattleView extends ViewPart {
                     enemies.getChildren().add(pane);
                 }
 
-                for(BattleMember member : change.getRemoved()) {
+                for (BattleMember member : change.getRemoved()) {
                     enemies.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
@@ -188,10 +188,10 @@ public class BattleView extends ViewPart {
             info.getChildren().clear();
             info.getChildren().add(infoLabel);
 
-            final BattleMember target = selectedTarget.get() != null ? selectedTarget.get().getBattleMember(): null;
-            final BattleMember source = selectedSource.get() != null ? selectedSource.get().getBattleMember(): null;
+            final BattleMember target = selectedTarget.get() != null ? selectedTarget.get().getBattleMember() : null;
+            final BattleMember source = selectedSource.get() != null ? selectedSource.get().getBattleMember() : null;
 
-            if(target == null){
+            if (target == null) {
                 info.getChildren().add(emptyLabel);
                 getStage().sizeToScene();
                 return;
@@ -211,7 +211,7 @@ public class BattleView extends ViewPart {
             info.getChildren().add(labelTextField("Start: ", target.startValueProperty()));
 
             Button armorButton;
-            if(target instanceof ExtendedBattleMember){
+            if (target instanceof ExtendedBattleMember) {
                 armorButton = new Button("Charakterbogen");
                 armorButton.setPrefWidth(215);
                 armorButton.setOnAction(ev -> new CharacterView((ExtendedBattleMember) target));
@@ -227,8 +227,8 @@ public class BattleView extends ViewPart {
             statusButton.setOnAction(ev -> new MemberStateView(target, source));
             info.getChildren().add(statusButton);
 
-            if(source != null) {
-                if(battle.isSameTeam(source, target)){
+            if (source != null) {
+                if (battle.isSameTeam(source, target)) {
 
                     Label battleInfo = new Label();
                     battleInfo.setPadding(new Insets(30, 0, 5, 0));
@@ -245,7 +245,7 @@ public class BattleView extends ViewPart {
                     info.getChildren().add(healButton);
 
                 } else {
-                    if(source != target) {
+                    if (source != target) {
 
                         Label battleInfo = new Label();
                         battleInfo.setPadding(new Insets(30, 0, 5, 0));
@@ -264,7 +264,7 @@ public class BattleView extends ViewPart {
                         attackButton.setOnAction(ev -> target.takeDamage(
                                 damage.get(), attackCombo.getSelectionModel().getSelectedItem(),
                                 blockCombo.getSelectionModel().getSelectedItem().toBool(),
-                                (double) penetration.get()/100, Double.parseDouble(blockField.getText()), source));
+                                (double) penetration.get() / 100, Double.parseDouble(blockField.getText()), source));
                         info.getChildren().add(attackButton);
                     }
                 }
@@ -360,7 +360,7 @@ public class BattleView extends ViewPart {
         Button allStatusButton = new Button("Flächenstatus");
         allStatusButton.setPrefWidth(110);
         allStatusButton.setOnAction(event -> {
-            BattleMember source = selectedSource.get() != null ? selectedSource.get().getBattleMember(): null;
+            BattleMember source = selectedSource.get() != null ? selectedSource.get().getBattleMember() : null;
             new AllMemberStateView(battle, source);
         });
         utilityButtons.add(allStatusButton, 1, 1);
@@ -377,7 +377,7 @@ public class BattleView extends ViewPart {
     private void loot() {
         LootTable lootTable = new LootTable();
 
-        for(BattleMember member : battle.enemiesProperty()) {
+        for (BattleMember member : battle.enemiesProperty()) {
             lootTable.add(member.getLootTable());
         }
 
@@ -389,12 +389,11 @@ public class BattleView extends ViewPart {
             for (BattleMember enemy : battle.enemiesProperty()) {
                 int level = enemy.getLevel();
 
-                if(enemy.getTier() > player.getTier()){
-                    amount += (level -1 + Math.pow(5, enemy.getTier() - player.getTier()))
-                            /battle.playersProperty().size();
-                }
-                else if(enemy.getTier() >= player.getTier()-1){
-                    amount += (double) level/battle.playersProperty().size();
+                if (enemy.getTier() > player.getTier()) {
+                    amount += (level - 1 + Math.pow(5, enemy.getTier() - player.getTier()))
+                            / battle.playersProperty().size();
+                } else if (enemy.getTier() >= player.getTier() - 1) {
+                    amount += (double) level / battle.playersProperty().size();
                 }
             }
 
@@ -409,7 +408,7 @@ public class BattleView extends ViewPart {
     }
 
     private void removeMember() {
-        if(selectedTarget.get() != null){
+        if (selectedTarget.get() != null) {
             battle.removeMember(selectedTarget.get().getBattleMember());
             players.getChildren().remove(selectedTarget.get());
             enemies.getChildren().remove(selectedTarget.get());
@@ -418,9 +417,9 @@ public class BattleView extends ViewPart {
     }
 
     private void cloneMember() {
-        if(selectedTarget.get() != null){
+        if (selectedTarget.get() != null) {
             BattleMember member = selectedTarget.get().getBattleMember();
-            if(battle.isPlayer(member)){
+            if (battle.isPlayer(member)) {
                 battle.createPlayer(member);
             } else {
                 battle.createEnemy(member);
@@ -428,27 +427,27 @@ public class BattleView extends ViewPart {
         }
     }
 
-    private void selectTarget(BattleMemberPane pane){
-        if(selectedTarget.get() != null){
+    private void selectTarget(BattleMemberPane pane) {
+        if (selectedTarget.get() != null) {
             selectedTarget.get().setPrimarySelected(false);
         }
         selectedTarget.set(pane);
-        if(pane != null){
+        if (pane != null) {
             pane.setPrimarySelected(true);
         }
     }
 
-    private void selectSource(BattleMemberPane pane){
-        if(selectedSource.get() != null){
+    private void selectSource(BattleMemberPane pane) {
+        if (selectedSource.get() != null) {
             selectedSource.get().setSecondarySelected(false);
         }
         selectedSource.set(pane);
-        if(pane != null) {
+        if (pane != null) {
             pane.setSecondarySelected(true);
         }
     }
 
-    private void load(boolean enemy){
+    private void load(boolean enemy) {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Exeldatei", "*.xlsx"),
                 new FileChooser.ExtensionFilter("Alle Dateien", "*.*"));
@@ -459,19 +458,22 @@ public class BattleView extends ViewPart {
         new SpawnView(battle, enemy);
     }
 
-    private enum shieldEnum{
+    private enum shieldEnum {
         with, without;
 
         @Override
-        public String toString(){
-            switch (this){
-                case with: return "Mit Schild";
-                case without: return "Ohne Schild";
-                default: return "";
+        public String toString() {
+            switch (this) {
+                case with:
+                    return "Mit Schild";
+                case without:
+                    return "Ohne Schild";
+                default:
+                    return "";
             }
         }
 
-        public boolean toBool(){
+        public boolean toBool() {
             return this == shieldEnum.with;
         }
     }

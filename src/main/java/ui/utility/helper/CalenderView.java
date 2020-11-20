@@ -21,7 +21,7 @@ public class CalenderView extends ViewPart {
     private IntegerProperty day, month, year;
     private Label info;
 
-    public CalenderView(IView parent){
+    public CalenderView(IView parent) {
         super("Kalender", parent);
 
         this.year = new SimpleIntegerProperty(0);
@@ -30,26 +30,26 @@ public class CalenderView extends ViewPart {
         this.month = new SimpleIntegerProperty(1);
         this.month.addListener((ob, o, n) -> {
             int yearChange;
-            if(n.intValue() < 1){
-                yearChange = (n.intValue()-1)/10 -1;
+            if (n.intValue() < 1) {
+                yearChange = (n.intValue() - 1) / 10 - 1;
             } else {
-                yearChange = (n.intValue()-1)/10;
+                yearChange = (n.intValue() - 1) / 10;
             }
-            this.year.set(this.year.get()+yearChange);
-            this.month.set((n.intValue()+9)%10+1);
+            this.year.set(this.year.get() + yearChange);
+            this.month.set((n.intValue() + 9) % 10 + 1);
             update();
         });
 
         this.day = new SimpleIntegerProperty(1);
         this.day.addListener((ob, o, n) -> {
             int monthChange;
-            if (n.intValue() < 1){
-                monthChange = (n.intValue()-1)/40 - 1;
+            if (n.intValue() < 1) {
+                monthChange = (n.intValue() - 1) / 40 - 1;
             } else {
-                monthChange = (n.intValue()-1)/40;
+                monthChange = (n.intValue() - 1) / 40;
             }
             this.month.set(this.month.getValue() + monthChange);
-            this.day.set((n.intValue()+39)%40 + 1);
+            this.day.set((n.intValue() + 39) % 40 + 1);
             update();
         });
 
@@ -102,28 +102,28 @@ public class CalenderView extends ViewPart {
     private void update() {
         this.info.setText(
                 format("Grodon", 40) + "\n" +
-                format("Heros", 43) + "\n" +
-                format("Ados", 27)
+                        format("Heros", 43) + "\n" +
+                        format("Ados", 27)
         );
     }
 
-    private String format(String moon, int circle){
-        long phase = ((getAbsoluteDate()-newMoon)%circle + circle)%circle;
+    private String format(String moon, int circle) {
+        long phase = ((getAbsoluteDate() - newMoon) % circle + circle) % circle;
 
-        if(phase == 0){
+        if (phase == 0) {
             return moon + " ist im Neumond.";
         }
-        if(phase < circle/2){
-            return moon + " ist in " + (circle/2 - phase) + " Tagen im Vollmond.";
+        if (phase < circle / 2) {
+            return moon + " ist in " + (circle / 2 - phase) + " Tagen im Vollmond.";
         }
-        if(phase == circle/2){
+        if (phase == circle / 2) {
             return moon + " ist im Vollmond";
         }
 
         return moon + " ist in " + (circle - phase) + " Tagen im Neumond.";
     }
 
-    private long getAbsoluteDate(){
-        return this.day.get()-1 + (this.month.get()-1)*40 + this.year.get()*400;
+    private long getAbsoluteDate() {
+        return this.day.get() - 1 + (this.month.get() - 1) * 40 + this.year.get() * 400;
     }
 }

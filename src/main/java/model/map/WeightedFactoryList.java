@@ -22,7 +22,7 @@ public class WeightedFactoryList<Item> {
     }
 
     public Item getRandomItem() {
-        if(sumWeight > 0){
+        if (sumWeight > 0) {
             int num = random.nextInt(sumWeight);
             for (Entry entry : entries) {
                 if (num < entry.getWeight()) {

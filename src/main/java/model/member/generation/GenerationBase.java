@@ -6,7 +6,10 @@ import model.item.Weapon;
 import model.loot.LootTable;
 import model.member.ExtendedBattleMember;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Random;
 
 public abstract class GenerationBase<SubType> {
 
@@ -18,16 +21,16 @@ public abstract class GenerationBase<SubType> {
         this.name = name;
     }
 
-    public Collection<SubType> getSubTypes(){
+    public Collection<SubType> getSubTypes() {
         return new HashSet<>();
     }
 
-    public SubType getSubType(){
+    public SubType getSubType() {
         Collection<SubType> subTypes = getSubTypes();
         return subTypes.stream().skip(rand.nextInt(subTypes.size())).findFirst().orElse(null);
     }
 
-    public Collection<Talent> getForbiddenTalents(){
+    public Collection<Talent> getForbiddenTalents() {
         return new HashSet<>();
     }
 
@@ -35,60 +38,60 @@ public abstract class GenerationBase<SubType> {
         return new LootTable();
     }
 
-    public boolean dropsWeapons(){
+    public boolean dropsWeapons() {
         return true;
     }
 
-    public boolean dropsArmor(){
+    public boolean dropsArmor() {
         return true;
     }
 
-    public boolean dropsJewellery(){
+    public boolean dropsJewellery() {
         return true;
     }
 
-    public boolean usesFirstWeapon(){
+    public boolean usesFirstWeapon() {
         return true;
     }
 
-    public boolean usesSecondWeapon(){
+    public boolean usesSecondWeapon() {
         return true;
     }
 
-    public boolean usesArmor(String position){
+    public boolean usesArmor(String position) {
         return true;
     }
 
-    public boolean usesJewellery(String position){
+    public boolean usesJewellery(String position) {
         return true;
     }
 
-    public Collection<Weapon> getConcreteFirstWeapons(){
+    public Collection<Weapon> getConcreteFirstWeapons() {
         return new ArrayList<>();
     }
 
-    public Collection<Weapon> getConcreteSecondWeapons(){
+    public Collection<Weapon> getConcreteSecondWeapons() {
         return new ArrayList<>();
     }
 
-    public Collection<Armor> getConcreteArmor(){
+    public Collection<Armor> getConcreteArmor() {
         return new ArrayList<>();
     }
 
-    public Collection<Jewellery> getConcreteJewellery(){
+    public Collection<Jewellery> getConcreteJewellery() {
         return new ArrayList<>();
     }
 
-    public Collection<String> getAdvantage(){
+    public Collection<String> getAdvantage() {
         return new ArrayList<>();
     }
 
-    public Collection<String> getDisadvantage(){
+    public Collection<String> getDisadvantage() {
         return new ArrayList<>();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 }

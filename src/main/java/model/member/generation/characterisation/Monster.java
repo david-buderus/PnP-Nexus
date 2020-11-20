@@ -17,7 +17,7 @@ public class Monster extends Characterisation {
     }
 
     @Override
-    public Collection<Talent> getForbiddenTalents(){
+    public Collection<Talent> getForbiddenTalents() {
         Collection<Talent> collection = super.getForbiddenTalents();
 
         collection.add(Talent.oneHandBlunt);

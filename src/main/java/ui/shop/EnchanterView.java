@@ -17,18 +17,18 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import manager.Utility;
+import model.item.Item;
 import model.upgrade.UpgradeFactory;
 import model.upgrade.UpgradeModel;
-import model.item.Item;
 
-public class EnchanterView extends ShopView{
+public class EnchanterView extends ShopView {
 
     private Enchanter enchanter;
 
     private ObservableList<?> toAdd;
     private ObjectProperty<UpgradeModel> toRemove;
 
-    public EnchanterView(Enchanter enchanter){
+    public EnchanterView(Enchanter enchanter) {
         super();
         stage.setTitle("Verzauberer");
 
@@ -131,12 +131,12 @@ public class EnchanterView extends ShopView{
         this.stage.sizeToScene();
     }
 
-    protected void format(Object object, Text text){
-        if(object instanceof UpgradeModel){
+    protected void format(Object object, Text text) {
+        if (object instanceof UpgradeModel) {
             UpgradeModel model = (UpgradeModel) object;
             UpgradeFactory factory = Utility.upgradeMap.get(model);
 
-            if(enchanter.getRealMaterials().containsAmount(factory.getMaterialList(model.getLevel(), model.getLevel()))){
+            if (enchanter.getRealMaterials().containsAmount(factory.getMaterialList(model.getLevel(), model.getLevel()))) {
                 text.setFill(Paint.valueOf("#000000"));
             } else {
                 text.setFill(Paint.valueOf("#ff0000"));
@@ -144,22 +144,22 @@ public class EnchanterView extends ShopView{
         }
     }
 
-    private void add(){
+    private void add() {
         enchanter.add(toAdd);
         refresh();
     }
 
-    private void remove(){
+    private void remove() {
         enchanter.remove(toRemove.get());
         refresh();
     }
 
-    private void clear(){
+    private void clear() {
         enchanter.clear();
         refresh();
     }
 
-    private void buy(){
+    private void buy() {
         enchanter.buy();
         refresh();
     }

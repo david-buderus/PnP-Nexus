@@ -7,46 +7,46 @@ import model.item.Item;
 
 public class Loot {
 
-	private Item item;
-	private IntegerProperty amount;
-	
-	public Loot(Item item) {
-		this(item, 1);
-	}
-	
-	public Loot(Item item, int amount) {
-		this.item = item;
-		this.amount = new SimpleIntegerProperty(amount);
-	}
+    private Item item;
+    private IntegerProperty amount;
 
-	public Item getItem() {
-		return item;
-	}
+    public Loot(Item item) {
+        this(item, 1);
+    }
 
-	public void setItem(Item item) {
-		this.item = item;
-	}
+    public Loot(Item item, int amount) {
+        this.item = item;
+        this.amount = new SimpleIntegerProperty(amount);
+    }
 
-	public String getName() {
-		if(item instanceof Equipment && !((Equipment) item).getUpgrades().isEmpty()){
-			return item.getName() + " (verzaubert)";
-		}
-		return item.getName();
-	}
+    public Item getItem() {
+        return item;
+    }
 
-	public int getAmount() {
-		return amount.get();
-	}
+    public void setItem(Item item) {
+        this.item = item;
+    }
 
-	public void setAmount(int amount) {
-		this.amount.set(amount);
-	}
-	
-	public void addAmount(int amount) {
-		setAmount(getAmount() + amount);
-	}
-	
-	public IntegerProperty amountProperty() {
-		return this.amount;
-	}
+    public String getName() {
+        if (item instanceof Equipment && !((Equipment) item).getUpgrades().isEmpty()) {
+            return item.getName() + " (verzaubert)";
+        }
+        return item.getName();
+    }
+
+    public int getAmount() {
+        return amount.get();
+    }
+
+    public void setAmount(int amount) {
+        this.amount.set(amount);
+    }
+
+    public void addAmount(int amount) {
+        setAmount(getAmount() + amount);
+    }
+
+    public IntegerProperty amountProperty() {
+        return this.amount;
+    }
 }

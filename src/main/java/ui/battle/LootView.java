@@ -12,15 +12,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import manager.Utility;
-import model.upgrade.Upgrade;
 import model.item.Equipment;
 import model.item.Item;
 import model.loot.Loot;
+import model.upgrade.Upgrade;
 import ui.View;
 
 import java.util.Collection;
 
-public class LootView extends View{
+public class LootView extends View {
 
     public LootView(Collection<Loot> loot, Collection<EXP> exp, int playerCount) {
         super();
@@ -69,7 +69,7 @@ public class LootView extends View{
         player.prefWidthProperty().bind(levelTable.widthProperty().subtract(expAmount.widthProperty()));
 
         BorderPane buttonPane = new BorderPane();
-        buttonPane.setPadding(new Insets(10,0,0,0));
+        buttonPane.setPadding(new Insets(10, 0, 0, 0));
         root.getChildren().add(buttonPane);
 
         HBox leftButtons = new HBox(5);
@@ -102,18 +102,18 @@ public class LootView extends View{
             for (Loot l : lootTable.getItems()) {
                 Item item = l.getItem();
 
-                if(item.getCostOfOneAsCopper() > 0){
+                if (item.getCostOfOneAsCopper() > 0) {
                     itemValue += item.getCostOfOneAsCopper() * l.getAmount();
                 } else {
-                    switch (item.getName()){
+                    switch (item.getName()) {
                         case "Kupfer":
                             coinValue += l.getAmount();
                             break;
                         case "Silber":
-                            coinValue += l.getAmount()*100;
+                            coinValue += l.getAmount() * 100;
                             break;
                         case "Gold":
-                            coinValue += l.getAmount()*10000;
+                            coinValue += l.getAmount() * 10000;
                             break;
                     }
                 }
@@ -121,35 +121,36 @@ public class LootView extends View{
 
             int sellValue = Math.round(itemValue * 0.8f) + coinValue;
             coinLabel.setText(Utility.visualiseSell(sellValue) + "\tPro Spieler: " +
-                    Utility.visualiseSell(sellValue/playerCount));
+                    Utility.visualiseSell(sellValue / playerCount));
         });
 
         stage.setScene(scene);
         stage.show();
     }
 
-    public static class EXP{
+    public static class EXP {
         public String player;
         public int amount;
     }
 
-    public static class LootRow extends TableRow<Loot>{
+    public static class LootRow extends TableRow<Loot> {
 
-        public LootRow(){
+        public LootRow() {
             super();
 
             this.itemProperty().addListener((ob, o, n) -> {
-                this.setOnContextMenuRequested(ev -> {});
-                if(n == null){
+                this.setOnContextMenuRequested(ev -> {
+                });
+                if (n == null) {
                     return;
                 }
 
                 Item item = n.getItem();
 
-                if(item instanceof Equipment){
+                if (item instanceof Equipment) {
                     Collection<Upgrade> upgrades = ((Equipment) item).getUpgrades();
 
-                    if(!upgrades.isEmpty()){
+                    if (!upgrades.isEmpty()) {
                         ContextMenu upgradeMenu = new ContextMenu();
                         this.setOnContextMenuRequested(ev -> upgradeMenu.show(this, ev.getScreenX(), ev.getScreenY()));
 

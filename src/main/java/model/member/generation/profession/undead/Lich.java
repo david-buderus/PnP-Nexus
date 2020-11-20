@@ -1,8 +1,8 @@
 package model.member.generation.profession.undead;
 
 import model.member.generation.Talent;
-import model.member.generation.fightingtype.magic.DarkMage;
 import model.member.generation.fightingtype.FightingType;
+import model.member.generation.fightingtype.magic.DarkMage;
 import model.member.generation.profession.Profession;
 
 import java.util.Collection;

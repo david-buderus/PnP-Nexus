@@ -1,14 +1,13 @@
 package model.member.generation.profession;
 
-import model.member.generation.fightingtype.*;
+import model.member.generation.fightingtype.FightingType;
 import model.member.generation.fightingtype.magic.FullMage;
-import model.member.generation.fightingtype.magic.Mage;
 
 import java.util.Collection;
 
 public class BanditWithMagic extends BanditWithoutMagic {
 
-    public BanditWithMagic(){
+    public BanditWithMagic() {
         super("Bandit mit Magie");
     }
 

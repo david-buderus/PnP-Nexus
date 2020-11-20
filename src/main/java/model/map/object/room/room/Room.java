@@ -1,6 +1,5 @@
 package model.map.object.room.room;
 
-import model.loot.Loot;
 import model.map.RotationPoint;
 import model.map.object.loot.Chest;
 import model.map.object.loot.LootObject;
@@ -33,7 +32,7 @@ public class Room extends SimpleRoomObject implements Lootable {
 
     @Override
     public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
-        if(random.nextDouble() < 0.5){
+        if (random.nextDouble() < 0.5) {
             return specification.getPossibleCorridor(width);
         } else {
             return Optional.empty();
@@ -43,7 +42,7 @@ public class Room extends SimpleRoomObject implements Lootable {
     @Override
     public Collection<LootObject> generateLoot() {
         ArrayList<LootObject> result = new ArrayList<>();
-        result.add(new Chest(this,1, 0, 1));
+        result.add(new Chest(this, 1, 0, 1));
         return result;
     }
 }

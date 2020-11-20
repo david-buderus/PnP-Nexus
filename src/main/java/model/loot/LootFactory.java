@@ -18,7 +18,7 @@ public class LootFactory {
         this.chance = chance;
     }
 
-    public String getName(){
+    public String getName() {
         return item.getName();
     }
 
@@ -46,10 +46,10 @@ public class LootFactory {
         this.chance = chance;
     }
 
-    public Loot getLoot(){
+    public Loot getLoot() {
         Loot loot = new Loot(item, 0);
 
-        for(int i=0; i<getMaxAmount(); i++) {
+        for (int i = 0; i < getMaxAmount(); i++) {
             if (rand.nextDouble() < getChance()) {
                 loot.addAmount(1);
             }

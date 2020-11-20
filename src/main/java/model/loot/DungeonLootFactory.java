@@ -7,7 +7,7 @@ public class DungeonLootFactory extends LootFactory {
     private String container;
     private String place;
 
-    public DungeonLootFactory(){
+    public DungeonLootFactory() {
         this("", 0, 0, "", "");
     }
 
@@ -17,7 +17,7 @@ public class DungeonLootFactory extends LootFactory {
         this.place = place;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.getItem().setName(name);
     }
 

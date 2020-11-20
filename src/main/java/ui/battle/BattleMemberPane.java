@@ -21,7 +21,7 @@ public class BattleMemberPane extends StackPane {
     private final BattleMember battleMember;
     private boolean primarySelected, secondarySelected;
 
-    public BattleMemberPane(BattleMember member){
+    public BattleMemberPane(BattleMember member) {
         this.battleMember = member;
         this.primarySelected = false;
         this.secondarySelected = false;
@@ -60,17 +60,17 @@ public class BattleMemberPane extends StackPane {
 
         battleMember.statesProperty().addListener((ListChangeListener<? super MemberState>) change -> {
             iconBar.getGraphicsContext2D().clearRect(0, 0, iconBar.getWidth(), 13);
-            for(int i=0; i<change.getList().size(); i++) {
+            for (int i = 0; i < change.getList().size(); i++) {
                 MemberState state = change.getList().get(i);
                 iconBar.getGraphicsContext2D().drawImage(ICONS,
-                        state.getEffect().getImageID()*13, 0, 13, 13, i*17, 0, 13, 13);
+                        state.getEffect().getImageID() * 13, 0, 13, 13, i * 17, 0, 13, 13);
             }
         });
         iconBar.getGraphicsContext2D().clearRect(0, 0, iconBar.getWidth(), 13);
-        for(int i=0; i<battleMember.statesProperty().size(); i++) {
+        for (int i = 0; i < battleMember.statesProperty().size(); i++) {
             MemberState state = battleMember.statesProperty().get(i);
             iconBar.getGraphicsContext2D().drawImage(ICONS,
-                    state.getEffect().getImageID()*13, 0, 13, 13, i*17, 0, 13, 13);
+                    state.getEffect().getImageID() * 13, 0, 13, 13, i * 17, 0, 13, 13);
         }
 
         this.getChildren().add(root);
@@ -83,7 +83,7 @@ public class BattleMemberPane extends StackPane {
         battleMember.lifeProperty().addListener((ob, o, n) -> {
 
             GraphicsContext gc = canvas.getGraphicsContext2D();
-            if(n.intValue() < 1){
+            if (n.intValue() < 1) {
 
                 gc.setStroke(Color.RED);
                 gc.setLineWidth(4);
@@ -95,7 +95,7 @@ public class BattleMemberPane extends StackPane {
         });
 
         battleMember.turnsProperty().addListener((ob, o, n) -> {
-            switch (n.intValue()){
+            switch (n.intValue()) {
                 case 0:
                     this.setBackground(Background.EMPTY);
                     break;
@@ -108,7 +108,7 @@ public class BattleMemberPane extends StackPane {
             }
         });
 
-        switch (battleMember.getTurns()){
+        switch (battleMember.getTurns()) {
             case 0:
                 this.setBackground(Background.EMPTY);
                 break;
@@ -121,30 +121,30 @@ public class BattleMemberPane extends StackPane {
         }
     }
 
-    public BattleMember getBattleMember(){
+    public BattleMember getBattleMember() {
         return battleMember;
     }
 
-    public void setPrimarySelected(boolean bool){
+    public void setPrimarySelected(boolean bool) {
         primarySelected = bool;
         updateSelected();
     }
 
-    public void setSecondarySelected(boolean bool){
+    public void setSecondarySelected(boolean bool) {
         secondarySelected = bool;
         updateSelected();
     }
 
-    public boolean isPrimarySelected(){
+    public boolean isPrimarySelected() {
         return primarySelected;
     }
 
     private void updateSelected() {
-        if(primarySelected){
+        if (primarySelected) {
             this.setPadding(new Insets(4));
             this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,
                     CornerRadii.EMPTY, BorderWidths.DEFAULT)));
-        } else if(secondarySelected){
+        } else if (secondarySelected) {
             this.setPadding(new Insets(4));
             this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED,
                     CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -154,11 +154,11 @@ public class BattleMemberPane extends StackPane {
         }
     }
 
-    private void updateLife(ProgressBar lifeBar){
+    private void updateLife(ProgressBar lifeBar) {
         lifeBar.setProgress(Math.max(0, (double) battleMember.getLife() / (double) battleMember.getMaxLife()));
     }
 
-    private void updateMana(ProgressBar manaBar){
+    private void updateMana(ProgressBar manaBar) {
         manaBar.setProgress(Math.max(0, (double) battleMember.getMana() / (double) battleMember.getMaxMana()));
     }
 }

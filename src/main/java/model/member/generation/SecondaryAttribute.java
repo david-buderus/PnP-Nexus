@@ -5,7 +5,7 @@ public enum SecondaryAttribute {
 
     @Override
     public String toString() {
-        switch (this){
+        switch (this) {
             case meleeDamage:
                 return "Basisschaden Nahkampf";
             case rangeDamage:

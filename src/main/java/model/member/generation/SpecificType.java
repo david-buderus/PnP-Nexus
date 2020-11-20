@@ -117,8 +117,8 @@ public enum SpecificType {
         return new PrimaryAttribute[]{};
     }
 
-    public boolean canUseShield(){
-        switch (this){
+    public boolean canUseShield() {
+        switch (this) {
             case oneHandBlade:
             case oneHandBlunt:
             case pole:
@@ -128,8 +128,8 @@ public enum SpecificType {
         }
     }
 
-    public String[] getConcreteFirsthand(){
-        switch (this){
+    public String[] getConcreteFirsthand() {
+        switch (this) {
             case fist:
                 return new String[]{"Faustwaffe", "Klaue"};
             case oneHandBlade:
@@ -166,12 +166,12 @@ public enum SpecificType {
         return new String[]{};
     }
 
-    public String[] getConcreteSecondhand(boolean usesShield){
-        if(usesShield){
+    public String[] getConcreteSecondhand(boolean usesShield) {
+        if (usesShield) {
             return new String[]{"Großschild", "Schild"};
         }
 
-        switch (this){
+        switch (this) {
             case fist:
                 return new String[]{"Faustwaffe", "Klaue"};
             case oneHandBlade:
@@ -203,10 +203,10 @@ public enum SpecificType {
         return new String[]{};
     }
 
-    public Collection<Talent> getMainTalents(boolean usesShield){
+    public Collection<Talent> getMainTalents(boolean usesShield) {
         ArrayList<Talent> talents = new ArrayList<>();
 
-        switch (this){
+        switch (this) {
             case fist:
                 talents.add(Talent.fist);
                 talents.add(Talent.dodge);
@@ -282,21 +282,21 @@ public enum SpecificType {
                 break;
         }
 
-        if(usesShield){
+        if (usesShield) {
             talents.add(Talent.block);
         }
 
         return talents;
     }
 
-    public Talent[] getForbiddenTalents(){
+    public Talent[] getForbiddenTalents() {
         return new Talent[]{};
     }
 
-    public LootTable getLootTable(ExtendedBattleMember member){
-        LootTable lootTable =  new LootTable();
+    public LootTable getLootTable(ExtendedBattleMember member) {
+        LootTable lootTable = new LootTable();
 
-        switch (this){
+        switch (this) {
             case bow:
                 lootTable.add(getMetal(member.getTier()) + "pfeil", 10, 0.25);
                 lootTable.add("Silberpfeil", 10, 0.02);
@@ -311,7 +311,7 @@ public enum SpecificType {
                 break;
             case oneHandBlade:
             case twoHandBlade:
-                switch (member.getTier()){
+                switch (member.getTier()) {
                     case 4:
                         lootTable.add("exzellenter Schleifstein", 1, 0.04);
                     case 3:
@@ -325,8 +325,8 @@ public enum SpecificType {
         return lootTable;
     }
 
-    private String getMetal(int tier){
-        switch (tier){
+    private String getMetal(int tier) {
+        switch (tier) {
             case 1:
                 return "Eisen";
             case 2:

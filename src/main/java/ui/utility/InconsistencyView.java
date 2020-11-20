@@ -1,9 +1,7 @@
 package ui.utility;
 
 import javafx.beans.property.ReadOnlyStringWrapper;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -11,7 +9,6 @@ import javafx.scene.layout.VBox;
 import manager.Utility;
 import model.Inconsistency;
 import ui.IView;
-import ui.View;
 import ui.ViewPart;
 
 public class InconsistencyView extends ViewPart {

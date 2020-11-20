@@ -18,15 +18,15 @@ public class Town {
     private ArrayList<Shop> shops;
     private ArrayList<Shop> blackMarket;
 
-    public Town(String name, int population){
+    public Town(String name, int population) {
         this(name, TownTyp.getTownTyp(population), population);
     }
 
-    public Town(String name, TownTyp typ){
-        this(name, typ, typ.getAverage()/2 + rand.nextInt(typ.getAverage()));
+    public Town(String name, TownTyp typ) {
+        this(name, typ, typ.getAverage() / 2 + rand.nextInt(typ.getAverage()));
     }
 
-    private Town(String name, TownTyp typ, int population){
+    private Town(String name, TownTyp typ, int population) {
         this.name = name;
         this.population = population;
         this.typ = typ;
@@ -37,8 +37,8 @@ public class Town {
         spawnShop(new WeaponTrader(this));
     }
 
-    private void spawnShop(Shop shop){
-        if(rand.nextDouble() < shop.getSpawnChance()){
+    private void spawnShop(Shop shop) {
+        if (rand.nextDouble() < shop.getSpawnChance()) {
             this.addShop(shop);
         }
     }
@@ -56,39 +56,39 @@ public class Town {
         return typ;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public Collection<Shop> getShops(){
+    public Collection<Shop> getShops() {
         return this.shops;
     }
 
-    public void addShop(Shop shop){
+    public void addShop(Shop shop) {
         this.shops.add(shop);
     }
 
-    public void removeShop(Shop shop){
+    public void removeShop(Shop shop) {
         this.shops.remove(shop);
     }
 
-    public Collection<Shop> getBlackMarket(){
+    public Collection<Shop> getBlackMarket() {
         return this.blackMarket;
     }
 
-    public void addBlackMarketShop(Shop shop){
+    public void addBlackMarketShop(Shop shop) {
         this.blackMarket.add(shop);
     }
 
-    public void removeBlackMarketShop(Shop shop){
+    public void removeBlackMarketShop(Shop shop) {
         this.blackMarket.remove(shop);
     }
 
-    public boolean hasBlackMarket(){
+    public boolean hasBlackMarket() {
         return blackMarket.size() > 0;
     }
 
-    public double itemMultiplication(){
-        return (double) population/TownTyp.town.getAverage();
+    public double itemMultiplication() {
+        return (double) population / TownTyp.town.getAverage();
     }
 }

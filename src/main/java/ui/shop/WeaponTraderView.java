@@ -12,7 +12,7 @@ public class WeaponTraderView extends ShopView {
 
     private WeaponTrader trader;
 
-    public WeaponTraderView(WeaponTrader trader){
+    public WeaponTraderView(WeaponTrader trader) {
         this.trader = trader;
 
         VBox root = new VBox(10);
@@ -29,11 +29,11 @@ public class WeaponTraderView extends ShopView {
         stage.show();
     }
 
-    protected void format(Object object, Text text){
-        if(object instanceof Weapon){
+    protected void format(Object object, Text text) {
+        if (object instanceof Weapon) {
             Weapon weapon = (Weapon) object;
 
-            if(weapon.getAmount() > 0){
+            if (weapon.getAmount() > 0) {
                 text.setFill(Paint.valueOf("#000000"));
             } else {
                 text.setFill(Paint.valueOf("#ff0000"));

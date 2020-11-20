@@ -1,6 +1,6 @@
 package model.member.data;
 
-public enum AttackTypes{
+public enum AttackTypes {
     head, upperBody, legs, arm, ignoreArmor, direct;
 
     @Override

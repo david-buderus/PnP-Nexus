@@ -10,9 +10,9 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import manager.Utility;
 import model.ItemList;
+import model.item.Item;
 import model.upgrade.UpgradeFactory;
 import model.upgrade.UpgradeModel;
-import model.item.Item;
 import ui.shop.EnchanterView;
 import ui.shop.ShopView;
 
@@ -42,9 +42,9 @@ public class Enchanter extends Shop {
         this.upgrades = Utility.upgradeModelList.stream().filter(up -> up.getRequirement().contains("Verzauberung"))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        for(UpgradeModel model : upgrades){
+        for (UpgradeModel model : upgrades) {
             UpgradeFactory upgradeFactory = Utility.upgradeMap.get(model);
-            for(Item material : upgradeFactory.getMaterialList()){
+            for (Item material : upgradeFactory.getMaterialList()) {
                 material.setAmount(calculateAmount(material));
                 materials.add(material);
             }
@@ -74,7 +74,7 @@ public class Enchanter extends Shop {
     @Override
     @JsonIgnore
     public double getSpawnChance() {
-        switch (town.getTyp()){
+        switch (town.getTyp()) {
 
             case bigTown:
                 return 1;
@@ -92,8 +92,8 @@ public class Enchanter extends Shop {
         return 0;
     }
 
-    public void add(Collection<?> toAdd){
-        for(Object object : toAdd) {
+    public void add(Collection<?> toAdd) {
+        for (Object object : toAdd) {
             UpgradeModel model = (UpgradeModel) object;
             if (selected.contains(model)) {
                 this.amount.get(model).set(this.amount.get(model).get() + 1);
@@ -105,9 +105,9 @@ public class Enchanter extends Shop {
         updateDifference();
     }
 
-    public void remove(UpgradeModel model){
-        if(selected.contains(model)){
-            if(this.amount.get(model).get() == 1){
+    public void remove(UpgradeModel model) {
+        if (selected.contains(model)) {
+            if (this.amount.get(model).get() == 1) {
                 this.selected.remove(model);
                 this.amount.remove(model);
             } else {
@@ -117,13 +117,13 @@ public class Enchanter extends Shop {
         }
     }
 
-    public void clear(){
+    public void clear() {
         selected.clear();
         amount.clear();
         updateDifference();
     }
 
-    public void buy(){
+    public void buy() {
         materials.remove(calculateCosts());
         clear();
     }
@@ -140,9 +140,9 @@ public class Enchanter extends Shop {
     private ItemList calculateCosts() {
         ItemList cost = new ItemList();
 
-        for(UpgradeModel model : selected){
+        for (UpgradeModel model : selected) {
             Collection<Item> items = Utility.upgradeMap.get(model).getMaterialList(model.getLevel(), model.getLevel());
-            for(int i=0; i<amount.get(model).get(); i++){
+            for (int i = 0; i < amount.get(model).get(); i++) {
                 cost.addAll(items);
             }
         }

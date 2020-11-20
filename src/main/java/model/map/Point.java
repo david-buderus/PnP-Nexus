@@ -65,7 +65,7 @@ public class Point {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Point) {
+        if (obj instanceof Point) {
             Point other = (Point) obj;
             return x == other.x && y == other.y && z == other.z;
         } else {

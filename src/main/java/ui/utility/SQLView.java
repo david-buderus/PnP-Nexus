@@ -70,7 +70,7 @@ public class SQLView extends ViewPart {
         this.setContent(root);
     }
 
-    private Tab createTab(String text, String[] labels, String[] names, ListProperty<?> utility, Class<?> itemClass){
+    private Tab createTab(String text, String[] labels, String[] names, ListProperty<?> utility, Class<?> itemClass) {
         Tab tab = new Tab();
         tab.setText(text);
 
@@ -92,11 +92,11 @@ public class SQLView extends ViewPart {
         HBox input = new HBox();
         vBox.getChildren().add(input);
 
-        for (int i = 0; i < labels.length; i++){
+        for (int i = 0; i < labels.length; i++) {
             TableColumn<Object, Object> column = new TableColumn<>(labels[i]);
             column.setMaxWidth(400);
             column.setCellValueFactory(new PropertyValueFactory<>(names[i]));
-            column.setCellFactory(col -> new TableCell<>(){
+            column.setCellFactory(col -> new TableCell<>() {
                 @Override
                 public void updateItem(Object object, boolean empty) {
                     super.updateItem(object, empty);
@@ -106,12 +106,12 @@ public class SQLView extends ViewPart {
                     text.setStyle(" -fx-text-wrap: true;");
 
                     calculateSize(text);
-                    this.widthProperty().addListener((ob, o ,n) -> calculateSize(text));
+                    this.widthProperty().addListener((ob, o, n) -> calculateSize(text));
 
                     this.setGraphic(text);
                 }
 
-                private void calculateSize(Text text){
+                private void calculateSize(Text text) {
                     text.setWrappingWidth(0);
                     double width = text.getLayoutBounds().getWidth() > this.getTableColumn().getMaxWidth() ?
                             this.getWidth() - 25 : this.getWidth();
@@ -141,15 +141,15 @@ public class SQLView extends ViewPart {
             filterContainers.add(container);
         }
 
-        tab.selectedProperty().addListener((ob, o ,n) -> getStage().sizeToScene());
+        tab.selectedProperty().addListener((ob, o, n) -> getStage().sizeToScene());
 
         return tab;
     }
 
-    private void update(Collection<?> utility, ListProperty<Object> list, Collection<FilterContainer> filterContainers){
+    private void update(Collection<?> utility, ListProperty<Object> list, Collection<FilterContainer> filterContainers) {
         Stream<?> stream = utility.stream();
 
-        for (FilterContainer container : filterContainers){
+        for (FilterContainer container : filterContainers) {
             stream = stream.filter(x -> {
                 try {
                     return (String.valueOf(container.method.invoke(x))).toLowerCase().contains(container.textField.getText().toLowerCase());
@@ -163,7 +163,7 @@ public class SQLView extends ViewPart {
         list.set(stream.collect(Collectors.toCollection(FXCollections::observableArrayList)));
     }
 
-    private static class FilterContainer{
+    private static class FilterContainer {
         private TextField textField;
         private Method method;
     }

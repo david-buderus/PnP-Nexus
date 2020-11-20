@@ -5,7 +5,7 @@ public enum PrimaryAttribute {
 
     @Override
     public String toString() {
-        switch (this){
+        switch (this) {
             case strength:
                 return "Körperkraft";
             case endurance:
@@ -27,7 +27,7 @@ public enum PrimaryAttribute {
     }
 
     public String toShortString() {
-        switch (this){
+        switch (this) {
             case strength:
                 return "KK";
             case endurance:

@@ -239,33 +239,33 @@ public class ExtendedBattleMember extends BattleMember {
 
         Collection<Jewellery> jewelleryPool;
         Collection<Jewellery> concreteJewellery = getConcreteJewellery();
-        if(concreteJewellery.isEmpty()){
+        if (concreteJewellery.isEmpty()) {
             jewelleryPool = Utility.jewelleryList;
         } else {
             jewelleryPool = concreteJewellery;
         }
         this.jewellery = FXCollections.observableArrayList();
-        if(usesJewellery("Ring")){
+        if (usesJewellery("Ring")) {
             for (int i = 0; i < 8; i++) {
                 if (random.nextDouble() < getTier() / 100f) {
                     this.jewellery.add((Jewellery) randomJewellery("Ring", jewelleryPool).getWithUpgrade());
                 }
             }
         }
-        if(usesJewellery("Armband")){
+        if (usesJewellery("Armband")) {
             for (int i = 0; i < 8; i++) {
                 if (random.nextDouble() < getTier() / 100f) {
                     this.jewellery.add((Jewellery) randomJewellery("Armband", jewelleryPool).getWithUpgrade());
                 }
             }
         }
-        if(usesJewellery("Kette")){
+        if (usesJewellery("Kette")) {
             if (random.nextDouble() < getTier() / 100f) {
                 this.jewellery.add((Jewellery) randomJewellery("Kette", jewelleryPool).getWithUpgrade());
             }
         }
 
-        if(dropsJewellery()){
+        if (dropsJewellery()) {
             for (Equipment equip : jewellery) {
                 if (!equip.getName().isEmpty()) {
                     this.lootTable.add(equip, 1, 1);
@@ -292,7 +292,7 @@ public class ExtendedBattleMember extends BattleMember {
         this.lootTable.add(specificType.getLootTable(this));
     }
 
-    private void addDescription(){
+    private void addDescription() {
         addDescription("Charakterisierungsvorteile", characterisation.getAdvantage());
         addDescription("Rassenvorteile", race.getAdvantage());
         addDescription("Berufsvorteile", profession.getAdvantage());
@@ -304,8 +304,8 @@ public class ExtendedBattleMember extends BattleMember {
         addDescription("Kampfnachteile", fightingType.getDisadvantage());
     }
 
-    private void addDescription(String header, Collection<String> lines){
-        if(!lines.isEmpty()){
+    private void addDescription(String header, Collection<String> lines) {
+        if (!lines.isEmpty()) {
             notes.set(notes.get() + header + "\n");
             for (String line : lines) {
                 notes.set(notes.get() + "  - " + line + "\n");
@@ -648,7 +648,7 @@ public class ExtendedBattleMember extends BattleMember {
         return jewellery;
     }
 
-    private<Eq extends Equipment> ArrayList<Eq> equipmentSearch(final String typ, Collection<Eq> pool){
+    private <Eq extends Equipment> ArrayList<Eq> equipmentSearch(final String typ, Collection<Eq> pool) {
         ArrayList<Eq> equipment = new ArrayList<>();
         for (int i = getTier(); i > 0 && equipment.size() == 0; i--) {
             int k = i;

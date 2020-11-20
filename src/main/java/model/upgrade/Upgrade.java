@@ -61,7 +61,7 @@ public class Upgrade {
     }
 
     @JsonIgnore
-    public String getFullName(){
+    public String getFullName() {
         return getName() + " " + Utility.asRomanNumber(getLevel());
     }
 }
