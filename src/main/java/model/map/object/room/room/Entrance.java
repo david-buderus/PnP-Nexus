@@ -25,4 +25,9 @@ public class Entrance extends SimpleRoomObject {
     public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
         return specification.getPossibleCorridor(width);
     }
+
+    @Override
+    public boolean preventsDeadEnd() {
+        return true;
+    }
 }

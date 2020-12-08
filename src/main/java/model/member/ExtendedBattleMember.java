@@ -7,6 +7,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import manager.Database;
 import manager.Utility;
 import model.Battle;
 import model.Spell;
@@ -160,7 +161,7 @@ public class ExtendedBattleMember extends BattleMember {
             Collection<Weapon> concreteFirstWeapons = getConcreteFirstWeapons();
             Weapon firstHand;
             if (concreteFirstWeapons.isEmpty()) {
-                firstHand = randomWeapon(specificType.getConcreteFirsthand(), Utility.weaponList);
+                firstHand = randomWeapon(specificType.getConcreteFirsthand(), Database.weaponList);
             } else {
                 firstHand = randomWeapon(
                         concreteFirstWeapons.stream().map(Item::getSubTyp).toArray(String[]::new),
@@ -177,7 +178,7 @@ public class ExtendedBattleMember extends BattleMember {
             if (concreteSecondWeapons.isEmpty()) {
                 String[] secondTypes = specificType.getConcreteSecondhand(usesShield);
                 if (secondTypes.length > 0) {
-                    this.weapons.add((Weapon) randomWeapon(secondTypes, Utility.weaponList).getWithUpgrade());
+                    this.weapons.add((Weapon) randomWeapon(secondTypes, Database.weaponList).getWithUpgrade());
                 }
             } else {
                 this.weapons.add((Weapon) randomWeapon(
@@ -214,7 +215,7 @@ public class ExtendedBattleMember extends BattleMember {
         Collection<Armor> concreteArmor = getConcreteArmor();
         Collection<Armor> armorPool;
         if (concreteArmor.isEmpty()) {
-            armorPool = Utility.armorList;
+            armorPool = Database.armorList;
         } else {
             armorPool = concreteArmor;
         }
@@ -240,7 +241,7 @@ public class ExtendedBattleMember extends BattleMember {
         Collection<Jewellery> jewelleryPool;
         Collection<Jewellery> concreteJewellery = getConcreteJewellery();
         if (concreteJewellery.isEmpty()) {
-            jewelleryPool = Utility.jewelleryList;
+            jewelleryPool = Database.jewelleryList;
         } else {
             jewelleryPool = concreteJewellery;
         }
@@ -487,7 +488,7 @@ public class ExtendedBattleMember extends BattleMember {
         }
 
         //Only use spells which can be used
-        ArrayList<Spell> spells = Utility.spellList.stream()
+        ArrayList<Spell> spells = Database.spellList.stream()
                 .filter(x -> x.getTier() <= getTier())
                 .filter(x -> magicTalents.contains(x.getTalent())).collect(Collectors.toCollection(ArrayList::new));
 

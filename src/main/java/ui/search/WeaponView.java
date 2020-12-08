@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
+import manager.Database;
 import manager.Utility;
 import model.item.Weapon;
 import ui.IView;
@@ -50,12 +51,12 @@ public class WeaponView extends SearchView<Weapon> {
         this.types.add("Typ");
         ListProperty<String> rarities = new SimpleListProperty<>(FXCollections.observableArrayList());
         rarities.add("Seltenheit");
-        rarities.addAll(Utility.rarities);
+        rarities.addAll(Database.rarities);
         this.disabled = new SimpleBooleanProperty(true);
         this.searchCount = new SimpleIntegerProperty(1);
         this.rand = new Random();
 
-        Utility.weaponList.addListener((ob, o, n) -> updateTable());
+        Database.weaponList.addListener((ob, o, n) -> updateTable());
 
         int width = 400;
 
@@ -137,7 +138,7 @@ public class WeaponView extends SearchView<Weapon> {
             Collection<String> material = this.material.get().equals("Material") ? Utility.getRandomMaterial()
                     : Collections.singletonList(this.material.get());
 
-            Stream<Weapon> stream = Utility.weaponList.stream().filter(w -> w.getRarity().equals(rarity));
+            Stream<Weapon> stream = Database.weaponList.stream().filter(w -> w.getRarity().equals(rarity));
             stream = stream.filter(w -> material.contains(w.getMaterial()));
 
             if (!this.name.get().equals("Name")) {
@@ -173,14 +174,14 @@ public class WeaponView extends SearchView<Weapon> {
     }
 
     private void updateTable() {
-        if (!Utility.weaponList.isEmpty()) {
+        if (!Database.weaponList.isEmpty()) {
             this.disabled.set(false);
 
             ObservableList<String> name = FXCollections.observableArrayList("Name");
             ObservableList<String> material = FXCollections.observableArrayList("Material");
             ObservableList<String> typ = FXCollections.observableArrayList("Typ");
 
-            for (Weapon weapon : Utility.weaponList) {
+            for (Weapon weapon : Database.weaponList) {
                 String n = weapon.getName();
                 String m = weapon.getMaterial();
                 String t = weapon.getSubTyp();

@@ -1,6 +1,6 @@
 package model.loot;
 
-import manager.Utility;
+import manager.Database;
 import model.item.Item;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class LootTable {
     }
 
     public void add(String name, int amount, double chance) {
-        list.add(new LootFactory(Utility.getItem(name), amount, chance));
+        list.add(new LootFactory(Database.getItem(name), amount, chance));
     }
 
     public void add(Item item, int amount, double chance) {

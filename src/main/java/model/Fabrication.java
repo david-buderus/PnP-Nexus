@@ -1,6 +1,6 @@
 package model;
 
-import manager.Utility;
+import manager.Database;
 import model.item.Item;
 
 import java.util.Objects;
@@ -78,7 +78,7 @@ public class Fabrication {
     }
 
     public void setProductName(String itemName) {
-        product = Utility.getItem(itemName);
+        product = Database.getItem(itemName);
     }
 
     public String getSideProductName() {
@@ -86,7 +86,7 @@ public class Fabrication {
     }
 
     public void setSideProductName(String itemName) {
-        sideProduct = Utility.getItem(itemName);
+        sideProduct = Database.getItem(itemName);
     }
 
     public ItemList getMaterials() {

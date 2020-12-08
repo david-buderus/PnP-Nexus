@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
+import manager.Database;
 import manager.Utility;
 import model.item.Jewellery;
 import ui.IView;
@@ -50,12 +51,12 @@ public class JewelleryView extends SearchView<Jewellery> {
         this.types.add("Typ");
         ListProperty<String> rarities = new SimpleListProperty<>(FXCollections.observableArrayList());
         rarities.add("Seltenheit");
-        rarities.addAll(Utility.rarities);
+        rarities.addAll(Database.rarities);
         this.disabled = new SimpleBooleanProperty(true);
         this.searchCount = new SimpleIntegerProperty(1);
         this.rand = new Random();
 
-        Utility.jewelleryList.addListener((ob, o, n) -> update());
+        Database.jewelleryList.addListener((ob, o, n) -> update());
 
         int width = 400;
 
@@ -137,7 +138,7 @@ public class JewelleryView extends SearchView<Jewellery> {
             Collection<String> material = this.material.get().equals("Material") ? Utility.getRandomMaterial()
                     : Collections.singletonList(this.material.get());
 
-            Stream<Jewellery> stream = Utility.jewelleryList.stream().filter(w -> w.getRarity().equals(rarity));
+            Stream<Jewellery> stream = Database.jewelleryList.stream().filter(w -> w.getRarity().equals(rarity));
             stream = stream.filter(w -> material.contains(w.getMaterial()));
 
             if (!this.gem.get().equals("Edelstein")) {
@@ -173,14 +174,14 @@ public class JewelleryView extends SearchView<Jewellery> {
     }
 
     private void update() {
-        if (!Utility.jewelleryList.isEmpty()) {
+        if (!Database.jewelleryList.isEmpty()) {
             this.disabled.set(false);
 
             ObservableList<String> material = FXCollections.observableArrayList("Material");
             ObservableList<String> gem = FXCollections.observableArrayList("Edelstein");
             ObservableList<String> typ = FXCollections.observableArrayList("Typ");
 
-            for (Jewellery jewellery : Utility.jewelleryList) {
+            for (Jewellery jewellery : Database.jewelleryList) {
                 String m = jewellery.getMaterial();
                 String g = jewellery.getGem();
                 String t = jewellery.getSubTyp();

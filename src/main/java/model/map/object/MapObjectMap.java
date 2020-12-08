@@ -6,24 +6,24 @@ import model.map.object.loot.LootObject;
 
 import java.util.ArrayList;
 
-public class MapObjectMap<MOjb extends MapObject> {
+public class MapObjectMap<MObj extends MapObject> {
 
     protected final int width, depth, height;
-    protected final MOjb[][][] map;
+    protected final MObj[][][] map;
 
     @SuppressWarnings("unchecked")
     public MapObjectMap(int width, int height, int depth) {
         this.width = width;
         this.depth = depth;
         this.height = height;
-        this.map = (MOjb[][][]) new MapObject[width][height][depth];
+        this.map = (MObj[][][]) new MapObject[width][height][depth];
     }
 
-    public boolean addMapObject(MOjb object, RotationPoint point) {
+    public boolean addMapObject(MObj object, RotationPoint point) {
         return addMapObject(object, point.getX(), point.getY(), point.getZ(), point.getRotation());
     }
 
-    public boolean addMapObject(MOjb object, int x, int y, int z, int rotation) {
+    public boolean addMapObject(MObj object, int x, int y, int z, int rotation) {
         ArrayList<Point> points = getPoints(object, x, y, z, rotation);
 
         if (isEmpty(points)) {
@@ -43,6 +43,24 @@ public class MapObjectMap<MOjb extends MapObject> {
         }
     }
 
+    public boolean deleteMapObject(Point point) {
+        return deleteMapObject(point.getX(), point.getY(), point.getZ());
+    }
+
+    public boolean deleteMapObject(int x, int y, int z) {
+        return deleteMapObject(get(x, y, z));
+    }
+
+    public boolean deleteMapObject(MObj obj) {
+        ArrayList<Point> points = getPoints(obj, obj.getX(), obj.getY(), obj.getZ(), obj.getRotation());
+
+        for (Point point : points) {
+            map[point.getX()][point.getY()][point.getZ()] = null;
+        }
+
+        return true;
+    }
+
     public boolean isEmpty(Point point) {
         return isEmpty(point.getX(), point.getY(), point.getZ());
     }
@@ -57,7 +75,7 @@ public class MapObjectMap<MOjb extends MapObject> {
         return true;
     }
 
-    protected ArrayList<Point> getPoints(MOjb object, int x, int y, int z, int rotation) {
+    protected ArrayList<Point> getPoints(MObj object, int x, int y, int z, int rotation) {
         ArrayList<Point> result = new ArrayList<>();
 
         for (MapObjectPart part : object.getParts()) {
@@ -86,11 +104,11 @@ public class MapObjectMap<MOjb extends MapObject> {
         return 0 <= x && 0 <= y && 0 <= z && x < width && y < height && z < depth;
     }
 
-    public MOjb get(Point point) {
+    public MObj get(Point point) {
         return get(point.getX(), point.getY(), point.getZ());
     }
 
-    public MOjb get(int x, int y, int z) {
+    public MObj get(int x, int y, int z) {
         if (inBounds(x, y, z)) {
             return isEmpty(x, y, z) ? null : map[x][y][z];
         } else {

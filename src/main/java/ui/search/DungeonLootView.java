@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
-import manager.Utility;
+import manager.Database;
 import model.loot.DungeonLootFactory;
 import model.loot.Loot;
 import ui.IView;
@@ -45,7 +45,7 @@ public class DungeonLootView extends ViewPart {
         this.lootingCount = new SimpleIntegerProperty(1);
         this.placesMap = new HashMap<>();
 
-        Utility.dungeonLootList.addListener((ob, o, n) -> update());
+        Database.dungeonLootList.addListener((ob, o, n) -> update());
 
         float width = 400;
 
@@ -129,7 +129,7 @@ public class DungeonLootView extends ViewPart {
     private void loot() {
         for (int i = 0; i < lootingCount.intValue(); i++) {
 
-            for (DungeonLootFactory factory : Utility.dungeonLootList) {
+            for (DungeonLootFactory factory : Database.dungeonLootList) {
 
                 if (this.container.get().equals(factory.getContainer())
                         && this.place.get().equals(factory.getPlace())) {
@@ -157,14 +157,14 @@ public class DungeonLootView extends ViewPart {
     }
 
     private void update() {
-        if (!Utility.dungeonLootList.isEmpty()) {
+        if (!Database.dungeonLootList.isEmpty()) {
             this.disabled.set(false);
             placesMap.clear();
 
             ObservableList<String> plas = FXCollections.observableArrayList("Ort");
             placesMap.put("Ort", FXCollections.observableArrayList("Behälter"));
 
-            for (DungeonLootFactory factory : Utility.dungeonLootList) {
+            for (DungeonLootFactory factory : Database.dungeonLootList) {
                 String container = factory.getContainer();
                 String place = factory.getPlace();
 

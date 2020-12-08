@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
+import manager.Database;
 import manager.Utility;
 import model.item.Plant;
 import ui.IView;
@@ -52,7 +53,7 @@ public class PlantView extends ViewPart {
         this.types.add("Typ");
         ListProperty<String> rarities = new SimpleListProperty<>(FXCollections.observableArrayList());
         rarities.add("Seltenheit");
-        rarities.addAll(Utility.rarities);
+        rarities.addAll(Database.rarities);
         this.locations = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.locations.add("Fundort");
         this.chosenLocations = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -60,7 +61,7 @@ public class PlantView extends ViewPart {
         this.searchCount = new SimpleIntegerProperty(1);
         this.rand = new Random();
 
-        Utility.plantList.addListener((ob, o, n) -> update());
+        Database.plantList.addListener((ob, o, n) -> update());
 
         int width = 400;
 
@@ -252,7 +253,7 @@ public class PlantView extends ViewPart {
         for (int i = 0; i < searchCount.intValue(); i++) {
             String rarity = this.rarity.get().equals("Seltenheit") ? Utility.getRandomRarity() : this.rarity.get();
 
-            Stream<Plant> stream = Utility.plantList.stream().filter(w -> w.getRarity().equals(rarity));
+            Stream<Plant> stream = Database.plantList.stream().filter(w -> w.getRarity().equals(rarity));
 
             if (!this.name.get().equals("Name")) {
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
@@ -298,14 +299,14 @@ public class PlantView extends ViewPart {
     }
 
     private void update() {
-        if (!Utility.plantList.isEmpty()) {
+        if (!Database.plantList.isEmpty()) {
             this.disabled.set(false);
 
             ObservableList<String> name = FXCollections.observableArrayList("Name");
             ObservableList<String> typ = FXCollections.observableArrayList("Typ");
             ObservableList<String> location = FXCollections.observableArrayList("Fundort");
 
-            for (Plant plant : Utility.plantList) {
+            for (Plant plant : Database.plantList) {
                 String n = plant.getName();
                 String t = plant.getSubTyp();
 

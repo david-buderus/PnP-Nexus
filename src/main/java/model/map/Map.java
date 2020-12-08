@@ -39,7 +39,7 @@ public class Map {
     }
 
     public Map() {
-        this(new CryptSpecification(), 50, 2, 50);
+        this(new CryptSpecification(), 50, 1, 50);
     }
 
     public void draw(IMapCanvas canvas) {
@@ -53,6 +53,7 @@ public class Map {
 
     public void generate() {
         generateRoomObjects();
+        cutDeadEnds();
         generateLootObjects();
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -156,22 +157,54 @@ public class Map {
 
     protected void cutDeadEnds() {
         Queue<RoomObject> queue = new LinkedList<>();
-        HashMap<RoomObject, Boolean> deadEnd = new HashMap<>();
+        Collection<RoomObject> leaves = new ArrayList<>();
         HashMap<RoomObject, RoomObject> predecessor = new HashMap<>();
+        HashMap<RoomObject, Boolean> visited = new HashMap<>();
+        HashMap<RoomObject, Boolean> listed = new HashMap<>();
 
         RoomObject first = roomObjects.get(0); //RoomObjects are added in Order (maybe better solution needed)
         queue.add(first);
-        deadEnd.put(first, false);
+        listed.put(first, true);
 
         while (!queue.isEmpty()) {
             RoomObject current = queue.poll();
+            visited.put(current, true);
 
-            for (Point point : current.getPossibleExtensions().values()) {
-                RoomObject next = roomMap.get(point);
+            Collection<RoomObject> neighbors = current.getNeighborPositions().stream()
+                    .map(roomMap::get)
+                    .filter(Objects::nonNull)
+                    .filter(room -> room != predecessor.getOrDefault(current, null))
+                    .collect(Collectors.toList());
 
-                if (next != null) {
+            if (neighbors.isEmpty() && !current.preventsDeadEnd()) {
+                leaves.add(current);
+            }
 
+            for (RoomObject next : neighbors) {
+
+                if (next != null && !visited.getOrDefault(next, false) && !listed.getOrDefault(next, false)) {
+                    queue.add(next);
+                    listed.put(next, true);
+                    predecessor.put(next, current);
                 }
+            }
+        }
+
+        leaves.stream().map(room -> room.getX() + " " + room.getY() + " " + room.getZ()).forEach(System.out::println);
+
+        for (RoomObject leave : leaves) {
+            pruneDeadEnds(leave, predecessor);
+        }
+    }
+
+    private void pruneDeadEnds(RoomObject deadEnd, HashMap<RoomObject, RoomObject> predecessor) {
+
+        if(!deadEnd.preventsDeadEnd() && deadEnd.getNeighborPositions().size() < 3) {
+            roomMap.deleteMapObject(deadEnd);
+            roomObjects.remove(deadEnd);
+
+            if(predecessor.get(deadEnd) != null) {
+                pruneDeadEnds(predecessor.get(deadEnd), predecessor);
             }
         }
     }

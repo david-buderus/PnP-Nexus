@@ -1,8 +1,8 @@
 package model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import manager.Database;
 import manager.TypTranslation;
-import manager.Utility;
 import model.upgrade.Upgrade;
 import model.upgrade.UpgradeFactory;
 
@@ -59,7 +59,7 @@ public abstract class Equipment extends Item {
 
         Equipment equipment = this.copy();
         Collection<String> types = TypTranslation.getAllTypes(this.getSubTyp());
-        List<UpgradeFactory> list = Utility.upgradeList.stream().
+        List<UpgradeFactory> list = Database.upgradeList.stream().
                 filter(x -> types.contains(x.getTarget())).collect(Collectors.toList());
 
         if (list.size() == 0) {

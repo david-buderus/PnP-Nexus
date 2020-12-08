@@ -12,8 +12,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import manager.Database;
 import manager.TypTranslation;
-import manager.Utility;
 import model.CraftingBonus;
 import ui.IView;
 import ui.part.NumStringConverter;
@@ -89,7 +89,7 @@ public class CraftingView extends SearchView<CraftingBonus> {
 
     private void search() {
         Collection<String> targets = TypTranslation.getAllTypes(target.get());
-        ArrayList<CraftingBonus> bonuses = Utility.craftingBonusList.stream()
+        ArrayList<CraftingBonus> bonuses = Database.craftingBonusList.stream()
                 .filter(x -> targets.contains(x.getTarget())).collect(Collectors.toCollection(ArrayList::new));
 
         if (bonuses.size() > 0) {

@@ -45,4 +45,9 @@ public class Room extends SimpleRoomObject implements Lootable {
         result.add(new Chest(this, 1, 0, 1));
         return result;
     }
+
+    @Override
+    public boolean preventsDeadEnd() {
+        return true;
+    }
 }

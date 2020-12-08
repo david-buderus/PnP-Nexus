@@ -8,7 +8,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import manager.Utility;
+import manager.Database;
 import model.ItemList;
 import model.item.Item;
 import model.upgrade.UpgradeFactory;
@@ -39,11 +39,11 @@ public class Enchanter extends Shop {
         this.selected = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.difference = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-        this.upgrades = Utility.upgradeModelList.stream().filter(up -> up.getRequirement().contains("Verzauberung"))
+        this.upgrades = Database.upgradeModelList.stream().filter(up -> up.getRequirement().contains("Verzauberung"))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         for (UpgradeModel model : upgrades) {
-            UpgradeFactory upgradeFactory = Utility.upgradeMap.get(model);
+            UpgradeFactory upgradeFactory = Database.upgradeMap.get(model);
             for (Item material : upgradeFactory.getMaterialList()) {
                 material.setAmount(calculateAmount(material));
                 materials.add(material);
@@ -141,7 +141,7 @@ public class Enchanter extends Shop {
         ItemList cost = new ItemList();
 
         for (UpgradeModel model : selected) {
-            Collection<Item> items = Utility.upgradeMap.get(model).getMaterialList(model.getLevel(), model.getLevel());
+            Collection<Item> items = Database.upgradeMap.get(model).getMaterialList(model.getLevel(), model.getLevel());
             for (int i = 0; i < amount.get(model).get(); i++) {
                 cost.addAll(items);
             }

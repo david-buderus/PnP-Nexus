@@ -1,6 +1,6 @@
 package model.loot;
 
-import manager.Utility;
+import manager.Database;
 
 public class DungeonLootFactory extends LootFactory {
 
@@ -12,7 +12,7 @@ public class DungeonLootFactory extends LootFactory {
     }
 
     public DungeonLootFactory(String name, int maxAmount, double chance, String container, String place) {
-        super(Utility.getItem(name), maxAmount, chance);
+        super(Database.getItem(name), maxAmount, chance);
         this.container = container;
         this.place = place;
     }

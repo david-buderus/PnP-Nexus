@@ -6,7 +6,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import manager.Utility;
+import manager.Database;
 import model.Inconsistency;
 import ui.IView;
 import ui.ViewPart;
@@ -15,13 +15,13 @@ public class InconsistencyView extends ViewPart {
 
     public InconsistencyView(IView parent) {
         super("Inkonsistenzen", parent);
-        this.disableProperty().bind(Utility.inconsistent.not());
+        this.disableProperty().bind(Database.inconsistent.not());
 
         VBox root = new VBox();
         root.setPadding(new Insets(20));
 
         TableView<Inconsistency> table = new TableView<>();
-        table.itemsProperty().bind(Utility.inconsistencyList);
+        table.itemsProperty().bind(Database.inconsistencyList);
         root.getChildren().add(table);
 
         TableColumn<Inconsistency, String> name = new TableColumn<>("Name");

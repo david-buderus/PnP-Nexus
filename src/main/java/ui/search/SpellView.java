@@ -11,7 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
-import manager.Utility;
+import manager.Database;
 import model.Spell;
 import ui.IView;
 import ui.ViewPart;
@@ -55,7 +55,7 @@ public class SpellView extends ViewPart {
         this.searchCount = new SimpleIntegerProperty(1);
         this.rand = new Random();
 
-        Utility.spellList.addListener((ob, o, n) -> update());
+        Database.spellList.addListener((ob, o, n) -> update());
 
         int width = 400;
 
@@ -177,7 +177,7 @@ public class SpellView extends ViewPart {
         for (int i = 0; i < searchCount.intValue(); i++) {
             int tier = this.tier.get();
 
-            Stream<Spell> stream = Utility.spellList.stream().filter(w -> w.getTier() == tier);
+            Stream<Spell> stream = Database.spellList.stream().filter(w -> w.getTier() == tier);
 
             if (!this.name.get().equals("Name")) {
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
@@ -197,14 +197,14 @@ public class SpellView extends ViewPart {
     }
 
     private void update() {
-        if (!Utility.spellList.isEmpty()) {
+        if (!Database.spellList.isEmpty()) {
             this.disabled.set(false);
 
             ObservableList<String> name = FXCollections.observableArrayList("Name");
             ObservableList<String> typ = FXCollections.observableArrayList("Typ");
             ObservableList<String> cost = FXCollections.observableArrayList("Kosten");
 
-            for (Spell spell : Utility.spellList) {
+            for (Spell spell : Database.spellList) {
                 String n = spell.getName();
                 String t = spell.getTyp();
                 String c = spell.getCost();

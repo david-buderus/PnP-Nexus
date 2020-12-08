@@ -16,7 +16,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
-import manager.Utility;
+import manager.Database;
 import model.item.Item;
 import model.upgrade.UpgradeFactory;
 import model.upgrade.UpgradeModel;
@@ -134,7 +134,7 @@ public class EnchanterView extends ShopView {
     protected void format(Object object, Text text) {
         if (object instanceof UpgradeModel) {
             UpgradeModel model = (UpgradeModel) object;
-            UpgradeFactory factory = Utility.upgradeMap.get(model);
+            UpgradeFactory factory = Database.upgradeMap.get(model);
 
             if (enchanter.getRealMaterials().containsAmount(factory.getMaterialList(model.getLevel(), model.getLevel()))) {
                 text.setFill(Paint.valueOf("#000000"));

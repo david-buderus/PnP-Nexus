@@ -1,5 +1,6 @@
 package model.map.object.room;
 
+import model.map.Point;
 import model.map.RotationPoint;
 import model.map.object.MapObject;
 import model.map.object.MapObjectPart;
@@ -7,10 +8,7 @@ import model.map.specification.MapSpecification;
 import model.map.specification.texture.TextureHandler;
 import ui.map.IMapCanvas;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class RoomObject extends MapObject {
@@ -139,6 +137,15 @@ public abstract class RoomObject extends MapObject {
 
     public int getExitWidth(int key) {
         return exitWidth.getOrDefault(key, 0);
+    }
+
+    public Collection<Point> getNeighborPositions() {
+        return entries.entrySet().stream()
+                .filter(entry -> usedEntries.contains(entry.getKey()))
+                .map(Map.Entry::getValue).map(p -> p
+                .rotate(rotation)
+                .correctPosition(rotation, getWidth(), getDepth())
+                .add(x, y, z)).collect(Collectors.toSet());
     }
 
     public boolean preventsDeadEnd() {

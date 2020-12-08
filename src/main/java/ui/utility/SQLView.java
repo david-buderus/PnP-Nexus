@@ -9,7 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import manager.Utility;
+import manager.Database;
 import model.Spell;
 import model.item.Armor;
 import model.item.Item;
@@ -39,32 +39,32 @@ public class SQLView extends ViewPart {
         String[] labels = new String[]{"Name", "Typ", "Subtyp", "Tier", "Seltenheit", "Preis", "Effekt"};
         String[] names = new String[]{"name", "typ", "subTyp", "tier", "rarity", "cost", "effect"};
 
-        root.getTabs().add(createTab("Items", labels, names, Utility.itemList, Item.class));
+        root.getTabs().add(createTab("Items", labels, names, Database.itemList, Item.class));
 
         labels = new String[]{"Name", "Typ", "Initiative", "Würfel/Belastung", "Schaden/Schutz", "Treffer", "Tier", "Seltenheit", "Preis", "Effekt", "Slots", "Voraussetzung"};
         names = new String[]{"name", "subTyp", "initiative", "dice", "damage", "hit", "tier", "rarity", "cost", "effect", "slots", "requirement"};
 
-        root.getTabs().add(createTab("Waffen", labels, names, Utility.weaponList, Weapon.class));
+        root.getTabs().add(createTab("Waffen", labels, names, Database.weaponList, Weapon.class));
 
         labels = new String[]{"Name", "Typ", "Schutz", "Belastung", "Tier", "Seltenheit", "Preis", "Effekt", "Slots", "Voraussetzung"};
         names = new String[]{"name", "subTyp", "protection", "weight", "tier", "rarity", "cost", "effect", "slots", "requirement"};
 
-        root.getTabs().add(createTab("Rüstungen", labels, names, Utility.armorList, Armor.class));
+        root.getTabs().add(createTab("Rüstungen", labels, names, Database.armorList, Armor.class));
 
         labels = new String[]{"Name", "Typ", "Material", "Edelstein", "Tier", "Seltenheit", "Preis", "Effekt", "Slots", "Voraussetzung"};
         names = new String[]{"name", "subTyp", "material", "gem", "tier", "rarity", "cost", "effect", "slots", "requirement"};
 
-        root.getTabs().add(createTab("Schmuck", labels, names, Utility.jewelleryList, Jewellery.class));
+        root.getTabs().add(createTab("Schmuck", labels, names, Database.jewelleryList, Jewellery.class));
 
         labels = new String[]{"Name", "Effekt", "Typ", "Kosten", "Zauberzeit", "Tier"};
         names = new String[]{"name", "effect", "typ", "cost", "castTime", "tier"};
 
-        root.getTabs().add(createTab("Zauber", labels, names, Utility.spellList, Spell.class));
+        root.getTabs().add(createTab("Zauber", labels, names, Database.spellList, Spell.class));
 
         labels = new String[]{"Name", "Stufe", "Ziel", "Effekt", "Slots", "Kosten", "Mana", "Materials"};
         names = new String[]{"name", "level", "target", "effect", "slots", "cost", "mana", "materials"};
 
-        root.getTabs().add(createTab("Verbesserungen", labels, names, Utility.upgradeModelList, UpgradeModel.class));
+        root.getTabs().add(createTab("Verbesserungen", labels, names, Database.upgradeModelList, UpgradeModel.class));
 
 
         this.setContent(root);

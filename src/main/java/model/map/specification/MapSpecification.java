@@ -1,6 +1,6 @@
 package model.map.specification;
 
-import manager.Utility;
+import manager.Database;
 import model.loot.DungeonLootFactory;
 import model.loot.LootFactory;
 import model.map.WeightedFactoryList;
@@ -30,7 +30,7 @@ public abstract class MapSpecification {
         this.roomFactoryMap = new HashMap<>();
         this.lootFactoryMap = new HashMap<>();
 
-        for (DungeonLootFactory factory : Utility.dungeonLootList) {
+        for (DungeonLootFactory factory : Database.dungeonLootList) {
             if (place.equals(factory.getPlace())) {
                 lootFactoryMap.compute(factory.getContainer(), (k, v) -> {
                     if (v == null) {

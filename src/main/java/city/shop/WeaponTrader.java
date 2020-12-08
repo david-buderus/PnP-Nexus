@@ -2,7 +2,7 @@ package city.shop;
 
 import city.Shop;
 import city.Town;
-import manager.Utility;
+import manager.Database;
 import model.ItemList;
 import model.item.Weapon;
 import ui.shop.ShopView;
@@ -17,7 +17,7 @@ public class WeaponTrader extends Shop {
         super(town, "Waffenhändler");
         this.weapons = new ItemList();
 
-        Utility.weaponList.stream().map(Weapon::copy).filter(x -> !x.getRarity().equals("legendär")).forEach(weapon -> {
+        Database.weaponList.stream().map(Weapon::copy).filter(x -> !x.getRarity().equals("legendär")).forEach(weapon -> {
             weapon.setAmount(calculateAmount(weapon));
             weapons.add(weapon);
         });

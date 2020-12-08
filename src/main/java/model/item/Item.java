@@ -2,13 +2,14 @@ package model.item;
 
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
+import manager.Database;
 
 import java.lang.reflect.InvocationTargetException;
 
 /**
  * Represents an item in the database
  * If you need an item with a specific name use
- * {@link manager.Utility#getItem(String)}.
+ * {@link Database#getItem(String)}.
  */
 public class Item {
 
@@ -24,14 +25,14 @@ public class Item {
 
     /**
      * Use this only if you know what you do.
-     * Use {@link manager.Utility#getItem(String)} instead.
+     * Use {@link Database#getItem(String)} instead.
      */
     public Item() {
     }
 
     /**
      * Use this only if you know what you do.
-     * Use {@link manager.Utility#getItem(String)} instead.
+     * Use {@link Database#getItem(String)} instead.
      */
     public Item(String name) {
         this.name = name;

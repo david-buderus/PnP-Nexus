@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import manager.Database;
 import manager.TypTranslation;
 import manager.Utility;
 import model.*;
@@ -204,7 +205,7 @@ public class ManagerView extends View {
                 TypTranslation.add(weapon.getTyp(), "Waffe");
             }
 
-            Platform.runLater(() -> Utility.weaponList.set(weaponList));
+            Platform.runLater(() -> Database.weaponList.set(weaponList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Waffen konnten nicht geladen werden.");
@@ -234,7 +235,7 @@ public class ManagerView extends View {
                 TypTranslation.add(armor.getTyp(), "Rüstung");
             }
 
-            Platform.runLater(() -> Utility.armorList.set(armorList));
+            Platform.runLater(() -> Database.armorList.set(armorList));
         } catch (SQLException e) {
             info.add("Rüstungen konnten nicht geladen werden.");
         }
@@ -262,7 +263,7 @@ public class ManagerView extends View {
                 TypTranslation.add(jewellery.getTyp(), "Schmuck");
             }
 
-            Platform.runLater(() -> Utility.jewelleryList.set(jewelleryList));
+            Platform.runLater(() -> Database.jewelleryList.set(jewelleryList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Schmuck konnte nicht geladen werden.");
@@ -287,7 +288,7 @@ public class ManagerView extends View {
                 plantList.add(plant);
             }
 
-            Platform.runLater(() -> Utility.plantList.set(plantList));
+            Platform.runLater(() -> Database.plantList.set(plantList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Pflanzen konnten nicht geladen werden.");
@@ -312,11 +313,11 @@ public class ManagerView extends View {
                 itemList.add(item);
             }
             Platform.runLater(() -> {
-                Utility.itemList.set(itemList);
-                Utility.itemList.addAll(Utility.weaponList);
-                Utility.itemList.addAll(Utility.armorList);
-                Utility.itemList.addAll(Utility.jewelleryList);
-                Utility.itemList.addAll(Utility.plantList);
+                Database.itemList.set(itemList);
+                Database.itemList.addAll(Database.weaponList);
+                Database.itemList.addAll(Database.armorList);
+                Database.itemList.addAll(Database.jewelleryList);
+                Database.itemList.addAll(Database.plantList);
                 loadingThread.interrupt();
             });
 
@@ -348,7 +349,7 @@ public class ManagerView extends View {
                 spellList.add(spell);
             }
 
-            Platform.runLater(() -> Utility.spellList.set(spellList));
+            Platform.runLater(() -> Database.spellList.set(spellList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Zauber konnten nicht geladen werden.");
@@ -380,7 +381,7 @@ public class ManagerView extends View {
                     while (materialSet.next()) {
                         String mat = getString(materialSet, "Material");
                         float amount = materialSet.getFloat("Anzahl");
-                        Item material = Utility.getItemWithoutDefault(mat).copy();
+                        Item material = Database.getItemWithoutDefault(mat).copy();
                         material.setAmount(amount);
                         materials.add(material);
                     }
@@ -403,7 +404,7 @@ public class ManagerView extends View {
                     while (materialSet.next()) {
                         String mat = getString(materialSet, "Material");
                         float amount = materialSet.getFloat("Anzahl");
-                        Item material = Utility.getItemWithoutDefault(mat).copy();
+                        Item material = Database.getItemWithoutDefault(mat).copy();
                         material.setAmount(amount);
                         materials.add(material);
                     }
@@ -413,7 +414,7 @@ public class ManagerView extends View {
                 }
             }
 
-            Platform.runLater(() -> Utility.upgradeList.set(upgradeList));
+            Platform.runLater(() -> Database.upgradeList.set(upgradeList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Verbesserungen konnten nicht geladen werden.");
@@ -440,7 +441,7 @@ public class ManagerView extends View {
                 lootList.add(factory);
             }
 
-            Platform.runLater(() -> Utility.dungeonLootList.set(lootList));
+            Platform.runLater(() -> Database.dungeonLootList.set(lootList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Loot konnte nicht geladen werden.");
@@ -464,7 +465,7 @@ public class ManagerView extends View {
                 eventList.add(event);
             }
 
-            Platform.runLater(() -> Utility.eventList.set(eventList));
+            Platform.runLater(() -> Database.eventList.set(eventList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Events konnten nicht geladen werden.");
@@ -483,7 +484,7 @@ public class ManagerView extends View {
                 craftingBonusList.add(craftingBonus);
             }
 
-            Platform.runLater(() -> Utility.craftingBonusList.set(craftingBonusList));
+            Platform.runLater(() -> Database.craftingBonusList.set(craftingBonusList));
         } catch (SQLException e) {
             e.printStackTrace();
             info.add("Herstellungsverbesserungen konnten nicht geladen werden.");
@@ -510,7 +511,7 @@ public class ManagerView extends View {
                 while (materialSet.next()) {
                     String mat = getString(materialSet, "Material");
                     float amount = materialSet.getFloat("Anzahl");
-                    Item material = Utility.getItemWithoutDefault(mat).copy();
+                    Item material = Database.getItemWithoutDefault(mat).copy();
                     material.setAmount(amount);
                     materials.add(material);
                 }
@@ -519,7 +520,7 @@ public class ManagerView extends View {
                 fabricationList.add(fabrication);
             }
 
-            Platform.runLater(() -> Utility.fabricationList.set(fabricationList));
+            Platform.runLater(() -> Database.fabricationList.set(fabricationList));
         } catch (SQLException e) {
             info.add("Herstellungen konnten nicht geladen werden.");
             e.printStackTrace();
@@ -528,7 +529,7 @@ public class ManagerView extends View {
         //Inconsistencies
         ObservableList<Inconsistency> inconsistencyList = FXCollections.observableArrayList();
 
-        for (UpgradeFactory upgrade : Utility.upgradeList) {
+        for (UpgradeFactory upgrade : Database.upgradeList) {
 
             for (int level = 1; level <= upgrade.getMaxLevel(); level++) {
 
@@ -560,7 +561,7 @@ public class ManagerView extends View {
             }
         }
 
-        for (Fabrication fabrication : Utility.fabricationList) {
+        for (Fabrication fabrication : Database.fabricationList) {
 
             if (fabrication.getProduct().isTradeable()) {
                 int cost = 0;
@@ -593,7 +594,7 @@ public class ManagerView extends View {
                 }
             }
         }
-        Platform.runLater(() -> Utility.inconsistencyList.set(inconsistencyList));
+        Platform.runLater(() -> Database.inconsistencyList.set(inconsistencyList));
 
         statement.close();
     }

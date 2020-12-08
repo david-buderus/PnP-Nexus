@@ -11,7 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
-import manager.Utility;
+import manager.Database;
 import model.Event;
 import ui.IView;
 import ui.ViewPart;
@@ -59,7 +59,7 @@ public class EventView extends ViewPart {
         this.searchCount = new SimpleIntegerProperty(1);
         this.rand = new Random();
 
-        Utility.eventList.addListener((ob, o, n) -> update());
+        Database.eventList.addListener((ob, o, n) -> update());
 
         float width = 400;
 
@@ -250,7 +250,7 @@ public class EventView extends ViewPart {
     private void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
 
-            Stream<Event> stream = Utility.eventList.stream();
+            Stream<Event> stream = Database.eventList.stream();
 
             if (!this.trigger.get().equals("Ausl\u00f6ser")) {
                 stream = stream.filter(ev -> eq(ev.getTrigger(), this.trigger));
@@ -294,7 +294,7 @@ public class EventView extends ViewPart {
     }
 
     private void update() {
-        if (!Utility.eventList.isEmpty()) {
+        if (!Database.eventList.isEmpty()) {
             this.disabled.set(false);
 
             ObservableList<String> trigger = FXCollections.observableArrayList("Ausl\u00f6ser");
@@ -302,7 +302,7 @@ public class EventView extends ViewPart {
             ObservableList<String> land = FXCollections.observableArrayList("Land");
             ObservableList<String> location = FXCollections.observableArrayList("Gebiet");
 
-            for (Event event : Utility.eventList) {
+            for (Event event : Database.eventList) {
                 String name = event.getName();
 
                 if (name.isEmpty()) {
