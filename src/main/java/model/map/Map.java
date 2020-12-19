@@ -5,6 +5,7 @@ import model.loot.LootFactory;
 import model.map.object.MapObjectMap;
 import model.map.object.loot.LootObject;
 import model.map.object.room.Lootable;
+import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.room.Entrance;
 import model.map.specification.CryptSpecification;
@@ -53,7 +54,7 @@ public class Map {
 
     public void generate() {
         generateRoomObjects();
-        cutDeadEnds();
+        //cutDeadEnds();
         generateLootObjects();
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -68,7 +69,7 @@ public class Map {
         HashMap<RoomObject, Integer> failedTries = new HashMap<>();
 
         RoomObject entrance = new Entrance();
-        if (roomMap.addMapObject(entrance, 10, 0, 10, 1)) {
+        if (roomMap.addMapObject(entrance, 10, 0, 10, 0)) {
             roomObjects.add(entrance);
             if (!entrance.getPossibleExtensions().isEmpty()) {
                 this.possibleExtensions.add(entrance);
@@ -79,39 +80,40 @@ public class Map {
             RoomObject object = possibleExtensions.get(random.nextInt(possibleExtensions.size()));
             possibleExtensions.remove(object);
 
-            HashMap<Integer, RotationPoint> freeExtensions = getFreeExtensionPoints(object);
+            List<Passage> freeExtensions = object.getPossibleExtensions();
             //Check if there is a place where a new MapObject can be generated
             if (!freeExtensions.isEmpty()) {
                 //Select a random exit of the extensions
-                int exitId = freeExtensions.keySet().stream().skip(random.nextInt(freeExtensions.size())).findFirst().orElse(-1);
-                RotationPoint exit = freeExtensions.get(exitId);
-                freeExtensions.remove(exitId);
+                Passage exit = freeExtensions.get(random.nextInt(freeExtensions.size()));
+                RotationPoint exitPoint = exit.getAbsoluteEntryPosition();
+                freeExtensions.remove(exit);
 
                 //Get possible next MapObject
-                Optional<RoomObject> optNext = object.getFollowingRoomObject(specification, object.getExitWidth(exitId));
-                if (optNext.isPresent() && exit != null) {
+                Optional<RoomObject> optNext = object.getFollowingRoomObject(specification, exit.getWidth());
+                if (optNext.isPresent()) {
                     RoomObject next = optNext.get();
                     //Get possible entry point of the new MapObject
-                    HashMap<Integer, RotationPoint> entries = next.getRelativePossibleEntrancePoints();
-                    Optional<Integer> key = entries.keySet().stream()
-                            .skip(random.nextInt(entries.keySet().size())).findFirst();
+                    List<Passage> entries = next.getPossibleEntrancePoints().stream()
+                            .filter(p -> p.isCompatible(exit)).collect(Collectors.toList());
 
-                    if (key.isPresent()) {
-                        RotationPoint entry = entries.get(key.get());
+                    if (!entries.isEmpty()) {
+                        Passage entry = entries.get(random.nextInt(entries.size()));
+                        RotationPoint entryPoint = entry.getRelativePositionToMapObject();
 
                         //Rotate new MapObject so it matches the rotation of the exit
                         int rotation = 0;
-                        if (entry.getRotation() != exit.getRotation()) {
-                            rotation = exit.getRotation() - entry.getRotation();
+                        if (entryPoint.getRotation() != exitPoint.getRotation()) {
+                            rotation = exitPoint.getRotation() - entryPoint.getRotation();
                             next.setRotation(rotation);
-                            entry = next.getRelativePossibleEntrancePoints().get(key.get());
+                            entryPoint = entry.getRelativePositionToMapObject();
                         }
 
-                        if (roomMap.addMapObject(next, exit.sub(entry).withRotation(rotation))) {
-                            object.registerUsedEntry(exitId);
-                            next.registerUsedEntry(key.get());
+                        if (roomMap.addMapObject(next, exitPoint.sub(entryPoint).withRotation(rotation))) {
+                            exit.setDestination(next);
+                            entry.setDestination(next);
                             failedTries.put(object, 0);
                             roomObjects.add(next);
+
                             if (!next.getPossibleExtensions().isEmpty()) {
                                 this.possibleExtensions.add(next);
                             }
@@ -129,34 +131,11 @@ public class Map {
         }
 
         // If an open exit points randomly on an open entry, connect those
-        for (RoomObject exitObject : roomObjects) {
-            HashMap<Integer, RotationPoint> openExtensionPoints = exitObject.getPossibleExtensions();
 
-            for (int exitKey : openExtensionPoints.keySet()) {
-                RotationPoint exitPoint = openExtensionPoints.get(exitKey);
-
-                if (roomMap.inBounds(exitPoint)) {
-                    RoomObject entryObject = roomMap.get(exitPoint);
-                    if (entryObject != null) {
-                        HashMap<Integer, RotationPoint> openEntryPoints = entryObject.getPossibleEntrancePoints();
-
-                        for (int entryKey : openEntryPoints.keySet()) {
-                            RotationPoint entryPoint = openEntryPoints.get(entryKey);
-
-                            if (exitPoint.equals(entryPoint)) {
-                                exitObject.registerUsedEntry(exitKey);
-                                entryObject.registerUsedEntry(entryKey);
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
     }
 
     protected void cutDeadEnds() {
-        Queue<RoomObject> queue = new LinkedList<>();
+        /*Queue<RoomObject> queue = new LinkedList<>();
         Collection<RoomObject> leaves = new ArrayList<>();
         HashMap<RoomObject, RoomObject> predecessor = new HashMap<>();
         HashMap<RoomObject, Boolean> visited = new HashMap<>();
@@ -194,19 +173,19 @@ public class Map {
 
         for (RoomObject leave : leaves) {
             pruneDeadEnds(leave, predecessor);
-        }
+        }*/
     }
 
     private void pruneDeadEnds(RoomObject deadEnd, HashMap<RoomObject, RoomObject> predecessor) {
 
-        if(!deadEnd.preventsDeadEnd() && deadEnd.getNeighborPositions().size() < 3) {
+        /*if(!deadEnd.preventsDeadEnd() && deadEnd.getNeighborPositions().size() < 3) {
             roomMap.deleteMapObject(deadEnd);
             roomObjects.remove(deadEnd);
 
             if(predecessor.get(deadEnd) != null) {
                 pruneDeadEnds(predecessor.get(deadEnd), predecessor);
             }
-        }
+        }*/
     }
 
     protected void generateLootObjects() {
@@ -230,15 +209,6 @@ public class Map {
         }
     }
 
-    protected HashMap<Integer, RotationPoint> getFreeExtensionPoints(RoomObject object) {
-        return object.getPossibleExtensions().entrySet().stream()
-                .filter(entry -> roomMap.isEmpty(entry.getValue()))
-                .collect(Collectors.toMap(
-                        java.util.Map.Entry::getKey,
-                        java.util.Map.Entry::getValue,
-                        (prev, next) -> next, HashMap::new));
-    }
-
     public int getWidth() {
         return width;
     }
@@ -257,5 +227,9 @@ public class Map {
 
     public LootObject getLootObject(int x, int y, int z) {
         return lootMap.get(x, y, z);
+    }
+
+    public Collection<RoomObject> getRoomObjects() {
+        return roomObjects;
     }
 }

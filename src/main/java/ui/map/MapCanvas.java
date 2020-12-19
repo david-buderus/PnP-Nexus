@@ -2,6 +2,8 @@ package ui.map;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -11,14 +13,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import model.map.Map;
+import model.map.Point;
 import model.map.object.IPosition;
 import model.map.object.loot.LootObject;
+import model.map.object.room.Passage;
+import model.map.object.room.RoomObject;
 
 public class MapCanvas extends Pane implements IMapCanvas {
 
     private final Canvas mapCanvas, infoCanvas;
     private final GraphicsContext mapContext, infoContext;
     private final ObjectProperty<Map> map;
+    private final IntegerProperty mouseX, mouseZ;
 
     private double offsetX, offsetY;
     private double prevX, prevY;
@@ -31,6 +37,8 @@ public class MapCanvas extends Pane implements IMapCanvas {
         this.infoCanvas = new Canvas(300, 300);
         this.mapContext = mapCanvas.getGraphicsContext2D();
         this.infoContext = infoCanvas.getGraphicsContext2D();
+        this.mouseX = new SimpleIntegerProperty(0);
+        this.mouseZ = new SimpleIntegerProperty(0);
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -74,6 +82,8 @@ public class MapCanvas extends Pane implements IMapCanvas {
                 int mapZ = (int) (event.getY() / zoom + offsetY);
 
                 this.drawInfoHud(event.getX(), event.getY(), mapX, mapZ);
+                this.mouseX.set(mapX);
+                this.mouseZ.set(mapZ);
             }
             infoContext.restore();
         });
@@ -83,6 +93,34 @@ public class MapCanvas extends Pane implements IMapCanvas {
         clear();
         if (map.get() != null) {
             map.get().draw(this);
+        }
+    }
+
+    protected void drawHelp() {
+        for (int z = 0; z < map.get().getDepth(); z++) {
+            for (int x = 0; x < map.get().getWidth(); x++) {
+                RoomObject room = map.get().getRoomObject(x, 0, z);
+                if (room != null){
+                    mapContext.save();
+                    mapContext.setFill(Color.RED);
+                    mapContext.fillRect(x * 10 + 1, z * 10 + 1, 8, 8);
+                    mapContext.restore();
+                }
+            }
+        }
+
+        for (RoomObject room : map.get().getRoomObjects()) {
+            mapContext.save();
+            for (Passage passage : room.getAllPassages()) {
+                Point exit = passage.getAbsolutePosition();
+                mapContext.setFill(Color.YELLOW);
+                mapContext.fillRect(exit.getX() * 10 + 2, exit.getZ() * 10 + 2, 3, 6);
+
+                Point entry = passage.getAbsoluteEntryPosition();
+                mapContext.setFill(Color.GREEN);
+                mapContext.fillRect(entry.getX() * 10 + 5, entry.getZ() * 10 + 2, 3, 6);
+            }
+            mapContext.restore();
         }
     }
 
@@ -367,5 +405,17 @@ public class MapCanvas extends Pane implements IMapCanvas {
             infoContext.fillText(loot.getContainer(), x + 20, y + 20, 80);
             infoContext.fillText(infoText, x + 20, y + 40, 80);
         }
+    }
+
+     public ReadOnlyIntegerProperty getMouseX() {
+        return mouseX;
+     }
+
+    public ReadOnlyIntegerProperty getMouseY() {
+        return shownYLayer;
+    }
+
+    public ReadOnlyIntegerProperty getMouseZ() {
+        return mouseZ;
     }
 }

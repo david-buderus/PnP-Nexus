@@ -131,4 +131,13 @@ public class MapObjectMap<MObj extends MapObject> {
     public int getHeight() {
         return height;
     }
+
+    public void print() {
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < depth; z++) {
+                System.out.print(get(x, 0, z) != null ? 1 : 0);
+            }
+            System.out.println();
+        }
+    }
 }

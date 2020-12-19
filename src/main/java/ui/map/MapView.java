@@ -7,6 +7,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import model.map.Map;
@@ -16,7 +18,7 @@ import ui.ViewPart;
 public class MapView extends ViewPart {
 
     private final MapCanvas canvas;
-    private ObjectProperty<Map> map;
+    private final ObjectProperty<Map> map;
     private ObjectProperty<Structure> selectedStructure;
     private final BooleanProperty loading;
     private final IntegerProperty shownYLayer;
@@ -79,6 +81,13 @@ public class MapView extends ViewPart {
 
         this.canvas.setPrefSize(500, 500);
         root.setCenter(canvas);
+
+        BorderPane info = new BorderPane();
+        root.setBottom(info);
+
+        Label coordinates = new Label();
+        coordinates.textProperty().bind(canvas.getMouseX().asString().concat(", ").concat(canvas.getMouseY()).concat(", ").concat(canvas.getMouseZ()));
+        info.setRight(coordinates);
 
         this.setContent(root);
     }

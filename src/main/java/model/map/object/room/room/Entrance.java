@@ -1,6 +1,7 @@
 package model.map.object.room.room;
 
 import model.map.RotationPoint;
+import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.SimpleRoomObject;
 import model.map.specification.MapSpecification;
@@ -13,7 +14,7 @@ public class Entrance extends SimpleRoomObject {
 
     public Entrance() {
         super(2, 3);
-        this.registerExit(new RotationPoint(2, 0, 1, 1));
+        this.addPassage(new Passage(this, new RotationPoint(1, 0, 1, 3)));
     }
 
     @Override

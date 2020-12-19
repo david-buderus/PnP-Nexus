@@ -4,6 +4,7 @@ import model.map.RotationPoint;
 import model.map.object.loot.Chest;
 import model.map.object.loot.LootObject;
 import model.map.object.room.Lootable;
+import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.SimpleRoomObject;
 import model.map.specification.MapSpecification;
@@ -18,10 +19,10 @@ public class Room extends SimpleRoomObject implements Lootable {
 
     public Room() {
         super(5, 5);
-        registerEntryWithExit(new RotationPoint(2, 0, 0, 2));
-        registerEntryWithExit(new RotationPoint(4, 0, 2, 3));
-        registerEntryWithExit(new RotationPoint(2, 0, 4, 0));
-        registerEntryWithExit(new RotationPoint(0, 0, 2, 1));
+        addPassage(new Passage(this, new RotationPoint(2, 0, 4, 0)));
+        addPassage(new Passage(this, new RotationPoint(0, 0, 2, 1)));
+        addPassage(new Passage(this, new RotationPoint(2, 0, 0, 2)));
+        addPassage(new Passage(this, new RotationPoint(4, 0, 2, 3)));
     }
 
     @Override

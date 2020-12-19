@@ -1,6 +1,7 @@
 package model.map.object.room.corridor;
 
 import model.map.RotationPoint;
+import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.SimpleRoomObject;
 import model.map.specification.MapSpecification;
@@ -16,8 +17,8 @@ public class Corridor extends SimpleRoomObject {
     public Corridor(int length) {
         super(length, 1);
         this.length = length;
-        this.registerEntryWithExit(new RotationPoint(length - 1, 0, 0, 3));
-        this.registerEntryWithExit(new RotationPoint(0, 0, 0, 1));
+        addPassage(new Passage(this, new RotationPoint(length - 1, 0, 0, 3)));
+        addPassage(new Passage(this, new RotationPoint(0, 0, 0, 1)));
     }
 
     @Override
