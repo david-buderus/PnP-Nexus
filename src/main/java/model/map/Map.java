@@ -23,8 +23,6 @@ public class Map {
     protected final int width, depth, height;
     protected final MapObjectMap<RoomObject> roomMap;
     protected final MapObjectMap<LootObject> lootMap;
-    protected final ArrayList<RoomObject> roomObjects;
-    protected final ArrayList<LootObject> lootObjects;
     protected final ArrayList<RoomObject> possibleExtensions;
 
     public Map(MapSpecification specification, int width, int height, int depth) {
@@ -34,8 +32,6 @@ public class Map {
         this.height = height;
         this.roomMap = new MapObjectMap<>(width, height, depth);
         this.lootMap = new MapObjectMap<>(width, height, depth);
-        this.roomObjects = new ArrayList<>();
-        this.lootObjects = new ArrayList<>();
         this.possibleExtensions = new ArrayList<>();
     }
 
@@ -44,10 +40,10 @@ public class Map {
     }
 
     public void draw(IMapCanvas canvas) {
-        for (RoomObject object : roomObjects) {
+        for (RoomObject object : roomMap.getAllMapObjects()) {
             object.draw(canvas, specification.getTextureHandler());
         }
-        for (LootObject object : lootObjects) {
+        for (LootObject object : lootMap.getAllMapObjects()) {
             object.draw(canvas, specification.getTextureHandler());
         }
     }
@@ -70,7 +66,6 @@ public class Map {
 
         RoomObject entrance = new Entrance();
         if (roomMap.addMapObject(entrance, 10, 0, 10, 0)) {
-            roomObjects.add(entrance);
             if (!entrance.getPossibleExtensions().isEmpty()) {
                 this.possibleExtensions.add(entrance);
             }
@@ -112,7 +107,6 @@ public class Map {
                             exit.setDestination(next);
                             entry.setDestination(next);
                             failedTries.put(object, 0);
-                            roomObjects.add(next);
 
                             if (!next.getPossibleExtensions().isEmpty()) {
                                 this.possibleExtensions.add(next);
@@ -189,7 +183,7 @@ public class Map {
     }
 
     protected void generateLootObjects() {
-        for (RoomObject roomObject : roomObjects) {
+        for (RoomObject roomObject : roomMap.getAllMapObjects()) {
             if (roomObject instanceof Lootable) {
                 for (LootObject lootObject : ((Lootable) roomObject).generateLoot()) {
 
@@ -201,7 +195,6 @@ public class Map {
                     if (!loot.isEmpty() &&
                             lootMap.addMapObject(lootObject,
                                     roomObject.getX(), roomObject.getY(), roomObject.getZ(), roomObject.getRotation())) {
-                        lootObjects.add(lootObject);
                         lootObject.setLoot(loot);
                     }
                 }
@@ -230,6 +223,6 @@ public class Map {
     }
 
     public Collection<RoomObject> getRoomObjects() {
-        return roomObjects;
+        return roomMap.getAllMapObjects();
     }
 }
