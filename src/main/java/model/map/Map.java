@@ -199,7 +199,7 @@ public class Map implements SeededRandom {
                 for (LootObject lootObject : ((Lootable) roomObject).generateLoot()) {
 
                     Collection<Loot> loot = specification.getLoot(lootObject.getContainer()).stream()
-                            .map(LootFactory::getLoot)
+                            .map(factory -> factory.getLoot(random))
                             .filter(item -> item.getAmount() > 0)
                             .collect(Collectors.toList());
 
