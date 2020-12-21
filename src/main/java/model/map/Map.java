@@ -157,7 +157,7 @@ public class Map implements SeededRandom {
                     .filter(room -> room != predecessor.getOrDefault(current, null))
                     .collect(Collectors.toList());
 
-            if (neighbors.isEmpty() && !current.preventsDeadEnd()) {
+            if (neighbors.isEmpty() && current.isDeadEnd()) {
                 leaves.add(current);
             }
 
@@ -187,7 +187,7 @@ public class Map implements SeededRandom {
 
     private void markDeadEnds(RoomObject deadEnd, HashMap<RoomObject, RoomObject> predecessor, Collection<RoomObject> deadEnds) {
 
-        if (!deadEnd.preventsDeadEnd() && deadEnd.getNeighborRooms().size() < 3) {
+        if (deadEnd.isDeadEnd() && deadEnd.getNeighborRooms().size() < 3) {
             deadEnds.add(deadEnd);
 
             if (predecessor.get(deadEnd) != null) {

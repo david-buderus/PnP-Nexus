@@ -16,6 +16,7 @@ public class Entrance extends SimpleRoomObject {
     public Entrance(SeededRandom random) {
         super(random, 2, 3);
         this.addPassage(new Passage(this, new RotationPoint(1, 0, 1, 3)));
+        this.deadEnd = false;
     }
 
     @Override
@@ -26,10 +27,5 @@ public class Entrance extends SimpleRoomObject {
     @Override
     public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
         return specification.getPossibleCorridor(width);
-    }
-
-    @Override
-    public boolean preventsDeadEnd() {
-        return true;
     }
 }

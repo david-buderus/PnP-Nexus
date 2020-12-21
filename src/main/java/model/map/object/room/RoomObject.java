@@ -17,10 +17,12 @@ import java.util.stream.Collectors;
 public abstract class RoomObject extends MapObject {
 
     private final ArrayList<Passage> passages;
+    protected boolean deadEnd;
 
     protected RoomObject(SeededRandom random, MapObjectPart... parts) {
         super(random, parts);
         this.passages = new ArrayList<>();
+        this.deadEnd = true;
     }
 
     protected void drawWalls(IMapCanvas canvas, TextureHandler textureHandler) {
@@ -74,8 +76,8 @@ public abstract class RoomObject extends MapObject {
     }
 
 
-    public boolean preventsDeadEnd() {
-        return false;
+    public boolean isDeadEnd() {
+        return deadEnd;
     }
 
     @Override

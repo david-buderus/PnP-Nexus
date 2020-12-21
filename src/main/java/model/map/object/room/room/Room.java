@@ -20,6 +20,7 @@ public class Room extends SimpleRoomObject implements Lootable {
 
     public Room(SeededRandom random) {
         super(random,5, 5);
+        this.deadEnd = false;
         addPassage(new Passage(this, new RotationPoint(2, 0, 4, 0)));
         addPassage(new Passage(this, new RotationPoint(0, 0, 2, 1)));
         addPassage(new Passage(this, new RotationPoint(2, 0, 0, 2)));
@@ -46,10 +47,5 @@ public class Room extends SimpleRoomObject implements Lootable {
         ArrayList<LootObject> result = new ArrayList<>();
         result.add(new Chest(random,this, 1, 0, 1));
         return result;
-    }
-
-    @Override
-    public boolean preventsDeadEnd() {
-        return true;
     }
 }
