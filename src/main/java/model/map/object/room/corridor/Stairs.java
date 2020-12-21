@@ -11,7 +11,7 @@ import ui.map.IMapCanvas;
 
 import java.util.Optional;
 
-public class Stairs extends RoomObject {
+public class Stairs extends AbstractCorridor {
 
     public Stairs(SeededRandom random) {
         super(
@@ -26,10 +26,5 @@ public class Stairs extends RoomObject {
     @Override
     public void draw(IMapCanvas canvas, TextureHandler textureHandler) {
         canvas.drawPerspectiveImage(textureHandler.getStairs(), this);
-    }
-
-    @Override
-    public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
-        return specification.getPossibleCorridor(width);
     }
 }

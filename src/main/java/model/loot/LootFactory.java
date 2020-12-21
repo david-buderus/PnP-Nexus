@@ -47,10 +47,14 @@ public class LootFactory {
     }
 
     public Loot getLoot() {
+        return getLoot(rand);
+    }
+
+    public Loot getLoot(Random random) {
         Loot loot = new Loot(item, 0);
 
         for (int i = 0; i < getMaxAmount(); i++) {
-            if (rand.nextDouble() < getChance()) {
+            if (random.nextDouble() < getChance()) {
                 loot.addAmount(1);
             }
         }

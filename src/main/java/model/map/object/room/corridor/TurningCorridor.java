@@ -11,7 +11,7 @@ import ui.map.IMapCanvas;
 
 import java.util.Optional;
 
-public class TurningCorridor extends RoomObject {
+public class TurningCorridor extends AbstractCorridor {
 
     public TurningCorridor(SeededRandom random) {
         super(
@@ -27,10 +27,5 @@ public class TurningCorridor extends RoomObject {
     public void draw(IMapCanvas canvas, TextureHandler textureHandler) {
         canvas.drawPerspectiveImage(textureHandler.getTurningCorridor(), this);
         this.drawWalls(canvas, textureHandler);
-    }
-
-    @Override
-    public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
-        return specification.getPossibleCorridor(width);
     }
 }

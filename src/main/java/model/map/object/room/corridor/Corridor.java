@@ -11,7 +11,7 @@ import ui.map.IMapCanvas;
 
 import java.util.Optional;
 
-public class Corridor extends SimpleRoomObject {
+public class Corridor extends AbstractSimpleCorridor {
 
     protected final int length;
 
@@ -32,17 +32,5 @@ public class Corridor extends SimpleRoomObject {
             }
         }
         drawWalls(canvas, textureHandler);
-    }
-
-    @Override
-    public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
-        double d = random.getRandom().nextDouble();
-        if (d < 0.25) {
-            return specification.getPossibleRoom(width);
-        } else if (d < 0.5) {
-            return specification.getPossibleCrossings(width);
-        } else {
-            return specification.getPossibleCorridor(width);
-        }
     }
 }

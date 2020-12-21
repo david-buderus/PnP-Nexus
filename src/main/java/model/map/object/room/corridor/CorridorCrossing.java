@@ -11,7 +11,7 @@ import ui.map.IMapCanvas;
 
 import java.util.Optional;
 
-public class CorridorCrossing extends SimpleRoomObject {
+public class CorridorCrossing extends AbstractSimpleCorridor {
 
     public CorridorCrossing(SeededRandom random) {
         super(random, 1, 1);
@@ -25,10 +25,5 @@ public class CorridorCrossing extends SimpleRoomObject {
     public void draw(IMapCanvas canvas, TextureHandler textureHandler) {
         canvas.drawPerspectiveImage(textureHandler.getCorridorCrossing(), this);
         this.drawWalls(canvas, textureHandler);
-    }
-
-    @Override
-    public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
-        return specification.getPossibleCorridor(width);
     }
 }
