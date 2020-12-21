@@ -6,7 +6,6 @@ import ui.map.IMapCanvas;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 public abstract class MapObject implements IPosition {
 
@@ -74,4 +73,9 @@ public abstract class MapObject implements IPosition {
     }
 
     public void onDelete() { }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " (" + getX() + ", " + getY() + ", " + getZ() + ")";
+    }
 }

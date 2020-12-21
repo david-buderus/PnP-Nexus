@@ -16,7 +16,7 @@ public abstract class LootObject extends MapObject {
     protected Collection<Loot> loot;
 
     protected LootObject(SeededRandom random, String container, IPosition parent, MapObjectPart... parts) {
-        super(random);
+        super(random, parts);
         this.container = container;
         this.parent = parent;
         this.loot = Collections.emptyList();

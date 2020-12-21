@@ -58,13 +58,6 @@ public class Map implements SeededRandom {
         generateRoomObjects();
         cutDeadEnds();
         generateLootObjects();
-        for (int z = 0; z < depth; z++) {
-            for (int x = 0; x < width; x++) {
-                if (lootMap.get(x, 0, z) != null) {
-                    System.out.println(x + ", " + z);
-                }
-            }
-        }
     }
 
     protected void generateRoomObjects() {

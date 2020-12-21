@@ -2,7 +2,6 @@ package model.map.object;
 
 import model.map.Point;
 import model.map.RotationPoint;
-import model.map.object.loot.LootObject;
 
 import java.util.ArrayList;
 import java.util.Collection;

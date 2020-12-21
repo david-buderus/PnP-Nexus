@@ -79,9 +79,10 @@ public class MapCanvas extends Pane implements IMapCanvas {
                 int mapX = (int) (event.getX() / zoom + offsetX);
                 int mapZ = (int) (event.getY() / zoom + offsetY);
 
-                this.drawInfoHud(event.getX(), event.getY(), mapX, mapZ);
                 this.mouseX.set(mapX);
                 this.mouseZ.set(mapZ);
+
+                this.drawInfoHud(event.getX(), event.getY(), mapX, mapZ);
             }
             infoContext.restore();
         });
