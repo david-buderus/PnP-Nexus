@@ -13,10 +13,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import model.map.Map;
-import model.map.Point;
 import model.map.object.IPosition;
 import model.map.object.loot.LootObject;
-import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 
 public class MapCanvas extends Pane implements IMapCanvas {
@@ -94,7 +92,6 @@ public class MapCanvas extends Pane implements IMapCanvas {
         if (map.get() != null) {
             drawRectangle(0, shownYLayer.get(), 0, map.get().getWidth(), map.get().getDepth(), 0, Color.WHITE);
             map.get().draw(this);
-            drawHelp();
         }
     }
 
@@ -102,7 +99,7 @@ public class MapCanvas extends Pane implements IMapCanvas {
         for (int z = 0; z < map.get().getDepth(); z++) {
             for (int x = 0; x < map.get().getWidth(); x++) {
                 RoomObject room = map.get().getRoomObject(x, shownYLayer.get(), z);
-                if (room != null && room.marked){
+                if (room != null){
                     mapContext.save();
                     mapContext.setFill(Color.RED);
                     mapContext.fillRect(x * 10 + 1, z * 10 + 1, 8, 8);

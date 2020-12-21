@@ -8,11 +8,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import model.map.Map;
 import ui.IView;
 import ui.ViewPart;
+import ui.part.NumStringConverter;
+
+import java.util.Random;
 
 public class MapView extends ViewPart {
 
@@ -21,6 +25,8 @@ public class MapView extends ViewPart {
     private ObjectProperty<Structure> selectedStructure;
     private final BooleanProperty loading;
     private final IntegerProperty shownYLayer;
+    private final LongProperty seed;
+    private final Random random;
 
     public MapView(IView parent) {
         super("Karten", parent);
@@ -28,7 +34,9 @@ public class MapView extends ViewPart {
         this.loading = new SimpleBooleanProperty(false);
         this.shownYLayer = new SimpleIntegerProperty(0);
         this.map = new SimpleObjectProperty<>(null);
+        this.seed = new SimpleLongProperty(5411351666781167994L);
         this.canvas = new MapCanvas(map, shownYLayer);
+        this.random = new Random();
 
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(20, 10, 10, 10));
@@ -46,6 +54,16 @@ public class MapView extends ViewPart {
         structure.getSelectionModel().selectFirst();
         structure.setPrefWidth(120);
         generateBox.getChildren().add(structure);
+
+        TextField seedField = new TextField();
+        seedField.setPrefWidth(120);
+        seedField.textProperty().bindBidirectional(seed, new NumStringConverter());
+        generateBox.getChildren().add(seedField);
+
+        Button seedButton = new Button("Zufälliger Seed");
+        seedButton.setOnAction(ev -> seed.set(random.nextLong()));
+        seedButton.setPrefWidth(120);
+        generateBox.getChildren().add(seedButton);
 
         Button generateButton = new Button("Generiere");
         generateButton.setOnAction(ev -> generate());
@@ -93,7 +111,7 @@ public class MapView extends ViewPart {
     }
 
     private void generate() {
-        map.set(new Map());
+        map.set(new Map(seed.get()));
 
         Thread generateThread = new Thread(() -> {
             long time = System.currentTimeMillis();

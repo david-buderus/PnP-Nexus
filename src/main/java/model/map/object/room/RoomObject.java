@@ -18,8 +18,6 @@ public abstract class RoomObject extends MapObject {
 
     private final ArrayList<Passage> passages;
 
-    public boolean marked = false;
-
     protected RoomObject(SeededRandom random, MapObjectPart... parts) {
         super(random, parts);
         this.passages = new ArrayList<>();

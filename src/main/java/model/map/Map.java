@@ -25,7 +25,8 @@ public class Map implements SeededRandom {
     protected final MapObjectMap<LootObject> lootMap;
     protected final ArrayList<RoomObject> possibleExtensions;
 
-    public Map(int width, int height, int depth) {
+    public Map(long seed, int width, int height, int depth) {
+        this.random = new Random(seed);
         this.specification = null;
         this.width = width;
         this.depth = depth;
@@ -33,16 +34,15 @@ public class Map implements SeededRandom {
         this.roomMap = new MapObjectMap<>(width, height, depth);
         this.lootMap = new MapObjectMap<>(width, height, depth);
         this.possibleExtensions = new ArrayList<>();
-        this.random = new Random(1231);
     }
 
-    public Map() {
-        this(50, 10, 50);
+    public Map(long seed) {
+        this(seed, 50, 10, 50);
         this.specification = new CryptSpecification(this);
     }
 
     public void draw(IMapCanvas canvas) {
-        if (!hasSpecification()) {
+        if (hasNoSpecification()) {
             return;
         }
 
@@ -68,7 +68,7 @@ public class Map implements SeededRandom {
     }
 
     protected void generateRoomObjects() {
-        if (!hasSpecification()) {
+        if (hasNoSpecification()) {
             return;
         }
 
@@ -171,27 +171,33 @@ public class Map implements SeededRandom {
             }
         }
 
-        leaves.stream().map(room -> room.getX() + " " + room.getY() + " " + room.getZ()).forEach(System.out::println);
+        HashSet<RoomObject> deadEnds = new HashSet<>();
 
         for (RoomObject leave : leaves) {
-            pruneDeadEnds(leave, predecessor);
+            markDeadEnds(leave, predecessor, deadEnds);
+        }
+        for (RoomObject deadEnd : deadEnds) {
+            roomMap.deleteMapObject(deadEnd);
+        }
+
+        if (!deadEnds.isEmpty()) {
+            cutDeadEnds();
         }
     }
 
-    private void pruneDeadEnds(RoomObject deadEnd, HashMap<RoomObject, RoomObject> predecessor) {
+    private void markDeadEnds(RoomObject deadEnd, HashMap<RoomObject, RoomObject> predecessor, Collection<RoomObject> deadEnds) {
 
         if (!deadEnd.preventsDeadEnd() && deadEnd.getNeighborRooms().size() < 3) {
-            //roomMap.deleteMapObject(deadEnd);
-            deadEnd.marked = true;
+            deadEnds.add(deadEnd);
 
             if (predecessor.get(deadEnd) != null) {
-                pruneDeadEnds(predecessor.get(deadEnd), predecessor);
+                markDeadEnds(predecessor.get(deadEnd), predecessor, deadEnds);
             }
         }
     }
 
     protected void generateLootObjects() {
-        if (!hasSpecification()) {
+        if (hasNoSpecification()) {
             return;
         }
 
@@ -242,8 +248,8 @@ public class Map implements SeededRandom {
         this.specification = specification;
     }
 
-    public boolean hasSpecification() {
-        return specification != null;
+    public boolean hasNoSpecification() {
+        return specification == null;
     }
 
     @Override

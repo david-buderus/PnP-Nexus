@@ -52,14 +52,12 @@ public class MapObjectMap<MObj extends MapObject> {
     }
 
     public boolean deleteMapObject(MObj obj) {
-        ArrayList<Point> points = getPoints(obj, obj.getX(), obj.getY(), obj.getZ(), obj.getRotation());
-
-        for (Point point : points) {
-            map[point.getX()][point.getY()][point.getZ()] = null;
-        }
-
-
         if (mapObjects.remove(obj)) {
+            ArrayList<Point> points = getPoints(obj, obj.getX(), obj.getY(), obj.getZ(), obj.getRotation());
+
+            for (Point point : points) {
+                map[point.getX()][point.getY()][point.getZ()] = null;
+            }
             obj.onDelete();
             return true;
         } else {
