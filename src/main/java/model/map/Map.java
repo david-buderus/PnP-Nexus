@@ -15,31 +15,37 @@ import ui.map.IMapCanvas;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Map {
+public class Map implements SeededRandom {
 
-    protected static final Random random = new Random();
+    protected final Random random;
 
-    protected final MapSpecification specification;
+    protected MapSpecification specification;
     protected final int width, depth, height;
     protected final MapObjectMap<RoomObject> roomMap;
     protected final MapObjectMap<LootObject> lootMap;
     protected final ArrayList<RoomObject> possibleExtensions;
 
-    public Map(MapSpecification specification, int width, int height, int depth) {
-        this.specification = specification;
+    public Map(int width, int height, int depth) {
+        this.specification = null;
         this.width = width;
         this.depth = depth;
         this.height = height;
         this.roomMap = new MapObjectMap<>(width, height, depth);
         this.lootMap = new MapObjectMap<>(width, height, depth);
         this.possibleExtensions = new ArrayList<>();
+        this.random = new Random(1231);
     }
 
     public Map() {
-        this(new CryptSpecification(), 50, 1, 50);
+        this(50, 10, 50);
+        this.specification = new CryptSpecification(this);
     }
 
     public void draw(IMapCanvas canvas) {
+        if (!hasSpecification()) {
+            return;
+        }
+
         for (RoomObject object : roomMap.getAllMapObjects()) {
             object.draw(canvas, specification.getTextureHandler());
         }
@@ -50,7 +56,7 @@ public class Map {
 
     public void generate() {
         generateRoomObjects();
-        //cutDeadEnds();
+        cutDeadEnds();
         generateLootObjects();
         for (int z = 0; z < depth; z++) {
             for (int x = 0; x < width; x++) {
@@ -62,10 +68,14 @@ public class Map {
     }
 
     protected void generateRoomObjects() {
+        if (!hasSpecification()) {
+            return;
+        }
+
         HashMap<RoomObject, Integer> failedTries = new HashMap<>();
 
-        RoomObject entrance = new Entrance();
-        if (roomMap.addMapObject(entrance, 10, 0, 10, 0)) {
+        RoomObject entrance = new Entrance(this);
+        if (roomMap.addMapObject(entrance, 0, 0, getDepth() / 2 - 2, 0)) {
             if (!entrance.getPossibleExtensions().isEmpty()) {
                 this.possibleExtensions.add(entrance);
             }
@@ -105,7 +115,7 @@ public class Map {
 
                         if (roomMap.addMapObject(next, exitPoint.sub(entryPoint).withRotation(rotation))) {
                             exit.setDestination(next);
-                            entry.setDestination(next);
+                            entry.setDestination(object);
                             failedTries.put(object, 0);
 
                             if (!next.getPossibleExtensions().isEmpty()) {
@@ -117,7 +127,7 @@ public class Map {
                     }
 
                     //Add it back to the list if it can still be extended and hasn't failed too often
-                    if (!freeExtensions.isEmpty() && failedTries.getOrDefault(object, 0) < 5) {
+                    if (!freeExtensions.isEmpty() && failedTries.getOrDefault(object, 0) < 1000) {
                         possibleExtensions.add(object);
                     }
                 }
@@ -129,13 +139,13 @@ public class Map {
     }
 
     protected void cutDeadEnds() {
-        /*Queue<RoomObject> queue = new LinkedList<>();
+        Queue<RoomObject> queue = new LinkedList<>();
         Collection<RoomObject> leaves = new ArrayList<>();
         HashMap<RoomObject, RoomObject> predecessor = new HashMap<>();
         HashMap<RoomObject, Boolean> visited = new HashMap<>();
         HashMap<RoomObject, Boolean> listed = new HashMap<>();
 
-        RoomObject first = roomObjects.get(0); //RoomObjects are added in Order (maybe better solution needed)
+        RoomObject first = roomMap.getAllMapObjects().stream().findFirst().get(); //RoomObjects are added in Order (maybe better solution needed)
         queue.add(first);
         listed.put(first, true);
 
@@ -143,9 +153,7 @@ public class Map {
             RoomObject current = queue.poll();
             visited.put(current, true);
 
-            Collection<RoomObject> neighbors = current.getNeighborPositions().stream()
-                    .map(roomMap::get)
-                    .filter(Objects::nonNull)
+            Collection<RoomObject> neighbors = current.getNeighborRooms().stream()
                     .filter(room -> room != predecessor.getOrDefault(current, null))
                     .collect(Collectors.toList());
 
@@ -155,7 +163,7 @@ public class Map {
 
             for (RoomObject next : neighbors) {
 
-                if (next != null && !visited.getOrDefault(next, false) && !listed.getOrDefault(next, false)) {
+                if (!visited.getOrDefault(next, false) && !listed.getOrDefault(next, false)) {
                     queue.add(next);
                     listed.put(next, true);
                     predecessor.put(next, current);
@@ -167,22 +175,26 @@ public class Map {
 
         for (RoomObject leave : leaves) {
             pruneDeadEnds(leave, predecessor);
-        }*/
+        }
     }
 
     private void pruneDeadEnds(RoomObject deadEnd, HashMap<RoomObject, RoomObject> predecessor) {
 
-        /*if(!deadEnd.preventsDeadEnd() && deadEnd.getNeighborPositions().size() < 3) {
-            roomMap.deleteMapObject(deadEnd);
-            roomObjects.remove(deadEnd);
+        if (!deadEnd.preventsDeadEnd() && deadEnd.getNeighborRooms().size() < 3) {
+            //roomMap.deleteMapObject(deadEnd);
+            deadEnd.marked = true;
 
-            if(predecessor.get(deadEnd) != null) {
+            if (predecessor.get(deadEnd) != null) {
                 pruneDeadEnds(predecessor.get(deadEnd), predecessor);
             }
-        }*/
+        }
     }
 
     protected void generateLootObjects() {
+        if (!hasSpecification()) {
+            return;
+        }
+
         for (RoomObject roomObject : roomMap.getAllMapObjects()) {
             if (roomObject instanceof Lootable) {
                 for (LootObject lootObject : ((Lootable) roomObject).generateLoot()) {
@@ -224,5 +236,18 @@ public class Map {
 
     public Collection<RoomObject> getRoomObjects() {
         return roomMap.getAllMapObjects();
+    }
+
+    public void setSpecification(MapSpecification specification) {
+        this.specification = specification;
+    }
+
+    public boolean hasSpecification() {
+        return specification != null;
+    }
+
+    @Override
+    public Random getRandom() {
+        return random;
     }
 }

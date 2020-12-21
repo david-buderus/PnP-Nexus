@@ -1,6 +1,7 @@
 package model.map.object.room.corridor;
 
 import model.map.RotationPoint;
+import model.map.SeededRandom;
 import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.SimpleRoomObject;
@@ -14,8 +15,8 @@ public class Corridor extends SimpleRoomObject {
 
     protected final int length;
 
-    public Corridor(int length) {
-        super(length, 1);
+    public Corridor(SeededRandom random, int length) {
+        super(random, length, 1);
         this.length = length;
         addPassage(new Passage(this, new RotationPoint(length - 1, 0, 0, 3)));
         addPassage(new Passage(this, new RotationPoint(0, 0, 0, 1)));
@@ -35,7 +36,7 @@ public class Corridor extends SimpleRoomObject {
 
     @Override
     public Optional<RoomObject> getFollowingRoomObject(MapSpecification specification, int width) {
-        double d = random.nextDouble();
+        double d = random.getRandom().nextDouble();
         if (d < 0.25) {
             return specification.getPossibleRoom(width);
         } else if (d < 0.5) {

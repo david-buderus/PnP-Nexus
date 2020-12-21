@@ -1,6 +1,7 @@
 package model.map.object.room;
 
 import model.map.RotationPoint;
+import model.map.SeededRandom;
 import model.map.object.MapObject;
 import model.map.object.MapObjectPart;
 import model.map.specification.MapSpecification;
@@ -8,6 +9,7 @@ import model.map.specification.texture.TextureHandler;
 import ui.map.IMapCanvas;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,8 +18,10 @@ public abstract class RoomObject extends MapObject {
 
     private final ArrayList<Passage> passages;
 
-    protected RoomObject(MapObjectPart... parts) {
-        super(parts);
+    public boolean marked = false;
+
+    protected RoomObject(SeededRandom random, MapObjectPart... parts) {
+        super(random, parts);
         this.passages = new ArrayList<>();
     }
 
@@ -60,12 +64,17 @@ public abstract class RoomObject extends MapObject {
         return passages.get(id);
     }
 
+    public Collection<Passage> getPassagesTo(RoomObject roomObject) {
+        return passages.stream().filter(passage -> passage.getDestination() == roomObject).collect(Collectors.toSet());
+    }
+
     public List<RoomObject> getNeighborRooms() {
         return passages.stream()
                 .filter(Passage::isUsed)
                 .map(Passage::getDestination)
                 .collect(Collectors.toList());
     }
+
 
     public boolean preventsDeadEnd() {
         return false;
@@ -86,6 +95,15 @@ public abstract class RoomObject extends MapObject {
 
         for (Passage passage : passages) {
             passage.updatePosition(rotation, getWidth(), getDepth(), getX(), getY(), getZ());
+        }
+    }
+
+    @Override
+    public void onDelete() {
+        for (RoomObject neighbor : getNeighborRooms()) {
+            for (Passage passage : neighbor.getPassagesTo(this)) {
+                passage.setDestination(null);
+            }
         }
     }
 }

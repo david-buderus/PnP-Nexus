@@ -1,6 +1,7 @@
 package model.map.object.room.corridor;
 
 import model.map.RotationPoint;
+import model.map.SeededRandom;
 import model.map.object.MapObjectPart;
 import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
@@ -12,8 +13,9 @@ import java.util.Optional;
 
 public class TurningCorridor extends RoomObject {
 
-    public TurningCorridor() {
+    public TurningCorridor(SeededRandom random) {
         super(
+                random,
                 new MapObjectPart(0, 0, 0, 2, 1, 1),
                 new MapObjectPart(0, 0, 1, 1, 1, 1)
         );

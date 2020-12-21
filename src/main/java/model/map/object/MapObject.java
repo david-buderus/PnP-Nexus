@@ -1,5 +1,6 @@
 package model.map.object;
 
+import model.map.SeededRandom;
 import model.map.specification.texture.TextureHandler;
 import ui.map.IMapCanvas;
 
@@ -9,17 +10,17 @@ import java.util.Random;
 
 public abstract class MapObject implements IPosition {
 
-    protected Random random;
+    protected SeededRandom random;
     protected int x, y, z, rotation;
     protected final List<MapObjectPart> parts;
     protected String infoText;
 
-    protected MapObject(MapObjectPart... parts) {
+    protected MapObject(SeededRandom random , MapObjectPart... parts) {
         this.rotation = 0;
         this.x = 0;
         this.y = 0;
         this.z = 0;
-        this.random = new Random();
+        this.random = random;
         this.parts = List.of(parts);
         this.infoText = "";
     }
@@ -71,4 +72,6 @@ public abstract class MapObject implements IPosition {
     public String getInfoText() {
         return infoText;
     }
+
+    public void onDelete() { }
 }

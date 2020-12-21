@@ -1,6 +1,7 @@
 package model.map.object.loot;
 
 import model.loot.Loot;
+import model.map.SeededRandom;
 import model.map.object.IPosition;
 import model.map.object.MapObject;
 import model.map.object.MapObjectPart;
@@ -14,8 +15,8 @@ public abstract class LootObject extends MapObject {
     protected final IPosition parent;
     protected Collection<Loot> loot;
 
-    protected LootObject(String container, IPosition parent, MapObjectPart... parts) {
-        super(parts);
+    protected LootObject(SeededRandom random, String container, IPosition parent, MapObjectPart... parts) {
+        super(random);
         this.container = container;
         this.parent = parent;
         this.loot = Collections.emptyList();

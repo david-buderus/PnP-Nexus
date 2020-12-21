@@ -1,6 +1,7 @@
 package model.map.object.room.corridor;
 
 import model.map.RotationPoint;
+import model.map.SeededRandom;
 import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.SimpleRoomObject;
@@ -12,8 +13,8 @@ import java.util.Optional;
 
 public class CorridorCrossing extends SimpleRoomObject {
 
-    public CorridorCrossing() {
-        super(1, 1);
+    public CorridorCrossing(SeededRandom random) {
+        super(random, 1, 1);
         addPassage(new Passage(this, new RotationPoint(0, 0, 0, 0)));
         addPassage(new Passage(this, new RotationPoint(0, 0, 0, 1)));
         addPassage(new Passage(this, new RotationPoint(0, 0, 0, 2)));

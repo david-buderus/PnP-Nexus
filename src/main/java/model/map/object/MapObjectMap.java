@@ -58,7 +58,13 @@ public class MapObjectMap<MObj extends MapObject> {
             map[point.getX()][point.getY()][point.getZ()] = null;
         }
 
-        return mapObjects.remove(obj);
+
+        if (mapObjects.remove(obj)) {
+            obj.onDelete();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isEmpty(Point point) {
