@@ -2,7 +2,7 @@ package ui.part;
 
 import javafx.beans.property.*;
 import javafx.scene.control.TextField;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class NumberField extends TextField {
 
@@ -19,7 +19,7 @@ public class NumberField extends TextField {
         this.validInput = new SimpleBooleanProperty(true);
         this.textProperty().bindBidirectional(this.number, new NumStringConverter());
         this.textProperty().addListener((ob, o, n) -> {
-            if (NumberUtils.isNumber(n)) {
+            if (NumberUtils.isCreatable(n)) {
                 this.setStyle("");
                 this.validInput.set(true);
             } else {

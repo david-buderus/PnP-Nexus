@@ -91,7 +91,18 @@ public class MapCanvas extends Pane implements IMapCanvas {
     public void refresh() {
         clear();
         if (map.get() != null) {
+            mapContext.save();
+            mapContext.setFill(Color.WHITE);
+            mapContext.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+
+            mapContext.setFill(Color.BLACK);
+            mapContext.fillRect((-offsetX - 1) * zoom, (-offsetY - 1) * zoom,
+                    (map.get().getWidth() + 2) * zoom, (map.get().getDepth() + 2) * zoom);
             drawRectangle(0, shownYLayer.get(), 0, map.get().getWidth(), map.get().getDepth(), 0, Color.WHITE);
+
+            mapContext.restore();
+
+
             map.get().draw(this);
         }
     }
@@ -100,7 +111,7 @@ public class MapCanvas extends Pane implements IMapCanvas {
         for (int z = 0; z < map.get().getDepth(); z++) {
             for (int x = 0; x < map.get().getWidth(); x++) {
                 RoomObject room = map.get().getRoomObject(x, shownYLayer.get(), z);
-                if (room != null){
+                if (room != null) {
                     mapContext.save();
                     mapContext.setFill(Color.RED);
                     mapContext.fillRect(x * 10 + 1, z * 10 + 1, 8, 8);
@@ -385,9 +396,9 @@ public class MapCanvas extends Pane implements IMapCanvas {
         }
     }
 
-     public ReadOnlyIntegerProperty getMouseX() {
+    public ReadOnlyIntegerProperty getMouseX() {
         return mouseX;
-     }
+    }
 
     public ReadOnlyIntegerProperty getMouseY() {
         return shownYLayer;

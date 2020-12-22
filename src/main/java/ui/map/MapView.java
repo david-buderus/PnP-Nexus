@@ -12,20 +12,24 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import model.map.Map;
+import model.map.specification.CryptSpecification;
 import ui.IView;
 import ui.ViewPart;
 import ui.part.NumStringConverter;
 
 import java.util.Random;
+import static ui.ViewFactory.labelTextField;
 
 public class MapView extends ViewPart {
 
     private final MapCanvas canvas;
     private final ObjectProperty<Map> map;
     private ObjectProperty<Structure> selectedStructure;
+    private final LongProperty seed;
+    private final IntegerProperty width, height, depth;
+
     private final BooleanProperty loading;
     private final IntegerProperty shownYLayer;
-    private final LongProperty seed;
     private final Random random;
 
     public MapView(IView parent) {
@@ -35,6 +39,9 @@ public class MapView extends ViewPart {
         this.shownYLayer = new SimpleIntegerProperty(0);
         this.map = new SimpleObjectProperty<>(null);
         this.seed = new SimpleLongProperty(5411351666781167994L);
+        this.width = new SimpleIntegerProperty(50);
+        this.height = new SimpleIntegerProperty(10);
+        this.depth = new SimpleIntegerProperty(50);
         this.canvas = new MapCanvas(map, shownYLayer);
         this.random = new Random();
 
@@ -42,6 +49,7 @@ public class MapView extends ViewPart {
         root.setPadding(new Insets(20, 10, 10, 10));
 
         BorderPane rightSide = new BorderPane();
+        rightSide.setPadding(new Insets(0, 0, 0, 10));
         root.setRight(rightSide);
 
         VBox generateBox = new VBox(10);
@@ -52,23 +60,26 @@ public class MapView extends ViewPart {
         ComboBox<Structure> structure = new ComboBox<>(FXCollections.observableArrayList(Structure.values()));
         this.selectedStructure.bind(structure.getSelectionModel().selectedItemProperty());
         structure.getSelectionModel().selectFirst();
-        structure.setPrefWidth(120);
+        structure.setPrefWidth(215);
         generateBox.getChildren().add(structure);
 
-        TextField seedField = new TextField();
-        seedField.setPrefWidth(120);
-        seedField.textProperty().bindBidirectional(seed, new NumStringConverter());
-        generateBox.getChildren().add(seedField);
+        generateBox.getChildren().add(labelTextField("Breite", width));
+
+        generateBox.getChildren().add(labelTextField("Höhe", height));
+
+        generateBox.getChildren().add(labelTextField("Tiefe", depth));
+
+        generateBox.getChildren().add(labelTextField("Seed", seed));
 
         Button seedButton = new Button("Zufälliger Seed");
         seedButton.setOnAction(ev -> seed.set(random.nextLong()));
-        seedButton.setPrefWidth(120);
+        seedButton.setPrefWidth(215);
         generateBox.getChildren().add(seedButton);
 
         Button generateButton = new Button("Generiere");
         generateButton.setOnAction(ev -> generate());
         generateButton.disableProperty().bind(loading);
-        generateButton.setPrefWidth(120);
+        generateButton.setPrefWidth(215);
         generateBox.getChildren().add(generateButton);
 
         VBox layerBox = new VBox(10);
@@ -111,11 +122,13 @@ public class MapView extends ViewPart {
     }
 
     private void generate() {
-        map.set(new Map(seed.get()));
+        Map m = new Map(seed.get(), width.get(), height.get(), depth.get());
+        m.setSpecification(new CryptSpecification(m));
+        map.set(m);
 
         Thread generateThread = new Thread(() -> {
             long time = System.currentTimeMillis();
-            map.get().generate();
+            m.generate();
             Platform.runLater(() -> {
                 loading.set(false);
                 canvas.refresh();

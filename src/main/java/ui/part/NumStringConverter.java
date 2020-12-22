@@ -2,6 +2,9 @@ package ui.part;
 
 import javafx.util.converter.NumberStringConverter;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
 public class NumStringConverter extends NumberStringConverter {
 
     int defaultValue;
@@ -18,6 +21,14 @@ public class NumStringConverter extends NumberStringConverter {
         this.defaultValue = defaultValue;
     }
 
+    @Override
+    public String toString(Number value) {
+        if (value == null) {
+            return "";
+        } else {
+            return MessageFormat.format("{0,number,#}", value);
+        }
+    }
 
     @Override
     public Number fromString(String string) {
