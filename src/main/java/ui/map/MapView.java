@@ -8,16 +8,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import model.map.Map;
 import model.map.specification.CryptSpecification;
 import ui.IView;
 import ui.ViewPart;
-import ui.part.NumStringConverter;
 
 import java.util.Random;
+
 import static ui.ViewFactory.labelTextField;
 
 public class MapView extends ViewPart {
@@ -108,7 +107,6 @@ public class MapView extends ViewPart {
         });
 
         this.canvas.setPrefSize(500, 500);
-        this.canvas.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         root.setCenter(canvas);
 
         BorderPane info = new BorderPane();
