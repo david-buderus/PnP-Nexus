@@ -84,8 +84,10 @@ public class LootView extends View {
         save.setPrefWidth(100);
         leftButtons.getChildren().add(save);
         save.setOnAction(ev -> {
-            Utility.memoryView.add(lootTable.getSelectionModel().getSelectedItem());
-            lootTable.getItems().remove(lootTable.getSelectionModel().getSelectedItem());
+            if (lootTable.getSelectionModel().getSelectedItem() != null) {
+                Utility.memoryView.add(lootTable.getSelectionModel().getSelectedItem());
+                lootTable.getItems().remove(lootTable.getSelectionModel().getSelectedItem());
+            }
         });
 
         Label coinLabel = new Label();
