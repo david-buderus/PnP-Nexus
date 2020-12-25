@@ -37,4 +37,10 @@ public class InfoView extends View {
     public void add(String s) {
         info.set(info.get() + s + "\n");
     }
+
+    public void addAll(Iterable<String> it) {
+        for (String s : it) {
+            add(s);
+        }
+    }
 }

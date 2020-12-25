@@ -18,7 +18,7 @@ public class DungeonLootFactory extends LootFactory {
     }
 
     public void setName(String name) {
-        this.getItem().setName(name);
+        this.setItem(Database.getItem(name));
     }
 
     public String getContainer() {
