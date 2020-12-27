@@ -9,6 +9,7 @@ public class Spell {
     private String typ;
     private String cost;
     private String castTime;
+    private Talent talent;
     private int tier;
 
     public int getTier() {
@@ -60,34 +61,10 @@ public class Spell {
     }
 
     public Talent getTalent() {
+        return talent;
+    }
 
-        switch (getTyp()) {
-            case "Arkan":
-                return Talent.arkan;
-            case "Illusion":
-                return Talent.illusion;
-            case "Licht":
-                return Talent.light;
-            case "Finsternis":
-                return Talent.darkness;
-            case "Feuer":
-                return Talent.fire;
-            case "Wasser":
-                return Talent.water;
-            case "Luft":
-                return Talent.air;
-            case "Erde":
-                return Talent.earth;
-            case "Sturm":
-                return Talent.storm;
-            case "Frost":
-                return Talent.ice;
-            case "Natur":
-                return Talent.nature;
-            case "Tot":
-                return Talent.death;
-        }
-
-        return Talent.knowledge;
+    public void setTalent(Talent talent) {
+        this.talent = talent;
     }
 }

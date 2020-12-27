@@ -11,11 +11,7 @@ import model.loot.LootTable;
 import model.member.BattleMember;
 import model.member.ExtendedBattleMember;
 import model.member.data.ArmorPiece;
-import model.member.generation.SpecificType;
-import model.member.generation.characterisation.Characterisation;
-import model.member.generation.fightingtype.FightingType;
-import model.member.generation.profession.Profession;
-import model.member.generation.race.Race;
+import model.member.generation.specs.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -224,9 +220,9 @@ public class Battle {
     }
 
     public void spawnMember(boolean enemy, int level, Characterisation characterisation, Race race,
-                            Profession profession, FightingType fightingType, SpecificType specificType) {
+                            Profession profession, FightingStyle fightingStyle, Specialisation specialisation) {
         ExtendedBattleMember member = new ExtendedBattleMember(this, level, characterisation, race,
-                profession, fightingType, specificType);
+                profession, fightingStyle, specialisation);
 
         if (enemy) {
             enemies.add(member);

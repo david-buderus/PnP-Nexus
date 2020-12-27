@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import manager.Database;
 import model.Spell;
 import model.item.Armor;
 import model.item.Jewellery;
@@ -16,7 +17,6 @@ import model.item.Weapon;
 import model.member.ExtendedBattleMember;
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
-import model.member.generation.Talent;
 import ui.View;
 
 import static ui.ViewFactory.labelShortTextField;
@@ -167,36 +167,35 @@ public class CharacterView extends View {
         talents.setGridLinesVisible(true);
         fightTab.setContent(talents);
 
-        talents.add(new TalentPane(character, Talent.fist), 0, 0);
-        talents.add(new TalentPane(character, Talent.pole), 1, 0);
-        talents.add(new TalentPane(character, Talent.oneHandBlade), 0, 1);
-        talents.add(new TalentPane(character, Talent.oneHandBlunt), 1, 1);
-        talents.add(new TalentPane(character, Talent.twoHandBlade), 0, 2);
-        talents.add(new TalentPane(character, Talent.twoHandBlunt), 1, 2);
-        talents.add(new TalentPane(character, Talent.small_throwing), 0, 3);
-        talents.add(new TalentPane(character, Talent.big_throwing), 1, 3);
-        talents.add(new TalentPane(character, Talent.bow_crossbow), 0, 4);
-        talents.add(new TalentPane(character, Talent.gun), 1, 4);
-        talents.add(new TalentPane(character, Talent.improvised), 0, 5);
+        talents.add(new TalentPane(character, Database.getTalent("Faustkampf")), 0, 0);
+        talents.add(new TalentPane(character, Database.getTalent("Stangenwaffen")), 1, 0);
+        talents.add(new TalentPane(character, Database.getTalent("Klingenwaffen Einhändig")), 0, 1);
+        talents.add(new TalentPane(character, Database.getTalent("Stumpfe Waffen Einhändig")), 1, 1);
+        talents.add(new TalentPane(character, Database.getTalent("Klingenwaffen Zweihändig")), 0, 2);
+        talents.add(new TalentPane(character, Database.getTalent("Stumpfe Waffen Zweihändig")), 1, 2);
+        talents.add(new TalentPane(character, Database.getTalent("Kleine Wurfwaffen")), 0, 3);
+        talents.add(new TalentPane(character, Database.getTalent("Große Wurfwaffen")), 1, 3);
+        talents.add(new TalentPane(character, Database.getTalent("Bogen / Armbrust")), 0, 4);
+        talents.add(new TalentPane(character, Database.getTalent("Gewehr")), 1, 4);
 
         talents.add(createSpring(), 0, 6);
 
-        talents.add(new TalentPane(character, Talent.dodge), 0, 7);
-        talents.add(new TalentPane(character, Talent.instinct), 1, 7);
-        talents.add(new TalentPane(character, Talent.disarming), 0, 8);
-        talents.add(new TalentPane(character, Talent.parry), 1, 8);
-        talents.add(new TalentPane(character, Talent.block), 0, 9);
+        talents.add(new TalentPane(character, Database.getTalent("Ausweichen")), 0, 7);
+        talents.add(new TalentPane(character, Database.getTalent("Gefahreninstinkt (Normal)")), 1, 7);
+        talents.add(new TalentPane(character, Database.getTalent("Entwaffnen")), 0, 8);
+        talents.add(new TalentPane(character, Database.getTalent("Parieren")), 1, 8);
+        talents.add(new TalentPane(character, Database.getTalent("Blocken")), 0, 9);
 
-        talents.add(new TalentPane(character, Talent.run), 0, 10);
-        talents.add(new TalentPane(character, Talent.roll), 1, 10);
-        talents.add(new TalentPane(character, Talent.jump), 0, 11);
-        talents.add(new TalentPane(character, Talent.swim), 1, 11);
-        talents.add(new TalentPane(character, Talent.fly), 0, 12);
-        talents.add(new TalentPane(character, Talent.ride), 1, 12);
-        talents.add(new TalentPane(character, Talent.throwing), 0, 13);
-        talents.add(new TalentPane(character, Talent.aim), 1, 13);
-        talents.add(new TalentPane(character, Talent.work), 0, 14);
-        talents.add(new TalentPane(character, Talent.unleash), 1, 14);
+        talents.add(new TalentPane(character, Database.getTalent("Laufen")), 0, 10);
+        talents.add(new TalentPane(character, Database.getTalent("Abrollen")), 1, 10);
+        talents.add(new TalentPane(character, Database.getTalent("Springen")), 0, 11);
+        talents.add(new TalentPane(character, Database.getTalent("Schwimmen")), 1, 11);
+        talents.add(new TalentPane(character, Database.getTalent("Fliegen")), 0, 12);
+        talents.add(new TalentPane(character, Database.getTalent("Reiten")), 1, 12);
+        talents.add(new TalentPane(character, Database.getTalent("Werfen")), 0, 13);
+        talents.add(new TalentPane(character, Database.getTalent("Zielen")), 1, 13);
+        talents.add(new TalentPane(character, Database.getTalent("Körperliche Arbeit")), 0, 14);
+        talents.add(new TalentPane(character, Database.getTalent("Entfesseln")), 1, 14);
 
 
         Tab magicTab = new Tab("Magie");
@@ -209,22 +208,22 @@ public class CharacterView extends View {
         magicTalents.setGridLinesVisible(true);
         magicTab.setContent(magicTalents);
 
-        magicTalents.add(new TalentPane(character, Talent.knowledge), 0, 0);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Magisches Wissen")), 0, 0);
 
         magicTalents.add(createSpring(), 0, 1);
 
-        magicTalents.add(new TalentPane(character, Talent.arkan), 0, 2);
-        magicTalents.add(new TalentPane(character, Talent.illusion), 1, 2);
-        magicTalents.add(new TalentPane(character, Talent.light), 0, 3);
-        magicTalents.add(new TalentPane(character, Talent.darkness), 1, 3);
-        magicTalents.add(new TalentPane(character, Talent.fire), 0, 4);
-        magicTalents.add(new TalentPane(character, Talent.water), 1, 4);
-        magicTalents.add(new TalentPane(character, Talent.air), 0, 5);
-        magicTalents.add(new TalentPane(character, Talent.earth), 1, 5);
-        magicTalents.add(new TalentPane(character, Talent.storm), 0, 6);
-        magicTalents.add(new TalentPane(character, Talent.ice), 1, 6);
-        magicTalents.add(new TalentPane(character, Talent.nature), 0, 7);
-        magicTalents.add(new TalentPane(character, Talent.death), 1, 7);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Arkanmagie")), 0, 2);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Illusionsmagie")), 1, 2);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Lichtmagie")), 0, 3);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Finstermagie")), 1, 3);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Feuermagie")), 0, 4);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Wassermagie")), 1, 4);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Luftmagie")), 0, 5);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Erdmagie")), 1, 5);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Sturmmagie")), 0, 6);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Frostmagie")), 1, 6);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Naturmagie")), 0, 7);
+        magicTalents.add(new TalentPane(character, Database.getTalent("Totenmagie")), 1, 7);
 
         if (character.getSpells().size() > 0) {
             Tab spellTab = new Tab("Zauber");
