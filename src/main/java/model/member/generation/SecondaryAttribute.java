@@ -1,7 +1,9 @@
 package model.member.generation;
 
+import java.util.NoSuchElementException;
+
 public enum SecondaryAttribute {
-    meleeDamage, rangeDamage, magicPower, defense, initiative, health, mentalHealth, mana, unknown;
+    meleeDamage, rangeDamage, magicPower, defense, initiative, health, mentalHealth, mana;
 
     @Override
     public String toString() {
@@ -45,6 +47,6 @@ public enum SecondaryAttribute {
             case "Mana":
                 return mana;
         }
-        return unknown;
+        throw new NoSuchElementException("The SecondaryAttribute with the name " + name + " does not exists.");
     }
 }

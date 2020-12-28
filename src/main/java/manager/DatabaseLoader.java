@@ -47,8 +47,9 @@ public abstract class DatabaseLoader {
                 info.add(loadEvents(statement, semaphore));
                 info.add(loadCraftingBoni(statement, semaphore));
                 info.add(loadFabrication(statement, semaphore));
+                info.add(loadShieldTypes(statement, semaphore));
 
-                semaphore.acquire(6);
+                semaphore.acquire(7);
                 info.add(loadEnemies(statement, semaphore));
 
                 semaphore.acquire();
@@ -475,6 +476,22 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             e.printStackTrace();
             return "Herstellungen konnten nicht geladen werden.";
+        }
+        return "";
+    }
+
+    private static String loadShieldTypes(Statement statement, Semaphore semaphore) {
+        try {
+            ObservableList<String> shieldTypList =
+                    FXCollections.observableArrayList(getCollection(statement, "SELECT * FROM Schildtypen", "Schildtyp"));
+
+            Platform.runLater(() -> {
+                Database.shieldTypes.set(shieldTypList);
+                semaphore.release();
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Schildtypen konnten nicht geladen werden.";
         }
         return "";
     }
