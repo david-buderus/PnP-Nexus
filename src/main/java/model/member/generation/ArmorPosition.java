@@ -18,4 +18,18 @@ public enum ArmorPosition {
         }
         return super.toString();
     }
+
+    public static ArmorPosition getArmorPosition(String name) {
+        switch (name) {
+            case "Kopf":
+                return head;
+            case "Oberkörper":
+                return body;
+            case "Arme":
+                return arms;
+            case "Beine":
+                return legs;
+        }
+        throw new IllegalArgumentException();
+    }
 }

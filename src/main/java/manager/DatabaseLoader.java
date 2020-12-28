@@ -16,9 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -627,6 +625,26 @@ public abstract class DatabaseLoader {
             return "Sekundäre Waffentypen konnten nicht gesetzt werden.";
         }
 
+        // Add specific equipment
+        try {
+            addSpecificPrimaryWeapons(statement, combinedList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Primäre Waffen konnten nicht gesetzt werden.";
+        }
+        try {
+            addSpecificSecondaryWeapons(statement, combinedList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Sekundäre Waffen konnten nicht gesetzt werden.";
+        }
+        try {
+            addSpecificArmor(statement, combinedList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Rüstungen konnten nicht gesetzt werden.";
+        }
+
         Platform.runLater(() -> {
             Database.characterisationList.set(characterisationList);
             Database.raceList.set(raceList);
@@ -761,6 +779,99 @@ public abstract class DatabaseLoader {
             generationBase.setSecondaryWeaponTypes(
                     getCollection(statement, "SELECT * FROM [Sekundärhand Waffenart] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Waffenart"));
         }
+    }
+
+    private static void addSpecificPrimaryWeapons(Statement statement, Collection<GenerationBase> combined) throws SQLException {
+
+        for (GenerationBase generationBase : combined) {
+            Collection<String> weaponNames = getCollection(statement, "SELECT * FROM [Ausgerüstete spezifische Primärwaffen] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Waffe");
+
+            Collection<Weapon> weapons = new ArrayList<>();
+            for (String weaponName : weaponNames) {
+                weapons.addAll(loadSpecificWeapons(statement, weaponName));
+            }
+            generationBase.setSpecificPrimaryWeapons(weapons);
+        }
+    }
+
+    private static void addSpecificSecondaryWeapons(Statement statement, Collection<GenerationBase> combined) throws SQLException {
+
+        for (GenerationBase generationBase : combined) {
+            Collection<String> weaponNames = getCollection(statement, "SELECT * FROM [Ausgerüstete spezifische Sekundärwaffen] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Waffe");
+
+            Collection<Weapon> weapons = new ArrayList<>();
+            for (String weaponName : weaponNames) {
+                weapons.addAll(loadSpecificWeapons(statement, weaponName));
+            }
+            generationBase.setSpecificSecondaryWeapons(weapons);
+        }
+    }
+
+    private static Collection<Weapon> loadSpecificWeapons(Statement statement, String weaponName) throws SQLException {
+        Collection<Weapon> weapons = new ArrayList<>();
+
+        try (ResultSet weaponSet = statement.executeQuery("SELECT * FROM [Spezifische Waffenstats] WHERE Bezeichnung=\"" + weaponName + "\"")) {
+            while (weaponSet.next()) {
+                Weapon weapon = new Weapon();
+                weapon.setName(weaponName);
+                weapon.setTyp("Waffe");
+                weapon.setSubTyp(getString(weaponSet, "Waffentyp"));
+                weapon.setTier(weaponSet.getInt("Tier"));
+                weapon.setRarity(getString(weaponSet, "Seltenheit"));
+                weapon.setInitiative(getString(weaponSet, "Initiative"));
+                weapon.setDice(getString(weaponSet, "Würfel/Belastung"));
+                weapon.setDamage(weaponSet.getInt("Schaden/Schutz"));
+                weapon.setHit(weaponSet.getInt("Treffer"));
+                weapon.setEffect(getString(weaponSet, "Effekt"));
+
+                weapons.add(weapon);
+            }
+        }
+        return weapons;
+    }
+
+    private static void addSpecificArmor(Statement statement, Collection<GenerationBase> combined) throws SQLException {
+
+        for (GenerationBase generationBase : combined) {
+            try (ResultSet eqSet = statement.executeQuery("SELECT * FROM [Ausgerüstete spezifische Rüstung] WHERE Bezeichnung=\"" + generationBase.getName() + "\"")) {
+                Map<ArmorPosition, Collection<Armor>> armor = new HashMap<>();
+                for (ArmorPosition position : ArmorPosition.values()) {
+                    armor.put(position, new ArrayList<>());
+                }
+
+                while (eqSet.next()) {
+                    String armorName = getString(eqSet, "Rüstung");
+                    ArmorPosition position = ArmorPosition.getArmorPosition(getString(eqSet, "Rüstungstyp"));
+
+                    armor.get(position).addAll(loadSpecificArmor(statement, armorName, position));
+                }
+
+                for (ArmorPosition position : ArmorPosition.values()) {
+                    generationBase.setSpecificArmor(position, armor.get(position));
+                }
+            }
+        }
+    }
+
+    private static Collection<Armor> loadSpecificArmor(Statement statement, String armorName, ArmorPosition position) throws SQLException {
+        Collection<Armor> armorList = new ArrayList<>();
+
+        try (ResultSet armorSet = statement.executeQuery("SELECT * FROM [Spezifische Rüstungenstats] WHERE (Bezeichnung=\"" + armorName + "\") AND (Rüstungstyp=\"" + position + "\")" )) {
+            while (armorSet.next()) {
+                Armor armor = new Armor();
+                armor.setName(armorName);
+                armor.setTyp("Rüstung");
+                armor.setSubTyp(position.toString());
+                armor.setTier(armorSet.getInt("Tier"));
+                armor.setRarity(getString(armorSet, "Seltenheit"));
+                armor.setProtection(armorSet.getInt("Schutz"));
+                armor.setWeight(armorSet.getDouble("Belastung"));
+                armor.setEffect(getString(armorSet, "Effekt"));
+
+                armorList.add(armor);
+            }
+        }
+        return armorList;
     }
 
     private static void checkInconsistencies() {
