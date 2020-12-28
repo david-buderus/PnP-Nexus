@@ -2,9 +2,17 @@ package manager;
 
 import city.Town;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import model.item.Armor;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
 import java.util.Arrays;
@@ -16,9 +24,18 @@ public abstract class Utility {
 
     private static final Random rand = new Random();
 
+    public static final ObjectProperty<Language> language = new SimpleObjectProperty<>(Language.german);
+    public static ObjectProperty<Configuration> config = new SimpleObjectProperty<>();
+
     public static final ListProperty<Town> townList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public static MemoryView memoryView;
+
+    static {
+        reloadConfig(language.get());
+        language.addListener((ob, o, n) -> reloadConfig(n));
+        System.out.println(config.get().getString("test.a"));
+    }
 
     /**
      * Generates a string that represents
@@ -316,6 +333,20 @@ public abstract class Utility {
             return calculateLightArmorProtection(tier - 1, startValue) + 2;
         } else {
             return calculateLightArmorProtection(tier - 1, startValue) + 1;
+        }
+    }
+
+    private static void reloadConfig(Language language) {
+
+        Parameters params = new Parameters();
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
+                new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties().setFileName(language.getConfigPath()));
+
+        try {
+            config.set(builder.getConfiguration());
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
         }
     }
 }
