@@ -1,12 +1,8 @@
 package manager;
 
 import city.Town;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import model.item.Armor;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -15,27 +11,19 @@ import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 public abstract class Utility {
 
     private static final Random rand = new Random();
 
-    public static final ObjectProperty<Language> language = new SimpleObjectProperty<>(Language.german);
-    public static ObjectProperty<Configuration> config = new SimpleObjectProperty<>();
+    public static final ObjectProperty<Configuration> config = new SimpleObjectProperty<>();
 
     public static final ListProperty<Town> townList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public static MemoryView memoryView;
 
-    static {
-        reloadConfig(language.get());
-        language.addListener((ob, o, n) -> reloadConfig(n));
-        System.out.println(config.get().getString("test.a"));
-    }
+
 
     /**
      * Generates a string that represents
@@ -206,147 +194,5 @@ public abstract class Utility {
         }
 
         return result.toString().trim();
-    }
-
-    /**
-     * Calculates the base damage of a weapon with the specific values would have.
-     *
-     * @param tier       of the weapon
-     * @param step       that the weapon damage does from Tier 1 to Tier 2
-     * @param startValue the base damage of the weapon at Tier 1
-     * @return the calculated base damage
-     */
-    public static int calculateWeaponDamage(int tier, int step, int startValue) {
-        if (tier < 1) {
-            return startValue - step;
-        } else if (tier < 4) {
-            return calculateWeaponDamage(tier - 1, step, startValue) + step;
-        } else {
-            return calculateWeaponDamage(tier - 1, step, startValue) + 2 * step;
-        }
-    }
-
-    /**
-     * Generates a heavy armor for the given tier and position with weight of 0.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonHeavyArmor(int tier, String name, String position) {
-        return generateCommonHeavyArmor(tier, name, position, 0);
-    }
-
-    /**
-     * Generates a heavy armor for the given tier and position.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @param weight   of the generated armor item
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonHeavyArmor(int tier, String name, String position, int weight) {
-        Armor armor = new Armor();
-        armor.setName(name);
-        armor.setWeight(weight);
-        armor.setTier(tier);
-        armor.setSubTyp(position);
-        armor.setProtection(calculateHeavyArmorProtection(tier, position));
-        armor.setRarity("gewöhnlich");
-        return armor;
-    }
-
-    private static int calculateHeavyArmorProtection(int tier, String position) {
-        switch (position) {
-            case "Kopf":
-            case "Arme":
-                return calculateHeavyArmorProtection(tier, 3);
-            case "Oberkörper":
-                return calculateHeavyArmorProtection(tier, 5);
-            case "Beine":
-                return calculateHeavyArmorProtection(tier, 4);
-        }
-        return 0;
-    }
-
-    private static int calculateHeavyArmorProtection(int tier, int startValue) {
-        if (tier < 1) {
-            return startValue - 2;
-        } else if (tier == 3) {
-            return calculateHeavyArmorProtection(tier - 1, startValue);
-        } else {
-            return calculateHeavyArmorProtection(tier - 1, startValue) + 2;
-        }
-    }
-
-    /**
-     * Generates a light armor for the given tier and position with weight of 0.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonLightArmor(int tier, String name, String position) {
-        return generateCommonLightArmor(tier, name, position, 0);
-    }
-
-    /**
-     * Generates a light armor for the given tier and position.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @param weight   of the generated armor item
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonLightArmor(int tier, String name, String position, int weight) {
-        Armor armor = new Armor();
-        armor.setName(name);
-        armor.setWeight(weight);
-        armor.setTier(tier);
-        armor.setSubTyp(position);
-        armor.setProtection(calculateLightArmorProtection(tier, position));
-        armor.setRarity("gewöhnlich");
-        return armor;
-    }
-
-    private static int calculateLightArmorProtection(int tier, String position) {
-        switch (position) {
-            case "Kopf":
-            case "Arme":
-                return calculateLightArmorProtection(tier, 1);
-            case "Oberkörper":
-                return calculateLightArmorProtection(tier, 3);
-            case "Beine":
-                return calculateLightArmorProtection(tier, 2);
-        }
-        return 0;
-    }
-
-    private static int calculateLightArmorProtection(int tier, int startValue) {
-        if (tier < 1) {
-            return startValue - 1;
-        } else if (tier == 5) {
-            return calculateLightArmorProtection(tier - 1, startValue) + 2;
-        } else {
-            return calculateLightArmorProtection(tier - 1, startValue) + 1;
-        }
-    }
-
-    private static void reloadConfig(Language language) {
-
-        Parameters params = new Parameters();
-        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
-                new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
-                        .configure(params.properties().setFileName(language.getConfigPath()));
-
-        try {
-            config.set(builder.getConfiguration());
-        } catch (ConfigurationException e) {
-            e.printStackTrace();
-        }
     }
 }

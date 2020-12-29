@@ -7,15 +7,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
+import manager.LanguageUtility;
 import ui.View;
 
 public class InfoView extends View {
 
-    private StringProperty info;
+    private final StringProperty info;
 
     public InfoView(String title) {
         super();
-        this.stage.setTitle(title);
+        this.stage.titleProperty().bind(LanguageUtility.getMessageProperty(title));
         this.info = new SimpleStringProperty("");
 
         BorderPane root = new BorderPane();

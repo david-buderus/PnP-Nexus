@@ -1,15 +1,28 @@
 package manager;
 
-public enum Language {
-    german, english;
+import java.util.Locale;
 
-    public String getConfigPath() {
+public enum Language {
+    german("Deutsch"), english("English");
+
+    private final String name;
+
+    Language(String name) {
+        this.name = name;
+    }
+
+    public Locale getLocale() {
         switch (this) {
             case german:
-                return "config/german.properties";
+                return Locale.GERMAN;
             case english:
-                return "config/english.properties";
+                return Locale.ENGLISH;
         }
-        return english.getConfigPath();
+        return Locale.ENGLISH;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

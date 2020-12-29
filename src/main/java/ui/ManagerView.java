@@ -1,21 +1,24 @@
 package ui;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import manager.DatabaseLoader;
+import manager.Language;
+import manager.LanguageUtility;
 import manager.Utility;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import ui.battle.BattleView;
@@ -34,16 +37,19 @@ import java.sql.SQLException;
 
 public class ManagerView extends View {
 
+    protected StringProperty fileName;
+
     public ManagerView(Stage stage) {
-        super(stage, new SimpleStringProperty("Keine Datei ausgew\u00e4hlt"));
+        super(stage);
+        this.fileName = new SimpleStringProperty();
+        this.fileName.bind(LanguageUtility.getMessageProperty("manager.noFile"));
 
         stage.setTitle("P&P Manager");
 
-        int width = 400;
-
         TabPane root = new TabPane();
 
-        Tab startTab = new Tab("Start");
+        Tab startTab = new Tab();
+        startTab.textProperty().bind(LanguageUtility.getMessageProperty("settings"));
         startTab.setClosable(false);
         root.getTabs().add(startTab);
 
@@ -70,29 +76,42 @@ public class ManagerView extends View {
         root.getTabs().add(inconsistencyTab);
 
 
-        //First Menu
-        VBox startPane = new VBox(10);
-        startPane.setPadding(new Insets(10, 20, 20, 20));
-        startPane.setAlignment(Pos.CENTER);
-        startTab.setContent(startPane);
+        GridPane settingsPane = new GridPane();
+        settingsPane.setPadding(new Insets(20, 20, 20, 20));
+        settingsPane.setAlignment(Pos.CENTER);
+        settingsPane.setHgap(10);
+        settingsPane.setVgap(5);
 
-        HBox titleLine = new HBox(10);
-        titleLine.setPadding(new Insets(0, 0, 10, 0));
-        titleLine.setAlignment(Pos.CENTER);
+        ColumnConstraints textColumn = new ColumnConstraints(250);
+        textColumn.setFillWidth(true);
+        settingsPane.getColumnConstraints().add(textColumn);
+        ColumnConstraints settingsColumn = new ColumnConstraints(250);
+        settingsColumn.setFillWidth(true);
+        settingsPane.getColumnConstraints().add(settingsColumn);
+
+        startTab.setContent(settingsPane);
 
         Label fileText = new Label();
-        fileText.setPrefWidth((int) (width * (2.0 / 3)) - 10);
         fileText.textProperty().bindBidirectional(fileName);
+        settingsPane.add(fileText, 0, 0);
 
-        titleLine.getChildren().add(fileText);
-
-        Button loadButton = new Button("Laden");
-        loadButton.setPrefWidth(width - ((int) (width * (2.0 / 3)) - 10));
+        Button loadButton = new Button();
+        loadButton.textProperty().bind(LanguageUtility.getMessageProperty("load"));
+        loadButton.setMaxWidth(Double.MAX_VALUE);
         loadButton.setOnAction(ev -> load());
+        settingsPane.add(loadButton, 1, 0);
 
-        titleLine.getChildren().add(loadButton);
+        Label languageText = new Label();
+        languageText.textProperty().bind(LanguageUtility.getMessageProperty("language"));
+        settingsPane.add(languageText, 0, 1);
 
-        startPane.getChildren().add(titleLine);
+        ComboBox<Language> languageBox = new ComboBox<>();
+        languageBox.setMaxWidth(Double.MAX_VALUE);
+        languageBox.setItems(FXCollections.observableArrayList(Language.values()));
+        languageBox.getSelectionModel().select(LanguageUtility.language.get());
+        LanguageUtility.language.bind(languageBox.getSelectionModel().selectedItemProperty());
+        settingsPane.add(languageBox, 1, 1);
+
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -116,8 +135,8 @@ public class ManagerView extends View {
     }
 
     public void load(File file) {
-        this.info = new InfoView("Ladefehler");
-        this.fileName.set("Lädt...");
+        this.info = new InfoView("loadingError");
+        this.fileName.bind(LanguageUtility.getMessageProperty("loading"));
 
         Service<Object> service = new Service<>() {
             @Override
@@ -141,12 +160,14 @@ public class ManagerView extends View {
             }
         };
         service.setOnSucceeded(ev -> {
+            this.fileName.unbind();
             this.fileName.set(file.getName());
-            if (!info.isEmpty())
+            if (!info.isEmpty()) {
                 info.show();
+            }
         });
         service.setOnCancelled(ev -> {
-            this.fileName.set("Datei konnte nicht geladen werden");
+            this.fileName.bind(LanguageUtility.getMessageProperty("fileNotLoaded"));
             if (!info.isEmpty())
                 info.show();
         });
