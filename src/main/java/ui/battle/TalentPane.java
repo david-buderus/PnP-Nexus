@@ -23,13 +23,14 @@ public class TalentPane extends HBox {
         name.setPrefWidth(150);
         this.getChildren().add(name);
 
-        Label attributes = new Label(Arrays.stream(talent.getNeededAttributes(battleMember))
+        Label attributes = new Label(Arrays.stream(talent.getAttributes())
                 .map(PrimaryAttribute::toShortString).collect(Collectors.joining(" / ")));
         attributes.setPrefWidth(80);
         this.getChildren().add(attributes);
 
         TextField points = new TextField();
         points.setPrefWidth(30);
+
         points.textProperty().bindBidirectional(battleMember.getTalent(talent), new NumStringConverter());
         this.getChildren().add(points);
     }

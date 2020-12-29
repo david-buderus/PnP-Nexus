@@ -1,5 +1,7 @@
 package model.member.generation;
 
+import java.util.NoSuchElementException;
+
 public enum PrimaryAttribute {
     strength, endurance, dexterity, intelligence, charisma, resilience, maneuverability, precision;
 
@@ -46,5 +48,27 @@ public enum PrimaryAttribute {
                 return "GN";
         }
         return "--";
+    }
+
+    public static PrimaryAttribute getPrimaryAttribute(String name) {
+        switch (name) {
+            case "Körperkraft":
+                return strength;
+            case "Ausdauer":
+                return endurance;
+            case "Geschicklichkeit":
+                return dexterity;
+            case "Intelligenz":
+                return intelligence;
+            case "Charisma":
+                return charisma;
+            case "Belastbarkeit":
+                return resilience;
+            case "Beweglichkeit":
+                return maneuverability;
+            case "Genauigkeit":
+                return precision;
+        }
+        throw new NoSuchElementException("The PrimaryAttribute with the name " + name + " does not exists.");
     }
 }

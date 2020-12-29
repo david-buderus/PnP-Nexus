@@ -10,13 +10,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import manager.Database;
 import model.Battle;
 import model.member.generation.GenerationBase;
-import model.member.generation.SpecificType;
-import model.member.generation.characterisation.Characterisation;
-import model.member.generation.fightingtype.FightingType;
-import model.member.generation.profession.Profession;
-import model.member.generation.race.Race;
+import model.member.generation.TypedGenerationBase;
+import model.member.generation.specs.*;
 import ui.View;
 import ui.part.NumStringConverter;
 
@@ -85,7 +83,7 @@ public class SpawnView extends View {
         for (SpawnBox box : spawns) {
             for (SpawnParameter parameter : box.getParameters()) {
                 battle.spawnMember(enemy, parameter.level, parameter.characterisation, parameter.race,
-                        parameter.profession, parameter.fightingType, parameter.specificType);
+                        parameter.profession, parameter.fightingStyle, parameter.specialisation);
             }
         }
     }
@@ -98,8 +96,8 @@ public class SpawnView extends View {
         private final ObjectProperty<Characterisation> characterisation;
         private final ObjectProperty<Race> race;
         private final ObjectProperty<Profession> profession;
-        private final ObjectProperty<FightingType> fightingType;
-        private final ObjectProperty<SpecificType> specificType;
+        private final ObjectProperty<FightingStyle> fightingType;
+        private final ObjectProperty<Specialisation> specificType;
         private final BooleanBinding randomCharacterisation;
         private final BooleanBinding randomRace;
         private final BooleanBinding randomProfession;
@@ -132,20 +130,19 @@ public class SpawnView extends View {
 
             ObservableList<Race> races = FXCollections.observableArrayList();
             ObservableList<Profession> professions = FXCollections.observableArrayList();
-            ObservableList<FightingType> fightingTypes = FXCollections.observableArrayList();
-            ObservableList<SpecificType> specificTypes = FXCollections.observableArrayList();
+            ObservableList<FightingStyle> fightingStyles = FXCollections.observableArrayList();
+            ObservableList<Specialisation> specialisations = FXCollections.observableArrayList();
 
             this.addDefaultListener(characterisation, races);
             this.addDefaultListener(race, professions);
-            this.addDefaultListener(profession, fightingTypes);
-            this.addDefaultListener(fightingType, specificTypes);
+            this.addDefaultListener(profession, fightingStyles);
+            this.addDefaultListener(fightingType, specialisations);
 
-            this.randomCharacterisation = createSelectBox(characterisation,
-                    FXCollections.observableArrayList(Characterisation.getCharacterisations()), this);
+            this.randomCharacterisation = createSelectBox(characterisation, Database.characterisationList, this);
             this.randomRace = createSelectBox(race, races, this, randomCharacterisation);
             this.randomProfession = createSelectBox(profession, professions, this, randomRace);
-            this.randomFightingType = createSelectBox(fightingType, fightingTypes, this, randomProfession);
-            this.randomSpecificType = createSelectBox(specificType, specificTypes, this, randomFightingType);
+            this.randomFightingType = createSelectBox(fightingType, fightingStyles, this, randomProfession);
+            this.randomSpecificType = createSelectBox(specificType, specialisations, this, randomFightingType);
 
             Button removeButton = new Button("Entfernen");
             removeButton.prefWidthProperty().bind(this.widthProperty().subtract(10));
@@ -153,7 +150,7 @@ public class SpawnView extends View {
             this.getChildren().add(removeButton);
         }
 
-        private <T> void addDefaultListener(ObjectProperty<? extends GenerationBase<T>> property, ObservableList<T> list) {
+        private <T extends GenerationBase> void addDefaultListener(ObjectProperty<? extends TypedGenerationBase<T>> property, ObservableList<T> list) {
             property.addListener((ob, o, n) -> {
                 list.clear();
                 if (n != null) {
@@ -223,29 +220,29 @@ public class SpawnView extends View {
                 SpawnParameter spawnParameter = new SpawnParameter();
                 spawnParameter.level = (int) Math.round(this.level.get() + random.nextGaussian() * fluctuation.get() / 3);
                 if (randomCharacterisation.get()) {
-                    spawnParameter.characterisation = Characterisation.getCharacterisation();
+                    spawnParameter.characterisation = Database.characterisationList.get(random.nextInt(Database.characterisationList.size()));
                 } else {
                     spawnParameter.characterisation = characterisation.get();
                 }
                 if (randomRace.get()) {
-                    spawnParameter.race = spawnParameter.characterisation.getSubType();
+                    spawnParameter.race = spawnParameter.characterisation.getRandomSubType();
                 } else {
                     spawnParameter.race = race.get();
                 }
                 if (randomProfession.get()) {
-                    spawnParameter.profession = spawnParameter.race.getSubType();
+                    spawnParameter.profession = spawnParameter.race.getRandomSubType();
                 } else {
                     spawnParameter.profession = profession.get();
                 }
                 if (randomFightingType.get()) {
-                    spawnParameter.fightingType = spawnParameter.profession.getSubType();
+                    spawnParameter.fightingStyle = spawnParameter.profession.getRandomSubType();
                 } else {
-                    spawnParameter.fightingType = fightingType.get();
+                    spawnParameter.fightingStyle = fightingType.get();
                 }
                 if (randomSpecificType.get()) {
-                    spawnParameter.specificType = spawnParameter.fightingType.getSubType();
+                    spawnParameter.specialisation = spawnParameter.fightingStyle.getRandomSubType();
                 } else {
-                    spawnParameter.specificType = specificType.get();
+                    spawnParameter.specialisation = specificType.get();
                 }
 
                 spawnParameters.add(spawnParameter);
@@ -260,7 +257,7 @@ public class SpawnView extends View {
         public Characterisation characterisation;
         public Race race;
         public Profession profession;
-        public FightingType fightingType;
-        public SpecificType specificType;
+        public FightingStyle fightingStyle;
+        public Specialisation specialisation;
     }
 }

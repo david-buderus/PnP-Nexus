@@ -11,6 +11,8 @@ import javafx.collections.ObservableList;
 import model.*;
 import model.item.*;
 import model.loot.DungeonLootFactory;
+import model.member.generation.Talent;
+import model.member.generation.specs.*;
 import model.upgrade.UpgradeFactory;
 import model.upgrade.UpgradeModel;
 
@@ -35,6 +37,13 @@ public abstract class Database {
     public static final ListProperty<CraftingBonus> craftingBonusList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Fabrication> fabricationList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Inconsistency> inconsistencyList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Talent> talentList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<String> shieldTypes = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Characterisation> characterisationList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Race> raceList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Profession> professionList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<FightingStyle> fightingStyleList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<Specialisation> specialisationList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public static final MapProperty<UpgradeModel, UpgradeFactory> upgradeMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
 
@@ -99,6 +108,22 @@ public abstract class Database {
      */
     public static Item getItemWithoutDefault(String name) throws NoSuchElementException {
         return itemList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
+                .findFirst().orElseThrow();
+    }
+
+    public static Talent getTalent(String name) {
+        Talent talent = new Talent();
+        talent.setName(name + " (Nicht in  der Datenbank)");
+        return getTalentOrElse(name, talent);
+    }
+
+    public static Talent getTalentOrElse(String name, Talent talent) {
+        return talentList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
+                .findFirst().orElse(talent);
+    }
+
+    public static Talent getTalentWithoutDefault(String name) throws NoSuchElementException {
+        return talentList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
                 .findFirst().orElseThrow();
     }
 
