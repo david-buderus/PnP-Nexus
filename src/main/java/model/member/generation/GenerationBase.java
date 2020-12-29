@@ -104,7 +104,7 @@ public abstract class GenerationBase {
     }
 
     public boolean dropsWeapon() {
-        return dropsWeapon && parents.stream().map(GenerationBase::dropsWeapon).reduce(true, (a, b) -> a && b);
+        return dropsWeapon && parents.stream().allMatch(GenerationBase::dropsWeapon);
     }
 
     public void setDropsWeapon(boolean dropsWeapon) {
@@ -112,7 +112,7 @@ public abstract class GenerationBase {
     }
 
     public boolean dropsArmor() {
-        return dropsArmor && parents.stream().map(GenerationBase::dropsArmor).reduce(true, (a, b) -> a && b);
+        return dropsArmor && parents.stream().allMatch(GenerationBase::dropsArmor);
     }
 
     public void setDropsArmor(boolean dropsArmor) {
@@ -120,7 +120,7 @@ public abstract class GenerationBase {
     }
 
     public boolean dropsJewellery() {
-        return dropsJewellery && parents.stream().map(GenerationBase::dropsJewellery).reduce(true, (a, b) -> a && b);
+        return dropsJewellery && parents.stream().allMatch(GenerationBase::dropsJewellery);
     }
 
     public void setDropsJewellery(boolean dropsJewellery) {
@@ -128,7 +128,7 @@ public abstract class GenerationBase {
     }
 
     public boolean isAbleToUsesPrimaryHand() {
-        return ableToUsesPrimaryHand && parents.stream().map(GenerationBase::isAbleToUsesPrimaryHand).reduce(true, (a, b) -> a && b);
+        return ableToUsesPrimaryHand && parents.stream().allMatch(GenerationBase::isAbleToUsesPrimaryHand);
     }
 
     public void setAbleToUsesPrimaryHand(boolean ableToUsesPrimaryHand) {
@@ -136,7 +136,7 @@ public abstract class GenerationBase {
     }
 
     public boolean isAbleToUsesSecondaryHand() {
-        return ableToUsesSecondaryHand && parents.stream().map(GenerationBase::isAbleToUsesSecondaryHand).reduce(true, (a, b) -> a && b);
+        return ableToUsesSecondaryHand && parents.stream().allMatch(GenerationBase::isAbleToUsesSecondaryHand);
     }
 
     public void setAbleToUsesSecondaryHand(boolean ableToUsesSecondaryHand) {
@@ -144,7 +144,7 @@ public abstract class GenerationBase {
     }
 
     public boolean isAbleToUseShield() {
-        return ableToUseShield && parents.stream().map(GenerationBase::isAbleToUseShield).reduce(true, (a, b) -> a && b);
+        return ableToUseShield && parents.stream().allMatch(GenerationBase::isAbleToUseShield);
     }
 
     public void setAbleToUseShield(boolean ableToUseShield) {
@@ -152,7 +152,7 @@ public abstract class GenerationBase {
     }
 
     public boolean isAbleToUseArmor(ArmorPosition position) {
-        return ableToUseArmor.getOrDefault(position, false) && parents.stream().map(g -> g.isAbleToUseArmor(position)).reduce(true, (a, b) -> a && b);
+        return ableToUseArmor.getOrDefault(position, false) && parents.stream().allMatch(g -> g.isAbleToUseArmor(position));
     }
 
     public void setAbleToUseArmor(ArmorPosition position, boolean ableToUseArmor) {
@@ -160,7 +160,7 @@ public abstract class GenerationBase {
     }
 
     public boolean isAbleToUseJewellery() {
-        return ableToUseJewellery && parents.stream().map(GenerationBase::isAbleToUseJewellery).reduce(true, (a, b) -> a && b);
+        return ableToUseJewellery && parents.stream().allMatch(GenerationBase::isAbleToUseJewellery);
     }
 
     public void setAbleToUseJewellery(boolean ableToUseJewellery) {
@@ -168,7 +168,7 @@ public abstract class GenerationBase {
     }
 
     public boolean isAbleToUseSpells() {
-        return ableToUseSpells && parents.stream().map(GenerationBase::isAbleToUseSpells).reduce(true, (a, b) -> a && b);
+        return ableToUseSpells || parents.stream().anyMatch(GenerationBase::isAbleToUseSpells);
     }
 
     public void setAbleToUseSpells(boolean ableToUseSpells) {
@@ -176,7 +176,7 @@ public abstract class GenerationBase {
     }
 
     public boolean usesAlwaysShield() {
-        return usesAlwaysShield || parents.stream().map(GenerationBase::isAbleToUseSpells).reduce(false, (a, b) -> a || b);
+        return usesAlwaysShield || parents.stream().anyMatch(GenerationBase::usesAlwaysShield);
     }
 
     public void setUsesAlwaysShield(boolean usesAlwaysShield) {
