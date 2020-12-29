@@ -572,7 +572,7 @@ public abstract class DatabaseLoader {
             linkSubTypes(statement, characterisationList, raceList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Characterisation konnten nicht mit SubTypen gelinkt werden.";
+            return "Charakterisierungen konnten nicht mit SubTypen gelinkt werden.";
         }
         try {
             linkSubTypes(statement, raceList, professionList);
