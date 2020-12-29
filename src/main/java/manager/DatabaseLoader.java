@@ -662,6 +662,14 @@ public abstract class DatabaseLoader {
             return "Rüstungen konnten nicht gesetzt werden.";
         }
 
+        // Add drops
+        try {
+            addDrops(statement, combinedList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "Drops konnten nicht gesetzt werden.";
+        }
+
         Platform.runLater(() -> {
             Database.characterisationList.set(characterisationList);
             Database.raceList.set(raceList);
@@ -889,6 +897,31 @@ public abstract class DatabaseLoader {
             }
         }
         return armorList;
+    }
+
+    private static void addDrops(Statement statement, Collection<GenerationBase> combined) throws SQLException {
+        for (GenerationBase generationBase : combined) {
+            try (ResultSet dropSet = statement.executeQuery("SELECT * FROM Drops WHERE Bezeichnung=\"" + generationBase.getName() + "\"")) {
+                Collection<Drop> drops = new ArrayList<>();
+
+                while (dropSet.next()) {
+                    Drop drop = new Drop();
+                    drop.setName(getString(dropSet, "Drop"));
+                    drop.setChance(dropSet.getFloat("Wahrscheinlichkeit"));
+                    drop.setAmount(dropSet.getInt("Anzahl"));
+                    drop.setLevelMultiplication(dropSet.getFloat("Levelmultiplikator"));
+                    drop.setTierMultiplication(dropSet.getFloat("Tiermultiplikator"));
+                    drop.setMinLevel(dropSet.getInt("Mindestlevel"));
+                    drop.setMinTier(dropSet.getInt("Mindesttier"));
+                    drop.setMaxLevel(dropSet.getInt("Maximallevel"));
+                    drop.setMaxTier(dropSet.getInt("Maximaltier"));
+
+                    drops.add(drop);
+                }
+
+                generationBase.setDrops(drops);
+            }
+        }
     }
 
     private static void checkInconsistencies() {
