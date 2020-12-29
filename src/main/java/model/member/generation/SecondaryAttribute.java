@@ -1,5 +1,7 @@
 package model.member.generation;
 
+import java.util.NoSuchElementException;
+
 public enum SecondaryAttribute {
     meleeDamage, rangeDamage, magicPower, defense, initiative, health, mentalHealth, mana;
 
@@ -24,5 +26,27 @@ public enum SecondaryAttribute {
                 return "Mana";
         }
         return "Sonstiges";
+    }
+
+    public static SecondaryAttribute getSecondaryAttribute(String name) {
+        switch (name) {
+            case "Schaden Nahkampf":
+                return meleeDamage;
+            case "Schaden Fernkampf":
+                return rangeDamage;
+            case "Magiekraft":
+                return magicPower;
+            case "Abwehr":
+                return defense;
+            case "Initiative":
+                return initiative;
+            case "Leben":
+                return health;
+            case "Geistige Gesundheit":
+                return mentalHealth;
+            case "Mana":
+                return mana;
+        }
+        throw new NoSuchElementException("The SecondaryAttribute with the name " + name + " does not exists.");
     }
 }

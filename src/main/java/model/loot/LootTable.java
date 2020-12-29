@@ -18,6 +18,10 @@ public class LootTable {
         list.add(new LootFactory(Database.getItem(name), amount, chance));
     }
 
+    public void add(LootFactory factory) {
+        list.add(factory);
+    }
+
     public void add(Item item, int amount, double chance) {
         list.add(new LootFactory(item, amount, chance));
     }
