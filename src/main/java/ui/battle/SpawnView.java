@@ -225,22 +225,22 @@ public class SpawnView extends View {
                     spawnParameter.characterisation = characterisation.get();
                 }
                 if (randomRace.get()) {
-                    spawnParameter.race = spawnParameter.characterisation.getSubType();
+                    spawnParameter.race = spawnParameter.characterisation.getRandomSubType();
                 } else {
                     spawnParameter.race = race.get();
                 }
                 if (randomProfession.get()) {
-                    spawnParameter.profession = spawnParameter.race.getSubType();
+                    spawnParameter.profession = spawnParameter.race.getRandomSubType();
                 } else {
                     spawnParameter.profession = profession.get();
                 }
                 if (randomFightingType.get()) {
-                    spawnParameter.fightingStyle = spawnParameter.profession.getSubType();
+                    spawnParameter.fightingStyle = spawnParameter.profession.getRandomSubType();
                 } else {
                     spawnParameter.fightingStyle = fightingType.get();
                 }
                 if (randomSpecificType.get()) {
-                    spawnParameter.specialisation = spawnParameter.fightingStyle.getSubType();
+                    spawnParameter.specialisation = spawnParameter.fightingStyle.getRandomSubType();
                 } else {
                     spawnParameter.specialisation = specificType.get();
                 }

@@ -26,7 +26,7 @@ public abstract class TypedGenerationBase<SubType extends GenerationBase> extend
         this.subTypes.add(subType);
     }
 
-    public SubType getSubType() {
+    public SubType getRandomSubType() {
         Collection<SubType> subTypes = getSubTypes();
         return subTypes.stream().skip(random.nextInt(subTypes.size())).findFirst().orElse(null);
     }
