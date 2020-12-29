@@ -508,7 +508,7 @@ public abstract class DatabaseLoader {
             characterisationList = loadEnemies(enemySet, Characterisation::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Characterisation konnten nicht geladen werden.";
+            return "Charakterisierung konnte nicht geladen werden.";
         }
         try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Rasse\"")) {
             raceList = loadEnemies(enemySet, Race::new);
