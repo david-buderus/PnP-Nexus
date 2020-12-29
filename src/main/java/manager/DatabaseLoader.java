@@ -508,7 +508,7 @@ public abstract class DatabaseLoader {
             characterisationList = loadEnemies(enemySet, Characterisation::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Characterisation konnten nicht geladen werden.";
+            return "Charakterisierung konnte nicht geladen werden.";
         }
         try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Rasse\"")) {
             raceList = loadEnemies(enemySet, Race::new);
@@ -526,7 +526,7 @@ public abstract class DatabaseLoader {
             fightingStyleList = loadEnemies(enemySet, FightingStyle::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Kampfstyle konnten nicht geladen werden.";
+            return "Kampfstile konnten nicht geladen werden.";
         }
         try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Spezialisierung\"")) {
             specialisationList = loadEnemies(enemySet, Specialisation::new);
@@ -540,7 +540,7 @@ public abstract class DatabaseLoader {
             linkParents(statement, characterisationList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Characterisation konnten nicht gruppiert werden.";
+            return "Charakterisierungen konnten nicht gruppiert werden.";
         }
         try {
             linkParents(statement, raceList);
@@ -572,7 +572,7 @@ public abstract class DatabaseLoader {
             linkSubTypes(statement, characterisationList, raceList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Characterisation konnten nicht mit SubTypen gelinkt werden.";
+            return "Charakterisierungen konnten nicht mit SubTypen gelinkt werden.";
         }
         try {
             linkSubTypes(statement, raceList, professionList);
@@ -605,7 +605,7 @@ public abstract class DatabaseLoader {
             addMainTalents(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Hauptalente konnten nicht gesetzt werden.";
+            return "Haupttalente konnten nicht gesetzt werden.";
         }
         try {
             addForbiddenTalents(statement, combinedList);

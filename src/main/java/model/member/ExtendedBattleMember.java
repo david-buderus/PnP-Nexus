@@ -354,7 +354,7 @@ public class ExtendedBattleMember extends BattleMember {
             Talent talent = usableTalents.get(random.nextInt(usableTalents.size()));
 
             //Dont skill in more than three types of magic
-            if (talent.isMagicTalent()  && talents.keySet().stream()
+            if (talent.isMagicTalent() && talents.keySet().stream()
                     .filter(Talent::isMagicTalent).filter(x -> talents.get(x).get() > 0).count() > 2) {
                 continue;
             }
