@@ -20,13 +20,18 @@ public abstract class LanguageUtility {
         language.addListener((ob, o, n) -> {
             reloadLanguage(n);
             for (String key : messageBindings.keySet()) {
-                messageBindings.get(key).set(messages.get().getString(key));
+                messageBindings.get(key).set(getMessage(key));
             }
         });
     }
 
     public static String getMessage(String key) {
-        return messages.get().getString(key);
+        try {
+            return messages.get().getString(key);
+        }
+        catch (MissingResourceException e) {
+            return key;
+        }
     }
 
     public static ReadOnlyStringProperty getMessageProperty(String key) {
@@ -34,7 +39,7 @@ public abstract class LanguageUtility {
             return messageBindings.get(key);
         } else {
             StringProperty property = new SimpleStringProperty();
-            property.set(messages.get().getString(key));
+            property.set(getMessage(key));
             messageBindings.put(key, property);
             return property;
         }
