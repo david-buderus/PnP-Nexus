@@ -526,7 +526,7 @@ public abstract class DatabaseLoader {
             fightingStyleList = loadEnemies(enemySet, FightingStyle::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Kampfstyle konnten nicht geladen werden.";
+            return "Kampfstile konnten nicht geladen werden.";
         }
         try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Spezialisierung\"")) {
             specialisationList = loadEnemies(enemySet, Specialisation::new);
