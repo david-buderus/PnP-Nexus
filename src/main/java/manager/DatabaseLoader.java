@@ -540,7 +540,7 @@ public abstract class DatabaseLoader {
             linkParents(statement, characterisationList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Characterisation konnten nicht gruppiert werden.";
+            return "Charakterisierungen konnten nicht gruppiert werden.";
         }
         try {
             linkParents(statement, raceList);
