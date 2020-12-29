@@ -605,7 +605,7 @@ public abstract class DatabaseLoader {
             addMainTalents(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Hauptalente konnten nicht gesetzt werden.";
+            return "Haupttalente konnten nicht gesetzt werden.";
         }
         try {
             addForbiddenTalents(statement, combinedList);
