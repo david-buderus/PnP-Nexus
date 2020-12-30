@@ -28,8 +28,7 @@ public abstract class LanguageUtility {
     public static String getMessage(String key) {
         try {
             return messages.get().getString(key);
-        }
-        catch (MissingResourceException e) {
+        } catch (MissingResourceException e) {
             return key;
         }
     }

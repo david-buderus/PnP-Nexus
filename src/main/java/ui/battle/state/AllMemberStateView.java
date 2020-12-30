@@ -1,6 +1,9 @@
-package ui.battle;
+package ui.battle.state;
 
-import javafx.beans.property.*;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
@@ -12,12 +15,16 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import manager.LanguageUtility;
 import model.Battle;
 import model.member.BattleMember;
 import model.member.MemberState;
 import model.member.data.AttackTypes;
 import model.member.data.MemberStateEffect;
 import ui.View;
+import ui.battle.BattleMemberPane;
+import ui.part.NumberField;
+import ui.part.UpdatingListCell;
 
 import java.util.HashMap;
 
@@ -47,10 +54,11 @@ public class AllMemberStateView extends View {
         headlineBox.getChildren().add(headline);
 
         if (source != null) {
-            headline.textProperty().bind(
-                    new ReadOnlyStringWrapper("Statusverteilung von ").concat(source.nameProperty()));
+            headline.textProperty().bind(LanguageUtility.getMessageProperty("allState.distribution.of")
+                    .concat(" ")
+                    .concat(source.nameProperty()));
         } else {
-            headline.textProperty().bind(new ReadOnlyStringWrapper("Statusverteilung"));
+            headline.textProperty().bind(LanguageUtility.getMessageProperty("allState.distribution"));
         }
 
         HBox memberPart = new HBox(10);
@@ -62,7 +70,8 @@ public class AllMemberStateView extends View {
         HBox.setHgrow(memberLists, Priority.ALWAYS);
         memberPart.getChildren().add(memberLists);
 
-        Label playerLabel = new Label("Spieler");
+        Label playerLabel = new Label();
+        playerLabel.textProperty().bind(LanguageUtility.getMessageProperty("players"));
         playerLabel.setFont(new Font(20));
         memberLists.getChildren().add(playerLabel);
 
@@ -95,7 +104,8 @@ public class AllMemberStateView extends View {
             players.getChildren().add(pane);
         }
 
-        Label enemyLabel = new Label("Gegner");
+        Label enemyLabel = new Label();
+        enemyLabel.textProperty().bind(LanguageUtility.getMessageProperty("enemies"));
         enemyLabel.setFont(new Font(20));
         memberLists.getChildren().add(enemyLabel);
 
@@ -138,39 +148,48 @@ public class AllMemberStateView extends View {
         info.setPrefSize(280, 240);
         memberPart.getChildren().add(info);
 
-        Label infoLabel = new Label("Erstellen");
+        Label infoLabel = new Label();
+        infoLabel.textProperty().bind(LanguageUtility.getMessageProperty("state.info.create"));
         infoLabel.setFont(Font.font("", FontWeight.BOLD, 20));
 
         //Name
         StringProperty name = new SimpleStringProperty("");
-        HBox nameBox = labelTextField("Name:", name);
+        HBox nameBox = labelTextField("state.info.name", name);
 
-        //Effelt
+        //Effect
         ComboBox<MemberStateEffect> effectComboBox = new ComboBox<>();
+        effectComboBox.setCellFactory(list -> new UpdatingListCell<>());
+        effectComboBox.setButtonCell(new UpdatingListCell<>());
         effectComboBox.setItems(FXCollections.observableArrayList(MemberStateEffect.values()));
-        HBox effectBox = labelRegion("Art: ", effectComboBox);
+        HBox effectBox = labelRegion("state.info.type", effectComboBox);
 
         //Power
-        ComboBox<String> randomComboBox = new ComboBox<>();
-        randomComboBox.setItems(FXCollections.observableArrayList("", "D"));
+        ComboBox<Dice> randomComboBox = new ComboBox<>();
+        randomComboBox.setItems(FXCollections.observableArrayList(Dice.values()));
+        randomComboBox.setCellFactory(list -> new UpdatingListCell<>());
+        randomComboBox.setButtonCell(new UpdatingListCell<>());
         randomComboBox.getSelectionModel().selectFirst();
 
-        TextField powerField = new TextField("0");
-        HBox powerBox = labelRegion("Stärke:", 55, randomComboBox, 95, powerField);
+        TextField powerField = new NumberField();
+        HBox powerBox = labelRegion("state.info.power", 55, randomComboBox, 95, powerField);
 
         //Duration
-        TextField durationField = new TextField("1");
+        TextField durationField = new NumberField(1);
 
-        ComboBox<String> activeComboBox = new ComboBox<>();
-        activeComboBox.setItems(FXCollections.observableArrayList("Runden", "aktive Runden"));
+        ComboBox<Rounds> activeComboBox = new ComboBox<>();
+        activeComboBox.setButtonCell(new UpdatingListCell<>());
+        activeComboBox.setCellFactory(list -> new UpdatingListCell<>());
+        activeComboBox.setItems(FXCollections.observableArrayList(Rounds.values()));
         activeComboBox.getSelectionModel().selectFirst();
-        HBox durationBox = labelRegion("Dauer:", 30, durationField, 120, activeComboBox);
+        HBox durationBox = labelRegion("state.info.duration", 30, durationField, 120, activeComboBox);
 
         //Type
         ComboBox<AttackTypes> typeComboBox = new ComboBox<>();
         typeComboBox.setItems(FXCollections.observableArrayList(AttackTypes.values()));
+        typeComboBox.setCellFactory(list -> new UpdatingListCell<>());
+        typeComboBox.setButtonCell(new UpdatingListCell<>());
         typeComboBox.getSelectionModel().select(AttackTypes.direct);
-        HBox typeBox = labelRegion("Ziel:", typeComboBox);
+        HBox typeBox = labelRegion("state.info.target", typeComboBox);
 
         effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, effect) -> {
             info.getChildren().clear();
@@ -202,14 +221,15 @@ public class AllMemberStateView extends View {
                     break;
             }
 
-            Button createButton = new Button("Hinzufügen");
+            Button createButton = new Button();
+            createButton.textProperty().bind(LanguageUtility.getMessageProperty("state.info.add"));
             createButton.setPrefWidth(215);
             createButton.setOnAction(ev -> {
                 for (BattleMemberPane pane : selected) {
                     pane.getBattleMember().addState(
                             new MemberState(name.get(), effectComboBox.getValue(), Integer.parseInt(durationField.getText()),
-                                    activeComboBox.getValue().equals("aktive Runden"), Double.parseDouble(powerField.getText()),
-                                    randomComboBox.getValue().equals("D"), typeComboBox.getValue(), source));
+                                    activeComboBox.getValue() == Rounds.activeRounds, Double.parseDouble(powerField.getText()),
+                                    randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), source));
                 }
             });
             info.getChildren().add(createButton);

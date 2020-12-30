@@ -1,4 +1,4 @@
-package ui.battle;
+package ui.battle.state;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

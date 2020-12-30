@@ -2,6 +2,9 @@ package manager;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.configuration2.Configuration;
 import ui.utility.MemoryView;
 
@@ -17,7 +20,6 @@ public abstract class Utility {
     public static final ObjectProperty<Configuration> config = new SimpleObjectProperty<>();
 
     public static MemoryView memoryView;
-
 
 
     /**
@@ -189,5 +191,21 @@ public abstract class Utility {
         }
 
         return result.toString().trim();
+    }
+
+    public static <T> ObservableList<T> createListBinding(ObservableValue<T>... items) {
+        ObservableList<T> result = FXCollections.observableArrayList();
+
+        for (ObservableValue<T> item : items) {
+            result.add(item.getValue());
+
+            item.addListener((ob, o, n) -> {
+                int pos = result.indexOf(o);
+                result.remove(pos);
+                result.add(pos, n);
+            });
+        }
+
+        return result;
     }
 }

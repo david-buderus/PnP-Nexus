@@ -1,9 +1,6 @@
 package ui.battle;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -18,13 +15,17 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import manager.LanguageUtility;
 import model.Battle;
+import model.interfaces.WithToStringProperty;
 import model.loot.LootTable;
 import model.member.BattleMember;
 import model.member.ExtendedBattleMember;
 import model.member.data.AttackTypes;
 import ui.IView;
 import ui.ViewPart;
+import ui.battle.state.AllMemberStateView;
+import ui.battle.state.MemberStateView;
 import ui.part.NumStringConverter;
+import ui.part.UpdatingListCell;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public class BattleView extends ViewPart {
         memberScroll.setContent(memberLists);
 
         Label playerLabel = new Label();
-        playerLabel.textProperty().bind(LanguageUtility.getMessageProperty("battle.players"));
+        playerLabel.textProperty().bind(LanguageUtility.getMessageProperty("players"));
         playerLabel.setFont(new Font(20));
         memberLists.getChildren().add(playerLabel);
 
@@ -121,7 +122,7 @@ public class BattleView extends ViewPart {
         });
 
         Label enemyLabel = new Label();
-        enemyLabel.textProperty().bind(LanguageUtility.getMessageProperty("battle.enemies"));
+        enemyLabel.textProperty().bind(LanguageUtility.getMessageProperty("enemies"));
         enemyLabel.setFont(new Font(20));
         memberLists.getChildren().add(enemyLabel);
 
@@ -178,14 +179,18 @@ public class BattleView extends ViewPart {
 
         ComboBox<AttackTypes> attackCombo = new ComboBox<>();
         attackCombo.setItems(FXCollections.observableArrayList(AttackTypes.values()));
+        attackCombo.setCellFactory(list -> new UpdatingListCell<>());
+        attackCombo.setButtonCell(new UpdatingListCell<>());
         attackCombo.getSelectionModel().select(AttackTypes.upperBody);
         HBox attackBox = labelRegion("battle.info.target", attackCombo);
 
         TextField blockField = new TextField("1");
 
-        ComboBox<shieldEnum> blockCombo = new ComboBox<>();
-        blockCombo.setItems(FXCollections.observableArrayList(shieldEnum.values()));
-        blockCombo.getSelectionModel().select(shieldEnum.without);
+        ComboBox<ShieldEnum> blockCombo = new ComboBox<>();
+        blockCombo.setCellFactory(list -> new UpdatingListCell<>());
+        blockCombo.setButtonCell(new UpdatingListCell<>());
+        blockCombo.setItems(FXCollections.observableArrayList(ShieldEnum.values()));
+        blockCombo.getSelectionModel().select(ShieldEnum.without);
 
         HBox blockBox = labelRegion("battle.info.block", 40, blockField, 110, blockCombo);
 
@@ -487,16 +492,21 @@ public class BattleView extends ViewPart {
         new SpawnView(battle, enemy);
     }
 
-    private enum shieldEnum {
+    private enum ShieldEnum implements WithToStringProperty {
         with, without;
 
         @Override
         public String toString() {
-            return LanguageUtility.getMessage("battle.shieldEnum." + super.toString());
+            return toStringProperty().get();
         }
 
         public boolean toBool() {
-            return this == shieldEnum.with;
+            return this == ShieldEnum.with;
+        }
+
+        @Override
+        public ReadOnlyStringProperty toStringProperty() {
+            return LanguageUtility.getMessageProperty("battle.shieldEnum." + super.toString());
         }
     }
 }
