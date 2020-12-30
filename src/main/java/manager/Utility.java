@@ -1,25 +1,20 @@
 package manager;
 
-import city.Town;
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.FileBasedConfiguration;
-import org.apache.commons.configuration2.PropertiesConfiguration;
-import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
-import org.apache.commons.configuration2.builder.fluent.Parameters;
-import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Random;
 
 public abstract class Utility {
 
     private static final Random rand = new Random();
 
     public static final ObjectProperty<Configuration> config = new SimpleObjectProperty<>();
-
-    public static final ListProperty<Town> townList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     public static MemoryView memoryView;
 

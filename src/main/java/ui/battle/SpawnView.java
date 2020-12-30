@@ -33,6 +33,8 @@ public class SpawnView extends View {
     private final boolean enemy;
 
     public SpawnView(Battle battle, boolean enemy) {
+        super("spawn.title");
+
         VBox root = new VBox(10);
         root.setAlignment(Pos.TOP_CENTER);
 

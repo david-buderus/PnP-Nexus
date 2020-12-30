@@ -26,11 +26,11 @@ import static ui.ViewFactory.labelTextField;
 
 public class AllMemberStateView extends View {
 
-    private HashMap<BattleMember, BattleMemberPane> panes;
-    private ListProperty<BattleMemberPane> selected;
+    private final HashMap<BattleMember, BattleMemberPane> panes;
+    private final ListProperty<BattleMemberPane> selected;
 
     public AllMemberStateView(Battle battle, BattleMember source) {
-        this.stage.setTitle("Effekte");
+        super("allState.title");
         this.panes = new HashMap<>();
         this.selected = new SimpleListProperty<>(FXCollections.observableArrayList());
 

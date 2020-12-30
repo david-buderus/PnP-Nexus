@@ -1,6 +1,6 @@
 package ui.battle;
 
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import manager.Database;
+import manager.LanguageUtility;
 import model.Spell;
 import model.item.Armor;
 import model.item.Jewellery;
@@ -26,10 +27,8 @@ public class CharacterView extends View {
     protected ExtendedBattleMember character;
 
     public CharacterView(ExtendedBattleMember character) {
-        super();
+        super(LanguageUtility.getMessage("character.title"), new ReadOnlyStringWrapper(" ").concat(character.nameProperty()));
         this.character = character;
-
-        this.stage.titleProperty().bind(new SimpleStringProperty("Charakterbogen ").concat(character.nameProperty()));
 
         HBox root = new HBox();
 

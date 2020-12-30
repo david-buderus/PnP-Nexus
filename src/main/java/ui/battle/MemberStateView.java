@@ -30,7 +30,7 @@ public class MemberStateView extends View {
     private final ObjectProperty<MemberStatePane> selected;
 
     public MemberStateView(BattleMember target, BattleMember source) {
-        this.stage.setTitle("Effekte");
+        super("state.title");
         this.panes = new HashMap<>();
         this.selected = new SimpleObjectProperty<>();
 

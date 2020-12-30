@@ -16,8 +16,7 @@ import ui.View;
 public class StatisticView extends View {
 
     public StatisticView(ObservableList<BattleMember> members, Battle battle) {
-
-        stage.setTitle("Statistik");
+        super("statistics.title");
 
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(20, 5, 20, 4));

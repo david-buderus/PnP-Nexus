@@ -17,7 +17,7 @@ import static ui.ViewFactory.labelTextField;
 public class MemberArmorView extends View {
 
     public MemberArmorView(BattleMember member) {
-        this.stage.setTitle("Rüstung");
+        super("armor.title");
 
         VBox root = new VBox(5);
         root.setPadding(new Insets(10));

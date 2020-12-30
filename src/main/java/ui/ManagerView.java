@@ -11,8 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -40,16 +38,14 @@ public class ManagerView extends View {
     protected StringProperty fileName;
 
     public ManagerView(Stage stage) {
-        super(stage);
+        super("manager.title", stage);
         this.fileName = new SimpleStringProperty();
         this.fileName.bind(LanguageUtility.getMessageProperty("manager.noFile"));
-
-        stage.setTitle("P&P Manager");
 
         TabPane root = new TabPane();
 
         Tab startTab = new Tab();
-        startTab.textProperty().bind(LanguageUtility.getMessageProperty("settings"));
+        startTab.textProperty().bind(LanguageUtility.getMessageProperty("manager.settings"));
         startTab.setClosable(false);
         root.getTabs().add(startTab);
 
@@ -96,7 +92,7 @@ public class ManagerView extends View {
         settingsPane.add(fileText, 0, 0);
 
         Button loadButton = new Button();
-        loadButton.textProperty().bind(LanguageUtility.getMessageProperty("load"));
+        loadButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.load"));
         loadButton.setMaxWidth(Double.MAX_VALUE);
         loadButton.setOnAction(ev -> load());
         settingsPane.add(loadButton, 1, 0);
@@ -135,8 +131,8 @@ public class ManagerView extends View {
     }
 
     public void load(File file) {
-        this.info = new InfoView("loadingError");
-        this.fileName.bind(LanguageUtility.getMessageProperty("loading"));
+        this.info = new InfoView("manager.loadingError");
+        this.fileName.bind(LanguageUtility.getMessageProperty("manager.loading"));
 
         Service<Object> service = new Service<>() {
             @Override
@@ -167,7 +163,7 @@ public class ManagerView extends View {
             }
         });
         service.setOnCancelled(ev -> {
-            this.fileName.bind(LanguageUtility.getMessageProperty("fileNotLoaded"));
+            this.fileName.bind(LanguageUtility.getMessageProperty("manager.fileNotLoaded"));
             if (!info.isEmpty())
                 info.show();
         });

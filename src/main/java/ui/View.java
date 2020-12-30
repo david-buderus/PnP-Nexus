@@ -1,7 +1,9 @@
 package ui;
 
+import javafx.beans.binding.StringExpression;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import manager.LanguageUtility;
 
 public abstract class View implements IView {
 
@@ -9,12 +11,22 @@ public abstract class View implements IView {
 
     protected Stage stage;
 
-    public View() {
-        this(new Stage());
+    public View(String key) {
+        this(key, new Stage());
     }
 
-    public View(Stage stage) {
+    public View(String key, StringExpression titleAddition) {
+        this(key, titleAddition, new Stage());
+    }
+
+    public View(String key, StringExpression titleAddition, Stage stage) {
+        this(key, stage);
+        this.stage.titleProperty().bind(LanguageUtility.getMessageProperty(key).concat(titleAddition));
+    }
+
+    public View(String key, Stage stage) {
         this.stage = stage;
+        this.stage.titleProperty().bind(LanguageUtility.getMessageProperty(key));
         this.stage.getIcons().add(ICON_IMAGE);
         this.stage.setOnCloseRequest(ev -> onClose());
     }

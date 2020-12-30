@@ -23,9 +23,7 @@ import java.util.Collection;
 public class LootView extends View {
 
     public LootView(Collection<Loot> loot, Collection<EXP> exp, int playerCount) {
-        super();
-
-        stage.setTitle("Raubgut");
+        super("loot.title");
 
         VBox root = new VBox();
         root.setPadding(new Insets(10, 20, 20, 20));
