@@ -8,15 +8,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import manager.LanguageUtility;
 import ui.part.NumberField;
 
 public abstract class ViewFactory {
 
-    public static HBox labelTextField(String text, StringProperty property) {
+    public static HBox labelTextField(String key, StringProperty property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
-        Label name = new Label(text);
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
         name.setPrefWidth(60);
         box.getChildren().add(name);
 
@@ -29,11 +31,12 @@ public abstract class ViewFactory {
     }
 
 
-    public static HBox labelTextField(String text, IntegerProperty property) {
+    public static HBox labelTextField(String key, IntegerProperty property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
-        Label name = new Label(text);
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
         name.setPrefWidth(60);
         box.getChildren().add(name);
 
@@ -45,11 +48,12 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelShortTextField(String text, IntegerProperty property) {
+    public static HBox labelShortTextField(String key, IntegerProperty property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
-        Label name = new Label(text);
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
         name.setPrefWidth(150);
         box.getChildren().add(name);
 
@@ -61,11 +65,12 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelShortTextField(String text, ReadOnlyIntegerProperty property, IntegerProperty modifier) {
+    public static HBox labelShortTextField(String key, ReadOnlyIntegerProperty property, IntegerProperty modifier) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
-        Label name = new Label(text);
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
         name.setPrefWidth(150);
         box.getChildren().add(name);
 
@@ -83,11 +88,12 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelTextField(String text, IntegerProperty property1, IntegerProperty property2) {
+    public static HBox labelTextField(String key, IntegerProperty property1, IntegerProperty property2) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
-        Label name = new Label(text);
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
         name.setPrefWidth(60);
         box.getChildren().add(name);
 
@@ -114,11 +120,12 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelRegion(String text, Region region) {
+    public static HBox labelRegion(String key, Region region) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
-        Label name = new Label(text);
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
         name.setPrefWidth(60);
         box.getChildren().add(name);
 
@@ -128,11 +135,12 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelRegion(String text, int space1, Region region1, int space2, Region region2) {
+    public static HBox labelRegion(String key, int space1, Region region1, int space2, Region region2) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
-        Label name = new Label(text);
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
         name.setPrefWidth(60);
         box.getChildren().add(name);
 
