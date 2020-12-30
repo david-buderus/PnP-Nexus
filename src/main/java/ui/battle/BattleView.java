@@ -215,16 +215,13 @@ public class BattleView extends ViewPart {
             info.getChildren().add(labelTextField("battle.info.counter", target.counterProperty()));
             info.getChildren().add(labelTextField("battle.info.start", target.startValueProperty()));
 
-            Button armorButton;
+            Button armorButton = new Button();
+            armorButton.setPrefWidth(215);
             if (target instanceof ExtendedBattleMember) {
-                armorButton = new Button();
                 armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.characterSheet"));
-                armorButton.setPrefWidth(215);
                 armorButton.setOnAction(ev -> new CharacterView((ExtendedBattleMember) target));
             } else {
-                armorButton = new Button();
                 armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.armor"));
-                armorButton.setPrefWidth(215);
                 armorButton.setOnAction(ev -> new MemberArmorView(target));
             }
             info.getChildren().add(armorButton);
@@ -480,8 +477,9 @@ public class BattleView extends ViewPart {
 
     private void load(boolean enemy) {
         FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Exeldatei", "*.xlsx"),
-                new FileChooser.ExtensionFilter("Alle Dateien", "*.*"));
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("excelFile"), "*.xlsx"),
+                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
         battle.load(chooser.showOpenDialog(getStage()), enemy);
     }
 
