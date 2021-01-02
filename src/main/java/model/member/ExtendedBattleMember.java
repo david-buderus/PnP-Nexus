@@ -691,7 +691,7 @@ public class ExtendedBattleMember extends BattleMember {
                 return charisma;
             case resilience:
                 return resilience;
-            case maneuverability:
+            case agility:
                 return maneuverability;
             case precision:
                 return precision;
@@ -864,7 +864,7 @@ public class ExtendedBattleMember extends BattleMember {
         return result;
     }
 
-    private Collection<Talent> getMainTalents() {
+    public Collection<Talent> getMainTalents() {
         Collection<Talent> result = new ArrayList<>();
         result.addAll(characterisation.getMainTalents());
         result.addAll(race.getMainTalents());

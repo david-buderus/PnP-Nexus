@@ -2,6 +2,7 @@ package ui;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -49,11 +50,15 @@ public abstract class ViewFactory {
     }
 
     public static HBox labelShortTextField(String key, IntegerProperty property) {
+        return labelShortTextField(LanguageUtility.getMessageProperty(key), property);
+    }
+
+    public static HBox labelShortTextField(ReadOnlyStringProperty nameProperty, IntegerProperty property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
         Label name = new Label();
-        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
+        name.textProperty().bind(nameProperty);
         name.setPrefWidth(150);
         box.getChildren().add(name);
 
@@ -66,11 +71,15 @@ public abstract class ViewFactory {
     }
 
     public static HBox labelShortTextField(String key, ReadOnlyIntegerProperty property, IntegerProperty modifier) {
+        return labelShortTextField(LanguageUtility.getMessageProperty(key), property, modifier);
+    }
+
+    public static HBox labelShortTextField(ReadOnlyStringProperty nameProperty, ReadOnlyIntegerProperty property, IntegerProperty modifier) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
         Label name = new Label();
-        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
+        name.textProperty().bind(nameProperty);
         name.setPrefWidth(150);
         box.getChildren().add(name);
 

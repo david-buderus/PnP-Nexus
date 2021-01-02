@@ -1,73 +1,28 @@
 package model.member.generation;
 
+import javafx.beans.property.ReadOnlyStringProperty;
+import manager.LanguageUtility;
+import model.interfaces.WithToStringProperty;
+
 import java.util.NoSuchElementException;
 
-public enum PrimaryAttribute {
-    strength, endurance, dexterity, intelligence, charisma, resilience, maneuverability, precision;
+public enum PrimaryAttribute implements WithToStringProperty {
+    strength, endurance, dexterity, intelligence, charisma, resilience, agility, precision;
 
     @Override
-    public String toString() {
-        switch (this) {
-            case strength:
-                return "Körperkraft";
-            case endurance:
-                return "Ausdauer";
-            case dexterity:
-                return "Geschicklichkeit";
-            case intelligence:
-                return "Intelligenz";
-            case charisma:
-                return "Charisma";
-            case resilience:
-                return "Belastbarkeit";
-            case maneuverability:
-                return "Beweglichkeit";
-            case precision:
-                return "Genauigkeit";
-        }
-        return "Sonstiges";
+    public ReadOnlyStringProperty toStringProperty() {
+        return LanguageUtility.getMessageProperty("primaryAttribute." + super.toString());
     }
 
-    public String toShortString() {
-        switch (this) {
-            case strength:
-                return "KK";
-            case endurance:
-                return "AU";
-            case dexterity:
-                return "GE";
-            case intelligence:
-                return "IN";
-            case charisma:
-                return "CH";
-            case resilience:
-                return "BL";
-            case maneuverability:
-                return "BW";
-            case precision:
-                return "GN";
-        }
-        return "--";
+    public ReadOnlyStringProperty toShortStringProperty() {
+        return LanguageUtility.getMessageProperty("primaryAttribute." + super.toString() + ".short");
     }
 
     public static PrimaryAttribute getPrimaryAttribute(String name) {
-        switch (name) {
-            case "Körperkraft":
-                return strength;
-            case "Ausdauer":
-                return endurance;
-            case "Geschicklichkeit":
-                return dexterity;
-            case "Intelligenz":
-                return intelligence;
-            case "Charisma":
-                return charisma;
-            case "Belastbarkeit":
-                return resilience;
-            case "Beweglichkeit":
-                return maneuverability;
-            case "Genauigkeit":
-                return precision;
+        for (PrimaryAttribute attribute : values()) {
+            if (attribute.toStringProperty().get().equalsIgnoreCase(name.trim())) {
+                return attribute;
+            }
         }
         throw new NoSuchElementException("The PrimaryAttribute with the name " + name + " does not exists.");
     }

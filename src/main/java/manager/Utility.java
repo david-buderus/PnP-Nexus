@@ -1,11 +1,12 @@
 package manager;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
 import java.util.Arrays;
@@ -15,11 +16,30 @@ import java.util.Random;
 
 public abstract class Utility {
 
-    private static final Random rand = new Random();
-
-    public static final ObjectProperty<Configuration> config = new SimpleObjectProperty<>();
-
     public static MemoryView memoryView;
+
+    private static final Random rand = new Random();
+    private static Configuration config = null;
+
+
+    static {
+        Parameters params = new Parameters();
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
+                new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties()
+                                .setFileName("Configuration.properties")
+                                .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
+
+        try {
+            config = builder.getConfiguration();
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Configuration getConfig() {
+        return config;
+    }
 
 
     /**
@@ -191,21 +211,5 @@ public abstract class Utility {
         }
 
         return result.toString().trim();
-    }
-
-    public static <T> ObservableList<T> createListBinding(ObservableValue<T>... items) {
-        ObservableList<T> result = FXCollections.observableArrayList();
-
-        for (ObservableValue<T> item : items) {
-            result.add(item.getValue());
-
-            item.addListener((ob, o, n) -> {
-                int pos = result.indexOf(o);
-                result.remove(pos);
-                result.add(pos, n);
-            });
-        }
-
-        return result;
     }
 }
