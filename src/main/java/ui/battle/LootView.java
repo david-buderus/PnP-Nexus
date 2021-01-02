@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import manager.LanguageUtility;
 import manager.Utility;
 import model.item.Equipment;
 import model.item.Item;
@@ -19,6 +20,8 @@ import model.upgrade.Upgrade;
 import ui.View;
 
 import java.util.Collection;
+
+import static manager.LanguageUtility.getMessageProperty;
 
 public class LootView extends View {
 
@@ -36,11 +39,13 @@ public class LootView extends View {
         lootTable.setRowFactory(table -> new LootRow());
         lootTable.setPrefWidth(800);
 
-        TableColumn<Loot, String> name = new TableColumn<>("Gegenstand");
+        TableColumn<Loot, String> name = new TableColumn<>();
+        name.textProperty().bind(getMessageProperty("loot.item.name"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         lootTable.getColumns().add(name);
 
-        TableColumn<Loot, Integer> amount = new TableColumn<>("Menge");
+        TableColumn<Loot, Integer> amount = new TableColumn<>();
+        amount.textProperty().bind(getMessageProperty("loot.item.amount"));
         amount.setCellValueFactory(cell -> cell.getValue().amountProperty().asObject());
         amount.setPrefWidth(100);
         lootTable.getColumns().add(amount);
@@ -54,11 +59,13 @@ public class LootView extends View {
         levelTable.setPrefWidth(800);
         levelTable.setPrefHeight(200);
 
-        TableColumn<EXP, String> player = new TableColumn<>("Spieler");
+        TableColumn<EXP, String> player = new TableColumn<>();
+        player.textProperty().bind(getMessageProperty("loot.player.name"));
         player.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().player));
         levelTable.getColumns().add(player);
 
-        TableColumn<EXP, Integer> expAmount = new TableColumn<>("Erfahrung");
+        TableColumn<EXP, Integer> expAmount = new TableColumn<>();
+        expAmount.textProperty().bind(getMessageProperty("loot.player.exp"));
         expAmount.setCellValueFactory(x -> new SimpleIntegerProperty(x.getValue().amount).asObject());
         expAmount.setPrefWidth(100);
         levelTable.getColumns().add(expAmount);
@@ -73,12 +80,14 @@ public class LootView extends View {
         HBox leftButtons = new HBox(5);
         buttonPane.setLeft(leftButtons);
 
-        Button remove = new Button("Entfernen");
+        Button remove = new Button();
+        remove.textProperty().bind(getMessageProperty("loot.button.remove"));
         remove.setPrefWidth(100);
         leftButtons.getChildren().add(remove);
         remove.setOnAction(ev -> lootTable.getItems().remove(lootTable.getSelectionModel().getSelectedItem()));
 
-        Button save = new Button("Merken");
+        Button save = new Button();
+        save.textProperty().bind(getMessageProperty("loot.button.save"));
         save.setPrefWidth(100);
         leftButtons.getChildren().add(save);
         save.setOnAction(ev -> {
@@ -91,7 +100,8 @@ public class LootView extends View {
         Label coinLabel = new Label();
         buttonPane.setCenter(coinLabel);
 
-        Button sell = new Button("Verkaufen");
+        Button sell = new Button();
+        sell.textProperty().bind(getMessageProperty("loot.button.sell"));
         sell.setPrefWidth(100);
         buttonPane.setRight(sell);
 
@@ -99,28 +109,31 @@ public class LootView extends View {
             int itemValue = 0;
             int coinValue = 0;
 
+            int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
+            int goldToCopper = Utility.getConfig().getInt("coin.gold.toSilver") * silverToCopper;
+            String copper = LanguageUtility.getMessage("coin.copper");
+            String silver = LanguageUtility.getMessage("coin.silver");
+            String gold = LanguageUtility.getMessage("coin.gold");
+
             for (Loot l : lootTable.getItems()) {
                 Item item = l.getItem();
 
                 if (item.getCostOfOneAsCopper() > 0) {
                     itemValue += item.getCostOfOneAsCopper() * l.getAmount();
                 } else {
-                    switch (item.getName()) {
-                        case "Kupfer":
-                            coinValue += l.getAmount();
-                            break;
-                        case "Silber":
-                            coinValue += l.getAmount() * 100;
-                            break;
-                        case "Gold":
-                            coinValue += l.getAmount() * 10000;
-                            break;
+                    String itemName = item.getName();
+                    if (itemName.equalsIgnoreCase(copper)) {
+                        coinValue += l.getAmount();
+                    } else if (itemName.equalsIgnoreCase(silver)) {
+                        coinValue += l.getAmount() * silverToCopper;
+                    } else if (itemName.equalsIgnoreCase(gold)) {
+                        coinValue += l.getAmount() * goldToCopper;
                     }
                 }
             }
 
             int sellValue = Math.round(itemValue * 0.8f) + coinValue;
-            coinLabel.setText(Utility.visualiseSell(sellValue) + "\tPro Spieler: " +
+            coinLabel.setText(Utility.visualiseSell(sellValue) + "\t "+ LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
                     Utility.visualiseSell(sellValue / playerCount));
         });
 

@@ -3,8 +3,12 @@ package model.item;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import manager.Database;
+import manager.LanguageUtility;
+import manager.Utility;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents an item in the database
@@ -132,36 +136,75 @@ public class Item {
     }
 
     public int getCostOfOneAsCopper() {
-        int value = 0;
-        StringBuilder number = new StringBuilder();
 
-        for (int i = 0; i < cost.length(); i++) {
-            char c = cost.charAt(i);
-            if (Character.isDigit(c)) {
-                number.append(c);
-            } else {
-                switch (c) {
-                    case 'K':
-                        value += Integer.parseInt(number.toString());
-                        number = new StringBuilder();
-                        break;
-                    case 'S':
-                        value += Integer.parseInt(number.toString()) * 100;
-                        number = new StringBuilder();
-                        break;
-                    case 'G':
-                        value += Integer.parseInt(number.toString()) * 10000;
-                        number = new StringBuilder();
-                        break;
-                }
+         if (cost.isBlank() || !isTradeable()) {
+             return 0;
+         }
+
+        int value = 0;
+        int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
+        int goldToCopper = Utility.getConfig().getInt("coin.gold.toSilver") * silverToCopper;
+        String copper = LanguageUtility.getMessage("coin.copper.short");
+        String silver = LanguageUtility.getMessage("coin.silver.short");
+        String gold = LanguageUtility.getMessage("coin.gold.short");
+
+        List<Character> costList = new ArrayList<>();
+        for (char c : cost.toCharArray()) {
+            costList.add(c);
+        }
+
+        while (!costList.isEmpty()) {
+            int amount = parseNumber(costList);
+            String coin = parseCoin(costList);
+
+            if (coin.equals(copper)) {
+                value += amount;
+            } else if (coin.equals(silver)) {
+                value += amount * silverToCopper;
+            } else if (coin.equals(gold)) {
+                value += amount * goldToCopper;
             }
         }
 
         return value;
     }
 
+    private int parseNumber(List<Character> input) {
+        StringBuilder number = new StringBuilder();
+
+        while (!input.isEmpty()) {
+            char c = input.get(0);
+
+            if (Character.isDigit(c)) {
+                input.remove(0);
+                number.append(c);
+            } else {
+                break;
+            }
+        }
+
+        return Integer.parseInt(number.toString());
+    }
+
+    private String parseCoin(List<Character> input) {
+        StringBuilder coin = new StringBuilder();
+
+        while (!input.isEmpty()) {
+            char c = input.get(0);
+
+            if (!Character.isDigit(c)) {
+                input.remove(0);
+                coin.append(c);
+            } else {
+                break;
+            }
+        }
+
+        return coin.toString().trim();
+    }
+
     public boolean isTradeable() {
-        return !cost.equals("Nicht Handelbar");
+        return !cost.equalsIgnoreCase(LanguageUtility.getMessage("coin.notTradeable"));
     }
 
     public Item copy() {
