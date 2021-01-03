@@ -14,8 +14,10 @@ import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import manager.Database;
 import manager.Utility;
+import model.Rarity;
 import model.item.Jewellery;
 import ui.IView;
+import ui.part.UpdatingListCell;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -25,16 +27,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class JewelleryView extends SearchView<Jewellery> {
-    private StringProperty material;
-    private StringProperty gem;
-    private StringProperty typ;
-    private StringProperty rarity;
-    private ListProperty<String> gems;
-    private ListProperty<String> materials;
-    private ListProperty<String> types;
-    private BooleanProperty disabled;
-    private IntegerProperty searchCount;
-    private Random rand;
+    private final StringProperty material;
+    private final StringProperty gem;
+    private final StringProperty typ;
+    private final ObjectProperty<Rarity> rarity;
+    private final ListProperty<String> gems;
+    private final ListProperty<String> materials;
+    private final ListProperty<String> types;
+    private final BooleanProperty disabled;
+    private final IntegerProperty searchCount;
+    private final Random rand;
 
     public JewelleryView(IView parent) {
         super("Schmuck", parent, Jewellery.class);
@@ -42,16 +44,13 @@ public class JewelleryView extends SearchView<Jewellery> {
         this.material = new SimpleStringProperty("Material");
         this.gem = new SimpleStringProperty("Edelstein");
         this.typ = new SimpleStringProperty("Typ");
-        this.rarity = new SimpleStringProperty("Seltenheit");
+        this.rarity = new SimpleObjectProperty<>();
         this.materials = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.materials.add("Material");
         this.gems = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.gems.add("Edelstein");
         this.types = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.types.add("Typ");
-        ListProperty<String> rarities = new SimpleListProperty<>(FXCollections.observableArrayList());
-        rarities.add("Seltenheit");
-        rarities.addAll(Database.rarities);
         this.disabled = new SimpleBooleanProperty(true);
         this.searchCount = new SimpleIntegerProperty(1);
         this.rand = new Random();
@@ -93,10 +92,12 @@ public class JewelleryView extends SearchView<Jewellery> {
         typB.setPrefWidth((double) width / 2 - 5);
         infos2.getChildren().add(typB);
 
-        ComboBox<String> rarityB = new ComboBox<>();
+        ComboBox<Rarity> rarityB = new ComboBox<>();
         rarity.bind(rarityB.selectionModelProperty().get().selectedItemProperty());
-        rarityB.itemsProperty().bindBidirectional(rarities);
-        rarityB.getSelectionModel().selectFirst();
+        rarityB.setItems(FXCollections.observableArrayList(Rarity.values()));
+        rarityB.setButtonCell(new UpdatingListCell<>());
+        rarityB.setCellFactory(list -> new UpdatingListCell<>());
+        rarityB.getSelectionModel().select(Rarity.unknown);
         rarityB.setPrefWidth((double) width / 2 - 5);
         infos2.getChildren().add(rarityB);
 
@@ -134,11 +135,11 @@ public class JewelleryView extends SearchView<Jewellery> {
 
     private void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            String rarity = this.rarity.get().equals("Seltenheit") ? Utility.getRandomRarity() : this.rarity.get();
-            Collection<String> material = this.material.get().equals("Material") ? Utility.getRandomMaterial()
+            Rarity rarity = this.rarity.get() == Rarity.unknown ? Utility.getRandomRarity() : this.rarity.get();
+            Collection<String> material = this.material.get().equals("Material") ? Database.getRandomMaterial()
                     : Collections.singletonList(this.material.get());
 
-            Stream<Jewellery> stream = Database.jewelleryList.stream().filter(w -> w.getRarity().equals(rarity));
+            Stream<Jewellery> stream = Database.jewelleryList.stream().filter(w -> w.getRarity() == rarity);
             stream = stream.filter(w -> material.contains(w.getMaterial()));
 
             if (!this.gem.get().equals("Edelstein")) {

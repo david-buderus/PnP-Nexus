@@ -1,5 +1,6 @@
 package manager;
 
+import model.Rarity;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -9,10 +10,7 @@ import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 public abstract class Utility {
 
@@ -48,66 +46,17 @@ public abstract class Utility {
      *
      * @return a rarity matching the chance
      */
-    public static String getRandomRarity() {
+    public static Rarity getRandomRarity() {
         double percent = rand.nextDouble();
 
-        if (percent < getChanceOfRarity("legendär")) {
-            return "legendär";
-        }
-        if (percent < getChanceOfRarity("episch")) {
-            return "episch";
-        }
-        if (percent < getChanceOfRarity("selten")) {
-            return "selten";
-        }
-        return "gewöhnlich";
+        return Arrays.stream(Rarity.values())
+                .sorted(Comparator.comparingDouble(Rarity::getChance))
+                .filter(r -> percent < r.getChance())
+                .findFirst().orElse(Rarity.unknown);
     }
 
     /**
-     * Returns the chance to find an item
-     * of the given rarity
-     *
-     * @param rarity of which the chance is needed
-     * @return a double in [0,1]
-     */
-    public static double getChanceOfRarity(String rarity) {
-        if (rarity.equals("legendär")) {
-            return 0.01;
-        }
-        if (rarity.equals("episch")) {
-            return 0.05;
-        }
-        if (rarity.equals("selten")) {
-            return 0.20;
-        }
-        return 1;
-    }
-
-    /**
-     * Generates a Collection of String which
-     * represents materials of the database.
-     *
-     * @return a list of materials of a specific tier
-     */
-    public static Collection<String> getRandomMaterial() {
-        switch (getRandomTier()) {
-            case 1:
-                return Arrays.asList("Eisen", "Silber", "Leder", "Holz", "Papier", "Stoff");
-            case 2:
-                return Arrays.asList("Stahl", "Gold", "Verstärktes Leder", "Verzaubertes Holz", "Pergament", "Verzauberter Stoff");
-            case 3:
-                return Arrays.asList("Mithril", "Platin", "Bestienleder", "Entholz", "Verzaubertes Papier", "Seide");
-            case 4:
-                return Arrays.asList("Orichalcum", "Wei\u00dfgold", "Verstärktes Bestienleder", "Verzaubertes Entholz", "Verzaubertes Pergament", "Verzauberte Seide");
-            case 5:
-                return Arrays.asList("Adamantium", "Drachenschuppe", "Weltenholz", "Gesegnetes Pergament", "Magiestoff");
-            default:
-                return Collections.emptyList();
-        }
-    }
-
-    /**
-     * Generates a random number in [1, 5]
+     * Generates a random number in between 1 and the maximal tier specified in the config
      * with a higher chance to generate a low number.
      *
      * @return a random generated Tier
@@ -115,18 +64,14 @@ public abstract class Utility {
     public static int getRandomTier() {
         double percent = rand.nextDouble();
 
-        if (percent < 0.01) {
-            return 5;
+        Float[] array = (Float[]) config.getArray(Float.class, "tier.chance");
+
+        for (int i = array.length - 1; i >= 0; i--) {
+            if (percent < array[i]) {
+                return i + 1;
+            }
         }
-        if (percent < 0.1) {
-            return 4;
-        }
-        if (percent < 0.25) {
-            return 3;
-        }
-        if (percent < 0.5) {
-            return 2;
-        }
+
         return 1;
     }
 
@@ -188,26 +133,32 @@ public abstract class Utility {
      * @return human-readable format
      */
     public static String visualiseSell(int cost) {
-        String copper = cost % 100 + "K";
-        cost /= 100;
-        String silver = cost % 100 + "S";
-        cost /= 100;
-        String gold = cost + "G";
+        int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
+        int goldToSilver = Utility.getConfig().getInt("coin.gold.toSilver");
+        String copperCoin = LanguageUtility.getMessage("coin.copper.short");
+        String silverCoin = LanguageUtility.getMessage("coin.silver.short");
+        String goldCoin = LanguageUtility.getMessage("coin.gold.short");
+
+        int copper = cost % silverToCopper;
+        cost /= silverToCopper;
+        int silver = cost % goldToSilver;
+        cost /= goldToSilver;
+        int gold = cost;
 
         StringBuilder result = new StringBuilder();
 
-        if (!gold.equals("0G")) {
-            result.append(gold).append(" ");
+        if (gold > 0) {
+            result.append(gold).append(goldCoin).append(" ");
         }
-        if (!silver.equals("0S")) {
-            result.append(silver).append(" ");
+        if (silver > 0) {
+            result.append(silver).append(silverCoin).append(" ");
         }
-        if (!copper.equals("0K")) {
-            result.append(copper);
+        if (copper > 0) {
+            result.append(copper).append(copperCoin);
         }
 
         if (result.length() == 0) {
-            return "0K";
+            return "0" + copperCoin;
         }
 
         return result.toString().trim();

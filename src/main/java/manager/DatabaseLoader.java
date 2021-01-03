@@ -78,7 +78,7 @@ public abstract class DatabaseLoader {
                 weapon.setHit(weaponSet.getInt("Treffer"));
                 weapon.setEffect(getString(weaponSet, "Effekt"));
                 weapon.setSlots(weaponSet.getInt("Verbesserungsslots"));
-                weapon.setRarity(getString(weaponSet, "Seltenheit"));
+                weapon.setRarity(getRarity(weaponSet, "Seltenheit"));
                 weapon.setCost(getString(weaponSet, "Preis"));
                 weapon.setTier(weaponSet.getInt("Tier"));
 
@@ -113,7 +113,7 @@ public abstract class DatabaseLoader {
                 armor.setWeight(armorSet.getDouble("Belastung"));
                 armor.setEffect(getString(armorSet, "Effekt"));
                 armor.setSlots(armorSet.getInt("Verbesserungsslots"));
-                armor.setRarity(getString(armorSet, "Seltenheit"));
+                armor.setRarity(getRarity(armorSet, "Seltenheit"));
                 armor.setCost(getString(armorSet, "Preis"));
                 armor.setTier(armorSet.getInt("Tier"));
 
@@ -146,7 +146,7 @@ public abstract class DatabaseLoader {
                 jewellery.setRequirement(getString(jewellerySet, "Vorraussetzung"));
                 jewellery.setEffect(getString(jewellerySet, "Effekt"));
                 jewellery.setSlots(jewellerySet.getInt("Verbesserungsslots"));
-                jewellery.setRarity(getString(jewellerySet, "Seltenheit"));
+                jewellery.setRarity(getRarity(jewellerySet, "Seltenheit"));
                 jewellery.setCost(getString(jewellerySet, "Preis"));
                 jewellery.setTier(jewellerySet.getInt("Tier"));
 
@@ -176,7 +176,7 @@ public abstract class DatabaseLoader {
                 plant.setTyp(getString(plantSet, "Typ"));
                 plant.setSubTyp(getString(plantSet, "Subtyp"));
                 plant.setEffect(getString(plantSet, "Effekt"));
-                plant.setRarity(getString(plantSet, "Seltenheit"));
+                plant.setRarity(getRarity(plantSet, "Seltenheit"));
                 plant.setCost(getString(plantSet, "Preis"));
                 plant.setTier(plantSet.getInt("Tier"));
                 plant.setLocations(getCollection(statement,
@@ -206,7 +206,7 @@ public abstract class DatabaseLoader {
                 item.setName(getString(itemSet, "Bezeichnung"));
                 item.setSubTyp(getString(itemSet, "Subtyp"));
                 item.setEffect(getString(itemSet, "Effekt"));
-                item.setRarity(getString(itemSet, "Seltenheit"));
+                item.setRarity(getRarity(itemSet, "Seltenheit"));
                 item.setCost(getString(itemSet, "Preis"));
                 item.setTier(itemSet.getInt("Tier"));
 
@@ -842,7 +842,7 @@ public abstract class DatabaseLoader {
                 weapon.setTyp("Waffe");
                 weapon.setSubTyp(getString(weaponSet, "Waffentyp"));
                 weapon.setTier(weaponSet.getInt("Tier"));
-                weapon.setRarity(getString(weaponSet, "Seltenheit"));
+                weapon.setRarity(getRarity(weaponSet, "Seltenheit"));
                 weapon.setInitiative(getString(weaponSet, "Initiative"));
                 weapon.setDice(getString(weaponSet, "Würfel/Belastung"));
                 weapon.setDamage(weaponSet.getInt("Schaden/Schutz"));
@@ -888,7 +888,7 @@ public abstract class DatabaseLoader {
                 armor.setTyp("Rüstung");
                 armor.setSubTyp(position.toString());
                 armor.setTier(armorSet.getInt("Tier"));
-                armor.setRarity(getString(armorSet, "Seltenheit"));
+                armor.setRarity(getRarity(armorSet, "Seltenheit"));
                 armor.setProtection(armorSet.getInt("Schutz"));
                 armor.setWeight(armorSet.getDouble("Belastung"));
                 armor.setEffect(getString(armorSet, "Effekt"));
@@ -1035,6 +1035,10 @@ public abstract class DatabaseLoader {
             }
         }
         return null;
+    }
+
+    private static Rarity getRarity(ResultSet resultSet, String label) throws SQLException {
+        return Rarity.getRarity(getString(resultSet, label));
     }
 
     private static String getString(ResultSet resultSet, String label) throws SQLException {

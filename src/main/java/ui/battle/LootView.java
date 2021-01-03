@@ -133,8 +133,14 @@ public class LootView extends View {
             }
 
             int sellValue = Math.round(itemValue * 0.8f) + coinValue;
-            coinLabel.setText(Utility.visualiseSell(sellValue) + "\t "+ LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
-                    Utility.visualiseSell(sellValue / playerCount));
+
+            if (playerCount > 0) {
+                coinLabel.setText(Utility.visualiseSell(sellValue) + "\t "+ LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
+                        Utility.visualiseSell(sellValue / playerCount));
+            } else {
+                coinLabel.setText(Utility.visualiseSell(sellValue));
+            }
+
         });
 
         stage.setScene(scene);

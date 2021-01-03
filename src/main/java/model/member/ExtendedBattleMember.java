@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import manager.Database;
 import manager.Utility;
 import model.Battle;
+import model.Rarity;
 import model.Spell;
 import model.item.*;
 import model.member.data.ArmorPiece;
@@ -432,10 +433,10 @@ public class ExtendedBattleMember extends BattleMember {
         ArrayList<Weapon> weapons = new ArrayList<>();
         for (int i = getTier(); i > 0 && weapons.size() == 0; i--) {
             int k = i;
-            String rarity = Utility.getRandomRarity();
+            Rarity rarity = Utility.getRandomRarity();
             weapons = weaponPool.stream()
                     .filter(x -> x.getTier() == k)
-                    .filter(x -> x.getRarity().equals(rarity))
+                    .filter(x -> x.getRarity() == rarity)
                     .filter(this::checkRequirements)
                     .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
                     .collect(Collectors.toCollection(ArrayList::new));
@@ -443,7 +444,7 @@ public class ExtendedBattleMember extends BattleMember {
             if (weapons.size() == 0) {
                 weapons = weaponPool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity().equals("gewöhnlich"))
+                        .filter(x -> x.getRarity() == Rarity.common)
                         .filter(this::checkRequirements)
                         .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -559,10 +560,10 @@ public class ExtendedBattleMember extends BattleMember {
         ArrayList<Eq> equipment = new ArrayList<>();
         for (int i = getTier(); i > 0 && equipment.size() == 0; i--) {
             int k = i;
-            String rarity = Utility.getRandomRarity();
+            Rarity rarity = Utility.getRandomRarity();
             equipment = pool.stream()
                     .filter(x -> x.getTier() == k)
-                    .filter(x -> x.getRarity().equals(rarity))
+                    .filter(x -> x.getRarity() == rarity)
                     .filter(x -> x.getSubTyp().equals(typ))
                     .filter(this::checkRequirements)
                     .collect(Collectors.toCollection(ArrayList::new));
@@ -570,7 +571,7 @@ public class ExtendedBattleMember extends BattleMember {
             if (equipment.size() == 0) {
                 equipment = pool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity().equals("gewöhnlich"))
+                        .filter(x -> x.getRarity() == Rarity.common)
                         .filter(x -> x.getSubTyp().equals(typ))
                         .filter(this::checkRequirements)
                         .collect(Collectors.toCollection(ArrayList::new));

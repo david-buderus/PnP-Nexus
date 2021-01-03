@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleFloatProperty;
 import manager.Database;
 import manager.LanguageUtility;
 import manager.Utility;
+import model.Rarity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class Item {
     protected String subTyp = "";
     protected String requirement = "";
     protected String effect = "";
-    protected String rarity = "";
+    protected Rarity rarity = Rarity.common;
     protected String cost = "";
     protected int tier = 1;
     protected FloatProperty amount = new SimpleFloatProperty(1);
@@ -90,11 +91,11 @@ public class Item {
         this.effect = effect;
     }
 
-    public String getRarity() {
+    public Rarity getRarity() {
         return rarity;
     }
 
-    public void setRarity(String rarity) {
+    public void setRarity(Rarity rarity) {
         this.rarity = rarity;
     }
 

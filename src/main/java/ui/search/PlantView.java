@@ -13,9 +13,11 @@ import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import manager.Database;
 import manager.Utility;
+import model.Rarity;
 import model.item.Plant;
 import ui.IView;
 import ui.ViewPart;
+import ui.part.UpdatingListCell;
 
 import java.util.List;
 import java.util.Random;
@@ -26,7 +28,7 @@ public class PlantView extends ViewPart {
 
     private final StringProperty name;
     private final StringProperty typ;
-    private final StringProperty rarity;
+    private final ObjectProperty<Rarity> rarity;
     private final StringProperty location;
     private final StringProperty chosenLocation;
     private final ListProperty<Plant> list;
@@ -43,7 +45,7 @@ public class PlantView extends ViewPart {
 
         this.name = new SimpleStringProperty("Name");
         this.typ = new SimpleStringProperty("Typ");
-        this.rarity = new SimpleStringProperty("Seltenheit");
+        this.rarity = new SimpleObjectProperty<>();
         this.location = new SimpleStringProperty("Fundort");
         this.chosenLocation = new SimpleStringProperty();
         this.list = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -51,9 +53,6 @@ public class PlantView extends ViewPart {
         this.names.add("Name");
         this.types = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.types.add("Typ");
-        ListProperty<String> rarities = new SimpleListProperty<>(FXCollections.observableArrayList());
-        rarities.add("Seltenheit");
-        rarities.addAll(Database.rarities);
         this.locations = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.locations.add("Fundort");
         this.chosenLocations = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -147,9 +146,11 @@ public class PlantView extends ViewPart {
         HBox infos2 = new HBox(50);
         infos2.setAlignment(Pos.CENTER);
 
-        ComboBox<String> rarityB = new ComboBox<>();
+        ComboBox<Rarity> rarityB = new ComboBox<>();
         rarity.bind(rarityB.selectionModelProperty().get().selectedItemProperty());
-        rarityB.itemsProperty().bindBidirectional(rarities);
+        rarityB.setItems(FXCollections.observableArrayList(Rarity.values()));
+        rarityB.setCellFactory(list -> new UpdatingListCell<>());
+        rarityB.setButtonCell(new UpdatingListCell<>());
         rarityB.getSelectionModel().selectFirst();
         rarityB.setPrefWidth((double) width / 2 - 5);
         infos2.getChildren().add(rarityB);
@@ -251,9 +252,9 @@ public class PlantView extends ViewPart {
 
     private void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            String rarity = this.rarity.get().equals("Seltenheit") ? Utility.getRandomRarity() : this.rarity.get();
+            Rarity rarity = this.rarity.get() == Rarity.unknown ? Utility.getRandomRarity() : this.rarity.get();
 
-            Stream<Plant> stream = Database.plantList.stream().filter(w -> w.getRarity().equals(rarity));
+            Stream<Plant> stream = Database.plantList.stream().filter(w -> w.getRarity() == rarity);
 
             if (!this.name.get().equals("Name")) {
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
