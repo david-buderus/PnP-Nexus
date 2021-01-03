@@ -21,34 +21,44 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class SpellView extends ViewPart {
 
-    private StringProperty name;
-    private StringProperty typ;
-    private StringProperty cost;
-    private IntegerProperty tier;
-    private ListProperty<Spell> list;
-    private ListProperty<String> names;
-    private ListProperty<String> typs;
-    private ListProperty<String> costs;
-    private ListProperty<Integer> tiers;
-    private BooleanProperty disabled;
-    private IntegerProperty searchCount;
-    private Random rand;
+    private final StringProperty name;
+    private final StringProperty typ;
+    private final StringProperty cost;
+    private final IntegerProperty tier;
+    private final ListProperty<Spell> list;
+    private final ListProperty<String> names;
+    private final ListProperty<String> typs;
+    private final ListProperty<String> costs;
+    private final ListProperty<Integer> tiers;
+    private final BooleanProperty disabled;
+    private final IntegerProperty searchCount;
+    private final Random rand;
+
+    protected final ReadOnlyStringProperty defaultName;
+    protected final ReadOnlyStringProperty defaultTyp;
+    protected final ReadOnlyStringProperty defaultCost;
 
     public SpellView(IView parent) {
-        super("Zauber", parent);
-        this.name = new SimpleStringProperty("Name");
-        this.typ = new SimpleStringProperty("Typ");
-        this.cost = new SimpleStringProperty("Kosten");
+        super("search.spell.title", parent);
+        this.defaultName = getMessageProperty("search.default.name");
+        this.defaultTyp = getMessageProperty("search.default.typ");
+        this.defaultCost = getMessageProperty("search.spell.default.cost");
+
+        this.name = new SimpleStringProperty(defaultName.get());
+        this.typ = new SimpleStringProperty(defaultTyp.get());
+        this.cost = new SimpleStringProperty(defaultCost.get());
         this.tier = new SimpleIntegerProperty(1);
         this.list = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.names = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.names.add("Name");
+        this.names.add(defaultName.get());
         this.typs = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.typs.add("Typ");
+        this.typs.add(defaultTyp.get());
         this.costs = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.costs.add("Kosten");
+        this.costs.add(defaultCost.get());
         this.tiers = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.tiers.addAll(1, 2, 3, 4, 5);
         this.disabled = new SimpleBooleanProperty(true);
@@ -72,32 +82,38 @@ public class SpellView extends ViewPart {
         searchTable.itemsProperty().bindBidirectional(list);
         searchTable.setPrefWidth(730);
 
-        TableColumn<Spell, String> nameC = new TableColumn<>("Name");
+        TableColumn<Spell, String> nameC = new TableColumn<>();
+        nameC.textProperty().bind(getMessageProperty("column.name"));
         nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
         nameC.setPrefWidth(100);
         searchTable.getColumns().add(nameC);
 
-        TableColumn<Spell, String> effectC = new TableColumn<>("Effekt");
+        TableColumn<Spell, String> effectC = new TableColumn<>();
+        effectC.textProperty().bind(getMessageProperty("column.effect"));
         effectC.setCellValueFactory(new PropertyValueFactory<>("effect"));
         effectC.setPrefWidth(330);
         searchTable.getColumns().add(effectC);
 
-        TableColumn<Spell, String> typC = new TableColumn<>("Typ");
+        TableColumn<Spell, String> typC = new TableColumn<>();
+        typC.textProperty().bind(getMessageProperty("column.typ"));
         typC.setCellValueFactory(new PropertyValueFactory<>("typ"));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);
 
-        TableColumn<Spell, String> costC = new TableColumn<>("Kosten");
+        TableColumn<Spell, String> costC = new TableColumn<>();
+        costC.textProperty().bind(getMessageProperty("search.spell.column.cost"));
         costC.setCellValueFactory(new PropertyValueFactory<>("cost"));
         costC.setPrefWidth(50);
         searchTable.getColumns().add(costC);
 
-        TableColumn<Spell, String> timeC = new TableColumn<>("Zauberzeit");
+        TableColumn<Spell, String> timeC = new TableColumn<>();
+        timeC.textProperty().bind(getMessageProperty("search.spell.column.castTime"));
         timeC.setCellValueFactory(new PropertyValueFactory<>("castTime"));
         timeC.setPrefWidth(50);
         searchTable.getColumns().add(timeC);
 
-        TableColumn<Spell, Integer> rarityC = new TableColumn<>("Tier");
+        TableColumn<Spell, Integer> rarityC = new TableColumn<>();
+        rarityC.textProperty().bind(getMessageProperty("column.tier"));
         rarityC.setCellValueFactory(new PropertyValueFactory<>("tier"));
         rarityC.prefWidthProperty().bind(searchTable.widthProperty().subtract(nameC.widthProperty())
                 .subtract(effectC.widthProperty()).subtract(typC.widthProperty()).subtract(costC.widthProperty()));
@@ -152,7 +168,8 @@ public class SpellView extends ViewPart {
         count.setPrefWidth(width / 2f - 5);
         searching.getChildren().add(count);
 
-        Button searchButton = new Button("Suchen");
+        Button searchButton = new Button();
+        searchButton.textProperty().bind(getMessageProperty("search.button.search"));
         searchButton.setOnAction(ev -> search());
         searchButton.setPrefWidth(width / 2f - 5);
         searchButton.disableProperty().bindBidirectional(disabled);
@@ -160,7 +177,8 @@ public class SpellView extends ViewPart {
 
         root.getChildren().add(searching);
 
-        Button clear = new Button("Reset");
+        Button clear = new Button();
+        clear.textProperty().bind(getMessageProperty("search.button.reset"));
         clear.setPrefWidth(width + 40);
         clear.setOnAction(ev -> clear());
         root.getChildren().add(clear);
@@ -179,13 +197,13 @@ public class SpellView extends ViewPart {
 
             Stream<Spell> stream = Database.spellList.stream().filter(w -> w.getTier() == tier);
 
-            if (!this.name.get().equals("Name")) {
+            if (!this.name.get().equals(defaultName.get())) {
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
             }
-            if (!this.typ.get().equals("Typ")) {
+            if (!this.typ.get().equals(defaultTyp.get())) {
                 stream = stream.filter(w -> w.getTyp().equals(this.typ.get()));
             }
-            if (!this.cost.get().equals("Kosten")) {
+            if (!this.cost.get().equals(defaultCost.get())) {
                 stream = stream.filter(w -> w.getCost().equals(this.cost.get()));
             }
             List<Spell> result = stream.collect(Collectors.toList());
@@ -200,9 +218,9 @@ public class SpellView extends ViewPart {
         if (!Database.spellList.isEmpty()) {
             this.disabled.set(false);
 
-            ObservableList<String> name = FXCollections.observableArrayList("Name");
-            ObservableList<String> typ = FXCollections.observableArrayList("Typ");
-            ObservableList<String> cost = FXCollections.observableArrayList("Kosten");
+            ObservableList<String> name = FXCollections.observableArrayList(defaultName.get());
+            ObservableList<String> typ = FXCollections.observableArrayList(defaultTyp.get());
+            ObservableList<String> cost = FXCollections.observableArrayList(defaultCost.get());
 
             for (Spell spell : Database.spellList) {
                 String n = spell.getName();
@@ -224,9 +242,9 @@ public class SpellView extends ViewPart {
             costs.set(cost.sorted());
         } else {
             disabled.set(true);
-            names.set(FXCollections.observableArrayList("Name"));
-            typs.set(FXCollections.observableArrayList("Typ"));
-            costs.set(FXCollections.observableArrayList("Kosten"));
+            names.set(FXCollections.observableArrayList(defaultName.get()));
+            typs.set(FXCollections.observableArrayList(defaultTyp.get()));
+            costs.set(FXCollections.observableArrayList(defaultCost.get()));
         }
     }
 }

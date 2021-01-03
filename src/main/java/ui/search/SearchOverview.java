@@ -8,7 +8,7 @@ import ui.ViewPart;
 public class SearchOverview extends ViewPart {
 
     public SearchOverview(IView parent) {
-        super("Suchen", parent);
+        super("search.title", parent);
 
         TabPane root = new TabPane();
 

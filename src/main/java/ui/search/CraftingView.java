@@ -20,19 +20,18 @@ import ui.part.NumStringConverter;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 import java.util.stream.Collectors;
+
+import static manager.LanguageUtility.getMessageProperty;
 
 public class CraftingView extends SearchView<CraftingBonus> {
 
-    private final static Random random = new Random();
-
-    private StringProperty target;
-    private IntegerProperty amount;
-    private StringProperty info;
+    private final StringProperty target;
+    private final IntegerProperty amount;
+    private final StringProperty info;
 
     public CraftingView(IView parent) {
-        super("Herstellungsbonus", parent, CraftingBonus.class);
+        super("search.crafting.title", parent, CraftingBonus.class);
         this.target = new SimpleStringProperty("");
         this.amount = new SimpleIntegerProperty(1);
         this.info = new SimpleStringProperty("");
@@ -40,7 +39,7 @@ public class CraftingView extends SearchView<CraftingBonus> {
         this.target.addListener((ob, o, n) -> update(n));
 
         VBox root = this.createRoot(
-                new String[]{"Name", "Ziel", "Effekt"},
+                new String[]{"column.name", "column.target", "column.effect"},
                 new String[]{"name", "target", "effect"},
                 new double[]{120, 100, 235});
 
@@ -68,11 +67,13 @@ public class CraftingView extends SearchView<CraftingBonus> {
         searchable.getChildren().add(targetField);
 
         Button searchButton = new Button("Suchen");
+        searchButton.textProperty().bind(getMessageProperty("search.button.search"));
         searchButton.setPrefWidth(250);
         searchButton.setOnAction(ev -> search());
         inputBox.getChildren().add(searchButton);
 
-        Button clearButton = new Button("Leeren");
+        Button clearButton = new Button();
+        clearButton.textProperty().bind(getMessageProperty("search.button.reset"));
         clearButton.setPrefWidth(250);
         clearButton.setOnAction(ev -> clear());
         inputBox.getChildren().add(clearButton);
@@ -94,7 +95,7 @@ public class CraftingView extends SearchView<CraftingBonus> {
 
         if (bonuses.size() > 0) {
             for (int i = 0; i < amount.get(); i++) {
-                fullList.add(bonuses.get(random.nextInt(bonuses.size())));
+                fullList.add(bonuses.get(rand.nextInt(bonuses.size())));
             }
         }
     }

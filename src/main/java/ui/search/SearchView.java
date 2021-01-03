@@ -24,14 +24,18 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static manager.LanguageUtility.getMessageProperty;
 
 public abstract class SearchView<Typ> extends ViewPart {
 
     protected ListProperty<Typ> showingList;
     protected ListProperty<Typ> fullList;
     protected Class<Typ> typClass;
+    protected final Random rand;
     private final ArrayList<FilterContainer> filterContainers;
 
     public SearchView(String title, IView parent, Class<Typ> typClass) {
@@ -42,6 +46,7 @@ public abstract class SearchView<Typ> extends ViewPart {
         this.fullList.addListener((ob, o, n) -> showingList.set(n));
         this.showingList.set(fullList);
         this.filterContainers = new ArrayList<>();
+        this.rand = new Random();
     }
 
     protected VBox createRoot(String[] labels, String[] names) {
@@ -99,7 +104,8 @@ public abstract class SearchView<Typ> extends ViewPart {
     }
 
     private void createCounter(TableView<Typ> table, HBox input) {
-        TableColumn<Typ, Float> column = new TableColumn<>("Menge");
+        TableColumn<Typ, Float> column = new TableColumn<>();
+        column.textProperty().bind(getMessageProperty("column.amount"));
         column.setMaxWidth(400);
         column.setCellValueFactory(c -> ((Item) c.getValue()).amountProperty().asObject());
         column.setCellFactory(col -> new TableCell<>() {
@@ -135,7 +141,8 @@ public abstract class SearchView<Typ> extends ViewPart {
     }
 
     private void createUpgrade(TableView<Typ> table, HBox input) {
-        TableColumn<Typ, String> column = new TableColumn<>("Verbesserungen");
+        TableColumn<Typ, String> column = new TableColumn<>();
+        column.textProperty().bind(getMessageProperty("column.equipment.upgrades"));
         column.setMaxWidth(400);
         column.setCellValueFactory(c -> new ReadOnlyStringWrapper(((Equipment) c.getValue()).upgradesAsString()));
         column.setCellFactory(col -> new TableCell<>() {
@@ -171,7 +178,8 @@ public abstract class SearchView<Typ> extends ViewPart {
     }
 
     private void createColumn(TableView<Typ> table, HBox input, String label, String name, double width) {
-        TableColumn<Typ, Object> column = new TableColumn<>(label);
+        TableColumn<Typ, Object> column = new TableColumn<>();
+        column.textProperty().bind(getMessageProperty(label));
         column.setMaxWidth(400);
         if (width != 0) {
             column.setPrefWidth(width);

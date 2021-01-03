@@ -10,19 +10,21 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
-import javafx.util.converter.NumberStringConverter;
 import manager.Database;
 import manager.Utility;
 import model.Rarity;
 import model.item.Plant;
 import ui.IView;
 import ui.ViewPart;
+import ui.part.NumberField;
 import ui.part.UpdatingListCell;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static manager.LanguageUtility.getMessageProperty;
 
 public class PlantView extends ViewPart {
 
@@ -40,21 +42,28 @@ public class PlantView extends ViewPart {
     private final IntegerProperty searchCount;
     private final Random rand;
 
-    public PlantView(IView parent) {
-        super("Pflanzen", parent);
+    protected final ReadOnlyStringProperty defaultName;
+    protected final ReadOnlyStringProperty defaultTyp;
+    protected final ReadOnlyStringProperty defaultLocation;
 
-        this.name = new SimpleStringProperty("Name");
-        this.typ = new SimpleStringProperty("Typ");
+    public PlantView(IView parent) {
+        super("search.plant.title", parent);
+        this.defaultName = getMessageProperty("search.default.name");
+        this.defaultTyp = getMessageProperty("search.default.typ");
+        this.defaultLocation = getMessageProperty("search.plant.default.location");
+
+        this.name = new SimpleStringProperty(defaultName.get());
+        this.typ = new SimpleStringProperty(defaultTyp.get());
         this.rarity = new SimpleObjectProperty<>();
-        this.location = new SimpleStringProperty("Fundort");
+        this.location = new SimpleStringProperty(defaultLocation.get());
         this.chosenLocation = new SimpleStringProperty();
         this.list = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.names = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.names.add("Name");
+        this.names.add(defaultName.get());
         this.types = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.types.add("Typ");
+        this.types.add(defaultTyp.get());
         this.locations = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.locations.add("Fundort");
+        this.locations.add(defaultLocation.get());
         this.chosenLocations = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.disabled = new SimpleBooleanProperty(true);
         this.searchCount = new SimpleIntegerProperty(1);
@@ -77,37 +86,44 @@ public class PlantView extends ViewPart {
         searchTable.itemsProperty().bindBidirectional(list);
         searchTable.setPrefWidth(770);
 
-        TableColumn<Plant, Float> amountC = new TableColumn<>("#");
+        TableColumn<Plant, Float> amountC = new TableColumn<>();
+        amountC.textProperty().bind(getMessageProperty("column.amount.short"));
         amountC.setCellValueFactory(val -> val.getValue().amountProperty().asObject());
         amountC.setPrefWidth(20);
         amountC.setMaxWidth(25);
         searchTable.getColumns().add(amountC);
 
-        TableColumn<Plant, String> nameC = new TableColumn<>("Name");
+        TableColumn<Plant, String> nameC = new TableColumn<>();
+        nameC.textProperty().bind(getMessageProperty("column.name"));
         nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
         nameC.setPrefWidth(100);
         searchTable.getColumns().add(nameC);
 
-        TableColumn<Plant, String> typC = new TableColumn<>("Typ");
+        TableColumn<Plant, String> typC = new TableColumn<>();
+        typC.textProperty().bind(getMessageProperty("column.typ"));
         typC.setCellValueFactory(new PropertyValueFactory<>("subTyp"));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);
 
-        TableColumn<Plant, String> effectC = new TableColumn<>("Effekt");
+        TableColumn<Plant, String> effectC = new TableColumn<>();
+        effectC.textProperty().bind(getMessageProperty("column.effect"));
         effectC.setCellValueFactory(new PropertyValueFactory<>("effect"));
         effectC.setPrefWidth(250);
         searchTable.getColumns().add(effectC);
 
-        TableColumn<Plant, String> reqC = new TableColumn<>("Benötigt");
+        TableColumn<Plant, String> reqC = new TableColumn<>();
+        reqC.textProperty().bind(getMessageProperty("search.plant.column.requirement"));
         reqC.setCellValueFactory(new PropertyValueFactory<>("requirement"));
         reqC.setPrefWidth(150);
         searchTable.getColumns().add(reqC);
 
-        TableColumn<Plant, String> locationsC = new TableColumn<>("Fundort");
+        TableColumn<Plant, String> locationsC = new TableColumn<>();
+        locationsC.textProperty().bind(getMessageProperty("search.plant.column.location"));
         locationsC.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().locationsAsString()));
         locationsC.setPrefWidth(200);
 
-        TableColumn<Plant, String> rarityC = new TableColumn<>("Seltenheit");
+        TableColumn<Plant, String> rarityC = new TableColumn<>();
+        rarityC.textProperty().bind(getMessageProperty("column.item.rarity"));
         rarityC.setCellValueFactory(new PropertyValueFactory<>("rarity"));
         rarityC.prefWidthProperty().bind(searchTable.widthProperty().subtract(nameC.widthProperty()).subtract(reqC.widthProperty())
                 .subtract(effectC.widthProperty()).subtract(typC.widthProperty()).subtract(locationsC.widthProperty()));
@@ -167,12 +183,14 @@ public class PlantView extends ViewPart {
         HBox locationBox = new HBox(50);
         locationBox.setAlignment(Pos.CENTER);
 
-        Button addButton = new Button("Hinzuf\u00fcgen");
+        Button addButton = new Button();
+        addButton.textProperty().bind(getMessageProperty("search.plant.button.add"));
         addButton.setOnAction(ev -> add());
         addButton.setPrefWidth((double) width / 2 - 5);
         locationBox.getChildren().add(addButton);
 
-        Button removeButton = new Button("Entfernen");
+        Button removeButton = new Button();
+        removeButton.textProperty().bind(getMessageProperty("search.plant.button.remove"));
         removeButton.setOnAction(ev -> remove());
         removeButton.setPrefWidth((double) width / 2 - 5);
         locationBox.getChildren().add(removeButton);
@@ -182,13 +200,14 @@ public class PlantView extends ViewPart {
         HBox searching = new HBox(50);
         searching.setAlignment(Pos.CENTER);
 
-        TextField count = new TextField();
+        NumberField count = new NumberField();
         count.setTextFormatter(new TextFormatter<>(new IntegerStringConverter()));
-        count.textProperty().bindBidirectional(searchCount, new NumberStringConverter());
+        count.numberProperty().bindBidirectional(searchCount);
         count.setPrefWidth((double) width / 2 - 5);
         searching.getChildren().add(count);
 
-        Button searchButton = new Button("Suchen");
+        Button searchButton = new Button();
+        searchButton.textProperty().bind(getMessageProperty("search.button.search"));
         searchButton.setOnAction(ev -> search());
         searchButton.setPrefWidth((double) width / 2 - 5);
         searchButton.disableProperty().bindBidirectional(disabled);
@@ -196,7 +215,8 @@ public class PlantView extends ViewPart {
 
         searchBox.getChildren().add(searching);
 
-        Button clear = new Button("Reset");
+        Button clear = new Button();
+        clear.textProperty().bind(getMessageProperty("search.button.reset"));
         clear.setPrefWidth(width + 40);
         clear.setOnAction(ev -> clearList());
         searchBox.getChildren().add(clear);
@@ -214,12 +234,14 @@ public class PlantView extends ViewPart {
         locationT.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         chosenLocation.bind(locationT.getSelectionModel().selectedItemProperty());
 
-        TableColumn<String, String> locationC = new TableColumn<>("Fundorte");
+        TableColumn<String, String> locationC = new TableColumn<>();
+        locationC.textProperty().bind(getMessageProperty("search.plant.column.locations"));
         locationC.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue()));
         locationT.getColumns().add(locationC);
         locationListBox.getChildren().add(locationT);
 
-        Button clearL = new Button("Reset");
+        Button clearL = new Button();
+        clearL.textProperty().bind(getMessageProperty("search.button.reset"));
         clearL.setPrefWidth(width + 40);
         clearL.setOnAction(ev -> clearLocations());
         locationListBox.getChildren().add(clearL);
@@ -245,7 +267,7 @@ public class PlantView extends ViewPart {
     }
 
     private void add() {
-        if (location.get() != null && !location.get().equals("Fundort") && !chosenLocations.contains(location.get())) {
+        if (location.get() != null && !location.get().equals(defaultLocation.get()) && !chosenLocations.contains(location.get())) {
             chosenLocations.add(location.get());
         }
     }
@@ -256,10 +278,10 @@ public class PlantView extends ViewPart {
 
             Stream<Plant> stream = Database.plantList.stream().filter(w -> w.getRarity() == rarity);
 
-            if (!this.name.get().equals("Name")) {
+            if (!this.name.get().equals(defaultName.get())) {
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
             }
-            if (!this.typ.get().equals("Typ")) {
+            if (!this.typ.get().equals(defaultTyp.get())) {
                 stream = stream.filter(w -> w.getSubTyp().equals(this.typ.get()));
             }
             if (!this.chosenLocations.isEmpty()) {
@@ -303,9 +325,9 @@ public class PlantView extends ViewPart {
         if (!Database.plantList.isEmpty()) {
             this.disabled.set(false);
 
-            ObservableList<String> name = FXCollections.observableArrayList("Name");
-            ObservableList<String> typ = FXCollections.observableArrayList("Typ");
-            ObservableList<String> location = FXCollections.observableArrayList("Fundort");
+            ObservableList<String> name = FXCollections.observableArrayList(defaultName.get());
+            ObservableList<String> typ = FXCollections.observableArrayList(defaultTyp.get());
+            ObservableList<String> location = FXCollections.observableArrayList(defaultLocation.get());
 
             for (Plant plant : Database.plantList) {
                 String n = plant.getName();
@@ -333,9 +355,9 @@ public class PlantView extends ViewPart {
             locations.set(location.sorted());
         } else {
             disabled.set(true);
-            names.set(FXCollections.observableArrayList("Name"));
-            types.set(FXCollections.observableArrayList("Typ"));
-            locations.set(FXCollections.observableArrayList("Fundort"));
+            names.set(FXCollections.observableArrayList(defaultName.get()));
+            types.set(FXCollections.observableArrayList(defaultTyp.get()));
+            locations.set(FXCollections.observableArrayList(location.get()));
         }
     }
 }
