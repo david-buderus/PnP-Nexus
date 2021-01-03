@@ -1,6 +1,7 @@
 package ui;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,7 +33,7 @@ public abstract class ViewFactory {
     }
 
 
-    public static HBox labelTextField(String key, IntegerProperty property) {
+    public static HBox labelTextField(String key, Property<Number> property) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 

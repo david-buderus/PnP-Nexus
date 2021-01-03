@@ -10,6 +10,7 @@ public abstract class TextureHandler {
     protected Image stairs;
     protected Image room;
     protected Image wall;
+    protected Image chest;
 
     public Image getCorridor() {
         return corridor;
@@ -33,5 +34,9 @@ public abstract class TextureHandler {
 
     public Image getWall() {
         return wall;
+    }
+
+    public Image getChest() {
+        return chest;
     }
 }
