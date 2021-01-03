@@ -11,10 +11,12 @@ import model.Inconsistency;
 import ui.IView;
 import ui.ViewPart;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class InconsistencyView extends ViewPart {
 
     public InconsistencyView(IView parent) {
-        super("Inkonsistenzen", parent);
+        super("inconsistencies.title", parent);
         this.disableProperty().bind(Database.inconsistent.not());
 
         VBox root = new VBox();
@@ -24,17 +26,20 @@ public class InconsistencyView extends ViewPart {
         table.itemsProperty().bind(Database.inconsistencyList);
         root.getChildren().add(table);
 
-        TableColumn<Inconsistency, String> name = new TableColumn<>("Name");
+        TableColumn<Inconsistency, String> name = new TableColumn<>();
+        name.textProperty().bind(getMessageProperty("column.name"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         name.setPrefWidth(150);
         table.getColumns().add(name);
 
-        TableColumn<Inconsistency, String> inconsistency = new TableColumn<>("Inkonsistenz");
+        TableColumn<Inconsistency, String> inconsistency = new TableColumn<>();
+        name.textProperty().bind(getMessageProperty("inconsistencies.column.inconsistencies"));
         inconsistency.setCellValueFactory(new PropertyValueFactory<>("inconsistency"));
         inconsistency.setPrefWidth(150);
         table.getColumns().add(inconsistency);
 
-        TableColumn<Inconsistency, String> info = new TableColumn<>("Weitere Infos");
+        TableColumn<Inconsistency, String> info = new TableColumn<>();
+        name.textProperty().bind(getMessageProperty("inconsistencies.column.moreInfo"));
         info.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getInfoAsString()));
         info.setPrefWidth(600);
         table.getColumns().add(info);

@@ -1,60 +1,64 @@
 package model.member;
 
 import javafx.beans.property.*;
-import model.member.data.Requirement;
+import model.member.data.FoodRequirement;
+
+import static manager.LanguageUtility.getMessageProperty;
 
 public class FoodMember extends Member {
 
-    private IntegerProperty starvationLevel;
-    private StringProperty starvationString;
-    private IntegerProperty thirstLevel;
-    private StringProperty thirstString;
-    private ObjectProperty<Requirement> requiredFood;
-    private ObjectProperty<Requirement> neededDrinking;
-    private DoubleProperty eatenFood;
-    private DoubleProperty drunkDrinking;
+    private final IntegerProperty starvationLevel;
+    private final StringProperty starvationString;
+    private final IntegerProperty thirstLevel;
+    private final StringProperty thirstString;
+    private final ObjectProperty<FoodRequirement> requiredFood;
+    private final ObjectProperty<FoodRequirement> neededDrinking;
+    private final DoubleProperty eatenFood;
+    private final DoubleProperty drunkDrinking;
 
     public FoodMember() {
         super();
         starvationLevel = new SimpleIntegerProperty(0);
-        starvationString = new SimpleStringProperty("Satt");
+        starvationString = new SimpleStringProperty();
+        starvationString.bind(getMessageProperty("helper.food.full"));
 
         starvationLevel.addListener((ob, o, n) -> {
             switch (n.intValue()) {
                 case 1:
-                    starvationString.set("Wohl Gen\u00e4hrt");
+                    starvationString.bind(getMessageProperty("helper.food.wellFed"));
                     break;
                 case 0:
-                    starvationString.set("Satt");
+                    starvationString.bind(getMessageProperty("helper.food.full"));
                     break;
                 case -1:
-                    starvationString.set("Hungrig");
+                    starvationString.bind(getMessageProperty("helper.food.hungry"));
                     break;
                 case -2:
-                    starvationString.set("Am Verhungern");
+                    starvationString.bind(getMessageProperty("helper.food.starving"));
                     break;
                 case -3:
-                    starvationString.set("Verhungert");
+                    starvationString.bind(getMessageProperty("helper.food.starved"));
                     break;
             }
         });
 
         thirstLevel = new SimpleIntegerProperty(0);
-        thirstString = new SimpleStringProperty("Sitt");
+        thirstString = new SimpleStringProperty();
+        thirstString.bind(getMessageProperty("helper.food.noThirst"));
 
         thirstLevel.addListener((ob, o, n) -> {
             switch (n.intValue()) {
                 case 0:
-                    thirstString.set("Sitt");
+                    thirstString.bind(getMessageProperty("helper.food.noThirst"));
                     break;
                 case -1:
-                    thirstString.set("Durstig");
+                    thirstString.bind(getMessageProperty("helper.food.thirsty"));
                     break;
                 case -2:
-                    thirstString.set("Am Verdursten");
+                    thirstString.bind(getMessageProperty("helper.food.dyingOfThirst"));
                     break;
                 case -3:
-                    thirstString.set("Verdurstet");
+                    thirstString.bind(getMessageProperty("helper.food.diedOfThirst"));
                     break;
             }
         });
@@ -119,11 +123,11 @@ public class FoodMember extends Member {
         return thirstString;
     }
 
-    public ObjectProperty<Requirement> requiredFoodProperty() {
+    public ObjectProperty<FoodRequirement> requiredFoodProperty() {
         return requiredFood;
     }
 
-    public ObjectProperty<Requirement> neededDrinkingProperty() {
+    public ObjectProperty<FoodRequirement> neededDrinkingProperty() {
         return neededDrinking;
     }
 

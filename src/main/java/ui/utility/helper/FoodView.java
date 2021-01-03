@@ -12,21 +12,24 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import model.member.FoodMember;
-import model.member.data.Requirement;
+import model.member.data.FoodRequirement;
 import ui.IView;
 import ui.ViewPart;
 import ui.part.NumStringConverter;
+import ui.part.UpdatingListCell;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class FoodView extends ViewPart {
-    private List<FoodMember> members;
+    private final List<FoodMember> members;
 
     public FoodView(IView parent) {
-        super("Essen", parent);
+        super("helper.food.title", parent);
         this.members = new ArrayList<>();
 
         BorderPane root = new BorderPane();
@@ -37,9 +40,9 @@ public class FoodView extends ViewPart {
         line.setAlignment(Pos.CENTER_LEFT);
         line.setPadding(new Insets(0, 0, 10, 5));
 
-        line.getChildren().add(nameBox("Name"));
+        line.getChildren().add(nameBox("helper.food.name"));
 
-        HBox life = nameBox("Essen");
+        HBox life = nameBox("helper.food.food");
         life.setAlignment(Pos.CENTER_LEFT);
 
         Button lAdd = new Button("+");
@@ -62,7 +65,7 @@ public class FoodView extends ViewPart {
 
         line.getChildren().add(life);
 
-        HBox mana = nameBox("Trinken");
+        HBox mana = nameBox("helper.food.drinking");
         mana.setAlignment(Pos.CENTER_LEFT);
 
         Button mAdd = new Button("+");
@@ -85,13 +88,13 @@ public class FoodView extends ViewPart {
 
         line.getChildren().add(mana);
 
-        line.getChildren().add(nameBox("Hunger"));
+        line.getChildren().add(nameBox("helper.food.hunger"));
 
-        line.getChildren().add(nameBox("Durst"));
+        line.getChildren().add(nameBox("helper.food.thirst"));
 
-        line.getChildren().add(nameBox("Essensverbrauch"));
+        line.getChildren().add(nameBox("helper.food.foodConsumption"));
 
-        line.getChildren().add(nameBox("Trinkenverbrauch"));
+        line.getChildren().add(nameBox("helper.food.drinkingConsumption"));
 
         root.setTop(line);
 
@@ -113,19 +116,22 @@ public class FoodView extends ViewPart {
         BorderPane buttons = new BorderPane();
         buttons.setPadding(new Insets(15, 5, 5, 5));
 
-        Button addButton = new Button("Hinzuf\u00fcgen");
+        Button addButton = new Button();
+        addButton.textProperty().bind(getMessageProperty("helper.food.button.add"));
         addButton.setPrefWidth(100);
         addButton.setOnAction((ev) -> addOne(inner));
         buttons.setRight(addButton);
 
-        Button turnButton = new Button("N\u00e4chster Tag");
+        Button turnButton = new Button();
+        turnButton.textProperty().bind(getMessageProperty("helper.food.button.nextDay"));
         turnButton.setPrefWidth(100);
         turnButton.setOnAction(ev -> nextDay());
         buttons.setCenter(turnButton);
 
         root.setBottom(buttons);
 
-        Button clearButton = new Button("Leeren");
+        Button clearButton = new Button();
+        clearButton.textProperty().bind(getMessageProperty("helper.food.button.clear"));
         clearButton.setPrefWidth(100);
         clearButton.setOnAction(ev -> clear(inner));
         buttons.setLeft(clearButton);
@@ -179,7 +185,8 @@ public class FoodView extends ViewPart {
         name.textProperty().bindBidirectional(member.nameProperty());
         box.getChildren().add(name);
 
-        Button remove = new Button("Entfernen");
+        Button remove = new Button();
+        remove.textProperty().bind(getMessageProperty("helper.food.button.remove"));
         remove.setPrefWidth(70);
         remove.setOnAction(ev -> {
             members.remove(member);
@@ -211,18 +218,22 @@ public class FoodView extends ViewPart {
         thirst.textProperty().bind(member.thirstProperty());
         line.getChildren().add(thirst);
 
-        ComboBox<Requirement> neededFood = new ComboBox<>();
+        ComboBox<FoodRequirement> neededFood = new ComboBox<>();
         neededFood.setPrefWidth(149);
-        neededFood.setItems(FXCollections.observableArrayList(Requirement.values()));
+        neededFood.setItems(FXCollections.observableArrayList(FoodRequirement.values()));
+        neededFood.setButtonCell(new UpdatingListCell<>());
+        neededFood.setCellFactory(list -> new UpdatingListCell<>());
         member.requiredFoodProperty().bind(neededFood.getSelectionModel().selectedItemProperty());
-        neededFood.getSelectionModel().select(Requirement.normal);
+        neededFood.getSelectionModel().select(FoodRequirement.normal);
         line.getChildren().add(neededFood);
 
-        ComboBox<Requirement> neededDrinking = new ComboBox<>();
+        ComboBox<FoodRequirement> neededDrinking = new ComboBox<>();
         neededDrinking.setPrefWidth(149);
-        neededDrinking.setItems(FXCollections.observableArrayList(Requirement.values()));
+        neededDrinking.setItems(FXCollections.observableArrayList(FoodRequirement.values()));
+        neededDrinking.setButtonCell(new UpdatingListCell<>());
+        neededDrinking.setCellFactory(list -> new UpdatingListCell<>());
         member.neededDrinkingProperty().bind(neededDrinking.getSelectionModel().selectedItemProperty());
-        neededDrinking.getSelectionModel().select(Requirement.normal);
+        neededDrinking.getSelectionModel().select(FoodRequirement.normal);
         line.getChildren().add(neededDrinking);
 
         root.getChildren().add(line);
@@ -267,12 +278,13 @@ public class FoodView extends ViewPart {
         return box;
     }
 
-    private HBox nameBox(String s) {
+    private HBox nameBox(String key) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER_LEFT);
         box.setPrefWidth(149);
 
-        Label name = new Label(s);
+        Label name = new Label();
+        name.textProperty().bind(getMessageProperty(key));
         box.getChildren().add(name);
 
         return box;

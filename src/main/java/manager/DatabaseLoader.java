@@ -44,12 +44,11 @@ public abstract class DatabaseLoader {
                 info.add(loadSpells(statement, semaphore));
                 info.add(loadUpgrades(statement, semaphore));
                 info.add(loadDungeonLoot(statement, semaphore));
-                info.add(loadEvents(statement, semaphore));
                 info.add(loadCraftingBoni(statement, semaphore));
                 info.add(loadFabrication(statement, semaphore));
                 info.add(loadShieldTypes(statement, semaphore));
 
-                semaphore.acquire(7);
+                semaphore.acquire(6);
                 info.add(loadEnemies(statement, semaphore));
 
                 semaphore.acquire();
@@ -382,35 +381,6 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             e.printStackTrace();
             return "Loot konnte nicht geladen werden.";
-        }
-        return "";
-    }
-
-    private static String loadEvents(Statement statement, Semaphore semaphore) {
-        try (ResultSet eventSet = statement.executeQuery("SELECT * FROM Events")) {
-            ObservableList<Event> eventList = FXCollections.observableArrayList();
-
-            while (eventSet.next()) {
-                Event event = new Event();
-                event.setName(getString(eventSet, "Bezeichnung"));
-                event.setTyp(getString(eventSet, "Typ"));
-                event.setInfo(getString(eventSet, "Info"));
-                event.setTrigger(getString(eventSet, "Auslöser"));
-                event.setChance(eventSet.getDouble("Wahrscheinlichkeit"));
-                event.setContinents(Arrays.stream(getString(eventSet, "Kontinent").split(",")).map(String::trim).collect(Collectors.toList()));
-                event.setLands(Arrays.stream(getString(eventSet, "Land").split(",")).map(String::trim).collect(Collectors.toList()));
-                event.setLocations(Arrays.stream(getString(eventSet, "Gebiet").split(",")).map(String::trim).collect(Collectors.toList()));
-
-                eventList.add(event);
-            }
-
-            Platform.runLater(() -> {
-                Database.eventList.set(eventList);
-                semaphore.release();
-            });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Events konnten nicht geladen werden.";
         }
         return "";
     }

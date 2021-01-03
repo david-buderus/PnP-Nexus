@@ -26,7 +26,6 @@ public abstract class Database {
 
     public static final ListProperty<Armor> armorList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<DungeonLootFactory> dungeonLootList = new SimpleListProperty<>(FXCollections.observableArrayList());
-    public static final ListProperty<Event> eventList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Jewellery> jewelleryList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Plant> plantList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Spell> spellList = new SimpleListProperty<>(FXCollections.observableArrayList());

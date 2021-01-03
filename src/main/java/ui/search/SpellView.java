@@ -101,13 +101,13 @@ public class SpellView extends ViewPart {
         searchTable.getColumns().add(typC);
 
         TableColumn<Spell, String> costC = new TableColumn<>();
-        costC.textProperty().bind(getMessageProperty("search.spell.column.cost"));
+        costC.textProperty().bind(getMessageProperty("column.spell.cost"));
         costC.setCellValueFactory(new PropertyValueFactory<>("cost"));
         costC.setPrefWidth(50);
         searchTable.getColumns().add(costC);
 
         TableColumn<Spell, String> timeC = new TableColumn<>();
-        timeC.textProperty().bind(getMessageProperty("search.spell.column.castTime"));
+        timeC.textProperty().bind(getMessageProperty("column.spell.castTime"));
         timeC.setCellValueFactory(new PropertyValueFactory<>("castTime"));
         timeC.setPrefWidth(50);
         searchTable.getColumns().add(timeC);

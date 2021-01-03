@@ -1,6 +1,8 @@
 package ui.utility.helper;
 
+import javafx.beans.binding.StringExpression;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,15 +16,17 @@ import ui.IView;
 import ui.ViewPart;
 import ui.part.NumStringConverter;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class CalenderView extends ViewPart {
 
     private static final int newMoon = 1440;
 
-    private IntegerProperty day, month, year;
-    private Label info;
+    private final IntegerProperty day, month, year;
+    private final Label info;
 
     public CalenderView(IView parent) {
-        super("Kalender", parent);
+        super("helper.calender.title", parent);
 
         this.year = new SimpleIntegerProperty(0);
         this.year.addListener((ob, o, n) -> update());
@@ -86,11 +90,13 @@ public class CalenderView extends ViewPart {
         HBox buttonLine = new HBox(20);
         buttonLine.setAlignment(Pos.CENTER);
 
-        Button prev = new Button("Vorheriger Tag");
+        Button prev = new Button();
+        prev.textProperty().bind(getMessageProperty("helper.calender.button.previous"));
         prev.setOnAction(ev -> day.set(day.get() - 1));
         buttonLine.getChildren().add(prev);
 
-        Button next = new Button("Nächster Tag");
+        Button next = new Button();
+        next.textProperty().bind(getMessageProperty("helper.calender.button.next"));
         next.setOnAction(ev -> day.set(day.get() + 1));
         buttonLine.getChildren().add(next);
 
@@ -100,30 +106,36 @@ public class CalenderView extends ViewPart {
     }
 
     private void update() {
-        this.info.setText(
-                format("Grodon", 40) + "\n" +
-                        format("Heros", 43) + "\n" +
-                        format("Ados", 27)
+        this.info.textProperty().bind(
+                format("Grodon", 40).concat("\n")
+                        .concat(format("Heros", 43)).concat("\n")
+                        .concat(format("Ados", 27))
+
         );
     }
 
-    private String format(String moon, int circle) {
+    private StringExpression format(String moonName, int circle) {
+        StringExpression moon = new ReadOnlyStringWrapper(moonName + " ");
         long phase = ((getAbsoluteDate() - newMoon) % circle + circle) % circle;
 
         if (phase == 0) {
-            return moon + " ist im Neumond.";
+            return moon.concat(getMessageProperty("helper.calender.isInNewMoon")).concat(".");
         }
         if (phase < circle / 2) {
-            return moon + " ist in " + (circle / 2 - phase) + " Tagen im Vollmond.";
+            return moon.concat(getMessageProperty("helper.calender.isInXDaysFullMoon"))
+                    .concat(" ").concat(circle / 2 - phase).concat(" ")
+                    .concat(getMessageProperty("helper.calender.isInXDaysFullMoon.ending"));
         }
         if (phase == circle / 2) {
-            return moon + " ist im Vollmond";
+            return moon.concat(getMessageProperty("helper.calender.isInFullMoon")).concat(".");
         }
 
-        return moon + " ist in " + (circle - phase) + " Tagen im Neumond.";
+        return moon.concat(getMessageProperty("helper.calender.isInXDaysNewMoon"))
+                .concat(" ").concat(circle - phase).concat(" ")
+                .concat(getMessageProperty("helper.calender.isInXDaysNewMoon.ending"));
     }
 
     private long getAbsoluteDate() {
-        return this.day.get() - 1 + (this.month.get() - 1) * 40 + this.year.get() * 400;
+        return this.day.get() - 1 + (this.month.get() - 1) * 40L + this.year.get() * 400L;
     }
 }

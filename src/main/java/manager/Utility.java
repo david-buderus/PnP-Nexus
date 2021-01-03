@@ -1,6 +1,8 @@
 package manager;
 
 import model.Rarity;
+import model.item.Item;
+import model.loot.Loot;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -162,5 +164,35 @@ public abstract class Utility {
         }
 
         return result.toString().trim();
+    }
+
+    public static int sellLoot(Collection<Loot> loot) {
+        int itemValue = 0;
+        int coinValue = 0;
+
+        int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
+        int goldToCopper = Utility.getConfig().getInt("coin.gold.toSilver") * silverToCopper;
+        String copper = LanguageUtility.getMessage("coin.copper");
+        String silver = LanguageUtility.getMessage("coin.silver");
+        String gold = LanguageUtility.getMessage("coin.gold");
+
+        for (Loot l : loot) {
+            Item item = l.getItem();
+
+            if (item.getCostOfOneAsCopper() > 0) {
+                itemValue += item.getCostOfOneAsCopper() * l.getAmount();
+            } else {
+                String itemName = item.getName();
+                if (itemName.equalsIgnoreCase(copper)) {
+                    coinValue += l.getAmount();
+                } else if (itemName.equalsIgnoreCase(silver)) {
+                    coinValue += l.getAmount() * silverToCopper;
+                } else if (itemName.equalsIgnoreCase(gold)) {
+                    coinValue += l.getAmount() * goldToCopper;
+                }
+            }
+        }
+
+        return Math.round(itemValue * 0.8f) + coinValue;
     }
 }
