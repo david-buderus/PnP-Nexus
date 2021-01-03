@@ -225,7 +225,7 @@ public class CharacterView extends View {
                     if (pos % columnCount != 0) {
                         pos = (pos / columnCount + 1) * columnCount;
                     }
-                    talents.add(createSpring(), pos % columnCount, pos / columnCount);
+                    talents.add(createEmptyCell(), pos % columnCount, pos / columnCount);
                     pos += columnCount;
                 } else {
                     if (!talentName.isBlank()) {
@@ -309,7 +309,7 @@ public class CharacterView extends View {
         return label;
     }
 
-    private Pane createSpring() {
+    private Pane createEmptyCell() {
         Pane pane = new Pane();
         pane.setPrefHeight(30);
         return pane;

@@ -1,9 +1,7 @@
 package model.member;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import manager.LanguageUtility;
 import model.member.data.AttackTypes;
 import model.member.data.MemberStateEffect;
 
@@ -11,36 +9,35 @@ import java.util.Random;
 
 public class MemberState {
 
-    private static Random RAND = new Random();
+    private static final Random RAND = new Random();
 
-    private String name;
-    private int maxDuration;
-    private IntegerProperty duration;
-    private StringProperty durationDisplay;
-    private boolean active;
-    private double power;
-    private boolean random;
-    private AttackTypes type;
+    private final String name;
+    private final int maxDuration;
+    private final IntegerProperty duration;
+    private final StringProperty durationDisplay;
+    private final boolean active;
+    private final double power;
+    private final boolean random;
+    private final AttackTypes type;
 
-    private BattleMember source;
+    private final BattleMember source;
     private MemberStateEffect effect;
 
     public MemberState(String name, MemberStateEffect effect, int duration, boolean active, double power,
                        boolean random, AttackTypes type, BattleMember source) {
         this.type = type;
-        this.duration = new SimpleIntegerProperty(0);
+        this.duration = new SimpleIntegerProperty(duration);
         this.durationDisplay = new SimpleStringProperty("");
-        this.setName(name);
-        this.setEffect(effect);
-        this.setDuration(duration);
+        this.name = name;
+        this.effect = effect;
         this.maxDuration = duration;
         this.active = active;
-        this.setPower(power);
+        this.power = power;
         this.random = random;
         this.source = source;
-        this.setDurationDisplay(getDuration() + (this.active ? " aktive Runden" : " Runden"));
-
-        this.duration.addListener((ob, o, n) -> setDurationDisplay(getDuration() + (this.active ? " aktive Runden" : " Runden")));
+        this.durationDisplay.bind(this.duration.asString().concat(" ").concat(this.active ?
+                LanguageUtility.getMessageProperty("state.info.activeRounds") :
+                LanguageUtility.getMessageProperty("state.info.rounds")));
     }
 
     public void decreaseDuration() {
@@ -94,10 +91,6 @@ public class MemberState {
         }
     }
 
-    public void setPower(double power) {
-        this.power = power;
-    }
-
     public MemberStateEffect getEffect() {
         return effect;
     }
@@ -110,23 +103,11 @@ public class MemberState {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public boolean isActiveRounder() {
         return this.active;
     }
 
-    public String getDurationDisplay() {
-        return durationDisplay.get();
-    }
-
-    public void setDurationDisplay(String s) {
-        this.durationDisplay.set(s);
-    }
-
-    public StringProperty durationDisplayProperty() {
+    public ReadOnlyStringProperty durationDisplayProperty() {
         return durationDisplay;
     }
 

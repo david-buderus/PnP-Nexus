@@ -13,6 +13,8 @@ import model.Battle;
 import model.member.BattleMember;
 import ui.View;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class StatisticView extends View {
 
     public StatisticView(ObservableList<BattleMember> members, Battle battle) {
@@ -27,26 +29,31 @@ public class StatisticView extends View {
         battleView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         root.setCenter(battleView);
 
-        TableColumn<BattleMember, String> nameC = new TableColumn<>("Name");
+        TableColumn<BattleMember, String> nameC = new TableColumn<>();
+        nameC.textProperty().bind(getMessageProperty("statistics.name"));
         nameC.setCellValueFactory(b -> new ReadOnlyStringWrapper(b.getValue().getName()));
         battleView.getColumns().add(nameC);
 
-        TableColumn<BattleMember, Integer> damageC = new TableColumn<>("Schaden");
+        TableColumn<BattleMember, Integer> damageC = new TableColumn<>();
+        damageC.textProperty().bind(getMessageProperty("statistics.damage"));
         damageC.setCellValueFactory(b -> new ReadOnlyIntegerWrapper(battle.getDamageDealt(b.getValue())).asObject());
         battleView.getColumns().add(damageC);
 
-        TableColumn<BattleMember, Double> damagePRC = new TableColumn<>("Schaden pro Runde");
+        TableColumn<BattleMember, Double> damagePRC = new TableColumn<>();
+        damagePRC.textProperty().bind(getMessageProperty("statistics.damagePerRound"));
         damagePRC.setCellValueFactory(b ->
                 new ReadOnlyDoubleWrapper(
                         round((double) battle.getDamageDealt(b.getValue()) / battle.roundProperty().get()))
                         .asObject());
         battleView.getColumns().add(damagePRC);
 
-        TableColumn<BattleMember, Integer> healC = new TableColumn<>("Heilung");
+        TableColumn<BattleMember, Integer> healC = new TableColumn<>();
+        healC.textProperty().bind(getMessageProperty("statistics.heal"));
         healC.setCellValueFactory(b -> new ReadOnlyIntegerWrapper(battle.getDamageHealed(b.getValue())).asObject());
         battleView.getColumns().add(healC);
 
-        TableColumn<BattleMember, Double> healPRC = new TableColumn<>("Heilung pro Runde");
+        TableColumn<BattleMember, Double> healPRC = new TableColumn<>();
+        healPRC.textProperty().bind(getMessageProperty("statistics.healPerRound"));
         healPRC.setCellValueFactory(b ->
                 new ReadOnlyDoubleWrapper(
                         round((double) battle.getDamageHealed(b.getValue()) / battle.roundProperty().get()))

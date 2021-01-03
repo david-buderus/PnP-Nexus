@@ -8,6 +8,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import manager.LanguageUtility;
 import model.member.MemberState;
 
 public class MemberStatePane extends VBox {
@@ -45,7 +46,8 @@ public class MemberStatePane extends VBox {
         durationBar.setProgress((double) state.getDuration() / state.getMaxDuration());
         this.getChildren().add(durationBar);
 
-        Label strength = new Label("Stärke: " + state.getPowerAsString());
+        Label strength = new Label();
+        strength.textProperty().bind(LanguageUtility.getMessageProperty("state.info.power").concat(": ").concat(state.getPowerAsString()));
         strength.setPadding(new Insets(5, 0, 5, 0));
         this.getChildren().add(strength);
 
