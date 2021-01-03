@@ -9,20 +9,25 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import manager.LanguageUtility;
+import model.interfaces.WithToStringProperty;
 import model.map.Map;
 import ui.IView;
 import ui.ViewPart;
+import ui.part.UpdatingListCell;
+
+import static manager.LanguageUtility.getMessageProperty;
 
 public class MapView extends ViewPart {
 
     private final MapCanvas canvas;
-    private ObjectProperty<Map> map;
-    private ObjectProperty<Structure> selectedStructure;
+    private final ObjectProperty<Map> map;
+    private final ObjectProperty<Structure> selectedStructure;
     private final BooleanProperty loading;
     private final IntegerProperty shownYLayer;
 
     public MapView(IView parent) {
-        super("Karten", parent);
+        super("map.title", parent);
         this.selectedStructure = new SimpleObjectProperty<>();
         this.loading = new SimpleBooleanProperty(false);
         this.shownYLayer = new SimpleIntegerProperty(0);
@@ -42,11 +47,14 @@ public class MapView extends ViewPart {
 
         ComboBox<Structure> structure = new ComboBox<>(FXCollections.observableArrayList(Structure.values()));
         this.selectedStructure.bind(structure.getSelectionModel().selectedItemProperty());
-        structure.getSelectionModel().selectFirst();
+        structure.getSelectionModel().select(Structure.crypt);
+        structure.setCellFactory(list -> new UpdatingListCell<>());
+        structure.setButtonCell(new UpdatingListCell<>());
         structure.setPrefWidth(120);
         generateBox.getChildren().add(structure);
 
-        Button generateButton = new Button("Generiere");
+        Button generateButton = new Button();
+        generateButton.textProperty().bind(getMessageProperty("map.button.generate"));
         generateButton.setOnAction(ev -> generate());
         generateButton.disableProperty().bind(loading);
         generateButton.setPrefWidth(120);
@@ -102,19 +110,13 @@ public class MapView extends ViewPart {
         generateThread.start();
     }
 
-    private enum Structure {
+    private enum Structure implements WithToStringProperty {
         cave, crypt;
 
+
         @Override
-        public String toString() {
-            switch (this) {
-                case cave:
-                    return "Höhle";
-                case crypt:
-                    return "Krypta";
-                default:
-                    return "";
-            }
+        public ReadOnlyStringProperty toStringProperty() {
+            return LanguageUtility.getMessageProperty("map.structure." + super.toString());
         }
     }
 }
