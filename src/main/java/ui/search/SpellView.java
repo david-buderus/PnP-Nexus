@@ -95,7 +95,7 @@ public class SpellView extends ViewPart {
         searchTable.getColumns().add(effectC);
 
         TableColumn<Spell, String> typC = new TableColumn<>();
-        typC.textProperty().bind(getMessageProperty("column.typ"));
+        typC.textProperty().bind(getMessageProperty("column.type"));
         typC.setCellValueFactory(new PropertyValueFactory<>("typ"));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);

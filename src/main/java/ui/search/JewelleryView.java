@@ -24,7 +24,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
         this.defaultName = getMessageProperty("search.default.gem");
 
         VBox root = this.createRoot(
-                new String[]{"column.name", "column.typ", "column.equipment.material", "column.jewellery.gem",
+                new String[]{"column.name", "column.type", "column.equipment.material", "column.jewellery.gem",
                         "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots",
                         "column.equipment.requirement"},
                 new String[]{"name", "subTyp", "material", "gem", "rarity", "cost", "effect", "slots", "requirement"});

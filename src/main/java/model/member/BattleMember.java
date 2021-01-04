@@ -5,6 +5,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import manager.LanguageUtility;
 import model.Battle;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
@@ -46,7 +47,7 @@ public class BattleMember extends Member {
 
     public BattleMember(Battle battle, LootTable lootTable) {
         super();
-        this.name.set("Teilnehmer");
+        this.name.set(LanguageUtility.getMessage("battleMember.defaultName"));
         this.life = new SimpleIntegerProperty(1);
         this.maxLife = new SimpleIntegerProperty(1);
         this.mana = new SimpleIntegerProperty(1);

@@ -1,6 +1,7 @@
 package model.upgrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import manager.Utility;
 import model.ItemList;
 import model.item.Item;
 
@@ -94,32 +95,7 @@ public class UpgradeFactory {
     }
 
     public int getCostAsCopper(int level) {
-        int value = 0;
-        StringBuilder number = new StringBuilder();
-
-        for (int i = 0; i < costList[level - 1].length(); i++) {
-            char c = costList[level - 1].charAt(i);
-            if (Character.isDigit(c)) {
-                number.append(c);
-            } else {
-                switch (c) {
-                    case 'K':
-                        value += Integer.parseInt(number.toString());
-                        number = new StringBuilder();
-                        break;
-                    case 'S':
-                        value += Integer.parseInt(number.toString()) * 100;
-                        number = new StringBuilder();
-                        break;
-                    case 'G':
-                        value += Integer.parseInt(number.toString()) * 10000;
-                        number = new StringBuilder();
-                        break;
-                }
-            }
-        }
-
-        return value;
+        return Utility.toCopperCost(costList[level - 1]);
     }
 
     public void setMana(int level, String mana) {

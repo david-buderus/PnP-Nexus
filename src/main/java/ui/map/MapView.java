@@ -18,10 +18,9 @@ import ui.IView;
 import ui.ViewPart;
 import ui.part.UpdatingListCell;
 
-import static manager.LanguageUtility.getMessageProperty;
-
 import java.util.Random;
 
+import static manager.LanguageUtility.getMessageProperty;
 import static ui.ViewFactory.labelTextField;
 
 public class MapView extends ViewPart {
@@ -68,15 +67,16 @@ public class MapView extends ViewPart {
         structure.setPrefWidth(215);
         generateBox.getChildren().add(structure);
 
-        generateBox.getChildren().add(labelTextField("Breite", width));
+        generateBox.getChildren().add(labelTextField("map.info.width", width));
 
-        generateBox.getChildren().add(labelTextField("Höhe", height));
+        generateBox.getChildren().add(labelTextField("map.info.height", height));
 
-        generateBox.getChildren().add(labelTextField("Tiefe", depth));
+        generateBox.getChildren().add(labelTextField("map.info.depth", depth));
 
-        generateBox.getChildren().add(labelTextField("Seed", seed));
+        generateBox.getChildren().add(labelTextField("map.info.seed", seed));
 
-        Button seedButton = new Button("Zufälliger Seed");
+        Button seedButton = new Button();
+        seedButton.textProperty().bind(getMessageProperty("map.button.randomSeed"));
         seedButton.setOnAction(ev -> seed.set(random.nextLong()));
         seedButton.setPrefWidth(215);
         generateBox.getChildren().add(seedButton);

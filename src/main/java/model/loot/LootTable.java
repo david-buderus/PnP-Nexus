@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class LootTable {
 
-    private ArrayList<LootFactory> list;
+    private final ArrayList<LootFactory> list;
 
     public LootTable() {
         this.list = new ArrayList<>();

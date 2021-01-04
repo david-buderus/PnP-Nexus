@@ -70,9 +70,9 @@ public class MemberState {
 
     public String getPowerAsString() {
         if (Math.rint(getPower()) == getPower()) {
-            return (random ? "D" : "") + (int) power;
+            return (random ? LanguageUtility.getMessage("state.info.dicePrefix") : "") + (int) power;
         } else {
-            return (random ? "D" : "") + power;
+            return (random ? LanguageUtility.getMessage("state.info.dicePrefix") : "") + power;
         }
     }
 

@@ -195,4 +195,96 @@ public abstract class Utility {
 
         return Math.round(itemValue * 0.8f) + coinValue;
     }
+
+    /**
+     * Reads the cost from the String and
+     * returns is a a amount of copper coins
+     *
+     * @param cost String to read
+     * @return amount of copper coins
+     */
+    public static int toCopperCost(String cost) {
+        if (cost.isBlank()) {
+            return 0;
+        }
+
+        int value = 0;
+        int silverToCopper = config.getInt("coin.silver.toCopper");
+        int goldToCopper = config.getInt("coin.gold.toSilver") * silverToCopper;
+        String copper = LanguageUtility.getMessage("coin.copper.short");
+        String silver = LanguageUtility.getMessage("coin.silver.short");
+        String gold = LanguageUtility.getMessage("coin.gold.short");
+
+        List<Character> costList = new ArrayList<>();
+        for (char c : cost.toCharArray()) {
+            costList.add(c);
+        }
+
+        while (!costList.isEmpty()) {
+            int amount = parseNumber(costList);
+            String coin = parseString(costList);
+
+            if (coin.equals(copper)) {
+                value += amount;
+            } else if (coin.equals(silver)) {
+                value += amount * silverToCopper;
+            } else if (coin.equals(gold)) {
+                value += amount * goldToCopper;
+            }
+        }
+
+        return value;
+    }
+
+    /**
+     * Reads and consumes all chars from the input list
+     * until if finds a non digit character
+     *
+     * @param input list that gets consumed
+     * @return the parsed digits as int
+     */
+    public static int parseNumber(List<Character> input) {
+        StringBuilder number = new StringBuilder();
+
+        while (!input.isEmpty()) {
+            char c = input.get(0);
+
+            if (Character.isDigit(c)) {
+                input.remove(0);
+                number.append(c);
+            } else {
+                break;
+            }
+        }
+
+        try {
+            return Integer.parseInt(number.toString());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Reads and consumes all chars from the input list
+     * until if finds a digit character
+     *
+     * @param input list that gets consumed
+     * @return the parsed chars as trimmed String
+     */
+    public static String parseString(List<Character> input) {
+        StringBuilder result = new StringBuilder();
+
+        while (!input.isEmpty()) {
+            char c = input.get(0);
+
+            if (!Character.isDigit(c)) {
+                input.remove(0);
+                result.append(c);
+            } else {
+                break;
+            }
+        }
+
+        return result.toString().trim();
+    }
 }

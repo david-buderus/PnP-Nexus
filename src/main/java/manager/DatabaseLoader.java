@@ -1,6 +1,8 @@
 package manager;
 
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.*;
@@ -22,6 +24,15 @@ import java.util.stream.Collectors;
 
 public abstract class DatabaseLoader {
 
+    private static final ObjectProperty<ResourceBundle> tables = new SimpleObjectProperty<>();
+
+    static {
+        reloadLanguage(LanguageUtility.language.get());
+        LanguageUtility.language.addListener((ob, o, n) -> reloadLanguage(n));
+    }
+
+    private static final Map<String, String> talentTypes = new HashMap<>();
+
     public static Collection<String> loadDatabase(Connection connection) throws SQLException {
         TypTranslation.clear();
         Collection<String> info = new ArrayList<>();
@@ -38,9 +49,10 @@ public abstract class DatabaseLoader {
                 semaphore.acquire(4);
                 info.add(loadItems(statement, semaphore));
                 info.add(loadTalents(statement, semaphore));
-                TypTranslation.addStandards();
+                info.add(loadEquivalences(statement));
 
                 semaphore.acquire(2);
+                info.add(loadSpellsTypes(statement));
                 info.add(loadSpells(statement, semaphore));
                 info.add(loadUpgrades(statement, semaphore));
                 info.add(loadDungeonLoot(statement, semaphore));
@@ -62,28 +74,28 @@ public abstract class DatabaseLoader {
     }
 
     private static String loadWeapons(Statement statement, Semaphore semaphore) {
-        try (ResultSet weaponSet = statement.executeQuery("SELECT * FROM Items NATURAL JOIN Waffen")) {
+        try (ResultSet weaponSet = statement.executeQuery(format("SELECT * FROM %s NATURAL JOIN %s", "table.items", "table.weapons"))) {
             ObservableList<Weapon> weaponList = FXCollections.observableArrayList();
             while (weaponSet.next()) {
                 Weapon weapon = new Weapon();
-                weapon.setName(getString(weaponSet, "Bezeichnung"));
-                weapon.setMaterial(getString(weaponSet, "Material"));
-                weapon.setTyp(getString(weaponSet, "Typ"));
-                weapon.setSubTyp(getString(weaponSet, "Subtyp"));
-                weapon.setRequirement(getString(weaponSet, "Vorraussetzung"));
-                weapon.setInitiative(getString(weaponSet, "Initiative"));
-                weapon.setDice(getString(weaponSet, "Würfel/Belastung"));
-                weapon.setDamage(weaponSet.getInt("Schaden/Schutz"));
-                weapon.setHit(weaponSet.getInt("Treffer"));
-                weapon.setEffect(getString(weaponSet, "Effekt"));
-                weapon.setSlots(weaponSet.getInt("Verbesserungsslots"));
-                weapon.setRarity(getRarity(weaponSet, "Seltenheit"));
-                weapon.setCost(getString(weaponSet, "Preis"));
-                weapon.setTier(weaponSet.getInt("Tier"));
+                weapon.setName(getString(weaponSet, getLocalized("column.name")));
+                weapon.setMaterial(getString(weaponSet, getLocalized("column.material")));
+                weapon.setTyp(getString(weaponSet, getLocalized("column.type")));
+                weapon.setSubTyp(getString(weaponSet, getLocalized("column.subtype")));
+                weapon.setRequirement(getString(weaponSet, getLocalized("column.requirement")));
+                weapon.setInitiative(getString(weaponSet, getLocalized("column.initiative")));
+                weapon.setDice(getString(weaponSet, getLocalized("column.dice_weight")));
+                weapon.setDamage(weaponSet.getInt(getLocalized("column.damage_protection")));
+                weapon.setHit(weaponSet.getInt(getLocalized("column.hit")));
+                weapon.setEffect(getString(weaponSet, getLocalized("column.effect")));
+                weapon.setSlots(weaponSet.getInt(getLocalized("column.upgradeSlots")));
+                weapon.setRarity(getRarity(weaponSet, getLocalized("column.rarity")));
+                weapon.setCost(getString(weaponSet, getLocalized("column.price")));
+                weapon.setTier(weaponSet.getInt(getLocalized("column.tier")));
 
                 weaponList.add(weapon);
 
-                TypTranslation.add(weapon.getTyp(), "Waffe");
+                TypTranslation.add(weapon.getTyp(), getLocalized("type.weapon"));
             }
 
             Platform.runLater(() -> {
@@ -92,33 +104,33 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Waffen konnten nicht geladen werden.";
+            return getErrorString("table.weapons");
         }
         return "";
     }
 
     private static String loadArmor(Statement statement, Semaphore semaphore) {
-        try (ResultSet armorSet = statement.executeQuery("SELECT * FROM Items NATURAL JOIN Rüstungen")) {
+        try (ResultSet armorSet = statement.executeQuery(format("SELECT * FROM %s NATURAL JOIN %s", "table.items", "table.armors"))) {
             ObservableList<Armor> armorList = FXCollections.observableArrayList();
 
             while (armorSet.next()) {
                 Armor armor = new Armor();
-                armor.setName(getString(armorSet, "Bezeichnung"));
-                armor.setMaterial(getString(armorSet, "Material"));
-                armor.setTyp(getString(armorSet, "Typ"));
-                armor.setSubTyp(getString(armorSet, "Subtyp"));
-                armor.setRequirement(getString(armorSet, "Vorraussetzung"));
-                armor.setProtection(armorSet.getInt("Schutz"));
-                armor.setWeight(armorSet.getDouble("Belastung"));
-                armor.setEffect(getString(armorSet, "Effekt"));
-                armor.setSlots(armorSet.getInt("Verbesserungsslots"));
-                armor.setRarity(getRarity(armorSet, "Seltenheit"));
-                armor.setCost(getString(armorSet, "Preis"));
-                armor.setTier(armorSet.getInt("Tier"));
+                armor.setName(getString(armorSet, getLocalized("column.name")));
+                armor.setMaterial(getString(armorSet, getLocalized("column.material")));
+                armor.setTyp(getString(armorSet, getLocalized("column.type")));
+                armor.setSubTyp(getString(armorSet, getLocalized("column.subtype")));
+                armor.setRequirement(getString(armorSet, getLocalized("column.requirement")));
+                armor.setProtection(armorSet.getInt(getLocalized("column.protection")));
+                armor.setWeight(armorSet.getDouble(getLocalized("column.weight")));
+                armor.setEffect(getString(armorSet, getLocalized("column.effect")));
+                armor.setSlots(armorSet.getInt(getLocalized("column.upgradeSlots")));
+                armor.setRarity(getRarity(armorSet, getLocalized("column.rarity")));
+                armor.setCost(getString(armorSet, getLocalized("column.price")));
+                armor.setTier(armorSet.getInt(getLocalized("column.tier")));
 
                 armorList.add(armor);
 
-                TypTranslation.add(armor.getTyp(), "Rüstung");
+                TypTranslation.add(armor.getTyp(), getLocalized("type.armor"));
             }
 
             Platform.runLater(() -> {
@@ -126,32 +138,32 @@ public abstract class DatabaseLoader {
                 semaphore.release();
             });
         } catch (SQLException e) {
-            return "Rüstungen konnten nicht geladen werden.";
+            return getErrorString("table.armors");
         }
         return "";
     }
 
     private static String loadJewellery(Statement statement, Semaphore semaphore) {
-        try (ResultSet jewellerySet = statement.executeQuery("SELECT * FROM Items NATURAL JOIN Schmuck")) {
+        try (ResultSet jewellerySet = statement.executeQuery(format("SELECT * FROM %s NATURAL JOIN %s", "table.items", "table.jewellery"))) {
             ObservableList<Jewellery> jewelleryList = FXCollections.observableArrayList();
 
             while (jewellerySet.next()) {
                 Jewellery jewellery = new Jewellery();
-                jewellery.setName(getString(jewellerySet, "Bezeichnung"));
-                jewellery.setMaterial(getString(jewellerySet, "Material"));
-                jewellery.setGem(getString(jewellerySet, "Edelstein"));
-                jewellery.setTyp(getString(jewellerySet, "Typ"));
-                jewellery.setSubTyp(getString(jewellerySet, "Subtyp"));
-                jewellery.setRequirement(getString(jewellerySet, "Vorraussetzung"));
-                jewellery.setEffect(getString(jewellerySet, "Effekt"));
-                jewellery.setSlots(jewellerySet.getInt("Verbesserungsslots"));
-                jewellery.setRarity(getRarity(jewellerySet, "Seltenheit"));
-                jewellery.setCost(getString(jewellerySet, "Preis"));
-                jewellery.setTier(jewellerySet.getInt("Tier"));
+                jewellery.setName(getString(jewellerySet, getLocalized("column.name")));
+                jewellery.setMaterial(getString(jewellerySet, getLocalized("column.material")));
+                jewellery.setGem(getString(jewellerySet, getLocalized("column.gem")));
+                jewellery.setTyp(getString(jewellerySet, getLocalized("column.type")));
+                jewellery.setSubTyp(getString(jewellerySet, getLocalized("column.subtype")));
+                jewellery.setRequirement(getString(jewellerySet, getLocalized("column.requirement")));
+                jewellery.setEffect(getString(jewellerySet, getLocalized("column.effect")));
+                jewellery.setSlots(jewellerySet.getInt(getLocalized("column.upgradeSlots")));
+                jewellery.setRarity(getRarity(jewellerySet, getLocalized("column.rarity")));
+                jewellery.setCost(getString(jewellerySet, getLocalized("column.price")));
+                jewellery.setTier(jewellerySet.getInt(getLocalized("column.tier")));
 
                 jewelleryList.add(jewellery);
 
-                TypTranslation.add(jewellery.getTyp(), "Schmuck");
+                TypTranslation.add(jewellery.getTyp(), getLocalized("type.jewellery"));
             }
 
             Platform.runLater(() -> {
@@ -160,26 +172,27 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Schmuck konnte nicht geladen werden.";
+            return getErrorString("table.jewellery");
         }
         return "";
     }
 
     private static String loadPlants(Statement statement, Semaphore semaphore) {
-        try (ResultSet plantSet = statement.executeQuery("SELECT * FROM Items WHERE Typ=\"Pflanze\"")) {
+        try (ResultSet plantSet = statement.executeQuery(format("SELECT * FROM %s WHERE %s=\"%s\"", "table.items", "column.type", "type.plant"))) {
             ObservableList<Plant> plantList = FXCollections.observableArrayList();
 
             while (plantSet.next()) {
                 Plant plant = new Plant();
-                plant.setName(getString(plantSet, "Bezeichnung"));
-                plant.setTyp(getString(plantSet, "Typ"));
-                plant.setSubTyp(getString(plantSet, "Subtyp"));
-                plant.setEffect(getString(plantSet, "Effekt"));
-                plant.setRarity(getRarity(plantSet, "Seltenheit"));
-                plant.setCost(getString(plantSet, "Preis"));
-                plant.setTier(plantSet.getInt("Tier"));
+                plant.setName(getString(plantSet, getLocalized("column.name")));
+                plant.setTyp(getString(plantSet, getLocalized("column.type")));
+                plant.setSubTyp(getString(plantSet, getLocalized("column.subtype")));
+                plant.setEffect(getString(plantSet, getLocalized("column.effect")));
+                plant.setRarity(getRarity(plantSet, getLocalized("column.rarity")));
+                plant.setCost(getString(plantSet, getLocalized("column.price")));
+                plant.setTier(plantSet.getInt(getLocalized("column.tier")));
                 plant.setLocations(getCollection(statement,
-                        "SELECT Fundort FROM Fundorte WHERE Bezeichnung=\"" + plant.getName() + "\"", "Fundort"));
+                        format("SELECT %s FROM %s WHERE %s=\"%s\"",
+                                "column.place", "table.places", "column.name", plant.getName()), "column.place"));
 
                 plantList.add(plant);
             }
@@ -190,24 +203,26 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Pflanzen konnten nicht geladen werden.";
+            return getErrorString("column.type");
         }
         return "";
     }
 
     private static String loadItems(Statement statement, Semaphore semaphore) {
-        try (ResultSet itemSet = statement.executeQuery("SELECT * FROM Items WHERE Typ NOT IN (\"Waffe\", \"Rüstung\", \"Schmuck\", \"Pflanze\")")) {
+        try (ResultSet itemSet = statement.executeQuery(
+                format("SELECT * FROM %s WHERE %s NOT IN (\"%s\", \"%s\", \"%s\", \"%s\")",
+                        "table.items", "column.type", "type.weapon", "type.armor", "type.jewellery", "type.plant"))) {
             ObservableList<Item> itemList = FXCollections.observableArrayList();
 
             while (itemSet.next()) {
                 Item item = new Item();
-                item.setTyp(getString(itemSet, "Typ"));
-                item.setName(getString(itemSet, "Bezeichnung"));
-                item.setSubTyp(getString(itemSet, "Subtyp"));
-                item.setEffect(getString(itemSet, "Effekt"));
-                item.setRarity(getRarity(itemSet, "Seltenheit"));
-                item.setCost(getString(itemSet, "Preis"));
-                item.setTier(itemSet.getInt("Tier"));
+                item.setTyp(getString(itemSet, getLocalized("column.type")));
+                item.setName(getString(itemSet, getLocalized("column.name")));
+                item.setSubTyp(getString(itemSet, getLocalized("column.subtype")));
+                item.setEffect(getString(itemSet, getLocalized("column.effect")));
+                item.setRarity(getRarity(itemSet, getLocalized("column.rarity")));
+                item.setCost(getString(itemSet, getLocalized("column.price")));
+                item.setTier(itemSet.getInt(getLocalized("column.tier")));
 
                 itemList.add(item);
             }
@@ -222,25 +237,42 @@ public abstract class DatabaseLoader {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Items konnten nicht geladen werden.";
+            return getErrorString("table.items");
+        }
+        return "";
+    }
+
+    private static String loadEquivalences(Statement statement) {
+        try (ResultSet eqSet = statement.executeQuery(format("SELECT * FROM %s", "table.equivalences"))) {
+
+            while (eqSet.next()) {
+                String sub = getString(eqSet, getLocalized("column.subtype"));
+                String main = getString(eqSet, getLocalized("column.mainType"));
+
+                TypTranslation.add(sub, main);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return getErrorString("table.equivalences");
         }
         return "";
     }
 
     private static String loadTalents(Statement statement, Semaphore semaphore) {
-        try (ResultSet talentSet = statement.executeQuery("SELECT * FROM Talente")) {
+        try (ResultSet talentSet = statement.executeQuery(format("SELECT * FROM %s", "table.talents"))) {
             ObservableList<Talent> talentList = FXCollections.observableArrayList();
 
             while (talentSet.next()) {
                 Talent talent = new Talent();
-                talent.setName(getString(talentSet, "Bezeichnung"));
+                talent.setName(getString(talentSet, getLocalized("column.name")));
                 talent.setAttributes(new PrimaryAttribute[]{
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, "Attribut 1")),
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, "Attribut 2")),
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, "Attribut 3"))
+                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute.1"))),
+                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute.2"))),
+                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute.3")))
                 });
-                talent.setMagicTalent(talentSet.getBoolean("Magietalent"));
-                talent.setWeaponTalent(talentSet.getBoolean("Waffentalent"));
+                talent.setMagicTalent(talentSet.getBoolean(getLocalized("column.magicTalent")));
+                talent.setWeaponTalent(talentSet.getBoolean(getLocalized("column.weaponTalent")));
 
                 talentList.add(talent);
             }
@@ -251,24 +283,24 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Talente konnten nicht geladen werden.";
+            return getErrorString("table.talents");
         }
         return "";
     }
 
     private static String loadSpells(Statement statement, Semaphore semaphore) {
-        try (ResultSet spellSet = statement.executeQuery("SELECT * FROM Zauber")) {
+        try (ResultSet spellSet = statement.executeQuery(format("SELECT * FROM %s", "table.spells"))) {
             ObservableList<Spell> spellList = FXCollections.observableArrayList();
 
             while (spellSet.next()) {
                 Spell spell = new Spell();
-                spell.setName(getString(spellSet, "Bezeichnung"));
-                spell.setEffect(getString(spellSet, "Effekt"));
-                spell.setTyp(Arrays.stream((SingleValue[]) spellSet.getObject("Typ")).
+                spell.setName(getString(spellSet, getLocalized("column.name")));
+                spell.setEffect(getString(spellSet, getLocalized("column.effect")));
+                spell.setTyp(Arrays.stream((SingleValue[]) spellSet.getObject(getLocalized("column.type"))).
                         map(val -> (String) val.getValue()).collect(Collectors.joining(",")));
-                spell.setCost(getString(spellSet, "Kosten"));
-                spell.setCastTime(getString(spellSet, "Zauberzeit"));
-                spell.setTier(spellSet.getInt("Tier"));
+                spell.setCost(getString(spellSet, getLocalized("column.cost")));
+                spell.setCastTime(getString(spellSet, getLocalized("column.castTime")));
+                spell.setTier(spellSet.getInt(getLocalized("column.tier")));
                 spell.setTalent(getTalent(spell.getTyp()));
 
                 spellList.add(spell);
@@ -280,19 +312,37 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Zauber konnten nicht geladen werden.";
+            return getErrorString("table.spells");
+        }
+        return "";
+    }
+
+    private static String loadSpellsTypes(Statement statement) {
+        talentTypes.clear();
+
+        try (ResultSet spellSet = statement.executeQuery(format("SELECT * FROM %s", "table.spellTypes"))) {
+
+            while (spellSet.next()) {
+                String typ = getString(spellSet, getLocalized("column.type"));
+                String talent = getString(spellSet, getLocalized("column.talent"));
+
+                talentTypes.put(typ, talent);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return getErrorString("table.spellTypes");
         }
         return "";
     }
 
     private static String loadUpgrades(Statement statement, Semaphore semaphore) {
-        try (ResultSet upgradeSet = statement.executeQuery("SELECT * FROM Verbesserungen")) {
+        try (ResultSet upgradeSet = statement.executeQuery(format("SELECT * FROM %s", "table.upgrades"))) {
             ObservableList<UpgradeFactory> upgradeList = FXCollections.observableArrayList();
 
             while (upgradeSet.next()) {
 
-                String name = getString(upgradeSet, "Bezeichnung");
-                int level = upgradeSet.getInt("Stufe");
+                String name = getString(upgradeSet, getLocalized("column.name"));
+                int level = upgradeSet.getInt(getLocalized("column.level"));
 
                 UpgradeFactory exist = getUpgradeFactory(name, upgradeList);
 
@@ -300,17 +350,18 @@ public abstract class DatabaseLoader {
                     if (exist.getMaxLevel() < level) {
                         exist.setMaxLevel(level);
                     }
-                    exist.setEffect(level, getString(upgradeSet, "Effekt"));
-                    exist.setCost(level, getString(upgradeSet, "Preis"));
-                    exist.setMana(level, getString(upgradeSet, "Mana"));
-                    exist.setRequirement(level, getString(upgradeSet, "Benötigt"));
+                    exist.setEffect(level, getString(upgradeSet, getLocalized("column.effect")));
+                    exist.setCost(level, getString(upgradeSet, getLocalized("column.price")));
+                    exist.setMana(level, getString(upgradeSet, getLocalized("column.mana")));
+                    exist.setRequirement(level, getString(upgradeSet, getLocalized("column.requires")));
 
                     ItemList materials = new ItemList();
-                    ResultSet materialSet = statement.executeQuery("SELECT * FROM Verbesserungsmaterial " +
-                            "WHERE Bezeichnung=\"" + name + "\" AND Stufe=" + level);
+                    ResultSet materialSet = statement.executeQuery(format(
+                            "SELECT * FROM %s WHERE %s=\"%s\" AND %s=%s",
+                            "table.upgrades.materials", "column.name", name, "column.level", String.valueOf(level)));
                     while (materialSet.next()) {
-                        String mat = getString(materialSet, "Material");
-                        float amount = materialSet.getFloat("Anzahl");
+                        String mat = getString(materialSet, getLocalized("column.material"));
+                        float amount = materialSet.getFloat(getLocalized("column.amount"));
                         Item material = Database.getItemWithoutDefault(mat).copy();
                         material.setAmount(amount);
                         materials.add(material);
@@ -321,19 +372,20 @@ public abstract class DatabaseLoader {
                     UpgradeFactory upgradeFactory = new UpgradeFactory();
                     upgradeFactory.setName(name);
                     upgradeFactory.setMaxLevel(level);
-                    upgradeFactory.setTarget(getString(upgradeSet, "Ziel"));
-                    upgradeFactory.setSlots(upgradeSet.getInt("Slots"));
-                    upgradeFactory.setRequirement(level, getString(upgradeSet, "Benötigt"));
-                    upgradeFactory.setEffect(level, getString(upgradeSet, "Effekt"));
-                    upgradeFactory.setCost(level, getString(upgradeSet, "Preis"));
-                    upgradeFactory.setMana(level, getString(upgradeSet, "Mana"));
+                    upgradeFactory.setTarget(getString(upgradeSet, getLocalized("column.target")));
+                    upgradeFactory.setSlots(upgradeSet.getInt(getLocalized("column.slots")));
+                    upgradeFactory.setRequirement(level, getString(upgradeSet, getLocalized("column.requires")));
+                    upgradeFactory.setEffect(level, getString(upgradeSet, getLocalized("column.effect")));
+                    upgradeFactory.setCost(level, getString(upgradeSet, getLocalized("column.price")));
+                    upgradeFactory.setMana(level, getString(upgradeSet, getLocalized("column.mana")));
 
                     ItemList materials = new ItemList();
-                    ResultSet materialSet = statement.executeQuery("SELECT * FROM Verbesserungsmaterial " +
-                            "WHERE Bezeichnung=\"" + name + "\" AND Stufe=" + level);
+                    ResultSet materialSet = statement.executeQuery(format(
+                            "SELECT * FROM %s WHERE %s=\"%s\" AND %s=%s",
+                            "table.upgrades.materials", "column.name", name, "column.level", String.valueOf(level)));
                     while (materialSet.next()) {
-                        String mat = getString(materialSet, "Material");
-                        float amount = materialSet.getFloat("Anzahl");
+                        String mat = getString(materialSet, getLocalized("column.material"));
+                        float amount = materialSet.getFloat(getLocalized("column.amount"));
                         Item material = Database.getItemWithoutDefault(mat).copy();
                         material.setAmount(amount);
                         materials.add(material);
@@ -350,26 +402,26 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Verbesserungen konnten nicht geladen werden.";
+            return getErrorString("table.upgrades");
         } catch (NoSuchElementException e) {
             e.printStackTrace();
-            return "Verbesserungen konnten nicht geladen werden. Ein Material existierte nicht.";
+            return getErrorString("table.upgrades") + ". " + LanguageUtility.getMessage("database.missingMaterial");
         }
         return "";
     }
 
     private static String loadDungeonLoot(Statement statement, Semaphore semaphore) {
-        try (ResultSet lootSet = statement.executeQuery("SELECT * FROM Loot")) {
+        try (ResultSet lootSet = statement.executeQuery(format("SELECT * FROM %s", "table.loot"))) {
             ObservableList<DungeonLootFactory> lootList = FXCollections.observableArrayList();
 
             while (lootSet.next()) {
                 DungeonLootFactory factory = new DungeonLootFactory();
-                String name = getString(lootSet, "Gegenstand");
-                factory.setName(name.equals("Allgemeiner Gegenstand") ? getString(lootSet, "Info") : name);
-                factory.setContainer(getString(lootSet, "Behälter"));
-                factory.setPlace(getString(lootSet, "Ort"));
-                factory.setChance(lootSet.getDouble("Wahrscheinlichkeit"));
-                factory.setMaxAmount(lootSet.getInt("Anzahl"));
+                String name = getString(lootSet, getLocalized("column.item"));
+                factory.setName(name.equals(getLocalized("type.notSpecifiedItem")) ? getString(lootSet, getLocalized("column.info")) : name);
+                factory.setContainer(getString(lootSet, getLocalized("column.container")));
+                factory.setPlace(getString(lootSet, getLocalized("column.location")));
+                factory.setChance(lootSet.getDouble(getLocalized("column.chance")));
+                factory.setMaxAmount(lootSet.getInt(getLocalized("column.amount")));
 
                 lootList.add(factory);
             }
@@ -380,20 +432,20 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Loot konnte nicht geladen werden.";
+            return getErrorString("table.loot");
         }
         return "";
     }
 
     private static String loadCraftingBoni(Statement statement, Semaphore semaphore) {
-        try (ResultSet eventSet = statement.executeQuery("SELECT * FROM Herstellungsverbesserungen")) {
+        try (ResultSet eventSet = statement.executeQuery(format("SELECT * FROM %s", "table.manufacturingImprovements"))) {
             ObservableList<CraftingBonus> craftingBonusList = FXCollections.observableArrayList();
 
             while (eventSet.next()) {
                 CraftingBonus craftingBonus = new CraftingBonus();
-                craftingBonus.setName(getString(eventSet, "Bezeichnung"));
-                craftingBonus.setTarget(getString(eventSet, "Ziel"));
-                craftingBonus.setEffect(getString(eventSet, "Effekt"));
+                craftingBonus.setName(getString(eventSet, getLocalized("column.name")));
+                craftingBonus.setTarget(getString(eventSet, getLocalized("column.target")));
+                craftingBonus.setEffect(getString(eventSet, getLocalized("column.effect")));
 
                 craftingBonusList.add(craftingBonus);
             }
@@ -404,32 +456,34 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Herstellungsverbesserungen konnten nicht geladen werden.";
+            return getErrorString("table.manufacturingImprovements");
         }
         return "";
     }
 
     private static String loadFabrication(Statement statement, Semaphore semaphore) {
-        try (ResultSet fabricationSet = statement.executeQuery("SELECT * FROM Herstellung")) {
+        try (ResultSet fabricationSet = statement.executeQuery(format("SELECT * FROM %s", "table.manufacturing"))) {
             ObservableList<Fabrication> fabricationList = FXCollections.observableArrayList();
 
             while (fabricationSet.next()) {
                 Fabrication fabrication = new Fabrication();
-                fabrication.setProductName(getString(fabricationSet, "Bezeichnung"));
-                fabrication.setProfession(getString(fabricationSet, "Beruf"));
-                fabrication.setRequirement(getString(fabricationSet, "Benötigte Fähigkeiten"));
-                fabrication.setOtherCircumstances(getString(fabricationSet, "Sonstige Umstände"));
-                fabrication.setProductAmount(fabricationSet.getInt("Hergestellte Menge"));
-                fabrication.setSideProductAmount(fabricationSet.getInt("Anzahl  Neben"));
-                fabrication.setSideProductName(getString(fabricationSet, "Nebenprodukt"));
+                fabrication.setProductName(getString(fabricationSet, getLocalized("column.name")));
+                fabrication.setProfession(getString(fabricationSet, getLocalized("column.profession")));
+                fabrication.setRequirement(getString(fabricationSet, getLocalized("column.requiredAbilities")));
+                fabrication.setOtherCircumstances(getString(fabricationSet, getLocalized("column.otherCircumstances")));
+                fabrication.setProductAmount(fabricationSet.getInt(getLocalized("column.createdAmount")));
+                fabrication.setSideProductAmount(fabricationSet.getInt(getLocalized("column.createdSideAmount")));
+                fabrication.setSideProductName(getString(fabricationSet, getLocalized("column.sideProduct")));
 
-                int id = fabricationSet.getInt("ID");
+                int id = fabricationSet.getInt(getLocalized("column.id"));
 
                 ItemList materials = new ItemList();
-                ResultSet materialSet = statement.executeQuery("SELECT * FROM Herstellungsmaterial WHERE ID=" + id);
+                ResultSet materialSet = statement.executeQuery(
+                        format("SELECT * FROM %s WHERE %s=%s",
+                                "table.manufacturing.material", "column.id", String.valueOf(id)));
                 while (materialSet.next()) {
-                    String mat = getString(materialSet, "Material");
-                    float amount = materialSet.getFloat("Anzahl");
+                    String mat = getString(materialSet, getLocalized("column.material"));
+                    float amount = materialSet.getFloat(getLocalized("column.amount"));
                     Item material = Database.getItemWithoutDefault(mat).copy();
                     material.setAmount(amount);
                     materials.add(material);
@@ -445,7 +499,7 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Herstellungen konnten nicht geladen werden.";
+            return getErrorString("table.manufacturing");
         }
         return "";
     }
@@ -453,7 +507,8 @@ public abstract class DatabaseLoader {
     private static String loadShieldTypes(Statement statement, Semaphore semaphore) {
         try {
             ObservableList<String> shieldTypList =
-                    FXCollections.observableArrayList(getCollection(statement, "SELECT * FROM Schildtypen", "Schildtyp"));
+                    FXCollections.observableArrayList(getCollection(statement,
+                            format("SELECT * FROM %s", "table.shieldTypes"), "column.shieldTyp"));
 
             Platform.runLater(() -> {
                 Database.shieldTypes.set(shieldTypList);
@@ -461,7 +516,7 @@ public abstract class DatabaseLoader {
             });
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Schildtypen konnten nicht geladen werden.";
+            return getErrorString("table.shieldTypes");
         }
         return "";
     }
@@ -474,35 +529,45 @@ public abstract class DatabaseLoader {
         ObservableList<Specialisation> specialisationList;
 
         // Load raw model from database
-        try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Charakterisierung\"")) {
+        try (ResultSet enemySet = statement.executeQuery(format(
+                "SELECT * FROM %s WHERE %s=\"%s\"",
+                "table.enemies", "column.type", "type.characterisation"))) {
             characterisationList = loadEnemies(enemySet, Characterisation::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Charakterisierung konnte nicht geladen werden.";
+            return getErrorString("type.characterisation");
         }
-        try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Rasse\"")) {
+        try (ResultSet enemySet = statement.executeQuery(format(
+                "SELECT * FROM %s WHERE %s=\"%s\"",
+                "table.enemies", "column.type", "type.race"))) {
             raceList = loadEnemies(enemySet, Race::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Rassen konnten nicht geladen werden.";
+            return getErrorString("type.race");
         }
-        try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Beruf\"")) {
+        try (ResultSet enemySet = statement.executeQuery(format(
+                "SELECT * FROM %s WHERE %s=\"%s\"",
+                "table.enemies", "column.type", "type.profession"))) {
             professionList = loadEnemies(enemySet, Profession::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Berufe konnten nicht geladen werden.";
+            return getErrorString("type.profession");
         }
-        try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Kampfstil\"")) {
+        try (ResultSet enemySet = statement.executeQuery(format(
+                "SELECT * FROM %s WHERE %s=\"%s\"",
+                "table.enemies", "column.type", "type.fightingStyle"))) {
             fightingStyleList = loadEnemies(enemySet, FightingStyle::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Kampfstile konnten nicht geladen werden.";
+            return getErrorString("type.fightingStyle");
         }
-        try (ResultSet enemySet = statement.executeQuery("SELECT * FROM Gegner WHERE TYP=\"Spezialisierung\"")) {
+        try (ResultSet enemySet = statement.executeQuery(format(
+                "SELECT * FROM %s WHERE %s=\"%s\"",
+                "table.enemies", "column.type", "type.specialisation"))) {
             specialisationList = loadEnemies(enemySet, Specialisation::new);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Spezialisierungen konnten nicht geladen werden.";
+            return getErrorString("type.specialisation");
         }
 
         // Link parents
@@ -510,31 +575,31 @@ public abstract class DatabaseLoader {
             linkParents(statement, characterisationList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Charakterisierungen konnten nicht gruppiert werden.";
+            return getLocalized("type.characterisation") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
         }
         try {
             linkParents(statement, raceList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Rassen konnten nicht gruppiert werden.";
+            return getLocalized("type.race") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
         }
         try {
             linkParents(statement, professionList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Berufe konnten nicht gruppiert werden.";
+            return getLocalized("type.profession") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
         }
         try {
             linkParents(statement, fightingStyleList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Kampfstile konnten nicht gruppiert werden.";
+            return getLocalized("type.fightingStyle") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
         }
         try {
             linkParents(statement, specialisationList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Spezialisierungen konnten nicht gruppiert werden.";
+            return getLocalized("type.specialisation") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
         }
 
         // Link subtypes
@@ -542,25 +607,25 @@ public abstract class DatabaseLoader {
             linkSubTypes(statement, characterisationList, raceList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Charakterisierungen konnten nicht mit SubTypen gelinkt werden.";
+            return getLocalized("type.characterisation") + " " + LanguageUtility.getMessage("database.cantGetLinked");
         }
         try {
             linkSubTypes(statement, raceList, professionList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Rassen konnten nicht mit SubTypen gelinkt werden.";
+            return getLocalized("type.race") + " " + LanguageUtility.getMessage("database.cantGetLinked");
         }
         try {
             linkSubTypes(statement, professionList, fightingStyleList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Berufe konnten nicht mit SubTypen gelinkt werden.";
+            return getLocalized("type.profession") + " " + LanguageUtility.getMessage("database.cantGetLinked");
         }
         try {
             linkSubTypes(statement, fightingStyleList, specialisationList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Kampfstile konnten nicht mit SubTypen gelinkt werden.";
+            return getLocalized("type.fightingStyle") + " " + LanguageUtility.getMessage("database.cantGetLinked");
         }
 
         Collection<GenerationBase> combinedList = new ArrayList<>();
@@ -575,13 +640,13 @@ public abstract class DatabaseLoader {
             addMainTalents(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Haupttalente konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.mainTalents") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
         try {
             addForbiddenTalents(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Verbotene Talente konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.forbiddenTalents") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
 
         // Add Attributes
@@ -589,13 +654,13 @@ public abstract class DatabaseLoader {
             addPrimaryAttributes(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Primäre Attribute konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.primaryAttributes") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
         try {
             addSecondaryAttributes(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Sekundäre Attribute konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.secondaryAttributes") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
 
         // Add Weapon Types
@@ -603,13 +668,13 @@ public abstract class DatabaseLoader {
             addPrimaryWeaponTypes(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Primäre Waffentypen konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.primaryWeaponType") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
         try {
             addSecondaryWeaponTypes(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Sekundäre Waffentypen konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.secondaryWeaponType") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
 
         // Add specific equipment
@@ -617,19 +682,19 @@ public abstract class DatabaseLoader {
             addSpecificPrimaryWeapons(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Primäre Waffen konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.equippedPrimaryWeapon") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
         try {
             addSpecificSecondaryWeapons(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Sekundäre Waffen konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.equippedSecondaryWeapon") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
         try {
             addSpecificArmor(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Rüstungen konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.equippedArmor") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
 
         // Add drops
@@ -637,7 +702,7 @@ public abstract class DatabaseLoader {
             addDrops(statement, combinedList);
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Drops konnten nicht gesetzt werden.";
+            return getLocalized("table.enemies.drop") + " " + LanguageUtility.getMessage("database.cantGetSet");
         }
 
         Platform.runLater(() -> {
@@ -657,24 +722,24 @@ public abstract class DatabaseLoader {
         while (set.next()) {
             try {
                 Generation generation = constructor.get();
-                generation.setName(getString(set, "Bezeichnung"));
-                generation.setAdvantages(Arrays.stream(getString(set, "Vorteile").split("\n"))
+                generation.setName(getString(set, getLocalized("column.name")));
+                generation.setAdvantages(Arrays.stream(getString(set, getLocalized("column.advantages")).split("\n"))
                         .filter(s -> !s.isBlank()).collect(Collectors.toList()));
-                generation.setDisadvantages(Arrays.stream(getString(set, "Nachteile").split("\n"))
+                generation.setDisadvantages(Arrays.stream(getString(set, getLocalized("column.disadvantages")).split("\n"))
                         .filter(s -> !s.isBlank()).collect(Collectors.toList()));
-                generation.setDropsWeapon(set.getBoolean("Droppt Waffen"));
-                generation.setDropsArmor(set.getBoolean("Droppt Rüstung"));
-                generation.setDropsJewellery(set.getBoolean("Droppt Schmuck"));
-                generation.setAbleToUsesPrimaryHand(set.getBoolean("Kann Primärhand benutzen"));
-                generation.setAbleToUsesSecondaryHand(set.getBoolean("Kann Sekundärhand benutzen"));
-                generation.setAbleToUseShield(set.getBoolean("Kann Schild benutzen"));
-                generation.setAbleToUseArmor(ArmorPosition.head, set.getBoolean("Kann Helm benutzen"));
-                generation.setAbleToUseArmor(ArmorPosition.body, set.getBoolean("Kann Harnisch benutzen"));
-                generation.setAbleToUseArmor(ArmorPosition.arms, set.getBoolean("Kann Armschienen benutzen"));
-                generation.setAbleToUseArmor(ArmorPosition.legs, set.getBoolean("Kann Beinrüstung benutzen"));
-                generation.setAbleToUseJewellery(set.getBoolean("Kann Schmuck benutzen"));
-                generation.setUsesAlwaysShield(set.getBoolean("Benutzt immer Schild"));
-                generation.setAbleToUseSpells(set.getBoolean("Kann Zauber benutzen"));
+                generation.setDropsWeapon(set.getBoolean(getLocalized("column.dropsWeapons")));
+                generation.setDropsArmor(set.getBoolean(getLocalized("column.dropsArmor")));
+                generation.setDropsJewellery(set.getBoolean(getLocalized("column.dropsJewellery")));
+                generation.setAbleToUsesPrimaryHand(set.getBoolean(getLocalized("column.ableToUsePrimaryHand")));
+                generation.setAbleToUsesSecondaryHand(set.getBoolean(getLocalized("column.ableToUseSecondaryHand")));
+                generation.setAbleToUseShield(set.getBoolean(getLocalized("column.ableToUseShield")));
+                generation.setAbleToUseArmor(ArmorPosition.head, set.getBoolean(getLocalized("column.ableToUseHelmet")));
+                generation.setAbleToUseArmor(ArmorPosition.upperBody, set.getBoolean(getLocalized("column.ableToUseHarness")));
+                generation.setAbleToUseArmor(ArmorPosition.arm, set.getBoolean(getLocalized("column.ableToUseBracers")));
+                generation.setAbleToUseArmor(ArmorPosition.legs, set.getBoolean(getLocalized("column.ableToUseLegArmor")));
+                generation.setAbleToUseJewellery(set.getBoolean(getLocalized("column.ableToUseJewellery")));
+                generation.setUsesAlwaysShield(set.getBoolean(getLocalized("column.usesAlwaysShield")));
+                generation.setAbleToUseSpells(set.getBoolean(getLocalized("column.ableToUseSpells")));
 
                 list.add(generation);
             } catch (Exception e) {
@@ -686,10 +751,10 @@ public abstract class DatabaseLoader {
     }
 
     private static <Generation extends GenerationBase> void linkParents(Statement statement, Collection<Generation> generations) throws SQLException {
-        try (ResultSet groupSet = statement.executeQuery("SELECT * FROM [Gegner Gruppierungen]")) {
+        try (ResultSet groupSet = statement.executeQuery(format("SELECT * FROM [%s]", "table.enemies.enemyGroups"))) {
             while (groupSet.next()) {
-                String group = getString(groupSet, "Gruppe");
-                String part = getString(groupSet, "Teilgruppe");
+                String group = getString(groupSet, getLocalized("column.group"));
+                String part = getString(groupSet, getLocalized("column.groupPart"));
 
                 Optional<Generation> parent = generations.stream().filter(g -> g.getName().equalsIgnoreCase(group)).findFirst();
                 Optional<Generation> child = generations.stream().filter(g -> g.getName().equalsIgnoreCase(part)).findFirst();
@@ -704,10 +769,10 @@ public abstract class DatabaseLoader {
     private static <SubType extends GenerationBase, Generation extends TypedGenerationBase<SubType>>
     void linkSubTypes(Statement statement, Collection<Generation> mains, Collection<SubType> subs) throws SQLException {
 
-        try (ResultSet subTypSet = statement.executeQuery("SELECT * FROM [Gegner Subtypen]")) {
+        try (ResultSet subTypSet = statement.executeQuery(format("SELECT * FROM [%s]", "table.enemies.enemySubtypes"))) {
             while (subTypSet.next()) {
-                String mainName = getString(subTypSet, "Haupttyp");
-                String subName = getString(subTypSet, "Subtyp");
+                String mainName = getString(subTypSet, getLocalized("column.mainType"));
+                String subName = getString(subTypSet, getLocalized("column.subtype"));
 
                 Optional<Generation> parent = mains.stream().filter(g -> g.getName().equalsIgnoreCase(mainName)).findFirst();
                 Optional<SubType> child = subs.stream().filter(g -> g.getName().equalsIgnoreCase(subName)).findFirst();
@@ -721,10 +786,10 @@ public abstract class DatabaseLoader {
     }
 
     private static void addMainTalents(Statement statement, Collection<GenerationBase> combined) throws SQLException {
-        try (ResultSet talentTypSet = statement.executeQuery("SELECT * FROM [Haupt Talente]")) {
+        try (ResultSet talentTypSet = statement.executeQuery(format("SELECT * FROM [%s]", "table.enemies.mainTalents"))) {
             while (talentTypSet.next()) {
-                String name = getString(talentTypSet, "Bezeichnung");
-                String talentName = getString(talentTypSet, "Talent");
+                String name = getString(talentTypSet, getLocalized("column.name"));
+                String talentName = getString(talentTypSet, getLocalized("column.talent"));
 
                 GenerationBase base = combined.stream().filter(g -> g.getName().equalsIgnoreCase(name)).findFirst().orElseThrow();
                 Talent talent = Database.getTalentWithoutDefault(talentName);
@@ -734,10 +799,10 @@ public abstract class DatabaseLoader {
     }
 
     private static void addForbiddenTalents(Statement statement, Collection<GenerationBase> combined) throws SQLException {
-        try (ResultSet talentTypSet = statement.executeQuery("SELECT * FROM [Verbotene Talente]")) {
+        try (ResultSet talentTypSet = statement.executeQuery(format("SELECT * FROM [%s]", "table.enemies.forbiddenTalents"))) {
             while (talentTypSet.next()) {
-                String name = getString(talentTypSet, "Bezeichnung");
-                String talentName = getString(talentTypSet, "Talent");
+                String name = getString(talentTypSet, getLocalized("column.name"));
+                String talentName = getString(talentTypSet, getLocalized("column.talent"));
 
                 GenerationBase base = combined.stream().filter(g -> g.getName().equalsIgnoreCase(name)).findFirst().orElseThrow();
                 Talent talent = Database.getTalentWithoutDefault(talentName);
@@ -749,7 +814,10 @@ public abstract class DatabaseLoader {
     private static void addPrimaryAttributes(Statement statement, Collection<GenerationBase> combined) throws SQLException {
         for (GenerationBase generationBase : combined) {
             generationBase.setPrimaryAttributes(
-                    getCollection(statement, "SELECT * FROM [Primäre Attribute] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Attribut").stream()
+                    getCollection(statement, format(
+                            "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                            "table.enemies.primaryAttributes", "column.name", generationBase.getName()),
+                            "column.attribute").stream()
                             .map(PrimaryAttribute::getPrimaryAttribute).collect(Collectors.toList()));
         }
     }
@@ -757,7 +825,10 @@ public abstract class DatabaseLoader {
     private static void addSecondaryAttributes(Statement statement, Collection<GenerationBase> combined) throws SQLException {
         for (GenerationBase generationBase : combined) {
             generationBase.setSecondaryAttributes(
-                    getCollection(statement, "SELECT * FROM [Sekundäre Attribute] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Attribut").stream()
+                    getCollection(statement, format(
+                            "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                            "table.enemies.secondaryAttributes", "column.name", generationBase.getName()),
+                            "column.attribute").stream()
                             .map(SecondaryAttribute::getSecondaryAttribute).collect(Collectors.toList()));
         }
     }
@@ -765,21 +836,29 @@ public abstract class DatabaseLoader {
     private static void addPrimaryWeaponTypes(Statement statement, Collection<GenerationBase> combined) throws SQLException {
         for (GenerationBase generationBase : combined) {
             generationBase.setPrimaryWeaponTypes(
-                    getCollection(statement, "SELECT * FROM [Primärhand Waffenart] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Waffenart"));
+                    getCollection(statement, format(
+                            "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                            "table.enemies.primaryWeaponType", "column.name", generationBase.getName()),
+                            "column.weaponTyp"));
         }
     }
 
     private static void addSecondaryWeaponTypes(Statement statement, Collection<GenerationBase> combined) throws SQLException {
         for (GenerationBase generationBase : combined) {
-            generationBase.setSecondaryWeaponTypes(
-                    getCollection(statement, "SELECT * FROM [Sekundärhand Waffenart] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Waffenart"));
+            generationBase.setSecondaryWeaponTypes(getCollection(statement, format(
+                    "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                    "table.enemies.secondaryWeaponType", "column.name", generationBase.getName()),
+                    "column.weaponTyp"));
         }
     }
 
     private static void addSpecificPrimaryWeapons(Statement statement, Collection<GenerationBase> combined) throws SQLException {
 
         for (GenerationBase generationBase : combined) {
-            Collection<String> weaponNames = getCollection(statement, "SELECT * FROM [Ausgerüstete spezifische Primärwaffen] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Waffe");
+            Collection<String> weaponNames = getCollection(statement, format(
+                    "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                    "table.enemies.equippedPrimaryWeapon", "column.name", generationBase.getName()),
+                    "type.weapon");
 
             Collection<Weapon> weapons = new ArrayList<>();
             for (String weaponName : weaponNames) {
@@ -792,7 +871,10 @@ public abstract class DatabaseLoader {
     private static void addSpecificSecondaryWeapons(Statement statement, Collection<GenerationBase> combined) throws SQLException {
 
         for (GenerationBase generationBase : combined) {
-            Collection<String> weaponNames = getCollection(statement, "SELECT * FROM [Ausgerüstete spezifische Sekundärwaffen] WHERE Bezeichnung=\"" + generationBase.getName() + "\"", "Waffe");
+            Collection<String> weaponNames = getCollection(statement, format(
+                    "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                    "table.enemies.equippedSecondaryWeapon", "column.name", generationBase.getName()),
+                    "type.weapon");
 
             Collection<Weapon> weapons = new ArrayList<>();
             for (String weaponName : weaponNames) {
@@ -805,19 +887,21 @@ public abstract class DatabaseLoader {
     private static Collection<Weapon> loadSpecificWeapons(Statement statement, String weaponName) throws SQLException {
         Collection<Weapon> weapons = new ArrayList<>();
 
-        try (ResultSet weaponSet = statement.executeQuery("SELECT * FROM [Spezifische Waffenstats] WHERE Bezeichnung=\"" + weaponName + "\"")) {
+        try (ResultSet weaponSet = statement.executeQuery(format(
+                "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                "table.enemies.specificWeaponStats", "column.name", weaponName))) {
             while (weaponSet.next()) {
                 Weapon weapon = new Weapon();
                 weapon.setName(weaponName);
-                weapon.setTyp("Waffe");
-                weapon.setSubTyp(getString(weaponSet, "Waffentyp"));
-                weapon.setTier(weaponSet.getInt("Tier"));
-                weapon.setRarity(getRarity(weaponSet, "Seltenheit"));
-                weapon.setInitiative(getString(weaponSet, "Initiative"));
-                weapon.setDice(getString(weaponSet, "Würfel/Belastung"));
-                weapon.setDamage(weaponSet.getInt("Schaden/Schutz"));
-                weapon.setHit(weaponSet.getInt("Treffer"));
-                weapon.setEffect(getString(weaponSet, "Effekt"));
+                weapon.setTyp(getLocalized("type.weapon"));
+                weapon.setSubTyp(getString(weaponSet, getLocalized("column.weaponTyp")));
+                weapon.setTier(weaponSet.getInt(getLocalized("column.tier")));
+                weapon.setRarity(getRarity(weaponSet, getLocalized("column.rarity")));
+                weapon.setInitiative(getString(weaponSet, getLocalized("column.initiative")));
+                weapon.setDice(getString(weaponSet, getLocalized("column.dice_weight")));
+                weapon.setDamage(weaponSet.getInt(getLocalized("column.damage_protection")));
+                weapon.setHit(weaponSet.getInt(getLocalized("column.hit")));
+                weapon.setEffect(getString(weaponSet, getLocalized("column.effect")));
 
                 weapons.add(weapon);
             }
@@ -828,15 +912,17 @@ public abstract class DatabaseLoader {
     private static void addSpecificArmor(Statement statement, Collection<GenerationBase> combined) throws SQLException {
 
         for (GenerationBase generationBase : combined) {
-            try (ResultSet eqSet = statement.executeQuery("SELECT * FROM [Ausgerüstete spezifische Rüstung] WHERE Bezeichnung=\"" + generationBase.getName() + "\"")) {
+            try (ResultSet eqSet = statement.executeQuery(format(
+                    "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                    "table.enemies.equippedArmor", "column.name", generationBase.getName()))) {
                 Map<ArmorPosition, Collection<Armor>> armor = new HashMap<>();
                 for (ArmorPosition position : ArmorPosition.values()) {
                     armor.put(position, new ArrayList<>());
                 }
 
                 while (eqSet.next()) {
-                    String armorName = getString(eqSet, "Rüstung");
-                    ArmorPosition position = ArmorPosition.getArmorPosition(getString(eqSet, "Rüstungstyp"));
+                    String armorName = getString(eqSet, getLocalized("column.armor"));
+                    ArmorPosition position = ArmorPosition.getArmorPosition(getString(eqSet, getLocalized("column.armorType")));
 
                     armor.get(position).addAll(loadSpecificArmor(statement, armorName, position));
                 }
@@ -850,18 +936,21 @@ public abstract class DatabaseLoader {
 
     private static Collection<Armor> loadSpecificArmor(Statement statement, String armorName, ArmorPosition position) throws SQLException {
         Collection<Armor> armorList = new ArrayList<>();
+        String positionName = position.toStringProperty().get();
 
-        try (ResultSet armorSet = statement.executeQuery("SELECT * FROM [Spezifische Rüstungenstats] WHERE (Bezeichnung=\"" + armorName + "\") AND (Rüstungstyp=\"" + position + "\")" )) {
+        try (ResultSet armorSet = statement.executeQuery(format(
+                "SELECT * FROM [%s] WHERE (%s=\"%s\") AND (%s=\"%s\")",
+                "table.enemies.armor", "column.name", armorName, "column.armorTyp", positionName))) {
             while (armorSet.next()) {
                 Armor armor = new Armor();
                 armor.setName(armorName);
-                armor.setTyp("Rüstung");
-                armor.setSubTyp(position.toString());
-                armor.setTier(armorSet.getInt("Tier"));
-                armor.setRarity(getRarity(armorSet, "Seltenheit"));
-                armor.setProtection(armorSet.getInt("Schutz"));
-                armor.setWeight(armorSet.getDouble("Belastung"));
-                armor.setEffect(getString(armorSet, "Effekt"));
+                armor.setTyp(getLocalized("type.armor"));
+                armor.setSubTyp(positionName);
+                armor.setTier(armorSet.getInt(getLocalized("column.tier")));
+                armor.setRarity(getRarity(armorSet, getLocalized("column.rarity")));
+                armor.setProtection(armorSet.getInt(getLocalized("column.protection")));
+                armor.setWeight(armorSet.getDouble(getLocalized("column.weight")));
+                armor.setEffect(getString(armorSet, getLocalized("column.effect")));
 
                 armorList.add(armor);
             }
@@ -871,20 +960,22 @@ public abstract class DatabaseLoader {
 
     private static void addDrops(Statement statement, Collection<GenerationBase> combined) throws SQLException {
         for (GenerationBase generationBase : combined) {
-            try (ResultSet dropSet = statement.executeQuery("SELECT * FROM Drops WHERE Bezeichnung=\"" + generationBase.getName() + "\"")) {
+            try (ResultSet dropSet = statement.executeQuery(format(
+                    "SELECT * FROM %s WHERE %s=\"%s\"",
+                    "table.enemies.drop", "column.name", generationBase.getName()))) {
                 Collection<Drop> drops = new ArrayList<>();
 
                 while (dropSet.next()) {
                     Drop drop = new Drop();
-                    drop.setName(getString(dropSet, "Drop"));
-                    drop.setChance(dropSet.getFloat("Wahrscheinlichkeit"));
-                    drop.setAmount(dropSet.getInt("Anzahl"));
-                    drop.setLevelMultiplication(dropSet.getFloat("Levelmultiplikator"));
-                    drop.setTierMultiplication(dropSet.getFloat("Tiermultiplikator"));
-                    drop.setMinLevel(dropSet.getInt("Mindestlevel"));
-                    drop.setMinTier(dropSet.getInt("Mindesttier"));
-                    drop.setMaxLevel(dropSet.getInt("Maximallevel"));
-                    drop.setMaxTier(dropSet.getInt("Maximaltier"));
+                    drop.setName(getString(dropSet, getLocalized("column.drop")));
+                    drop.setChance(dropSet.getFloat(getLocalized("column.chance")));
+                    drop.setAmount(dropSet.getInt(getLocalized("column.amount")));
+                    drop.setLevelMultiplication(dropSet.getFloat(getLocalized("column.levelMultiplication")));
+                    drop.setTierMultiplication(dropSet.getFloat(getLocalized("column.tierMultiplication")));
+                    drop.setMinLevel(dropSet.getInt(getLocalized("column.minLevel")));
+                    drop.setMinTier(dropSet.getInt(getLocalized("column.minTier")));
+                    drop.setMaxLevel(dropSet.getInt(getLocalized("column.maxLevel")));
+                    drop.setMaxTier(dropSet.getInt(getLocalized("column.maxTier")));
 
                     drops.add(drop);
                 }
@@ -966,36 +1057,7 @@ public abstract class DatabaseLoader {
     }
 
     private static Talent getTalent(String typ) {
-        switch (typ) {
-            case "Arkan":
-                return Database.getTalent("Arkanmagie");
-            case "Erde":
-                return Database.getTalent("Erdmagie");
-            case "Feuer":
-                return Database.getTalent("Feuermagie");
-            case "Finster":
-                return Database.getTalent("Finstermagie");
-            case "Frost":
-                return Database.getTalent("Frostmagie");
-            case "Illusion":
-                return Database.getTalent("Illusionsmagie");
-            case "Licht":
-                return Database.getTalent("Lichtmagie");
-            case "Luft":
-                return Database.getTalent("Luftmagie");
-            case "Natur":
-                return Database.getTalent("Naturmagie");
-            case "Sturm":
-                return Database.getTalent("Sturmmagie");
-            case "Tot":
-                return Database.getTalent("Totenmagie");
-            case "Wasser":
-                return Database.getTalent("Wassermagie");
-            case "Wissen":
-                return Database.getTalent("Magisches Wissen");
-
-        }
-        return Database.getTalent(typ);
+        return Database.getTalent(talentTypes.getOrDefault(typ, typ));
     }
 
     private static UpgradeFactory getUpgradeFactory(String name, Collection<UpgradeFactory> collection) {
@@ -1016,13 +1078,42 @@ public abstract class DatabaseLoader {
         return string != null ? string : "";
     }
 
-    private static Collection<String> getCollection(Statement statement, String sql, String label) throws SQLException {
+    private static Collection<String> getCollection(Statement statement, @org.intellij.lang.annotations.Language("SQL") String sql, String label) throws SQLException {
         ArrayList<String> collection = new ArrayList<>();
         try (ResultSet set = statement.executeQuery(sql)) {
             while (set.next()) {
-                collection.add(getString(set, label));
+                collection.add(getString(set, getLocalized(label)));
             }
         }
         return collection;
+    }
+
+    private static String getErrorString(String table) {
+        return LanguageUtility.getMessage("database.cantGetLoaded") + " " +
+                getLocalized(table) + " " +
+                LanguageUtility.getMessage("database.cantGetLoaded.ending");
+    }
+
+    private static String getLocalized(String key) {
+        if (tables.get().containsKey(key)) {
+            return tables.get().getString(key);
+        } else {
+            return key;
+        }
+    }
+
+    private static String format(@org.intellij.lang.annotations.Language("SQL") String sql, String... keys) {
+        keys = Arrays.stream(keys).map(DatabaseLoader::getLocalized).toArray(String[]::new);
+
+        return String.format(sql, (Object[]) keys);
+    }
+
+    private static void reloadLanguage(Language language) {
+        try {
+            tables.set(ResourceBundle.getBundle("table/Table", language.getLocale()));
+        } catch (MissingResourceException e) {
+            e.printStackTrace();
+            tables.set(ResourceBundle.getBundle("table/Table", Locale.ENGLISH));
+        }
     }
 }

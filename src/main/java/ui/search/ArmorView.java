@@ -11,7 +11,7 @@ public class ArmorView extends EquipmentView<Armor> {
         super("search.armor.title", parent, Armor.class, Database.armorList);
 
         VBox root = this.createRoot(
-                new String[]{"column.name", "column.typ", "column.armor.protection", "column.armor.weight",
+                new String[]{"column.name", "column.type", "column.armor.protection", "column.armor.weight",
                         "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots",
                         "column.equipment.requirement"},
                 new String[]{"name", "subTyp", "protection", "weight", "rarity", "cost", "effect", "slots", "requirement"});

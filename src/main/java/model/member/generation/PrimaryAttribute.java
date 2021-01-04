@@ -18,6 +18,10 @@ public enum PrimaryAttribute implements WithToStringProperty {
         return LanguageUtility.getMessageProperty("primaryAttribute." + super.toString() + ".short");
     }
 
+    public String toShortString() {
+        return toShortStringProperty().get();
+    }
+
     public static PrimaryAttribute getPrimaryAttribute(String name) {
         for (PrimaryAttribute attribute : values()) {
             if (attribute.toStringProperty().get().equalsIgnoreCase(name.trim())) {

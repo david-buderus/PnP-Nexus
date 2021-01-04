@@ -100,7 +100,7 @@ public class PlantView extends ViewPart {
         searchTable.getColumns().add(nameC);
 
         TableColumn<Plant, String> typC = new TableColumn<>();
-        typC.textProperty().bind(getMessageProperty("column.typ"));
+        typC.textProperty().bind(getMessageProperty("column.type"));
         typC.setCellValueFactory(new PropertyValueFactory<>("subTyp"));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);
