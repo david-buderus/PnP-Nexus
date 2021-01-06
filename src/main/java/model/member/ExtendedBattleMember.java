@@ -98,14 +98,14 @@ public class ExtendedBattleMember extends BattleMember {
         this.mentalHealthModifier = new SimpleIntegerProperty();
         this.maxManaModifier = new SimpleIntegerProperty();
 
-        this.baseDamageMelee = createProperty(0.18, strength, 0.09, dexterity, 0.03, endurance, baseDamageMeleeModifier);
-        this.baseDamageRange = createProperty(0.18, precision, 0.09, dexterity, 0.03, agility, baseDamageRangeModifier);
-        this.magicPower = createProperty(0.18, intelligence, 0.08, charisma, 0.04, precision, magicPowerModifier);
-        this.baseDefense = createProperty(0.105, resilience, 0.09, agility, 0.105, endurance, defenseModifier);
-        this.initiative = createProperty(0.2, agility, 0.16, precision, 0.16, charisma, initModifier, 2);
-        this.maxLife = createProperty(4.5, resilience, 0.9, endurance, 0.4, strength, maxLifeModifier);
-        this.mentalHealth = createProperty(0.9, resilience, 0.4, intelligence, 0.2, charisma, mentalHealthModifier, 7);
-        this.maxMana = createProperty(4.2, intelligence, 1.6, charisma, maxManaModifier, 10);
+        this.baseDamageMelee = createSecondaryAttributeProperty("character.secondaryAttribute.damageMelee", baseDamageMeleeModifier);
+        this.baseDamageRange = createSecondaryAttributeProperty("character.secondaryAttribute.damageRange", baseDamageRangeModifier);
+        this.magicPower = createSecondaryAttributeProperty("character.secondaryAttribute.magicPower", magicPowerModifier);
+        this.baseDefense = createSecondaryAttributeProperty("character.secondaryAttribute.baseDefense", defenseModifier);
+        this.initiative = createSecondaryAttributeProperty("character.secondaryAttribute.initiative", initModifier);
+        this.maxLife = createSecondaryAttributeProperty("character.secondaryAttribute.maxLife", maxLifeModifier);
+        this.mentalHealth = createSecondaryAttributeProperty("character.secondaryAttribute.mentalHealth", mentalHealthModifier);
+        this.maxMana = createSecondaryAttributeProperty("character.secondaryAttribute.maxMana", maxManaModifier);
 
         this.notes = new SimpleStringProperty("");
 
@@ -384,7 +384,6 @@ public class ExtendedBattleMember extends BattleMember {
     private void generateSpells() {
 
         if (isNotAbleToUseSpells()) {
-            System.out.println("Darf net");
             return;
         }
 
@@ -629,22 +628,26 @@ public class ExtendedBattleMember extends BattleMember {
         }
     }
 
-    private IntegerProperty createProperty(double s1, IntegerProperty n1, double s2, IntegerProperty n2,
-                                           double s3, IntegerProperty n3, IntegerProperty points) {
-        return createProperty(s1, n1, s2, n2, s3, n3, points, 0);
-    }
+    private IntegerProperty createSecondaryAttributeProperty(String key, IntegerProperty points) {
+        Double[] loadedFactors = (Double[]) Utility.getConfig().getArray(Double.class, key);
+        int baseValue = Utility.getConfig().getInt(key + ".base", 0);
 
-    private IntegerProperty createProperty(double s1, IntegerProperty n1, double s2, IntegerProperty n2,
-                                           double s3, IntegerProperty n3, IntegerProperty points, int b) {
-        DoubleBinding base = n1.multiply(s1).add(n2.multiply(s2)).add(n3.multiply(s3)).add(b).add(points);
-        IntegerProperty result = new SimpleIntegerProperty();
-        result.bind(Bindings.createIntegerBinding(() -> (int) Math.round(base.get()), base));
-        return result;
-    }
+        double[] factors = new double[8];
+        for (int i = 0; i < loadedFactors.length; i++) {
+            factors[i] = loadedFactors[i];
+        }
 
-    private IntegerProperty createProperty(double s1, IntegerProperty n1, double s2,
-                                           IntegerProperty n2, IntegerProperty points, int b) {
-        DoubleBinding base = n1.multiply(s1).add(n2.multiply(s2)).add(b).add(points);
+        DoubleBinding base = strength.multiply(factors[0])
+                .add(endurance.multiply(factors[1]))
+                .add(dexterity.multiply(factors[2]))
+                .add(intelligence.multiply(factors[3]))
+                .add(charisma.multiply(factors[4]))
+                .add(resilience.multiply(factors[5]))
+                .add(agility.multiply(factors[6]))
+                .add(precision.multiply(factors[7]))
+                .add(baseValue)
+                .add(points);
+
         IntegerProperty result = new SimpleIntegerProperty();
         result.bind(Bindings.createIntegerBinding(() -> (int) Math.round(base.get()), base));
         return result;
