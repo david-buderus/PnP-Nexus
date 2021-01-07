@@ -6,7 +6,7 @@ import java.util.*;
 
 public abstract class LanguageUtility {
 
-    public static final ObjectProperty<Language> language = new SimpleObjectProperty<>(Language.german);
+    public static final ObjectProperty<Language> language = new SimpleObjectProperty<>(Language.system);
     private static final ObjectProperty<ResourceBundle> messages = new SimpleObjectProperty<>();
     private static final Map<String, StringProperty> messageBindings = new HashMap<>();
 

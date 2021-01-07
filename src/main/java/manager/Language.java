@@ -3,7 +3,7 @@ package manager;
 import java.util.Locale;
 
 public enum Language {
-    german("Deutsch"), english("English");
+    system("Default"), german("Deutsch"), english("English");
 
     private final String name;
 
@@ -13,6 +13,8 @@ public enum Language {
 
     public Locale getLocale() {
         switch (this) {
+            case system:
+                return Locale.getDefault();
             case german:
                 return Locale.GERMAN;
             case english:

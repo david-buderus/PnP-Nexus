@@ -24,11 +24,13 @@ import java.util.stream.Collectors;
 
 public abstract class DatabaseLoader {
 
+    public static final ObjectProperty<Language> tableLanguage = new SimpleObjectProperty<>(Language.system);
+
     private static final ObjectProperty<ResourceBundle> tables = new SimpleObjectProperty<>();
 
     static {
-        reloadLanguage(LanguageUtility.language.get());
-        LanguageUtility.language.addListener((ob, o, n) -> reloadLanguage(n));
+        reloadLanguage(tableLanguage.get());
+        tableLanguage.addListener((ob, o, n) -> reloadLanguage(n));
     }
 
     private static final Map<String, String> talentTypes = new HashMap<>();
@@ -74,8 +76,9 @@ public abstract class DatabaseLoader {
     }
 
     private static String loadWeapons(Statement statement, Semaphore semaphore) {
+        ObservableList<Weapon> weaponList = FXCollections.observableArrayList();
+
         try (ResultSet weaponSet = statement.executeQuery(format("SELECT * FROM %s NATURAL JOIN %s", "table.items", "table.weapons"))) {
-            ObservableList<Weapon> weaponList = FXCollections.observableArrayList();
             while (weaponSet.next()) {
                 Weapon weapon = new Weapon();
                 weapon.setName(getString(weaponSet, getLocalized("column.name")));
@@ -98,20 +101,22 @@ public abstract class DatabaseLoader {
                 TypTranslation.add(weapon.getTyp(), getLocalized("type.weapon"));
             }
 
+        } catch (SQLException e) {
+            return getErrorString("table.weapons");
+        } finally {
             Platform.runLater(() -> {
                 Database.weaponList.set(weaponList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.weapons");
         }
+
         return "";
     }
 
     private static String loadArmor(Statement statement, Semaphore semaphore) {
+        ObservableList<Armor> armorList = FXCollections.observableArrayList();
+
         try (ResultSet armorSet = statement.executeQuery(format("SELECT * FROM %s NATURAL JOIN %s", "table.items", "table.armors"))) {
-            ObservableList<Armor> armorList = FXCollections.observableArrayList();
 
             while (armorSet.next()) {
                 Armor armor = new Armor();
@@ -133,19 +138,21 @@ public abstract class DatabaseLoader {
                 TypTranslation.add(armor.getTyp(), getLocalized("type.armor"));
             }
 
+        } catch (SQLException e) {
+            return getErrorString("table.armors");
+        } finally {
             Platform.runLater(() -> {
                 Database.armorList.set(armorList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            return getErrorString("table.armors");
         }
         return "";
     }
 
     private static String loadJewellery(Statement statement, Semaphore semaphore) {
+        ObservableList<Jewellery> jewelleryList = FXCollections.observableArrayList();
+
         try (ResultSet jewellerySet = statement.executeQuery(format("SELECT * FROM %s NATURAL JOIN %s", "table.items", "table.jewellery"))) {
-            ObservableList<Jewellery> jewelleryList = FXCollections.observableArrayList();
 
             while (jewellerySet.next()) {
                 Jewellery jewellery = new Jewellery();
@@ -165,21 +172,21 @@ public abstract class DatabaseLoader {
 
                 TypTranslation.add(jewellery.getTyp(), getLocalized("type.jewellery"));
             }
-
+        } catch (SQLException e) {
+            return getErrorString("table.jewellery");
+        } finally {
             Platform.runLater(() -> {
                 Database.jewelleryList.set(jewelleryList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.jewellery");
         }
         return "";
     }
 
     private static String loadPlants(Statement statement, Semaphore semaphore) {
+        ObservableList<Plant> plantList = FXCollections.observableArrayList();
+
         try (ResultSet plantSet = statement.executeQuery(format("SELECT * FROM %s WHERE %s=\"%s\"", "table.items", "column.type", "type.plant"))) {
-            ObservableList<Plant> plantList = FXCollections.observableArrayList();
 
             while (plantSet.next()) {
                 Plant plant = new Plant();
@@ -196,23 +203,23 @@ public abstract class DatabaseLoader {
 
                 plantList.add(plant);
             }
-
+        } catch (SQLException e) {
+            return getErrorString("column.type");
+        } finally {
             Platform.runLater(() -> {
                 Database.plantList.set(plantList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("column.type");
         }
         return "";
     }
 
     private static String loadItems(Statement statement, Semaphore semaphore) {
+        ObservableList<Item> itemList = FXCollections.observableArrayList();
+
         try (ResultSet itemSet = statement.executeQuery(
                 format("SELECT * FROM %s WHERE %s NOT IN (\"%s\", \"%s\", \"%s\", \"%s\")",
                         "table.items", "column.type", "type.weapon", "type.armor", "type.jewellery", "type.plant"))) {
-            ObservableList<Item> itemList = FXCollections.observableArrayList();
 
             while (itemSet.next()) {
                 Item item = new Item();
@@ -226,6 +233,9 @@ public abstract class DatabaseLoader {
 
                 itemList.add(item);
             }
+        } catch (SQLException e) {
+            return getErrorString("table.items");
+        } finally {
             Platform.runLater(() -> {
                 Database.itemList.set(itemList);
                 Database.itemList.addAll(Database.weaponList);
@@ -234,10 +244,6 @@ public abstract class DatabaseLoader {
                 Database.itemList.addAll(Database.plantList);
                 semaphore.release();
             });
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.items");
         }
         return "";
     }
@@ -253,15 +259,15 @@ public abstract class DatabaseLoader {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
             return getErrorString("table.equivalences");
         }
         return "";
     }
 
     private static String loadTalents(Statement statement, Semaphore semaphore) {
+        ObservableList<Talent> talentList = FXCollections.observableArrayList();
+
         try (ResultSet talentSet = statement.executeQuery(format("SELECT * FROM %s", "table.talents"))) {
-            ObservableList<Talent> talentList = FXCollections.observableArrayList();
 
             while (talentSet.next()) {
                 Talent talent = new Talent();
@@ -276,21 +282,21 @@ public abstract class DatabaseLoader {
 
                 talentList.add(talent);
             }
-
+        } catch (SQLException e) {
+            return getErrorString("table.talents");
+        } finally {
             Platform.runLater(() -> {
                 Database.talentList.set(talentList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.talents");
         }
         return "";
     }
 
     private static String loadSpells(Statement statement, Semaphore semaphore) {
+        ObservableList<Spell> spellList = FXCollections.observableArrayList();
+
         try (ResultSet spellSet = statement.executeQuery(format("SELECT * FROM %s", "table.spells"))) {
-            ObservableList<Spell> spellList = FXCollections.observableArrayList();
 
             while (spellSet.next()) {
                 Spell spell = new Spell();
@@ -305,14 +311,13 @@ public abstract class DatabaseLoader {
 
                 spellList.add(spell);
             }
-
+        } catch (SQLException e) {
+            return getErrorString("table.spells");
+        } finally {
             Platform.runLater(() -> {
                 Database.spellList.set(spellList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.spells");
         }
         return "";
     }
@@ -329,15 +334,15 @@ public abstract class DatabaseLoader {
                 talentTypes.put(typ, talent);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             return getErrorString("table.spellTypes");
         }
         return "";
     }
 
     private static String loadUpgrades(Statement statement, Semaphore semaphore) {
+        ObservableList<UpgradeFactory> upgradeList = FXCollections.observableArrayList();
+
         try (ResultSet upgradeSet = statement.executeQuery(format("SELECT * FROM %s", "table.upgrades"))) {
-            ObservableList<UpgradeFactory> upgradeList = FXCollections.observableArrayList();
 
             while (upgradeSet.next()) {
 
@@ -395,24 +400,23 @@ public abstract class DatabaseLoader {
                     upgradeList.add(upgradeFactory);
                 }
             }
-
+        } catch (SQLException e) {
+            return getErrorString("table.upgrades");
+        } catch (NoSuchElementException e) {
+            return getErrorString("table.upgrades") + ". " + LanguageUtility.getMessage("database.missingMaterial");
+        } finally {
             Platform.runLater(() -> {
                 Database.upgradeList.set(upgradeList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.upgrades");
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-            return getErrorString("table.upgrades") + ". " + LanguageUtility.getMessage("database.missingMaterial");
         }
         return "";
     }
 
     private static String loadDungeonLoot(Statement statement, Semaphore semaphore) {
+        ObservableList<DungeonLootFactory> lootList = FXCollections.observableArrayList();
+
         try (ResultSet lootSet = statement.executeQuery(format("SELECT * FROM %s", "table.loot"))) {
-            ObservableList<DungeonLootFactory> lootList = FXCollections.observableArrayList();
 
             while (lootSet.next()) {
                 DungeonLootFactory factory = new DungeonLootFactory();
@@ -425,21 +429,21 @@ public abstract class DatabaseLoader {
 
                 lootList.add(factory);
             }
-
+        } catch (SQLException e) {
+            return getErrorString("table.loot");
+        } finally {
             Platform.runLater(() -> {
                 Database.dungeonLootList.set(lootList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.loot");
         }
         return "";
     }
 
     private static String loadCraftingBoni(Statement statement, Semaphore semaphore) {
+        ObservableList<CraftingBonus> craftingBonusList = FXCollections.observableArrayList();
+
         try (ResultSet eventSet = statement.executeQuery(format("SELECT * FROM %s", "table.manufacturingImprovements"))) {
-            ObservableList<CraftingBonus> craftingBonusList = FXCollections.observableArrayList();
 
             while (eventSet.next()) {
                 CraftingBonus craftingBonus = new CraftingBonus();
@@ -449,21 +453,21 @@ public abstract class DatabaseLoader {
 
                 craftingBonusList.add(craftingBonus);
             }
-
+        } catch (SQLException e) {
+            return getErrorString("table.manufacturingImprovements");
+        } finally {
             Platform.runLater(() -> {
                 Database.craftingBonusList.set(craftingBonusList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.manufacturingImprovements");
         }
         return "";
     }
 
     private static String loadFabrication(Statement statement, Semaphore semaphore) {
+        ObservableList<Fabrication> fabricationList = FXCollections.observableArrayList();
+
         try (ResultSet fabricationSet = statement.executeQuery(format("SELECT * FROM %s", "table.manufacturing"))) {
-            ObservableList<Fabrication> fabricationList = FXCollections.observableArrayList();
 
             while (fabricationSet.next()) {
                 Fabrication fabrication = new Fabrication();
@@ -492,227 +496,214 @@ public abstract class DatabaseLoader {
 
                 fabricationList.add(fabrication);
             }
-
+        } catch (SQLException e) {
+            return getErrorString("table.manufacturing");
+        } finally {
             Platform.runLater(() -> {
                 Database.fabricationList.set(fabricationList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.manufacturing");
         }
         return "";
     }
 
     private static String loadShieldTypes(Statement statement, Semaphore semaphore) {
+        ObservableList<String> shieldTypList = FXCollections.emptyObservableList();
+
         try {
-            ObservableList<String> shieldTypList =
-                    FXCollections.observableArrayList(getCollection(statement,
-                            format("SELECT * FROM %s", "table.shieldTypes"), "column.shieldTyp"));
+            shieldTypList = FXCollections.observableArrayList(getCollection(statement,
+                    format("SELECT * FROM %s", "table.shieldTypes"), "column.shieldTyp"));
+
+        } catch (SQLException e) {
+            return getErrorString("table.shieldTypes");
+        } finally {
+            final ObservableList<String> fShieldTypList = shieldTypList;
 
             Platform.runLater(() -> {
-                Database.shieldTypes.set(shieldTypList);
+                Database.shieldTypes.set(fShieldTypList);
                 semaphore.release();
             });
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("table.shieldTypes");
         }
         return "";
     }
 
     private static String loadEnemies(Statement statement, Semaphore semaphore) {
-        ObservableList<Characterisation> characterisationList;
-        ObservableList<Race> raceList;
-        ObservableList<Profession> professionList;
-        ObservableList<FightingStyle> fightingStyleList;
-        ObservableList<Specialisation> specialisationList;
+        ObservableList<Characterisation> characterisationList = FXCollections.emptyObservableList();
+        ObservableList<Race> raceList = FXCollections.emptyObservableList();
+        ObservableList<Profession> professionList = FXCollections.emptyObservableList();
+        ObservableList<FightingStyle> fightingStyleList = FXCollections.emptyObservableList();
+        ObservableList<Specialisation> specialisationList = FXCollections.emptyObservableList();
 
-        // Load raw model from database
-        try (ResultSet enemySet = statement.executeQuery(format(
-                "SELECT * FROM %s WHERE %s=\"%s\"",
-                "table.enemies", "column.type", "type.characterisation"))) {
-            characterisationList = loadEnemies(enemySet, Characterisation::new);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("type.characterisation");
-        }
-        try (ResultSet enemySet = statement.executeQuery(format(
-                "SELECT * FROM %s WHERE %s=\"%s\"",
-                "table.enemies", "column.type", "type.race"))) {
-            raceList = loadEnemies(enemySet, Race::new);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("type.race");
-        }
-        try (ResultSet enemySet = statement.executeQuery(format(
-                "SELECT * FROM %s WHERE %s=\"%s\"",
-                "table.enemies", "column.type", "type.profession"))) {
-            professionList = loadEnemies(enemySet, Profession::new);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("type.profession");
-        }
-        try (ResultSet enemySet = statement.executeQuery(format(
-                "SELECT * FROM %s WHERE %s=\"%s\"",
-                "table.enemies", "column.type", "type.fightingStyle"))) {
-            fightingStyleList = loadEnemies(enemySet, FightingStyle::new);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("type.fightingStyle");
-        }
-        try (ResultSet enemySet = statement.executeQuery(format(
-                "SELECT * FROM %s WHERE %s=\"%s\"",
-                "table.enemies", "column.type", "type.specialisation"))) {
-            specialisationList = loadEnemies(enemySet, Specialisation::new);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getErrorString("type.specialisation");
-        }
+        try {
+            // Load raw model from database
+            try (ResultSet enemySet = statement.executeQuery(format(
+                    "SELECT * FROM %s WHERE %s=\"%s\"",
+                    "table.enemies", "column.type", "type.characterisation"))) {
+                characterisationList = loadEnemies(enemySet, Characterisation::new);
+            } catch (SQLException e) {
+                return getErrorString("type.characterisation");
+            }
+            try (ResultSet enemySet = statement.executeQuery(format(
+                    "SELECT * FROM %s WHERE %s=\"%s\"",
+                    "table.enemies", "column.type", "type.race"))) {
+                raceList = loadEnemies(enemySet, Race::new);
+            } catch (SQLException e) {
+                return getErrorString("type.race");
+            }
+            try (ResultSet enemySet = statement.executeQuery(format(
+                    "SELECT * FROM %s WHERE %s=\"%s\"",
+                    "table.enemies", "column.type", "type.profession"))) {
+                professionList = loadEnemies(enemySet, Profession::new);
+            } catch (SQLException e) {
+                return getErrorString("type.profession");
+            }
+            try (ResultSet enemySet = statement.executeQuery(format(
+                    "SELECT * FROM %s WHERE %s=\"%s\"",
+                    "table.enemies", "column.type", "type.fightingStyle"))) {
+                fightingStyleList = loadEnemies(enemySet, FightingStyle::new);
+            } catch (SQLException e) {
+                return getErrorString("type.fightingStyle");
+            }
+            try (ResultSet enemySet = statement.executeQuery(format(
+                    "SELECT * FROM %s WHERE %s=\"%s\"",
+                    "table.enemies", "column.type", "type.specialisation"))) {
+                specialisationList = loadEnemies(enemySet, Specialisation::new);
+            } catch (SQLException e) {
+                return getErrorString("type.specialisation");
+            }
 
-        // Link parents
-        try {
-            linkParents(statement, characterisationList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.characterisation") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
-        }
-        try {
-            linkParents(statement, raceList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.race") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
-        }
-        try {
-            linkParents(statement, professionList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.profession") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
-        }
-        try {
-            linkParents(statement, fightingStyleList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.fightingStyle") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
-        }
-        try {
-            linkParents(statement, specialisationList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.specialisation") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
-        }
+            // Link parents
+            try {
+                linkParents(statement, characterisationList);
+            } catch (SQLException e) {
+                return getLocalized("type.characterisation") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
+            }
+            try {
+                linkParents(statement, raceList);
+            } catch (SQLException e) {
+                return getLocalized("type.race") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
+            }
+            try {
+                linkParents(statement, professionList);
+            } catch (SQLException e) {
+                return getLocalized("type.profession") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
+            }
+            try {
+                linkParents(statement, fightingStyleList);
+            } catch (SQLException e) {
+                return getLocalized("type.fightingStyle") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
+            }
+            try {
+                linkParents(statement, specialisationList);
+            } catch (SQLException e) {
+                return getLocalized("type.specialisation") + " " + LanguageUtility.getMessage("database.cantGetGrouped");
+            }
 
-        // Link subtypes
-        try {
-            linkSubTypes(statement, characterisationList, raceList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.characterisation") + " " + LanguageUtility.getMessage("database.cantGetLinked");
-        }
-        try {
-            linkSubTypes(statement, raceList, professionList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.race") + " " + LanguageUtility.getMessage("database.cantGetLinked");
-        }
-        try {
-            linkSubTypes(statement, professionList, fightingStyleList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.profession") + " " + LanguageUtility.getMessage("database.cantGetLinked");
-        }
-        try {
-            linkSubTypes(statement, fightingStyleList, specialisationList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("type.fightingStyle") + " " + LanguageUtility.getMessage("database.cantGetLinked");
-        }
+            // Link subtypes
+            try {
+                linkSubTypes(statement, characterisationList, raceList);
+            } catch (SQLException e) {
+                return getLocalized("type.characterisation") + " " + LanguageUtility.getMessage("database.cantGetLinked");
+            }
+            try {
+                linkSubTypes(statement, raceList, professionList);
+            } catch (SQLException e) {
+                return getLocalized("type.race") + " " + LanguageUtility.getMessage("database.cantGetLinked");
+            }
+            try {
+                linkSubTypes(statement, professionList, fightingStyleList);
+            } catch (SQLException e) {
+                return getLocalized("type.profession") + " " + LanguageUtility.getMessage("database.cantGetLinked");
+            }
+            try {
+                linkSubTypes(statement, fightingStyleList, specialisationList);
+            } catch (SQLException e) {
+                return getLocalized("type.fightingStyle") + " " + LanguageUtility.getMessage("database.cantGetLinked");
+            }
 
-        Collection<GenerationBase> combinedList = new ArrayList<>();
-        combinedList.addAll(characterisationList);
-        combinedList.addAll(raceList);
-        combinedList.addAll(professionList);
-        combinedList.addAll(fightingStyleList);
-        combinedList.addAll(specialisationList);
+            Collection<GenerationBase> combinedList = new ArrayList<>();
+            combinedList.addAll(characterisationList);
+            combinedList.addAll(raceList);
+            combinedList.addAll(professionList);
+            combinedList.addAll(fightingStyleList);
+            combinedList.addAll(specialisationList);
 
-        // Add Talents
-        try {
-            addMainTalents(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.mainTalents") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
-        try {
-            addForbiddenTalents(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.forbiddenTalents") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
+            // Add Talents
+            try {
+                addMainTalents(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.mainTalents") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
+            try {
+                addForbiddenTalents(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.forbiddenTalents") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
 
-        // Add Attributes
-        try {
-            addPrimaryAttributes(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.primaryAttributes") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
-        try {
-            addSecondaryAttributes(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.secondaryAttributes") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
+            // Add Attributes
+            try {
+                addPrimaryAttributes(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.primaryAttributes") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
+            try {
+                addSecondaryAttributes(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.secondaryAttributes") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
 
-        // Add Weapon Types
-        try {
-            addPrimaryWeaponTypes(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.primaryWeaponType") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
-        try {
-            addSecondaryWeaponTypes(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.secondaryWeaponType") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
+            // Add Weapon Types
+            try {
+                addPrimaryWeaponTypes(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.primaryWeaponType") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
+            try {
+                addSecondaryWeaponTypes(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.secondaryWeaponType") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
 
-        // Add specific equipment
-        try {
-            addSpecificPrimaryWeapons(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.equippedPrimaryWeapon") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
-        try {
-            addSpecificSecondaryWeapons(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.equippedSecondaryWeapon") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
-        try {
-            addSpecificArmor(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.equippedArmor") + " " + LanguageUtility.getMessage("database.cantGetSet");
-        }
+            // Add specific equipment
+            try {
+                addSpecificPrimaryWeapons(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.equippedPrimaryWeapon") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
+            try {
+                addSpecificSecondaryWeapons(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.equippedSecondaryWeapon") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
+            try {
+                addSpecificArmor(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.equippedArmor") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
 
-        // Add drops
-        try {
-            addDrops(statement, combinedList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return getLocalized("table.enemies.drop") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            // Add drops
+            try {
+                addDrops(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.drop") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
+        } finally {
+            final ObservableList<Characterisation> fCharacterisationList = characterisationList;
+            final ObservableList<Race> fRaceList = raceList;
+            final ObservableList<Profession> fProfessionList = professionList;
+            final ObservableList<FightingStyle> fFightingStyleList = fightingStyleList;
+            final ObservableList<Specialisation> fSpecialisationList = specialisationList;
+
+            Platform.runLater(() -> {
+                Database.characterisationList.set(fCharacterisationList);
+                Database.raceList.set(fRaceList);
+                Database.professionList.set(fProfessionList);
+                Database.fightingStyleList.set(fFightingStyleList);
+                Database.specialisationList.set(fSpecialisationList);
+                semaphore.release();
+            });
         }
 
-        Platform.runLater(() -> {
-            Database.characterisationList.set(characterisationList);
-            Database.raceList.set(raceList);
-            Database.professionList.set(professionList);
-            Database.fightingStyleList.set(fightingStyleList);
-            Database.specialisationList.set(specialisationList);
-            semaphore.release();
-        });
         return "";
     }
 
@@ -1110,9 +1101,12 @@ public abstract class DatabaseLoader {
 
     private static void reloadLanguage(Language language) {
         try {
-            tables.set(ResourceBundle.getBundle("table/Table", language.getLocale()));
+            if (language == Language.system) {
+                tables.set(ResourceBundle.getBundle("table/Table", LanguageUtility.language.get().getLocale()));
+            } else {
+                tables.set(ResourceBundle.getBundle("table/Table", language.getLocale()));
+            }
         } catch (MissingResourceException e) {
-            e.printStackTrace();
             tables.set(ResourceBundle.getBundle("table/Table", Locale.ENGLISH));
         }
     }

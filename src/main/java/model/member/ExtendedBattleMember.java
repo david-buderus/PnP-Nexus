@@ -633,7 +633,7 @@ public class ExtendedBattleMember extends BattleMember {
         int baseValue = Utility.getConfig().getInt(key + ".base", 0);
 
         double[] factors = new double[8];
-        for (int i = 0; i < loadedFactors.length; i++) {
+        for (int i = 0; i < loadedFactors.length && i < factors.length; i++) {
             factors[i] = loadedFactors[i];
         }
 

@@ -44,11 +44,6 @@ public class ManagerView extends View {
 
         TabPane root = new TabPane();
 
-        Tab startTab = new Tab();
-        startTab.textProperty().bind(LanguageUtility.getMessageProperty("manager.settings"));
-        startTab.setClosable(false);
-        root.getTabs().add(startTab);
-
         Tab battleTab = new BattleView(this);
         root.getTabs().add(battleTab);
 
@@ -68,9 +63,13 @@ public class ManagerView extends View {
         Tab mapTab = new MapView(this);
         root.getTabs().add(mapTab);
 
+        Tab startTab = new Tab();
+        startTab.textProperty().bind(LanguageUtility.getMessageProperty("manager.settings"));
+        startTab.setClosable(false);
+        root.getTabs().add(startTab);
+
         Tab inconsistencyTab = new InconsistencyView(this);
         root.getTabs().add(inconsistencyTab);
-
 
         GridPane settingsPane = new GridPane();
         settingsPane.setPadding(new Insets(20, 20, 20, 20));
@@ -108,6 +107,16 @@ public class ManagerView extends View {
         LanguageUtility.language.bind(languageBox.getSelectionModel().selectedItemProperty());
         settingsPane.add(languageBox, 1, 1);
 
+        Label languageTableText = new Label();
+        languageTableText.textProperty().bind(LanguageUtility.getMessageProperty("language.table"));
+        settingsPane.add(languageTableText, 0, 2);
+
+        ComboBox<Language> languageTableBox = new ComboBox<>();
+        languageTableBox.setMaxWidth(Double.MAX_VALUE);
+        languageTableBox.setItems(FXCollections.observableArrayList(Language.values()));
+        languageTableBox.getSelectionModel().select(DatabaseLoader.tableLanguage.get());
+        DatabaseLoader.tableLanguage.bind(languageTableBox.getSelectionModel().selectedItemProperty());
+        settingsPane.add(languageTableBox, 1, 2);
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
