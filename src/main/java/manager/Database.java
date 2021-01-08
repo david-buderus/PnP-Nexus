@@ -186,7 +186,7 @@ public abstract class Database {
      * Generates a Collection of String which
      * represents materials of the database.
      *
-     * @return a list of materials of a specific tier
+     * @return a list of materials of a random tier
      */
     public static Collection<String> getRandomMaterial() {
         return getMaterialsOfTier(Utility.getRandomTier());
