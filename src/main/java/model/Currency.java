@@ -101,7 +101,14 @@ public class Currency {
         return value;
     }
 
-    public static String toCoinString(int cost) {
+    /**
+     * Visualises the amount of copper coins
+     * in copper, silver and gold
+     *
+     * @param cost amount of copper coins
+     * @return human-readable format
+     */
+    protected static String toCoinString(int cost) {
         int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
         int goldToSilver = Utility.getConfig().getInt("coin.gold.toSilver");
         String copperCoin = LanguageUtility.getMessage("coin.copper.short");
