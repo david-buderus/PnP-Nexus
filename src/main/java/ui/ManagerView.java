@@ -128,8 +128,8 @@ public class ManagerView extends View {
     private void load() {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Accessdatei", "*.accdb"),
-                new ExtensionFilter("Alle Dateien", "*.*"));
+                new ExtensionFilter(LanguageUtility.getMessage("accessFile"), "*.accdb"),
+                new ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
         File file = chooser.showOpenDialog(stage);
 
         if (file == null) {
