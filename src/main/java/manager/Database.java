@@ -130,7 +130,7 @@ public abstract class Database {
     /**
      * If a talent with the given name exists in the {@link #talentList},
      * it returns that talent.
-     * If there is no talent, it returns an talent with the name and the suffix
+     * If there is no talent with that name, it returns a new talent with the name and the suffix
      * "(database.notFound)".
      *
      * @param name of the searched talent
