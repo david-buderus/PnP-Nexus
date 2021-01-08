@@ -12,9 +12,9 @@ import static manager.Utility.parseString;
 
 public class Currency {
 
-    private final int coinValue;
-    private final String coinString;
-    private final boolean tradeable;
+    protected final int coinValue;
+    protected final String coinString;
+    protected final boolean tradeable;
 
     public Currency() {
         this.tradeable = false;
