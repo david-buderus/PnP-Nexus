@@ -274,9 +274,9 @@ public abstract class DatabaseLoader {
                 Talent talent = new Talent();
                 talent.setName(getString(talentSet, getLocalized("column.name")));
                 talent.setAttributes(new PrimaryAttribute[]{
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute.1"))),
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute.2"))),
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute.3")))
+                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute1"))),
+                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute2"))),
+                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute3")))
                 });
                 talent.setMagicTalent(talentSet.getBoolean(getLocalized("column.magicTalent")));
                 talent.setWeaponTalent(talentSet.getBoolean(getLocalized("column.weaponTalent")));
