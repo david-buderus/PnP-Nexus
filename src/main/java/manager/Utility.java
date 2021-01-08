@@ -13,6 +13,8 @@ import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public abstract class Utility {
@@ -33,6 +35,22 @@ public abstract class Utility {
 
         try {
             config = builder.getConfiguration();
+
+            // Load external configuration file
+            Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
+
+            if (home.toFile().exists()) {
+                builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties()
+                                .setFile(home.toFile())
+                                .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
+
+                Configuration localConfig = builder.getConfiguration();
+                for (Iterator<String> it = localConfig.getKeys(); it.hasNext(); ) {
+                    String key = it.next();
+                    config.setProperty(key, localConfig.getProperty(key));
+                }
+            }
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
