@@ -90,7 +90,7 @@ public abstract class Database {
      * "(database.notFound)".
      *
      * @param name of the searched item
-     * @return a more ore less matching item
+     * @return the matching item or a fallback item with the given name
      */
     public static Item getItem(String name) {
         Item item = new Item();
@@ -134,7 +134,7 @@ public abstract class Database {
      * "(database.notFound)".
      *
      * @param name of the searched talent
-     * @return a more ore less matching talent
+     * @return the matching talent or a fallback talent with the given name
      */
     public static Talent getTalent(String name) {
         Talent talent = new Talent();
