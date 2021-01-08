@@ -13,9 +13,11 @@ import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Logger;
 
 public abstract class Utility {
 
@@ -228,5 +230,35 @@ public abstract class Utility {
         }
 
         return result.toString().trim();
+    }
+
+    public static void saveToCustomConfig(String key, Object object) {
+
+        Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
+
+        try {
+            if (home.toFile().createNewFile()) {
+                Logger.getLogger("Utility").info("Custom Configuration.properties created");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Parameters params = new Parameters();
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
+                new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties()
+                                .setFile(home.toFile())
+                                .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
+
+        try {
+            Configuration customConfig = builder.getConfiguration();
+            customConfig.setProperty(key, object);
+
+            builder.save();
+
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 }
