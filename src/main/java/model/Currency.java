@@ -12,27 +12,31 @@ import static manager.Utility.parseString;
 
 public class Currency {
 
-    private int coinValue;
-    private String coinString;
+    private final int coinValue;
+    private final String coinString;
     private final boolean tradeable;
 
     public Currency() {
         this.tradeable = false;
-        this.setCoinValue(0);
+        this.coinValue = 0;
+        this.coinString = LanguageUtility.getMessage("coin.notTradeable");
     }
 
     public Currency(int coinValue) {
-        this.setCoinValue(coinValue);
         this.tradeable = true;
+        this.coinValue = coinValue;
+        this.coinString = toCoinString(coinValue);
     }
 
     public Currency(String coinString) {
         if (coinString.equalsIgnoreCase(LanguageUtility.getMessage("coin.notTradeable"))) {
-            this.setCoinValue(0);
             this.tradeable = false;
+            this.coinValue = 0;
+            this.coinString = LanguageUtility.getMessage("coin.notTradeable");
         } else {
-            this.setCoinString(coinString);
             this.tradeable = true;
+            this.coinString = coinString;
+            this.coinValue = toCoinValue(coinString);
         }
     }
 
@@ -144,18 +148,8 @@ public class Currency {
         return coinValue;
     }
 
-    public void setCoinValue(int coinValue) {
-        this.coinValue = coinValue;
-        this.coinString = toCoinString(coinValue);
-    }
-
     public String getCoinString() {
         return coinString;
-    }
-
-    public void setCoinString(String coinString) {
-        this.coinString = coinString;
-        this.coinValue = toCoinValue(coinString);
     }
 
     public boolean isTradeable() {
