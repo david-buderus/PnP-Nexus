@@ -176,7 +176,7 @@ public abstract class Database {
      * represents materials of the database
      *
      * @param tier of the material
-     * @return a list of materials of a the specific tier
+     * @return a list of materials of the specific tier
      */
     public static Collection<String> getMaterialsOfTier(int tier) {
         return materialsMap.getOrDefault(tier, FXCollections.observableSet());
