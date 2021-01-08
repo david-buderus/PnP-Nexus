@@ -163,7 +163,7 @@ public abstract class Database {
      * If there is no talent, it throws a {@link NoSuchElementException}.
      *
      * @param name of the searched talent
-     * @return an matching talent
+     * @return a matching talent
      * @throws NoSuchElementException if there is no talent with the given name
      */
     public static Talent getTalentWithoutDefault(String name) throws NoSuchElementException {
