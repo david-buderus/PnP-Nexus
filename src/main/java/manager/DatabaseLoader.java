@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.*;
+import model.Currency;
 import model.item.*;
 import model.loot.DungeonLootFactory;
 import model.member.generation.*;
@@ -93,7 +94,7 @@ public abstract class DatabaseLoader {
                 weapon.setEffect(getString(weaponSet, getLocalized("column.effect")));
                 weapon.setSlots(weaponSet.getInt(getLocalized("column.upgradeSlots")));
                 weapon.setRarity(getRarity(weaponSet, getLocalized("column.rarity")));
-                weapon.setCost(getString(weaponSet, getLocalized("column.price")));
+                weapon.setCurrency(new Currency(getString(weaponSet, getLocalized("column.price"))));
                 weapon.setTier(weaponSet.getInt(getLocalized("column.tier")));
 
                 weaponList.add(weapon);
@@ -130,7 +131,7 @@ public abstract class DatabaseLoader {
                 armor.setEffect(getString(armorSet, getLocalized("column.effect")));
                 armor.setSlots(armorSet.getInt(getLocalized("column.upgradeSlots")));
                 armor.setRarity(getRarity(armorSet, getLocalized("column.rarity")));
-                armor.setCost(getString(armorSet, getLocalized("column.price")));
+                armor.setCurrency(new Currency(getString(armorSet, getLocalized("column.price"))));
                 armor.setTier(armorSet.getInt(getLocalized("column.tier")));
 
                 armorList.add(armor);
@@ -165,7 +166,7 @@ public abstract class DatabaseLoader {
                 jewellery.setEffect(getString(jewellerySet, getLocalized("column.effect")));
                 jewellery.setSlots(jewellerySet.getInt(getLocalized("column.upgradeSlots")));
                 jewellery.setRarity(getRarity(jewellerySet, getLocalized("column.rarity")));
-                jewellery.setCost(getString(jewellerySet, getLocalized("column.price")));
+                jewellery.setCurrency(new Currency(getString(jewellerySet, getLocalized("column.price"))));
                 jewellery.setTier(jewellerySet.getInt(getLocalized("column.tier")));
 
                 jewelleryList.add(jewellery);
@@ -195,7 +196,7 @@ public abstract class DatabaseLoader {
                 plant.setSubTyp(getString(plantSet, getLocalized("column.subtype")));
                 plant.setEffect(getString(plantSet, getLocalized("column.effect")));
                 plant.setRarity(getRarity(plantSet, getLocalized("column.rarity")));
-                plant.setCost(getString(plantSet, getLocalized("column.price")));
+                plant.setCurrency(new Currency(getString(plantSet, getLocalized("column.price"))));
                 plant.setTier(plantSet.getInt(getLocalized("column.tier")));
                 plant.setLocations(getCollection(statement,
                         format("SELECT %s FROM %s WHERE %s=\"%s\"",
@@ -228,7 +229,7 @@ public abstract class DatabaseLoader {
                 item.setSubTyp(getString(itemSet, getLocalized("column.subtype")));
                 item.setEffect(getString(itemSet, getLocalized("column.effect")));
                 item.setRarity(getRarity(itemSet, getLocalized("column.rarity")));
-                item.setCost(getString(itemSet, getLocalized("column.price")));
+                item.setCurrency(new Currency(getString(itemSet, getLocalized("column.price"))));
                 item.setTier(itemSet.getInt(getLocalized("column.tier")));
 
                 itemList.add(item);
@@ -356,7 +357,7 @@ public abstract class DatabaseLoader {
                         exist.setMaxLevel(level);
                     }
                     exist.setEffect(level, getString(upgradeSet, getLocalized("column.effect")));
-                    exist.setCost(level, getString(upgradeSet, getLocalized("column.price")));
+                    exist.setCurrency(level, new Currency(getString(upgradeSet, getLocalized("column.price"))));
                     exist.setMana(level, getString(upgradeSet, getLocalized("column.mana")));
                     exist.setRequirement(level, getString(upgradeSet, getLocalized("column.requires")));
 
@@ -381,7 +382,7 @@ public abstract class DatabaseLoader {
                     upgradeFactory.setSlots(upgradeSet.getInt(getLocalized("column.slots")));
                     upgradeFactory.setRequirement(level, getString(upgradeSet, getLocalized("column.requires")));
                     upgradeFactory.setEffect(level, getString(upgradeSet, getLocalized("column.effect")));
-                    upgradeFactory.setCost(level, getString(upgradeSet, getLocalized("column.price")));
+                    upgradeFactory.setCurrency(level, new Currency(getString(upgradeSet, getLocalized("column.price"))));
                     upgradeFactory.setMana(level, getString(upgradeSet, getLocalized("column.mana")));
 
                     ItemList materials = new ItemList();
@@ -983,24 +984,25 @@ public abstract class DatabaseLoader {
 
             for (int level = 1; level <= upgrade.getMaxLevel(); level++) {
 
-                int cost = 0;
+                Currency currency = new Currency(0);
 
                 for (Item item : upgrade.getMaterials(level)) {
                     if (item != null) {
-                        cost += item.getCostAsCopper();
+                        currency = currency.add(item.getCurrencyWithAmount());
                     }
                 }
 
-                int actualCost = upgrade.getCostAsCopper(level);
-                if (cost > actualCost) {
+                Currency actualCurrency = upgrade.getCurrency(level);
+
+                if (currency.getCoinValue() > actualCurrency.getCoinValue()) {
                     Inconsistency inconsistency = new Inconsistency();
                     inconsistency.setName(upgrade.getName());
-                    inconsistency.setInconsistency(Utility.visualiseSell(cost) + " > " + Utility.visualiseSell(actualCost));
+                    inconsistency.setInconsistency(currency.getCoinString() + " > " + actualCurrency.getCoinString());
 
                     ArrayList<String> information = new ArrayList<>();
                     for (Item material : upgrade.getMaterials(level)) {
                         if (material != null) {
-                            String matCost = Utility.visualiseSell(Math.round(material.getCostAsCopper()));
+                            String matCost = material.getCurrencyWithAmount().getCoinString();
                             information.add(material.getPrettyAmount() + " " + material + " (" + matCost + ")");
                         }
                     }
@@ -1014,27 +1016,27 @@ public abstract class DatabaseLoader {
         for (Fabrication fabrication : Database.fabricationList) {
 
             if (fabrication.getProduct().isTradeable()) {
-                int cost = 0;
+                Currency currency = new Currency(0);
 
                 for (Item item : fabrication.getMaterials()) {
                     if (item != null) {
-                        cost += item.getCostAsCopper();
+                        currency = currency.add(item.getCurrencyWithAmount());
                     }
                 }
 
-                cost /= fabrication.getProductAmount();
+                currency = currency.divide(fabrication.getProductAmount());
 
-                int actualCost = fabrication.getProduct().getCostOfOneAsCopper() * fabrication.getProductAmount();
-                if (cost > actualCost) {
+                Currency actualCurrency = fabrication.getProduct().getCurrency().multiply(fabrication.getProductAmount());
+                if (currency.getCoinValue() > actualCurrency.getCoinValue()) {
                     Inconsistency inconsistency = new Inconsistency();
                     inconsistency.setName(fabrication.getProduct().getName());
-                    inconsistency.setInconsistency(Utility.visualiseSell(cost)
-                            + " > " + Utility.visualiseSell(actualCost));
+                    inconsistency.setInconsistency(currency.getCoinString()
+                            + " > " + actualCurrency.getCoinString());
 
                     ArrayList<String> information = new ArrayList<>();
                     for (Item material : fabrication.getMaterials()) {
                         if (material != null) {
-                            String matCost = Utility.visualiseSell(Math.round(material.getCostAsCopper()));
+                            String matCost = material.getCurrency().getCoinString();
                             information.add(material.getAmount() + " " + material + " (" + matCost + ")");
                         }
                     }

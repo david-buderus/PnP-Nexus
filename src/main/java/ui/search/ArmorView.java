@@ -14,7 +14,7 @@ public class ArmorView extends EquipmentView<Armor> {
                 new String[]{"column.name", "column.type", "column.armor.protection", "column.armor.weight",
                         "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots",
                         "column.equipment.requirement"},
-                new String[]{"name", "subTyp", "protection", "weight", "rarity", "cost", "effect", "slots", "requirement"});
+                new String[]{"name", "subTyp", "protection", "weight", "rarity", "currency", "effect", "slots", "requirement"});
 
         this.addControls(root);
 

@@ -70,7 +70,7 @@ public class MemoryView extends ViewPart {
         sell.setPrefWidth(150);
         buttonPane.setRight(sell);
 
-        sell.setOnAction(ev -> coinLabel.setText(Utility.visualiseSell(Utility.sellLoot(loots))));
+        sell.setOnAction(ev -> coinLabel.setText(Utility.sellLoot(loots).getCoinString()));
 
         this.setContent(root);
     }

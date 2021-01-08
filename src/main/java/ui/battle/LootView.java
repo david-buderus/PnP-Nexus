@@ -13,6 +13,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import manager.LanguageUtility;
 import manager.Utility;
+import model.Currency;
 import model.item.Equipment;
 import model.item.Item;
 import model.loot.Loot;
@@ -106,13 +107,13 @@ public class LootView extends View {
         buttonPane.setRight(sell);
 
         sell.setOnAction(ev -> {
-            int sellValue = Utility.sellLoot(lootTable.getItems());
+            Currency sellValue = Utility.sellLoot(lootTable.getItems());
 
             if (playerCount > 0) {
-                coinLabel.setText(Utility.visualiseSell(sellValue) + "\t "+ LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
-                        Utility.visualiseSell(sellValue / playerCount));
+                coinLabel.setText(sellValue.getCoinString() + "\t "+ LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
+                        sellValue.divide(playerCount).getCoinString());
             } else {
-                coinLabel.setText(Utility.visualiseSell(sellValue));
+                coinLabel.setText(sellValue.getCoinString() );
             }
 
         });

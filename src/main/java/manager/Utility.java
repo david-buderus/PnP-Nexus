@@ -1,5 +1,6 @@
 package manager;
 
+import model.Currency;
 import model.Rarity;
 import model.item.Item;
 import model.loot.Loot;
@@ -127,47 +128,8 @@ public abstract class Utility {
         }
     }
 
-    /**
-     * Visualises the amount of copper coins
-     * in copper, silver and gold
-     *
-     * @param cost amount of copper coins
-     * @return human-readable format
-     */
-    public static String visualiseSell(int cost) {
-        int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
-        int goldToSilver = Utility.getConfig().getInt("coin.gold.toSilver");
-        String copperCoin = LanguageUtility.getMessage("coin.copper.short");
-        String silverCoin = LanguageUtility.getMessage("coin.silver.short");
-        String goldCoin = LanguageUtility.getMessage("coin.gold.short");
-
-        int copper = cost % silverToCopper;
-        cost /= silverToCopper;
-        int silver = cost % goldToSilver;
-        cost /= goldToSilver;
-        int gold = cost;
-
-        StringBuilder result = new StringBuilder();
-
-        if (gold > 0) {
-            result.append(gold).append(goldCoin).append(" ");
-        }
-        if (silver > 0) {
-            result.append(silver).append(silverCoin).append(" ");
-        }
-        if (copper > 0) {
-            result.append(copper).append(copperCoin);
-        }
-
-        if (result.length() == 0) {
-            return "0" + copperCoin;
-        }
-
-        return result.toString().trim();
-    }
-
-    public static int sellLoot(Collection<Loot> loot) {
-        int itemValue = 0;
+    public static Currency sellLoot(Collection<Loot> loot) {
+        Currency itemValue = new Currency();
         int coinValue = 0;
 
         int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
@@ -179,8 +141,10 @@ public abstract class Utility {
         for (Loot l : loot) {
             Item item = l.getItem();
 
-            if (item.getCostOfOneAsCopper() > 0) {
-                itemValue += item.getCostOfOneAsCopper() * l.getAmount();
+
+            if (item.getCurrency().getCoinValue() > 0) {
+                itemValue = itemValue.add(item.getCurrency().multiply(l.getAmount()));
+
             } else {
                 String itemName = item.getName();
                 if (itemName.equalsIgnoreCase(copper)) {
@@ -193,47 +157,7 @@ public abstract class Utility {
             }
         }
 
-        return Math.round(itemValue * 0.8f) + coinValue;
-    }
-
-    /**
-     * Reads the cost from the String and
-     * returns is a a amount of copper coins
-     *
-     * @param cost String to read
-     * @return amount of copper coins
-     */
-    public static int toCopperCost(String cost) {
-        if (cost.isBlank()) {
-            return 0;
-        }
-
-        int value = 0;
-        int silverToCopper = config.getInt("coin.silver.toCopper");
-        int goldToCopper = config.getInt("coin.gold.toSilver") * silverToCopper;
-        String copper = LanguageUtility.getMessage("coin.copper.short");
-        String silver = LanguageUtility.getMessage("coin.silver.short");
-        String gold = LanguageUtility.getMessage("coin.gold.short");
-
-        List<Character> costList = new ArrayList<>();
-        for (char c : cost.toCharArray()) {
-            costList.add(c);
-        }
-
-        while (!costList.isEmpty()) {
-            int amount = parseNumber(costList);
-            String coin = parseString(costList);
-
-            if (coin.equals(copper)) {
-                value += amount;
-            } else if (coin.equals(silver)) {
-                value += amount * silverToCopper;
-            } else if (coin.equals(gold)) {
-                value += amount * goldToCopper;
-            }
-        }
-
-        return value;
+        return itemValue.multiply(0.8f).add(coinValue);
     }
 
     /**

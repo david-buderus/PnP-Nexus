@@ -1,7 +1,7 @@
 package model.upgrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import manager.Utility;
+import model.Currency;
 import model.ItemList;
 import model.item.Item;
 
@@ -17,7 +17,7 @@ public class UpgradeFactory {
     private String target;
     private int slots;
     private String[] requirements = new String[0];
-    private String[] costList = new String[0];
+    private Currency[] currencyList = new Currency[0];
     private String[] manaList = new String[0];
     private String[] effectList = new String[0];
     private ItemList[] materialsList = new ItemList[0];
@@ -51,9 +51,9 @@ public class UpgradeFactory {
         System.arraycopy(requirements, 0, regList, 0, requirements.length);
         requirements = regList;
 
-        String[] cosList = new String[maxLevel];
-        System.arraycopy(costList, 0, cosList, 0, costList.length);
-        costList = cosList;
+        Currency[] cosList = new Currency[maxLevel];
+        System.arraycopy(currencyList, 0, cosList, 0, currencyList.length);
+        currencyList = cosList;
 
         String[] manList = new String[maxLevel];
         System.arraycopy(manaList, 0, manList, 0, manaList.length);
@@ -76,12 +76,12 @@ public class UpgradeFactory {
         this.slots = slots;
     }
 
-    public void setCost(int level, String cost) {
-        this.costList[level - 1] = cost;
+    public void setCurrency(int level, Currency currency) {
+        this.currencyList[level - 1] = currency;
     }
 
-    public String getCost(int level) {
-        return costList[level - 1];
+    public Currency getCurrency(int level) {
+        return currencyList[level - 1];
     }
 
     public int getFullCostAsCopper(int level) {
@@ -95,7 +95,7 @@ public class UpgradeFactory {
     }
 
     public int getCostAsCopper(int level) {
-        return Utility.toCopperCost(costList[level - 1]);
+        return currencyList[level - 1].getCoinValue();
     }
 
     public void setMana(int level, String mana) {
@@ -170,7 +170,7 @@ public class UpgradeFactory {
             model.setName(this.getName());
             model.setTarget(this.getTarget());
             model.setSlots(this.getSlots());
-            model.setCost(this.getCost(i));
+            model.setCost(this.getCurrency(i).getCoinString());
             model.setMana(this.getMana(i));
             model.setEffect(this.getEffect(i));
             model.setLevel(i);

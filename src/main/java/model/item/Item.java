@@ -3,8 +3,7 @@ package model.item;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import manager.Database;
-import manager.LanguageUtility;
-import manager.Utility;
+import model.Currency;
 import model.Rarity;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,8 +21,7 @@ public class Item {
     protected String requirement = "";
     protected String effect = "";
     protected Rarity rarity = Rarity.common;
-    protected String cost = "";
-    protected int costAsCopper = 0;
+    protected Currency currency = new Currency(0);
     protected int tier = 1;
     protected FloatProperty amount = new SimpleFloatProperty(1);
 
@@ -31,8 +29,7 @@ public class Item {
      * Use this only if you know what you do.
      * Use {@link Database#getItem(String)} instead.
      */
-    public Item() {
-    }
+    public Item() { }
 
     /**
      * Use this only if you know what you do.
@@ -58,17 +55,12 @@ public class Item {
         return typ;
     }
 
-    public void setCost(String cost) {
-        this.cost = cost;
-        if (isTradeable()) {
-            this.costAsCopper = Utility.toCopperCost(cost);
-        } else {
-            this.costAsCopper = 0;
-        }
+    public Currency getCurrency() {
+        return currency;
     }
 
-    public String getCost() {
-        return cost;
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
     }
 
     public void setSubTyp(String subTyp) {
@@ -136,16 +128,12 @@ public class Item {
         return this.amount;
     }
 
-    public int getCostAsCopper() {
-        return Math.round(getCostOfOneAsCopper() * getAmount());
-    }
-
-    public int getCostOfOneAsCopper() {
-        return costAsCopper;
+    public Currency getCurrencyWithAmount() {
+        return currency.multiply(getAmount());
     }
 
     public boolean isTradeable() {
-        return !cost.equalsIgnoreCase(LanguageUtility.getMessage("coin.notTradeable"));
+        return currency.isTradeable();
     }
 
     public Item copy() {
@@ -157,7 +145,7 @@ public class Item {
             item.setRarity(this.getRarity());
             item.setRequirement(this.getRequirement());
             item.setEffect(this.getEffect());
-            item.setCost(this.getCost());
+            item.setCurrency(this.getCurrency());
 
             return item;
 
@@ -178,7 +166,7 @@ public class Item {
         return this.getName().equals(other.getName()) && this.getTyp().equals(other.getTyp())
                 && this.getRequirement().equals(other.getRequirement()) && this.getEffect().equals(other.getEffect())
                 && this.getRarity().equals(other.getRarity()) && this.getSubTyp().equals(other.getSubTyp())
-                && this.getCost().equals(other.getCost());
+                && this.getCurrency().equals(other.getCurrency());
     }
 
     @Override
