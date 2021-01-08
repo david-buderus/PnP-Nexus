@@ -185,6 +185,7 @@ public abstract class Database {
     /**
      * Generates a Collection of String which
      * represents materials of the database.
+     * Each material will be of the same, but random tier.
      *
      * @return a list of materials of a random tier
      */
