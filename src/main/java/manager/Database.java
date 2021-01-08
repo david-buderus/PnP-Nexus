@@ -175,7 +175,7 @@ public abstract class Database {
      * Returns a Collection of String which
      * represents materials of the database
      *
-     * @param tier which the material has
+     * @param tier of the material
      * @return a list of materials of a the specific tier
      */
     public static Collection<String> getMaterialsOfTier(int tier) {
