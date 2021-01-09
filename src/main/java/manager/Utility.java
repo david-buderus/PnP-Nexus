@@ -90,6 +90,8 @@ public abstract class Utility {
      * @return a string that represents the matching roman number
      */
     public static String asRomanNumber(int x) {
+        if (x < 0) return "";
+
         String in = String.valueOf(x);
         StringBuilder out = new StringBuilder();
 

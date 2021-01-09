@@ -21,3 +21,9 @@ gradle-app.setting
 
 # other
 run
+
+bin/
+
+# vs code
+.settings/
+.vscode/
