@@ -433,14 +433,22 @@ public class ExtendedBattleMember extends BattleMember {
     private Weapon randomWeapon(Collection<String> types, Collection<Weapon> weaponPool) {
         ArrayList<Weapon> weapons = new ArrayList<>();
         for (int i = getTier(); i > 0 && weapons.size() == 0; i--) {
-            int k = i;
+            final int k = i;
             Rarity rarity = Rarity.getRandomRarity();
-            weapons = weaponPool.stream()
-                    .filter(x -> x.getTier() == k)
-                    .filter(x -> x.getRarity() == rarity)
-                    .filter(this::checkRequirements)
-                    .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
-                    .collect(Collectors.toCollection(ArrayList::new));
+
+            do {
+                final Rarity fRarity = rarity;
+
+                weapons = weaponPool.stream()
+                        .filter(x -> x.getTier() == k)
+                        .filter(x -> x.getRarity() == fRarity)
+                        .filter(this::checkRequirements)
+                        .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                rarity = rarity.getLowerRarity();
+
+            } while (weapons.size() == 0 && rarity != Rarity.common);
 
             if (weapons.size() == 0) {
                 weapons = weaponPool.stream()
@@ -550,14 +558,22 @@ public class ExtendedBattleMember extends BattleMember {
     private <Eq extends Equipment> ArrayList<Eq> equipmentSearch(final String typ, Collection<Eq> pool) {
         ArrayList<Eq> equipment = new ArrayList<>();
         for (int i = getTier(); i > 0 && equipment.size() == 0; i--) {
-            int k = i;
+            final int k = i;
             Rarity rarity = Rarity.getRandomRarity();
-            equipment = pool.stream()
-                    .filter(x -> x.getTier() == k)
-                    .filter(x -> x.getRarity() == rarity)
-                    .filter(x -> x.getSubTyp().equals(typ))
-                    .filter(this::checkRequirements)
-                    .collect(Collectors.toCollection(ArrayList::new));
+
+            do {
+                final Rarity fRarity = rarity;
+
+                equipment = pool.stream()
+                        .filter(x -> x.getTier() == k)
+                        .filter(x -> x.getRarity() == fRarity)
+                        .filter(x -> x.getSubTyp().equals(typ))
+                        .filter(this::checkRequirements)
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                rarity = rarity.getLowerRarity();
+
+            } while (equipment.size() == 0 && rarity != Rarity.common);
 
             if (equipment.size() == 0) {
                 equipment = pool.stream()

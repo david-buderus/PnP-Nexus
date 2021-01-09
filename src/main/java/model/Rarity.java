@@ -19,6 +19,20 @@ public enum Rarity implements WithToStringProperty {
         return LanguageUtility.getMessageProperty("rarity." + super.toString());
     }
 
+    public Rarity getLowerRarity() {
+        switch (this) {
+            case rare:
+                return common;
+            case epic:
+                return rare;
+            case legendary:
+                return epic;
+            case godlike:
+                return legendary;
+        }
+        return common;
+    }
+
     public int getWeight() {
         if (this == unknown) {
             return 0;
