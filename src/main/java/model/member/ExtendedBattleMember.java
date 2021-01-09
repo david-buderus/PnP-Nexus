@@ -434,7 +434,7 @@ public class ExtendedBattleMember extends BattleMember {
         ArrayList<Weapon> weapons = new ArrayList<>();
         for (int i = getTier(); i > 0 && weapons.size() == 0; i--) {
             int k = i;
-            Rarity rarity = Utility.getRandomRarity();
+            Rarity rarity = Rarity.getRandomRarity();
             weapons = weaponPool.stream()
                     .filter(x -> x.getTier() == k)
                     .filter(x -> x.getRarity() == rarity)
@@ -551,7 +551,7 @@ public class ExtendedBattleMember extends BattleMember {
         ArrayList<Eq> equipment = new ArrayList<>();
         for (int i = getTier(); i > 0 && equipment.size() == 0; i--) {
             int k = i;
-            Rarity rarity = Utility.getRandomRarity();
+            Rarity rarity = Rarity.getRandomRarity();
             equipment = pool.stream()
                     .filter(x -> x.getTier() == k)
                     .filter(x -> x.getRarity() == rarity)

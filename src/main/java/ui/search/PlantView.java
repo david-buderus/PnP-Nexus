@@ -11,7 +11,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import manager.Database;
-import manager.Utility;
 import model.Rarity;
 import model.item.Plant;
 import ui.IView;
@@ -274,7 +273,7 @@ public class PlantView extends ViewPart {
 
     private void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            Rarity rarity = this.rarity.get() == Rarity.unknown ? Utility.getRandomRarity() : this.rarity.get();
+            Rarity rarity = this.rarity.get() == Rarity.unknown ? Rarity.getRandomRarity() : this.rarity.get();
 
             Stream<Plant> stream = Database.plantList.stream().filter(w -> w.getRarity() == rarity);
 

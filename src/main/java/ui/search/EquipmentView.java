@@ -13,7 +13,6 @@ import javafx.scene.layout.Pane;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import manager.Database;
-import manager.Utility;
 import model.Rarity;
 import model.item.Equipment;
 import ui.IView;
@@ -137,7 +136,7 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
     @SuppressWarnings("unchecked")
     protected void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            Rarity rarity = this.rarity.get() == Rarity.unknown ? Utility.getRandomRarity() : this.rarity.get();
+            Rarity rarity = this.rarity.get() == Rarity.unknown ? Rarity.getRandomRarity() : this.rarity.get();
             Collection<String> material = this.material.get().equals(defaultMaterial.get()) ? Database.getRandomMaterial()
                     : Collections.singletonList(this.material.get());
 

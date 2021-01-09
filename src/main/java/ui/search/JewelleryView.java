@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
 import manager.Database;
-import manager.Utility;
 import model.Rarity;
 import model.item.Jewellery;
 import ui.IView;
@@ -37,7 +36,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
 
     protected void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            Rarity rarity = this.rarity.get() == Rarity.unknown ? Utility.getRandomRarity() : this.rarity.get();
+            Rarity rarity = this.rarity.get() == Rarity.unknown ? Rarity.getRandomRarity() : this.rarity.get();
             Collection<String> material = this.material.get().equals(defaultMaterial.get()) ? Database.getRandomMaterial()
                     : Collections.singletonList(this.material.get());
 

@@ -1,7 +1,6 @@
 package manager;
 
 import model.Currency;
-import model.Rarity;
 import model.item.Item;
 import model.loot.Loot;
 import org.apache.commons.configuration2.Configuration;
@@ -16,7 +15,10 @@ import ui.utility.MemoryView;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public abstract class Utility {
@@ -60,22 +62,6 @@ public abstract class Utility {
 
     public static Configuration getConfig() {
         return config;
-    }
-
-
-    /**
-     * Generates a string that represents
-     * a rarity of the database
-     *
-     * @return a rarity matching the chance
-     */
-    public static Rarity getRandomRarity() {
-        double percent = rand.nextDouble();
-
-        return Arrays.stream(Rarity.values())
-                .sorted(Comparator.comparingDouble(Rarity::getChance))
-                .filter(r -> percent < r.getChance())
-                .findFirst().orElse(Rarity.unknown);
     }
 
     /**
