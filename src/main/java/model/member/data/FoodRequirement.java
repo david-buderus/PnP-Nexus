@@ -5,7 +5,7 @@ import manager.LanguageUtility;
 import model.interfaces.WithToStringProperty;
 
 public enum FoodRequirement implements WithToStringProperty {
-    none(0), little(1), normal(2), much(3), lot(4), extrem(5);
+    none(0), little(1), normal(2), much(3), lot(4), extreme(5);
 
     private final int value;
 
