@@ -51,9 +51,9 @@ public class UpgradeFactory {
         System.arraycopy(requirements, 0, regList, 0, requirements.length);
         requirements = regList;
 
-        Currency[] cosList = new Currency[maxLevel];
-        System.arraycopy(currencyList, 0, cosList, 0, currencyList.length);
-        currencyList = cosList;
+        Currency[] curList = new Currency[maxLevel];
+        System.arraycopy(currencyList, 0, curList, 0, currencyList.length);
+        currencyList = curList;
 
         String[] manList = new String[maxLevel];
         System.arraycopy(manaList, 0, manList, 0, manaList.length);
