@@ -1,35 +1,25 @@
 package model.member.generation;
 
-public enum ArmorPosition {
-    head, body, arms, legs;
+import javafx.beans.property.ReadOnlyStringProperty;
+import manager.LanguageUtility;
+import model.interfaces.WithToStringProperty;
 
+import java.util.NoSuchElementException;
+
+public enum ArmorPosition implements WithToStringProperty {
+    head, upperBody, arm, legs;
 
     @Override
-    public String toString() {
-        switch (this) {
-            case head:
-                return "Kopf";
-            case body:
-                return "Oberkörper";
-            case arms:
-                return "Arme";
-            case legs:
-                return "Beine";
-        }
-        return super.toString();
+    public ReadOnlyStringProperty toStringProperty() {
+        return LanguageUtility.getMessageProperty("armorPosition." + super.toString());
     }
 
     public static ArmorPosition getArmorPosition(String name) {
-        switch (name) {
-            case "Kopf":
-                return head;
-            case "Oberkörper":
-                return body;
-            case "Arme":
-                return arms;
-            case "Beine":
-                return legs;
+        for (ArmorPosition pos : values()) {
+            if (pos.toStringProperty().get().equalsIgnoreCase(name.trim())) {
+                return pos;
+            }
         }
-        throw new IllegalArgumentException();
+        throw new NoSuchElementException("The ArmorPosition with the name " + name + " does not exists.");
     }
 }

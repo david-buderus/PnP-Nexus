@@ -2,6 +2,8 @@ package ui.map;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -13,12 +15,14 @@ import javafx.scene.transform.Rotate;
 import model.map.Map;
 import model.map.object.IPosition;
 import model.map.object.loot.LootObject;
+import model.map.object.room.RoomObject;
 
 public class MapCanvas extends Pane implements IMapCanvas {
 
     private final Canvas mapCanvas, infoCanvas;
     private final GraphicsContext mapContext, infoContext;
     private final ObjectProperty<Map> map;
+    private final IntegerProperty mouseX, mouseZ;
 
     private double offsetX, offsetY;
     private double prevX, prevY;
@@ -31,6 +35,8 @@ public class MapCanvas extends Pane implements IMapCanvas {
         this.infoCanvas = new Canvas(300, 300);
         this.mapContext = mapCanvas.getGraphicsContext2D();
         this.infoContext = infoCanvas.getGraphicsContext2D();
+        this.mouseX = new SimpleIntegerProperty(0);
+        this.mouseZ = new SimpleIntegerProperty(0);
 
         this.offsetX = 0;
         this.offsetY = 0;
@@ -73,16 +79,49 @@ public class MapCanvas extends Pane implements IMapCanvas {
                 int mapX = (int) (event.getX() / zoom + offsetX);
                 int mapZ = (int) (event.getY() / zoom + offsetY);
 
+                this.mouseX.set(mapX);
+                this.mouseZ.set(mapZ);
+
                 this.drawInfoHud(event.getX(), event.getY(), mapX, mapZ);
             }
             infoContext.restore();
+        });
+        this.map.addListener((ob, o, n) -> {
+            this.offsetX = -(getWidth()/zoom - n.getWidth())/2;
+            this.offsetY = -(getHeight()/zoom - n.getDepth())/2;
         });
     }
 
     public void refresh() {
         clear();
         if (map.get() != null) {
+            mapContext.save();
+            mapContext.setFill(Color.WHITE);
+            mapContext.fillRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
+
+            mapContext.setFill(Color.BLACK);
+            mapContext.fillRect((-offsetX - 1) * zoom, (-offsetY - 1) * zoom,
+                    (map.get().getWidth() + 2) * zoom, (map.get().getDepth() + 2) * zoom);
+            drawRectangle(0, shownYLayer.get(), 0, map.get().getWidth(), map.get().getDepth(), 0, Color.WHITE);
+
+            mapContext.restore();
+
+
             map.get().draw(this);
+        }
+    }
+
+    protected void drawHelp() {
+        for (int z = 0; z < map.get().getDepth(); z++) {
+            for (int x = 0; x < map.get().getWidth(); x++) {
+                RoomObject room = map.get().getRoomObject(x, shownYLayer.get(), z);
+                if (room != null) {
+                    mapContext.save();
+                    mapContext.setFill(Color.RED);
+                    mapContext.fillRect(x * 10 + 1, z * 10 + 1, 8, 8);
+                    mapContext.restore();
+                }
+            }
         }
     }
 
@@ -317,16 +356,8 @@ public class MapCanvas extends Pane implements IMapCanvas {
     }
 
     public void setOffset(double offsetX, double offsetY) {
-        if (offsetX < 0) {
-            this.offsetX = 0;
-        } else {
-            this.offsetX = offsetX;
-        }
-        if (offsetY < 0) {
-            this.offsetY = 0;
-        } else {
-            this.offsetY = offsetY;
-        }
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
         refresh();
     }
 
@@ -367,5 +398,17 @@ public class MapCanvas extends Pane implements IMapCanvas {
             infoContext.fillText(loot.getContainer(), x + 20, y + 20, 80);
             infoContext.fillText(infoText, x + 20, y + 40, 80);
         }
+    }
+
+    public ReadOnlyIntegerProperty getMouseX() {
+        return mouseX;
+    }
+
+    public ReadOnlyIntegerProperty getMouseY() {
+        return shownYLayer;
+    }
+
+    public ReadOnlyIntegerProperty getMouseZ() {
+        return mouseZ;
     }
 }

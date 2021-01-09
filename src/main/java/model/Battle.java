@@ -6,12 +6,15 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import manager.CopyService;
+import manager.LanguageUtility;
+import manager.Utility;
 import manager.WorkbookService;
 import model.loot.LootTable;
 import model.member.BattleMember;
 import model.member.ExtendedBattleMember;
 import model.member.data.ArmorPiece;
 import model.member.generation.specs.*;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,8 +23,9 @@ import org.apache.poi.ss.util.CellReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.List;
 
 public class Battle {
 
@@ -30,7 +34,6 @@ public class Battle {
     private final ListProperty<BattleMember> enemies;
     private final HashMap<BattleMember, Integer> damageStatistic;
     private final HashMap<BattleMember, Integer> healStatistic;
-    private final Random random;
 
     public Battle() {
         this.players = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -38,7 +41,6 @@ public class Battle {
         this.damageStatistic = new HashMap<>();
         this.healStatistic = new HashMap<>();
         this.round = new SimpleIntegerProperty(1);
-        this.random = new Random();
     }
 
     public void nextTurn() {
@@ -174,7 +176,13 @@ public class Battle {
 
     private void createMember(Workbook wb, boolean enemy) {
         LootTable lootTable = new LootTable();
-        Sheet loot = wb.getSheet("Loot");
+
+        String lootName = Utility.getConfig().getString("character.sheet.loot");
+        if (LanguageUtility.hasMessage("character.sheet." + lootName)) {
+            lootName = LanguageUtility.getMessage("character.sheet." + lootName);
+        }
+
+        Sheet loot = wb.getSheet(lootName);
 
         for (Row row : loot) {
             if (row.getRowNum() > 0) {
@@ -191,26 +199,32 @@ public class Battle {
             }
         }
 
-        Sheet character = wb.getSheet("Gegnerbogen");
-        BattleMember member = new BattleMember(this, lootTable);
-
-        member.setName(this.getStringInCell(character, "B", 57));
-        member.setMaxLife(this.getIntegerInCell(character, "B", 58));
-        member.setMaxMana(this.getIntegerInCell(character, "B", 59));
-        member.setInitiative(this.getIntegerInCell(character, "B", 60));
-        member.setLevel(this.getIntegerInCell(character, "B", 63));
-
-        // Protection
-        member.setArmor(ArmorPiece.head, this.getIntegerInCell(character, "D", 29));
-        member.setArmor(ArmorPiece.upperBody, this.getIntegerInCell(character, "D", 31));
-        member.setArmor(ArmorPiece.legs, this.getIntegerInCell(character, "D", 35));
-        member.setArmor(ArmorPiece.arm, this.getIntegerInCell(character, "D", 32));
-
-        if (this.getIntegerInCell(character, "C", 60) == 2) {
-            member.setArmor(ArmorPiece.shield, this.getIntegerInCell(character, "B", 62));
+        Configuration config = Utility.getConfig();
+        String charName = config.getString("character.sheet.enemy");
+        if (LanguageUtility.hasMessage("character.sheet." + charName)) {
+            charName = LanguageUtility.getMessage("character.sheet." + charName);
         }
 
-        member.setDefense(this.getIntegerInCell(character, "B", 61));
+        Sheet character = wb.getSheet(charName);
+        BattleMember member = new BattleMember(this, lootTable);
+
+        member.setName(this.getStringInCell(character, config.getString("character.cell.name")));
+        member.setMaxLife(this.getIntegerInCell(character, config.getString("character.cell.maxLife")));
+        member.setMaxMana(this.getIntegerInCell(character, config.getString("character.cell.maxMana")));
+        member.setInitiative(this.getIntegerInCell(character, config.getString("character.cell.initiative")));
+        member.setLevel(this.getIntegerInCell(character, config.getString("character.cell.level")));
+
+        // Protection
+        member.setArmor(ArmorPiece.head, this.getIntegerInCell(character, config.getString("character.cell.armor.head")));
+        member.setArmor(ArmorPiece.upperBody, this.getIntegerInCell(character, config.getString("character.cell.armor.upperBody")));
+        member.setArmor(ArmorPiece.legs, this.getIntegerInCell(character, config.getString("character.cell.armor.legs")));
+        member.setArmor(ArmorPiece.arm, this.getIntegerInCell(character, config.getString("character.cell.armor.arm")));
+
+        if (this.getIntegerInCell(character, config.getString("character.cell.hasShield")) == 2) {
+            member.setArmor(ArmorPiece.shield, this.getIntegerInCell(character, config.getString("character.cell.armor.shield")));
+        }
+
+        member.setDefense(this.getIntegerInCell(character, config.getString("character.cell.defense")));
 
         if (enemy) {
             enemies.add(member);
@@ -239,23 +253,31 @@ public class Battle {
         }
     }
 
-    protected int getIntegerInCell(Sheet sheet, String s, int pos) {
+    protected int getIntegerInCell(Sheet sheet, String pos) {
         try {
-            return (int) getCell(sheet, s, pos).getNumericCellValue();
+            return (int) getCell(sheet, pos).getNumericCellValue();
         } catch (Exception e) {
             return 0;
         }
     }
 
-    protected String getStringInCell(Sheet sheet, String s, int pos) {
+    protected String getStringInCell(Sheet sheet, String pos) {
         try {
-            return getCell(sheet, s, pos).getStringCellValue();
+            return getCell(sheet, pos).getStringCellValue();
         } catch (Exception e) {
             return "";
         }
     }
 
-    protected Cell getCell(Sheet sheet, String s, int pos) {
-        return sheet.getRow(pos - 1).getCell(CellReference.convertColStringToIndex(s));
+    protected Cell getCell(Sheet sheet, String pos) {
+        List<Character> input = new ArrayList<>();
+        for (char c : pos.toCharArray()) {
+            input.add(c);
+        }
+
+        String letter = Utility.consumeString(input);
+        int x = Utility.consumeNumber(input);
+
+        return sheet.getRow(x - 1).getCell(CellReference.convertColStringToIndex(letter));
     }
 }

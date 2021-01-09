@@ -12,18 +12,19 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import manager.Utility;
-import model.item.Item;
 import model.loot.Loot;
 import ui.IView;
 import ui.ViewPart;
 import ui.battle.LootView;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class MemoryView extends ViewPart {
 
-    private ObservableList<Loot> loots;
+    private final ObservableList<Loot> loots;
 
     public MemoryView(IView parent) {
-        super("Merkliste", parent);
+        super("memory.title", parent);
         this.loots = FXCollections.observableArrayList();
 
         VBox root = new VBox();
@@ -35,11 +36,13 @@ public class MemoryView extends ViewPart {
         lootTable.setRowFactory(table -> new LootView.LootRow());
         lootTable.setPrefWidth(800);
 
-        TableColumn<Loot, String> name = new TableColumn<>("Gegenstand");
+        TableColumn<Loot, String> name = new TableColumn<>();
+        name.textProperty().bind(getMessageProperty("memory.column.name"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         lootTable.getColumns().add(name);
 
-        TableColumn<Loot, Integer> amount = new TableColumn<>("Menge");
+        TableColumn<Loot, Integer> amount = new TableColumn<>();
+        amount.textProperty().bind(getMessageProperty("column.amount"));
         amount.setCellValueFactory(cell -> cell.getValue().amountProperty().asObject());
         amount.setPrefWidth(100);
         lootTable.getColumns().add(amount);
@@ -52,7 +55,8 @@ public class MemoryView extends ViewPart {
         buttonPane.setPadding(new Insets(10, 0, 0, 0));
         root.getChildren().add(buttonPane);
 
-        Button remove = new Button("Entfernen");
+        Button remove = new Button();
+        remove.textProperty().bind(getMessageProperty("memory.button.remove"));
         remove.setPrefWidth(150);
         buttonPane.setLeft(remove);
 
@@ -61,36 +65,12 @@ public class MemoryView extends ViewPart {
         Label coinLabel = new Label();
         buttonPane.setCenter(coinLabel);
 
-        Button sell = new Button("Verkaufen");
+        Button sell = new Button();
+        sell.textProperty().bind(getMessageProperty("memory.button.sell"));
         sell.setPrefWidth(150);
         buttonPane.setRight(sell);
 
-        sell.setOnAction(ev -> {
-            int itemValue = 0;
-            int coinValue = 0;
-
-            for (Loot l : loots) {
-                Item item = l.getItem();
-
-                if (item.getCostOfOneAsCopper() > 0) {
-                    itemValue += item.getCostOfOneAsCopper() * l.getAmount();
-                } else {
-                    switch (item.getName()) {
-                        case "Kupfer":
-                            coinValue += l.getAmount();
-                            break;
-                        case "Silber":
-                            coinValue += l.getAmount() * 100;
-                            break;
-                        case "Gold":
-                            coinValue += l.getAmount() * 10000;
-                            break;
-                    }
-                }
-            }
-
-            coinLabel.setText(Utility.visualiseSell(Math.round(itemValue * 0.8f) + coinValue));
-        });
+        sell.setOnAction(ev -> coinLabel.setText(Utility.sellLoot(loots).getCoinString()));
 
         this.setContent(root);
     }

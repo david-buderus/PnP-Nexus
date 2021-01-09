@@ -10,60 +10,6 @@ public abstract class TypTranslation {
         translationMap.clear();
     }
 
-    public static void addStandards() {
-        add("Rüstung", "Beliebig");
-        add("Waffe", "Beliebig");
-        add("Magische Waffe", "Beliebig");
-        add("Schmuck", "Beliebig");
-        add("Nahkampfwaffe", "Waffe");
-        add("Fernkampfwaffe", "Waffe");
-        add("Einhandwaffe", "Waffe");
-        add("Zweihandwaffe", "Waffe");
-
-        add("Klingenwaffe", "Nahkampfwaffe");
-        add("Stumpfe Waffe", "Nahkampfwaffe");
-        add("Wurfwaffe", "Fernkampfwaffe");
-        add("Bogen", "Fernkampfwaffe", "Zweihandwaffe");
-        add("Armbrust", "Fernkampfwaffe", "Zweihandwaffe");
-        add("Gewehr", "Fernkampfwaffe", "Zweihandwaffe");
-
-        add("Dolch", "Klingenwaffe", "Einhandwaffe");
-        add("Einhand-Axt", "Klingenwaffe", "Einhandwaffe");
-        add("Einhand-Keule", "Stumpfe Waffe", "Einhandwaffe");
-        add("Einhand-Schwert", "Klingenwaffe", "Einhandwaffe");
-        add("Faustwaffe", "Stumpfe Waffe", "Einhandwaffe");
-        add("Klaue", "Klingenwaffe", "Einhandwaffe");
-        add("Hammer", "Stumpfe Waffe", "Einhandwaffe");
-        add("Kriegshammer", "Stumpfe Waffe", "Zweihandwaffe");
-        add("Schleuder", "Fernkampfwaffe");
-        add("Stab", "Magische Waffe");
-        add("Stangenwaffe", "Klingenwaffe");
-        add("Wurfmesser", "Klingenwaffe");
-        add("Zauberbuch", "Magische Waffe");
-        add("Großes Zauberbuch", "Magische Waffe");
-        add("Zweihand-Axt", "Klingenwaffe", "Zweihandwaffe");
-        add("Zweihand-Keule", "Stumpfe Waffe", "Zweihandwaffe");
-        add("Zweihand-Schwert", "Klingenwaffe", "Zweihandwaffe");
-
-        add("Kopf", "Rüstung");
-        add("Oberkörper", "Rüstung");
-        add("Arme", "Rüstung");
-        add("Beine", "Rüstung");
-        add("Rücken", "Rüstung");
-        add("Schild", "Rüstung");
-        add("Großschild", "Schild");
-
-        add("Elixier", "Verbrauchsgegenstand");
-        add("Medizin", "Verbrauchsgegenstand");
-        add("Munition", "Verbrauchsgegenstand");
-        add("Nahrung", "Verbrauchsgegenstand");
-
-        add("Bolzen", "Munition");
-        add("Gewehrkugel", "Munition");
-        add("Pfeil", "Munition");
-
-    }
-
     public static void add(String key, String... typ) {
         if (translationMap.containsKey(key)) {
             translationMap.get(key).addAll(Arrays.asList(typ));

@@ -11,11 +11,10 @@ import ui.View;
 
 public class InfoView extends View {
 
-    private StringProperty info;
+    private final StringProperty info;
 
     public InfoView(String title) {
-        super();
-        this.stage.setTitle(title);
+        super(title);
         this.info = new SimpleStringProperty("");
 
         BorderPane root = new BorderPane();

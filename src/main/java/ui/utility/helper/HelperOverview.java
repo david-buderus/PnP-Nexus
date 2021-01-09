@@ -8,15 +8,12 @@ import ui.ViewPart;
 public class HelperOverview extends ViewPart {
 
     public HelperOverview(IView parent) {
-        super("Helfer", parent);
+        super("helper.title", parent);
 
         TabPane root = new TabPane();
 
         Tab calenderTab = new CalenderView(this);
         root.getTabs().add(calenderTab);
-
-        Tab eventTab = new EventView(this);
-        root.getTabs().add(eventTab);
 
         Tab foodTab = new FoodView(this);
         root.getTabs().add(foodTab);

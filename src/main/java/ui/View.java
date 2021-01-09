@@ -1,33 +1,34 @@
 package ui;
 
-import javafx.beans.property.StringProperty;
+import javafx.beans.binding.StringExpression;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import manager.LanguageUtility;
 
 public abstract class View implements IView {
 
     protected static Image ICON_IMAGE = new Image("Icon.png");
 
     protected Stage stage;
-    protected StringProperty fileName;
 
-    public View() {
-        this(new Stage(), null);
+    public View(String key) {
+        this(key, new Stage());
     }
 
-    public View(Stage stage) {
-        this(stage, null);
+    public View(String key, StringExpression titleAddition) {
+        this(key, titleAddition, new Stage());
     }
 
-    public View(StringProperty fileName) {
-        this(new Stage(), fileName);
+    public View(String key, StringExpression titleAddition, Stage stage) {
+        this(key, stage);
+        this.stage.titleProperty().bind(LanguageUtility.getMessageProperty(key).concat(titleAddition));
     }
 
-    public View(Stage stage, StringProperty fileName) {
+    public View(String key, Stage stage) {
         this.stage = stage;
+        this.stage.titleProperty().bind(LanguageUtility.getMessageProperty(key));
         this.stage.getIcons().add(ICON_IMAGE);
         this.stage.setOnCloseRequest(ev -> onClose());
-        this.fileName = fileName;
     }
 
     protected void onClose() {

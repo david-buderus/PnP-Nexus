@@ -1,6 +1,6 @@
 package ui.battle;
 
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -10,6 +10,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import manager.Database;
+import manager.LanguageUtility;
+import manager.Utility;
 import model.Spell;
 import model.item.Armor;
 import model.item.Jewellery;
@@ -17,7 +19,12 @@ import model.item.Weapon;
 import model.member.ExtendedBattleMember;
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
+import model.member.generation.Talent;
+import org.apache.commons.configuration2.Configuration;
 import ui.View;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static ui.ViewFactory.labelShortTextField;
 
@@ -26,10 +33,8 @@ public class CharacterView extends View {
     protected ExtendedBattleMember character;
 
     public CharacterView(ExtendedBattleMember character) {
-        super();
+        super(LanguageUtility.getMessage("character.title"), new ReadOnlyStringWrapper(" ").concat(character.nameProperty()));
         this.character = character;
-
-        this.stage.titleProperty().bind(new SimpleStringProperty("Charakterbogen ").concat(character.nameProperty()));
 
         HBox root = new HBox();
 
@@ -45,7 +50,7 @@ public class CharacterView extends View {
         attributes.getChildren().add(primAttr);
 
         for (PrimaryAttribute attribute : PrimaryAttribute.values()) {
-            HBox attr = labelShortTextField(attribute.toString(), character.getAttribute(attribute));
+            HBox attr = labelShortTextField(attribute.toStringProperty(), character.getAttribute(attribute));
             primAttr.getChildren().add(attr);
         }
 
@@ -57,7 +62,7 @@ public class CharacterView extends View {
         attributes.getChildren().add(secAttr);
 
         for (SecondaryAttribute attribute : SecondaryAttribute.values()) {
-            HBox attr = labelShortTextField(attribute.toString(),
+            HBox attr = labelShortTextField(attribute.toStringProperty(),
                     character.getAttribute(attribute), character.getModifier(attribute));
             secAttr.getChildren().add(attr);
         }
@@ -68,27 +73,27 @@ public class CharacterView extends View {
         HBox weaponHeadline = new HBox();
         weaponBox.getChildren().add(weaponHeadline);
 
-        weaponHeadline.getChildren().add(createEquipmentLabel(weaponHeadline, "Waffe", 100, Color.LIGHTGRAY, false, true));
-        weaponHeadline.getChildren().add(createEquipmentLabel(weaponHeadline, "Typ", 90));
-        weaponHeadline.getChildren().add(createEquipmentLabel(weaponHeadline, "Init", 55));
-        weaponHeadline.getChildren().add(createEquipmentLabel(weaponHeadline, "Würfel", 55));
-        weaponHeadline.getChildren().add(createEquipmentLabel(weaponHeadline, "Schaden", 55));
-        weaponHeadline.getChildren().add(createEquipmentLabel(weaponHeadline, "Treffer", 55));
-        weaponHeadline.getChildren().add(createEquipmentLabel(weaponHeadline, "Spezial", 150));
+        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.name", 100, false));
+        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.typ", 90));
+        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.initiative", 55));
+        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.dice", 55));
+        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.damage", 55));
+        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.hit", 55));
+        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.effect", 150));
 
         for (Weapon weapon : character.getWeapons()) {
             HBox weaponLine = new HBox();
             weaponBox.getChildren().add(weaponLine);
 
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getName(), 100, Color.TRANSPARENT, false, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getSubTyp(), 90, Color.TRANSPARENT, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getInitiative(), 55, Color.TRANSPARENT, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getDice(), 55, Color.TRANSPARENT, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, String.valueOf(weapon.getDamage()), 55, Color.TRANSPARENT, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, String.valueOf(weapon.getHit()), 55, Color.TRANSPARENT, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getEffect(), 150, Color.TRANSPARENT, true, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getName(), 100, false, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getSubTyp(), 90, true, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getInitiative(), 55, true, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getDice(), 55, true, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, String.valueOf(weapon.getDamage()), 55, true, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, String.valueOf(weapon.getHit()), 55, true, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getEffect(), 150, true, false));
 
-            weaponBox.getChildren().add(createEquipmentLabel(weaponLine, weapon.upgradesAsString(), 560, Color.LIGHTGRAY, false, true, false));
+            weaponBox.getChildren().add(createEquipmentLabel(weaponLine, weapon.upgradesAsString(), 560, Color.LIGHTGRAY, false, true, false, false));
         }
 
         HBox armorNotes = new HBox(5);
@@ -100,29 +105,29 @@ public class CharacterView extends View {
         HBox armorHeadline = new HBox();
         armorBox.getChildren().add(armorHeadline);
 
-        armorHeadline.getChildren().add(createEquipmentLabel(armorHeadline, "Rüstung", 100, Color.LIGHTGRAY, false, true));
-        armorHeadline.getChildren().add(createEquipmentLabel(armorHeadline, "Name", 130));
-        armorHeadline.getChildren().add(createEquipmentLabel(armorHeadline, "Schutz", 60));
-        armorHeadline.getChildren().add(createEquipmentLabel(armorHeadline, "Belastung", 60));
+        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.position", 100, false));
+        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.name", 130));
+        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.protection", 60));
+        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.weight", 60));
 
         for (Armor armor : character.getArmor()) {
             HBox armorLine = new HBox();
             armorBox.getChildren().add(armorLine);
 
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getSubTyp(), 100, Color.TRANSPARENT, false, false));
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getName(), 130, Color.TRANSPARENT, true, false));
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getProtection()), 60, Color.TRANSPARENT, true, false));
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getWeight()), 60, Color.TRANSPARENT, true, false));
+            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getSubTyp(), 100, false, false));
+            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getName(), 130, true, false));
+            armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getProtection()), 60, true, false));
+            armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getWeight()), 60, true, false));
 
             String upgradeInfo;
 
-            if (armor.getEffect().equals("")) {
+            if (armor.getEffect().isBlank()) {
                 upgradeInfo = armor.upgradesAsString();
             } else {
                 upgradeInfo = armor.getEffect() + " " + armor.upgradesAsString();
             }
 
-            armorBox.getChildren().add(createEquipmentLabel(armorLine, upgradeInfo, 350, Color.LIGHTGRAY, false, true, false));
+            armorBox.getChildren().add(createEquipmentLabel(armorLine, upgradeInfo, 350, Color.LIGHTGRAY, false, true, false, false));
         }
 
         TextArea notes = new TextArea();
@@ -139,17 +144,17 @@ public class CharacterView extends View {
             HBox jewelleryHeadline = new HBox();
             jewelleryBox.getChildren().add(jewelleryHeadline);
 
-            jewelleryHeadline.getChildren().add(createEquipmentLabel(jewelleryHeadline, "Name", 100, Color.LIGHTGRAY, false, true));
-            jewelleryHeadline.getChildren().add(createEquipmentLabel(jewelleryHeadline, "Effekt", 460));
+            jewelleryHeadline.getChildren().add(createEquipmentHeadline(jewelleryHeadline, "character.jewellery.headline.name", 100, false));
+            jewelleryHeadline.getChildren().add(createEquipmentHeadline(jewelleryHeadline, "character.jewellery.headline.effect", 460));
 
             for (Jewellery jewellery : character.getJewelleries()) {
                 HBox jewelleryLine = new HBox();
                 jewelleryBox.getChildren().add(jewelleryLine);
 
-                jewelleryLine.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.getName(), 100, Color.TRANSPARENT, false, false));
-                jewelleryLine.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.getEffect(), 460, Color.TRANSPARENT, true, false));
+                jewelleryLine.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.getName(), 100, false, false));
+                jewelleryLine.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.getEffect(), 460, true, false));
 
-                jewelleryBox.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.upgradesAsString(), 560, Color.LIGHTGRAY, false, true, false));
+                jewelleryBox.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.upgradesAsString(), 560, Color.LIGHTGRAY, false, true, false, false));
             }
         }
 
@@ -157,76 +162,83 @@ public class CharacterView extends View {
         talentTabs.setPadding(new Insets(20));
         root.getChildren().add(talentTabs);
 
-        Tab fightTab = new Tab("Kampf");
-        fightTab.setClosable(false);
-        talentTabs.getTabs().add(fightTab);
+        // Load layout from the config file
+        Configuration config = Utility.getConfig();
+        int pageCount = config.getInt("character.talent.pages");
+        int columnCount = config.getInt("character.talent.page.columns");
+        String custom = config.getString("character.talent.custom.marker");
+        String customs = config.getString("character.talent.customs.marker");
+        String skip = config.getString("character.talent.skip.marker");
+        List<List<String>> talentPages = new ArrayList<>();
 
-        GridPane talents = new GridPane();
-        talents.setVgap(1);
-        talents.setHgap(2);
-        talents.setGridLinesVisible(true);
-        fightTab.setContent(talents);
+        for (int i = 0; i < pageCount; i++) {
+            List<String> page = new ArrayList<>();
 
-        talents.add(new TalentPane(character, Database.getTalent("Faustkampf")), 0, 0);
-        talents.add(new TalentPane(character, Database.getTalent("Stangenwaffen")), 1, 0);
-        talents.add(new TalentPane(character, Database.getTalent("Klingenwaffen Einhändig")), 0, 1);
-        talents.add(new TalentPane(character, Database.getTalent("Stumpfe Waffen Einhändig")), 1, 1);
-        talents.add(new TalentPane(character, Database.getTalent("Klingenwaffen Zweihändig")), 0, 2);
-        talents.add(new TalentPane(character, Database.getTalent("Stumpfe Waffen Zweihändig")), 1, 2);
-        talents.add(new TalentPane(character, Database.getTalent("Kleine Wurfwaffen")), 0, 3);
-        talents.add(new TalentPane(character, Database.getTalent("Große Wurfwaffen")), 1, 3);
-        talents.add(new TalentPane(character, Database.getTalent("Bogen / Armbrust")), 0, 4);
-        talents.add(new TalentPane(character, Database.getTalent("Gewehr")), 1, 4);
+            for (String talentKey : config.getStringArray("character.talent.page." + i)) {
+                if (talentKey.equals(custom) || talentKey.equals(customs) || talentKey.equals(skip) || talentKey.isBlank()) {
+                    page.add(talentKey.trim());
+                } else {
+                    String talent = LanguageUtility.hasMessage("talent." + talentKey) ? LanguageUtility.getMessage("talent." + talentKey) : talentKey.trim();
+                    page.add(talent);
+                }
+            }
 
-        talents.add(createSpring(), 0, 6);
+            talentPages.add(page);
+        }
 
-        talents.add(new TalentPane(character, Database.getTalent("Ausweichen")), 0, 7);
-        talents.add(new TalentPane(character, Database.getTalent("Gefahreninstinkt (Normal)")), 1, 7);
-        talents.add(new TalentPane(character, Database.getTalent("Entwaffnen")), 0, 8);
-        talents.add(new TalentPane(character, Database.getTalent("Parieren")), 1, 8);
-        talents.add(new TalentPane(character, Database.getTalent("Blocken")), 0, 9);
+        // All talents that the character uses but are not shown in the default layout
+        Queue<Talent> notListedTalents = this.character.getMainTalents().stream()
+                .filter(talent -> talentPages.stream().flatMap(List::stream)
+                        .noneMatch(name -> name.equalsIgnoreCase(talent.getName())))
+                .collect(Collectors.toCollection(LinkedList::new));
 
-        talents.add(new TalentPane(character, Database.getTalent("Laufen")), 0, 10);
-        talents.add(new TalentPane(character, Database.getTalent("Abrollen")), 1, 10);
-        talents.add(new TalentPane(character, Database.getTalent("Springen")), 0, 11);
-        talents.add(new TalentPane(character, Database.getTalent("Schwimmen")), 1, 11);
-        talents.add(new TalentPane(character, Database.getTalent("Fliegen")), 0, 12);
-        talents.add(new TalentPane(character, Database.getTalent("Reiten")), 1, 12);
-        talents.add(new TalentPane(character, Database.getTalent("Werfen")), 0, 13);
-        talents.add(new TalentPane(character, Database.getTalent("Zielen")), 1, 13);
-        talents.add(new TalentPane(character, Database.getTalent("Körperliche Arbeit")), 0, 14);
-        talents.add(new TalentPane(character, Database.getTalent("Entfesseln")), 1, 14);
+        for (int pageNr = 0; pageNr < talentPages.size(); pageNr++) {
+            List<String> page = talentPages.get(pageNr);
+            Tab tab = new Tab();
+            tab.textProperty().bind(LanguageUtility.getMessageProperty("character.tab" + pageNr + ".name"));
+            tab.setClosable(false);
+            talentTabs.getTabs().add(tab);
 
+            GridPane talents = new GridPane();
+            talents.setVgap(1);
+            talents.setHgap(2);
+            talents.setGridLinesVisible(true);
+            tab.setContent(talents);
 
-        Tab magicTab = new Tab("Magie");
-        magicTab.setClosable(false);
-        talentTabs.getTabs().add(magicTab);
+            int pos = 0;
+            for (String talentName : page) {
 
-        GridPane magicTalents = new GridPane();
-        magicTalents.setVgap(1);
-        magicTalents.setHgap(2);
-        magicTalents.setGridLinesVisible(true);
-        magicTab.setContent(magicTalents);
+                if (talentName.equals(customs) && !notListedTalents.isEmpty()) {
+                    for (Talent talent : notListedTalents) {
+                        talents.add(new TalentPane(character, talent), pos % columnCount, pos / columnCount);
+                        pos++;
+                    }
+                    notListedTalents.clear();
 
-        magicTalents.add(new TalentPane(character, Database.getTalent("Magisches Wissen")), 0, 0);
+                } else if (talentName.equals(custom)) {
+                    if (!notListedTalents.isEmpty()) {
+                        talents.add(new TalentPane(character, notListedTalents.poll()), pos % columnCount, pos / columnCount);
+                        pos++;
+                    }
 
-        magicTalents.add(createSpring(), 0, 1);
-
-        magicTalents.add(new TalentPane(character, Database.getTalent("Arkanmagie")), 0, 2);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Illusionsmagie")), 1, 2);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Lichtmagie")), 0, 3);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Finstermagie")), 1, 3);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Feuermagie")), 0, 4);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Wassermagie")), 1, 4);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Luftmagie")), 0, 5);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Erdmagie")), 1, 5);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Sturmmagie")), 0, 6);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Frostmagie")), 1, 6);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Naturmagie")), 0, 7);
-        magicTalents.add(new TalentPane(character, Database.getTalent("Totenmagie")), 1, 7);
+                }  else if (talentName.equals(skip)) {
+                    if (pos % columnCount != 0) {
+                        pos = (pos / columnCount + 1) * columnCount;
+                    }
+                    talents.add(createEmptyCell(), pos % columnCount, pos / columnCount);
+                    pos += columnCount;
+                } else {
+                    if (!talentName.isBlank()) {
+                        talents.add(new TalentPane(character, Database.getTalent(talentName)), pos % columnCount, pos / columnCount);
+                    }
+                    pos++;
+                }
+            }
+        }
 
         if (character.getSpells().size() > 0) {
-            Tab spellTab = new Tab("Zauber");
+            Tab spellTab = new Tab();
+            spellTab.textProperty().bind(LanguageUtility.getMessageProperty("character.tabSpells.name"));
             spellTab.setClosable(false);
             talentTabs.getTabs().add(spellTab);
 
@@ -236,21 +248,21 @@ public class CharacterView extends View {
             HBox spellHeadline = new HBox();
             spellBox.getChildren().add(spellHeadline);
 
-            spellHeadline.getChildren().add(createEquipmentLabel(spellHeadline, "Name", 100, Color.LIGHTGRAY, false, true));
-            spellHeadline.getChildren().add(createEquipmentLabel(spellHeadline, "Effekt", 250));
-            spellHeadline.getChildren().add(createEquipmentLabel(spellHeadline, "Typ", 90));
-            spellHeadline.getChildren().add(createEquipmentLabel(spellHeadline, "Kosten", 51));
-            spellHeadline.getChildren().add(createEquipmentLabel(spellHeadline, "Zeit", 51));
+            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.name", 100, false));
+            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.effect", 250));
+            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.typ", 90));
+            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.costs", 51));
+            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.castTime", 51));
 
             for (Spell spell : character.getSpells()) {
                 HBox spellLine = new HBox();
                 spellBox.getChildren().add(spellLine);
 
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getName(), 100, Color.TRANSPARENT, false, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getEffect(), 250, Color.TRANSPARENT, true, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getTyp(), 90, Color.TRANSPARENT, true, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCost(), 51, Color.TRANSPARENT, true, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCastTime(), 51, Color.TRANSPARENT, true, true));
+                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getName(), 100, false, true));
+                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getEffect(), 250, true, true));
+                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getTyp(), 90, true, true));
+                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCost(), 51, true, true));
+                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCastTime(), 51, true, true));
             }
         }
 
@@ -259,16 +271,26 @@ public class CharacterView extends View {
         show();
     }
 
-    private Region createEquipmentLabel(HBox box, String name, double width) {
-        return createEquipmentLabel(box, name, width, Color.LIGHTGRAY, true, true);
+
+    private Region createEquipmentHeadline(HBox box, String key, double width) {
+        return createEquipmentHeadline(box, key, width, true);
     }
 
-    private Region createEquipmentLabel(HBox box, String name, double width, Color color, boolean left, boolean bot) {
-        return createEquipmentLabel(box, name, width, color, left, bot, true);
+    private Region createEquipmentHeadline(HBox box, String key, double width, boolean left) {
+        return createEquipmentLabel(box, key, width, Color.LIGHTGRAY, left, true, true, true);
     }
 
-    private Region createEquipmentLabel(HBox box, String name, double width, Color color, boolean left, boolean bot, boolean bind) {
-        Label label = new Label(name);
+    private Region createEquipmentLabel(HBox box, String name, double width, boolean left, boolean bot) {
+        return createEquipmentLabel(box, name, width, Color.TRANSPARENT, left, bot, true, false);
+    }
+
+    private Region createEquipmentLabel(HBox box, String name, double width, Color color, boolean left, boolean bot, boolean bind, boolean headline) {
+        Label label = new Label();
+        if (headline) {
+            label.textProperty().bind(LanguageUtility.getMessageProperty(name));
+        } else {
+            label.setText(name);
+        }
         label.setPrefWidth(width);
         label.setTextAlignment(TextAlignment.LEFT);
         label.setWrapText(true);
@@ -287,7 +309,7 @@ public class CharacterView extends View {
         return label;
     }
 
-    private Pane createSpring() {
+    private Pane createEmptyCell() {
         Pane pane = new Pane();
         pane.setPrefHeight(30);
         return pane;

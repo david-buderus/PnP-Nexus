@@ -8,14 +8,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import manager.Database;
+import manager.LanguageUtility;
 import manager.Utility;
 import model.Battle;
+import model.Rarity;
 import model.Spell;
 import model.item.*;
 import model.member.data.ArmorPiece;
 import model.member.generation.*;
 import model.member.generation.specs.*;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.configuration2.Configuration;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -32,7 +34,7 @@ public class ExtendedBattleMember extends BattleMember {
     protected IntegerProperty intelligence;
     protected IntegerProperty charisma;
     protected IntegerProperty resilience;
-    protected IntegerProperty maneuverability;
+    protected IntegerProperty agility;
     protected IntegerProperty precision;
 
     protected ReadOnlyIntegerProperty baseDamageMelee;
@@ -84,7 +86,7 @@ public class ExtendedBattleMember extends BattleMember {
         this.intelligence = new SimpleIntegerProperty(2);
         this.charisma = new SimpleIntegerProperty(2);
         this.resilience = new SimpleIntegerProperty(2);
-        this.maneuverability = new SimpleIntegerProperty(2);
+        this.agility = new SimpleIntegerProperty(2);
         this.precision = new SimpleIntegerProperty(2);
 
         this.baseDamageMeleeModifier = new SimpleIntegerProperty();
@@ -96,14 +98,14 @@ public class ExtendedBattleMember extends BattleMember {
         this.mentalHealthModifier = new SimpleIntegerProperty();
         this.maxManaModifier = new SimpleIntegerProperty();
 
-        this.baseDamageMelee = createProperty(0.18, strength, 0.09, dexterity, 0.03, endurance, baseDamageMeleeModifier);
-        this.baseDamageRange = createProperty(0.18, precision, 0.09, dexterity, 0.03, maneuverability, baseDamageRangeModifier);
-        this.magicPower = createProperty(0.18, intelligence, 0.08, charisma, 0.04, precision, magicPowerModifier);
-        this.baseDefense = createProperty(0.105, resilience, 0.09, maneuverability, 0.105, endurance, defenseModifier);
-        this.initiative = createProperty(0.2, maneuverability, 0.16, precision, 0.16, charisma, initModifier, 2);
-        this.maxLife = createProperty(4.5, resilience, 0.9, endurance, 0.4, strength, maxLifeModifier);
-        this.mentalHealth = createProperty(0.9, resilience, 0.4, intelligence, 0.2, charisma, mentalHealthModifier, 7);
-        this.maxMana = createProperty(4.2, intelligence, 1.6, charisma, maxManaModifier, 10);
+        this.baseDamageMelee = createSecondaryAttributeProperty("character.secondaryAttribute.damageMelee", baseDamageMeleeModifier);
+        this.baseDamageRange = createSecondaryAttributeProperty("character.secondaryAttribute.damageRange", baseDamageRangeModifier);
+        this.magicPower = createSecondaryAttributeProperty("character.secondaryAttribute.magicPower", magicPowerModifier);
+        this.baseDefense = createSecondaryAttributeProperty("character.secondaryAttribute.baseDefense", defenseModifier);
+        this.initiative = createSecondaryAttributeProperty("character.secondaryAttribute.initiative", initModifier);
+        this.maxLife = createSecondaryAttributeProperty("character.secondaryAttribute.maxLife", maxLifeModifier);
+        this.mentalHealth = createSecondaryAttributeProperty("character.secondaryAttribute.mentalHealth", mentalHealthModifier);
+        this.maxMana = createSecondaryAttributeProperty("character.secondaryAttribute.maxMana", maxManaModifier);
 
         this.notes = new SimpleStringProperty("");
 
@@ -111,6 +113,8 @@ public class ExtendedBattleMember extends BattleMember {
         for (Talent talent : Database.talentList) {
             talents.put(talent, new SimpleIntegerProperty(0));
         }
+
+        Configuration config = Utility.getConfig();
 
         this.generateStats();
 
@@ -187,11 +191,10 @@ public class ExtendedBattleMember extends BattleMember {
                 ObservableList<? extends Armor> list = ob.getList();
 
                 for (Armor armor : list) {
-                    if (ArmorPiece.getArmorPiece(armor.getSubTyp()) == null) {
-                        continue;
+                    try {
+                        this.setArmor(ArmorPiece.getArmorPiece(armor.getSubTyp()), armor.getProtection());
+                    } catch (NoSuchElementException ignored) {
                     }
-
-                    this.setArmor(ArmorPiece.getArmorPiece(armor.getSubTyp()), armor.getProtection());
                 }
             }
         });
@@ -218,18 +221,17 @@ public class ExtendedBattleMember extends BattleMember {
         }
         this.jewellery = FXCollections.observableArrayList();
         if (usesJewellery()) {
-            for (int i = 0; i < 8; i++) {
-                if (random.nextDouble() < getTier() / 100f) {
-                    this.jewellery.add((Jewellery) randomJewellery("Ring", jewelleryPool).getWithUpgrade());
+
+            for (String type : config.getStringArray("character.jewellery.types")) {
+                int amount = config.getInt("character.jewellery.amount." + type);
+                String localizedType = LanguageUtility.hasMessage("jewellery.type." + type) ?
+                        LanguageUtility.getMessage("jewellery.type." + type) : type;
+
+                for (int i = 0; i < amount; i++) {
+                    if (random.nextDouble() < getTier() / 100f) {
+                        this.jewellery.add((Jewellery) randomJewellery(localizedType, jewelleryPool).getWithUpgrade());
+                    }
                 }
-            }
-            for (int i = 0; i < 8; i++) {
-                if (random.nextDouble() < getTier() / 100f) {
-                    this.jewellery.add((Jewellery) randomJewellery("Armband", jewelleryPool).getWithUpgrade());
-                }
-            }
-            if (random.nextDouble() < getTier() / 100f) {
-                this.jewellery.add((Jewellery) randomJewellery("Kette", jewelleryPool).getWithUpgrade());
             }
         }
 
@@ -261,22 +263,22 @@ public class ExtendedBattleMember extends BattleMember {
     }
 
     private void addDescription() {
-        addDescription("Charakterisierungsvorteile", characterisation.getAdvantages());
-        addDescription("Rassenvorteile", race.getAdvantages());
-        addDescription("Berufsvorteile", profession.getAdvantages());
-        addDescription("Kampfvorteile", fightingStyle.getAdvantages());
-        addDescription("Spezifische Vorteile", specialisation.getAdvantages());
+        addDescription("character.advantage.characterisation", characterisation.getAdvantages());
+        addDescription("character.advantage.race", race.getAdvantages());
+        addDescription("character.advantage.profession", profession.getAdvantages());
+        addDescription("character.advantage.fightingStyle", fightingStyle.getAdvantages());
+        addDescription("character.advantage.specialisation", specialisation.getAdvantages());
 
-        addDescription("Charakterisierungsnachteile", characterisation.getDisadvantages());
-        addDescription("Rassennachteile", race.getDisadvantages());
-        addDescription("Berufsnachteile", profession.getDisadvantages());
-        addDescription("Kampfnachteile", fightingStyle.getDisadvantages());
-        addDescription("Spezifische Nachteile", specialisation.getDisadvantages());
+        addDescription("character.disadvantage.characterisation", characterisation.getDisadvantages());
+        addDescription("character.disadvantage.race", race.getDisadvantages());
+        addDescription("character.disadvantage.profession", profession.getDisadvantages());
+        addDescription("character.disadvantage.fightingStyle", fightingStyle.getDisadvantages());
+        addDescription("character.disadvantage.specialisation", specialisation.getDisadvantages());
     }
 
-    private void addDescription(String header, Collection<String> lines) {
+    private void addDescription(String headerKey, Collection<String> lines) {
         if (!lines.isEmpty()) {
-            notes.set(notes.get() + header + "\n");
+            notes.set(notes.get() + LanguageUtility.getMessage(headerKey) + "\n");
             for (String line : lines) {
                 notes.set(notes.get() + "  - " + line + "\n");
             }
@@ -292,7 +294,7 @@ public class ExtendedBattleMember extends BattleMember {
             } else {
                 armorPool = concreteArmor;
             }
-            this.armors.add((Armor) randomArmor(position.toString(), armorPool).getWithUpgrade());
+            this.armors.add((Armor) randomArmor(position, armorPool).getWithUpgrade());
         }
     }
 
@@ -373,7 +375,7 @@ public class ExtendedBattleMember extends BattleMember {
                 loopCheck -= 1;
             }
             if (loopCheck < 1) {
-                notes.set("Unbenutzte Talentpunkte: " + talentPoints + "\n\n" + notes.get());
+                notes.set(LanguageUtility.getMessage("character.unusedTalents") + ": " + talentPoints + "\n\n" + notes.get());
                 break;
             }
         }
@@ -431,19 +433,27 @@ public class ExtendedBattleMember extends BattleMember {
     private Weapon randomWeapon(Collection<String> types, Collection<Weapon> weaponPool) {
         ArrayList<Weapon> weapons = new ArrayList<>();
         for (int i = getTier(); i > 0 && weapons.size() == 0; i--) {
-            int k = i;
-            String rarity = Utility.getRandomRarity();
-            weapons = weaponPool.stream()
-                    .filter(x -> x.getTier() == k)
-                    .filter(x -> x.getRarity().equals(rarity))
-                    .filter(this::checkRequirements)
-                    .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
-                    .collect(Collectors.toCollection(ArrayList::new));
+            final int k = i;
+            Rarity rarity = Rarity.getRandomRarity();
+
+            do {
+                final Rarity fRarity = rarity;
+
+                weapons = weaponPool.stream()
+                        .filter(x -> x.getTier() == k)
+                        .filter(x -> x.getRarity() == fRarity)
+                        .filter(this::checkRequirements)
+                        .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                rarity = rarity.getLowerRarity();
+
+            } while (weapons.size() == 0 && rarity != Rarity.common);
 
             if (weapons.size() == 0) {
                 weapons = weaponPool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity().equals("gewöhnlich"))
+                        .filter(x -> x.getRarity() == Rarity.common)
                         .filter(this::checkRequirements)
                         .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -459,8 +469,8 @@ public class ExtendedBattleMember extends BattleMember {
         return weapon;
     }
 
-    private Armor randomArmor(final String position, Collection<Armor> armorPool) {
-        ArrayList<Armor> armors = equipmentSearch(position, armorPool);
+    private Armor randomArmor(final ArmorPosition position, Collection<Armor> armorPool) {
+        ArrayList<Armor> armors = equipmentSearch(position.toStringProperty().get(), armorPool);
 
         Armor armor;
         if (armors.size() == 0) {
@@ -484,56 +494,46 @@ public class ExtendedBattleMember extends BattleMember {
     }
 
     protected boolean checkRequirements(final Item item) {
-        String[] parsed = item.getRequirement().split(" ");
+        List<Character> requirementsList = new ArrayList<>();
+        for (char c : item.getRequirement().toCharArray()) {
+            requirementsList.add(c);
+        }
 
-        for (int i = 0; i < parsed.length; i += 2) {
-            if (NumberUtils.isDigits(parsed[i])) {
-                if (i + 1 >= parsed.length) {
+        while (!requirementsList.isEmpty()) {
+            int x = Utility.consumeNumber(requirementsList);
+            String attribute = Utility.consumeString(requirementsList);
+
+            if (attribute.equalsIgnoreCase(PrimaryAttribute.strength.toShortString())) {
+                if (x > getStrength()) {
                     return false;
                 }
-                int x = Integer.parseInt(parsed[i]);
-
-                switch (parsed[i + 1]) {
-                    case "KK":
-                        if (x > getStrength()) {
-                            return false;
-                        }
-                        break;
-                    case "AU":
-                        if (x > getEndurance()) {
-                            return false;
-                        }
-                        break;
-                    case "GE":
-                        if (x > getDexterity()) {
-                            return false;
-                        }
-                        break;
-                    case "IN":
-                        if (x > getIntelligence()) {
-                            return false;
-                        }
-                        break;
-                    case "CH":
-                        if (x > getCharisma()) {
-                            return false;
-                        }
-                        break;
-                    case "BL":
-                        if (x > getResilience()) {
-                            return false;
-                        }
-                        break;
-                    case "BW":
-                        if (x > getManeuverability()) {
-                            return false;
-                        }
-                        break;
-                    case "GN":
-                        if (x > getPrecision()) {
-                            return false;
-                        }
-                        break;
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.endurance.toShortString())) {
+                if (x > getEndurance()) {
+                    return false;
+                }
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.dexterity.toShortString())) {
+                if (x > getDexterity()) {
+                    return false;
+                }
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.intelligence.toShortString())) {
+                if (x > getIntelligence()) {
+                    return false;
+                }
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.charisma.toShortString())) {
+                if (x > getCharisma()) {
+                    return false;
+                }
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.resilience.toShortString())) {
+                if (x > getResilience()) {
+                    return false;
+                }
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.agility.toShortString())) {
+                if (x > getAgility()) {
+                    return false;
+                }
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.precision.toShortString())) {
+                if (x > getPrecision()) {
+                    return false;
                 }
             }
         }
@@ -558,19 +558,27 @@ public class ExtendedBattleMember extends BattleMember {
     private <Eq extends Equipment> ArrayList<Eq> equipmentSearch(final String typ, Collection<Eq> pool) {
         ArrayList<Eq> equipment = new ArrayList<>();
         for (int i = getTier(); i > 0 && equipment.size() == 0; i--) {
-            int k = i;
-            String rarity = Utility.getRandomRarity();
-            equipment = pool.stream()
-                    .filter(x -> x.getTier() == k)
-                    .filter(x -> x.getRarity().equals(rarity))
-                    .filter(x -> x.getSubTyp().equals(typ))
-                    .filter(this::checkRequirements)
-                    .collect(Collectors.toCollection(ArrayList::new));
+            final int k = i;
+            Rarity rarity = Rarity.getRandomRarity();
+
+            do {
+                final Rarity fRarity = rarity;
+
+                equipment = pool.stream()
+                        .filter(x -> x.getTier() == k)
+                        .filter(x -> x.getRarity() == fRarity)
+                        .filter(x -> x.getSubTyp().equals(typ))
+                        .filter(this::checkRequirements)
+                        .collect(Collectors.toCollection(ArrayList::new));
+
+                rarity = rarity.getLowerRarity();
+
+            } while (equipment.size() == 0 && rarity != Rarity.common);
 
             if (equipment.size() == 0) {
                 equipment = pool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity().equals("gewöhnlich"))
+                        .filter(x -> x.getRarity() == Rarity.common)
                         .filter(x -> x.getSubTyp().equals(typ))
                         .filter(this::checkRequirements)
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -582,7 +590,7 @@ public class ExtendedBattleMember extends BattleMember {
     private void generateStats() {
         NumberBinding remainingPoints = Bindings.createIntegerBinding(() -> 50).subtract(strength).subtract(endurance)
                 .subtract(dexterity).subtract(intelligence).subtract(charisma).subtract(resilience)
-                .subtract(maneuverability).subtract(precision);
+                .subtract(agility).subtract(precision);
 
 
         // Skill first into the attributes the main talents need
@@ -636,22 +644,26 @@ public class ExtendedBattleMember extends BattleMember {
         }
     }
 
-    private IntegerProperty createProperty(double s1, IntegerProperty n1, double s2, IntegerProperty n2,
-                                           double s3, IntegerProperty n3, IntegerProperty points) {
-        return createProperty(s1, n1, s2, n2, s3, n3, points, 0);
-    }
+    private IntegerProperty createSecondaryAttributeProperty(String key, IntegerProperty points) {
+        Double[] loadedFactors = (Double[]) Utility.getConfig().getArray(Double.class, key);
+        int baseValue = Utility.getConfig().getInt(key + ".base", 0);
 
-    private IntegerProperty createProperty(double s1, IntegerProperty n1, double s2, IntegerProperty n2,
-                                           double s3, IntegerProperty n3, IntegerProperty points, int b) {
-        DoubleBinding base = n1.multiply(s1).add(n2.multiply(s2)).add(n3.multiply(s3)).add(b).add(points);
-        IntegerProperty result = new SimpleIntegerProperty();
-        result.bind(Bindings.createIntegerBinding(() -> (int) Math.round(base.get()), base));
-        return result;
-    }
+        double[] factors = new double[8];
+        for (int i = 0; i < loadedFactors.length && i < factors.length; i++) {
+            factors[i] = loadedFactors[i];
+        }
 
-    private IntegerProperty createProperty(double s1, IntegerProperty n1, double s2,
-                                           IntegerProperty n2, IntegerProperty points, int b) {
-        DoubleBinding base = n1.multiply(s1).add(n2.multiply(s2)).add(b).add(points);
+        DoubleBinding base = strength.multiply(factors[0])
+                .add(endurance.multiply(factors[1]))
+                .add(dexterity.multiply(factors[2]))
+                .add(intelligence.multiply(factors[3]))
+                .add(charisma.multiply(factors[4]))
+                .add(resilience.multiply(factors[5]))
+                .add(agility.multiply(factors[6]))
+                .add(precision.multiply(factors[7]))
+                .add(baseValue)
+                .add(points);
+
         IntegerProperty result = new SimpleIntegerProperty();
         result.bind(Bindings.createIntegerBinding(() -> (int) Math.round(base.get()), base));
         return result;
@@ -691,8 +703,8 @@ public class ExtendedBattleMember extends BattleMember {
                 return charisma;
             case resilience:
                 return resilience;
-            case maneuverability:
-                return maneuverability;
+            case agility:
+                return agility;
             case precision:
                 return precision;
         }
@@ -846,10 +858,10 @@ public class ExtendedBattleMember extends BattleMember {
     }
 
     private boolean isNotAbleToUseSpells() {
-        return !characterisation.isAbleToUseSpells() ||
-                !race.isAbleToUseSpells() ||
-                !profession.isAbleToUseSpells() ||
-                !fightingStyle.isAbleToUseSpells() ||
+        return !characterisation.isAbleToUseSpells() &&
+                !race.isAbleToUseSpells() &&
+                !profession.isAbleToUseSpells() &&
+                !fightingStyle.isAbleToUseSpells() &&
                 !specialisation.isAbleToUseSpells();
     }
 
@@ -864,7 +876,7 @@ public class ExtendedBattleMember extends BattleMember {
         return result;
     }
 
-    private Collection<Talent> getMainTalents() {
+    public Collection<Talent> getMainTalents() {
         Collection<Talent> result = new ArrayList<>();
         result.addAll(characterisation.getMainTalents());
         result.addAll(race.getMainTalents());
@@ -973,16 +985,16 @@ public class ExtendedBattleMember extends BattleMember {
         this.resilience.set(resilience);
     }
 
-    public int getManeuverability() {
-        return maneuverability.get();
+    public int getAgility() {
+        return agility.get();
     }
 
-    public IntegerProperty maneuverabilityProperty() {
-        return maneuverability;
+    public IntegerProperty agilityProperty() {
+        return agility;
     }
 
-    public void setManeuverability(int maneuverability) {
-        this.maneuverability.set(maneuverability);
+    public void setAgility(int agility) {
+        this.agility.set(agility);
     }
 
     public int getPrecision() {

@@ -7,32 +7,51 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import manager.LanguageUtility;
+import model.interfaces.WithToStringProperty;
 import model.map.Map;
+import model.map.specification.CryptSpecification;
 import ui.IView;
 import ui.ViewPart;
+import ui.part.UpdatingListCell;
+
+import java.util.Random;
+
+import static manager.LanguageUtility.getMessageProperty;
+import static ui.ViewFactory.labelTextField;
 
 public class MapView extends ViewPart {
 
     private final MapCanvas canvas;
-    private ObjectProperty<Map> map;
-    private ObjectProperty<Structure> selectedStructure;
+    private final ObjectProperty<Map> map;
+    private final ObjectProperty<Structure> selectedStructure;
+    private final LongProperty seed;
+    private final IntegerProperty width, height, depth;
     private final BooleanProperty loading;
     private final IntegerProperty shownYLayer;
+    private final Random random;
 
     public MapView(IView parent) {
-        super("Karten", parent);
+        super("map.title", parent);
         this.selectedStructure = new SimpleObjectProperty<>();
         this.loading = new SimpleBooleanProperty(false);
         this.shownYLayer = new SimpleIntegerProperty(0);
         this.map = new SimpleObjectProperty<>(null);
+        this.seed = new SimpleLongProperty(5411351666781167994L);
+        this.width = new SimpleIntegerProperty(50);
+        this.height = new SimpleIntegerProperty(10);
+        this.depth = new SimpleIntegerProperty(50);
         this.canvas = new MapCanvas(map, shownYLayer);
+        this.random = new Random();
 
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(20, 10, 10, 10));
 
         BorderPane rightSide = new BorderPane();
+        rightSide.setPadding(new Insets(0, 0, 0, 10));
         root.setRight(rightSide);
 
         VBox generateBox = new VBox(10);
@@ -42,14 +61,31 @@ public class MapView extends ViewPart {
 
         ComboBox<Structure> structure = new ComboBox<>(FXCollections.observableArrayList(Structure.values()));
         this.selectedStructure.bind(structure.getSelectionModel().selectedItemProperty());
-        structure.getSelectionModel().selectFirst();
-        structure.setPrefWidth(120);
+        structure.getSelectionModel().select(Structure.crypt);
+        structure.setCellFactory(list -> new UpdatingListCell<>());
+        structure.setButtonCell(new UpdatingListCell<>());
+        structure.setPrefWidth(215);
         generateBox.getChildren().add(structure);
 
-        Button generateButton = new Button("Generiere");
+        generateBox.getChildren().add(labelTextField("map.info.width", width));
+
+        generateBox.getChildren().add(labelTextField("map.info.height", height));
+
+        generateBox.getChildren().add(labelTextField("map.info.depth", depth));
+
+        generateBox.getChildren().add(labelTextField("map.info.seed", seed));
+
+        Button seedButton = new Button();
+        seedButton.textProperty().bind(getMessageProperty("map.button.randomSeed"));
+        seedButton.setOnAction(ev -> seed.set(random.nextLong()));
+        seedButton.setPrefWidth(215);
+        generateBox.getChildren().add(seedButton);
+
+        Button generateButton = new Button();
+        generateButton.textProperty().bind(getMessageProperty("map.button.generate"));
         generateButton.setOnAction(ev -> generate());
         generateButton.disableProperty().bind(loading);
-        generateButton.setPrefWidth(120);
+        generateButton.setPrefWidth(215);
         generateBox.getChildren().add(generateButton);
 
         VBox layerBox = new VBox(10);
@@ -80,15 +116,24 @@ public class MapView extends ViewPart {
         this.canvas.setPrefSize(500, 500);
         root.setCenter(canvas);
 
+        BorderPane info = new BorderPane();
+        root.setBottom(info);
+
+        Label coordinates = new Label();
+        coordinates.textProperty().bind(canvas.getMouseX().asString().concat(", ").concat(canvas.getMouseY()).concat(", ").concat(canvas.getMouseZ()));
+        info.setRight(coordinates);
+
         this.setContent(root);
     }
 
     private void generate() {
-        map.set(new Map());
+        Map m = new Map(seed.get(), width.get(), height.get(), depth.get());
+        m.setSpecification(new CryptSpecification(m));
+        map.set(m);
 
         Thread generateThread = new Thread(() -> {
             long time = System.currentTimeMillis();
-            map.get().generate();
+            m.generate();
             Platform.runLater(() -> {
                 loading.set(false);
                 canvas.refresh();
@@ -102,19 +147,13 @@ public class MapView extends ViewPart {
         generateThread.start();
     }
 
-    private enum Structure {
+    private enum Structure implements WithToStringProperty {
         cave, crypt;
 
+
         @Override
-        public String toString() {
-            switch (this) {
-                case cave:
-                    return "Höhle";
-                case crypt:
-                    return "Krypta";
-                default:
-                    return "";
-            }
+        public ReadOnlyStringProperty toStringProperty() {
+            return LanguageUtility.getMessageProperty("map.structure." + super.toString());
         }
     }
 }

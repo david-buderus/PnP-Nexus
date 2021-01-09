@@ -1,110 +1,84 @@
 package manager;
 
-import city.Town;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
-import model.item.Armor;
+import model.Currency;
+import model.item.Item;
+import model.loot.Loot;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import ui.utility.MemoryView;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Random;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.logging.Logger;
 
 public abstract class Utility {
 
-    private static final Random rand = new Random();
-
-    public static final ListProperty<Town> townList = new SimpleListProperty<>(FXCollections.observableArrayList());
-
     public static MemoryView memoryView;
 
-    /**
-     * Generates a string that represents
-     * a rarity of the database
-     *
-     * @return a rarity matching the chance
-     */
-    public static String getRandomRarity() {
-        double percent = rand.nextDouble();
+    private static final Random rand = new Random();
+    private static Configuration config = null;
 
-        if (percent < getChanceOfRarity("legendär")) {
-            return "legendär";
-        }
-        if (percent < getChanceOfRarity("episch")) {
-            return "episch";
-        }
-        if (percent < getChanceOfRarity("selten")) {
-            return "selten";
-        }
-        return "gewöhnlich";
-    }
 
-    /**
-     * Returns the chance to find an item
-     * of the given rarity
-     *
-     * @param rarity of which the chance is needed
-     * @return a double in [0,1]
-     */
-    public static double getChanceOfRarity(String rarity) {
-        if (rarity.equals("legendär")) {
-            return 0.01;
-        }
-        if (rarity.equals("episch")) {
-            return 0.05;
-        }
-        if (rarity.equals("selten")) {
-            return 0.20;
-        }
-        return 1;
-    }
+    static {
+        Parameters params = new Parameters();
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
+                new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties()
+                                .setFileName("Configuration.properties")
+                                .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
 
-    /**
-     * Generates a Collection of String which
-     * represents materials of the database.
-     *
-     * @return a list of materials of a specific tier
-     */
-    public static Collection<String> getRandomMaterial() {
-        switch (getRandomTier()) {
-            case 1:
-                return Arrays.asList("Eisen", "Silber", "Leder", "Holz", "Papier", "Stoff");
-            case 2:
-                return Arrays.asList("Stahl", "Gold", "Verstärktes Leder", "Verzaubertes Holz", "Pergament", "Verzauberter Stoff");
-            case 3:
-                return Arrays.asList("Mithril", "Platin", "Bestienleder", "Entholz", "Verzaubertes Papier", "Seide");
-            case 4:
-                return Arrays.asList("Orichalcum", "Wei\u00dfgold", "Verstärktes Bestienleder", "Verzaubertes Entholz", "Verzaubertes Pergament", "Verzauberte Seide");
-            case 5:
-                return Arrays.asList("Adamantium", "Drachenschuppe", "Weltenholz", "Gesegnetes Pergament", "Magiestoff");
-            default:
-                return Collections.emptyList();
+        try {
+            config = builder.getConfiguration();
+
+            // Load external configuration file
+            Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
+
+            if (home.toFile().exists()) {
+                builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties()
+                                .setFile(home.toFile())
+                                .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
+
+                Configuration localConfig = builder.getConfiguration();
+                for (Iterator<String> it = localConfig.getKeys(); it.hasNext(); ) {
+                    String key = it.next();
+                    config.setProperty(key, localConfig.getProperty(key));
+                }
+            }
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
         }
     }
 
+    public static Configuration getConfig() {
+        return config;
+    }
+
     /**
-     * Generates a random number in [1, 5]
+     * Generates a random number in between 1 and the maximal tier specified in the config
      * with a higher chance to generate a low number.
      *
      * @return a random generated Tier
      */
     public static int getRandomTier() {
-        double percent = rand.nextDouble();
+        Integer[] array = (Integer[]) config.getArray(Integer.class, "tier.weight");
+        double weight = rand.nextInt(Arrays.stream(array).mapToInt(i -> i).sum());
 
-        if (percent < 0.01) {
-            return 5;
+
+        for (int i = array.length - 1; i >= 0; i--) {
+            if (weight < array[i]) {
+                return i + 1;
+            }
+            weight -= array[i];
         }
-        if (percent < 0.1) {
-            return 4;
-        }
-        if (percent < 0.25) {
-            return 3;
-        }
-        if (percent < 0.5) {
-            return 2;
-        }
+
         return 1;
     }
 
@@ -158,164 +132,105 @@ public abstract class Utility {
         }
     }
 
-    /**
-     * Visualises the amount of copper coins
-     * in copper, silver and gold
-     *
-     * @param cost amount of copper coins
-     * @return human-readable format
-     */
-    public static String visualiseSell(int cost) {
-        String copper = cost % 100 + "K";
-        cost /= 100;
-        String silver = cost % 100 + "S";
-        cost /= 100;
-        String gold = cost + "G";
+    public static Currency sellLoot(Collection<Loot> loot) {
+        Currency itemsSellingPrice = new Currency();
+        Currency valueOfTheCoins = new Currency();
+        String currencyString = LanguageUtility.getMessage("currency");
 
+        for (Loot l : loot) {
+            Item item = l.getItem();
+
+
+            if (item.getSubTyp().equalsIgnoreCase(currencyString)) {
+                valueOfTheCoins = valueOfTheCoins.add(item.getCurrency().multiply(l.getAmount()));
+            } else {
+                itemsSellingPrice = itemsSellingPrice.add(item.getCurrency().multiply(l.getAmount()));
+
+            }
+        }
+
+        return itemsSellingPrice.multiply(config.getFloat("loot.sell.modifier")).add(valueOfTheCoins);
+    }
+
+    /**
+     * Reads and consumes all chars from the input list
+     * until if finds a non digit character
+     *
+     * @param input list that gets consumed
+     * @return the parsed digits as int
+     */
+    public static int consumeNumber(List<Character> input) {
+        StringBuilder number = new StringBuilder();
+
+        while (!input.isEmpty()) {
+            char c = input.get(0);
+
+            if (Character.isDigit(c)) {
+                input.remove(0);
+                number.append(c);
+            } else {
+                break;
+            }
+        }
+
+        try {
+            return Integer.parseInt(number.toString());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Reads and consumes all chars from the input list
+     * until if finds a digit character
+     *
+     * @param input list that gets consumed
+     * @return the parsed chars as trimmed String
+     */
+    public static String consumeString(List<Character> input) {
         StringBuilder result = new StringBuilder();
 
-        if (!gold.equals("0G")) {
-            result.append(gold).append(" ");
-        }
-        if (!silver.equals("0S")) {
-            result.append(silver).append(" ");
-        }
-        if (!copper.equals("0K")) {
-            result.append(copper);
-        }
+        while (!input.isEmpty()) {
+            char c = input.get(0);
 
-        if (result.length() == 0) {
-            return "0K";
+            if (!Character.isDigit(c)) {
+                input.remove(0);
+                result.append(c);
+            } else {
+                break;
+            }
         }
 
         return result.toString().trim();
     }
 
-    /**
-     * Calculates the base damage of a weapon with the specific values would have.
-     *
-     * @param tier       of the weapon
-     * @param step       that the weapon damage does from Tier 1 to Tier 2
-     * @param startValue the base damage of the weapon at Tier 1
-     * @return the calculated base damage
-     */
-    public static int calculateWeaponDamage(int tier, int step, int startValue) {
-        if (tier < 1) {
-            return startValue - step;
-        } else if (tier < 4) {
-            return calculateWeaponDamage(tier - 1, step, startValue) + step;
-        } else {
-            return calculateWeaponDamage(tier - 1, step, startValue) + 2 * step;
+    public static void saveToCustomConfig(String key, Object object) {
+
+        Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
+
+        try {
+            if (home.toFile().createNewFile()) {
+                Logger.getLogger("Utility").info("Custom Configuration.properties created");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
 
-    /**
-     * Generates a heavy armor for the given tier and position with weight of 0.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonHeavyArmor(int tier, String name, String position) {
-        return generateCommonHeavyArmor(tier, name, position, 0);
-    }
+        Parameters params = new Parameters();
+        FileBasedConfigurationBuilder<FileBasedConfiguration> builder =
+                new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
+                        .configure(params.properties()
+                                .setFile(home.toFile())
+                                .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
 
-    /**
-     * Generates a heavy armor for the given tier and position.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @param weight   of the generated armor item
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonHeavyArmor(int tier, String name, String position, int weight) {
-        Armor armor = new Armor();
-        armor.setName(name);
-        armor.setWeight(weight);
-        armor.setTier(tier);
-        armor.setSubTyp(position);
-        armor.setProtection(calculateHeavyArmorProtection(tier, position));
-        armor.setRarity("gewöhnlich");
-        return armor;
-    }
+        try {
+            Configuration customConfig = builder.getConfiguration();
+            customConfig.setProperty(key, object);
 
-    private static int calculateHeavyArmorProtection(int tier, String position) {
-        switch (position) {
-            case "Kopf":
-            case "Arme":
-                return calculateHeavyArmorProtection(tier, 3);
-            case "Oberkörper":
-                return calculateHeavyArmorProtection(tier, 5);
-            case "Beine":
-                return calculateHeavyArmorProtection(tier, 4);
-        }
-        return 0;
-    }
+            builder.save();
 
-    private static int calculateHeavyArmorProtection(int tier, int startValue) {
-        if (tier < 1) {
-            return startValue - 2;
-        } else if (tier == 3) {
-            return calculateHeavyArmorProtection(tier - 1, startValue);
-        } else {
-            return calculateHeavyArmorProtection(tier - 1, startValue) + 2;
-        }
-    }
-
-    /**
-     * Generates a light armor for the given tier and position with weight of 0.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonLightArmor(int tier, String name, String position) {
-        return generateCommonLightArmor(tier, name, position, 0);
-    }
-
-    /**
-     * Generates a light armor for the given tier and position.
-     *
-     * @param tier     of the armor
-     * @param name     of the generated armor item
-     * @param position of the armor
-     * @param weight   of the generated armor item
-     * @return the generated armor with matching stats
-     */
-    public static Armor generateCommonLightArmor(int tier, String name, String position, int weight) {
-        Armor armor = new Armor();
-        armor.setName(name);
-        armor.setWeight(weight);
-        armor.setTier(tier);
-        armor.setSubTyp(position);
-        armor.setProtection(calculateLightArmorProtection(tier, position));
-        armor.setRarity("gewöhnlich");
-        return armor;
-    }
-
-    private static int calculateLightArmorProtection(int tier, String position) {
-        switch (position) {
-            case "Kopf":
-            case "Arme":
-                return calculateLightArmorProtection(tier, 1);
-            case "Oberkörper":
-                return calculateLightArmorProtection(tier, 3);
-            case "Beine":
-                return calculateLightArmorProtection(tier, 2);
-        }
-        return 0;
-    }
-
-    private static int calculateLightArmorProtection(int tier, int startValue) {
-        if (tier < 1) {
-            return startValue - 1;
-        } else if (tier == 5) {
-            return calculateLightArmorProtection(tier - 1, startValue) + 2;
-        } else {
-            return calculateLightArmorProtection(tier - 1, startValue) + 1;
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
         }
     }
 }

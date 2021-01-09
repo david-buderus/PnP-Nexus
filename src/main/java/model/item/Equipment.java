@@ -3,6 +3,7 @@ package model.item;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import manager.Database;
 import manager.TypTranslation;
+import model.Currency;
 import model.upgrade.Upgrade;
 import model.upgrade.UpgradeFactory;
 
@@ -79,14 +80,14 @@ public abstract class Equipment extends Item {
     }
 
     @Override
-    public int getCostOfOneAsCopper() {
-        int cost = super.getCostOfOneAsCopper();
+    public Currency getCurrency() {
+        Currency currency = super.getCurrency();
 
         for (Upgrade upgrade : upgrades) {
-            cost += upgrade.getCost();
+            currency = currency.add(upgrade.getCost());
         }
 
-        return cost;
+        return currency;
     }
 
     @Override

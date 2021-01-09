@@ -1,70 +1,23 @@
 package model.member.data;
 
-public enum MemberStateEffect {
-    damage, heal, manaDrain, manaRegeneration, slow, relativeSlow, speed, relativeSpeed, snare, stun, fear,
-    armorPlus, armorMinus, other;
+import javafx.beans.property.ReadOnlyStringProperty;
+import manager.LanguageUtility;
+import model.interfaces.WithToStringProperty;
 
-    @Override
-    public String toString() {
-        switch (this) {
-            case damage:
-                return "Schaden";
-            case heal:
-                return "Heilung";
-            case manaRegeneration:
-                return "Manaregeneration";
-            case manaDrain:
-                return "Manaentzug";
-            case slow:
-                return "Verlangsamung";
-            case relativeSlow:
-                return "Relative Verlangsamung";
-            case speed:
-                return "Beschleunigung";
-            case relativeSpeed:
-                return "Relative Beschleunigung";
-            case snare:
-                return "Festhalten";
-            case stun:
-                return "Betäuben";
-            case fear:
-                return "Veränstigen";
-            case armorPlus:
-                return "Verstärkte Abwehr";
-            case armorMinus:
-                return "Geschwächte Abwehr";
-        }
-        return "Sonstiges";
+public enum MemberStateEffect implements WithToStringProperty {
+    damage(1), heal(2), manaDrain(3), manaRegeneration(4),
+    slow(5), relativeSlow(5), speed(6), relativeSpeed(6),
+    snare(7), stun(8), fear(9),
+    armorPlus(10), armorMinus(11), other(0);
+
+    private final int imageId;
+
+    MemberStateEffect(int imageId) {
+        this.imageId = imageId;
     }
 
     public int getImageID() {
-        switch (this) {
-            case damage:
-                return 1;
-            case heal:
-                return 2;
-            case manaDrain:
-                return 3;
-            case manaRegeneration:
-                return 4;
-            case slow:
-            case relativeSlow:
-                return 5;
-            case speed:
-            case relativeSpeed:
-                return 6;
-            case snare:
-                return 7;
-            case stun:
-                return 8;
-            case fear:
-                return 9;
-            case armorPlus:
-                return 10;
-            case armorMinus:
-                return 11;
-        }
-        return 0;
+        return imageId;
     }
 
     public boolean isAbsoluteInitiativeEffect() {
@@ -83,5 +36,10 @@ public enum MemberStateEffect {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public ReadOnlyStringProperty toStringProperty() {
+        return LanguageUtility.getMessageProperty("state.effect." + super.toString());
     }
 }

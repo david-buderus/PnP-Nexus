@@ -5,6 +5,8 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import manager.LanguageUtility;
+import manager.Utility;
 import model.Battle;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
@@ -46,14 +48,14 @@ public class BattleMember extends Member {
 
     public BattleMember(Battle battle, LootTable lootTable) {
         super();
-        this.name.set("Teilnehmer");
+        this.name.set(LanguageUtility.getMessage("battleMember.defaultName"));
         this.life = new SimpleIntegerProperty(1);
         this.maxLife = new SimpleIntegerProperty(1);
         this.mana = new SimpleIntegerProperty(1);
         this.maxMana = new SimpleIntegerProperty(1);
         this.initiative = new SimpleIntegerProperty(1);
-        this.startValue = new SimpleIntegerProperty(10);
-        this.counter = new SimpleIntegerProperty(10);
+        this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
+        this.counter = new SimpleIntegerProperty(startValue.get());
         this.turns = new SimpleIntegerProperty(1);
         this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.baseDefense = new SimpleIntegerProperty(0);
@@ -88,7 +90,7 @@ public class BattleMember extends Member {
 
         while (getCounter() < 1) {
             turns.set(getTurns() + 1);
-            this.counter.set(getCounter() + 10);
+            this.counter.set(getCounter() + startValue.get());
         }
 
         for (MemberState state : states) {

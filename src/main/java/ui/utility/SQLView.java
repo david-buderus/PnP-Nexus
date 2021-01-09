@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import manager.Database;
+import manager.LanguageUtility;
 import model.Spell;
 import model.item.Armor;
 import model.item.Item;
@@ -31,48 +32,48 @@ import java.util.stream.Stream;
 public class SQLView extends ViewPart {
 
     public SQLView(IView parent) {
-        super("Items", parent);
+        super("sql.title", parent);
 
         TabPane root = new TabPane();
         root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        String[] labels = new String[]{"Name", "Typ", "Subtyp", "Tier", "Seltenheit", "Preis", "Effekt"};
-        String[] names = new String[]{"name", "typ", "subTyp", "tier", "rarity", "cost", "effect"};
+        String[] labels = new String[]{"column.name", "column.type", "column.item.subtype", "column.tier", "column.item.rarity", "column.item.price", "column.effect"};
+        String[] names = new String[]{"name", "typ", "subTyp", "tier", "rarity", "currency", "effect"};
 
-        root.getTabs().add(createTab("Items", labels, names, Database.itemList, Item.class));
+        root.getTabs().add(createTab("sql.tab.items", labels, names, Database.itemList, Item.class));
 
-        labels = new String[]{"Name", "Typ", "Initiative", "Würfel/Belastung", "Schaden/Schutz", "Treffer", "Tier", "Seltenheit", "Preis", "Effekt", "Slots", "Voraussetzung"};
-        names = new String[]{"name", "subTyp", "initiative", "dice", "damage", "hit", "tier", "rarity", "cost", "effect", "slots", "requirement"};
+        labels = new String[]{"column.name", "column.type", "column.weapon.initiative", "column.dice_weight", "column.damage_protection", "column.weapon.hit", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
+        names = new String[]{"name", "subTyp", "initiative", "dice", "damage", "hit", "tier", "rarity", "currency", "effect", "slots", "requirement"};
 
-        root.getTabs().add(createTab("Waffen", labels, names, Database.weaponList, Weapon.class));
+        root.getTabs().add(createTab("sql.tab.weapons", labels, names, Database.weaponList, Weapon.class));
 
-        labels = new String[]{"Name", "Typ", "Schutz", "Belastung", "Tier", "Seltenheit", "Preis", "Effekt", "Slots", "Voraussetzung"};
-        names = new String[]{"name", "subTyp", "protection", "weight", "tier", "rarity", "cost", "effect", "slots", "requirement"};
+        labels = new String[]{"column.name", "column.type", "Schutz", "Belastung", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
+        names = new String[]{"name", "subTyp", "protection", "weight", "tier", "rarity", "currency", "effect", "slots", "requirement"};
 
-        root.getTabs().add(createTab("Rüstungen", labels, names, Database.armorList, Armor.class));
+        root.getTabs().add(createTab("sql.tab.armor", labels, names, Database.armorList, Armor.class));
 
-        labels = new String[]{"Name", "Typ", "Material", "Edelstein", "Tier", "Seltenheit", "Preis", "Effekt", "Slots", "Voraussetzung"};
-        names = new String[]{"name", "subTyp", "material", "gem", "tier", "rarity", "cost", "effect", "slots", "requirement"};
+        labels = new String[]{"column.name", "column.type", "Material", "Edelstein", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
+        names = new String[]{"name", "subTyp", "material", "gem", "tier", "rarity", "currency", "effect", "slots", "requirement"};
 
-        root.getTabs().add(createTab("Schmuck", labels, names, Database.jewelleryList, Jewellery.class));
+        root.getTabs().add(createTab("sql.tab.jewellery", labels, names, Database.jewelleryList, Jewellery.class));
 
-        labels = new String[]{"Name", "Effekt", "Typ", "Kosten", "Zauberzeit", "Tier"};
+        labels = new String[]{"column.name", "column.effect", "column.type", "column.spell.cost", "column.spell.castTime", "column.tier"};
         names = new String[]{"name", "effect", "typ", "cost", "castTime", "tier"};
 
-        root.getTabs().add(createTab("Zauber", labels, names, Database.spellList, Spell.class));
+        root.getTabs().add(createTab("sql.tab.spell", labels, names, Database.spellList, Spell.class));
 
-        labels = new String[]{"Name", "Stufe", "Ziel", "Effekt", "Slots", "Kosten", "Mana", "Materials"};
+        labels = new String[]{"column.name", "Stufe", "Ziel", "column.effect", "column.equipment.slots", "column.item.price", "column.upgrade.mana", "column.upgrade.materials"};
         names = new String[]{"name", "level", "target", "effect", "slots", "cost", "mana", "materials"};
 
-        root.getTabs().add(createTab("Verbesserungen", labels, names, Database.upgradeModelList, UpgradeModel.class));
+        root.getTabs().add(createTab("sql.tab.upgrades", labels, names, Database.upgradeModelList, UpgradeModel.class));
 
 
         this.setContent(root);
     }
 
-    private Tab createTab(String text, String[] labels, String[] names, ListProperty<?> utility, Class<?> itemClass) {
+    private Tab createTab(String key, String[] labels, String[] names, ListProperty<?> utility, Class<?> itemClass) {
         Tab tab = new Tab();
-        tab.setText(text);
+        tab.textProperty().bind(LanguageUtility.getMessageProperty(key));
 
         ListProperty<Object> list = new SimpleListProperty<>();
         utility.addListener((ob, o, n) -> list.set(n.stream().collect(Collectors.toCollection(FXCollections::observableArrayList))));
@@ -93,7 +94,8 @@ public class SQLView extends ViewPart {
         vBox.getChildren().add(input);
 
         for (int i = 0; i < labels.length; i++) {
-            TableColumn<Object, Object> column = new TableColumn<>(labels[i]);
+            TableColumn<Object, Object> column = new TableColumn<>();
+            column.textProperty().bind(LanguageUtility.getMessageProperty(labels[i]));
             column.setMaxWidth(400);
             column.setCellValueFactory(new PropertyValueFactory<>(names[i]));
             column.setCellFactory(col -> new TableCell<>() {

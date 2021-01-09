@@ -2,13 +2,14 @@ package model.loot;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import manager.LanguageUtility;
 import model.item.Equipment;
 import model.item.Item;
 
 public class Loot {
 
     private Item item;
-    private IntegerProperty amount;
+    private final IntegerProperty amount;
 
     public Loot(Item item) {
         this(item, 1);
@@ -29,7 +30,7 @@ public class Loot {
 
     public String getName() {
         if (item instanceof Equipment && !((Equipment) item).getUpgrades().isEmpty()) {
-            return item.getName() + " (verzaubert)";
+            return item.getName() + " (" + LanguageUtility.getMessage("item.upgraded") + ")";
         }
         return item.getName();
     }

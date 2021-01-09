@@ -20,27 +20,34 @@ import ui.ViewPart;
 
 import java.util.HashMap;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class DungeonLootView extends ViewPart {
 
-    private StringProperty container;
-    private StringProperty place;
-    private ListProperty<Loot> list;
-    private ListProperty<String> containers;
-    private ListProperty<String> places;
-    private BooleanProperty disabled;
-    private IntegerProperty lootingCount;
-    private HashMap<String, ObservableList<String>> placesMap;
+    private final StringProperty container;
+    private final StringProperty place;
+    private final ListProperty<Loot> list;
+    private final ListProperty<String> containers;
+    private final ListProperty<String> places;
+    private final BooleanProperty disabled;
+    private final IntegerProperty lootingCount;
+    private final HashMap<String, ObservableList<String>> placesMap;
+
+    private final ReadOnlyStringProperty containerDefault;
+    private final ReadOnlyStringProperty placeDefault;
 
     public DungeonLootView(IView parent) {
-        super("Dungeon Loot", parent);
+        super("search.loot.title", parent);
+        this.containerDefault = getMessageProperty("search.loot.default.container");
+        this.placeDefault = getMessageProperty("search.loot.default.place");
 
-        this.container = new SimpleStringProperty("Beh\u00e4lter");
-        this.place = new SimpleStringProperty("Ort");
+        this.container = new SimpleStringProperty(containerDefault.get());
+        this.place = new SimpleStringProperty(placeDefault.get());
         this.list = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.containers = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.containers.add("Beh\u00e4lter");
+        this.containers.add(containerDefault.get());
         this.places = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.places.add("Ort");
+        this.places.add(placeDefault.get());
         this.disabled = new SimpleBooleanProperty(true);
         this.lootingCount = new SimpleIntegerProperty(1);
         this.placesMap = new HashMap<>();
@@ -62,11 +69,13 @@ public class DungeonLootView extends ViewPart {
         lootTable.itemsProperty().bindBidirectional(list);
         lootTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        TableColumn<Loot, String> name = new TableColumn<>("Gegenstand");
+        TableColumn<Loot, String> name = new TableColumn<>();
+        name.textProperty().bind(getMessageProperty("search.loot.column.name"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         lootTable.getColumns().add(name);
 
-        TableColumn<Loot, Integer> amount = new TableColumn<>("Menge");
+        TableColumn<Loot, Integer> amount = new TableColumn<>();
+        amount.textProperty().bind(getMessageProperty("column.amount"));
         amount.setCellValueFactory(cell -> cell.getValue().amountProperty().asObject());
         lootTable.getColumns().add(amount);
 
@@ -105,7 +114,8 @@ public class DungeonLootView extends ViewPart {
         count.setPrefWidth(width / 2 - 5);
         looting.setLeft(count);
 
-        Button lootButton = new Button("Pl\u00fcndern");
+        Button lootButton = new Button();
+        lootButton.textProperty().bind(getMessageProperty("search.loot.button.loot"));
         lootButton.setOnAction(ev -> loot());
         lootButton.setPrefWidth(width / 2 - 5);
         lootButton.disableProperty().bindBidirectional(disabled);
@@ -113,7 +123,8 @@ public class DungeonLootView extends ViewPart {
 
         root.getChildren().add(looting);
 
-        Button clear = new Button("Reset");
+        Button clear = new Button();
+        clear.textProperty().bind(getMessageProperty("search.button.reset"));
         clear.setOnAction(ev -> clear());
         clear.setMaxWidth(Double.MAX_VALUE);
         root.getChildren().add(clear);
@@ -161,8 +172,8 @@ public class DungeonLootView extends ViewPart {
             this.disabled.set(false);
             placesMap.clear();
 
-            ObservableList<String> plas = FXCollections.observableArrayList("Ort");
-            placesMap.put("Ort", FXCollections.observableArrayList("Behälter"));
+            ObservableList<String> placesList = FXCollections.observableArrayList(placeDefault.get());
+            placesMap.put(placeDefault.get(), FXCollections.observableArrayList(containerDefault.get()));
 
             for (DungeonLootFactory factory : Database.dungeonLootList) {
                 String container = factory.getContainer();
@@ -176,8 +187,8 @@ public class DungeonLootView extends ViewPart {
                     placesMap.put(place, FXCollections.observableArrayList());
                 }
 
-                if (!plas.contains(place)) {
-                    plas.add(place);
+                if (!placesList.contains(place)) {
+                    placesList.add(place);
                 }
 
                 if (!placesMap.get(place).contains(container)) {
@@ -185,14 +196,14 @@ public class DungeonLootView extends ViewPart {
                 }
 
             }
-            containers.set(placesMap.get("Ort").sorted());
-            places.set(plas.sorted());
+            containers.set(placesMap.get(placeDefault.get()).sorted());
+            places.set(placesList.sorted());
         } else {
             this.disabled.set(true);
-            this.containers.set(FXCollections.observableArrayList("Beh\u00e4lter"));
-            this.places.set(FXCollections.observableArrayList("Ort"));
+            this.containers.set(FXCollections.observableArrayList(containerDefault.get()));
+            this.places.set(FXCollections.observableArrayList(placeDefault.get()));
             this.placesMap.clear();
-            this.placesMap.put("Ort", FXCollections.observableArrayList("Behälter"));
+            this.placesMap.put(placeDefault.get(), FXCollections.observableArrayList(containerDefault.get()));
         }
     }
 }

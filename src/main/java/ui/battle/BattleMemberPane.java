@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import manager.LanguageUtility;
 import model.member.BattleMember;
 import model.member.MemberState;
 
@@ -32,7 +33,9 @@ public class BattleMemberPane extends StackPane {
         root.setAlignment(Pos.CENTER);
 
         Label name = new Label();
-        name.textProperty().bind(battleMember.nameProperty().concat(" Lvl: ").concat(battleMember.levelProperty()));
+        name.textProperty().bind(battleMember.nameProperty()
+                .concat(" ").concat(LanguageUtility.getMessageProperty("character.level.short"))
+                .concat(": ").concat(battleMember.levelProperty()));
         name.setMaxWidth(100);
         name.setWrapText(true);
         name.setTextAlignment(TextAlignment.CENTER);

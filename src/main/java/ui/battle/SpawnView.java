@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import static manager.LanguageUtility.getMessageProperty;
+
 public class SpawnView extends View {
 
     private static final Random random = new Random();
@@ -33,6 +35,8 @@ public class SpawnView extends View {
     private final boolean enemy;
 
     public SpawnView(Battle battle, boolean enemy) {
+        super("spawn.title");
+
         VBox root = new VBox(10);
         root.setAlignment(Pos.TOP_CENTER);
 
@@ -55,7 +59,8 @@ public class SpawnView extends View {
         buttons.setPadding(new Insets(0, 10, 10, 10));
         root.getChildren().add(buttons);
 
-        Button addButton = new Button("Hinzufügen");
+        Button addButton = new Button();
+        addButton.textProperty().bind(getMessageProperty("spawn.button.add"));
         addButton.setPrefWidth(100);
         addButton.setOnAction(ev -> {
             SpawnBox box = new SpawnBox(battle.getAveragePlayerLevel(),
@@ -69,7 +74,8 @@ public class SpawnView extends View {
         });
         buttons.setLeft(addButton);
 
-        Button spawnButton = new Button("Spawnen");
+        Button spawnButton = new Button();
+        spawnButton.textProperty().bind(getMessageProperty("spawn.button.spawn"));
         spawnButton.setPrefWidth(100);
         spawnButton.setOnAction(event -> spawn());
         buttons.setRight(spawnButton);
@@ -123,9 +129,9 @@ public class SpawnView extends View {
             VBox labelBox = new VBox(1);
             this.getChildren().add(labelBox);
 
-            labelBox.getChildren().add(createLabelInteger("Menge", this.amount));
-            labelBox.getChildren().add(createLabelInteger("Level", this.level));
-            labelBox.getChildren().add(createLabelInteger("Abweichung", this.fluctuation));
+            labelBox.getChildren().add(createLabelInteger("spawn.amount", this.amount));
+            labelBox.getChildren().add(createLabelInteger("spawn.level", this.level));
+            labelBox.getChildren().add(createLabelInteger("spawn.variance", this.fluctuation));
 
 
             ObservableList<Race> races = FXCollections.observableArrayList();
@@ -144,7 +150,8 @@ public class SpawnView extends View {
             this.randomFightingType = createSelectBox(fightingType, fightingStyles, this, randomProfession);
             this.randomSpecificType = createSelectBox(specificType, specialisations, this, randomFightingType);
 
-            Button removeButton = new Button("Entfernen");
+            Button removeButton = new Button();
+            removeButton.textProperty().bind(getMessageProperty("spawn.button.remove"));
             removeButton.prefWidthProperty().bind(this.widthProperty().subtract(10));
             removeButton.setOnAction(ev -> removeCallback.accept(this));
             this.getChildren().add(removeButton);
@@ -159,11 +166,12 @@ public class SpawnView extends View {
             });
         }
 
-        private HBox createLabelInteger(String text, Property<Number> property) {
+        private HBox createLabelInteger(String key, Property<Number> property) {
             HBox box = new HBox(5);
             box.setAlignment(Pos.CENTER);
 
-            Label label = new Label(text);
+            Label label = new Label();
+            label.textProperty().bind(getMessageProperty(key));
             box.getChildren().add(label);
 
             TextField field = new TextField();

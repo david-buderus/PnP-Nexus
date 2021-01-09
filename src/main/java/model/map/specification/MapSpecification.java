@@ -3,6 +3,7 @@ package model.map.specification;
 import manager.Database;
 import model.loot.DungeonLootFactory;
 import model.loot.LootFactory;
+import model.map.SeededRandom;
 import model.map.WeightedFactoryList;
 import model.map.object.room.RoomObject;
 import model.map.specification.texture.TextureHandler;
@@ -12,9 +13,9 @@ import java.util.function.Supplier;
 
 public abstract class MapSpecification {
 
-    protected final Random random = new Random();
 
     protected TextureHandler textureHandler;
+    protected SeededRandom random;
     protected HashMap<Integer, WeightedFactoryList<RoomObject>> entranceFactoryMap;
     protected HashMap<Integer, WeightedFactoryList<RoomObject>> corridorFactoryMap;
     protected HashMap<Integer, WeightedFactoryList<RoomObject>> crossingFactoryMap;
@@ -22,13 +23,14 @@ public abstract class MapSpecification {
 
     protected HashMap<String, Collection<LootFactory>> lootFactoryMap;
 
-    protected MapSpecification(TextureHandler textureHandler, String place) {
+    protected MapSpecification(TextureHandler textureHandler, String place, SeededRandom random) {
         this.textureHandler = textureHandler;
         this.entranceFactoryMap = new HashMap<>();
         this.corridorFactoryMap = new HashMap<>();
         this.crossingFactoryMap = new HashMap<>();
         this.roomFactoryMap = new HashMap<>();
         this.lootFactoryMap = new HashMap<>();
+        this.random = random;
 
         for (DungeonLootFactory factory : Database.dungeonLootList) {
             if (place.equals(factory.getPlace())) {
@@ -50,7 +52,7 @@ public abstract class MapSpecification {
     protected void registerRoomObject(HashMap<Integer, WeightedFactoryList<RoomObject>> factoryMap, int width, int weight, Supplier<RoomObject> supplier) {
         WeightedFactoryList<RoomObject> factory = factoryMap.get(width);
         if (factory == null) {
-            factory = new WeightedFactoryList<>();
+            factory = new WeightedFactoryList<>(random);
             factoryMap.put(width, factory);
         }
         factory.add(weight, supplier);

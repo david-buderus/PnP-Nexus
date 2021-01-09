@@ -1,39 +1,25 @@
 package model.member.data;
 
-public enum ArmorPiece {
+import javafx.beans.property.ReadOnlyStringProperty;
+import manager.LanguageUtility;
+import model.interfaces.WithToStringProperty;
+
+import java.util.NoSuchElementException;
+
+public enum ArmorPiece implements WithToStringProperty {
     head, upperBody, legs, arm, shield;
 
     @Override
-    public String toString() {
-        switch (this) {
-            case arm:
-                return "Arme";
-            case head:
-                return "Kopf";
-            case legs:
-                return "Beine";
-            case upperBody:
-                return "Oberk\u00f6rper";
-            case shield:
-                return "Schild";
-        }
-        return "Nichts";
+    public ReadOnlyStringProperty toStringProperty() {
+        return LanguageUtility.getMessageProperty("armorPiece." + super.toString());
     }
 
-    public static ArmorPiece getArmorPiece(String piece) {
-        switch (piece) {
-            case "Kopf":
-                return head;
-            case "Oberkörper":
-                return upperBody;
-            case "Arme":
-                return arm;
-            case "Beine":
-                return legs;
-            case "Schild":
-            case "Großschild":
-                return shield;
+    public static ArmorPiece getArmorPiece(String name) {
+        for (ArmorPiece piece : values()) {
+            if (piece.toStringProperty().get().equalsIgnoreCase(name.trim())) {
+                return piece;
+            }
         }
-        return null;
+        throw new NoSuchElementException("The ArmorPiece with the name " + name + " does not exists.");
     }
 }

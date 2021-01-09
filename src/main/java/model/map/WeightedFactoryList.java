@@ -1,19 +1,18 @@
 package model.map;
 
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class WeightedFactoryList<Item> {
 
     protected ArrayList<Entry> entries;
     protected int sumWeight;
-    protected Random random;
+    protected SeededRandom random;
 
-    public WeightedFactoryList() {
+    public WeightedFactoryList(SeededRandom random) {
         this.entries = new ArrayList<>();
         this.sumWeight = 0;
-        this.random = new Random();
+        this.random = random;
     }
 
     public void add(int weight, Supplier<Item> supplier) {
@@ -23,7 +22,7 @@ public class WeightedFactoryList<Item> {
 
     public Item getRandomItem() {
         if (sumWeight > 0) {
-            int num = random.nextInt(sumWeight);
+            int num = random.getRandom().nextInt(sumWeight);
             for (Entry entry : entries) {
                 if (num < entry.getWeight()) {
                     return entry.getSupplier().get();

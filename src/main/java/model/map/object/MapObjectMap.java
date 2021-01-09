@@ -2,14 +2,15 @@ package model.map.object;
 
 import model.map.Point;
 import model.map.RotationPoint;
-import model.map.object.loot.LootObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class MapObjectMap<MObj extends MapObject> {
 
     protected final int width, depth, height;
     protected final MObj[][][] map;
+    protected final ArrayList<MObj> mapObjects;
 
     @SuppressWarnings("unchecked")
     public MapObjectMap(int width, int height, int depth) {
@@ -17,6 +18,7 @@ public class MapObjectMap<MObj extends MapObject> {
         this.depth = depth;
         this.height = height;
         this.map = (MObj[][][]) new MapObject[width][height][depth];
+        this.mapObjects = new ArrayList<>();
     }
 
     public boolean addMapObject(MObj object, RotationPoint point) {
@@ -32,10 +34,7 @@ public class MapObjectMap<MObj extends MapObject> {
             }
             object.setRotation(rotation);
             object.setCoordinates(x, y, z);
-
-            if (object instanceof LootObject) {
-                System.out.println(points);
-            }
+            mapObjects.add(object);
 
             return true;
         } else {
@@ -52,13 +51,17 @@ public class MapObjectMap<MObj extends MapObject> {
     }
 
     public boolean deleteMapObject(MObj obj) {
-        ArrayList<Point> points = getPoints(obj, obj.getX(), obj.getY(), obj.getZ(), obj.getRotation());
+        if (mapObjects.remove(obj)) {
+            ArrayList<Point> points = getPoints(obj, obj.getX(), obj.getY(), obj.getZ(), obj.getRotation());
 
-        for (Point point : points) {
-            map[point.getX()][point.getY()][point.getZ()] = null;
+            for (Point point : points) {
+                map[point.getX()][point.getY()][point.getZ()] = null;
+            }
+            obj.onDelete();
+            return true;
+        } else {
+            return false;
         }
-
-        return true;
     }
 
     public boolean isEmpty(Point point) {
@@ -130,5 +133,18 @@ public class MapObjectMap<MObj extends MapObject> {
 
     public int getHeight() {
         return height;
+    }
+
+    public Collection<MObj> getAllMapObjects() {
+        return mapObjects;
+    }
+
+    public void print() {
+        for (int x = 0; x < width; x++) {
+            for (int z = 0; z < depth; z++) {
+                System.out.print(get(x, 0, z) != null ? 1 : 0);
+            }
+            System.out.println();
+        }
     }
 }

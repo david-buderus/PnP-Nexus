@@ -8,6 +8,7 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import model.*;
 import model.item.*;
 import model.loot.DungeonLootFactory;
@@ -23,10 +24,8 @@ import java.util.stream.Collectors;
 
 public abstract class Database {
 
-    public static final Collection<String> rarities = Arrays.asList("gew\u00f6hnlich", "selten", "episch", "legend\u00e4r");
     public static final ListProperty<Armor> armorList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<DungeonLootFactory> dungeonLootList = new SimpleListProperty<>(FXCollections.observableArrayList());
-    public static final ListProperty<Event> eventList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Jewellery> jewelleryList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Plant> plantList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Spell> spellList = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -49,7 +48,9 @@ public abstract class Database {
 
     public static final BooleanBinding inconsistent = Bindings.isEmpty(inconsistencyList).not();
 
-    public static void init() {
+    private static final MapProperty<Integer, ObservableSet<String>> materialsMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
+
+    static {
         upgradeList.addListener((ob, o, n) -> {
             upgradeMap.clear();
             ObservableList<UpgradeModel> list = FXCollections.observableArrayList();
@@ -65,20 +66,35 @@ public abstract class Database {
 
             upgradeModelList.set(list);
         });
+        itemList.addListener((ob, o, n) -> {
+            materialsMap.clear();
+
+            for (Item item : n) {
+                if (item instanceof Equipment) {
+                    Equipment equipment = (Equipment) item;
+
+                    if (!materialsMap.containsKey(equipment.getTier())) {
+                        materialsMap.put(equipment.getTier(), FXCollections.observableSet());
+                    }
+
+                    materialsMap.get(equipment.getTier()).add(equipment.getMaterial());
+                }
+            }
+        });
     }
 
     /**
      * If an item with the given name exists in the {@link #itemList},
      * it returns that item.
      * If there is no item, it returns an item with the name and the suffix
-     * "(Nicht in  der Datenbank)".
+     * "(database.notFound)".
      *
      * @param name of the searched item
-     * @return a more ore less matching item
+     * @return the matching item or a fallback item with the given name
      */
     public static Item getItem(String name) {
         Item item = new Item();
-        item.setName(name + " (Nicht in  der Datenbank)");
+        item.setName(name + " (" + LanguageUtility.getMessage("database.notFound") + ")");
         return getItemOrElse(name, item);
     }
 
@@ -103,7 +119,7 @@ public abstract class Database {
      * If there is no item, it throws a {@link NoSuchElementException}.
      *
      * @param name of the searched item
-     * @return an matching item
+     * @return a matching item
      * @throws NoSuchElementException if there is no item with the given name
      */
     public static Item getItemWithoutDefault(String name) throws NoSuchElementException {
@@ -111,20 +127,70 @@ public abstract class Database {
                 .findFirst().orElseThrow();
     }
 
+    /**
+     * If a talent with the given name exists in the {@link #talentList},
+     * it returns that talent.
+     * If there is no talent with that name, it returns a new talent with the name and the suffix
+     * "(database.notFound)".
+     *
+     * @param name of the searched talent
+     * @return the matching talent or a fallback talent with the given name
+     */
     public static Talent getTalent(String name) {
         Talent talent = new Talent();
-        talent.setName(name + " (Nicht in  der Datenbank)");
+        talent.setName(name + " (" + LanguageUtility.getMessage("database.notFound") + ")");
         return getTalentOrElse(name, talent);
     }
 
+    /**
+     * If a talent with the given name exists in the {@link #talentList},
+     * it returns that talent.
+     * If there is no talent, it returns the talent specified in the
+     * parameters.
+     *
+     * @param name   of the searched talent
+     * @param talent fallback talent
+     * @return a matching talent or the fallback
+     */
     public static Talent getTalentOrElse(String name, Talent talent) {
         return talentList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
                 .findFirst().orElse(talent);
     }
 
+    /**
+     * If a talent with the given name exists in the {@link #talentList},
+     * it returns that talent.
+     * If there is no talent, it throws a {@link NoSuchElementException}.
+     *
+     * @param name of the searched talent
+     * @return a matching talent
+     * @throws NoSuchElementException if there is no talent with the given name
+     */
     public static Talent getTalentWithoutDefault(String name) throws NoSuchElementException {
         return talentList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
                 .findFirst().orElseThrow();
+    }
+
+    /**
+     * Returns a Collection of String which
+     * represents materials of the database
+     *
+     * @param tier of the material
+     * @return a list of materials of the specific tier
+     */
+    public static Collection<String> getMaterialsOfTier(int tier) {
+        return materialsMap.getOrDefault(tier, FXCollections.observableSet());
+    }
+
+    /**
+     * Generates a Collection of String which
+     * represents materials of the database.
+     * Each material will be of the same, but random tier.
+     *
+     * @return a list of materials of a random tier
+     */
+    public static Collection<String> getRandomMaterial() {
+        return getMaterialsOfTier(Utility.getRandomTier());
     }
 
     private static String trimSpaces(String string) {

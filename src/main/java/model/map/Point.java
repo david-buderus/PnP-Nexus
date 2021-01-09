@@ -47,7 +47,7 @@ public class Point {
     }
 
     public Point correctPosition(int rotation, int width, int depth) {
-        switch (rotation) {
+        switch ((rotation % 4 + 4) % 4) {
             case 1:
                 return this.add(depth - 1, 0, 0);
             case 2:

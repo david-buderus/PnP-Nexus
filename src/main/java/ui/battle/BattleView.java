@@ -1,9 +1,7 @@
 package ui.battle;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.binding.StringExpression;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -16,14 +14,19 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
+import manager.LanguageUtility;
 import model.Battle;
+import model.interfaces.WithToStringProperty;
 import model.loot.LootTable;
 import model.member.BattleMember;
 import model.member.ExtendedBattleMember;
 import model.member.data.AttackTypes;
 import ui.IView;
 import ui.ViewPart;
+import ui.battle.state.AllMemberStateView;
+import ui.battle.state.MemberStateView;
 import ui.part.NumStringConverter;
+import ui.part.UpdatingListCell;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -48,7 +51,7 @@ public class BattleView extends ViewPart {
     private final FlowPane enemies;
 
     public BattleView(IView parent) {
-        super("Kampfhelfer", parent);
+        super("battle.tabName", parent);
         this.battle = new Battle();
         this.panes = new HashMap<>();
         this.selectedSource = new SimpleObjectProperty<>();
@@ -66,8 +69,8 @@ public class BattleView extends ViewPart {
         headlineBox.setPadding(new Insets(0, 0, 5, 0));
         root.setTop(headlineBox);
 
-        Label headline = new Label("Kampf in Runde 1");
-        battle.roundProperty().addListener((ob, o, n) -> headline.setText("Kampf in Runde " + n.intValue()));
+        Label headline = new Label();
+        headline.textProperty().bind(LanguageUtility.getMessageProperty("battle.round").concat(" ").concat(battle.roundProperty()));
         headline.setFont(Font.font("", FontWeight.EXTRA_BOLD, 20));
         headlineBox.getChildren().add(headline);
 
@@ -87,7 +90,8 @@ public class BattleView extends ViewPart {
         memberLists.setAlignment(Pos.TOP_LEFT);
         memberScroll.setContent(memberLists);
 
-        Label playerLabel = new Label("Spieler");
+        Label playerLabel = new Label();
+        playerLabel.textProperty().bind(LanguageUtility.getMessageProperty("players"));
         playerLabel.setFont(new Font(20));
         memberLists.getChildren().add(playerLabel);
 
@@ -118,7 +122,8 @@ public class BattleView extends ViewPart {
             }
         });
 
-        Label enemyLabel = new Label("Gegner");
+        Label enemyLabel = new Label();
+        enemyLabel.textProperty().bind(LanguageUtility.getMessageProperty("enemies"));
         enemyLabel.setFont(new Font(20));
         memberLists.getChildren().add(enemyLabel);
 
@@ -159,30 +164,36 @@ public class BattleView extends ViewPart {
         info.setPrefSize(280, 520);
         memberPart.getChildren().add(info);
 
-        Label infoLabel = new Label("Info");
+        Label infoLabel = new Label();
+        infoLabel.textProperty().bind(LanguageUtility.getMessageProperty("battle.info"));
         infoLabel.setFont(Font.font("", FontWeight.BOLD, 20));
         info.getChildren().add(infoLabel);
 
-        Label emptyLabel = new Label("Nichts ausgewählt");
+        Label emptyLabel = new Label();
+        emptyLabel.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.nothingSelected"));
         emptyLabel.setAlignment(Pos.CENTER);
         info.getChildren().add(emptyLabel);
 
-        HBox damageBox = labelTextField("Schaden:", damage);
-        HBox penBox = labelTextField("Pen. in %:", penetration);
-        HBox healBox = labelTextField("Heilung", heal);
+        HBox damageBox = labelTextField("battle.info.damage", damage);
+        HBox penBox = labelTextField("battle.info.penetration", penetration);
+        HBox healBox = labelTextField("battle.info.healing", heal);
 
         ComboBox<AttackTypes> attackCombo = new ComboBox<>();
         attackCombo.setItems(FXCollections.observableArrayList(AttackTypes.values()));
+        attackCombo.setCellFactory(list -> new UpdatingListCell<>());
+        attackCombo.setButtonCell(new UpdatingListCell<>());
         attackCombo.getSelectionModel().select(AttackTypes.upperBody);
-        HBox attackBox = labelRegion("Ziel:", attackCombo);
+        HBox attackBox = labelRegion("battle.info.target", attackCombo);
 
         TextField blockField = new TextField("1");
 
-        ComboBox<shieldEnum> blockCombo = new ComboBox<>();
-        blockCombo.setItems(FXCollections.observableArrayList(shieldEnum.values()));
-        blockCombo.getSelectionModel().select(shieldEnum.without);
+        ComboBox<ShieldEnum> blockCombo = new ComboBox<>();
+        blockCombo.setCellFactory(list -> new UpdatingListCell<>());
+        blockCombo.setButtonCell(new UpdatingListCell<>());
+        blockCombo.setItems(FXCollections.observableArrayList(ShieldEnum.values()));
+        blockCombo.getSelectionModel().select(ShieldEnum.without);
 
-        HBox blockBox = labelRegion("Block:", 40, blockField, 110, blockCombo);
+        HBox blockBox = labelRegion("battle.info.block", 40, blockField, 110, blockCombo);
 
         ChangeListener<BattleMemberPane> changeListener = (ob, o, memberPane) -> {
             info.getChildren().clear();
@@ -203,26 +214,26 @@ public class BattleView extends ViewPart {
             TextField lvlField = new TextField();
             lvlField.textProperty().bindBidirectional(target.levelProperty(), new NumStringConverter());
 
-            info.getChildren().add(labelRegion("Name", 120, nameField, 30, lvlField));
-            info.getChildren().add(labelTextField("Leben: ", target.lifeProperty(), target.maxLifeProperty()));
-            info.getChildren().add(labelTextField("Mana: ", target.manaProperty(), target.maxManaProperty()));
-            info.getChildren().add(labelTextField("Init: ", target.initiativeProperty()));
-            info.getChildren().add(labelTextField("Zähler: ", target.counterProperty()));
-            info.getChildren().add(labelTextField("Start: ", target.startValueProperty()));
+            info.getChildren().add(labelRegion("battle.info.name", 120, nameField, 30, lvlField));
+            info.getChildren().add(labelTextField("battle.info.hitPoints", target.lifeProperty(), target.maxLifeProperty()));
+            info.getChildren().add(labelTextField("battle.info.mana", target.manaProperty(), target.maxManaProperty()));
+            info.getChildren().add(labelTextField("battle.info.initiative", target.initiativeProperty()));
+            info.getChildren().add(labelTextField("battle.info.counter", target.counterProperty()));
+            info.getChildren().add(labelTextField("battle.info.start", target.startValueProperty()));
 
-            Button armorButton;
+            Button armorButton = new Button();
+            armorButton.setPrefWidth(215);
             if (target instanceof ExtendedBattleMember) {
-                armorButton = new Button("Charakterbogen");
-                armorButton.setPrefWidth(215);
+                armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.characterSheet"));
                 armorButton.setOnAction(ev -> new CharacterView((ExtendedBattleMember) target));
             } else {
-                armorButton = new Button("Rüstung");
-                armorButton.setPrefWidth(215);
+                armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.armor"));
                 armorButton.setOnAction(ev -> new MemberArmorView(target));
             }
             info.getChildren().add(armorButton);
 
-            Button statusButton = new Button("Status");
+            Button statusButton = new Button();
+            statusButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.status"));
             statusButton.setPrefWidth(215);
             statusButton.setOnAction(ev -> new MemberStateView(target, source));
             info.getChildren().add(statusButton);
@@ -233,13 +244,17 @@ public class BattleView extends ViewPart {
                     Label battleInfo = new Label();
                     battleInfo.setPadding(new Insets(30, 0, 5, 0));
                     battleInfo.textProperty().bind(
-                            source.nameProperty().concat(" heilt ").concat(target.nameProperty()));
+                            source.nameProperty()
+                                    .concat(" ")
+                                    .concat(LanguageUtility.getMessageProperty("battle.info.heals"))
+                                    .concat(" ").concat(target.nameProperty()));
                     battleInfo.setFont(Font.font("", FontWeight.BOLD, 12));
                     info.getChildren().add(battleInfo);
 
                     info.getChildren().add(healBox);
 
-                    Button healButton = new Button("Heilen");
+                    Button healButton = new Button();
+                    healButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.heal"));
                     healButton.setPrefWidth(215);
                     healButton.setOnAction(ev -> target.heal(heal.get(), source));
                     info.getChildren().add(healButton);
@@ -249,8 +264,18 @@ public class BattleView extends ViewPart {
 
                         Label battleInfo = new Label();
                         battleInfo.setPadding(new Insets(30, 0, 5, 0));
-                        battleInfo.textProperty().bind(
-                                source.nameProperty().concat(" greift ").concat(target.nameProperty()).concat(" an."));
+                        StringExpression infoExpression = source.nameProperty()
+                                .concat(" ")
+                                .concat(LanguageUtility.getMessageProperty("battle.info.attacks.verb"))
+                                .concat(" ")
+                                .concat(target.nameProperty());
+
+                        if (!LanguageUtility.getMessage("battle.info.attacks.ending").isBlank()) {
+                            infoExpression = infoExpression
+                                    .concat(" ")
+                                    .concat(LanguageUtility.getMessageProperty("battle.info.attacks.ending"));
+                        }
+                        battleInfo.textProperty().bind(infoExpression);
                         battleInfo.setFont(Font.font("", FontWeight.BOLD, 12));
                         info.getChildren().add(battleInfo);
 
@@ -259,7 +284,8 @@ public class BattleView extends ViewPart {
                         info.getChildren().add(attackBox);
                         info.getChildren().add(blockBox);
 
-                        Button attackButton = new Button("Angreifen");
+                        Button attackButton = new Button();
+                        attackButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.attack"));
                         attackButton.setPrefWidth(215);
                         attackButton.setOnAction(ev -> target.takeDamage(
                                 damage.get(), attackCombo.getSelectionModel().getSelectedItem(),
@@ -284,22 +310,26 @@ public class BattleView extends ViewPart {
         createButtons.setVgap(5);
         buttonPane.setLeft(createButtons);
 
-        Button playerButton = new Button("Neuer Spieler");
+        Button playerButton = new Button();
+        playerButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.newPlayer"));
         playerButton.setPrefWidth(110);
         playerButton.setOnAction(ev -> battle.createPlayer());
         createButtons.add(playerButton, 0, 0);
 
-        Button loadPlayerButton = new Button("Spieler Laden");
+        Button loadPlayerButton = new Button();
+        loadPlayerButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.loadPlayer"));
         loadPlayerButton.setPrefWidth(110);
         loadPlayerButton.setOnAction(ev -> load(false));
         createButtons.add(loadPlayerButton, 1, 0);
 
-        Button spawnPlayerButton = new Button("Spieler Spawnen");
+        Button spawnPlayerButton = new Button();
+        spawnPlayerButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.spawnPlayer"));
         spawnPlayerButton.setPrefWidth(110);
         spawnPlayerButton.setOnAction(ev -> spawn(false));
         createButtons.add(spawnPlayerButton, 2, 0);
 
-        Button cloneButton = new Button("Klonen");
+        Button cloneButton = new Button();
+        cloneButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.clone"));
         cloneButton.setPrefWidth(110);
         cloneButton.setOnAction(ev -> cloneMember());
         createButtons.add(cloneButton, 3, 0);
@@ -307,22 +337,26 @@ public class BattleView extends ViewPart {
         cloneButton.setDisable(true);
         selectedTarget.addListener((ob, o, n) -> cloneButton.setDisable(n == null));
 
-        Button enemyButton = new Button("Neuer Gegner");
+        Button enemyButton = new Button();
+        enemyButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.newEnemy"));
         enemyButton.setPrefWidth(110);
         enemyButton.setOnAction(ev -> battle.createEnemy());
         createButtons.add(enemyButton, 0, 1);
 
-        Button loadEnemyButton = new Button("Gegner Laden");
+        Button loadEnemyButton = new Button();
+        loadEnemyButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.loadEnemy"));
         loadEnemyButton.setPrefWidth(110);
         loadEnemyButton.setOnAction(ev -> load(true));
         createButtons.add(loadEnemyButton, 1, 1);
 
-        Button spawnEnemyButton = new Button("Gegner Spawnen");
+        Button spawnEnemyButton = new Button();
+        spawnEnemyButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.spawnEnemy"));
         spawnEnemyButton.setPrefWidth(110);
         spawnEnemyButton.setOnAction(ev -> spawn(true));
         createButtons.add(spawnEnemyButton, 2, 1);
 
-        Button removeButton = new Button("Entfernen");
+        Button removeButton = new Button();
+        removeButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.remove"));
         removeButton.setPrefWidth(110);
         removeButton.setOnAction(ev -> removeMember());
         createButtons.add(removeButton, 3, 1);
@@ -331,7 +365,8 @@ public class BattleView extends ViewPart {
         selectedTarget.addListener((ob, o, n) -> removeButton.setDisable(n == null));
 
         //Middle
-        Button nextTurnButton = new Button("Nächster Zug");
+        Button nextTurnButton = new Button();
+        nextTurnButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.nextTurn"));
         nextTurnButton.setPrefWidth(110);
         nextTurnButton.setOnAction(ev -> battle.nextTurn());
         buttonPane.setCenter(nextTurnButton);
@@ -342,22 +377,26 @@ public class BattleView extends ViewPart {
         utilityButtons.setVgap(5);
         buttonPane.setRight(utilityButtons);
 
-        Button lootButton = new Button("Plündern");
+        Button lootButton = new Button();
+        lootButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.loot"));
         lootButton.setPrefWidth(110);
         lootButton.setOnAction(event -> loot());
         utilityButtons.add(lootButton, 0, 0);
 
-        Button statisticButton = new Button("Statistik");
+        Button statisticButton = new Button();
+        statisticButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.statistics"));
         statisticButton.setPrefWidth(110);
         statisticButton.setOnAction(event -> new StatisticView(battle.playersProperty(), battle));
         utilityButtons.add(statisticButton, 1, 0);
 
-        Button resetButton = new Button("Reset");
+        Button resetButton = new Button();
+        resetButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.reset"));
         resetButton.setPrefWidth(110);
         resetButton.setOnAction(event -> reset());
         utilityButtons.add(resetButton, 0, 1);
 
-        Button allStatusButton = new Button("Flächenstatus");
+        Button allStatusButton = new Button();
+        allStatusButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.allStatus"));
         allStatusButton.setPrefWidth(110);
         allStatusButton.setOnAction(event -> {
             BattleMember source = selectedSource.get() != null ? selectedSource.get().getBattleMember() : null;
@@ -449,8 +488,9 @@ public class BattleView extends ViewPart {
 
     private void load(boolean enemy) {
         FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Exeldatei", "*.xlsx"),
-                new FileChooser.ExtensionFilter("Alle Dateien", "*.*"));
+        chooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("excelFile"), "*.xlsx"),
+                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
         battle.load(chooser.showOpenDialog(getStage()), enemy);
     }
 
@@ -458,23 +498,21 @@ public class BattleView extends ViewPart {
         new SpawnView(battle, enemy);
     }
 
-    private enum shieldEnum {
+    private enum ShieldEnum implements WithToStringProperty {
         with, without;
 
         @Override
         public String toString() {
-            switch (this) {
-                case with:
-                    return "Mit Schild";
-                case without:
-                    return "Ohne Schild";
-                default:
-                    return "";
-            }
+            return toStringProperty().get();
         }
 
         public boolean toBool() {
-            return this == shieldEnum.with;
+            return this == ShieldEnum.with;
+        }
+
+        @Override
+        public ReadOnlyStringProperty toStringProperty() {
+            return LanguageUtility.getMessageProperty("battle.shieldEnum." + super.toString());
         }
     }
 }

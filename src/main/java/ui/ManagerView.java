@@ -1,21 +1,23 @@
 package ui;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import manager.DatabaseLoader;
+import manager.Language;
+import manager.LanguageUtility;
 import manager.Utility;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import ui.battle.BattleView;
@@ -34,18 +36,17 @@ import java.sql.SQLException;
 
 public class ManagerView extends View {
 
+    protected StringProperty fileName;
+    protected StringProperty defaultPath;
+
     public ManagerView(Stage stage) {
-        super(stage, new SimpleStringProperty("Keine Datei ausgew\u00e4hlt"));
-
-        stage.setTitle("P&P Manager");
-
-        int width = 400;
+        super("manager.title", stage);
+        this.fileName = new SimpleStringProperty();
+        this.fileName.bind(LanguageUtility.getMessageProperty("manager.noFile"));
+        this.defaultPath = new SimpleStringProperty(Utility.getConfig().getString("home.defaultLoadingPath", ""));
+        this.defaultPath.addListener((ob, o, n) -> Utility.saveToCustomConfig("home.defaultLoadingPath", n));
 
         TabPane root = new TabPane();
-
-        Tab startTab = new Tab("Start");
-        startTab.setClosable(false);
-        root.getTabs().add(startTab);
 
         Tab battleTab = new BattleView(this);
         root.getTabs().add(battleTab);
@@ -66,37 +67,87 @@ public class ManagerView extends View {
         Tab mapTab = new MapView(this);
         root.getTabs().add(mapTab);
 
+        Tab startTab = new Tab();
+        startTab.textProperty().bind(LanguageUtility.getMessageProperty("manager.settings"));
+        startTab.setClosable(false);
+        root.getTabs().add(startTab);
+
         Tab inconsistencyTab = new InconsistencyView(this);
         root.getTabs().add(inconsistencyTab);
 
+        GridPane settingsPane = new GridPane();
+        settingsPane.setPadding(new Insets(20, 20, 20, 20));
+        settingsPane.setAlignment(Pos.CENTER);
+        settingsPane.setHgap(10);
+        settingsPane.setVgap(5);
 
-        //First Menu
-        VBox startPane = new VBox(10);
-        startPane.setPadding(new Insets(10, 20, 20, 20));
-        startPane.setAlignment(Pos.CENTER);
-        startTab.setContent(startPane);
+        ColumnConstraints textColumn = new ColumnConstraints(250);
+        textColumn.setFillWidth(true);
+        settingsPane.getColumnConstraints().add(textColumn);
+        ColumnConstraints settingsColumn = new ColumnConstraints(250);
+        settingsColumn.setFillWidth(true);
+        settingsPane.getColumnConstraints().add(settingsColumn);
 
-        HBox titleLine = new HBox(10);
-        titleLine.setPadding(new Insets(0, 0, 10, 0));
-        titleLine.setAlignment(Pos.CENTER);
+        startTab.setContent(settingsPane);
 
         Label fileText = new Label();
-        fileText.setPrefWidth((int) (width * (2.0 / 3)) - 10);
         fileText.textProperty().bindBidirectional(fileName);
+        settingsPane.add(fileText, 0, 0);
 
-        titleLine.getChildren().add(fileText);
-
-        Button loadButton = new Button("Laden");
-        loadButton.setPrefWidth(width - ((int) (width * (2.0 / 3)) - 10));
+        Button loadButton = new Button();
+        loadButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.load"));
+        loadButton.setMaxWidth(Double.MAX_VALUE);
         loadButton.setOnAction(ev -> load());
+        settingsPane.add(loadButton, 1, 0);
 
-        titleLine.getChildren().add(loadButton);
+        Label defaultFileText = new Label();
+        defaultFileText.textProperty().bind(LanguageUtility.getMessageProperty("manager.defaultPath"));
+        settingsPane.add(defaultFileText, 0, 1);
 
-        startPane.getChildren().add(titleLine);
+        HBox defaultLine = new HBox(5);
+        defaultLine.setMaxWidth(Double.MAX_VALUE);
+        settingsPane.add(defaultLine, 1, 1);
+
+        TextField defaultTextField = new TextField();
+        defaultTextField.textProperty().bindBidirectional(defaultPath);
+        defaultTextField.prefWidthProperty().bind(defaultLine.widthProperty().subtract(20));
+        defaultTextField.setMaxWidth(Double.MAX_VALUE);
+        defaultLine.getChildren().add(defaultTextField);
+
+        Button defaultSetButton = new Button("...");
+        defaultSetButton.setPrefWidth(15);
+        defaultSetButton.setOnAction(ev -> setDefaultPath());
+        defaultLine.getChildren().add(defaultSetButton);
+
+        Label languageText = new Label();
+        languageText.textProperty().bind(LanguageUtility.getMessageProperty("language"));
+        settingsPane.add(languageText, 0, 2);
+
+        ComboBox<Language> languageBox = new ComboBox<>();
+        languageBox.setMaxWidth(Double.MAX_VALUE);
+        languageBox.setItems(FXCollections.observableArrayList(Language.values()));
+        languageBox.getSelectionModel().select(LanguageUtility.language.get());
+        LanguageUtility.language.bind(languageBox.getSelectionModel().selectedItemProperty());
+        settingsPane.add(languageBox, 1, 2);
+
+        Label languageTableText = new Label();
+        languageTableText.textProperty().bind(LanguageUtility.getMessageProperty("language.table"));
+        settingsPane.add(languageTableText, 0, 3);
+
+        ComboBox<Language> languageTableBox = new ComboBox<>();
+        languageTableBox.setMaxWidth(Double.MAX_VALUE);
+        languageTableBox.setItems(FXCollections.observableArrayList(Language.values()));
+        languageTableBox.getSelectionModel().select(DatabaseLoader.tableLanguage.get());
+        DatabaseLoader.tableLanguage.bind(languageTableBox.getSelectionModel().selectedItemProperty());
+        settingsPane.add(languageTableBox, 1, 3);
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+        if (!defaultPath.get().isBlank()) {
+            load(new File(defaultPath.get()));
+        }
     }
 
     private InfoView info;
@@ -104,8 +155,8 @@ public class ManagerView extends View {
     private void load() {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(
-                new ExtensionFilter("Accessdatei", "*.accdb"),
-                new ExtensionFilter("Alle Dateien", "*.*"));
+                new ExtensionFilter(LanguageUtility.getMessage("accessFile"), "*.accdb"),
+                new ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
         File file = chooser.showOpenDialog(stage);
 
         if (file == null) {
@@ -115,9 +166,23 @@ public class ManagerView extends View {
         load(file);
     }
 
+    private void setDefaultPath() {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().addAll(
+                new ExtensionFilter(LanguageUtility.getMessage("accessFile"), "*.accdb"),
+                new ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
+        File file = chooser.showOpenDialog(stage);
+
+        if (file == null) {
+            return;
+        }
+
+        this.defaultPath.set(file.getPath());
+    }
+
     public void load(File file) {
-        this.info = new InfoView("Ladefehler");
-        this.fileName.set("Lädt...");
+        this.info = new InfoView("manager.loadingError");
+        this.fileName.bind(LanguageUtility.getMessageProperty("manager.loading"));
 
         Service<Object> service = new Service<>() {
             @Override
@@ -141,12 +206,14 @@ public class ManagerView extends View {
             }
         };
         service.setOnSucceeded(ev -> {
+            this.fileName.unbind();
             this.fileName.set(file.getName());
-            if (!info.isEmpty())
+            if (!info.isEmpty()) {
                 info.show();
+            }
         });
         service.setOnCancelled(ev -> {
-            this.fileName.set("Datei konnte nicht geladen werden");
+            this.fileName.bind(LanguageUtility.getMessageProperty("manager.fileNotLoaded"));
             if (!info.isEmpty())
                 info.show();
         });
