@@ -15,10 +15,7 @@ import ui.utility.MemoryView;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 
 public abstract class Utility {
@@ -71,14 +68,15 @@ public abstract class Utility {
      * @return a random generated Tier
      */
     public static int getRandomTier() {
-        double percent = rand.nextDouble();
+        Integer[] array = (Integer[]) config.getArray(Integer.class, "tier.weight");
+        double weight = rand.nextInt(Arrays.stream(array).mapToInt(i -> i).sum());
 
-        Float[] array = (Float[]) config.getArray(Float.class, "tier.chance");
 
         for (int i = array.length - 1; i >= 0; i--) {
-            if (percent < array[i]) {
+            if (weight < array[i]) {
                 return i + 1;
             }
+            weight -= array[i];
         }
 
         return 1;
