@@ -113,7 +113,7 @@ public class LootView extends View {
                 coinLabel.setText(sellValue.getCoinString() + "\t "+ LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
                         sellValue.divide(playerCount).getCoinString());
             } else {
-                coinLabel.setText(sellValue.getCoinString() );
+                coinLabel.setText(sellValue.getCoinString());
             }
 
         });
