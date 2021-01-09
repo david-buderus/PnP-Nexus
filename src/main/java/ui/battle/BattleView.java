@@ -21,8 +21,8 @@ import model.loot.LootTable;
 import model.member.BattleMember;
 import model.member.ExtendedBattleMember;
 import model.member.data.AttackTypes;
+import ui.ConfigurableViewPart;
 import ui.IView;
-import ui.ViewPart;
 import ui.battle.state.AllMemberStateView;
 import ui.battle.state.MemberStateView;
 import ui.part.NumStringConverter;
@@ -35,7 +35,7 @@ import java.util.LinkedList;
 import static ui.ViewFactory.labelRegion;
 import static ui.ViewFactory.labelTextField;
 
-public class BattleView extends ViewPart {
+public class BattleView extends ConfigurableViewPart {
 
     private final Battle battle;
 
@@ -51,11 +51,13 @@ public class BattleView extends ViewPart {
     private final FlowPane enemies;
 
     public BattleView(IView parent) {
-        super("battle.tabName", parent);
+        super(parent);
         this.battle = new Battle();
+        this.nameProperty().bindBidirectional(battle.nameProperty());
         this.panes = new HashMap<>();
         this.selectedSource = new SimpleObjectProperty<>();
         this.selectedTarget = new SimpleObjectProperty<>();
+        this.setClosable(true);
 
         this.damage = new SimpleIntegerProperty(0);
         this.heal = new SimpleIntegerProperty(0);

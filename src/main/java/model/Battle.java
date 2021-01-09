@@ -1,9 +1,6 @@
 package model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import manager.CopyService;
 import manager.LanguageUtility;
@@ -29,6 +26,7 @@ import java.util.List;
 
 public class Battle {
 
+    private final StringProperty name;
     private final IntegerProperty round;
     private final ListProperty<BattleMember> players;
     private final ListProperty<BattleMember> enemies;
@@ -41,6 +39,7 @@ public class Battle {
         this.damageStatistic = new HashMap<>();
         this.healStatistic = new HashMap<>();
         this.round = new SimpleIntegerProperty(1);
+        this.name = new SimpleStringProperty(LanguageUtility.getMessage("battle.defaultName"));
     }
 
     public void nextTurn() {
@@ -279,5 +278,17 @@ public class Battle {
         int x = Utility.consumeNumber(input);
 
         return sheet.getRow(x - 1).getCell(CellReference.convertColStringToIndex(letter));
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
     }
 }
