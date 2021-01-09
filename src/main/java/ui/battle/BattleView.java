@@ -1,5 +1,6 @@
 package ui.battle;
 
+import javafx.beans.binding.StringExpression;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -263,13 +264,18 @@ public class BattleView extends ViewPart {
 
                         Label battleInfo = new Label();
                         battleInfo.setPadding(new Insets(30, 0, 5, 0));
-                        battleInfo.textProperty().bind(source.nameProperty()
+                        StringExpression infoExpression = source.nameProperty()
                                 .concat(" ")
                                 .concat(LanguageUtility.getMessageProperty("battle.info.attacks.verb"))
                                 .concat(" ")
-                                .concat(target.nameProperty())
-                                .concat(" ")
-                                .concat(LanguageUtility.getMessageProperty("battle.info.attacks.ending")));
+                                .concat(target.nameProperty());
+
+                        if (!LanguageUtility.getMessage("battle.info.attacks.ending").isBlank()) {
+                            infoExpression = infoExpression
+                                    .concat(" ")
+                                    .concat(LanguageUtility.getMessageProperty("battle.info.attacks.ending"));
+                        }
+                        battleInfo.textProperty().bind(infoExpression);
                         battleInfo.setFont(Font.font("", FontWeight.BOLD, 12));
                         info.getChildren().add(battleInfo);
 
