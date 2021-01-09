@@ -119,7 +119,7 @@ public abstract class Database {
      * If there is no item, it throws a {@link NoSuchElementException}.
      *
      * @param name of the searched item
-     * @return an matching item
+     * @return a matching item
      * @throws NoSuchElementException if there is no item with the given name
      */
     public static Item getItemWithoutDefault(String name) throws NoSuchElementException {
