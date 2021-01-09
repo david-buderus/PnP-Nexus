@@ -133,35 +133,23 @@ public abstract class Utility {
     }
 
     public static Currency sellLoot(Collection<Loot> loot) {
-        Currency itemValue = new Currency();
-        int coinValue = 0;
-
-        int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
-        int goldToCopper = Utility.getConfig().getInt("coin.gold.toSilver") * silverToCopper;
-        String copper = LanguageUtility.getMessage("coin.copper");
-        String silver = LanguageUtility.getMessage("coin.silver");
-        String gold = LanguageUtility.getMessage("coin.gold");
+        Currency itemsSellingPrice = new Currency();
+        Currency valueOfTheCoins = new Currency();
+        String currencyString = LanguageUtility.getMessage("currency");
 
         for (Loot l : loot) {
             Item item = l.getItem();
 
 
-            if (item.getCurrency().getCoinValue() > 0) {
-                itemValue = itemValue.add(item.getCurrency().multiply(l.getAmount()));
-
+            if (item.getSubTyp().equalsIgnoreCase(currencyString)) {
+                valueOfTheCoins = valueOfTheCoins.add(item.getCurrency().multiply(l.getAmount()));
             } else {
-                String itemName = item.getName();
-                if (itemName.equalsIgnoreCase(copper)) {
-                    coinValue += l.getAmount();
-                } else if (itemName.equalsIgnoreCase(silver)) {
-                    coinValue += l.getAmount() * silverToCopper;
-                } else if (itemName.equalsIgnoreCase(gold)) {
-                    coinValue += l.getAmount() * goldToCopper;
-                }
+                itemsSellingPrice = itemsSellingPrice.add(item.getCurrency().multiply(l.getAmount()));
+
             }
         }
 
-        return itemValue.multiply(0.8f).add(coinValue);
+        return itemsSellingPrice.multiply(config.getFloat("loot.sell.modifier")).add(valueOfTheCoins);
     }
 
     /**
