@@ -10,24 +10,37 @@ import java.util.List;
 import static manager.Utility.parseNumber;
 import static manager.Utility.parseString;
 
+/** The coin value is defined in copper coins */
 public class Currency {
 
     protected final int coinValue;
     protected final String coinString;
     protected final boolean tradeable;
 
+    /** Represents a not tradeable currency object */
     public Currency() {
         this.tradeable = false;
         this.coinValue = 0;
         this.coinString = LanguageUtility.getMessage("coin.notTradeable");
     }
 
+    /**
+     * Creates a currency object with a predefined number of coins
+     *
+     * @param coinValue amount of  copper coins
+     */
     public Currency(int coinValue) {
         this.tradeable = true;
         this.coinValue = coinValue;
         this.coinString = toCoinString(coinValue);
     }
 
+    /**
+     * Creates a currency object which matches the value
+     * defined in the coinString
+     *
+     * @param coinString in the format of 7G 3S 11K
+     */
     public Currency(String coinString) {
         if (coinString.equalsIgnoreCase(LanguageUtility.getMessage("coin.notTradeable"))) {
             this.tradeable = false;
@@ -144,14 +157,17 @@ public class Currency {
         return result.toString().trim();
     }
 
+    /** The amount of copper coins this currency object represents */
     public int getCoinValue() {
         return coinValue;
     }
 
+    /** A human readable String of the value that this object represents  */
     public String getCoinString() {
         return coinString;
     }
 
+    /** If this currency object represents a tradeable value */
     public boolean isTradeable() {
         return tradeable;
     }
