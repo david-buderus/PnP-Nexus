@@ -500,8 +500,8 @@ public class ExtendedBattleMember extends BattleMember {
         }
 
         while (!requirementsList.isEmpty()) {
-            int x = Utility.parseNumber(requirementsList);
-            String attribute = Utility.parseString(requirementsList);
+            int x = Utility.consumeNumber(requirementsList);
+            String attribute = Utility.consumeString(requirementsList);
 
             if (attribute.equalsIgnoreCase(PrimaryAttribute.strength.toShortString())) {
                 if (x > getStrength()) {

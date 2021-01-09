@@ -7,8 +7,8 @@ import org.apache.commons.configuration2.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static manager.Utility.parseNumber;
-import static manager.Utility.parseString;
+import static manager.Utility.consumeNumber;
+import static manager.Utility.consumeString;
 
 /** The coin value is defined in copper coins */
 public class Currency {
@@ -103,8 +103,8 @@ public class Currency {
         }
 
         while (!costList.isEmpty()) {
-            int amount = parseNumber(costList);
-            String coin = parseString(costList);
+            int amount = consumeNumber(costList);
+            String coin = consumeString(costList);
 
             if (coin.equals(copper)) {
                 value += amount;

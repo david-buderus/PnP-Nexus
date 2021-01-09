@@ -275,8 +275,8 @@ public class Battle {
             input.add(c);
         }
 
-        String letter = Utility.parseString(input);
-        int x = Utility.parseNumber(input);
+        String letter = Utility.consumeString(input);
+        int x = Utility.consumeNumber(input);
 
         return sheet.getRow(x - 1).getCell(CellReference.convertColStringToIndex(letter));
     }

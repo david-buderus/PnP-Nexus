@@ -159,7 +159,7 @@ public abstract class Utility {
      * @param input list that gets consumed
      * @return the parsed digits as int
      */
-    public static int parseNumber(List<Character> input) {
+    public static int consumeNumber(List<Character> input) {
         StringBuilder number = new StringBuilder();
 
         while (!input.isEmpty()) {
@@ -187,7 +187,7 @@ public abstract class Utility {
      * @param input list that gets consumed
      * @return the parsed chars as trimmed String
      */
-    public static String parseString(List<Character> input) {
+    public static String consumeString(List<Character> input) {
         StringBuilder result = new StringBuilder();
 
         while (!input.isEmpty()) {
