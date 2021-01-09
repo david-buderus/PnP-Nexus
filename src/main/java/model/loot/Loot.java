@@ -30,7 +30,7 @@ public class Loot {
 
     public String getName() {
         if (item instanceof Equipment && !((Equipment) item).getUpgrades().isEmpty()) {
-            return item.getName() + " (" + LanguageUtility.getMessage("item.enchanted") + ")";
+            return item.getName() + " (" + LanguageUtility.getMessage("item.upgraded") + ")";
         }
         return item.getName();
     }
