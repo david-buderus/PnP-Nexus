@@ -18,6 +18,7 @@ import model.item.Equipment;
 import model.item.Item;
 import ui.IView;
 import ui.ViewPart;
+import ui.part.WrappingTableCell;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -108,29 +109,7 @@ public abstract class SearchView<Typ> extends ViewPart {
         column.textProperty().bind(getMessageProperty("column.amount"));
         column.setMaxWidth(400);
         column.setCellValueFactory(c -> ((Item) c.getValue()).amountProperty().asObject());
-        column.setCellFactory(col -> new TableCell<>() {
-            @Override
-            public void updateItem(Float f, boolean empty) {
-                super.updateItem(f, empty);
-                String item = empty ? "" : String.valueOf(f);
-
-                Text text = new Text(item);
-                text.setStyle(" -fx-text-wrap: true;");
-
-                calculateSize(text);
-                this.widthProperty().addListener((ob, o, n) -> calculateSize(text));
-
-                this.setGraphic(text);
-            }
-
-            private void calculateSize(Text text) {
-                text.setWrappingWidth(0);
-                double width = text.getLayoutBounds().getWidth() > this.getTableColumn().getMaxWidth() ?
-                        this.getWidth() - 25 : this.getWidth();
-                text.setWrappingWidth(width);
-                this.setPrefHeight(text.getLayoutBounds().getHeight() + 10);
-            }
-        });
+        column.setCellFactory(col -> new WrappingTableCell<>());
         table.getColumns().add(column);
 
         TextField textField = new TextField();
@@ -185,29 +164,7 @@ public abstract class SearchView<Typ> extends ViewPart {
             column.setPrefWidth(width);
         }
         column.setCellValueFactory(new PropertyValueFactory<>(name));
-        column.setCellFactory(col -> new TableCell<>() {
-            @Override
-            public void updateItem(Object object, boolean empty) {
-                super.updateItem(object, empty);
-                String item = empty ? "" : String.valueOf(object);
-
-                Text text = new Text(item);
-                text.setStyle(" -fx-text-wrap: true;");
-
-                calculateSize(text);
-                this.widthProperty().addListener((ob, o, n) -> calculateSize(text));
-
-                this.setGraphic(text);
-            }
-
-            private void calculateSize(Text text) {
-                text.setWrappingWidth(0);
-                double width = text.getLayoutBounds().getWidth() > this.getTableColumn().getMaxWidth() ?
-                        this.getWidth() - 25 : this.getWidth();
-                text.setWrappingWidth(width);
-                this.setPrefHeight(text.getLayoutBounds().getHeight() + 10);
-            }
-        });
+        column.setCellFactory(col -> new WrappingTableCell<>());
 
         table.getColumns().add(column);
 

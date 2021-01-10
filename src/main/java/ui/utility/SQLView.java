@@ -8,7 +8,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import manager.Database;
 import manager.LanguageUtility;
 import model.Spell;
@@ -19,6 +18,7 @@ import model.item.Weapon;
 import model.upgrade.UpgradeModel;
 import ui.IView;
 import ui.ViewPart;
+import ui.part.WrappingTableCell;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -86,6 +86,7 @@ public class SQLView extends ViewPart {
         TableView<Object> table = new TableView<>();
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         table.itemsProperty().bindBidirectional(list);
+        table.itemsProperty().addListener((ob, o, n) -> table.layout());
         vBox.getChildren().add(table);
 
         ArrayList<FilterContainer> filterContainers = new ArrayList<>();
@@ -98,30 +99,7 @@ public class SQLView extends ViewPart {
             column.textProperty().bind(LanguageUtility.getMessageProperty(labels[i]));
             column.setMaxWidth(400);
             column.setCellValueFactory(new PropertyValueFactory<>(names[i]));
-            column.setCellFactory(col -> new TableCell<>() {
-                @Override
-                public void updateItem(Object object, boolean empty) {
-                    super.updateItem(object, empty);
-                    String item = empty ? "" : String.valueOf(object);
-
-                    Text text = new Text(item);
-                    text.setStyle(" -fx-text-wrap: true;");
-
-                    calculateSize(text);
-                    this.widthProperty().addListener((ob, o, n) -> calculateSize(text));
-
-                    this.setGraphic(text);
-                }
-
-                private void calculateSize(Text text) {
-                    text.setWrappingWidth(0);
-                    double width = text.getLayoutBounds().getWidth() > this.getTableColumn().getMaxWidth() ?
-                            this.getWidth() - 25 : this.getWidth();
-                    text.setWrappingWidth(width);
-                    this.setPrefHeight(text.getLayoutBounds().getHeight() + 10);
-                }
-            });
-
+            column.setCellFactory(col -> new WrappingTableCell<>());
             table.getColumns().add(column);
 
             Method getter = null;
