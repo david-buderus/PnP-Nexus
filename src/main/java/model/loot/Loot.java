@@ -39,6 +39,10 @@ public class Loot {
         return amount.get();
     }
 
+    public float getAmountWithItemAmount() {
+        return amount.get() * item.getAmount();
+    }
+
     public void setAmount(int amount) {
         this.amount.set(amount);
     }
