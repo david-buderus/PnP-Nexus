@@ -115,8 +115,6 @@ public class SpellView extends ViewPart {
         TableColumn<Spell, Integer> rarityC = new TableColumn<>();
         rarityC.textProperty().bind(getMessageProperty("column.tier"));
         rarityC.setCellValueFactory(new PropertyValueFactory<>("tier"));
-        rarityC.prefWidthProperty().bind(searchTable.widthProperty().subtract(nameC.widthProperty())
-                .subtract(effectC.widthProperty()).subtract(typC.widthProperty()).subtract(costC.widthProperty()));
         searchTable.getColumns().add(rarityC);
 
         root.getChildren().add(searchTable);
