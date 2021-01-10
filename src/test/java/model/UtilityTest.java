@@ -94,6 +94,14 @@ public class UtilityTest {
         lootList.add(new Loot(item, 500));
 
         assertEquals(500, Utility.sellLoot(lootList).coinValue, 0);
+
+        // add 3 items with 1/3 times 1 copper each
+        item = new Item();
+        item.setAmount(1/3f);
+        item.setCurrency(new Currency(1));
+        lootList.add(new Loot(item, 3));
+
+        assertEquals(501, Utility.sellLoot(lootList).coinValue, 0);
     }
 
 }
