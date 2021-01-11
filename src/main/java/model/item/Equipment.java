@@ -11,6 +11,7 @@ import model.upgrade.Upgrade;
 import model.upgrade.UpgradeFactory;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public abstract class Equipment extends Item {
@@ -22,6 +23,7 @@ public abstract class Equipment extends Item {
     protected ArrayList<Upgrade> upgrades;
     protected IntegerProperty wear;
     protected IntegerProperty wearStep;
+    protected Collection<Consumer<Equipment>> listeners;
 
     public Equipment() {
         super();
@@ -29,37 +31,20 @@ public abstract class Equipment extends Item {
         this.slots = 0;
         this.upgrades = new ArrayList<>();
         this.wearStep = new SimpleIntegerProperty(0);
-        this.wear = new SimpleIntegerProperty();
+        this.wear = new SimpleIntegerProperty(0);
         this.wear.bind(wearStep.divide(10));
+        this.listeners = new ArrayList<>();
     }
 
-    public String getMaterial() {
-        return material;
-    }
+    protected abstract boolean shouldBreak();
 
-    public void setMaterial(String material) {
-        this.material = material;
-    }
-
-    public int getSlots() {
-        return slots;
-    }
-
-    public void setSlots(int slots) {
-        this.slots = slots;
-    }
-
-    public Collection<Upgrade> getUpgrades() {
-        return upgrades;
-    }
-
-    public void setUpgrades(ArrayList<Upgrade> upgrades) {
-        this.upgrades = upgrades;
-        this.upgrades.sort(Comparator.comparing(Upgrade::getFullName));
-    }
-
-    public String upgradesAsString() {
-        return this.upgrades.stream().map(Upgrade::getFullName).collect(Collectors.joining(", "));
+    public void onUse() {
+        this.setWearStep(getWearStep() + 1);
+        if (shouldBreak()) {
+            for (Consumer<Equipment> listener : this.listeners) {
+                listener.accept(this);
+            }
+        }
     }
 
     public Equipment copy() {
@@ -94,8 +79,37 @@ public abstract class Equipment extends Item {
         return equipment;
     }
 
-    public void onUse() {
-        this.setWearStep(getWearStep() + 1);
+    public void addListener(Consumer<Equipment> listener) {
+        this.listeners.add(listener);
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
+    public int getSlots() {
+        return slots;
+    }
+
+    public void setSlots(int slots) {
+        this.slots = slots;
+    }
+
+    public Collection<Upgrade> getUpgrades() {
+        return upgrades;
+    }
+
+    public void setUpgrades(ArrayList<Upgrade> upgrades) {
+        this.upgrades = upgrades;
+        this.upgrades.sort(Comparator.comparing(Upgrade::getFullName));
+    }
+
+    public String upgradesAsString() {
+        return this.upgrades.stream().map(Upgrade::getFullName).collect(Collectors.joining(", "));
     }
 
     @Override

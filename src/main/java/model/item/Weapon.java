@@ -15,6 +15,22 @@ public class Weapon extends Equipment {
         this.hit = 0;
     }
 
+    @Override
+    protected boolean shouldBreak() {
+        return getWear() >= getDamage();
+    }
+
+    @Override
+    public Weapon copy() {
+        Weapon weapon = (Weapon) super.copy();
+        weapon.setInitiative(this.getInitiative());
+        weapon.setDice(this.getDice());
+        weapon.setDamage(this.getDamage());
+        weapon.setHit(this.getHit());
+
+        return weapon;
+    }
+
     public String getInitiative() {
         return initiative;
     }
@@ -45,17 +61,6 @@ public class Weapon extends Equipment {
 
     public void setHit(int hit) {
         this.hit = hit;
-    }
-
-    @Override
-    public Weapon copy() {
-        Weapon weapon = (Weapon) super.copy();
-        weapon.setInitiative(this.getInitiative());
-        weapon.setDice(this.getDice());
-        weapon.setDamage(this.getDamage());
-        weapon.setHit(this.getHit());
-
-        return weapon;
     }
 
     @Override

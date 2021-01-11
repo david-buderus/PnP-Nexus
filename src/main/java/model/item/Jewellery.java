@@ -9,12 +9,9 @@ public class Jewellery extends Equipment {
         this.gem = "";
     }
 
-    public String getGem() {
-        return gem;
-    }
-
-    public void setGem(String gem) {
-        this.gem = gem;
+    @Override
+    protected boolean shouldBreak() {
+        return false;
     }
 
     @Override
@@ -23,6 +20,14 @@ public class Jewellery extends Equipment {
         jewellery.setGem(this.getGem());
 
         return jewellery;
+    }
+
+    public String getGem() {
+        return gem;
+    }
+
+    public void setGem(String gem) {
+        this.gem = gem;
     }
 
     @Override
