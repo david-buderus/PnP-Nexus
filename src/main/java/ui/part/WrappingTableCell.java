@@ -20,7 +20,7 @@ public class WrappingTableCell<S, T> extends TableCell<S, T> {
     }
 
     private void calculateSize(Text text) {
-        double width = this.getTableColumn().getWidth() * 0.9;
+        double width = this.getTableColumn().getWidth() - 10;
         text.setWrappingWidth(width);
         this.setPrefHeight(text.getLayoutBounds().getHeight() + 10);
     }
