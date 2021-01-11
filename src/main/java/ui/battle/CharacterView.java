@@ -86,7 +86,7 @@ public class CharacterView extends View {
             weaponBox.getChildren().add(weaponLine);
 
             weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getName(), 100, false, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getSubTyp(), 90, true, false));
+            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getSubtype(), 90, true, false));
             weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getInitiative(), 55, true, false));
             weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getDice(), 55, true, false));
             weaponLine.getChildren().add(createEquipmentLabel(weaponLine, String.valueOf(weapon.getDamage()), 55, true, false));
@@ -114,7 +114,7 @@ public class CharacterView extends View {
             HBox armorLine = new HBox();
             armorBox.getChildren().add(armorLine);
 
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getSubTyp(), 100, false, false));
+            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getSubtype(), 100, false, false));
             armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getName(), 130, true, false));
             armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getProtection()), 60, true, false));
             armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getWeight()), 60, true, false));
@@ -260,7 +260,7 @@ public class CharacterView extends View {
 
                 spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getName(), 100, false, true));
                 spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getEffect(), 250, true, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getTyp(), 90, true, true));
+                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getType(), 90, true, true));
                 spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCost(), 51, true, true));
                 spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCastTime(), 51, true, true));
             }

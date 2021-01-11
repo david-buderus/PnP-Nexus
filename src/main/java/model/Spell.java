@@ -6,11 +6,21 @@ public class Spell {
 
     private String name;
     private String effect;
-    private String typ;
+    private String type;
     private String cost;
     private String castTime;
     private Talent talent;
     private int tier;
+
+    public Spell() {
+        this.name = "";
+        this.effect = "";
+        this.type = "";
+        this.cost = "";
+        this.castTime = "";
+        this.talent = new Talent();
+        this.tier = 1;
+    }
 
     public int getTier() {
         return tier;
@@ -36,12 +46,12 @@ public class Spell {
         this.effect = effect;
     }
 
-    public String getTyp() {
-        return typ;
+    public String getType() {
+        return type;
     }
 
-    public void setTyp(String typ) {
-        this.typ = typ;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getCost() {

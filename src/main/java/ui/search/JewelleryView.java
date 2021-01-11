@@ -26,7 +26,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
                 new String[]{"column.name", "column.type", "column.equipment.material", "column.jewellery.gem",
                         "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots",
                         "column.equipment.requirement"},
-                new String[]{"name", "subTyp", "material", "gem", "rarity", "currency", "effect", "slots", "requirement"});
+                new String[]{"name", "subtype", "material", "gem", "rarity", "currency", "effect", "slots", "requirement"});
 
         this.addControls(root);
 
@@ -47,7 +47,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
                 stream = stream.filter(w -> w.getGem().equals(this.name.get()));
             }
             if (!this.typ.get().equals(defaultTyp.get())) {
-                stream = stream.filter(w -> w.getSubTyp().equals(this.typ.get()));
+                stream = stream.filter(w -> w.getSubtype().equals(this.typ.get()));
             }
             List<Jewellery> result = stream.collect(Collectors.toList());
 
@@ -75,7 +75,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
             for (Jewellery jewellery : Database.jewelleryList) {
                 String m = jewellery.getMaterial();
                 String g = jewellery.getGem();
-                String t = jewellery.getSubTyp();
+                String t = jewellery.getSubtype();
 
                 if (!material.contains(m)) {
                     material.add(m);

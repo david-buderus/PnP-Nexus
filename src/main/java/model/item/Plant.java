@@ -1,10 +1,16 @@
 package model.item;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class Plant extends Item {
 
     private Collection<String> locations;
+
+    public Plant() {
+        super();
+        this.locations = Collections.emptyList();
+    }
 
     public Collection<String> getLocations() {
         return locations;

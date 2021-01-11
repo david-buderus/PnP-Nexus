@@ -38,27 +38,27 @@ public class SQLView extends ViewPart {
         root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         String[] labels = new String[]{"column.name", "column.type", "column.item.subtype", "column.tier", "column.item.rarity", "column.item.price", "column.effect"};
-        String[] names = new String[]{"name", "typ", "subTyp", "tier", "rarity", "currency", "effect"};
+        String[] names = new String[]{"name", "type", "subtype", "tier", "rarity", "currency", "effect"};
 
         root.getTabs().add(createTab("sql.tab.items", labels, names, Database.itemList, Item.class));
 
         labels = new String[]{"column.name", "column.type", "column.weapon.initiative", "column.dice_weight", "column.damage_protection", "column.weapon.hit", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subTyp", "initiative", "dice", "damage", "hit", "tier", "rarity", "currency", "effect", "slots", "requirement"};
+        names = new String[]{"name", "subtype", "initiative", "dice", "damage", "hit", "tier", "rarity", "currency", "effect", "slots", "requirement"};
 
         root.getTabs().add(createTab("sql.tab.weapons", labels, names, Database.weaponList, Weapon.class));
 
         labels = new String[]{"column.name", "column.type", "Schutz", "Belastung", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subTyp", "protection", "weight", "tier", "rarity", "currency", "effect", "slots", "requirement"};
+        names = new String[]{"name", "subtype", "protection", "weight", "tier", "rarity", "currency", "effect", "slots", "requirement"};
 
         root.getTabs().add(createTab("sql.tab.armor", labels, names, Database.armorList, Armor.class));
 
         labels = new String[]{"column.name", "column.type", "Material", "Edelstein", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subTyp", "material", "gem", "tier", "rarity", "currency", "effect", "slots", "requirement"};
+        names = new String[]{"name", "subtype", "material", "gem", "tier", "rarity", "currency", "effect", "slots", "requirement"};
 
         root.getTabs().add(createTab("sql.tab.jewellery", labels, names, Database.jewelleryList, Jewellery.class));
 
         labels = new String[]{"column.name", "column.effect", "column.type", "column.spell.cost", "column.spell.castTime", "column.tier"};
-        names = new String[]{"name", "effect", "typ", "cost", "castTime", "tier"};
+        names = new String[]{"name", "effect", "type", "cost", "castTime", "tier"};
 
         root.getTabs().add(createTab("sql.tab.spell", labels, names, Database.spellList, Spell.class));
 

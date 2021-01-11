@@ -2,8 +2,14 @@ package model.item;
 
 public class Armor extends Equipment {
 
-    private int protection = 0;
-    private double weight = 0;
+    private int protection;
+    private double weight;
+
+    public Armor() {
+        super();
+        this.protection = 0;
+        this.weight = 0;
+    }
 
     public int getProtection() {
         return protection;

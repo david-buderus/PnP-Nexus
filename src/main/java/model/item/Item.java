@@ -15,27 +15,38 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class Item {
 
-    protected String name = "";
-    protected String typ = "";
-    protected String subTyp = "";
-    protected String requirement = "";
-    protected String effect = "";
-    protected Rarity rarity = Rarity.common;
-    protected Currency currency = new Currency(0);
-    protected int tier = 1;
-    protected FloatProperty amount = new SimpleFloatProperty(1);
+    protected String name;
+    protected String type;
+    protected String subtype;
+    protected String requirement;
+    protected String effect;
+    protected Rarity rarity;
+    protected Currency currency;
+    protected int tier;
+    protected FloatProperty amount;
 
     /**
      * Use this only if you know what you do.
      * Use {@link Database#getItem(String)} instead.
      */
-    public Item() { }
+    public Item() {
+        this.name = "";
+        this.type = "";
+        this.subtype = "";
+        this.requirement = "";
+        this.effect = "";
+        this.rarity = Rarity.common;
+        this.currency = new Currency(0);
+        this.tier = 1;
+        this.amount = new SimpleFloatProperty(1);
+    }
 
     /**
      * Use this only if you know what you do.
      * Use {@link Database#getItem(String)} instead.
      */
     public Item(String name) {
+        this();
         this.name = name;
     }
 
@@ -47,12 +58,12 @@ public class Item {
         this.name = name;
     }
 
-    public void setTyp(String typ) {
-        this.typ = typ;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getTyp() {
-        return typ;
+    public String getType() {
+        return type;
     }
 
     public Currency getCurrency() {
@@ -63,12 +74,12 @@ public class Item {
         this.currency = currency;
     }
 
-    public void setSubTyp(String subTyp) {
-        this.subTyp = subTyp;
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
     }
 
-    public String getSubTyp() {
-        return subTyp;
+    public String getSubtype() {
+        return subtype;
     }
 
     public String getRequirement() {
@@ -140,8 +151,8 @@ public class Item {
         try {
             Item item = this.getClass().getConstructor().newInstance();
             item.setName(this.getName());
-            item.setTyp(this.getTyp());
-            item.setSubTyp(this.getSubTyp());
+            item.setType(this.getType());
+            item.setSubtype(this.getSubtype());
             item.setRarity(this.getRarity());
             item.setRequirement(this.getRequirement());
             item.setEffect(this.getEffect());
@@ -163,9 +174,9 @@ public class Item {
 
         Item other = (Item) o;
 
-        return this.getName().equals(other.getName()) && this.getTyp().equals(other.getTyp())
+        return this.getName().equals(other.getName()) && this.getType().equals(other.getType())
                 && this.getRequirement().equals(other.getRequirement()) && this.getEffect().equals(other.getEffect())
-                && this.getRarity().equals(other.getRarity()) && this.getSubTyp().equals(other.getSubTyp())
+                && this.getRarity().equals(other.getRarity()) && this.getSubtype().equals(other.getSubtype())
                 && this.getCurrency().equals(other.getCurrency());
     }
 

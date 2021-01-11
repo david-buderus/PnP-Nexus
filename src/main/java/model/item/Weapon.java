@@ -2,10 +2,18 @@ package model.item;
 
 public class Weapon extends Equipment {
 
-    private String initiative = "0";
-    private String dice = "";
-    private int damage = 0;
-    private int hit = 0;
+    private String initiative;
+    private String dice;
+    private int damage;
+    private int hit;
+
+    public Weapon() {
+        super();
+        this.initiative = "0";
+        this.dice = "";
+        this.damage = 0;
+        this.hit = 0;
+    }
 
     public String getInitiative() {
         return initiative;

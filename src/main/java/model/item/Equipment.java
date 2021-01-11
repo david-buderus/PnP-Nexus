@@ -1,6 +1,9 @@
 package model.item;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 import manager.TypTranslation;
 import model.Currency;
@@ -14,9 +17,21 @@ public abstract class Equipment extends Item {
 
     protected static Random rand = new Random();
 
-    protected String material = "";
-    protected int slots = 0;
-    protected ArrayList<Upgrade> upgrades = new ArrayList<>();
+    protected String material;
+    protected int slots;
+    protected ArrayList<Upgrade> upgrades;
+    protected IntegerProperty wear;
+    protected IntegerProperty wearStep;
+
+    public Equipment() {
+        super();
+        this.material = "";
+        this.slots = 0;
+        this.upgrades = new ArrayList<>();
+        this.wearStep = new SimpleIntegerProperty(0);
+        this.wear = new SimpleIntegerProperty();
+        this.wear.bind(wearStep.divide(10));
+    }
 
     public String getMaterial() {
         return material;
@@ -59,7 +74,7 @@ public abstract class Equipment extends Item {
     public Equipment getWithUpgrade() {
 
         Equipment equipment = this.copy();
-        Collection<String> types = TypTranslation.getAllTypes(this.getSubTyp());
+        Collection<String> types = TypTranslation.getAllTypes(this.getSubtype());
         List<UpgradeFactory> list = Database.upgradeList.stream().
                 filter(x -> types.contains(x.getTarget())).collect(Collectors.toList());
 
@@ -88,6 +103,26 @@ public abstract class Equipment extends Item {
         }
 
         return currency;
+    }
+
+    public int getWear() {
+        return wear.get();
+    }
+
+    public ReadOnlyIntegerProperty wearProperty() {
+        return wear;
+    }
+
+    public int getWearStep() {
+        return wearStep.get();
+    }
+
+    public IntegerProperty wearStepProperty() {
+        return wearStep;
+    }
+
+    public void setWearStep(int wearStep) {
+        this.wearStep.set(wearStep);
     }
 
     @Override

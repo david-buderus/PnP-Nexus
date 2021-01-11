@@ -2,7 +2,12 @@ package model.item;
 
 public class Jewellery extends Equipment {
 
-    private String gem = "";
+    private String gem;
+
+    public Jewellery() {
+        super();
+        this.gem = "";
+    }
 
     public String getGem() {
         return gem;

@@ -155,7 +155,7 @@ public class ExtendedBattleMember extends BattleMember {
                 firstHand = randomWeapon(getPrimaryWeaponTypes(), Database.weaponList);
             } else {
                 firstHand = randomWeapon(
-                        concreteFirstWeapons.stream().map(Item::getSubTyp).collect(Collectors.toSet()),
+                        concreteFirstWeapons.stream().map(Item::getSubtype).collect(Collectors.toSet()),
                         concreteFirstWeapons);
             }
             this.weapons.add((Weapon) firstHand.getWithUpgrade());
@@ -171,7 +171,7 @@ public class ExtendedBattleMember extends BattleMember {
             } else {
                 this.weapons.add((Weapon) randomWeapon(
                         //Allow all types mentioned in concreteSecondWeapons
-                        concreteSecondWeapons.stream().map(Item::getSubTyp).collect(Collectors.toSet()),
+                        concreteSecondWeapons.stream().map(Item::getSubtype).collect(Collectors.toSet()),
                         concreteSecondWeapons).getWithUpgrade());
             }
         }
@@ -192,7 +192,7 @@ public class ExtendedBattleMember extends BattleMember {
 
                 for (Armor armor : list) {
                     try {
-                        this.setArmor(ArmorPiece.getArmorPiece(armor.getSubTyp()), armor.getProtection());
+                        this.setArmor(ArmorPiece.getArmorPiece(armor.getSubtype()), armor.getProtection());
                     } catch (NoSuchElementException ignored) {
                     }
                 }
@@ -443,7 +443,7 @@ public class ExtendedBattleMember extends BattleMember {
                         .filter(x -> x.getTier() == k)
                         .filter(x -> x.getRarity() == fRarity)
                         .filter(this::checkRequirements)
-                        .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
+                        .filter(x -> types.stream().anyMatch(y -> x.getSubtype().equals(y)))
                         .collect(Collectors.toCollection(ArrayList::new));
 
                 rarity = rarity.getLowerRarity();
@@ -455,7 +455,7 @@ public class ExtendedBattleMember extends BattleMember {
                         .filter(x -> x.getTier() == k)
                         .filter(x -> x.getRarity() == Rarity.common)
                         .filter(this::checkRequirements)
-                        .filter(x -> types.stream().anyMatch(y -> x.getSubTyp().equals(y)))
+                        .filter(x -> types.stream().anyMatch(y -> x.getSubtype().equals(y)))
                         .collect(Collectors.toCollection(ArrayList::new));
             }
         }
@@ -567,7 +567,7 @@ public class ExtendedBattleMember extends BattleMember {
                 equipment = pool.stream()
                         .filter(x -> x.getTier() == k)
                         .filter(x -> x.getRarity() == fRarity)
-                        .filter(x -> x.getSubTyp().equals(typ))
+                        .filter(x -> x.getSubtype().equals(typ))
                         .filter(this::checkRequirements)
                         .collect(Collectors.toCollection(ArrayList::new));
 
@@ -579,7 +579,7 @@ public class ExtendedBattleMember extends BattleMember {
                 equipment = pool.stream()
                         .filter(x -> x.getTier() == k)
                         .filter(x -> x.getRarity() == Rarity.common)
-                        .filter(x -> x.getSubTyp().equals(typ))
+                        .filter(x -> x.getSubtype().equals(typ))
                         .filter(this::checkRequirements)
                         .collect(Collectors.toCollection(ArrayList::new));
             }
