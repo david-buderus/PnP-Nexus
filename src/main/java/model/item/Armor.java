@@ -1,22 +1,29 @@
 package model.item;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Armor extends Equipment {
 
-    private int protection;
+    private final IntegerProperty protection;
     private double weight;
 
     public Armor() {
         super();
-        this.protection = 0;
+        this.protection = new SimpleIntegerProperty(0);
         this.weight = 0;
     }
 
     public int getProtection() {
+        return protection.get();
+    }
+
+    public IntegerProperty protectionProperty() {
         return protection;
     }
 
     public void setProtection(int protection) {
-        this.protection = protection;
+        this.protection.set(protection);
     }
 
     public double getWeight() {

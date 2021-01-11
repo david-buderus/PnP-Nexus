@@ -94,6 +94,10 @@ public abstract class Equipment extends Item {
         return equipment;
     }
 
+    public void onUse() {
+        this.setWearStep(getWearStep() + 1);
+    }
+
     @Override
     public Currency getCurrency() {
         Currency currency = super.getCurrency();

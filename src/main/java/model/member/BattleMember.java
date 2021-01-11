@@ -35,10 +35,24 @@ public class BattleMember extends Member {
 
     private final ListProperty<MemberState> states;
 
+    /**
+     * Creates a BattleMember with default stats
+     * and an empty LootTable
+     *
+     * @param battle the BattleMember is part of
+     */
     public BattleMember(Battle battle) {
         this(battle, new LootTable());
     }
 
+    /**
+     * Copies values of the armor map into the own property.
+     * These properties won't be linked!
+     *
+     * @param battle the BattleMember is part of
+     * @param lootTable of the given BattleMember
+     * @param armor which will be used as Armor
+     */
     public BattleMember(Battle battle, LootTable lootTable, HashMap<ArmorPiece, IntegerProperty> armor) {
         this(battle, lootTable);
         for (ArmorPiece piece : armor.keySet()) {
@@ -46,6 +60,12 @@ public class BattleMember extends Member {
         }
     }
 
+    /**
+     * Creates a BattleMember with default stats
+     *
+     * @param battle the BattleMember is part of
+     * @param lootTable of the given BattleMember
+     */
     public BattleMember(Battle battle, LootTable lootTable) {
         super();
         this.name.set(LanguageUtility.getMessage("battleMember.defaultName"));
@@ -203,6 +223,10 @@ public class BattleMember extends Member {
 
     public void setArmor(ArmorPiece target, int defense) {
         this.armor.get(target).set(defense);
+    }
+
+    protected void setArmor(ArmorPiece target, IntegerProperty defense) {
+        this.armor.put(target, defense);
     }
 
     public boolean isDead() {
