@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import manager.LanguageUtility;
 import manager.Utility;
@@ -225,15 +226,24 @@ public class BattleMember extends Member {
         this.armor.get(target).set(defense);
     }
 
-    protected void setArmor(ArmorPiece target, IntegerProperty defense) {
-        this.armor.put(target, defense);
+    /**
+     * Creates a new IntegerProperty and binds it
+     * to the ObservableValue
+     *
+     * @param target the specific ArmorPiece
+     * @param defense ObservableValue which will get binded
+     */
+    protected void setArmor(ArmorPiece target, ObservableValue<Number> defense) {
+        IntegerProperty property = new SimpleIntegerProperty(defense.getValue().intValue());
+        property.bind(defense);
+        this.armor.put(target, property);
     }
 
     public boolean isDead() {
         return getLife() <= 0;
     }
 
-    private int getArmor(ArmorPiece target) {
+    protected int getArmor(ArmorPiece target) {
         return armor.get(target).get();
     }
 

@@ -48,6 +48,10 @@ public class Armor extends Equipment {
         return protectionWithWear;
     }
 
+    public int getProtectionWithWear() {
+        return protectionWithWear.get();
+    }
+
     public double getWeight() {
         return weight;
     }

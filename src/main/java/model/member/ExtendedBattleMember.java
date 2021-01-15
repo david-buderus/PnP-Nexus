@@ -192,7 +192,7 @@ public class ExtendedBattleMember extends BattleMember {
 
                 for (Armor armor : list) {
                     try {
-                        this.setArmor(ArmorPiece.getArmorPiece(armor.getSubtype()), armor.getProtection());
+                        this.setArmor(ArmorPiece.getArmorPiece(armor.getSubtype()), armor.protectionWithWearBinding());
                     } catch (NoSuchElementException ignored) {
                     }
                 }
