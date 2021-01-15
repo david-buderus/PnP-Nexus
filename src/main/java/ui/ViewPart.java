@@ -9,8 +9,12 @@ public class ViewPart extends Tab implements IView {
     protected IView parent;
 
     public ViewPart(String title, IView parent) {
-        super();
+        this(parent);
         this.textProperty().bind(LanguageUtility.getMessageProperty(title));
+    }
+
+    public ViewPart(IView parent) {
+        super();
         this.parent = parent;
         this.setClosable(false);
     }
