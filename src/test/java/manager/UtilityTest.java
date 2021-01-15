@@ -91,7 +91,7 @@ public class UtilityTest {
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item, 500));
 
-        assertEquals(500, Utility.sellLoot(lootList).getCoinValue(), 0);
+        assertEquals(5200, Utility.sellLoot(lootList).getCoinValue(), 0);
 
         item = new Item();
         item.setSubTyp(currencyString);

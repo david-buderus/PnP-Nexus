@@ -4,6 +4,7 @@ plugins {
 
 def versionNumber = "v1.1.0"
 sourceCompatibility = 11
+targetCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -20,6 +21,22 @@ if (!project.hasProperty("platform")) {
         platform = 'linux'
     } else if (currentOS.isMacOsX()) {
         platform = 'mac'
+    }
+}
+
+sourceSets {
+    main {
+         java {
+            srcDir 'src/main'
+        }
+         resources {
+            srcDir 'resources'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test'
+        }
     }
 }
 
@@ -44,7 +61,8 @@ dependencies {
 
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testRuntimeOnly group:'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.4.2'
 }
 
 tasks.withType(JavaCompile) {
@@ -58,5 +76,13 @@ jar {
 
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    logger.lifecycle("bla")
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: ${descriptor}")
     }
 }
