@@ -1,4 +1,4 @@
-package model;
+package manager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,8 +10,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import manager.LanguageUtility;
-import manager.Utility;
+import model.Currency;
 import model.item.Item;
 import model.loot.Loot;
 
@@ -50,30 +49,30 @@ public class UtilityTest {
         float modifier = Utility.getConfig().getFloat("loot.sell.modifier");
         List<Loot> lootList = new ArrayList<Loot>();
 
-        assertEquals(0, Utility.sellLoot(lootList).coinValue);
+        assertEquals(0, Utility.sellLoot(lootList).getCoinValue());
 
         // add empty item
         lootList.add(new Loot(new Item()));
 
-        assertEquals(0, Utility.sellLoot(lootList).coinValue);
+        assertEquals(0, Utility.sellLoot(lootList).getCoinValue());
 
         // add two more empty items
         lootList.add(new Loot(new Item()));
         lootList.add(new Loot(new Item()));
 
-        assertEquals(0, Utility.sellLoot(lootList).coinValue);
+        assertEquals(0, Utility.sellLoot(lootList).getCoinValue());
 
         // add two items with 0.5 * 500 copper each. should be 500 * modifier
         lootList.get(0).getItem().setCurrency(new Currency(500));
         lootList.get(0).getItem().setAmount(0.5f);
         lootList.get(0).setAmount(2);
 
-        assertEquals(500 *modifier, Utility.sellLoot(lootList).coinValue, 0);
+        assertEquals(500 *modifier, Utility.sellLoot(lootList).getCoinValue(), 0);
 
         // add one item with -500 copper
         lootList.get(1).getItem().setCurrency(new Currency(-500));
 
-        assertEquals(0, Utility.sellLoot(lootList).coinValue, 0);
+        assertEquals(0, Utility.sellLoot(lootList).getCoinValue(), 0);
 
         // add 1 currency items with 500 times 1 copper each 
         String currencyString = LanguageUtility.getMessage("currency");
@@ -83,7 +82,7 @@ public class UtilityTest {
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item));
 
-        assertEquals(500, Utility.sellLoot(lootList).coinValue, 0);
+        assertEquals(500, Utility.sellLoot(lootList).getCoinValue(), 0);
 
         // add 500 currency items with 0 times 1 copper each 
         item = new Item();
@@ -92,15 +91,22 @@ public class UtilityTest {
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item, 500));
 
-        assertEquals(500, Utility.sellLoot(lootList).coinValue, 0);
+        assertEquals(500, Utility.sellLoot(lootList).getCoinValue(), 0);
 
-        // add 3 items with 1/3 times 1 copper each
         item = new Item();
-        item.setAmount(1/3f);
+        item.setSubTyp(currencyString);
+        item.setAmount(2/3f);
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item, 3));
 
-        assertEquals(501, Utility.sellLoot(lootList).coinValue, 0);
+        assertEquals(503, Utility.sellLoot(lootList).getCoinValue(), 0);
+
+        item = new Item();
+        item.setAmount(2/3f);
+        item.setCurrency(new Currency(1));
+        lootList.add(new Loot(item, 3));
+
+        assertEquals(Math.round(503 + modifier*3), Utility.sellLoot(lootList).getCoinValue(), 0);
     }
 
 }
