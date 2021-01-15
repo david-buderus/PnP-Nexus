@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 public class RarityTest {
 
     @BeforeAll
-    public void setup() {
+    public static void setup() {
     }
 
     @Test
@@ -27,11 +27,11 @@ public class RarityTest {
             rarityMap.put(randomRarity, rarityMap.get(randomRarity) + 1);
         }
 
-        assertTrue("Common", rarityMap.get(Rarity.common) > 7500 && rarityMap.get(Rarity.common) < 8500);
-        assertTrue("Rare", rarityMap.get(Rarity.rare) > 1000 && rarityMap.get(Rarity.rare) < 2000);
-        assertTrue("Epic", rarityMap.get(Rarity.epic) > 200 && rarityMap.get(Rarity.epic) < 600);
-        assertTrue("Legendary", rarityMap.get(Rarity.legendary) > 50 && rarityMap.get(Rarity.legendary) < 150);
-        assertTrue("Godlike", rarityMap.get(Rarity.godlike) == 0);
-        assertTrue("Unknown", rarityMap.get(Rarity.unknown) == 0);
+        assertTrue(rarityMap.get(Rarity.common) > 7500 && rarityMap.get(Rarity.common) < 8500);
+        assertTrue(rarityMap.get(Rarity.rare) > 1000 && rarityMap.get(Rarity.rare) < 2000);
+        assertTrue(rarityMap.get(Rarity.epic) > 200 && rarityMap.get(Rarity.epic) < 600);
+        assertTrue(rarityMap.get(Rarity.legendary) > 50 && rarityMap.get(Rarity.legendary) < 150);
+        assertTrue(rarityMap.get(Rarity.godlike) == 0);
+        assertTrue(rarityMap.get(Rarity.unknown) == 0);
     }
 }

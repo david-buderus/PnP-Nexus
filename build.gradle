@@ -65,8 +65,4 @@ jar {
 
 test {
     useJUnitPlatform()
-    logger.lifecycle("bla")
-    beforeTest { descriptor ->
-        logger.lifecycle("Running test: ${descriptor}")
-    }
 }

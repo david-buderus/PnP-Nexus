@@ -21,9 +21,12 @@ gradle-app.setting
 
 # other
 run
-
+gradle.properties
 bin/
 
 # vs code
 .settings/
 .vscode/
+
+.classpath
+.project
