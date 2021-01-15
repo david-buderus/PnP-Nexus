@@ -55,7 +55,7 @@ public abstract class LootObject extends MapObject {
 
         return loot.stream()
                 .limit(loot.size() == limit ? limit : limit - 1)
-                .map(l -> l.getAmount() + " " + l.getName())
+                .map(l -> l.getAmountWithItemAmount() + " " + l.getName())
                 .reduce((a, b) -> a + "\n" + b)
                 .orElse("")
                 + (loot.size() > limit ? "\n..." : "");
