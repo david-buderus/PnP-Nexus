@@ -230,8 +230,10 @@ public class ExtendedBattleMember extends BattleMember {
                 String localizedType = LanguageUtility.hasMessage("jewellery.type." + type) ?
                         LanguageUtility.getMessage("jewellery.type." + type) : type;
 
-                amountPerType.put(localizedType, amount);
-                maxAmount += amount;
+                if (amount > 0) {
+                    amountPerType.put(localizedType, amount);
+                    maxAmount += amount;
+                }
             }
 
             for (int i = 0; i < maxAmount; i++) {
@@ -241,7 +243,13 @@ public class ExtendedBattleMember extends BattleMember {
                     if (random.nextDouble() < getTier() / 100f) {
                         String type = opType.get();
                         this.jewellery.add((Jewellery) randomJewellery(type, jewelleryPool).getWithUpgrade());
-                        amountPerType.put(type, amountPerType.get(type) - 1);
+
+                        int newAmount = amountPerType.get(type) - 1;
+                        if (newAmount < 1) {
+                            amountPerType.remove(type);
+                        } else {
+                            amountPerType.put(type, newAmount);
+                        }
                     }
                 }
             }
