@@ -961,7 +961,8 @@ public abstract class DatabaseLoader {
                     Drop drop = new Drop();
                     drop.setName(getString(dropSet, getLocalized("column.drop")));
                     drop.setChance(dropSet.getFloat(getLocalized("column.chance")));
-                    drop.setAmount(dropSet.getInt(getLocalized("column.amount")));
+                    drop.setBaseAmount(dropSet.getInt(getLocalized("column.baseAmount")));
+                    drop.setMultiplicativeAmount(dropSet.getInt(getLocalized("column.multiplicativeAmount")));
                     drop.setLevelMultiplication(dropSet.getFloat(getLocalized("column.levelMultiplication")));
                     drop.setTierMultiplication(dropSet.getFloat(getLocalized("column.tierMultiplication")));
                     drop.setMinLevel(dropSet.getInt(getLocalized("column.minLevel")));
