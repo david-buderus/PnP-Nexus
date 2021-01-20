@@ -540,35 +540,35 @@ public abstract class DatabaseLoader {
             try (ResultSet enemySet = statement.executeQuery(format(
                     "SELECT * FROM %s WHERE %s=\"%s\"",
                     "table.enemies", "column.type", "type.characterisation"))) {
-                characterisationList = loadEnemies(enemySet, Characterisation::new);
+                characterisationList = loadEnemies(statement, enemySet, Characterisation::new);
             } catch (SQLException e) {
                 return getErrorString("type.characterisation");
             }
             try (ResultSet enemySet = statement.executeQuery(format(
                     "SELECT * FROM %s WHERE %s=\"%s\"",
                     "table.enemies", "column.type", "type.race"))) {
-                raceList = loadEnemies(enemySet, Race::new);
+                raceList = loadEnemies(statement, enemySet, Race::new);
             } catch (SQLException e) {
                 return getErrorString("type.race");
             }
             try (ResultSet enemySet = statement.executeQuery(format(
                     "SELECT * FROM %s WHERE %s=\"%s\"",
                     "table.enemies", "column.type", "type.profession"))) {
-                professionList = loadEnemies(enemySet, Profession::new);
+                professionList = loadEnemies(statement, enemySet, Profession::new);
             } catch (SQLException e) {
                 return getErrorString("type.profession");
             }
             try (ResultSet enemySet = statement.executeQuery(format(
                     "SELECT * FROM %s WHERE %s=\"%s\"",
                     "table.enemies", "column.type", "type.fightingStyle"))) {
-                fightingStyleList = loadEnemies(enemySet, FightingStyle::new);
+                fightingStyleList = loadEnemies(statement, enemySet, FightingStyle::new);
             } catch (SQLException e) {
                 return getErrorString("type.fightingStyle");
             }
             try (ResultSet enemySet = statement.executeQuery(format(
                     "SELECT * FROM %s WHERE %s=\"%s\"",
                     "table.enemies", "column.type", "type.specialisation"))) {
-                specialisationList = loadEnemies(enemySet, Specialisation::new);
+                specialisationList = loadEnemies(statement, enemySet, Specialisation::new);
             } catch (SQLException e) {
                 return getErrorString("type.specialisation");
             }
@@ -708,17 +708,23 @@ public abstract class DatabaseLoader {
         return "";
     }
 
-    private static <Generation extends GenerationBase> ObservableList<Generation> loadEnemies(ResultSet set, Supplier<Generation> constructor) throws SQLException {
+    private static <Generation extends GenerationBase> ObservableList<Generation> loadEnemies(Statement statement, ResultSet set, Supplier<Generation> constructor) throws SQLException {
         ObservableList<Generation> list = FXCollections.observableArrayList();
 
         while (set.next()) {
             try {
                 Generation generation = constructor.get();
-                generation.setName(getString(set, getLocalized("column.name")));
-                generation.setAdvantages(Arrays.stream(getString(set, getLocalized("column.advantages")).split("\n"))
-                        .filter(s -> !s.isBlank()).collect(Collectors.toList()));
-                generation.setDisadvantages(Arrays.stream(getString(set, getLocalized("column.disadvantages")).split("\n"))
-                        .filter(s -> !s.isBlank()).collect(Collectors.toList()));
+                String name = getString(set, getLocalized("column.name"));
+
+                generation.setName(name);
+                generation.setAdvantages(getCollection(
+                        statement,format("SELECT * FROM %s WHERE %s=\"%s\"",
+                                "table.enemies.advantages", "column.name", name),
+                        getLocalized("column.advantages")));
+                generation.setDisadvantages(getCollection(
+                        statement,format("SELECT * FROM %s WHERE %s=\"%s\"",
+                                "table.enemies.disadvantages", "column.name", name),
+                        getLocalized("column.disadvantages")));
                 generation.setDropsWeapon(set.getBoolean(getLocalized("column.dropsWeapons")));
                 generation.setDropsArmor(set.getBoolean(getLocalized("column.dropsArmor")));
                 generation.setDropsJewellery(set.getBoolean(getLocalized("column.dropsJewellery")));

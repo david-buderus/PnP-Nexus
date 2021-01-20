@@ -225,35 +225,40 @@ public class SpawnView extends View {
             Collection<SpawnParameter> spawnParameters = new ArrayList<>();
 
             for (int i = 0; i < amount.get(); i++) {
-                SpawnParameter spawnParameter = new SpawnParameter();
-                spawnParameter.level = (int) Math.round(this.level.get() + random.nextGaussian() * fluctuation.get() / 3);
-                if (randomCharacterisation.get()) {
-                    spawnParameter.characterisation = Database.characterisationList.get(random.nextInt(Database.characterisationList.size()));
-                } else {
-                    spawnParameter.characterisation = characterisation.get();
-                }
-                if (randomRace.get()) {
-                    spawnParameter.race = spawnParameter.characterisation.getRandomSubType();
-                } else {
-                    spawnParameter.race = race.get();
-                }
-                if (randomProfession.get()) {
-                    spawnParameter.profession = spawnParameter.race.getRandomSubType();
-                } else {
-                    spawnParameter.profession = profession.get();
-                }
-                if (randomFightingType.get()) {
-                    spawnParameter.fightingStyle = spawnParameter.profession.getRandomSubType();
-                } else {
-                    spawnParameter.fightingStyle = fightingType.get();
-                }
-                if (randomSpecificType.get()) {
-                    spawnParameter.specialisation = spawnParameter.fightingStyle.getRandomSubType();
-                } else {
-                    spawnParameter.specialisation = specificType.get();
-                }
+                try {
+                    SpawnParameter spawnParameter = new SpawnParameter();
+                    spawnParameter.level = (int) Math.round(this.level.get() + random.nextGaussian() * fluctuation.get() / 3);
+                    if (randomCharacterisation.get()) {
+                        spawnParameter.characterisation = Database.characterisationList.get(random.nextInt(Database.characterisationList.size()));
+                    } else {
+                        spawnParameter.characterisation = characterisation.get();
+                    }
+                    if (randomRace.get()) {
+                        spawnParameter.race = spawnParameter.characterisation.getRandomSubType();
+                    } else {
+                        spawnParameter.race = race.get();
+                    }
+                    if (randomProfession.get()) {
+                        spawnParameter.profession = spawnParameter.race.getRandomSubType();
+                    } else {
+                        spawnParameter.profession = profession.get();
+                    }
+                    if (randomFightingType.get()) {
+                        spawnParameter.fightingStyle = spawnParameter.profession.getRandomSubType();
+                    } else {
+                        spawnParameter.fightingStyle = fightingType.get();
+                    }
+                    if (randomSpecificType.get()) {
+                        spawnParameter.specialisation = spawnParameter.fightingStyle.getRandomSubType();
+                    } else {
+                        spawnParameter.specialisation = specificType.get();
+                    }
 
-                spawnParameters.add(spawnParameter);
+                    spawnParameters.add(spawnParameter);
+                }
+                catch (NullPointerException ignored) {
+                    //No generation possible, missing some kind of type
+                }
             }
 
             return spawnParameters;
