@@ -216,14 +216,34 @@ public class ExtendedBattleMember extends BattleMember {
         this.jewellery = FXCollections.observableArrayList();
         if (usesJewellery()) {
 
+            Map<String, Integer> amountPerType = new HashMap<>();
+            int maxAmount = 0;
+
             for (String type : config.getStringArray("character.jewellery.types")) {
                 int amount = config.getInt("character.jewellery.amount." + type);
                 String localizedType = LanguageUtility.hasMessage("jewellery.type." + type) ?
                         LanguageUtility.getMessage("jewellery.type." + type) : type;
 
-                for (int i = 0; i < amount; i++) {
+                if (amount > 0) {
+                    amountPerType.put(localizedType, amount);
+                    maxAmount += amount;
+                }
+            }
+
+            for (int i = 0; i < maxAmount; i++) {
+                Optional<String> opType = amountPerType.keySet().stream().skip(random.nextInt(amountPerType.keySet().size())).findFirst();
+
+                if (opType.isPresent()) {
                     if (random.nextDouble() < getTier() / 100f) {
-                        this.jewellery.add((Jewellery) randomJewellery(localizedType, jewelleryPool).getWithUpgrade());
+                        String type = opType.get();
+                        this.jewellery.add((Jewellery) randomJewellery(type, jewelleryPool).getWithUpgrade());
+
+                        int newAmount = amountPerType.get(type) - 1;
+                        if (newAmount < 1) {
+                            amountPerType.remove(type);
+                        } else {
+                            amountPerType.put(type, newAmount);
+                        }
                     }
                 }
             }
