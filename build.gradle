@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-def versionNumber = "v1.1.0"
+def versionNumber = "v1.2.0"
 sourceCompatibility = 11
 targetCompatibility = 11
 
