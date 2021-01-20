@@ -9,7 +9,8 @@ public class Drop {
 
     protected Item item;
     protected float chance;
-    protected int amount;
+    protected int baseAmount;
+    protected int multiplicativeAmount;
     protected float levelMultiplication;
     protected float tierMultiplication;
     protected int minLevel;
@@ -22,7 +23,7 @@ public class Drop {
     public void addToLootTable(LootTable lootTable, BattleMember member) {
         if (member.getLevel() >= minLevel && member.getLevel() <= maxLevel &&
                 member.getTier() >= minTier && member.getTier() <= maxTier) {
-            float amount = this.amount;
+            float amount = this.multiplicativeAmount;
 
             if (levelMultiplication != 0) {
                 amount *= levelMultiplication * member.getLevel();
@@ -31,7 +32,7 @@ public class Drop {
                 amount *= tierMultiplication * member.getTier();
             }
 
-            lootTable.add(item, Math.round(amount), chance);
+            lootTable.add(item, Math.round(baseAmount + amount), chance);
         }
     }
 
@@ -59,12 +60,20 @@ public class Drop {
         this.chance = chance;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getBaseAmount() {
+        return baseAmount;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setBaseAmount(int baseAmount) {
+        this.baseAmount = baseAmount;
+    }
+
+    public int getMultiplicativeAmount() {
+        return multiplicativeAmount;
+    }
+
+    public void setMultiplicativeAmount(int multiplicativeAmount) {
+        this.multiplicativeAmount = multiplicativeAmount;
     }
 
     public float getLevelMultiplication() {
