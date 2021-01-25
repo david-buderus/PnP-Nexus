@@ -20,7 +20,7 @@ import manager.Language;
 import manager.LanguageUtility;
 import manager.Utility;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import ui.battle.BattleView;
+import ui.battle.BattleOverview;
 import ui.map.MapView;
 import ui.search.SearchOverview;
 import ui.utility.InconsistencyView;
@@ -48,7 +48,7 @@ public class ManagerView extends View {
 
         TabPane root = new TabPane();
 
-        Tab battleTab = new BattleView(this);
+        Tab battleTab = new BattleOverview(this);
         root.getTabs().add(battleTab);
 
         Tab itemTab = new SQLView(this);

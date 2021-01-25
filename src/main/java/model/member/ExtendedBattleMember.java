@@ -154,25 +154,19 @@ public class ExtendedBattleMember extends BattleMember {
             if (concreteFirstWeapons.isEmpty()) {
                 firstHand = randomWeapon(getPrimaryWeaponTypes(), Database.weaponList);
             } else {
-                firstHand = randomWeapon(
-                        concreteFirstWeapons.stream().map(Item::getSubtype).collect(Collectors.toSet()),
-                        concreteFirstWeapons);
+                firstHand = randomWeapon(getPrimaryWeaponTypes() ,concreteFirstWeapons);
             }
             this.weapons.add((Weapon) firstHand.getWithUpgrade());
         }
 
         if (usesSecondWeapon()) {
-            Collection<Weapon> concreteSecondWeapons = getSpecificSecondaryWeapons();
-            if (concreteSecondWeapons.isEmpty()) {
-                Collection<String> secondTypes = usesShield ? Database.shieldTypes : getSecondaryWeaponTypes();
-                if (secondTypes.size() > 0) {
-                    this.weapons.add((Weapon) randomWeapon(secondTypes, Database.weaponList).getWithUpgrade());
-                }
-            } else {
-                this.weapons.add((Weapon) randomWeapon(
-                        //Allow all types mentioned in concreteSecondWeapons
-                        concreteSecondWeapons.stream().map(Item::getSubtype).collect(Collectors.toSet()),
-                        concreteSecondWeapons).getWithUpgrade());
+            Collection<Weapon> secondWeapons = getSpecificSecondaryWeapons();
+            if (secondWeapons.isEmpty()) {
+                secondWeapons = Database.weaponList;
+            }
+            Collection<String> secondTypes = usesShield ? Database.shieldTypes : getSecondaryWeaponTypes();
+            if (secondTypes.size() > 0) {
+                this.weapons.add((Weapon) randomWeapon(secondTypes, secondWeapons).getWithUpgrade());
             }
         }
 
@@ -222,14 +216,34 @@ public class ExtendedBattleMember extends BattleMember {
         this.jewellery = FXCollections.observableArrayList();
         if (usesJewellery()) {
 
+            Map<String, Integer> amountPerType = new HashMap<>();
+            int maxAmount = 0;
+
             for (String type : config.getStringArray("character.jewellery.types")) {
                 int amount = config.getInt("character.jewellery.amount." + type);
                 String localizedType = LanguageUtility.hasMessage("jewellery.type." + type) ?
                         LanguageUtility.getMessage("jewellery.type." + type) : type;
 
-                for (int i = 0; i < amount; i++) {
+                if (amount > 0) {
+                    amountPerType.put(localizedType, amount);
+                    maxAmount += amount;
+                }
+            }
+
+            for (int i = 0; i < maxAmount; i++) {
+                Optional<String> opType = amountPerType.keySet().stream().skip(random.nextInt(amountPerType.keySet().size())).findFirst();
+
+                if (opType.isPresent()) {
                     if (random.nextDouble() < getTier() / 100f) {
-                        this.jewellery.add((Jewellery) randomJewellery(localizedType, jewelleryPool).getWithUpgrade());
+                        String type = opType.get();
+                        this.jewellery.add((Jewellery) randomJewellery(type, jewelleryPool).getWithUpgrade());
+
+                        int newAmount = amountPerType.get(type) - 1;
+                        if (newAmount < 1) {
+                            amountPerType.remove(type);
+                        } else {
+                            amountPerType.put(type, newAmount);
+                        }
                     }
                 }
             }
@@ -263,24 +277,54 @@ public class ExtendedBattleMember extends BattleMember {
     }
 
     private void addDescription() {
-        addDescription("character.advantage.characterisation", characterisation.getAdvantages());
-        addDescription("character.advantage.race", race.getAdvantages());
-        addDescription("character.advantage.profession", profession.getAdvantages());
-        addDescription("character.advantage.fightingStyle", fightingStyle.getAdvantages());
-        addDescription("character.advantage.specialisation", specialisation.getAdvantages());
+        if (Utility.getConfig().getBoolean("character.advantages_disadvantages.separatedByType")) {
+            addDescription("character.advantage.characterisation", characterisation.getAdvantages());
+            addDescription("character.advantage.race", race.getAdvantages());
+            addDescription("character.advantage.profession", profession.getAdvantages());
+            addDescription("character.advantage.fightingStyle", fightingStyle.getAdvantages());
+            addDescription("character.advantage.specialisation", specialisation.getAdvantages());
 
-        addDescription("character.disadvantage.characterisation", characterisation.getDisadvantages());
-        addDescription("character.disadvantage.race", race.getDisadvantages());
-        addDescription("character.disadvantage.profession", profession.getDisadvantages());
-        addDescription("character.disadvantage.fightingStyle", fightingStyle.getDisadvantages());
-        addDescription("character.disadvantage.specialisation", specialisation.getDisadvantages());
+            notes.set(notes.get() + "\n");
+
+            addDescription("character.disadvantage.characterisation", characterisation.getDisadvantages());
+            addDescription("character.disadvantage.race", race.getDisadvantages());
+            addDescription("character.disadvantage.profession", profession.getDisadvantages());
+            addDescription("character.disadvantage.fightingStyle", fightingStyle.getDisadvantages());
+            addDescription("character.disadvantage.specialisation", specialisation.getDisadvantages());
+        } else {
+            Collection<String> advantages = new ArrayList<>();
+            advantages.addAll(characterisation.getAdvantages());
+            advantages.addAll(race.getAdvantages());
+            advantages.addAll(profession.getAdvantages());
+            advantages.addAll(fightingStyle.getAdvantages());
+            advantages.addAll(specialisation.getAdvantages());
+            addDescription("character.advantage", advantages);
+
+            notes.set(notes.get() + "\n");
+
+            Collection<String> disadvantages = new ArrayList<>();
+            disadvantages.addAll(characterisation.getDisadvantages());
+            disadvantages.addAll(race.getDisadvantages());
+            disadvantages.addAll(profession.getDisadvantages());
+            disadvantages.addAll(fightingStyle.getDisadvantages());
+            disadvantages.addAll(specialisation.getDisadvantages());
+            addDescription("character.disadvantage", disadvantages);
+        }
     }
 
     private void addDescription(String headerKey, Collection<String> lines) {
         if (!lines.isEmpty()) {
             notes.set(notes.get() + LanguageUtility.getMessage(headerKey) + "\n");
             for (String line : lines) {
-                notes.set(notes.get() + "  - " + line + "\n");
+                String[] parts = line.split("\\r?\\n");
+                for (int i = 0; i < parts.length; i++) {
+                    if (i == 0) {
+                        notes.set(notes.get() + "  - " + parts[i] + "\n");
+                    } else {
+                        notes.set(notes.get() + "    " + parts[i] + "\n");
+                    }
+                }
+
             }
         }
     }
