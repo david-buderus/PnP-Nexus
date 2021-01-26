@@ -1,12 +1,12 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RarityTest {
 
@@ -16,7 +16,7 @@ public class RarityTest {
 
     @Test
     public void testRarityChance() {
-        Map<Rarity, Integer> rarityMap = new HashMap<Rarity, Integer>();
+        Map<Rarity, Integer> rarityMap = new HashMap<>();
 
         for (Rarity r : Rarity.values()) {
             rarityMap.put(r, 0);

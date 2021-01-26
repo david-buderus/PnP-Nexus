@@ -6,6 +6,7 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 import manager.TypTranslation;
+import manager.Utility;
 import model.Currency;
 import model.upgrade.Upgrade;
 import model.upgrade.UpgradeFactory;
@@ -32,7 +33,12 @@ public abstract class Equipment extends Item {
         this.upgrades = new ArrayList<>();
         this.wearStep = new SimpleIntegerProperty(0);
         this.wear = new SimpleIntegerProperty(0);
-        this.wear.bind(wearStep.divide(10));
+
+        int neededSteps = Utility.getConfig().getInt("character.wear.stepsNeeded");
+
+        if (neededSteps > 0) {
+            this.wear.bind(wearStep.divide(neededSteps));
+        }
         this.onBreakListeners = new ArrayList<>();
     }
 
