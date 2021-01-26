@@ -225,6 +225,7 @@ public class BattleMember extends Member {
     }
 
     public void setArmor(ArmorPiece target, int defense) {
+        this.armor.get(target).unbind();
         this.armor.get(target).set(defense);
     }
 

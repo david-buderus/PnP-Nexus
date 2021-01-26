@@ -129,6 +129,7 @@ public class ExtendedBattleMember extends BattleMember {
 
         Consumer<Equipment> armorListener = armor -> {
             if (armor instanceof Armor) {
+                setArmor(ArmorPiece.getArmorPiece(armor.getSubtype()), 0);
                 armors.remove(armor);
             }
         };
