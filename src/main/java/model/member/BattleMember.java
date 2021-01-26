@@ -141,6 +141,8 @@ public class BattleMember extends Member {
         }
     }
 
+    public void onAttack() { }
+
     private int calculateInitiative() {
 
         if (this.states.stream().anyMatch(state -> state.getEffect() == MemberStateEffect.stun && state.getDuration() > 0)) {

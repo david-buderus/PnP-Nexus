@@ -5,10 +5,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import manager.Database;
 import manager.LanguageUtility;
 import manager.Utility;
@@ -22,8 +23,13 @@ import model.member.generation.SecondaryAttribute;
 import model.member.generation.Talent;
 import org.apache.commons.configuration2.Configuration;
 import ui.View;
+import ui.part.CharacterTable;
+import ui.part.EquipmentTable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import static ui.ViewFactory.labelShortTextField;
@@ -67,95 +73,45 @@ public class CharacterView extends View {
             secAttr.getChildren().add(attr);
         }
 
-        VBox weaponBox = new VBox();
-        info.getChildren().add(weaponBox);
-
-        HBox weaponHeadline = new HBox();
-        weaponBox.getChildren().add(weaponHeadline);
-
-        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.name", 100, false));
-        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.typ", 90));
-        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.initiative", 55));
-        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.dice", 55));
-        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.damage", 55));
-        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.hit", 55));
-        weaponHeadline.getChildren().add(createEquipmentHeadline(weaponHeadline, "character.weapon.headline.effect", 150));
-
-        for (Weapon weapon : character.getWeapons()) {
-            HBox weaponLine = new HBox();
-            weaponBox.getChildren().add(weaponLine);
-
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getName(), 100, false, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getSubtype(), 90, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getInitiative(), 55, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getDice(), 55, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, String.valueOf(weapon.getDamage()), 55, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, String.valueOf(weapon.getHit()), 55, true, false));
-            weaponLine.getChildren().add(createEquipmentLabel(weaponLine, weapon.getEffect(), 150, true, false));
-
-            weaponBox.getChildren().add(createEquipmentLabel(weaponLine, weapon.upgradesAsString(), 560, Color.LIGHTGRAY, false, true, false, false));
-        }
+        EquipmentTable<Weapon> weaponTable = new EquipmentTable<>(character.getWeapons());
+        weaponTable.addStringColumn("character.weapon.headline.name", 100, Weapon::getName);
+        weaponTable.addStringColumn("character.weapon.headline.type", 90, Weapon::getSubtype);
+        weaponTable.addStringColumn("character.weapon.headline.initiative", 55, Weapon::getInitiative);
+        weaponTable.addStringColumn("character.weapon.headline.dice", 55, Weapon::getDice);
+        weaponTable.addColumn("character.weapon.headline.damage", 55, Weapon::damageWithWearBinding);
+        weaponTable.addStringColumn("character.weapon.headline.hit", 55, Weapon::getHit);
+        weaponTable.addStringColumn("character.weapon.headline.effect", 150, Weapon::getEffect);
+        info.getChildren().add(weaponTable);
 
         HBox armorNotes = new HBox(5);
         info.getChildren().add(armorNotes);
 
-        VBox armorBox = new VBox();
-        armorNotes.getChildren().add(armorBox);
-
-        HBox armorHeadline = new HBox();
-        armorBox.getChildren().add(armorHeadline);
-
-        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.position", 100, false));
-        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.name", 130));
-        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.protection", 60));
-        armorHeadline.getChildren().add(createEquipmentHeadline(armorHeadline, "character.armor.headline.weight", 60));
-
-        for (Armor armor : character.getArmor()) {
-            HBox armorLine = new HBox();
-            armorBox.getChildren().add(armorLine);
-
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getSubtype(), 100, false, false));
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, armor.getName(), 130, true, false));
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getProtection()), 60, true, false));
-            armorLine.getChildren().add(createEquipmentLabel(armorLine, String.valueOf(armor.getWeight()), 60, true, false));
-
-            String upgradeInfo;
-
+        EquipmentTable<Armor> armorTable = new EquipmentTable<>(character.getArmor());
+        armorTable.addStringColumn("character.armor.headline.position", 100, Armor::getSubtype);
+        armorTable.addStringColumn("character.armor.headline.name", 130, Armor::getName);
+        armorTable.addColumn("character.armor.headline.protection", 60, Armor::protectionWithWearBinding);
+        armorTable.addStringColumn("character.armor.headline.weight", 60, Armor::getWeight);
+        armorTable.setUpgradeFactory(armor -> {
             if (armor.getEffect().isBlank()) {
-                upgradeInfo = armor.upgradesAsString();
+                return new ReadOnlyStringWrapper(armor.upgradesAsString());
             } else {
-                upgradeInfo = armor.getEffect() + " " + armor.upgradesAsString();
+                return new ReadOnlyStringWrapper(armor.getEffect() + " " + armor.upgradesAsString());
             }
-
-            armorBox.getChildren().add(createEquipmentLabel(armorLine, upgradeInfo, 350, Color.LIGHTGRAY, false, true, false, false));
-        }
+        });
+        armorNotes.getChildren().add(armorTable);
 
         TextArea notes = new TextArea();
         notes.setPrefWidth(100);
         HBox.setHgrow(notes, Priority.ALWAYS);
-        notes.prefHeightProperty().bind(armorBox.heightProperty());
+        notes.prefHeightProperty().bind(armorTable.heightProperty());
         notes.textProperty().bindBidirectional(character.notesProperty());
         armorNotes.getChildren().add(notes);
 
         if (character.getJewelleries().size() > 0) {
-            VBox jewelleryBox = new VBox();
-            info.getChildren().add(jewelleryBox);
-
-            HBox jewelleryHeadline = new HBox();
-            jewelleryBox.getChildren().add(jewelleryHeadline);
-
-            jewelleryHeadline.getChildren().add(createEquipmentHeadline(jewelleryHeadline, "character.jewellery.headline.name", 100, false));
-            jewelleryHeadline.getChildren().add(createEquipmentHeadline(jewelleryHeadline, "character.jewellery.headline.effect", 460));
-
-            for (Jewellery jewellery : character.getJewelleries()) {
-                HBox jewelleryLine = new HBox();
-                jewelleryBox.getChildren().add(jewelleryLine);
-
-                jewelleryLine.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.getName(), 100, false, false));
-                jewelleryLine.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.getEffect(), 460, true, false));
-
-                jewelleryBox.getChildren().add(createEquipmentLabel(jewelleryLine, jewellery.upgradesAsString(), 560, Color.LIGHTGRAY, false, true, false, false));
-            }
+            EquipmentTable<Jewellery> jewelleryTable = new EquipmentTable<>(character.getJewelleries());
+            jewelleryTable.addStringColumn("character.jewellery.headline.name", 100, Jewellery::getName);
+            jewelleryTable.addStringColumn("character.jewellery.headline.effect", 460, Jewellery::getEffect);
+            info.getChildren().add(jewelleryTable);
         }
 
         TabPane talentTabs = new TabPane();
@@ -221,7 +177,7 @@ public class CharacterView extends View {
                         pos++;
                     }
 
-                }  else if (talentName.equals(skip)) {
+                } else if (talentName.equals(skip)) {
                     if (pos % columnCount != 0) {
                         pos = (pos / columnCount + 1) * columnCount;
                     }
@@ -242,71 +198,18 @@ public class CharacterView extends View {
             spellTab.setClosable(false);
             talentTabs.getTabs().add(spellTab);
 
-            VBox spellBox = new VBox();
-            spellTab.setContent(spellBox);
-
-            HBox spellHeadline = new HBox();
-            spellBox.getChildren().add(spellHeadline);
-
-            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.name", 100, false));
-            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.effect", 250));
-            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.typ", 90));
-            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.costs", 51));
-            spellHeadline.getChildren().add(createEquipmentHeadline(spellHeadline, "character.spell.headline.castTime", 51));
-
-            for (Spell spell : character.getSpells()) {
-                HBox spellLine = new HBox();
-                spellBox.getChildren().add(spellLine);
-
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getName(), 100, false, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getEffect(), 250, true, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getType(), 90, true, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCost(), 51, true, true));
-                spellLine.getChildren().add(createEquipmentLabel(spellLine, spell.getCastTime(), 51, true, true));
-            }
+            CharacterTable<Spell> spellTable = new CharacterTable<>(character.getSpells());
+            spellTable.addStringColumn("character.spell.headline.name", 100, Spell::getName);
+            spellTable.addStringColumn("character.spell.headline.effect", 250, Spell::getEffect);
+            spellTable.addStringColumn("character.spell.headline.type", 90, Spell::getType);
+            spellTable.addStringColumn("character.spell.headline.costs", 51, Spell::getCost);
+            spellTable.addStringColumn("character.spell.headline.castTime", 51, Spell::getCastTime);
+            spellTab.setContent(spellTable);
         }
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
         show();
-    }
-
-
-    private Region createEquipmentHeadline(HBox box, String key, double width) {
-        return createEquipmentHeadline(box, key, width, true);
-    }
-
-    private Region createEquipmentHeadline(HBox box, String key, double width, boolean left) {
-        return createEquipmentLabel(box, key, width, Color.LIGHTGRAY, left, true, true, true);
-    }
-
-    private Region createEquipmentLabel(HBox box, String name, double width, boolean left, boolean bot) {
-        return createEquipmentLabel(box, name, width, Color.TRANSPARENT, left, bot, true, false);
-    }
-
-    private Region createEquipmentLabel(HBox box, String name, double width, Color color, boolean left, boolean bot, boolean bind, boolean headline) {
-        Label label = new Label();
-        if (headline) {
-            label.textProperty().bind(LanguageUtility.getMessageProperty(name));
-        } else {
-            label.setText(name);
-        }
-        label.setPrefWidth(width);
-        label.setTextAlignment(TextAlignment.LEFT);
-        label.setWrapText(true);
-        label.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
-                BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
-                bot ? BorderStrokeStyle.SOLID : BorderStrokeStyle.NONE,
-                left ? BorderStrokeStyle.SOLID : BorderStrokeStyle.NONE,
-                CornerRadii.EMPTY, BorderWidths.DEFAULT, Insets.EMPTY)));
-        label.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
-        label.setPadding(new Insets(0, 0, 0, 5));
-
-        if (bind) {
-            label.minHeightProperty().bind(box.heightProperty());
-        }
-
-        return label;
     }
 
     private Pane createEmptyCell() {

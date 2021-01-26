@@ -1,23 +1,30 @@
 package model.item;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Weapon extends Equipment {
 
     private String initiative;
     private String dice;
-    private int damage;
+    private final IntegerProperty damage;
+    protected final IntegerBinding damageWithWear;
     private int hit;
 
     public Weapon() {
         super();
         this.initiative = "0";
         this.dice = "";
-        this.damage = 0;
+        this.damage = new SimpleIntegerProperty(0);
+        this.damageWithWear = Bindings.createIntegerBinding(() -> Math.max(0, getDamage() - getWear()), damage, wear);
         this.hit = 0;
     }
 
     @Override
     protected boolean shouldBreak() {
-        return getWear() >= getDamage();
+        return getWear() > getDamage();
     }
 
     @Override
@@ -48,11 +55,19 @@ public class Weapon extends Equipment {
     }
 
     public int getDamage() {
+        return damage.get();
+    }
+
+    public IntegerProperty damageProperty() {
         return damage;
     }
 
     public void setDamage(int damage) {
-        this.damage = damage;
+        this.damage.set(damage);
+    }
+
+    public IntegerBinding damageWithWearBinding() {
+        return damageWithWear;
     }
 
     public int getHit() {

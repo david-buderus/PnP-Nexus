@@ -14,7 +14,9 @@ import model.Battle;
 import model.Rarity;
 import model.Spell;
 import model.item.*;
+import model.loot.LootTable;
 import model.member.data.ArmorPiece;
+import model.member.data.AttackTypes;
 import model.member.generation.*;
 import model.member.generation.specs.*;
 import org.apache.commons.configuration2.Configuration;
@@ -22,6 +24,7 @@ import org.apache.commons.configuration2.Configuration;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ExtendedBattleMember extends BattleMember {
@@ -118,12 +121,32 @@ public class ExtendedBattleMember extends BattleMember {
 
         this.generateStats();
 
+        Consumer<Equipment> weaponListener = weapon -> {
+            if (weapon instanceof Weapon) {
+                weapons.remove(weapon);
+            }
+        };
+
+        Consumer<Equipment> armorListener = armor -> {
+            if (armor instanceof Armor) {
+                armors.remove(armor);
+            }
+        };
+
         //Prepare WeaponList
         this.weapons = FXCollections.observableArrayList();
         this.weapons.addListener((ListChangeListener<? super Weapon>) ob -> {
+            for (Weapon weapon : weapons) {
+                weapon.removeOnBreakListener(weaponListener);
+            }
+
             while (ob.next()) {
                 ObservableList<? extends Weapon> list = ob.getList();
                 DecimalFormat format = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.GERMANY);
+
+                for (Weapon weapon : list) {
+                    weapon.addOnBreakListener(weaponListener);
+                }
 
                 try {
                     if (list.size() == 1) {
@@ -170,23 +193,20 @@ public class ExtendedBattleMember extends BattleMember {
             }
         }
 
-        if (dropsWeapons()) {
-            for (Equipment equip : weapons) {
-                if (!equip.getName().isEmpty()) {
-                    this.lootTable.add(equip, 1, 1);
-                }
-            }
-        }
-
         //Prepare ArmorList
         this.armors = FXCollections.observableArrayList();
         this.armors.addListener((ListChangeListener<? super Armor>) ob -> {
+            for (Armor armor : armors) {
+                armor.removeOnBreakListener(armorListener);
+            }
+
             while (ob.next()) {
                 ObservableList<? extends Armor> list = ob.getList();
 
                 for (Armor armor : list) {
                     try {
                         this.setArmor(ArmorPiece.getArmorPiece(armor.getSubtype()), armor.protectionWithWearBinding());
+                        armor.addOnBreakListener(armorListener);
                     } catch (NoSuchElementException ignored) {
                     }
                 }
@@ -196,14 +216,6 @@ public class ExtendedBattleMember extends BattleMember {
         //Generate Armor
         for (ArmorPosition position : ArmorPosition.values()) {
             this.generateArmor(position);
-        }
-
-        if (dropsArmor()) {
-            for (Equipment equip : armors) {
-                if (!equip.getName().isEmpty()) {
-                    this.lootTable.add(equip, 1, 1);
-                }
-            }
         }
 
         Collection<Jewellery> jewelleryPool;
@@ -249,14 +261,6 @@ public class ExtendedBattleMember extends BattleMember {
             }
         }
 
-        if (dropsJewellery()) {
-            for (Equipment equip : jewellery) {
-                if (!equip.getName().isEmpty()) {
-                    this.lootTable.add(equip, 1, 1);
-                }
-            }
-        }
-
         this.useSkillPoints();
         this.spells = FXCollections.observableArrayList();
         this.generateSpells();
@@ -266,6 +270,74 @@ public class ExtendedBattleMember extends BattleMember {
 
         this.generateLoot();
         this.addDescription();
+    }
+
+    @Override
+    public LootTable getLootTable() {
+        LootTable lootTable = super.getLootTable();
+
+        if (dropsWeapons()) {
+            for (Equipment equip : weapons) {
+                if (!equip.getName().isEmpty()) {
+                    lootTable.add(equip, 1, 1);
+                }
+            }
+        }
+
+        if (dropsArmor()) {
+            for (Equipment equip : armors) {
+                if (!equip.getName().isEmpty()) {
+                    lootTable.add(equip, 1, 1);
+                }
+            }
+        }
+
+        if (dropsJewellery()) {
+            for (Equipment equip : jewellery) {
+                if (!equip.getName().isEmpty()) {
+                    lootTable.add(equip, 1, 1);
+                }
+            }
+        }
+
+        return lootTable;
+    }
+
+    @Override
+    public void onAttack() {
+        for (Weapon weapon : new ArrayList<>(weapons)) {
+            if (!Database.shieldTypes.contains(weapon.getSubtype())) {
+                weapon.onUse();
+            }
+        }
+    }
+
+    @Override
+    public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, BattleMember source) {
+        super.takeDamage(amount, type, withShield, penetration, block, source);
+
+        if (withShield) {
+            for (Weapon shield : new ArrayList<>(weapons)) {
+                if (Database.shieldTypes.contains(shield.getSubtype())) {
+                    shield.onUse();
+                }
+            }
+
+            if (getArmor(ArmorPiece.shield) < amount) {
+                for (Armor armor : new ArrayList<>(armors)) {
+                    if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
+                        armor.onUse();
+                    }
+                }
+            }
+
+        } else {
+            for (Armor armor : new ArrayList<>(armors)) {
+                if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
+                    armor.onUse();
+                }
+            }
+        }
     }
 
     private void generateLoot() {
@@ -717,19 +789,19 @@ public class ExtendedBattleMember extends BattleMember {
         return talents.get(talent);
     }
 
-    public Collection<Weapon> getWeapons() {
+    public ObservableList<Weapon> getWeapons() {
         return weapons;
     }
 
-    public Collection<Armor> getArmor() {
+    public ObservableList<Armor> getArmor() {
         return armors;
     }
 
-    public Collection<Jewellery> getJewelleries() {
+    public ObservableList<Jewellery> getJewelleries() {
         return jewellery;
     }
 
-    public Collection<Spell> getSpells() {
+    public ObservableList<Spell> getSpells() {
         return spells;
     }
 

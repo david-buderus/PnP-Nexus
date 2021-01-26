@@ -23,7 +23,7 @@ public abstract class Equipment extends Item {
     protected ArrayList<Upgrade> upgrades;
     protected IntegerProperty wear;
     protected IntegerProperty wearStep;
-    protected Collection<Consumer<Equipment>> listeners;
+    protected Collection<Consumer<Equipment>> onBreakListeners;
 
     public Equipment() {
         super();
@@ -33,7 +33,7 @@ public abstract class Equipment extends Item {
         this.wearStep = new SimpleIntegerProperty(0);
         this.wear = new SimpleIntegerProperty(0);
         this.wear.bind(wearStep.divide(10));
-        this.listeners = new ArrayList<>();
+        this.onBreakListeners = new ArrayList<>();
     }
 
     protected abstract boolean shouldBreak();
@@ -41,7 +41,7 @@ public abstract class Equipment extends Item {
     public void onUse() {
         this.setWearStep(getWearStep() + 1);
         if (shouldBreak()) {
-            for (Consumer<Equipment> listener : this.listeners) {
+            for (Consumer<Equipment> listener : this.onBreakListeners) {
                 listener.accept(this);
             }
         }
@@ -79,8 +79,12 @@ public abstract class Equipment extends Item {
         return equipment;
     }
 
-    public void addListener(Consumer<Equipment> listener) {
-        this.listeners.add(listener);
+    public void addOnBreakListener(Consumer<Equipment> listener) {
+        this.onBreakListeners.add(listener);
+    }
+
+    public void removeOnBreakListener(Consumer<Equipment> listener) {
+        this.onBreakListeners.remove(listener);
     }
 
     public String getMaterial() {

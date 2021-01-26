@@ -20,7 +20,7 @@ public class Armor extends Equipment {
 
     @Override
     protected boolean shouldBreak() {
-        return getWear() >= getProtection();
+        return getWear() > getProtection();
     }
 
     @Override
