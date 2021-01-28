@@ -278,27 +278,15 @@ public class ExtendedBattleMember extends BattleMember {
         LootTable lootTable = super.getLootTable();
 
         if (dropsWeapons()) {
-            for (Equipment equip : weapons) {
-                if (!equip.getName().isEmpty()) {
-                    lootTable.add(equip, 1, 1);
-                }
-            }
+            weapons.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
         }
 
         if (dropsArmor()) {
-            for (Equipment equip : armors) {
-                if (!equip.getName().isEmpty()) {
-                    lootTable.add(equip, 1, 1);
-                }
-            }
+            armors.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
         }
 
         if (dropsJewellery()) {
-            for (Equipment equip : jewellery) {
-                if (!equip.getName().isEmpty()) {
-                    lootTable.add(equip, 1, 1);
-                }
-            }
+            jewellery.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
         }
 
         return lootTable;
