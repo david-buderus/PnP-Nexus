@@ -22,8 +22,8 @@ public abstract class Equipment extends Item {
     protected String material;
     protected int upgradeSlots;
     protected ArrayList<Upgrade> upgrades;
-    protected IntegerProperty wear;
-    protected IntegerProperty wearStep;
+    protected IntegerProperty wearStage;
+    protected IntegerProperty wearTick;
     protected Collection<Consumer<Equipment>> onBreakListeners;
 
     public Equipment() {
@@ -31,13 +31,13 @@ public abstract class Equipment extends Item {
         this.material = "";
         this.upgradeSlots = 0;
         this.upgrades = new ArrayList<>();
-        this.wearStep = new SimpleIntegerProperty(0);
-        this.wear = new SimpleIntegerProperty(0);
+        this.wearTick = new SimpleIntegerProperty(0);
+        this.wearStage = new SimpleIntegerProperty(0);
 
         int neededSteps = Utility.getConfig().getInt("character.wear.stepsNeeded");
 
         if (neededSteps > 0) {
-            this.wear.bind(wearStep.divide(neededSteps));
+            this.wearStage.bind(wearTick.divide(neededSteps));
         }
         this.onBreakListeners = new ArrayList<>();
     }
@@ -55,7 +55,7 @@ public abstract class Equipment extends Item {
      * @param wear the amount of wear
      */
     public void applyWear(int wear) {
-        this.setWearStep(getWearStep() + wear);
+        this.setWearTick(getWearTick() + wear);
         if (shouldBreak()) {
             for (Consumer<Equipment> listener : this.onBreakListeners) {
                 listener.accept(this);
@@ -143,24 +143,24 @@ public abstract class Equipment extends Item {
         return currency;
     }
 
-    public int getWear() {
-        return wear.get();
+    public int getWearStage() {
+        return wearStage.get();
     }
 
-    public ReadOnlyIntegerProperty wearProperty() {
-        return wear;
+    public ReadOnlyIntegerProperty wearStageProperty() {
+        return wearStage;
     }
 
-    public int getWearStep() {
-        return wearStep.get();
+    public int getWearTick() {
+        return wearTick.get();
     }
 
-    public IntegerProperty wearStepProperty() {
-        return wearStep;
+    public IntegerProperty wearTickProperty() {
+        return wearTick;
     }
 
-    public void setWearStep(int wearStep) {
-        this.wearStep.set(wearStep);
+    public void setWearTick(int wearTick) {
+        this.wearTick.set(wearTick);
     }
 
     @Override

@@ -14,13 +14,13 @@ public class Armor extends Equipment {
     public Armor() {
         super();
         this.protection = new SimpleIntegerProperty(0);
-        this.protectionWithWear = Bindings.createIntegerBinding(() -> Math.max(0, getProtection() - getWear()), protection, wear);
+        this.protectionWithWear = Bindings.createIntegerBinding(() -> Math.max(0, getProtection() - getWearStage()), protection, wearStage);
         this.weight = 0;
     }
 
     @Override
     protected boolean shouldBreak() {
-        return getWear() > getProtection();
+        return getWearStage() > getProtection();
     }
 
     @Override

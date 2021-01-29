@@ -18,13 +18,13 @@ public class Weapon extends Equipment {
         this.initiative = "0";
         this.dice = "";
         this.damage = new SimpleIntegerProperty(0);
-        this.damageWithWear = Bindings.createIntegerBinding(() -> Math.max(0, getDamage() - getWear()), damage, wear);
+        this.damageWithWear = Bindings.createIntegerBinding(() -> Math.max(0, getDamage() - getWearStage()), damage, wearStage);
         this.hit = 0;
     }
 
     @Override
     protected boolean shouldBreak() {
-        return getWear() > getDamage();
+        return getWearStage() > getDamage();
     }
 
     @Override
