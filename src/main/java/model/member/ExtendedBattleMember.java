@@ -293,7 +293,7 @@ public class ExtendedBattleMember extends BattleMember {
     }
 
     @Override
-    public void onAttack() {
+    public void applyWearOnWeapons() {
         for (Weapon weapon : new ArrayList<>(weapons)) {
             if (!Database.shieldTypes.contains(weapon.getSubtype())) {
                 weapon.applyWear();

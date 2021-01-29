@@ -294,7 +294,7 @@ public class BattleView extends ConfigurableViewPart {
                                     damage.get(), attackCombo.getSelectionModel().getSelectedItem(),
                                     blockCombo.getSelectionModel().getSelectedItem().toBool(),
                                     (double) penetration.get() / 100, Double.parseDouble(blockField.getText()), source);
-                            source.onAttack();
+                            source.applyWearOnWeapons();
                         });
                         info.getChildren().add(attackButton);
                     }

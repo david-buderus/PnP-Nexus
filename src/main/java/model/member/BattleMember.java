@@ -141,7 +141,7 @@ public class BattleMember extends Member {
         }
     }
 
-    public void onAttack() { }
+    public void applyWearOnWeapons() { }
 
     private int calculateInitiative() {
 
