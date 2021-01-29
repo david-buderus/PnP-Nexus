@@ -26,7 +26,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
                 new String[]{"column.name", "column.type", "column.equipment.material", "column.jewellery.gem",
                         "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots",
                         "column.equipment.requirement"},
-                new String[]{"name", "subtype", "material", "gem", "rarity", "currency", "effect", "slots", "requirement"});
+                new String[]{"name", "subtype", "material", "gem", "rarity", "currency", "effect", "upgradeSlots", "requirement"});
 
         this.addControls(root);
 

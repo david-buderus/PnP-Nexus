@@ -43,17 +43,17 @@ public class SQLView extends ViewPart {
         root.getTabs().add(createTab("sql.tab.items", labels, names, Database.itemList, Item.class));
 
         labels = new String[]{"column.name", "column.type", "column.weapon.initiative", "column.dice_weight", "column.damage_protection", "column.weapon.hit", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subtype", "initiative", "dice", "damage", "hit", "tier", "rarity", "currency", "effect", "slots", "requirement"};
+        names = new String[]{"name", "subtype", "initiative", "dice", "damage", "hit", "tier", "rarity", "currency", "effect", "upgradeSlots", "requirement"};
 
         root.getTabs().add(createTab("sql.tab.weapons", labels, names, Database.weaponList, Weapon.class));
 
         labels = new String[]{"column.name", "column.type", "Schutz", "Belastung", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subtype", "protection", "weight", "tier", "rarity", "currency", "effect", "slots", "requirement"};
+        names = new String[]{"name", "subtype", "protection", "weight", "tier", "rarity", "currency", "effect", "upgradeSlots", "requirement"};
 
         root.getTabs().add(createTab("sql.tab.armor", labels, names, Database.armorList, Armor.class));
 
         labels = new String[]{"column.name", "column.type", "Material", "Edelstein", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subtype", "material", "gem", "tier", "rarity", "currency", "effect", "slots", "requirement"};
+        names = new String[]{"name", "subtype", "material", "gem", "tier", "rarity", "currency", "effect", "upgradeSlots", "requirement"};
 
         root.getTabs().add(createTab("sql.tab.jewellery", labels, names, Database.jewelleryList, Jewellery.class));
 
