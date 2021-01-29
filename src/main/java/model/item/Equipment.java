@@ -20,7 +20,7 @@ public abstract class Equipment extends Item {
     protected static Random rand = new Random();
 
     protected String material;
-    protected int slots;
+    protected int upgradeSlots;
     protected ArrayList<Upgrade> upgrades;
     protected IntegerProperty wear;
     protected IntegerProperty wearStep;
@@ -29,7 +29,7 @@ public abstract class Equipment extends Item {
     public Equipment() {
         super();
         this.material = "";
-        this.slots = 0;
+        this.upgradeSlots = 0;
         this.upgrades = new ArrayList<>();
         this.wearStep = new SimpleIntegerProperty(0);
         this.wear = new SimpleIntegerProperty(0);
@@ -44,8 +44,18 @@ public abstract class Equipment extends Item {
 
     protected abstract boolean shouldBreak();
 
-    public void onUse() {
-        this.setWearStep(getWearStep() + 1);
+    /** Applies one wear to this equipment */
+    public void applyWear() {
+        applyWear(1);
+    }
+
+    /**
+     * Applies wear to this equipment
+     *
+     * @param wear the amount of wear
+     */
+    public void applyWear(int wear) {
+        this.setWearStep(getWearStep() + wear);
         if (shouldBreak()) {
             for (Consumer<Equipment> listener : this.onBreakListeners) {
                 listener.accept(this);
@@ -56,7 +66,7 @@ public abstract class Equipment extends Item {
     public Equipment copy() {
         Equipment equipment = (Equipment) super.copy();
         equipment.setMaterial(this.getMaterial());
-        equipment.setSlots(this.getSlots());
+        equipment.setUpgradeSlots(this.getUpgradeSlots());
 
         return equipment;
     }
@@ -75,9 +85,9 @@ public abstract class Equipment extends Item {
 
         while (rand.nextDouble() <= 0.2) {
             UpgradeFactory factory = list.get(rand.nextInt(list.size()));
-            if (factory.getSlots() <= equipment.getSlots()) {
+            if (factory.getSlots() <= equipment.getUpgradeSlots()) {
                 equipment.getUpgrades().add(factory.getUpgrade());
-                equipment.setSlots(getSlots() - factory.getSlots());
+                equipment.setUpgradeSlots(getUpgradeSlots() - factory.getSlots());
                 list.remove(factory);
             }
         }
@@ -101,12 +111,12 @@ public abstract class Equipment extends Item {
         this.material = material;
     }
 
-    public int getSlots() {
-        return slots;
+    public int getUpgradeSlots() {
+        return upgradeSlots;
     }
 
-    public void setSlots(int slots) {
-        this.slots = slots;
+    public void setUpgradeSlots(int upgradeSlots) {
+        this.upgradeSlots = upgradeSlots;
     }
 
     public Collection<Upgrade> getUpgrades() {
@@ -165,7 +175,7 @@ public abstract class Equipment extends Item {
         this.upgrades.sort(Comparator.comparing(Upgrade::getFullName));
         other.upgrades.sort(Comparator.comparing(Upgrade::getFullName));
 
-        return this.getMaterial().equals(other.getMaterial()) && this.getSlots() == other.getSlots() &&
+        return this.getMaterial().equals(other.getMaterial()) && this.getUpgradeSlots() == other.getUpgradeSlots() &&
                 this.upgradesAsString().equals(other.upgradesAsString());
     }
 }

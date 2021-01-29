@@ -308,7 +308,7 @@ public class ExtendedBattleMember extends BattleMember {
     public void onAttack() {
         for (Weapon weapon : new ArrayList<>(weapons)) {
             if (!Database.shieldTypes.contains(weapon.getSubtype())) {
-                weapon.onUse();
+                weapon.applyWear();
             }
         }
     }
@@ -320,14 +320,14 @@ public class ExtendedBattleMember extends BattleMember {
         if (withShield) {
             for (Weapon shield : new ArrayList<>(weapons)) {
                 if (Database.shieldTypes.contains(shield.getSubtype())) {
-                    shield.onUse();
+                    shield.applyWear();
                 }
             }
 
             if (getArmor(ArmorPiece.shield) < amount) {
                 for (Armor armor : new ArrayList<>(armors)) {
                     if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
-                        armor.onUse();
+                        armor.applyWear();
                     }
                 }
             }
@@ -335,7 +335,7 @@ public class ExtendedBattleMember extends BattleMember {
         } else {
             for (Armor armor : new ArrayList<>(armors)) {
                 if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
-                    armor.onUse();
+                    armor.applyWear();
                 }
             }
         }

@@ -92,7 +92,7 @@ public abstract class DatabaseLoader {
                 weapon.setDamage(weaponSet.getInt(getLocalized("column.damage_protection")));
                 weapon.setHit(weaponSet.getInt(getLocalized("column.hit")));
                 weapon.setEffect(getString(weaponSet, getLocalized("column.effect")));
-                weapon.setSlots(weaponSet.getInt(getLocalized("column.upgradeSlots")));
+                weapon.setUpgradeSlots(weaponSet.getInt(getLocalized("column.upgradeSlots")));
                 weapon.setRarity(getRarity(weaponSet, getLocalized("column.rarity")));
                 weapon.setCurrency(new Currency(getString(weaponSet, getLocalized("column.price"))));
                 weapon.setTier(weaponSet.getInt(getLocalized("column.tier")));
@@ -129,7 +129,7 @@ public abstract class DatabaseLoader {
                 armor.setProtection(armorSet.getInt(getLocalized("column.protection")));
                 armor.setWeight(armorSet.getDouble(getLocalized("column.weight")));
                 armor.setEffect(getString(armorSet, getLocalized("column.effect")));
-                armor.setSlots(armorSet.getInt(getLocalized("column.upgradeSlots")));
+                armor.setUpgradeSlots(armorSet.getInt(getLocalized("column.upgradeSlots")));
                 armor.setRarity(getRarity(armorSet, getLocalized("column.rarity")));
                 armor.setCurrency(new Currency(getString(armorSet, getLocalized("column.price"))));
                 armor.setTier(armorSet.getInt(getLocalized("column.tier")));
@@ -164,7 +164,7 @@ public abstract class DatabaseLoader {
                 jewellery.setSubtype(getString(jewellerySet, getLocalized("column.subtype")));
                 jewellery.setRequirement(getString(jewellerySet, getLocalized("column.requirement")));
                 jewellery.setEffect(getString(jewellerySet, getLocalized("column.effect")));
-                jewellery.setSlots(jewellerySet.getInt(getLocalized("column.upgradeSlots")));
+                jewellery.setUpgradeSlots(jewellerySet.getInt(getLocalized("column.upgradeSlots")));
                 jewellery.setRarity(getRarity(jewellerySet, getLocalized("column.rarity")));
                 jewellery.setCurrency(new Currency(getString(jewellerySet, getLocalized("column.price"))));
                 jewellery.setTier(jewellerySet.getInt(getLocalized("column.tier")));
