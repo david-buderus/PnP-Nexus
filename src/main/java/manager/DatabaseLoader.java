@@ -84,22 +84,22 @@ public abstract class DatabaseLoader {
                 Weapon weapon = new Weapon();
                 weapon.setName(getString(weaponSet, getLocalized("column.name")));
                 weapon.setMaterial(getString(weaponSet, getLocalized("column.material")));
-                weapon.setTyp(getString(weaponSet, getLocalized("column.type")));
-                weapon.setSubTyp(getString(weaponSet, getLocalized("column.subtype")));
+                weapon.setType(getString(weaponSet, getLocalized("column.type")));
+                weapon.setSubtype(getString(weaponSet, getLocalized("column.subtype")));
                 weapon.setRequirement(getString(weaponSet, getLocalized("column.requirement")));
                 weapon.setInitiative(getString(weaponSet, getLocalized("column.initiative")));
                 weapon.setDice(getString(weaponSet, getLocalized("column.dice_weight")));
                 weapon.setDamage(weaponSet.getInt(getLocalized("column.damage_protection")));
                 weapon.setHit(weaponSet.getInt(getLocalized("column.hit")));
                 weapon.setEffect(getString(weaponSet, getLocalized("column.effect")));
-                weapon.setSlots(weaponSet.getInt(getLocalized("column.upgradeSlots")));
+                weapon.setUpgradeSlots(weaponSet.getInt(getLocalized("column.upgradeSlots")));
                 weapon.setRarity(getRarity(weaponSet, getLocalized("column.rarity")));
                 weapon.setCurrency(new Currency(getString(weaponSet, getLocalized("column.price"))));
                 weapon.setTier(weaponSet.getInt(getLocalized("column.tier")));
 
                 weaponList.add(weapon);
 
-                TypTranslation.add(weapon.getTyp(), getLocalized("type.weapon"));
+                TypTranslation.add(weapon.getType(), getLocalized("type.weapon"));
             }
 
         } catch (SQLException e) {
@@ -123,20 +123,20 @@ public abstract class DatabaseLoader {
                 Armor armor = new Armor();
                 armor.setName(getString(armorSet, getLocalized("column.name")));
                 armor.setMaterial(getString(armorSet, getLocalized("column.material")));
-                armor.setTyp(getString(armorSet, getLocalized("column.type")));
-                armor.setSubTyp(getString(armorSet, getLocalized("column.subtype")));
+                armor.setType(getString(armorSet, getLocalized("column.type")));
+                armor.setSubtype(getString(armorSet, getLocalized("column.subtype")));
                 armor.setRequirement(getString(armorSet, getLocalized("column.requirement")));
                 armor.setProtection(armorSet.getInt(getLocalized("column.protection")));
                 armor.setWeight(armorSet.getDouble(getLocalized("column.weight")));
                 armor.setEffect(getString(armorSet, getLocalized("column.effect")));
-                armor.setSlots(armorSet.getInt(getLocalized("column.upgradeSlots")));
+                armor.setUpgradeSlots(armorSet.getInt(getLocalized("column.upgradeSlots")));
                 armor.setRarity(getRarity(armorSet, getLocalized("column.rarity")));
                 armor.setCurrency(new Currency(getString(armorSet, getLocalized("column.price"))));
                 armor.setTier(armorSet.getInt(getLocalized("column.tier")));
 
                 armorList.add(armor);
 
-                TypTranslation.add(armor.getTyp(), getLocalized("type.armor"));
+                TypTranslation.add(armor.getType(), getLocalized("type.armor"));
             }
 
         } catch (SQLException e) {
@@ -160,18 +160,18 @@ public abstract class DatabaseLoader {
                 jewellery.setName(getString(jewellerySet, getLocalized("column.name")));
                 jewellery.setMaterial(getString(jewellerySet, getLocalized("column.material")));
                 jewellery.setGem(getString(jewellerySet, getLocalized("column.gem")));
-                jewellery.setTyp(getString(jewellerySet, getLocalized("column.type")));
-                jewellery.setSubTyp(getString(jewellerySet, getLocalized("column.subtype")));
+                jewellery.setType(getString(jewellerySet, getLocalized("column.type")));
+                jewellery.setSubtype(getString(jewellerySet, getLocalized("column.subtype")));
                 jewellery.setRequirement(getString(jewellerySet, getLocalized("column.requirement")));
                 jewellery.setEffect(getString(jewellerySet, getLocalized("column.effect")));
-                jewellery.setSlots(jewellerySet.getInt(getLocalized("column.upgradeSlots")));
+                jewellery.setUpgradeSlots(jewellerySet.getInt(getLocalized("column.upgradeSlots")));
                 jewellery.setRarity(getRarity(jewellerySet, getLocalized("column.rarity")));
                 jewellery.setCurrency(new Currency(getString(jewellerySet, getLocalized("column.price"))));
                 jewellery.setTier(jewellerySet.getInt(getLocalized("column.tier")));
 
                 jewelleryList.add(jewellery);
 
-                TypTranslation.add(jewellery.getTyp(), getLocalized("type.jewellery"));
+                TypTranslation.add(jewellery.getType(), getLocalized("type.jewellery"));
             }
         } catch (SQLException e) {
             return getErrorString("table.jewellery");
@@ -192,8 +192,8 @@ public abstract class DatabaseLoader {
             while (plantSet.next()) {
                 Plant plant = new Plant();
                 plant.setName(getString(plantSet, getLocalized("column.name")));
-                plant.setTyp(getString(plantSet, getLocalized("column.type")));
-                plant.setSubTyp(getString(plantSet, getLocalized("column.subtype")));
+                plant.setType(getString(plantSet, getLocalized("column.type")));
+                plant.setSubtype(getString(plantSet, getLocalized("column.subtype")));
                 plant.setEffect(getString(plantSet, getLocalized("column.effect")));
                 plant.setRarity(getRarity(plantSet, getLocalized("column.rarity")));
                 plant.setCurrency(new Currency(getString(plantSet, getLocalized("column.price"))));
@@ -224,9 +224,9 @@ public abstract class DatabaseLoader {
 
             while (itemSet.next()) {
                 Item item = new Item();
-                item.setTyp(getString(itemSet, getLocalized("column.type")));
+                item.setType(getString(itemSet, getLocalized("column.type")));
                 item.setName(getString(itemSet, getLocalized("column.name")));
-                item.setSubTyp(getString(itemSet, getLocalized("column.subtype")));
+                item.setSubtype(getString(itemSet, getLocalized("column.subtype")));
                 item.setEffect(getString(itemSet, getLocalized("column.effect")));
                 item.setRarity(getRarity(itemSet, getLocalized("column.rarity")));
                 item.setCurrency(new Currency(getString(itemSet, getLocalized("column.price"))));
@@ -303,12 +303,12 @@ public abstract class DatabaseLoader {
                 Spell spell = new Spell();
                 spell.setName(getString(spellSet, getLocalized("column.name")));
                 spell.setEffect(getString(spellSet, getLocalized("column.effect")));
-                spell.setTyp(Arrays.stream((SingleValue[]) spellSet.getObject(getLocalized("column.type"))).
+                spell.setType(Arrays.stream((SingleValue[]) spellSet.getObject(getLocalized("column.type"))).
                         map(val -> (String) val.getValue()).collect(Collectors.joining(",")));
                 spell.setCost(getString(spellSet, getLocalized("column.cost")));
                 spell.setCastTime(getString(spellSet, getLocalized("column.castTime")));
                 spell.setTier(spellSet.getInt(getLocalized("column.tier")));
-                spell.setTalent(getTalent(spell.getTyp()));
+                spell.setTalent(getTalent(spell.getType()));
 
                 spellList.add(spell);
             }
@@ -891,8 +891,8 @@ public abstract class DatabaseLoader {
             while (weaponSet.next()) {
                 Weapon weapon = new Weapon();
                 weapon.setName(weaponName);
-                weapon.setTyp(getLocalized("type.weapon"));
-                weapon.setSubTyp(getString(weaponSet, getLocalized("column.weaponTyp")));
+                weapon.setType(getLocalized("type.weapon"));
+                weapon.setSubtype(getString(weaponSet, getLocalized("column.weaponTyp")));
                 weapon.setTier(weaponSet.getInt(getLocalized("column.tier")));
                 weapon.setRarity(getRarity(weaponSet, getLocalized("column.rarity")));
                 weapon.setInitiative(getString(weaponSet, getLocalized("column.initiative")));
@@ -942,8 +942,8 @@ public abstract class DatabaseLoader {
             while (armorSet.next()) {
                 Armor armor = new Armor();
                 armor.setName(armorName);
-                armor.setTyp(getLocalized("type.armor"));
-                armor.setSubTyp(positionName);
+                armor.setType(getLocalized("type.armor"));
+                armor.setSubtype(positionName);
                 armor.setTier(armorSet.getInt(getLocalized("column.tier")));
                 armor.setRarity(getRarity(armorSet, getLocalized("column.rarity")));
                 armor.setProtection(armorSet.getInt(getLocalized("column.protection")));

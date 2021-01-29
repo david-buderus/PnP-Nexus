@@ -96,7 +96,7 @@ public class SpellView extends ViewPart {
 
         TableColumn<Spell, String> typC = new TableColumn<>();
         typC.textProperty().bind(getMessageProperty("column.type"));
-        typC.setCellValueFactory(new PropertyValueFactory<>("typ"));
+        typC.setCellValueFactory(new PropertyValueFactory<>("type"));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);
 
@@ -199,7 +199,7 @@ public class SpellView extends ViewPart {
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
             }
             if (!this.typ.get().equals(defaultTyp.get())) {
-                stream = stream.filter(w -> w.getTyp().equals(this.typ.get()));
+                stream = stream.filter(w -> w.getType().equals(this.typ.get()));
             }
             if (!this.cost.get().equals(defaultCost.get())) {
                 stream = stream.filter(w -> w.getCost().equals(this.cost.get()));
@@ -222,7 +222,7 @@ public class SpellView extends ViewPart {
 
             for (Spell spell : Database.spellList) {
                 String n = spell.getName();
-                String t = spell.getTyp();
+                String t = spell.getType();
                 String c = spell.getCost();
 
                 if (!name.contains(n)) {

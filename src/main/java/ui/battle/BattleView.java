@@ -289,10 +289,13 @@ public class BattleView extends ConfigurableViewPart {
                         Button attackButton = new Button();
                         attackButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.attack"));
                         attackButton.setPrefWidth(215);
-                        attackButton.setOnAction(ev -> target.takeDamage(
-                                damage.get(), attackCombo.getSelectionModel().getSelectedItem(),
-                                blockCombo.getSelectionModel().getSelectedItem().toBool(),
-                                (double) penetration.get() / 100, Double.parseDouble(blockField.getText()), source));
+                        attackButton.setOnAction(ev -> {
+                            target.takeDamage(
+                                    damage.get(), attackCombo.getSelectionModel().getSelectedItem(),
+                                    blockCombo.getSelectionModel().getSelectedItem().toBool(),
+                                    (double) penetration.get() / 100, Double.parseDouble(blockField.getText()), source);
+                            source.applyWearOnWeapons();
+                        });
                         info.getChildren().add(attackButton);
                     }
                 }

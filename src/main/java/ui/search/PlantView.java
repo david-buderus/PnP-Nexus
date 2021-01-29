@@ -100,7 +100,7 @@ public class PlantView extends ViewPart {
 
         TableColumn<Plant, String> typC = new TableColumn<>();
         typC.textProperty().bind(getMessageProperty("column.type"));
-        typC.setCellValueFactory(new PropertyValueFactory<>("subTyp"));
+        typC.setCellValueFactory(new PropertyValueFactory<>("subtype"));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);
 
@@ -281,7 +281,7 @@ public class PlantView extends ViewPart {
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
             }
             if (!this.typ.get().equals(defaultTyp.get())) {
-                stream = stream.filter(w -> w.getSubTyp().equals(this.typ.get()));
+                stream = stream.filter(w -> w.getSubtype().equals(this.typ.get()));
             }
             if (!this.chosenLocations.isEmpty()) {
                 stream = stream.filter(p -> {
@@ -330,7 +330,7 @@ public class PlantView extends ViewPart {
 
             for (Plant plant : Database.plantList) {
                 String n = plant.getName();
-                String t = plant.getSubTyp();
+                String t = plant.getSubtype();
 
                 if (n.isEmpty()) {
                     continue;

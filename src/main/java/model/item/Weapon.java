@@ -1,11 +1,42 @@
 package model.item;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Weapon extends Equipment {
 
-    private String initiative = "0";
-    private String dice = "";
-    private int damage = 0;
-    private int hit = 0;
+    private String initiative;
+    private String dice;
+    private final IntegerProperty damage;
+    protected final IntegerBinding damageWithWear;
+    private int hit;
+
+    public Weapon() {
+        super();
+        this.initiative = "0";
+        this.dice = "";
+        this.damage = new SimpleIntegerProperty(0);
+        this.damageWithWear = Bindings.createIntegerBinding(() -> Math.max(0, getDamage() - getWearStage()), damage, wearStage);
+        this.hit = 0;
+    }
+
+    @Override
+    protected boolean shouldBreak() {
+        return getWearStage() > getDamage();
+    }
+
+    @Override
+    public Weapon copy() {
+        Weapon weapon = (Weapon) super.copy();
+        weapon.setInitiative(this.getInitiative());
+        weapon.setDice(this.getDice());
+        weapon.setDamage(this.getDamage());
+        weapon.setHit(this.getHit());
+
+        return weapon;
+    }
 
     public String getInitiative() {
         return initiative;
@@ -24,11 +55,19 @@ public class Weapon extends Equipment {
     }
 
     public int getDamage() {
+        return damage.get();
+    }
+
+    public IntegerProperty damageProperty() {
         return damage;
     }
 
     public void setDamage(int damage) {
-        this.damage = damage;
+        this.damage.set(damage);
+    }
+
+    public IntegerBinding damageWithWearBinding() {
+        return damageWithWear;
     }
 
     public int getHit() {
@@ -37,17 +76,6 @@ public class Weapon extends Equipment {
 
     public void setHit(int hit) {
         this.hit = hit;
-    }
-
-    @Override
-    public Weapon copy() {
-        Weapon weapon = (Weapon) super.copy();
-        weapon.setInitiative(this.getInitiative());
-        weapon.setDice(this.getDice());
-        weapon.setDamage(this.getDamage());
-        weapon.setHit(this.getHit());
-
-        return weapon;
     }
 
     @Override

@@ -1,24 +1,23 @@
 package manager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import model.Currency;
+import model.item.Item;
+import model.loot.Loot;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-
-import model.Currency;
-import model.item.Item;
-import model.loot.Loot;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UtilityTest {
 
     @Test
     public void randomTierTest() {
-        Map<Integer, Integer> tierMap = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> tierMap = new HashMap<>();
 
         for (int i = 1; i < 6; i++) {
             tierMap.put((i), 0);
@@ -47,7 +46,7 @@ public class UtilityTest {
     @Test
     public void sellLootTest() {
         float modifier = Utility.getConfig().getFloat("loot.sell.modifier");
-        List<Loot> lootList = new ArrayList<Loot>();
+        List<Loot> lootList = new ArrayList<>();
 
         assertEquals(0, Utility.sellLoot(lootList).getCoinValue());
 
@@ -77,7 +76,7 @@ public class UtilityTest {
         // add 1 currency items with 500 times 1 copper each 
         String currencyString = LanguageUtility.getMessage("currency");
         Item item = new Item();
-        item.setSubTyp(currencyString);
+        item.setSubtype(currencyString);
         item.setAmount(500);
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item));
@@ -86,7 +85,7 @@ public class UtilityTest {
 
         // add 500 currency items with 0 times 1 copper each 
         item = new Item();
-        item.setSubTyp(currencyString);
+        item.setSubtype(currencyString);
         item.setAmount(0);
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item, 500));
@@ -94,7 +93,7 @@ public class UtilityTest {
         assertEquals(500, Utility.sellLoot(lootList).getCoinValue());
 
         item = new Item();
-        item.setSubTyp(currencyString);
+        item.setSubtype(currencyString);
         item.setAmount(2/3f);
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item, 3));

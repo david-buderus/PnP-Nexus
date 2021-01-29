@@ -143,7 +143,7 @@ public abstract class Utility {
             Item item = l.getItem();
 
 
-            if (item.getSubTyp().equalsIgnoreCase(currencyString)) {
+            if (item.getSubtype().equalsIgnoreCase(currencyString)) {
                 valueOfTheCoins = valueOfTheCoins.add(item.getCurrencyWithAmount().multiply(l.getAmount()));
             } else {
                 itemsSellingPrice = itemsSellingPrice.add(item.getCurrencyWithAmount().multiply(l.getAmount()));

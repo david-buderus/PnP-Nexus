@@ -147,7 +147,7 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
                 stream = stream.filter(w -> w.getName().equals(this.name.get()));
             }
             if (!this.typ.get().equals(defaultTyp.get())) {
-                stream = stream.filter(w -> w.getSubTyp().equals(this.typ.get()));
+                stream = stream.filter(w -> w.getSubtype().equals(this.typ.get()));
             }
             List<Eq> result = stream.collect(Collectors.toList());
 
@@ -190,7 +190,7 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
             for (Eq equipment : equipmentList) {
                 String n = equipment.getName();
                 String m = equipment.getMaterial();
-                String t = equipment.getSubTyp();
+                String t = equipment.getSubtype();
 
                 if (!name.contains(n)) {
                     name.add(n);

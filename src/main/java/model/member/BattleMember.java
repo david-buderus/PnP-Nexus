@@ -4,6 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import manager.LanguageUtility;
 import manager.Utility;
@@ -35,10 +36,24 @@ public class BattleMember extends Member {
 
     private final ListProperty<MemberState> states;
 
+    /**
+     * Creates a BattleMember with default stats
+     * and an empty LootTable
+     *
+     * @param battle the BattleMember is part of
+     */
     public BattleMember(Battle battle) {
         this(battle, new LootTable());
     }
 
+    /**
+     * Copies values of the armor map into the own property.
+     * These properties won't be linked!
+     *
+     * @param battle the BattleMember is part of
+     * @param lootTable of the given BattleMember
+     * @param armor which will be used as Armor
+     */
     public BattleMember(Battle battle, LootTable lootTable, HashMap<ArmorPiece, IntegerProperty> armor) {
         this(battle, lootTable);
         for (ArmorPiece piece : armor.keySet()) {
@@ -46,6 +61,12 @@ public class BattleMember extends Member {
         }
     }
 
+    /**
+     * Creates a BattleMember with default stats
+     *
+     * @param battle the BattleMember is part of
+     * @param lootTable of the given BattleMember
+     */
     public BattleMember(Battle battle, LootTable lootTable) {
         super();
         this.name.set(LanguageUtility.getMessage("battleMember.defaultName"));
@@ -119,6 +140,8 @@ public class BattleMember extends Member {
             this.states.stream().filter(MemberState::isActiveRounder).forEach(MemberState::decreaseDuration);
         }
     }
+
+    public void applyWearOnWeapons() { }
 
     private int calculateInitiative() {
 
@@ -202,14 +225,28 @@ public class BattleMember extends Member {
     }
 
     public void setArmor(ArmorPiece target, int defense) {
+        this.armor.get(target).unbind();
         this.armor.get(target).set(defense);
+    }
+
+    /**
+     * Creates a new IntegerProperty and binds it
+     * to the ObservableValue
+     *
+     * @param target the specific ArmorPiece
+     * @param defense ObservableValue which will get binded
+     */
+    protected void setArmor(ArmorPiece target, ObservableValue<Number> defense) {
+        IntegerProperty property = new SimpleIntegerProperty(defense.getValue().intValue());
+        property.bind(defense);
+        this.armor.put(target, property);
     }
 
     public boolean isDead() {
         return getLife() <= 0;
     }
 
-    private int getArmor(ArmorPiece target) {
+    protected int getArmor(ArmorPiece target) {
         return armor.get(target).get();
     }
 

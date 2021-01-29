@@ -2,14 +2,16 @@ package model.item;
 
 public class Jewellery extends Equipment {
 
-    private String gem = "";
+    private String gem;
 
-    public String getGem() {
-        return gem;
+    public Jewellery() {
+        super();
+        this.gem = "";
     }
 
-    public void setGem(String gem) {
-        this.gem = gem;
+    @Override
+    protected boolean shouldBreak() {
+        return false;
     }
 
     @Override
@@ -18,6 +20,14 @@ public class Jewellery extends Equipment {
         jewellery.setGem(this.getGem());
 
         return jewellery;
+    }
+
+    public String getGem() {
+        return gem;
+    }
+
+    public void setGem(String gem) {
+        this.gem = gem;
     }
 
     @Override
