@@ -2,9 +2,10 @@ package ui.search;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.VBox;
 import manager.Database;
 import model.Rarity;
+import model.item.Equipment;
+import model.item.Item;
 import model.item.Jewellery;
 import ui.IView;
 
@@ -19,21 +20,27 @@ import static manager.LanguageUtility.getMessageProperty;
 public class JewelleryView extends EquipmentView<Jewellery> {
 
     public JewelleryView(IView parent) {
-        super("search.jewellery.title", parent, Jewellery.class, Database.jewelleryList);
+        super("search.jewellery.title", parent, Database.jewelleryList);
         this.defaultName = getMessageProperty("search.default.gem");
 
-        VBox root = this.createRoot(
-                new String[]{"column.name", "column.type", "column.equipment.material", "column.jewellery.gem",
-                        "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots",
-                        "column.equipment.requirement"},
-                new String[]{"name", "subtype", "material", "gem", "rarity", "currency", "effect", "upgradeSlots", "requirement"});
+        tableView.addObservableColumn("column.amount", Item::amountProperty);
+        tableView.addColumn("column.name", Item::getName);
+        tableView.addColumn("column.type", Item::getSubtype);
+        tableView.addColumn("column.equipment.material", Equipment::getMaterial);
+        tableView.addColumn("column.jewellery.gem", Jewellery::getGem);
+        tableView.addColumn("column.tier", Item::getTier);
+        tableView.addColumn("column.item.rarity", Item::getRarity);
+        tableView.addColumn("column.item.price", Item::getCurrency);
+        tableView.addColumn("column.effect", Item::getEffect);
+        tableView.addColumn("column.equipment.slots", Equipment::getUpgradeSlots);
+        tableView.addColumn("column.equipment.requirement", Equipment::getRequirement);
+        tableView.addColumn("column.equipment.upgrades", Equipment::upgradesAsString);
 
-        this.addControls(root);
-
+        this.addControls();
         update();
-        this.setContent(root);
     }
 
+    @Override
     protected void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
             Rarity rarity = this.rarity.get() == Rarity.unknown ? Rarity.getRandomRarity() : this.rarity.get();
@@ -64,6 +71,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
         }
     }
 
+    @Override
     protected void update() {
         if (!Database.jewelleryList.isEmpty()) {
             this.disabled.set(false);

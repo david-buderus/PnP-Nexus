@@ -31,18 +31,47 @@ public class CraftingView extends SearchView<CraftingBonus> {
     private final StringProperty info;
 
     public CraftingView(IView parent) {
-        super("search.crafting.title", parent, CraftingBonus.class);
+        super("search.crafting.title", parent);
         this.target = new SimpleStringProperty("");
         this.amount = new SimpleIntegerProperty(1);
         this.info = new SimpleStringProperty("");
 
         this.target.addListener((ob, o, n) -> update(n));
 
-        VBox root = this.createRoot(
-                new String[]{"column.name", "column.target", "column.effect"},
-                new String[]{"name", "target", "effect"},
-                new double[]{120, 100, 235});
+        tableView.addColumn("column.name", CraftingBonus::getName, 120);
+        tableView.addColumn("column.target", CraftingBonus::getTarget, 100);
+        tableView.addColumn("column.effect", CraftingBonus::getEffect, 235);
 
+        addControls();
+    }
+
+    private void search() {
+        Collection<String> targets = TypTranslation.getAllTypes(target.get());
+        ArrayList<CraftingBonus> bonuses = Database.craftingBonusList.stream()
+                .filter(x -> targets.contains(x.getTarget())).collect(Collectors.toCollection(ArrayList::new));
+
+        if (bonuses.size() > 0) {
+            for (int i = 0; i < amount.get(); i++) {
+                fullList.add(bonuses.get(rand.nextInt(bonuses.size())));
+            }
+        }
+    }
+
+    private void update(String target) {
+        StringBuilder text = new StringBuilder();
+
+        for (String part : TypTranslation.getAllTypes(target)) {
+            text.append(part).append("\n");
+        }
+
+        info.set(text.toString());
+    }
+
+    private void clear() {
+        this.fullList.set(FXCollections.observableArrayList());
+    }
+
+    protected void addControls() {
         HBox bottomLayer = new HBox(10);
         bottomLayer.setPadding(new Insets(25, 0, 0, 0));
         bottomLayer.setAlignment(Pos.CENTER);
@@ -84,33 +113,5 @@ public class CraftingView extends SearchView<CraftingBonus> {
         infoText.setPrefHeight(85);
         infoText.textProperty().bindBidirectional(info);
         bottomLayer.getChildren().add(infoText);
-
-        this.setContent(root);
-    }
-
-    private void search() {
-        Collection<String> targets = TypTranslation.getAllTypes(target.get());
-        ArrayList<CraftingBonus> bonuses = Database.craftingBonusList.stream()
-                .filter(x -> targets.contains(x.getTarget())).collect(Collectors.toCollection(ArrayList::new));
-
-        if (bonuses.size() > 0) {
-            for (int i = 0; i < amount.get(); i++) {
-                fullList.add(bonuses.get(rand.nextInt(bonuses.size())));
-            }
-        }
-    }
-
-    private void update(String target) {
-        StringBuilder text = new StringBuilder();
-
-        for (String part : TypTranslation.getAllTypes(target)) {
-            text.append(part).append("\n");
-        }
-
-        info.set(text.toString());
-    }
-
-    private void clear() {
-        this.fullList.set(FXCollections.observableArrayList());
     }
 }

@@ -3,6 +3,7 @@ package ui.part;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -43,10 +44,26 @@ public class FilteredTableView<S> extends VBox {
     }
 
     public void addColumn(String columnKey, Function<S, Object> getter) {
-        TableColumn<S, String> column = new WrappingTableColumn<>();
+        addColumn(columnKey, getter, 0);
+    }
+
+    public void addColumn(String columnKey, Function<S, Object> getter, int width) {
+        addObservableColumn(columnKey, getter.andThen(obj -> new ReadOnlyStringWrapper(String.valueOf(obj))), width);
+    }
+
+    public <Ob> void addObservableColumn(String columnKey, Function<S, ObservableValue<Ob>> getter) {
+        addObservableColumn(columnKey, getter, 0);
+    }
+
+    public <Ob> void addObservableColumn(String columnKey, Function<S, ObservableValue<Ob>> getter, int width) {
+        TableColumn<S, Ob> column = new WrappingTableColumn<>();
         column.textProperty().bind(LanguageUtility.getMessageProperty(columnKey));
-        column.setCellValueFactory(cell -> new ReadOnlyStringWrapper(String.valueOf(getter.apply(cell.getValue()))));
+        column.setCellValueFactory(cell -> getter.apply(cell.getValue()));
         tableView.getColumns().add(column);
+
+        if (width > 0) {
+            column.setPrefWidth(width);
+        }
 
         TextField textField = new TextField();
         textField.minWidthProperty().bind(column.widthProperty());
@@ -54,7 +71,7 @@ public class FilteredTableView<S> extends VBox {
         textField.textProperty().addListener((ob, o, n) -> update());
         inputFields.getChildren().add(textField);
 
-        filterContainers.add(new FilterContainer<>(textField, getter));
+        filterContainers.add(new FilterContainer<>(textField, getter.andThen(ob -> String.valueOf(ob.getValue()))));
     }
 
     protected void update() {
