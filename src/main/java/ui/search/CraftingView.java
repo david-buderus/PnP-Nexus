@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -41,6 +42,8 @@ public class CraftingView extends SearchView<CraftingBonus> {
         tableView.addColumn("column.name", CraftingBonus::getName, 120);
         tableView.addColumn("column.target", CraftingBonus::getTarget, 100);
         tableView.addColumn("column.effect", CraftingBonus::getEffect, 235);
+        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tableView.setMaxWidth(455);
 
         addControls();
     }

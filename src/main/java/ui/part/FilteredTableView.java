@@ -10,6 +10,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import manager.LanguageUtility;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class FilteredTableView<S> extends VBox {
         this.tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         this.tableView.itemsProperty().bindBidirectional(list);
         this.tableView.itemsProperty().addListener((ob, o, n) -> tableView.layout());
+        this.tableView.prefWidthProperty().bind(this.widthProperty());
         this.getChildren().add(tableView);
 
         this.inputFields = new HBox();
@@ -72,6 +74,11 @@ public class FilteredTableView<S> extends VBox {
         inputFields.getChildren().add(textField);
 
         filterContainers.add(new FilterContainer<>(textField, getter.andThen(ob -> String.valueOf(ob.getValue()))));
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void setColumnResizePolicy(Callback<TableView.ResizeFeatures, Boolean> callback) {
+        tableView.setColumnResizePolicy(callback);
     }
 
     protected void update() {
