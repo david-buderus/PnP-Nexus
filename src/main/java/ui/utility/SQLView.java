@@ -78,6 +78,7 @@ public class SQLView extends ViewPart {
         root.getTabs().add(jewelleryTab);
 
         FilteredTableView<Jewellery> jewelleryTable = new FilteredTableView<>(Database.jewelleryList);
+        jewelleryTable.setPadding(new Insets(10, 20, 20, 20));
         jewelleryTable.addColumn("column.name", Item::getName);
         jewelleryTable.addColumn("column.type", Item::getSubtype);
         jewelleryTable.addColumn("column.equipment.material", Equipment::getMaterial);
@@ -95,6 +96,7 @@ public class SQLView extends ViewPart {
         root.getTabs().add(spellTab);
 
         FilteredTableView<Spell> spellTable = new FilteredTableView<>(Database.spellList);
+        spellTable.setPadding(new Insets(10, 20, 20, 20));
         spellTable.addColumn("column.name", Spell::getName);
         spellTable.addColumn("column.effect", Spell::getEffect);
         spellTable.addColumn("column.type", Spell::getType);
@@ -108,6 +110,7 @@ public class SQLView extends ViewPart {
         root.getTabs().add(upgradeTab);
 
         FilteredTableView<UpgradeModel> upgradeTable = new FilteredTableView<>(Database.upgradeModelList);
+        upgradeTable.setPadding(new Insets(10, 20, 20, 20));
         upgradeTable.addColumn("column.name", UpgradeModel::getName);
         upgradeTable.addColumn("column.upgrade.level", UpgradeModel::getLevel);
         upgradeTable.addColumn("column.target", UpgradeModel::getTarget);
