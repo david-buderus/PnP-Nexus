@@ -92,8 +92,8 @@ public class FilteredTableView<S> extends VBox {
     }
 
     protected static class FilterContainer<S> {
-        private final TextField textField;
-        private final Function<S, Object> getter;
+        public final TextField textField;
+        public final Function<S, Object> getter;
 
         public FilterContainer(TextField textField, Function<S, Object> getter) {
             this.textField = textField;
