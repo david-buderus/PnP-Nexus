@@ -186,6 +186,7 @@ public class MemberStateView extends View {
                 case relativeSlow:
                 case armorPlus:
                 case armorMinus:
+                case shield:
                     info.getChildren().add(powerBox);
                     info.getChildren().add(durationBox);
                     break;

@@ -14,6 +14,8 @@ import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
 import model.member.data.MemberStateEffect;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class BattleMember extends Member {
@@ -50,9 +52,9 @@ public class BattleMember extends Member {
      * Copies values of the armor map into the own property.
      * These properties won't be linked!
      *
-     * @param battle the BattleMember is part of
+     * @param battle    the BattleMember is part of
      * @param lootTable of the given BattleMember
-     * @param armor which will be used as Armor
+     * @param armor     which will be used as Armor
      */
     public BattleMember(Battle battle, LootTable lootTable, HashMap<ArmorPiece, IntegerProperty> armor) {
         this(battle, lootTable);
@@ -64,7 +66,7 @@ public class BattleMember extends Member {
     /**
      * Creates a BattleMember with default stats
      *
-     * @param battle the BattleMember is part of
+     * @param battle    the BattleMember is part of
      * @param lootTable of the given BattleMember
      */
     public BattleMember(Battle battle, LootTable lootTable) {
@@ -167,6 +169,26 @@ public class BattleMember extends Member {
     }
 
     public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, BattleMember source) {
+
+        Collection<MemberState> toRemove = new ArrayList<>();
+
+        for (MemberState state : this.states) {
+            if (state.getEffect() == MemberStateEffect.shield) {
+                int shieldStrength = (int) Math.round(state.getEffectPower());
+                int newAmount = Math.max(amount - shieldStrength, 0);
+
+                state.decreaseCurrentPower(amount - newAmount);
+
+                if (state.getCurrentPower() <= 0) {
+                    toRemove.add(state);
+                }
+
+                amount = newAmount;
+            }
+        }
+
+        this.states.removeAll(toRemove);
+
         int damage = Math.max(0, amount - calculateDefense(type, withShield, penetration, block));
         this.life.set(getLife() - damage);
         battle.addToDamageStatistic(source, damage);
@@ -233,7 +255,7 @@ public class BattleMember extends Member {
      * Creates a new IntegerProperty and binds it
      * to the ObservableValue
      *
-     * @param target the specific ArmorPiece
+     * @param target  the specific ArmorPiece
      * @param defense ObservableValue which will get binded
      */
     protected void setArmor(ArmorPiece target, ObservableValue<Number> defense) {

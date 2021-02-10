@@ -1,5 +1,7 @@
 package model.member;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.beans.property.*;
 import manager.LanguageUtility;
 import model.member.data.AttackTypes;
@@ -17,6 +19,7 @@ public class MemberState {
     private final StringProperty durationDisplay;
     private final boolean active;
     private final double power;
+    private final DoubleProperty currentPower;
     private final boolean random;
     private final AttackTypes type;
 
@@ -28,6 +31,7 @@ public class MemberState {
         this.type = type;
         this.duration = new SimpleIntegerProperty(duration);
         this.durationDisplay = new SimpleStringProperty("");
+        this.currentPower = new SimpleDoubleProperty(power);
         this.name = name;
         this.effect = effect;
         this.maxDuration = duration;
@@ -68,12 +72,30 @@ public class MemberState {
         return source;
     }
 
-    public String getPowerAsString() {
-        if (Math.rint(getPower()) == getPower()) {
-            return (random ? LanguageUtility.getMessage("state.info.dicePrefix") : "") + (int) power;
-        } else {
-            return (random ? LanguageUtility.getMessage("state.info.dicePrefix") : "") + power;
-        }
+    public StringBinding getPowerAsString() {
+        return Bindings.createStringBinding(() -> {
+            if (Math.rint(getCurrentPower()) == getCurrentPower()) {
+                return (random ? LanguageUtility.getMessage("state.info.dicePrefix") : "") + (int) getCurrentPower();
+            } else {
+                return (random ? LanguageUtility.getMessage("state.info.dicePrefix") : "") + getCurrentPower();
+            }
+        }, currentPowerProperty());
+    }
+
+    public double getCurrentPower() {
+        return currentPower.get();
+    }
+
+    public DoubleProperty currentPowerProperty() {
+        return currentPower;
+    }
+
+    public void setCurrentPower(double currentPower) {
+        this.currentPower.set(currentPower);
+    }
+
+    public void decreaseCurrentPower(double i) {
+        this.setCurrentPower(this.getCurrentPower() - i);
     }
 
     public double getPower() {
@@ -81,13 +103,13 @@ public class MemberState {
     }
 
     public double getEffectPower() {
-        if (Math.rint(this.power) == this.power) {
-            int power = (int) this.power;
+        if (Math.rint(this.getCurrentPower()) == this.getCurrentPower()) {
+            int power = (int) this.getCurrentPower();
 
             return power == 0 ? 0 : random ? RAND.nextInt(power) + 1 : power;
 
         } else {
-            return random ? 1 + RAND.nextDouble() * (power - 1) : power;
+            return random ? 1 + RAND.nextDouble() * (getCurrentPower() - 1) : getCurrentPower();
         }
     }
 
