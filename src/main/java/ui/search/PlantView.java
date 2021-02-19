@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
@@ -88,31 +87,31 @@ public class PlantView extends ViewPart {
         TableColumn<Plant, Float> amountC = new TableColumn<>();
         amountC.textProperty().bind(getMessageProperty("column.amount.short"));
         amountC.setCellValueFactory(val -> val.getValue().amountProperty().asObject());
-        amountC.setPrefWidth(20);
-        amountC.setMaxWidth(25);
+        amountC.setPrefWidth(25);
+        amountC.setMaxWidth(30);
         searchTable.getColumns().add(amountC);
 
         TableColumn<Plant, String> nameC = new TableColumn<>();
         nameC.textProperty().bind(getMessageProperty("column.name"));
-        nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getName()));
         nameC.setPrefWidth(100);
         searchTable.getColumns().add(nameC);
 
         TableColumn<Plant, String> typC = new TableColumn<>();
         typC.textProperty().bind(getMessageProperty("column.type"));
-        typC.setCellValueFactory(new PropertyValueFactory<>("subtype"));
+        typC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getSubtype()));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);
 
         TableColumn<Plant, String> effectC = new TableColumn<>();
         effectC.textProperty().bind(getMessageProperty("column.effect"));
-        effectC.setCellValueFactory(new PropertyValueFactory<>("effect"));
+        effectC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getEffect()));
         effectC.setPrefWidth(250);
         searchTable.getColumns().add(effectC);
 
         TableColumn<Plant, String> reqC = new TableColumn<>();
         reqC.textProperty().bind(getMessageProperty("search.plant.column.requirement"));
-        reqC.setCellValueFactory(new PropertyValueFactory<>("requirement"));
+        reqC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getRequirement()));
         reqC.setPrefWidth(150);
         searchTable.getColumns().add(reqC);
 
@@ -123,7 +122,7 @@ public class PlantView extends ViewPart {
 
         TableColumn<Plant, String> rarityC = new TableColumn<>();
         rarityC.textProperty().bind(getMessageProperty("column.item.rarity"));
-        rarityC.setCellValueFactory(new PropertyValueFactory<>("rarity"));
+        rarityC.setCellValueFactory(cell -> cell.getValue().getRarity().toStringProperty());
         rarityC.prefWidthProperty().bind(searchTable.widthProperty().subtract(nameC.widthProperty()).subtract(reqC.widthProperty())
                 .subtract(effectC.widthProperty()).subtract(typC.widthProperty()).subtract(locationsC.widthProperty()));
         searchTable.getColumns().add(rarityC);

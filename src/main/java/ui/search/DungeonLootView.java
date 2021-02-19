@@ -6,9 +6,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
@@ -60,18 +58,13 @@ public class DungeonLootView extends ViewPart {
         root.setPadding(new Insets(10, 20, 20, 20));
         root.setAlignment(Pos.CENTER);
 
-        HBox titleLine = new HBox(10);
-        titleLine.setAlignment(Pos.CENTER);
-
-        root.getChildren().add(titleLine);
-
         TableView<Loot> lootTable = new TableView<>();
         lootTable.itemsProperty().bindBidirectional(list);
         lootTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         TableColumn<Loot, String> name = new TableColumn<>();
         name.textProperty().bind(getMessageProperty("search.loot.column.name"));
-        name.setCellValueFactory(new PropertyValueFactory<>("name"));
+        name.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getName()));
         lootTable.getColumns().add(name);
 
         TableColumn<Loot, Integer> amount = new TableColumn<>();

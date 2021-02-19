@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
@@ -84,37 +83,37 @@ public class SpellView extends ViewPart {
 
         TableColumn<Spell, String> nameC = new TableColumn<>();
         nameC.textProperty().bind(getMessageProperty("column.name"));
-        nameC.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getName()));
         nameC.setPrefWidth(100);
         searchTable.getColumns().add(nameC);
 
         TableColumn<Spell, String> effectC = new TableColumn<>();
         effectC.textProperty().bind(getMessageProperty("column.effect"));
-        effectC.setCellValueFactory(new PropertyValueFactory<>("effect"));
+        effectC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getEffect()));
         effectC.setPrefWidth(330);
         searchTable.getColumns().add(effectC);
 
         TableColumn<Spell, String> typC = new TableColumn<>();
         typC.textProperty().bind(getMessageProperty("column.type"));
-        typC.setCellValueFactory(new PropertyValueFactory<>("type"));
+        typC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getType()));
         typC.setPrefWidth(100);
         searchTable.getColumns().add(typC);
 
         TableColumn<Spell, String> costC = new TableColumn<>();
         costC.textProperty().bind(getMessageProperty("column.spell.cost"));
-        costC.setCellValueFactory(new PropertyValueFactory<>("cost"));
+        costC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getCost()));
         costC.setPrefWidth(50);
         searchTable.getColumns().add(costC);
 
         TableColumn<Spell, String> timeC = new TableColumn<>();
         timeC.textProperty().bind(getMessageProperty("column.spell.castTime"));
-        timeC.setCellValueFactory(new PropertyValueFactory<>("castTime"));
+        timeC.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getCastTime()));
         timeC.setPrefWidth(50);
         searchTable.getColumns().add(timeC);
 
         TableColumn<Spell, Integer> rarityC = new TableColumn<>();
         rarityC.textProperty().bind(getMessageProperty("column.tier"));
-        rarityC.setCellValueFactory(new PropertyValueFactory<>("tier"));
+        rarityC.setCellValueFactory(cell -> new ReadOnlyIntegerWrapper(cell.getValue().getTier()).asObject());
         searchTable.getColumns().add(rarityC);
 
         root.getChildren().add(searchTable);

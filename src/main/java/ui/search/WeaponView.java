@@ -1,24 +1,32 @@
 package ui.search;
 
-import javafx.scene.layout.VBox;
 import manager.Database;
+import model.item.Equipment;
+import model.item.Item;
 import model.item.Weapon;
 import ui.IView;
 
 public class WeaponView extends EquipmentView<Weapon> {
 
     public WeaponView(IView parent) {
-        super("search.weapon.title", parent, Weapon.class, Database.weaponList);
+        super("search.weapon.title", parent, Database.weaponList);
 
-        VBox root = this.createRoot(
-                new String[]{"column.name", "column.type", "column.weapon.initiative", "column.weapon.dice",
-                        "column.weapon.damage", "column.weapon.hit", "column.item.rarity", "column.item.price",
-                        "column.effect", "column.equipment.slots", "column.equipment.requirement"},
-                new String[]{"name", "subtype", "initiative", "dice", "damage", "hit", "rarity", "currency", "effect", "upgradeSlots", "requirement"});
+        tableView.addObservableColumn("column.amount", Item::amountProperty);
+        tableView.addColumn("column.name", Item::getName);
+        tableView.addColumn("column.type", Item::getSubtype);
+        tableView.addColumn("column.weapon.initiative", Weapon::getInitiative);
+        tableView.addColumn("column.dice_weight", Weapon::getDice);
+        tableView.addColumn("column.damage_protection", Weapon::getDamage);
+        tableView.addColumn("column.weapon.hit", Weapon::getHit);
+        tableView.addColumn("column.tier", Item::getTier);
+        tableView.addColumn("column.item.rarity", Item::getRarity);
+        tableView.addColumn("column.item.price", Item::getCurrency);
+        tableView.addColumn("column.effect", Item::getEffect);
+        tableView.addColumn("column.equipment.slots", Equipment::getUpgradeSlots);
+        tableView.addColumn("column.equipment.requirement", Equipment::getRequirement);
+        tableView.addColumn("column.equipment.upgrades", Equipment::upgradesAsString);
 
-        this.addControls(root);
-
+        this.addControls();
         update();
-        this.setContent(root);
     }
 }

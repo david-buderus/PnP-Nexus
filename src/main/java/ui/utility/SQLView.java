@@ -1,33 +1,16 @@
 package ui.utility;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import manager.Database;
 import manager.LanguageUtility;
 import model.Spell;
-import model.item.Armor;
-import model.item.Item;
-import model.item.Jewellery;
-import model.item.Weapon;
+import model.item.*;
 import model.upgrade.UpgradeModel;
 import ui.IView;
 import ui.ViewPart;
-import ui.part.WrappingTableCell;
-
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import ui.part.FilteredTableView;
 
 public class SQLView extends ViewPart {
 
@@ -37,114 +20,107 @@ public class SQLView extends ViewPart {
         TabPane root = new TabPane();
         root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-        String[] labels = new String[]{"column.name", "column.type", "column.item.subtype", "column.tier", "column.item.rarity", "column.item.price", "column.effect"};
-        String[] names = new String[]{"name", "type", "subtype", "tier", "rarity", "currency", "effect"};
+        Tab itemTab = new Tab();
+        itemTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.items"));
+        root.getTabs().add(itemTab);
 
-        root.getTabs().add(createTab("sql.tab.items", labels, names, Database.itemList, Item.class));
+        FilteredTableView<Item> itemTable = new FilteredTableView<>(Database.itemList);
+        itemTable.setPadding(new Insets(10, 20, 20, 20));
+        itemTable.addColumn("column.name", Item::getName);
+        itemTable.addColumn("column.type", Item::getTier);
+        itemTable.addColumn("column.item.subtype", Item::getSubtype);
+        itemTable.addColumn("column.tier", Item::getTier);
+        itemTable.addColumn("column.item.rarity", Item::getRarity);
+        itemTable.addColumn("column.item.price", Item::getCurrency);
+        itemTable.addColumn("column.effect", Item::getEffect);
+        itemTab.setContent(itemTable);
 
-        labels = new String[]{"column.name", "column.type", "column.weapon.initiative", "column.dice_weight", "column.damage_protection", "column.weapon.hit", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subtype", "initiative", "dice", "damage", "hit", "tier", "rarity", "currency", "effect", "upgradeSlots", "requirement"};
+        Tab weaponTab = new Tab();
+        weaponTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.weapons"));
+        root.getTabs().add(weaponTab);
 
-        root.getTabs().add(createTab("sql.tab.weapons", labels, names, Database.weaponList, Weapon.class));
+        FilteredTableView<Weapon> weaponTable = new FilteredTableView<>(Database.weaponList);
+        weaponTable.setPadding(new Insets(10, 20, 20, 20));
+        weaponTable.addColumn("column.name", Item::getName);
+        weaponTable.addColumn("column.type", Item::getSubtype);
+        weaponTable.addColumn("column.weapon.initiative", Weapon::getInitiative);
+        weaponTable.addColumn("column.dice_weight", Weapon::getDice);
+        weaponTable.addColumn("column.damage_protection", Weapon::getDamage);
+        weaponTable.addColumn("column.weapon.hit", Weapon::getHit);
+        weaponTable.addColumn("column.tier", Item::getTier);
+        weaponTable.addColumn("column.item.rarity", Item::getRarity);
+        weaponTable.addColumn("column.item.price", Item::getCurrency);
+        weaponTable.addColumn("column.effect", Item::getEffect);
+        weaponTable.addColumn("column.equipment.slots", Equipment::getUpgradeSlots);
+        weaponTable.addColumn("column.equipment.requirement", Equipment::getRequirement);
+        weaponTab.setContent(weaponTable);
 
-        labels = new String[]{"column.name", "column.type", "Schutz", "Belastung", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subtype", "protection", "weight", "tier", "rarity", "currency", "effect", "upgradeSlots", "requirement"};
+        Tab armorTab = new Tab();
+        armorTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.armor"));
+        root.getTabs().add(armorTab);
 
-        root.getTabs().add(createTab("sql.tab.armor", labels, names, Database.armorList, Armor.class));
+        FilteredTableView<Armor> armorTable = new FilteredTableView<>(Database.armorList);
+        armorTable.setPadding(new Insets(10, 20, 20, 20));
+        armorTable.addColumn("column.name", Item::getName);
+        armorTable.addColumn("column.type", Item::getSubtype);
+        armorTable.addColumn("column.armor.protection", Armor::getProtection);
+        armorTable.addColumn("column.armor.weight", Armor::getWeight);
+        armorTable.addColumn("column.tier", Item::getTier);
+        armorTable.addColumn("column.item.rarity", Item::getRarity);
+        armorTable.addColumn("column.item.price", Item::getCurrency);
+        armorTable.addColumn("column.effect", Item::getEffect);
+        armorTable.addColumn("column.equipment.slots", Equipment::getUpgradeSlots);
+        armorTable.addColumn("column.equipment.requirement", Equipment::getRequirement);
+        armorTab.setContent(armorTable);
 
-        labels = new String[]{"column.name", "column.type", "Material", "Edelstein", "column.tier", "column.item.rarity", "column.item.price", "column.effect", "column.equipment.slots", "column.equipment.requirement"};
-        names = new String[]{"name", "subtype", "material", "gem", "tier", "rarity", "currency", "effect", "upgradeSlots", "requirement"};
+        Tab jewelleryTab = new Tab();
+        jewelleryTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.jewellery"));
+        root.getTabs().add(jewelleryTab);
 
-        root.getTabs().add(createTab("sql.tab.jewellery", labels, names, Database.jewelleryList, Jewellery.class));
+        FilteredTableView<Jewellery> jewelleryTable = new FilteredTableView<>(Database.jewelleryList);
+        jewelleryTable.setPadding(new Insets(10, 20, 20, 20));
+        jewelleryTable.addColumn("column.name", Item::getName);
+        jewelleryTable.addColumn("column.type", Item::getSubtype);
+        jewelleryTable.addColumn("column.equipment.material", Equipment::getMaterial);
+        jewelleryTable.addColumn("column.jewellery.gem", Jewellery::getGem);
+        jewelleryTable.addColumn("column.tier", Item::getTier);
+        jewelleryTable.addColumn("column.item.rarity", Item::getRarity);
+        jewelleryTable.addColumn("column.item.price", Item::getCurrency);
+        jewelleryTable.addColumn("column.effect", Item::getEffect);
+        jewelleryTable.addColumn("column.equipment.slots", Equipment::getUpgradeSlots);
+        jewelleryTable.addColumn("column.equipment.requirement", Equipment::getRequirement);
+        jewelleryTab.setContent(jewelleryTable);
 
-        labels = new String[]{"column.name", "column.effect", "column.type", "column.spell.cost", "column.spell.castTime", "column.tier"};
-        names = new String[]{"name", "effect", "type", "cost", "castTime", "tier"};
+        Tab spellTab = new Tab();
+        spellTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.spell"));
+        root.getTabs().add(spellTab);
 
-        root.getTabs().add(createTab("sql.tab.spell", labels, names, Database.spellList, Spell.class));
+        FilteredTableView<Spell> spellTable = new FilteredTableView<>(Database.spellList);
+        spellTable.setPadding(new Insets(10, 20, 20, 20));
+        spellTable.addColumn("column.name", Spell::getName);
+        spellTable.addColumn("column.effect", Spell::getEffect);
+        spellTable.addColumn("column.type", Spell::getType);
+        spellTable.addColumn("column.spell.cost", Spell::getCost);
+        spellTable.addColumn("column.spell.castTime", Spell::getCastTime);
+        spellTable.addColumn("column.tier", Spell::getTier);
+        spellTab.setContent(spellTable);
 
-        labels = new String[]{"column.name", "Stufe", "Ziel", "column.effect", "column.equipment.slots", "column.item.price", "column.upgrade.mana", "column.upgrade.materials"};
-        names = new String[]{"name", "level", "target", "effect", "slots", "cost", "mana", "materials"};
+        Tab upgradeTab = new Tab();
+        upgradeTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.upgrades"));
+        root.getTabs().add(upgradeTab);
 
-        root.getTabs().add(createTab("sql.tab.upgrades", labels, names, Database.upgradeModelList, UpgradeModel.class));
-
+        FilteredTableView<UpgradeModel> upgradeTable = new FilteredTableView<>(Database.upgradeModelList);
+        upgradeTable.setPadding(new Insets(10, 20, 20, 20));
+        upgradeTable.addColumn("column.name", UpgradeModel::getName);
+        upgradeTable.addColumn("column.upgrade.level", UpgradeModel::getLevel);
+        upgradeTable.addColumn("column.target", UpgradeModel::getTarget);
+        upgradeTable.addColumn("column.effect", UpgradeModel::getEffect);
+        upgradeTable.addColumn("column.equipment.slots", UpgradeModel::getSlots);
+        upgradeTable.addColumn("column.item.price", UpgradeModel::getCost);
+        upgradeTable.addColumn("column.upgrade.mana", UpgradeModel::getMana);
+        upgradeTable.addColumn("column.upgrade.materials", UpgradeModel::getMaterials);
+        upgradeTab.setContent(upgradeTable);
 
         this.setContent(root);
-    }
-
-    private Tab createTab(String key, String[] labels, String[] names, ListProperty<?> utility, Class<?> itemClass) {
-        Tab tab = new Tab();
-        tab.textProperty().bind(LanguageUtility.getMessageProperty(key));
-
-        ListProperty<Object> list = new SimpleListProperty<>();
-        utility.addListener((ob, o, n) -> list.set(n.stream().collect(Collectors.toCollection(FXCollections::observableArrayList))));
-        list.set(utility.stream().collect(Collectors.toCollection(FXCollections::observableArrayList)));
-
-        VBox vBox = new VBox(5);
-        vBox.setPadding(new Insets(10, 20, 20, 20));
-        tab.setContent(vBox);
-
-        TableView<Object> table = new TableView<>();
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        table.itemsProperty().bindBidirectional(list);
-        table.itemsProperty().addListener((ob, o, n) -> table.layout());
-        vBox.getChildren().add(table);
-
-        ArrayList<FilterContainer> filterContainers = new ArrayList<>();
-
-        HBox input = new HBox();
-        vBox.getChildren().add(input);
-
-        for (int i = 0; i < labels.length; i++) {
-            TableColumn<Object, Object> column = new TableColumn<>();
-            column.textProperty().bind(LanguageUtility.getMessageProperty(labels[i]));
-            column.setMaxWidth(400);
-            column.setCellValueFactory(new PropertyValueFactory<>(names[i]));
-            column.setCellFactory(col -> new WrappingTableCell<>());
-            table.getColumns().add(column);
-
-            Method getter = null;
-            try {
-                getter = new PropertyDescriptor(names[i], itemClass).getReadMethod();
-            } catch (IntrospectionException e) {
-                e.printStackTrace();
-            }
-
-            TextField textField = new TextField();
-            textField.minWidthProperty().bind(column.widthProperty());
-            textField.prefWidthProperty().bind(column.widthProperty());
-            textField.textProperty().addListener((ob, o, n) -> update(utility, list, filterContainers));
-            input.getChildren().add(textField);
-
-            FilterContainer container = new FilterContainer();
-            container.textField = textField;
-            container.method = getter;
-            filterContainers.add(container);
-        }
-
-        tab.selectedProperty().addListener((ob, o, n) -> getStage().sizeToScene());
-
-        return tab;
-    }
-
-    private void update(Collection<?> utility, ListProperty<Object> list, Collection<FilterContainer> filterContainers) {
-        Stream<?> stream = utility.stream();
-
-        for (FilterContainer container : filterContainers) {
-            stream = stream.filter(x -> {
-                try {
-                    return (String.valueOf(container.method.invoke(x))).toLowerCase().contains(container.textField.getText().toLowerCase());
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-                return false;
-            });
-        }
-
-        list.set(stream.collect(Collectors.toCollection(FXCollections::observableArrayList)));
-    }
-
-    private static class FilterContainer {
-        private TextField textField;
-        private Method method;
     }
 }

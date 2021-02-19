@@ -9,7 +9,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import manager.Database;
@@ -44,8 +43,8 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
 
     protected final ListProperty<Eq> equipmentList;
 
-    public EquipmentView(String title, IView parent, Class<Eq> typClass, ListProperty<Eq> equipmentList) {
-        super(title, parent, typClass);
+    public EquipmentView(String title, IView parent, ListProperty<Eq> equipmentList) {
+        super(title, parent);
         this.equipmentList = equipmentList;
         this.equipmentList.addListener((observable, o, n) -> update());
         this.defaultName = getMessageProperty("search.default.name");
@@ -65,7 +64,7 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
         this.searchCount = new SimpleIntegerProperty(1);
     }
 
-    protected void addControls(Pane root) {
+    protected void addControls() {
         int width = 400;
 
         HBox infos1 = new HBox(50);
