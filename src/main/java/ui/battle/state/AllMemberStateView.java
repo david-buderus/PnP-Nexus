@@ -18,9 +18,9 @@ import javafx.scene.text.FontWeight;
 import manager.LanguageUtility;
 import model.Battle;
 import model.member.BattleMember;
-import model.member.MemberState;
 import model.member.data.AttackTypes;
-import model.member.data.MemberStateEffect;
+import model.member.state.interfaces.IAttackTypeMemberState;
+import model.member.state.interfaces.IPowerMemberState;
 import ui.View;
 import ui.battle.BattleMemberPane;
 import ui.part.NumberField;
@@ -157,10 +157,10 @@ public class AllMemberStateView extends View {
         HBox nameBox = labelTextField("state.info.name", name);
 
         //Effect
-        ComboBox<MemberStateEffect> effectComboBox = new ComboBox<>();
+        ComboBox<MemberStateFactory> effectComboBox = new ComboBox<>();
         effectComboBox.setCellFactory(list -> new UpdatingListCell<>());
         effectComboBox.setButtonCell(new UpdatingListCell<>());
-        effectComboBox.setItems(FXCollections.observableArrayList(MemberStateEffect.values()));
+        effectComboBox.setItems(FXCollections.observableArrayList(MemberStateFactory.FACTORIES));
         HBox effectBox = labelRegion("state.info.type", effectComboBox);
 
         //Power
@@ -191,36 +191,19 @@ public class AllMemberStateView extends View {
         typeComboBox.getSelectionModel().select(AttackTypes.direct);
         HBox typeBox = labelRegion("state.info.target", typeComboBox);
 
-        effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, effect) -> {
+        effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, factory) -> {
             info.getChildren().clear();
             info.getChildren().add(infoLabel);
             info.getChildren().add(nameBox);
             info.getChildren().add(effectBox);
 
-
-            switch (effect) {
-                case damage:
-                    info.getChildren().add(powerBox);
-                    info.getChildren().add(typeBox);
-                    info.getChildren().add(durationBox);
-                    break;
-                case heal:
-                case manaDrain:
-                case manaRegeneration:
-                case speed:
-                case relativeSpeed:
-                case slow:
-                case relativeSlow:
-                case armorPlus:
-                case armorMinus:
-                case shield:
-                    info.getChildren().add(powerBox);
-                    info.getChildren().add(durationBox);
-                    break;
-                default:
-                    info.getChildren().add(durationBox);
-                    break;
+            if (factory.getDefaultState() instanceof IPowerMemberState) {
+                info.getChildren().add(powerBox);
             }
+            if (factory.getDefaultState() instanceof IAttackTypeMemberState) {
+                info.getChildren().add(typeBox);
+            }
+            info.getChildren().add(durationBox);
 
             Button createButton = new Button();
             createButton.textProperty().bind(LanguageUtility.getMessageProperty("state.info.add"));
@@ -228,10 +211,11 @@ public class AllMemberStateView extends View {
             createButton.setOnAction(ev -> {
                 for (BattleMemberPane pane : selected) {
                     pane.getBattleMember().addState(
-                            new MemberState(name.get(), effectComboBox.getValue(), Integer.parseInt(durationField.getText()),
-                                    activeComboBox.getValue() == Rounds.activeRounds, Double.parseDouble(powerField.getText()),
+                            effectComboBox.getValue().create(name.getName(), Integer.parseInt(durationField.getText()),
+                                    activeComboBox.getValue() == Rounds.activeRounds, Float.parseFloat(powerField.getText()),
                                     randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), source));
                 }
+                info.getChildren().add(createButton);
             });
             info.getChildren().add(createButton);
         });

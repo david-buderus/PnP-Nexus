@@ -9,16 +9,17 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import manager.LanguageUtility;
-import model.member.MemberState;
+import model.member.state.interfaces.IMemberState;
+import model.member.state.interfaces.IPowerMemberState;
 
 public class MemberStatePane extends VBox {
 
     private static final Image ICONS = new Image("Icons.png");
 
-    private final MemberState state;
+    private final IMemberState state;
     private boolean selected;
 
-    public MemberStatePane(MemberState state) {
+    public MemberStatePane(IMemberState state) {
         this.selected = false;
         this.state = state;
 
@@ -34,7 +35,7 @@ public class MemberStatePane extends VBox {
         iconCanvas.setWidth(13);
         nameBox.getChildren().add(iconCanvas);
         iconCanvas.getGraphicsContext2D().drawImage(ICONS,
-                state.getEffect().getImageID() * 13, 0, 13, 13, 0, 0, 13, 13);
+                state.getImageID() * 13, 0, 13, 13, 0, 0, 13, 13);
 
         Label name = new Label(state.getName());
         nameBox.getChildren().add(name);
@@ -46,10 +47,13 @@ public class MemberStatePane extends VBox {
         durationBar.setProgress((double) state.getDuration() / state.getMaxDuration());
         this.getChildren().add(durationBar);
 
-        Label strength = new Label();
-        strength.textProperty().bind(LanguageUtility.getMessageProperty("state.info.power").concat(": ").concat(state.getPowerAsString()));
-        strength.setPadding(new Insets(5, 0, 5, 0));
-        this.getChildren().add(strength);
+        if (state instanceof IPowerMemberState) {
+            Label power = new Label();
+            power.textProperty().bind(LanguageUtility.getMessageProperty("state.info.power").concat(": ").concat(((IPowerMemberState) state).getPowerAsString()));
+            power.setPadding(new Insets(5, 0, 5, 0));
+            this.getChildren().add(power);
+
+        }
 
         Label duration = new Label();
         duration.textProperty().bind(state.durationDisplayProperty());
@@ -69,7 +73,7 @@ public class MemberStatePane extends VBox {
         }
     }
 
-    public MemberState getState() {
+    public IMemberState getState() {
         return state;
     }
 }

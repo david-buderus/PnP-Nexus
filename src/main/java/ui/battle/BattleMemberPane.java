@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import manager.LanguageUtility;
 import model.member.BattleMember;
-import model.member.MemberState;
+import model.member.state.interfaces.IMemberState;
 
 public class BattleMemberPane extends StackPane {
 
@@ -61,19 +61,19 @@ public class BattleMemberPane extends StackPane {
         iconBar.setHeight(13);
         root.getChildren().add(iconBar);
 
-        battleMember.statesProperty().addListener((ListChangeListener<? super MemberState>) change -> {
+        battleMember.statesProperty().addListener((ListChangeListener<? super IMemberState>) change -> {
             iconBar.getGraphicsContext2D().clearRect(0, 0, iconBar.getWidth(), 13);
             for (int i = 0; i < change.getList().size(); i++) {
-                MemberState state = change.getList().get(i);
+                IMemberState state = change.getList().get(i);
                 iconBar.getGraphicsContext2D().drawImage(ICONS,
-                        state.getEffect().getImageID() * 13, 0, 13, 13, i * 17, 0, 13, 13);
+                        state.getImageID() * 13, 0, 13, 13, i * 17, 0, 13, 13);
             }
         });
         iconBar.getGraphicsContext2D().clearRect(0, 0, iconBar.getWidth(), 13);
         for (int i = 0; i < battleMember.statesProperty().size(); i++) {
-            MemberState state = battleMember.statesProperty().get(i);
+            IMemberState state = battleMember.statesProperty().get(i);
             iconBar.getGraphicsContext2D().drawImage(ICONS,
-                    state.getEffect().getImageID() * 13, 0, 13, 13, i * 17, 0, 13, 13);
+                    state.getImageID() * 13, 0, 13, 13, i * 17, 0, 13, 13);
         }
 
         this.getChildren().add(root);
