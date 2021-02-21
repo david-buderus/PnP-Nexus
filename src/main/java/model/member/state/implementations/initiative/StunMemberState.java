@@ -13,7 +13,7 @@ public class StunMemberState extends MemberState implements IRelativeInitiativeM
     }
 
     @Override
-    public Float apply(BattleMember member, Float input) {
+    public Float apply(BattleMember member, Float currentInitiative) {
         return 0f;
     }
 
