@@ -5,6 +5,9 @@ package model.member.state.interfaces;
 */
 public interface IActiveRounderMemberState extends IMemberState {
 
+  /**
+  * Method that returns, whether this MemberState decreses during active (true) or inactive (false) rounds
+  */
     boolean isActiveRounder();
 
     @Override
