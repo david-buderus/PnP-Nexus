@@ -5,13 +5,13 @@ public interface IActiveRounderMemberState extends IMemberState {
     boolean isActiveRounder();
 
     @Override
-    default void decreaseDuration(boolean isActiveRoundDecrease, int amount) {
+    default void decreaseDuration(boolean isActiveRound, int amount) {
         if (isActiveRounder()) {
-            if (isActiveRoundDecrease) {
+            if (isActiveRound) {
                 this.setDuration(this.getDuration() - amount);
             }
         } else {
-            if (!isActiveRoundDecrease) {
+            if (!isActiveRound) {
                 this.setDuration(this.getDuration() - amount);
             }
         }
