@@ -9,11 +9,7 @@ import model.interfaces.WithToStringProperty;
 import model.member.BattleMember;
 import model.member.state.interfaces.IMemberState;
 
-import java.util.Random;
-
 public abstract class MemberState implements IMemberState, WithToStringProperty {
-
-    protected static final Random RAND = new Random();
 
     protected final int maxDuration;
     protected final int imageID;

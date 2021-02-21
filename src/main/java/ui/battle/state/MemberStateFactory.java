@@ -5,8 +5,8 @@ import manager.LanguageUtility;
 import model.interfaces.WithToStringProperty;
 import model.member.BattleMember;
 import model.member.data.AttackTypes;
-import model.member.state.implementations.defense.ArmorMinusMemberState;
-import model.member.state.implementations.defense.ArmorPlusMemberState;
+import model.member.state.implementations.defense.ArmorMalusMemberState;
+import model.member.state.implementations.defense.ArmorBonusMemberState;
 import model.member.state.implementations.incoming.ShieldMemberState;
 import model.member.state.implementations.initiative.*;
 import model.member.state.implementations.manipulating.DamageMemberState;
@@ -55,13 +55,13 @@ public class MemberStateFactory implements WithToStringProperty {
 
     static {
         // DEFENSE
-        INTERN_FACTORIES.add(new MemberStateFactory("state.effect.armorPlus",
+        INTERN_FACTORIES.add(new MemberStateFactory("state.effect.armorBonus",
                 (name, duration, activeRounder, power, isRandom, type, source) ->
-                        new ArmorPlusMemberState(name, duration, activeRounder, source, power))
+                        new ArmorBonusMemberState(name, duration, activeRounder, source, power))
         );
-        INTERN_FACTORIES.add(new MemberStateFactory("state.effect.armorMinus",
+        INTERN_FACTORIES.add(new MemberStateFactory("state.effect.armorMalus",
                 (name, duration, activeRounder, power, isRandom, type, source) ->
-                        new ArmorMinusMemberState(name, duration, activeRounder, source, power))
+                        new ArmorMalusMemberState(name, duration, activeRounder, source, power))
         );
 
         // INCOMING

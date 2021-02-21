@@ -7,9 +7,9 @@ import model.member.state.PowerMemberState;
 import model.member.state.interfaces.IDefenseMemberState;
 import model.member.state.interfaces.IPowerMemberState;
 
-public class ArmorPlusMemberState extends PowerMemberState implements IDefenseMemberState, IPowerMemberState {
+public class ArmorBonusMemberState extends PowerMemberState implements IDefenseMemberState, IPowerMemberState {
 
-    public ArmorPlusMemberState(String name, int duration, boolean activeRounder, BattleMember source, float maxPower) {
+    public ArmorBonusMemberState(String name, int duration, boolean activeRounder, BattleMember source, float maxPower) {
         super(name, 10, duration, activeRounder, source, maxPower);
     }
 
@@ -20,6 +20,6 @@ public class ArmorPlusMemberState extends PowerMemberState implements IDefenseMe
 
     @Override
     public ReadOnlyStringProperty toStringProperty() {
-        return LanguageUtility.getMessageProperty("state.effect.armorPlus");
+        return LanguageUtility.getMessageProperty("state.effect.armorBonus");
     }
 }

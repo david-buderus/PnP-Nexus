@@ -7,16 +7,18 @@ import java.util.Random;
 
 public abstract class RandomPowerMemberState extends PowerMemberState implements IRandomPowerMemberState {
 
-    protected boolean random;
+    protected static final Random RAND = new Random();
 
-    public RandomPowerMemberState(String name, int imageID, int duration, boolean activeRounder, BattleMember source, float maxPower, boolean random) {
+    protected boolean isRandom;
+
+    public RandomPowerMemberState(String name, int imageID, int duration, boolean activeRounder, BattleMember source, float maxPower, boolean isRandom) {
         super(name, imageID, duration, activeRounder, source, maxPower);
-        this.random = random;
+        this.isRandom = isRandom;
     }
 
     @Override
     public boolean isRandom() {
-        return random;
+        return isRandom;
     }
 
     @Override
