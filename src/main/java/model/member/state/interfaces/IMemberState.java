@@ -18,12 +18,12 @@ public interface IMemberState {
 
     StringProperty durationDisplayProperty();
 
-    default void decreaseDuration(boolean isActiveRoundDecrease) {
-        decreaseDuration(isActiveRoundDecrease, 1);
+    default void decreaseDuration(boolean isActiveRound) {
+        decreaseDuration(isActiveRound, 1);
     }
 
-    default void decreaseDuration(boolean isActiveRoundDecrease, int amount) {
-        if (!isActiveRoundDecrease) {
+    default void decreaseDuration(boolean isActiveRound, int amount) {
+        if (!isActiveRound) {
             this.setDuration(this.getDuration() - amount);
         }
     }
