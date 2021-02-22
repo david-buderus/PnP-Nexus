@@ -3,6 +3,7 @@ package model.member.state.implementations.incoming;
 import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
 import model.member.BattleMember;
+import model.member.state.MemberStateIcon;
 import model.member.state.PowerMemberState;
 import model.member.state.interfaces.IIncomingDamageMemberState;
 import model.member.state.interfaces.IPowerMemberState;
@@ -10,7 +11,7 @@ import model.member.state.interfaces.IPowerMemberState;
 public class ShieldMemberState extends PowerMemberState implements IPowerMemberState, IIncomingDamageMemberState {
 
     public ShieldMemberState(String name, int duration, boolean activeRounder, BattleMember source, float maxPower) {
-        super(name, 12, duration, activeRounder, source, maxPower);
+        super(name, MemberStateIcon.SHIELD, duration, activeRounder, source, maxPower);
     }
 
     @Override

@@ -4,6 +4,7 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
 import model.member.BattleMember;
 import model.member.data.AttackTypes;
+import model.member.state.MemberStateIcon;
 import model.member.state.RandomPowerMemberState;
 import model.member.state.interfaces.IAttackTypeMemberState;
 import model.member.state.interfaces.IManipulatingMemberState;
@@ -14,7 +15,7 @@ public class DamageMemberState extends RandomPowerMemberState implements IManipu
     protected final AttackTypes type;
 
     public DamageMemberState(String name, int duration, boolean activeRounder, BattleMember source, float maxPower, boolean random, AttackTypes type) {
-        super(name, 1, duration, activeRounder, source, maxPower, random);
+        super(name, MemberStateIcon.DAMAGE, duration, activeRounder, source, maxPower, random);
         this.type = type;
     }
 
