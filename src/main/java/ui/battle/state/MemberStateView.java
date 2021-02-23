@@ -1,9 +1,6 @@
 package ui.battle.state;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
@@ -17,9 +14,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import manager.LanguageUtility;
 import model.member.BattleMember;
-import model.member.MemberState;
 import model.member.data.AttackTypes;
-import model.member.data.MemberStateEffect;
+import model.member.state.interfaces.*;
 import ui.View;
 import ui.part.NumberField;
 import ui.part.UpdatingListCell;
@@ -32,7 +28,7 @@ import static ui.ViewFactory.labelTextField;
 
 public class MemberStateView extends View {
 
-    private final HashMap<MemberState, MemberStatePane> panes;
+    private final HashMap<IMemberState, MemberStatePane> panes;
     private final ObjectProperty<MemberStatePane> selected;
 
     public MemberStateView(BattleMember target, BattleMember source) {
@@ -85,10 +81,10 @@ public class MemberStateView extends View {
         FlowPane states = new FlowPane();
         memberLists.getChildren().add(states);
 
-        target.statesProperty().addListener((ListChangeListener<? super MemberState>) change -> {
+        target.statesProperty().addListener((ListChangeListener<? super IMemberState>) change -> {
             while (change.next()) {
 
-                for (MemberState state : change.getAddedSubList()) {
+                for (IMemberState state : change.getAddedSubList()) {
                     MemberStatePane pane = new MemberStatePane(state);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
                     panes.put(state, pane);
@@ -96,14 +92,14 @@ public class MemberStateView extends View {
                     states.getChildren().add(pane);
                 }
 
-                for (MemberState member : change.getRemoved()) {
+                for (IMemberState member : change.getRemoved()) {
                     states.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
             }
         });
 
-        for (MemberState state : target.statesProperty()) {
+        for (IMemberState state : target.statesProperty()) {
             MemberStatePane pane = new MemberStatePane(state);
             pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
             panes.put(state, pane);
@@ -130,8 +126,8 @@ public class MemberStateView extends View {
         HBox nameBox = labelTextField("state.info.name", name);
 
         //Effect
-        ComboBox<MemberStateEffect> effectComboBox = new ComboBox<>();
-        effectComboBox.setItems(FXCollections.observableArrayList(MemberStateEffect.values()));
+        ComboBox<MemberStateFactory> effectComboBox = new ComboBox<>();
+        effectComboBox.setItems(FXCollections.observableArrayList(MemberStateFactory.FACTORIES));
         effectComboBox.setCellFactory(list -> new UpdatingListCell<>());
         effectComboBox.setButtonCell(new UpdatingListCell<>());
         HBox effectBox = labelRegion("state.info.type", effectComboBox);
@@ -143,18 +139,28 @@ public class MemberStateView extends View {
         randomComboBox.setButtonCell(new UpdatingListCell<>());
         randomComboBox.getSelectionModel().selectFirst();
 
-        TextField powerField = new NumberField();
-        HBox powerBox = labelRegion("state.info.power", 55, randomComboBox, 95, powerField);
+        FloatProperty powerProperty = new SimpleFloatProperty(0);
+        HBox powerBox = labelTextField("state.info.power", powerProperty);
+
+        NumberField powerField = new NumberField();
+        powerField.numberProperty().bindBidirectional(powerProperty);
+        HBox randomPowerBox = labelRegion("state.info.power", 55, randomComboBox, 95, powerField);
 
         //Duration
-        TextField durationField = new NumberField(1);
+        IntegerProperty durationProperty = new SimpleIntegerProperty(1);
+
+        HBox durationBox = labelTextField("state.info.duration", durationProperty);
+
+        NumberField durationField = new NumberField();
+        durationField.numberProperty().bindBidirectional(durationProperty);
 
         ComboBox<Rounds> activeComboBox = new ComboBox<>();
         activeComboBox.setButtonCell(new UpdatingListCell<>());
         activeComboBox.setCellFactory(list -> new UpdatingListCell<>());
         activeComboBox.setItems(FXCollections.observableArrayList(Rounds.values()));
         activeComboBox.getSelectionModel().selectFirst();
-        HBox durationBox = labelRegion("state.info.duration", 30, durationField, 120, activeComboBox);
+
+        HBox activeDurationBox = labelRegion("state.info.duration", 30, durationField, 120, activeComboBox);
 
         //Type
         ComboBox<AttackTypes> typeComboBox = new ComboBox<>();
@@ -164,34 +170,26 @@ public class MemberStateView extends View {
         typeComboBox.getSelectionModel().select(AttackTypes.direct);
         HBox typeBox = labelRegion("state.info.target", typeComboBox);
 
-        effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, effect) -> {
+        effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, factory) -> {
             info.getChildren().clear();
             info.getChildren().add(infoLabel);
             info.getChildren().add(nameBox);
             info.getChildren().add(effectBox);
 
-
-            switch (effect) {
-                case damage:
+            if (factory.getDefaultState() instanceof IPowerMemberState) {
+                if (factory.getDefaultState() instanceof IRandomPowerMemberState) {
+                    info.getChildren().add(randomPowerBox);
+                } else {
                     info.getChildren().add(powerBox);
-                    info.getChildren().add(typeBox);
-                    info.getChildren().add(durationBox);
-                    break;
-                case heal:
-                case manaDrain:
-                case manaRegeneration:
-                case speed:
-                case relativeSpeed:
-                case slow:
-                case relativeSlow:
-                case armorPlus:
-                case armorMinus:
-                    info.getChildren().add(powerBox);
-                    info.getChildren().add(durationBox);
-                    break;
-                default:
-                    info.getChildren().add(durationBox);
-                    break;
+                }
+            }
+            if (factory.getDefaultState() instanceof IAttackTypeMemberState) {
+                info.getChildren().add(typeBox);
+            }
+            if (factory.getDefaultState() instanceof IActiveRounderMemberState) {
+                info.getChildren().add(activeDurationBox);
+            } else {
+                info.getChildren().add(durationBox);
             }
 
             Button createButton = new Button();
@@ -199,8 +197,8 @@ public class MemberStateView extends View {
             createButton.setPrefWidth(215);
             createButton.setOnAction(ev ->
                     target.addState(
-                            new MemberState(name.get(), effectComboBox.getValue(), Integer.parseInt(durationField.getText()),
-                                    activeComboBox.getValue() == Rounds.activeRounds, Double.parseDouble(powerField.getText()),
+                            effectComboBox.getValue().create(name.get(), Integer.parseInt(durationField.getText()),
+                                    activeComboBox.getValue() == Rounds.activeRounds, powerProperty.get(),
                                     randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), Objects.requireNonNullElse(source, target))));
             info.getChildren().add(createButton);
         });

@@ -1,9 +1,6 @@
 package ui.battle.state;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
@@ -18,9 +15,11 @@ import javafx.scene.text.FontWeight;
 import manager.LanguageUtility;
 import model.Battle;
 import model.member.BattleMember;
-import model.member.MemberState;
 import model.member.data.AttackTypes;
-import model.member.data.MemberStateEffect;
+import model.member.state.interfaces.IActiveRounderMemberState;
+import model.member.state.interfaces.IAttackTypeMemberState;
+import model.member.state.interfaces.IPowerMemberState;
+import model.member.state.interfaces.IRandomPowerMemberState;
 import ui.View;
 import ui.battle.BattleMemberPane;
 import ui.part.NumberField;
@@ -157,10 +156,10 @@ public class AllMemberStateView extends View {
         HBox nameBox = labelTextField("state.info.name", name);
 
         //Effect
-        ComboBox<MemberStateEffect> effectComboBox = new ComboBox<>();
+        ComboBox<MemberStateFactory> effectComboBox = new ComboBox<>();
         effectComboBox.setCellFactory(list -> new UpdatingListCell<>());
         effectComboBox.setButtonCell(new UpdatingListCell<>());
-        effectComboBox.setItems(FXCollections.observableArrayList(MemberStateEffect.values()));
+        effectComboBox.setItems(FXCollections.observableArrayList(MemberStateFactory.FACTORIES));
         HBox effectBox = labelRegion("state.info.type", effectComboBox);
 
         //Power
@@ -170,18 +169,28 @@ public class AllMemberStateView extends View {
         randomComboBox.setButtonCell(new UpdatingListCell<>());
         randomComboBox.getSelectionModel().selectFirst();
 
-        TextField powerField = new NumberField();
-        HBox powerBox = labelRegion("state.info.power", 55, randomComboBox, 95, powerField);
+        FloatProperty powerProperty = new SimpleFloatProperty(0);
+        HBox powerBox = labelTextField("state.info.power", powerProperty);
+
+        NumberField powerField = new NumberField();
+        powerField.numberProperty().bindBidirectional(powerProperty);
+        HBox randomPowerBox = labelRegion("state.info.power", 55, randomComboBox, 95, powerField);
 
         //Duration
-        TextField durationField = new NumberField(1);
+        IntegerProperty durationProperty = new SimpleIntegerProperty(1);
+
+        HBox durationBox = labelTextField("state.info.duration", durationProperty);
+
+        NumberField durationField = new NumberField();
+        durationField.numberProperty().bindBidirectional(durationProperty);
 
         ComboBox<Rounds> activeComboBox = new ComboBox<>();
         activeComboBox.setButtonCell(new UpdatingListCell<>());
         activeComboBox.setCellFactory(list -> new UpdatingListCell<>());
         activeComboBox.setItems(FXCollections.observableArrayList(Rounds.values()));
         activeComboBox.getSelectionModel().selectFirst();
-        HBox durationBox = labelRegion("state.info.duration", 30, durationField, 120, activeComboBox);
+
+        HBox activeDurationBox = labelRegion("state.info.duration", 30, durationField, 120, activeComboBox);
 
         //Type
         ComboBox<AttackTypes> typeComboBox = new ComboBox<>();
@@ -191,34 +200,26 @@ public class AllMemberStateView extends View {
         typeComboBox.getSelectionModel().select(AttackTypes.direct);
         HBox typeBox = labelRegion("state.info.target", typeComboBox);
 
-        effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, effect) -> {
+        effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, factory) -> {
             info.getChildren().clear();
             info.getChildren().add(infoLabel);
             info.getChildren().add(nameBox);
             info.getChildren().add(effectBox);
 
-
-            switch (effect) {
-                case damage:
+            if (factory.getDefaultState() instanceof IPowerMemberState) {
+                if (factory.getDefaultState() instanceof IRandomPowerMemberState) {
+                    info.getChildren().add(randomPowerBox);
+                } else {
                     info.getChildren().add(powerBox);
-                    info.getChildren().add(typeBox);
-                    info.getChildren().add(durationBox);
-                    break;
-                case heal:
-                case manaDrain:
-                case manaRegeneration:
-                case speed:
-                case relativeSpeed:
-                case slow:
-                case relativeSlow:
-                case armorPlus:
-                case armorMinus:
-                    info.getChildren().add(powerBox);
-                    info.getChildren().add(durationBox);
-                    break;
-                default:
-                    info.getChildren().add(durationBox);
-                    break;
+                }
+            }
+            if (factory.getDefaultState() instanceof IAttackTypeMemberState) {
+                info.getChildren().add(typeBox);
+            }
+            if (factory.getDefaultState() instanceof IActiveRounderMemberState) {
+                info.getChildren().add(activeDurationBox);
+            } else {
+                info.getChildren().add(durationBox);
             }
 
             Button createButton = new Button();
@@ -227,10 +228,11 @@ public class AllMemberStateView extends View {
             createButton.setOnAction(ev -> {
                 for (BattleMemberPane pane : selected) {
                     pane.getBattleMember().addState(
-                            new MemberState(name.get(), effectComboBox.getValue(), Integer.parseInt(durationField.getText()),
-                                    activeComboBox.getValue() == Rounds.activeRounds, Double.parseDouble(powerField.getText()),
+                            effectComboBox.getValue().create(name.getName(), Integer.parseInt(durationField.getText()),
+                                    activeComboBox.getValue() == Rounds.activeRounds, Float.parseFloat(powerField.getText()),
                                     randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), source));
                 }
+                info.getChildren().add(createButton);
             });
             info.getChildren().add(createButton);
         });

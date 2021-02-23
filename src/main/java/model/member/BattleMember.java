@@ -12,7 +12,7 @@ import model.Battle;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
-import model.member.data.MemberStateEffect;
+import model.member.state.interfaces.*;
 
 import java.util.HashMap;
 
@@ -34,7 +34,7 @@ public class BattleMember extends Member {
 
     protected Battle battle;
 
-    private final ListProperty<MemberState> states;
+    private final ListProperty<IMemberState> states;
 
     /**
      * Creates a BattleMember with default stats
@@ -50,9 +50,9 @@ public class BattleMember extends Member {
      * Copies values of the armor map into the own property.
      * These properties won't be linked!
      *
-     * @param battle the BattleMember is part of
+     * @param battle    the BattleMember is part of
      * @param lootTable of the given BattleMember
-     * @param armor which will be used as Armor
+     * @param armor     which will be used as Armor
      */
     public BattleMember(Battle battle, LootTable lootTable, HashMap<ArmorPiece, IntegerProperty> armor) {
         this(battle, lootTable);
@@ -64,7 +64,7 @@ public class BattleMember extends Member {
     /**
      * Creates a BattleMember with default stats
      *
-     * @param battle the BattleMember is part of
+     * @param battle    the BattleMember is part of
      * @param lootTable of the given BattleMember
      */
     public BattleMember(Battle battle, LootTable lootTable) {
@@ -114,30 +114,12 @@ public class BattleMember extends Member {
             this.counter.set(getCounter() + startValue.get());
         }
 
-        for (MemberState state : states) {
-            if (state.getDuration() > 0) {
-                switch (state.getEffect()) {
-                    case damage:
-                        this.takeDamage((int) state.getEffectPower(), state.getType(),
-                                false, 0, 0, state.getSource());
-                        break;
-                    case heal:
-                        this.heal((int) state.getEffectPower(), state.getSource());
-                        break;
-                    case manaRegeneration:
-                        this.mana.set(getMana() + (int) state.getEffectPower());
-                        break;
-                    case manaDrain:
-                        this.mana.set(getMana() - (int) state.getEffectPower());
-                        break;
-                }
+        for (IMemberState state : states) {
+            if (state instanceof IManipulatingMemberState) {
+                ((IManipulatingMemberState) state).apply(this);
             }
-        }
-
-        this.states.stream().filter(x -> !x.isActiveRounder()).forEach(MemberState::decreaseDuration);
-
-        for (int i = 0; i < getTurns(); i++) {
-            this.states.stream().filter(MemberState::isActiveRounder).forEach(MemberState::decreaseDuration);
+            state.decreaseDuration(false);
+            state.decreaseDuration(true, getTurns());
         }
     }
 
@@ -145,20 +127,25 @@ public class BattleMember extends Member {
 
     private int calculateInitiative() {
 
-        if (this.states.stream().anyMatch(state -> state.getEffect() == MemberStateEffect.stun && state.getDuration() > 0)) {
-            return 0;
-        }
-
         int init = getInitiative();
 
-        init += this.states.stream().filter(x -> x.getEffect().isAbsoluteInitiativeEffect())
-                .mapToDouble(state -> state.getEffect() == MemberStateEffect.slow ? -state.getEffectPower() : state.getEffectPower())
-                .sum();
+        for (IMemberState state : states) {
+            if (state instanceof IAbsolutInitiativeMemberState) {
+                init = ((IAbsolutInitiativeMemberState) state).apply(this, init);
+            }
+        }
 
-        init *= this.states.stream().filter(x -> x.getEffect().isRelativeInitiativeEffect())
-                .mapToDouble(MemberState::getEffectPower).reduce(1, (a, b) -> a * b);
+        float relativeChange = 1;
 
-        return Math.max(1, init);
+        for (IMemberState state : states) {
+            if (state instanceof IRelativeInitiativeMemberState) {
+                relativeChange = ((IRelativeInitiativeMemberState) state).apply(this, relativeChange);
+            }
+        }
+
+        init *= relativeChange;
+
+        return Math.max(init, 0);
     }
 
     public void heal(int amount, BattleMember source) {
@@ -167,6 +154,13 @@ public class BattleMember extends Member {
     }
 
     public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, BattleMember source) {
+
+        for (IMemberState state : this.states) {
+            if (state instanceof IIncomingDamageMemberState) {
+                amount = ((IIncomingDamageMemberState) state).apply(this, amount);
+            }
+        }
+
         int damage = Math.max(0, amount - calculateDefense(type, withShield, penetration, block));
         this.life.set(getLife() - damage);
         battle.addToDamageStatistic(source, damage);
@@ -197,11 +191,11 @@ public class BattleMember extends Member {
         }
         defense *= reduction;
 
-        defense += this.states.stream().filter(x -> x.getEffect() == MemberStateEffect.armorPlus)
-                .mapToDouble(MemberState::getEffectPower).sum();
-
-        defense -= this.states.stream().filter(x -> x.getEffect() == MemberStateEffect.armorMinus)
-                .mapToDouble(MemberState::getEffectPower).sum();
+        for (IMemberState state : this.states) {
+            if (state instanceof IDefenseMemberState) {
+                defense = ((IDefenseMemberState) state).apply(this, defense);
+            }
+        }
 
         return defense + baseDefense.get();
     }
@@ -212,11 +206,11 @@ public class BattleMember extends Member {
         this.turns.set(1);
     }
 
-    public void addState(MemberState state) {
+    public void addState(IMemberState state) {
         this.states.add(state);
     }
 
-    public void removeState(MemberState state) {
+    public void removeState(IMemberState state) {
         this.states.remove(state);
     }
 
@@ -233,7 +227,7 @@ public class BattleMember extends Member {
      * Creates a new IntegerProperty and binds it
      * to the ObservableValue
      *
-     * @param target the specific ArmorPiece
+     * @param target  the specific ArmorPiece
      * @param defense ObservableValue which will get binded
      */
     protected void setArmor(ArmorPiece target, ObservableValue<Number> defense) {
@@ -317,7 +311,7 @@ public class BattleMember extends Member {
     }
 
     public void setMana(int mana) {
-        this.mana.set(mana);
+        this.mana.set(Math.max(0, Math.min(mana, getMana())));
     }
 
     public IntegerProperty manaProperty() {
@@ -356,7 +350,7 @@ public class BattleMember extends Member {
         return turns;
     }
 
-    public ListProperty<MemberState> statesProperty() {
+    public ListProperty<IMemberState> statesProperty() {
         return states;
     }
 
