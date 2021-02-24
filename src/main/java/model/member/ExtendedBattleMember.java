@@ -19,6 +19,7 @@ import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
 import model.member.generation.*;
 import model.member.generation.specs.*;
+import model.member.interfaces.IExtendedBattleMember;
 import org.apache.commons.configuration2.Configuration;
 
 import java.text.DecimalFormat;
@@ -27,7 +28,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class ExtendedBattleMember extends BattleMember {
+public class ExtendedBattleMember extends BattleMember implements IExtendedBattleMember {
 
     protected static Random random = new Random();
 
@@ -1016,20 +1017,12 @@ public class ExtendedBattleMember extends BattleMember {
         return result;
     }
 
-    public int getStrength() {
-        return strength.get();
-    }
-
     public IntegerProperty strengthProperty() {
         return strength;
     }
 
-    public void setStrength(int strength) {
+    private void setStrength(int strength) {
         this.strength.set(strength);
-    }
-
-    public int getEndurance() {
-        return endurance.get();
     }
 
     public IntegerProperty enduranceProperty() {
@@ -1040,20 +1033,12 @@ public class ExtendedBattleMember extends BattleMember {
         this.endurance.set(endurance);
     }
 
-    public int getDexterity() {
-        return dexterity.get();
-    }
-
     public IntegerProperty dexterityProperty() {
         return dexterity;
     }
 
     public void setDexterity(int dexterity) {
         this.dexterity.set(dexterity);
-    }
-
-    public int getIntelligence() {
-        return intelligence.get();
     }
 
     public IntegerProperty intelligenceProperty() {
@@ -1064,20 +1049,12 @@ public class ExtendedBattleMember extends BattleMember {
         this.intelligence.set(intelligence);
     }
 
-    public int getCharisma() {
-        return charisma.get();
-    }
-
     public IntegerProperty charismaProperty() {
         return charisma;
     }
 
     public void setCharisma(int charisma) {
         this.charisma.set(charisma);
-    }
-
-    public int getResilience() {
-        return resilience.get();
     }
 
     public IntegerProperty resilienceProperty() {
@@ -1088,10 +1065,6 @@ public class ExtendedBattleMember extends BattleMember {
         this.resilience.set(resilience);
     }
 
-    public int getAgility() {
-        return agility.get();
-    }
-
     public IntegerProperty agilityProperty() {
         return agility;
     }
@@ -1100,20 +1073,12 @@ public class ExtendedBattleMember extends BattleMember {
         this.agility.set(agility);
     }
 
-    public int getPrecision() {
-        return precision.get();
-    }
-
     public IntegerProperty precisionProperty() {
         return precision;
     }
 
     public void setPrecision(int precision) {
         this.precision.set(precision);
-    }
-
-    public String getNotes() {
-        return notes.get();
     }
 
     public StringProperty notesProperty() {
