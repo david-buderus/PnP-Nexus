@@ -213,7 +213,6 @@ public class BattleMember extends Member implements IBattleMember {
     }
 
     public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, IBattleMember source) {
-
         for (IMemberState state : this.states) {
             if (state instanceof IIncomingDamageMemberState) {
                 amount = ((IIncomingDamageMemberState) state).apply(this, amount);
@@ -223,11 +222,6 @@ public class BattleMember extends Member implements IBattleMember {
         int damage = Math.max(0, amount - calculateDefense(type, withShield, penetration, block));
         this.life.set(getLife() - damage);
         battle.addToDamageStatistic(source, damage);
-    }
-
-    @Override
-    public void decreaseMana(int amount, IBattleMember source) {
-        this.setMana(Math.min(0, this.getMana() - amount));
     }
 
     private int calculateDefense(AttackTypes type, boolean withShield, double penetration, double block) {
@@ -300,14 +294,6 @@ public class BattleMember extends Member implements IBattleMember {
         this.armor.put(target, property);
     }
 
-    public boolean isDead() {
-        return getLife() <= 0;
-    }
-
-    public int getArmor(ArmorPiece target) {
-        return armor.get(target).get();
-    }
-
     public BattleMember cloneMember() {
         BattleMember member = new BattleMember(battle, lootTable, armor);
         member.setDefense(baseDefense.get());
@@ -342,10 +328,6 @@ public class BattleMember extends Member implements IBattleMember {
         this.initiative.set(init);
     }
 
-    public int getLife() {
-        return life.get();
-    }
-
     protected void setLife(int life) {
         this.life.set(life);
     }
@@ -354,24 +336,12 @@ public class BattleMember extends Member implements IBattleMember {
         return life;
     }
 
-    public int getMaxLife() {
-        return maxLife.get();
-    }
-
     public IntegerProperty maxLifeProperty() {
         return maxLife;
     }
 
-    public int getMaxMana() {
-        return maxMana.get();
-    }
-
     public IntegerProperty maxManaProperty() {
         return maxMana;
-    }
-
-    public int getMana() {
-        return mana.get();
     }
 
     protected void setMana(int mana) {
@@ -382,32 +352,16 @@ public class BattleMember extends Member implements IBattleMember {
         return mana;
     }
 
-    public int getInitiative() {
-        return initiative.get();
-    }
-
     public IntegerProperty initiativeProperty() {
         return initiative;
-    }
-
-    public int getStartValue() {
-        return startValue.get();
     }
 
     public IntegerProperty startValueProperty() {
         return startValue;
     }
 
-    public int getCounter() {
-        return counter.get();
-    }
-
     public IntegerProperty counterProperty() {
         return counter;
-    }
-
-    public int getTurns() {
-        return turns.get();
     }
 
     public IntegerProperty turnsProperty() {
@@ -426,16 +380,8 @@ public class BattleMember extends Member implements IBattleMember {
         this.level.set(level);
     }
 
-    public int getLevel() {
-        return level.get();
-    }
-
     public IntegerProperty levelProperty() {
         return level;
-    }
-
-    public int getTier() {
-        return (int) Math.ceil(this.getLevel() / 5f);
     }
 
     public IntegerProperty armorProperty(ArmorPiece piece) {

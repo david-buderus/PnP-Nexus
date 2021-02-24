@@ -27,43 +27,65 @@ public interface IBattleMember extends IMember {
     void removeState(IMemberState state);
     LootTable getLootTable();
 
-    boolean isDead();
+    default boolean isDead() {
+        return getLife() <= 0;
+    }
 
-    int getArmor(ArmorPiece target);
+    default int getArmor(ArmorPiece piece) {
+        return this.armorProperty(piece).get();
+    };
     IntegerProperty armorProperty(ArmorPiece piece);
 
     void applyWearOnWeapons();
 
     BattleMember cloneMember();
 
-    int getLife();
+    default int getLife(){
+        return this.lifeProperty().get();
+    };
     IntegerProperty lifeProperty();
 
-    int getMaxLife();
+    default int getMaxLife(){
+        return this.maxLifeProperty().get();
+    };
     IntegerProperty maxLifeProperty();
 
-    int getMaxMana();
+    default int getMaxMana() {
+        return this.maxManaProperty().get();
+    }
     IntegerProperty maxManaProperty();
 
-    int getMana();
+    default int getMana() {
+        return this.manaProperty().get();
+    };
     IntegerProperty manaProperty();
 
-    int getInitiative();
+    default int getInitiative() {
+        return this.initiativeProperty().get();
+    };
     IntegerProperty initiativeProperty();
 
-    int getStartValue();
+    default int getStartValue() {
+        return this.startValueProperty().get();
+    };
     IntegerProperty startValueProperty();
 
-    int getCounter();
+    default int getCounter() {
+        return this.counterProperty().get();
+    };
     IntegerProperty counterProperty();
 
-    int getTurns();
+    default int getTurns() {
+        return turnsProperty().get();
+    };
     IntegerProperty turnsProperty();
 
     ListProperty<IMemberState> statesProperty();
     IntegerProperty baseDefenseProperty();
 
-    int getLevel();
+    default int getLevel() {
+        return levelProperty().get();
+    };
     IntegerProperty levelProperty();
 
     default int getTier() {
