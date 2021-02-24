@@ -16,6 +16,7 @@ import manager.LanguageUtility;
 import model.Battle;
 import model.member.BattleMember;
 import model.member.data.AttackTypes;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IActiveRounderMemberState;
 import model.member.state.interfaces.IAttackTypeMemberState;
 import model.member.state.interfaces.IPowerMemberState;
@@ -32,10 +33,10 @@ import static ui.ViewFactory.labelTextField;
 
 public class AllMemberStateView extends View {
 
-    private final HashMap<BattleMember, BattleMemberPane> panes;
+    private final HashMap<IBattleMember, BattleMemberPane> panes;
     private final ListProperty<BattleMemberPane> selected;
 
-    public AllMemberStateView(Battle battle, BattleMember source) {
+    public AllMemberStateView(Battle battle, IBattleMember source) {
         super("allState.title");
         this.panes = new HashMap<>();
         this.selected = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -77,10 +78,10 @@ public class AllMemberStateView extends View {
         FlowPane players = new FlowPane();
         memberLists.getChildren().add(players);
 
-        battle.playersProperty().addListener((ListChangeListener<? super BattleMember>) change -> {
+        battle.playersProperty().addListener((ListChangeListener<IBattleMember>) change -> {
             while (change.next()) {
 
-                for (BattleMember member : change.getAddedSubList()) {
+                for (IBattleMember member : change.getAddedSubList()) {
                     BattleMemberPane pane = new BattleMemberPane(member);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
                     panes.put(member, pane);
@@ -88,14 +89,14 @@ public class AllMemberStateView extends View {
                     players.getChildren().add(pane);
                 }
 
-                for (BattleMember member : change.getRemoved()) {
+                for (IBattleMember member : change.getRemoved()) {
                     players.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
             }
         });
 
-        for (BattleMember member : battle.playersProperty()) {
+        for (IBattleMember member : battle.playersProperty()) {
             BattleMemberPane pane = new BattleMemberPane(member);
             pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
             panes.put(member, pane);
@@ -111,10 +112,10 @@ public class AllMemberStateView extends View {
         FlowPane enemies = new FlowPane();
         memberLists.getChildren().add(enemies);
 
-        battle.enemiesProperty().addListener((ListChangeListener<? super BattleMember>) change -> {
+        battle.enemiesProperty().addListener((ListChangeListener<IBattleMember>) change -> {
             while (change.next()) {
 
-                for (BattleMember member : change.getAddedSubList()) {
+                for (IBattleMember member : change.getAddedSubList()) {
                     BattleMemberPane pane = new BattleMemberPane(member);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
                     panes.put(member, pane);
@@ -122,14 +123,14 @@ public class AllMemberStateView extends View {
                     enemies.getChildren().add(pane);
                 }
 
-                for (BattleMember member : change.getRemoved()) {
+                for (IBattleMember member : change.getRemoved()) {
                     enemies.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
             }
         });
 
-        for (BattleMember member : battle.enemiesProperty()) {
+        for (IBattleMember member : battle.enemiesProperty()) {
             BattleMemberPane pane = new BattleMemberPane(member);
             pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
             panes.put(member, pane);

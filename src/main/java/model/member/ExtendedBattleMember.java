@@ -292,7 +292,6 @@ public class ExtendedBattleMember extends BattleMember {
         return lootTable;
     }
 
-    @Override
     public void applyWearOnWeapons() {
         for (Weapon weapon : new ArrayList<>(weapons)) {
             if (!Database.shieldTypes.contains(weapon.getSubtype())) {
@@ -301,7 +300,6 @@ public class ExtendedBattleMember extends BattleMember {
         }
     }
 
-    @Override
     public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, BattleMember source) {
         super.takeDamage(amount, type, withShield, penetration, block, source);
 

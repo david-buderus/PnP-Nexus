@@ -8,15 +8,21 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import manager.LanguageUtility;
 import manager.Utility;
+import manager.WorkbookUtility;
 import model.Battle;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
 
 import java.util.HashMap;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
-public class BattleMember extends Member {
+public class BattleMember extends Member implements IBattleMember {
 
     protected IntegerProperty life;
     protected IntegerProperty maxLife;
@@ -98,6 +104,59 @@ public class BattleMember extends Member {
 
     }
 
+    public BattleMember(Workbook wb) {
+        LootTable lootTable = new LootTable();
+
+        String lootName = Utility.getConfig().getString("character.sheet.loot");
+        if (LanguageUtility.hasMessage("character.sheet." + lootName)) {
+            lootName = LanguageUtility.getMessage("character.sheet." + lootName);
+        }
+
+        Sheet loot = wb.getSheet(lootName);
+
+        for (Row row : loot) {
+            if (row.getRowNum() > 0) {
+                String name = WorkbookUtility.getValue(row, 0);
+
+                if (name.isEmpty() || name.equals("0")) {
+                    continue;
+                }
+
+                int amount = (int) row.getCell(1).getNumericCellValue();
+                double chance = row.getCell(2).getNumericCellValue();
+
+                lootTable.add(name, amount, chance);
+            }
+        }
+
+        Configuration config = Utility.getConfig();
+        String charName = config.getString("character.sheet.enemy");
+        if (LanguageUtility.hasMessage("character.sheet." + charName)) {
+            charName = LanguageUtility.getMessage("character.sheet." + charName);
+        }
+
+        Sheet character = wb.getSheet(charName);
+
+        this.setName(WorkbookUtility.getStringInCell(character, config.getString("character.cell.name")));
+        this.setMaxLife(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.maxLife")));
+        this.setMaxMana(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.maxMana")));
+        this.setInitiative(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.initiative")));
+        this.setLevel(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.level")));
+
+        // Protection
+        this.setArmor(ArmorPiece.head, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.head")));
+        this.setArmor(ArmorPiece.upperBody, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.upperBody")));
+        this.setArmor(ArmorPiece.legs, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.legs")));
+        this.setArmor(ArmorPiece.arm, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.arm")));
+
+        if (WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.hasShield")) == 2) {
+            this.setArmor(ArmorPiece.shield, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.shield")));
+        }
+
+        this.setDefense(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.defense")));
+        this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
+    }
+
     public void nextTurn() {
         if (isDead()) {
             return;
@@ -148,12 +207,12 @@ public class BattleMember extends Member {
         return Math.max(init, 0);
     }
 
-    public void heal(int amount, BattleMember source) {
+    public void heal(int amount, IBattleMember source) {
         this.life.set(Math.min(getLife() + amount, getMaxLife()));
         battle.addToHealStatistic(source, amount);
     }
 
-    public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, BattleMember source) {
+    public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, IBattleMember source) {
 
         for (IMemberState state : this.states) {
             if (state instanceof IIncomingDamageMemberState) {
@@ -164,6 +223,11 @@ public class BattleMember extends Member {
         int damage = Math.max(0, amount - calculateDefense(type, withShield, penetration, block));
         this.life.set(getLife() - damage);
         battle.addToDamageStatistic(source, damage);
+    }
+
+    @Override
+    public void decreaseMana(int amount, IBattleMember source) {
+        this.setMana(Math.min(0, this.getMana() - amount));
     }
 
     private int calculateDefense(AttackTypes type, boolean withShield, double penetration, double block) {
@@ -218,7 +282,7 @@ public class BattleMember extends Member {
         return lootTable;
     }
 
-    public void setArmor(ArmorPiece target, int defense) {
+    protected void setArmor(ArmorPiece target, int defense) {
         this.armor.get(target).unbind();
         this.armor.get(target).set(defense);
     }
@@ -240,7 +304,7 @@ public class BattleMember extends Member {
         return getLife() <= 0;
     }
 
-    protected int getArmor(ArmorPiece target) {
+    public int getArmor(ArmorPiece target) {
         return armor.get(target).get();
     }
 
@@ -260,21 +324,21 @@ public class BattleMember extends Member {
         return member;
     }
 
-    public void setDefense(int defense) {
+    protected void setDefense(int defense) {
         this.baseDefense.set(defense);
     }
 
-    public void setMaxLife(int life) {
+    protected void setMaxLife(int life) {
         this.maxLife.set(life);
         this.life.set(life);
     }
 
-    public void setMaxMana(int mana) {
+    protected void setMaxMana(int mana) {
         this.maxMana.set(mana);
         this.mana.set(mana);
     }
 
-    public void setInitiative(int init) {
+    private void setInitiative(int init) {
         this.initiative.set(init);
     }
 
@@ -282,7 +346,7 @@ public class BattleMember extends Member {
         return life.get();
     }
 
-    public void setLife(int life) {
+    protected void setLife(int life) {
         this.life.set(life);
     }
 
@@ -310,7 +374,7 @@ public class BattleMember extends Member {
         return mana.get();
     }
 
-    public void setMana(int mana) {
+    protected void setMana(int mana) {
         this.mana.set(Math.max(0, Math.min(mana, getMana())));
     }
 
@@ -358,7 +422,7 @@ public class BattleMember extends Member {
         return baseDefense;
     }
 
-    public void setLevel(int level) {
+    protected void setLevel(int level) {
         this.level.set(level);
     }
 

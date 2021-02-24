@@ -15,6 +15,7 @@ import javafx.scene.text.FontWeight;
 import manager.LanguageUtility;
 import model.member.BattleMember;
 import model.member.data.AttackTypes;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
 import ui.View;
 import ui.part.NumberField;
@@ -31,7 +32,7 @@ public class MemberStateView extends View {
     private final HashMap<IMemberState, MemberStatePane> panes;
     private final ObjectProperty<MemberStatePane> selected;
 
-    public MemberStateView(BattleMember target, BattleMember source) {
+    public MemberStateView(IBattleMember target, IBattleMember source) {
         super("state.title");
         this.panes = new HashMap<>();
         this.selected = new SimpleObjectProperty<>();

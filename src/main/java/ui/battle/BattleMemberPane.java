@@ -13,16 +13,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import manager.LanguageUtility;
 import model.member.BattleMember;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IMemberState;
 
 public class BattleMemberPane extends StackPane {
 
     private static final Image ICONS = new Image("Icons.png");
 
-    private final BattleMember battleMember;
+    private final IBattleMember battleMember;
     private boolean primarySelected, secondarySelected;
 
-    public BattleMemberPane(BattleMember member) {
+    public BattleMemberPane(IBattleMember member) {
         this.battleMember = member;
         this.primarySelected = false;
         this.secondarySelected = false;
@@ -124,7 +125,7 @@ public class BattleMemberPane extends StackPane {
         }
     }
 
-    public BattleMember getBattleMember() {
+    public IBattleMember getBattleMember() {
         return battleMember;
     }
 

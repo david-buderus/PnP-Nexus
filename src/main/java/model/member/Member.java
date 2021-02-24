@@ -15,7 +15,7 @@ public abstract class Member {
         return this.name.get();
     }
 
-    public void setName(String name) {
+    protected void setName(String name) {
         this.name.set(name);
     }
 
