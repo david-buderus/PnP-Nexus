@@ -13,6 +13,6 @@ public class Chest extends SimpleLootObject {
 
     @Override
     public void draw(IMapCanvas canvas, TextureHandler textureHandler) {
-        canvas.drawImage(textureHandler.getChest(), parent, offsetX, offsetY, offfsetZ, 1, 1, 0);
+        canvas.drawImage(textureHandler.getChest(), parent, offsetX, offsetY, offfsetZ, 1, 1, 4 - getRotation());
     }
 }
