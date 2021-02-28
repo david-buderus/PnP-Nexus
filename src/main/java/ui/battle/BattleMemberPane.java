@@ -30,7 +30,7 @@ public class BattleMemberPane extends StackPane {
         this.setPadding(new Insets(5));
 
         VBox root = new VBox();
-        root.setAlignment(Pos.CENTER);
+        root.setAlignment(Pos.TOP_CENTER);
 
         Label name = new Label();
         name.textProperty().bind(battleMember.nameProperty()
