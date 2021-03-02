@@ -5,11 +5,17 @@ import model.loot.DungeonLootFactory;
 import model.loot.LootFactory;
 import model.map.SeededRandom;
 import model.map.WeightedFactoryList;
+import model.map.WeightedLootObjectFactoryList;
+import model.map.object.IPosition;
+import model.map.object.loot.LootObject;
+import model.map.object.loot.LootObjectType;
 import model.map.object.room.RoomObject;
 import model.map.specification.texture.TextureHandler;
 
 import java.util.*;
 import java.util.function.Supplier;
+
+import static manager.LanguageUtility.getMessage;
 
 public abstract class MapSpecification {
 
@@ -20,21 +26,23 @@ public abstract class MapSpecification {
     protected HashMap<Integer, WeightedFactoryList<RoomObject>> corridorFactoryMap;
     protected HashMap<Integer, WeightedFactoryList<RoomObject>> crossingFactoryMap;
     protected HashMap<Integer, WeightedFactoryList<RoomObject>> roomFactoryMap;
+    protected HashMap<LootObjectType, WeightedLootObjectFactoryList> lootFactoryMap;
 
-    protected HashMap<String, Collection<LootFactory>> lootFactoryMap;
+    protected HashMap<String, Collection<LootFactory>> lootFactoryFactoryMap;
 
-    protected MapSpecification(TextureHandler textureHandler, String place, SeededRandom random) {
+    protected MapSpecification(TextureHandler textureHandler, String placeKey, SeededRandom random) {
         this.textureHandler = textureHandler;
         this.entranceFactoryMap = new HashMap<>();
         this.corridorFactoryMap = new HashMap<>();
         this.crossingFactoryMap = new HashMap<>();
         this.roomFactoryMap = new HashMap<>();
         this.lootFactoryMap = new HashMap<>();
+        this.lootFactoryFactoryMap = new HashMap<>();
         this.random = random;
 
         for (DungeonLootFactory factory : Database.dungeonLootList) {
-            if (place.equals(factory.getPlace())) {
-                lootFactoryMap.compute(factory.getContainer(), (k, v) -> {
+            if (getMessage(placeKey).equals(factory.getPlace())) {
+                lootFactoryFactoryMap.compute(factory.getContainer().toLowerCase(), (k, v) -> {
                     if (v == null) {
                         v = new ArrayList<>();
                     }
@@ -58,12 +66,21 @@ public abstract class MapSpecification {
         factory.add(weight, supplier);
     }
 
+    protected void registerLootObject(LootObjectType type, int weight, String containerKey, LootObjectSupplier supplier) {
+        WeightedLootObjectFactoryList factory = lootFactoryMap.get(type);
+        if (factory == null) {
+            factory = new WeightedLootObjectFactoryList(random);
+            lootFactoryMap.put(type, factory);
+        }
+        factory.add(weight, getMessage(containerKey), supplier);
+    }
+
     public TextureHandler getTextureHandler() {
         return textureHandler;
     }
 
     public Collection<LootFactory> getLoot(String container) {
-        return lootFactoryMap.getOrDefault(container, Collections.emptyList());
+        return lootFactoryFactoryMap.getOrDefault(container.toLowerCase(), Collections.emptyList());
     }
 
     public Optional<RoomObject> getPossibleEntrance(int width) {
@@ -90,6 +107,13 @@ public abstract class MapSpecification {
     public Optional<RoomObject> getPossibleRoom(int width) {
         if (roomFactoryMap.get(width) != null) {
             return Optional.ofNullable(roomFactoryMap.get(width).getRandomItem());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<LootObject> getLootObject(LootObjectType type, SeededRandom random, IPosition parent, int offsetX, int offsetY, int offsetZ) {
+        if (lootFactoryMap.get(type) != null) {
+            return Optional.ofNullable(lootFactoryMap.get(type).getRandomLootObject(random, parent, offsetX, offsetY, offsetZ));
         }
         return Optional.empty();
     }

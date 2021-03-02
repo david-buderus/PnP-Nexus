@@ -2,8 +2,8 @@ package model.map.object.room.room;
 
 import model.map.RotationPoint;
 import model.map.SeededRandom;
-import model.map.object.loot.Chest;
 import model.map.object.loot.LootObject;
+import model.map.object.loot.LootObjectType;
 import model.map.object.room.Lootable;
 import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
@@ -43,9 +43,10 @@ public class Room extends SimpleRoomObject implements Lootable {
     }
 
     @Override
-    public Collection<LootObject> generateLoot() {
+    public Collection<LootObject> generateLoot(MapSpecification specification) {
         ArrayList<LootObject> result = new ArrayList<>();
-        result.add(new Chest(random,this, 1, 0, 1));
+        specification.getLootObject(LootObjectType.chest, random,this, 1, 0, 1)
+                .ifPresent(result::add);
         return result;
     }
 }
