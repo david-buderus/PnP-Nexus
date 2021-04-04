@@ -5,8 +5,8 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import model.*;
 import model.Currency;
+import model.*;
 import model.item.*;
 import model.loot.DungeonLootFactory;
 import model.member.generation.*;
@@ -681,6 +681,11 @@ public abstract class DatabaseLoader {
             } catch (SQLException e) {
                 return getLocalized("table.enemies.equippedArmor") + " " + LanguageUtility.getMessage("database.cantGetSet");
             }
+            try {
+                addSpecificJewellery(statement, combinedList);
+            } catch (SQLException e) {
+                return getLocalized("table.enemies.equippedJewellery") + " " + LanguageUtility.getMessage("database.cantGetSet");
+            }
 
             // Add drops
             try {
@@ -738,6 +743,13 @@ public abstract class DatabaseLoader {
                 generation.setAbleToUseJewellery(set.getBoolean(getLocalized("column.ableToUseJewellery")));
                 generation.setUsesAlwaysShield(set.getBoolean(getLocalized("column.usesAlwaysShield")));
                 generation.setAbleToUseSpells(set.getBoolean(getLocalized("column.ableToUseSpells")));
+                generation.setUsesExclusivelySpecificPrimaryWeapons(set.getBoolean(getLocalized("column.exclusivePrimaryHand")));
+                generation.setUsesExclusivelySpecificSecondaryWeapons(set.getBoolean(getLocalized("column.exclusiveSecondaryHand")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.head, set.getBoolean(getLocalized("column.exclusiveHelmet")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.upperBody, set.getBoolean(getLocalized("column.exclusiveHarness")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.arm, set.getBoolean(getLocalized("column.exclusiveBracers")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.legs, set.getBoolean(getLocalized("column.exclusiveLegArmor")));
+                generation.setUsesExclusivelySpecificJewellery(set.getBoolean(getLocalized("column.exclusiveJewellery")));
 
                 list.add(generation);
             } catch (Exception e) {
@@ -954,6 +966,43 @@ public abstract class DatabaseLoader {
             }
         }
         return armorList;
+    }
+
+    private static void addSpecificJewellery(Statement statement, Collection<GenerationBase> combined) throws SQLException {
+
+        for (GenerationBase generationBase : combined) {
+            Collection<String> jewelleryNames = getCollection(statement, format(
+                    "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                    "table.enemies.equippedJewellery", "column.name", generationBase.getName()),
+                    "type.jewellery");
+
+            Collection<Jewellery> jewelleries = new ArrayList<>();
+            for (String jewelleryName : jewelleryNames) {
+                jewelleries.addAll(loadSpecificJewellery(statement, jewelleryName));
+            }
+            generationBase.setSpecificJewellery(jewelleries);
+        }
+    }
+
+    private static Collection<Jewellery> loadSpecificJewellery(Statement statement, String jewelleryName) throws SQLException {
+        Collection<Jewellery> jewelleries = new ArrayList<>();
+
+        try (ResultSet jewellerySet = statement.executeQuery(format(
+                "SELECT * FROM [%s] WHERE %s=\"%s\"",
+                "table.enemies.specificJewelleryStats", "column.name", jewelleryName))) {
+            while (jewellerySet.next()) {
+                Jewellery jewellery = new Jewellery();
+                jewellery.setName(jewelleryName);
+                jewellery.setType(getLocalized("type.jewellery"));
+                jewellery.setSubtype(getString(jewellerySet, getLocalized("column.jewelleryTyp")));
+                jewellery.setTier(jewellerySet.getInt(getLocalized("column.tier")));
+                jewellery.setRarity(getRarity(jewellerySet, getLocalized("column.rarity")));
+                jewellery.setEffect(getString(jewellerySet, getLocalized("column.effect")));
+
+                jewelleries.add(jewellery);
+            }
+        }
+        return jewelleries;
     }
 
     private static void addDrops(Statement statement, Collection<GenerationBase> combined) throws SQLException {
