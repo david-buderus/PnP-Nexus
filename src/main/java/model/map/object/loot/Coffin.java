@@ -11,9 +11,8 @@ public class Coffin extends SimpleLootObject {
         super(random, parent, offsetX, offsetY, offsetZ, 2, 1, container);
     }
 
-
     @Override
     public void draw(IMapCanvas canvas, TextureHandler textureHandler) {
-
+        canvas.drawImage(textureHandler.getCoffin(), parent, offsetX, offsetY, offfsetZ, 2, 1, 0);
     }
 }

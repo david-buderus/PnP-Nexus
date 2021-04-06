@@ -2,6 +2,7 @@ package model.map.specification;
 
 import model.map.SeededRandom;
 import model.map.object.loot.Chest;
+import model.map.object.loot.Coffin;
 import model.map.object.loot.LootObjectType;
 import model.map.object.room.corridor.Corridor;
 import model.map.object.room.corridor.CorridorCrossing;
@@ -30,7 +31,7 @@ public class CryptSpecification extends MapSpecification {
         this.registerLootObject(LootObjectType.chest, 6, "map.loot.treasureChest.small", Chest::new);
         this.registerLootObject(LootObjectType.chest, 3, "map.loot.treasureChest", Chest::new);
         this.registerLootObject(LootObjectType.chest, 1, "map.loot.treasureChest.rare", Chest::new);
-        this.registerLootObject(LootObjectType.coffin, 10, "map.loot.coffin", null);
-        this.registerLootObject(LootObjectType.coffin, 1, "map.loot.coffin.rare", null);
+        this.registerLootObject(LootObjectType.coffin, 10, "map.loot.coffin", Coffin::new);
+        this.registerLootObject(LootObjectType.coffin, 1, "map.loot.coffin.rare", Coffin::new);
     }
 }

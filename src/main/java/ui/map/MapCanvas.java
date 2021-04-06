@@ -6,8 +6,8 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
@@ -17,7 +17,7 @@ import model.map.object.IPosition;
 import model.map.object.loot.LootObject;
 import model.map.object.room.RoomObject;
 
-public class MapCanvas extends Pane implements IMapCanvas {
+public class MapCanvas extends StackPane implements IMapCanvas {
 
     private final Canvas mapCanvas, infoCanvas;
     private final GraphicsContext mapContext, infoContext;
@@ -46,10 +46,8 @@ public class MapCanvas extends Pane implements IMapCanvas {
         this.shownYLayer = shownYLayer;
         this.shownYLayer.addListener((ob, o, n) -> refresh());
 
-        StackPane stack = new StackPane();
-        stack.getChildren().add(mapCanvas);
-        stack.getChildren().add(infoCanvas);
-        this.getChildren().add(stack);
+        this.getChildren().add(mapCanvas);
+        this.getChildren().add(infoCanvas);
 
         mapCanvas.widthProperty().bind(this.widthProperty());
         mapCanvas.heightProperty().bind(this.heightProperty());
@@ -131,11 +129,6 @@ public class MapCanvas extends Pane implements IMapCanvas {
     }
 
     @Override
-    public void drawRectangle(int x, int y, int z, int width, int depth, int rotation) {
-        drawRectangle(x, y, z, width, depth, rotation, Color.BLACK);
-    }
-
-    @Override
     public void drawRectangle(int x, int y, int z, int width, int depth, int rotation, Color color) {
         if (outOfBounds(x, y, z, width, 1, depth, rotation)) {
             return;
@@ -152,12 +145,6 @@ public class MapCanvas extends Pane implements IMapCanvas {
             mapContext.fillRect(canvasX, canvasY, depth * zoom, width * zoom);
         }
         mapContext.restore();
-    }
-
-    @Override
-    public void drawImage(Image image, int x, int y, int z, int width, int depth, int rotation) {
-        drawImage(image, 0, 0, image.getWidth(), image.getHeight(),
-                x, y, z, width, depth, rotation);
     }
 
     @Override
@@ -187,24 +174,6 @@ public class MapCanvas extends Pane implements IMapCanvas {
         mapContext.transform(new Affine(new Rotate(rotation * 90, canvasX, canvasY)));
         mapContext.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, canvasX, canvasY, width * zoom, depth * zoom);
         mapContext.restore();
-    }
-
-    @Override
-    public void drawImage(Image image, IPosition position) {
-        drawImage(image, position.getX(), position.getY(), position.getZ(), position.getWidth(), position.getDepth(), position.getRotation());
-    }
-
-    @Override
-    public void drawImage(Image image, IPosition position, int offsetX, int offsetY, int offsetZ, int width, int depth, int rotation) {
-        drawImage(image, 0, 0, image.getWidth(), image.getHeight(),
-                position, offsetX, offsetY, offsetZ, width, depth, rotation);
-    }
-
-    @Override
-    public void drawImage(Image image, double sourceX, double sourceY, double sourceWidth, double sourceHeight,
-                          IPosition position) {
-        drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight,
-                position.getX(), position.getY(), position.getZ(), position.getWidth(), position.getDepth(), position.getRotation());
     }
 
     @Override
@@ -255,12 +224,6 @@ public class MapCanvas extends Pane implements IMapCanvas {
     }
 
     @Override
-    public void drawPerspectiveImage(Image image, int x, int y, int z, int width, int height, int depth, int rotation) {
-        drawPerspectiveImage(image, 0, 0, image.getWidth() / 4, image.getHeight() / height,
-                x, y, z, width, height, depth, rotation);
-    }
-
-    @Override
     public void drawPerspectiveImage(Image image, double sourceX, double sourceY, double sourceWidth, double sourceHeight,
                                      int x, int y, int z, int width, int height, int depth, int rotation) {
         if (outOfBounds(x, y, z, width, height, depth, rotation)) {
@@ -275,25 +238,6 @@ public class MapCanvas extends Pane implements IMapCanvas {
         sourceX += sourceWidth * ((rotation + 4) % 4);
         sourceY += sourceHeight * usingHeight;
         mapContext.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, canvasX, canvasY, width * zoom, depth * zoom);
-    }
-
-    @Override
-    public void drawPerspectiveImage(Image image, IPosition position) {
-        int size = Math.max(position.getWidth(), position.getDepth());
-        drawPerspectiveImage(image, position.getX(), position.getY(), position.getZ(), size, position.getHeight(), size, position.getRotation());
-    }
-
-    @Override
-    public void drawPerspectiveImage(Image image, IPosition position, int offsetX, int offsetY, int offsetZ, int width, int height, int depth, int rotation) {
-        drawPerspectiveImage(image, 0, 0, image.getWidth() / 4, image.getHeight() / height,
-                position, offsetX, offsetY, offsetZ, width, height, depth, rotation);
-    }
-
-    @Override
-    public void drawPerspectiveImage(Image image, double sourceX, double sourceY, double sourceWidth, double sourceHeight,
-                                     IPosition position) {
-        drawPerspectiveImage(image, sourceX, sourceY, sourceWidth, sourceHeight,
-                position.getX(), position.getY(), position.getZ(), position.getWidth(), position.getHeight(), position.getDepth(), position.getRotation());
     }
 
     @Override
@@ -380,6 +324,8 @@ public class MapCanvas extends Pane implements IMapCanvas {
         }
         return mapCanvas.getWidth() / zoom + offsetX < x || mapCanvas.getHeight() / zoom + offsetY < z;
     }
+
+    private final Label label = new Label("Test");
 
     private void drawInfoHud(double x, double y, int mapX, int mapZ) {
         LootObject loot = map.get().getLootObject(mapX, shownYLayer.get(), mapZ);

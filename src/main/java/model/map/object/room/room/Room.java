@@ -47,6 +47,8 @@ public class Room extends SimpleRoomObject implements Lootable {
         ArrayList<LootObject> result = new ArrayList<>();
         specification.getLootObject(LootObjectType.chest, random,this, 1, 0, 1)
                 .ifPresent(result::add);
+        specification.getLootObject(LootObjectType.coffin, random,this, 3, 0, 1)
+                .ifPresent(result::add);
         return result;
     }
 }
