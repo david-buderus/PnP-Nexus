@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ExtendedBattleMember extends BattleMember {
@@ -79,7 +80,8 @@ public class ExtendedBattleMember extends BattleMember {
         this.profession = profession;
         this.fightingStyle = fightingStyle;
         this.specialisation = specialisation;
-        this.usesShield = fightingStyle.usesAlwaysShield() || (specialisation.isAbleToUseShield() && random.nextBoolean());
+        this.usesShield = usesAlwaysShield() ||
+                (isAbleToUseShield() && random.nextDouble() < Utility.getConfig().getDouble("character.chance_to_wear.shield"));
         this.setLevel(level);
         this.setName(profession + " - " + specialisation);
 
@@ -173,24 +175,21 @@ public class ExtendedBattleMember extends BattleMember {
 
         //Generate Weapons
         if (usesFirstWeapon()) {
-            Collection<Weapon> concreteFirstWeapons = getSpecificPrimaryWeapons();
-            Weapon firstHand;
-            if (concreteFirstWeapons.isEmpty()) {
-                firstHand = randomWeapon(getPrimaryWeaponTypes(), Database.weaponList);
-            } else {
-                firstHand = randomWeapon(getPrimaryWeaponTypes() ,concreteFirstWeapons);
+            Collection<Weapon> weaponPool = getSpecificPrimaryWeapons();
+            if (!usesExclusivelySpecificPrimaryWeapons()) {
+                weaponPool.addAll(Database.weaponList);
             }
-            this.weapons.add((Weapon) firstHand.getWithUpgrade());
+            this.weapons.add((Weapon) randomWeapon(getPrimaryWeaponTypes(), weaponPool).getWithUpgrade());
         }
 
         if (usesSecondWeapon()) {
-            Collection<Weapon> secondWeapons = getSpecificSecondaryWeapons();
-            if (secondWeapons.isEmpty()) {
-                secondWeapons = Database.weaponList;
+            Collection<Weapon> weaponPool = getSpecificSecondaryWeapons();
+            if (!usesExclusivelySpecificSecondaryWeapons()) {
+                weaponPool.addAll(Database.weaponList);
             }
             Collection<String> secondTypes = usesShield ? Database.shieldTypes : getSecondaryWeaponTypes();
             if (secondTypes.size() > 0) {
-                this.weapons.add((Weapon) randomWeapon(secondTypes, secondWeapons).getWithUpgrade());
+                this.weapons.add((Weapon) randomWeapon(secondTypes, weaponPool).getWithUpgrade());
             }
         }
 
@@ -219,13 +218,11 @@ public class ExtendedBattleMember extends BattleMember {
             this.generateArmor(position);
         }
 
-        Collection<Jewellery> jewelleryPool;
-        Collection<Jewellery> concreteJewellery = Collections.emptyList(); // TODO
-        if (concreteJewellery.isEmpty()) {
-            jewelleryPool = Database.jewelleryList;
-        } else {
-            jewelleryPool = concreteJewellery;
+        Collection<Jewellery> jewelleryPool = getSpecificJewellery();
+        if (!usesExclusivelySpecificJewellery()) {
+            jewelleryPool.addAll(Database.jewelleryList);
         }
+
         this.jewellery = FXCollections.observableArrayList();
         if (usesJewellery()) {
 
@@ -392,12 +389,9 @@ public class ExtendedBattleMember extends BattleMember {
 
     private void generateArmor(ArmorPosition position) {
         if (usesArmor(position)) {
-            Collection<Armor> concreteArmor = getSpecificArmor(position);
-            Collection<Armor> armorPool;
-            if (concreteArmor.isEmpty()) {
-                armorPool = Database.armorList;
-            } else {
-                armorPool = concreteArmor;
+            Collection<Armor> armorPool = getSpecificArmor(position);
+            if (!usesExclusivelySpecificArmor(position)) {
+                armorPool.addAll(Database.armorList);
             }
             this.armors.add((Armor) randomArmor(position, armorPool).getWithUpgrade());
         }
@@ -860,145 +854,122 @@ public class ExtendedBattleMember extends BattleMember {
         return baseDamageMeleeModifier;
     }
 
-    private Collection<String> getPrimaryWeaponTypes() {
-        Collection<String> collection = characterisation.getPrimaryWeaponTypes();
-        collection.addAll(race.getPrimaryWeaponTypes());
-        collection.addAll(profession.getPrimaryWeaponTypes());
-        collection.addAll(fightingStyle.getPrimaryWeaponTypes());
-        collection.addAll(specialisation.getPrimaryWeaponTypes());
+    private <T> Collection<T> getCollection(Function<GenerationBase, Collection<T>> getter) {
+        Collection<T> collection = new ArrayList<>();
+        collection.addAll(getter.apply(characterisation));
+        collection.addAll(getter.apply(race));
+        collection.addAll(getter.apply(profession));
+        collection.addAll(getter.apply(fightingStyle));
+        collection.addAll(getter.apply(specialisation));
         return collection;
+    }
+
+    private boolean getOr(Function<GenerationBase, Boolean> getter) {
+        return getter.apply(characterisation) ||
+                getter.apply(race) ||
+                getter.apply(profession) ||
+                getter.apply(fightingStyle) ||
+                getter.apply(specialisation);
+    }
+
+    private boolean getAnd(Function<GenerationBase, Boolean> getter) {
+        return getter.apply(characterisation) &&
+                getter.apply(race) &&
+                getter.apply(profession) &&
+                getter.apply(fightingStyle) &&
+                getter.apply(specialisation);
+    }
+
+    private Collection<String> getPrimaryWeaponTypes() {
+        return getCollection(GenerationBase::getPrimaryWeaponTypes);
     }
 
     private Collection<String> getSecondaryWeaponTypes() {
-        Collection<String> collection = characterisation.getSecondaryWeaponTypes();
-        collection.addAll(race.getSecondaryWeaponTypes());
-        collection.addAll(profession.getSecondaryWeaponTypes());
-        collection.addAll(fightingStyle.getSecondaryWeaponTypes());
-        collection.addAll(specialisation.getSecondaryWeaponTypes());
-        return collection;
+        return getCollection(GenerationBase::getSecondaryWeaponTypes);
     }
 
     private Collection<Weapon> getSpecificPrimaryWeapons() {
-        Collection<Weapon> collection = characterisation.getSpecificPrimaryWeapons();
-        collection.addAll(race.getSpecificPrimaryWeapons());
-        collection.addAll(profession.getSpecificPrimaryWeapons());
-        collection.addAll(fightingStyle.getSpecificPrimaryWeapons());
-        collection.addAll(specialisation.getSpecificPrimaryWeapons());
-        return collection;
+        return getCollection(GenerationBase::getSpecificPrimaryWeapons);
     }
 
     private Collection<Weapon> getSpecificSecondaryWeapons() {
-        Collection<Weapon> collection = characterisation.getSpecificSecondaryWeapons();
-        collection.addAll(race.getSpecificSecondaryWeapons());
-        collection.addAll(profession.getSpecificSecondaryWeapons());
-        collection.addAll(fightingStyle.getSpecificSecondaryWeapons());
-        collection.addAll(specialisation.getSpecificSecondaryWeapons());
-        return collection;
+        return getCollection(GenerationBase::getSpecificSecondaryWeapons);
     }
 
-
     private Collection<Armor> getSpecificArmor(ArmorPosition position) {
-        Collection<Armor> collection = characterisation.getSpecificArmor(position);
-        collection.addAll(race.getSpecificArmor(position));
-        collection.addAll(profession.getSpecificArmor(position));
-        collection.addAll(fightingStyle.getSpecificArmor(position));
-        collection.addAll(specialisation.getSpecificArmor(position));
-        return collection;
+        return getCollection(base -> base.getSpecificArmor(position));
+    }
+
+    private Collection<Jewellery> getSpecificJewellery() {
+        return getCollection(GenerationBase::getSpecificJewellery);
     }
 
     private boolean dropsWeapons() {
-        return characterisation.dropsWeapon() &&
-                race.dropsWeapon() &&
-                profession.dropsWeapon() &&
-                fightingStyle.dropsWeapon() &&
-                specialisation.dropsWeapon();
+        return getAnd(GenerationBase::dropsWeapon);
     }
 
     private boolean dropsArmor() {
-        return characterisation.dropsArmor() &&
-                race.dropsArmor() &&
-                profession.dropsArmor() &&
-                fightingStyle.dropsArmor() &&
-                specialisation.dropsArmor();
+        return getAnd(GenerationBase::dropsArmor);
     }
 
     private boolean dropsJewellery() {
-        return characterisation.dropsJewellery() &&
-                race.dropsJewellery() &&
-                profession.dropsJewellery() &&
-                fightingStyle.dropsJewellery() &&
-                specialisation.dropsJewellery();
+        return getAnd(GenerationBase::dropsJewellery);
     }
 
     private boolean usesFirstWeapon() {
-        return characterisation.isAbleToUsesPrimaryHand() &&
-                race.isAbleToUsesPrimaryHand() &&
-                profession.isAbleToUsesPrimaryHand() &&
-                fightingStyle.isAbleToUsesPrimaryHand() &&
-                specialisation.isAbleToUsesPrimaryHand();
+        return getAnd(GenerationBase::isAbleToUsesPrimaryHand);
     }
 
     private boolean usesSecondWeapon() {
-        return characterisation.isAbleToUsesSecondaryHand() &&
-                race.isAbleToUsesSecondaryHand() &&
-                profession.isAbleToUsesSecondaryHand() &&
-                fightingStyle.isAbleToUsesSecondaryHand() &&
-                specialisation.isAbleToUsesSecondaryHand();
+        return getAnd(GenerationBase::isAbleToUsesSecondaryHand);
     }
 
     private boolean usesArmor(ArmorPosition position) {
-        return characterisation.isAbleToUseArmor(position) &&
-                race.isAbleToUseArmor(position) &&
-                profession.isAbleToUseArmor(position) &&
-                fightingStyle.isAbleToUseArmor(position) &&
-                specialisation.isAbleToUseArmor(position);
+        return getAnd(base -> base.isAbleToUseArmor(position));
     }
 
     private boolean usesJewellery() {
-        return characterisation.isAbleToUseJewellery() &&
-                race.isAbleToUseJewellery() &&
-                profession.isAbleToUseJewellery() &&
-                fightingStyle.isAbleToUseJewellery() &&
-                specialisation.isAbleToUseJewellery();
+        return getAnd(GenerationBase::isAbleToUseJewellery);
     }
 
     private boolean isNotAbleToUseSpells() {
-        return !characterisation.isAbleToUseSpells() &&
-                !race.isAbleToUseSpells() &&
-                !profession.isAbleToUseSpells() &&
-                !fightingStyle.isAbleToUseSpells() &&
-                !specialisation.isAbleToUseSpells();
+        return getAnd(base -> !base.isAbleToUseSpells());
+    }
+
+    private boolean usesAlwaysShield() {
+        return getOr(GenerationBase::usesAlwaysShield);
+    }
+
+    private boolean isAbleToUseShield() {
+        return getAnd(GenerationBase::isAbleToUseShield);
+    }
+
+    private boolean usesExclusivelySpecificPrimaryWeapons() {
+        return getOr(GenerationBase::usesExclusivelySpecificPrimaryWeapons);
+    }
+
+    private boolean usesExclusivelySpecificSecondaryWeapons() {
+        return getOr(GenerationBase::usesExclusivelySpecificSecondaryWeapons);
+    }
+
+    private boolean usesExclusivelySpecificArmor(ArmorPosition position) {
+        return getOr(base -> base.usesExclusivelySpecificArmor(position));
+    }
+
+    private boolean usesExclusivelySpecificJewellery() {
+        return getOr(GenerationBase::usesExclusivelySpecificJewellery);
     }
 
     private Collection<PrimaryAttribute> getPrimaryAttributes() {
-        Collection<PrimaryAttribute> result = new ArrayList<>();
-        result.addAll(characterisation.getPrimaryAttributes());
-        result.addAll(race.getPrimaryAttributes());
-        result.addAll(profession.getPrimaryAttributes());
-        result.addAll(fightingStyle.getPrimaryAttributes());
-        result.addAll(specialisation.getPrimaryAttributes());
-
-        return result;
+        return getCollection(GenerationBase::getPrimaryAttributes);
     }
 
     public Collection<Talent> getMainTalents() {
-        Collection<Talent> result = new ArrayList<>();
-        result.addAll(characterisation.getMainTalents());
-        result.addAll(race.getMainTalents());
-        result.addAll(profession.getMainTalents());
-        result.addAll(fightingStyle.getMainTalents());
-        result.addAll(specialisation.getMainTalents());
-
-        return result;
+        return getCollection(GenerationBase::getMainTalents);
     }
 
     private Collection<Talent> getForbiddenTalents() {
-        Collection<Talent> result = new ArrayList<>();
-        result.addAll(characterisation.getForbiddenTalents());
-        result.addAll(race.getForbiddenTalents());
-        result.addAll(profession.getForbiddenTalents());
-        result.addAll(fightingStyle.getForbiddenTalents());
-        result.addAll(specialisation.getForbiddenTalents());
+        Collection<Talent> result = getCollection(GenerationBase::getForbiddenTalents);
 
         if (isNotAbleToUseSpells()) {
             result.addAll(Database.talentList.stream().filter(Talent::isMagicTalent).collect(Collectors.toList()));
@@ -1008,14 +979,7 @@ public class ExtendedBattleMember extends BattleMember {
     }
 
     private Collection<SecondaryAttribute> getSecondaryAttributes() {
-        Collection<SecondaryAttribute> result = new ArrayList<>();
-        result.addAll(characterisation.getSecondaryAttributes());
-        result.addAll(race.getSecondaryAttributes());
-        result.addAll(profession.getSecondaryAttributes());
-        result.addAll(fightingStyle.getSecondaryAttributes());
-        result.addAll(specialisation.getSecondaryAttributes());
-
-        return result;
+        return getCollection(GenerationBase::getSecondaryAttributes);
     }
 
     public int getStrength() {
