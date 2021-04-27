@@ -3,22 +3,28 @@ package ui.part;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ListChangeListener;
-import javafx.scene.control.Button;
+import javafx.collections.SetChangeListener;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import model.graph.Graph;
+import ui.part.interfaces.EdgeFactory;
+import ui.part.interfaces.PositioningStrategy;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.function.Function;
 
 public class GraphView<N, E> extends Region {
 
     protected ObjectProperty<Graph<N, E>> graph;
+    protected Function<N, Region> nodeFactory;
+    protected EdgeFactory<E> edgeFactory;
+    protected PositioningStrategy<N> positioningStrategy;
 
-    private ListChangeListener<N> nodeListener;
-    private ListChangeListener<Graph.Edge<N, E>> edgeListener;
-    private HashMap<N, Region> nodeMap;
+    private final SetChangeListener<N> nodeListener;
+    private final SetChangeListener<Graph.Edge<N, E>> edgeListener;
+    private final HashMap<N, Region> nodeMap;
 
     public GraphView() {
         this(new Graph<>());
@@ -29,6 +35,24 @@ public class GraphView<N, E> extends Region {
         this.nodeMap = new HashMap<>();
         this.nodeListener = (c) -> alignGraph();
         this.edgeListener = (c) -> alignGraph();
+        this.nodeFactory = (n) -> new Label(n.toString());
+        this.edgeFactory = (startX, startY, endX, endY, content) -> {
+            Line line = new Line();
+            line.startXProperty().bind(startX);
+            line.startYProperty().bind(startY);
+            line.endXProperty().bind(endX);
+            line.endYProperty().bind(endY);
+            return line;
+        };
+        this.positioningStrategy = (g, regionMap, view) -> {
+            Random rand = new Random();
+
+            for (Region region : regionMap.values()) {
+                region.layoutXProperty().bind(widthProperty().multiply(rand.nextDouble()));
+                region.layoutYProperty().bind(heightProperty().multiply(rand.nextDouble()));
+            }
+
+        };
 
         this.graph.addListener((ob, o, n) -> {
             if (o != null) {
@@ -48,36 +72,29 @@ public class GraphView<N, E> extends Region {
         this.getChildren().clear();
         this.nodeMap.clear();
 
-        Random rand = new Random();
-
         for (N node : getGraph().getNodes()) {
-            Button label = new Button(node.toString());
-            this.getChildren().add(label);
-            label.layoutXProperty().bind(widthProperty().divide(rand.nextDouble()));
-            label.layoutYProperty().bind(heightProperty().divide(rand.nextDouble()));
-            widthProperty().divide(rand.nextDouble()).addListener((ob, o, n) -> System.out.println(n));
-            //label.relocate(rand.nextInt(500), rand.nextInt(500));
-            this.nodeMap.put(node, label);
+            Region region = nodeFactory.apply(node);
+            this.getChildren().add(region);
+            this.nodeMap.put(node, region);
+        }
+        for (N node : getGraph().getNodes()) {
+            this.positioningStrategy.position(getGraph(), nodeMap, this);
         }
 
         for (Graph.Edge<N, E> edge : getGraph().getEdges()) {
             Region origin = nodeMap.get(edge.origin);
             Region target = nodeMap.get(edge.target);
 
-            Line line = new Line();
-            line.startXProperty().bind(getLineX(origin));
-            line.startYProperty().bind(getLineY(origin));
-            line.endXProperty().bind(getLineX(target));
-            line.endYProperty().bind(getLineY(target));
-            this.getChildren().add(0, line);
+            this.getChildren().add(0, edgeFactory.create(getCenterX(origin), getCenterY(origin),
+                    getCenterX(target), getCenterY(target), edge.content));
         }
     }
 
-    protected DoubleBinding getLineX(Region region) {
+    protected DoubleBinding getCenterX(Region region) {
         return region.layoutXProperty().add(region.widthProperty().divide(2));
     }
 
-    protected DoubleBinding getLineY(Region region) {
+    protected DoubleBinding getCenterY(Region region) {
         return region.layoutYProperty().add(region.heightProperty().divide(2));
     }
 
@@ -91,5 +108,29 @@ public class GraphView<N, E> extends Region {
 
     public void setGraph(Graph<N, E> graph) {
         this.graph.set(graph);
+    }
+
+    public Function<N, Region> getNodeFactory() {
+        return nodeFactory;
+    }
+
+    public void setNodeFactory(Function<N, Region> nodeFactory) {
+        this.nodeFactory = nodeFactory;
+    }
+
+    public EdgeFactory<E> getEdgeFactory() {
+        return edgeFactory;
+    }
+
+    public void setEdgeFactory(EdgeFactory<E> edgeFactory) {
+        this.edgeFactory = edgeFactory;
+    }
+
+    public PositioningStrategy<N> getPositioningStrategy() {
+        return positioningStrategy;
+    }
+
+    public void setPositioningStrategy(PositioningStrategy<N> positioningStrategy) {
+        this.positioningStrategy = positioningStrategy;
     }
 }

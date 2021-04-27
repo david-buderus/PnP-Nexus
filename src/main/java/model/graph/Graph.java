@@ -1,28 +1,31 @@
 package model.graph;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 
 public class Graph<N, E> {
 
-    protected ObservableList<N> nodes;
-    protected ObservableList<Edge<N, E>> edges;
+    protected ObservableSet<N> nodes;
+    protected ObservableSet<Edge<N, E>> edges;
 
     public Graph() {
         this(Collections.emptyList());
     }
 
     public Graph(Collection<N> nodes) {
-        this.nodes = FXCollections.observableArrayList(nodes);
-        this.edges = FXCollections.observableArrayList();
+        this.nodes = FXCollections.observableSet(new HashSet<>());
+        this.edges = FXCollections.observableSet(new HashSet<>());
+        this.nodes.addAll(nodes);
     }
 
     public void addNode(N node) {
         this.nodes.add(node);
+    }
+
+    public void addNodes(Collection<N> nodes) {
+        this.nodes.addAll(nodes);
     }
 
     public boolean removeNode(N node) {
@@ -30,10 +33,13 @@ public class Graph<N, E> {
     }
 
     public void addEdge(N origin, N target) {
-        this.edges.add(new Edge<>(origin, target, null));
+        this.addEdge(origin, target, null);
     }
 
     public void addEdge(N origin, N target, E content) {
+        if (!nodes.contains(origin) || !nodes.contains(target)) {
+            throw new NoSuchElementException("Nodes are not in the graph");
+        }
         this.edges.add(new Edge<>(origin, target, content));
     }
 
@@ -49,11 +55,11 @@ public class Graph<N, E> {
         edges.removeAll(toRemove);
     }
 
-    public ObservableList<N> getNodes() {
+    public ObservableSet<N> getNodes() {
         return nodes;
     }
 
-    public ObservableList<Edge<N, E>> getEdges() {
+    public ObservableSet<Edge<N, E>> getEdges() {
         return edges;
     }
 
