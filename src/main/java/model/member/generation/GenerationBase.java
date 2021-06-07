@@ -1,6 +1,7 @@
 package model.member.generation;
 
 import model.item.Armor;
+import model.item.Jewellery;
 import model.item.Weapon;
 import model.loot.LootTable;
 import model.member.BattleMember;
@@ -27,6 +28,11 @@ public abstract class GenerationBase {
     protected boolean ableToUseSpells;
     protected boolean usesAlwaysShield;
 
+    protected boolean usesExclusivelySpecificPrimaryWeapons;
+    protected boolean usesExclusivelySpecificSecondaryWeapons;
+    protected HashMap<ArmorPosition, Boolean> usesExclusivelySpecificArmor;
+    protected boolean usesExclusivelySpecificJewellery;
+
     protected Collection<Talent> mainTalents;
     protected Collection<Talent> forbiddenTalents;
     protected Collection<GenerationBase> parents;
@@ -38,11 +44,13 @@ public abstract class GenerationBase {
     protected Collection<Weapon> specificPrimaryWeapons;
     protected Collection<Weapon> specificSecondaryWeapons;
     protected Map<ArmorPosition, Collection<Armor>> specificArmor;
+    protected Collection<Jewellery> specificJewellery;
 
     protected GenerationBase() {
         this.random = new Random();
         this.specificArmor = new HashMap<>();
         this.ableToUseArmor = new HashMap<>();
+        this.usesExclusivelySpecificArmor = new HashMap<>();
         this.advantages = new ArrayList<>();
         this.disadvantages = new ArrayList<>();
         this.mainTalents = new ArrayList<>();
@@ -55,6 +63,7 @@ public abstract class GenerationBase {
         this.secondaryWeaponTypes = new ArrayList<>();
         this.specificPrimaryWeapons = new ArrayList<>();
         this.specificSecondaryWeapons = new ArrayList<>();
+        this.specificJewellery = new ArrayList<>();
     }
 
     public LootTable getLootTable(BattleMember member) {
@@ -179,6 +188,39 @@ public abstract class GenerationBase {
         return usesAlwaysShield || parents.stream().anyMatch(GenerationBase::usesAlwaysShield);
     }
 
+    public boolean usesExclusivelySpecificPrimaryWeapons() {
+        return usesExclusivelySpecificPrimaryWeapons || parents.stream().anyMatch(GenerationBase::usesExclusivelySpecificPrimaryWeapons);
+    }
+
+    public void setUsesExclusivelySpecificPrimaryWeapons(boolean usesExclusivelySpecificPrimaryWeapons) {
+        this.usesExclusivelySpecificPrimaryWeapons = usesExclusivelySpecificPrimaryWeapons;
+    }
+
+    public boolean usesExclusivelySpecificSecondaryWeapons() {
+        return usesExclusivelySpecificSecondaryWeapons || parents.stream().anyMatch(GenerationBase::usesExclusivelySpecificSecondaryWeapons);
+    }
+
+    public void setUsesExclusivelySpecificSecondaryWeapons(boolean usesExclusivelySpecificSecondaryWeapons) {
+        this.usesExclusivelySpecificSecondaryWeapons = usesExclusivelySpecificSecondaryWeapons;
+    }
+
+    public boolean usesExclusivelySpecificArmor(ArmorPosition armorPosition) {
+        return this.usesExclusivelySpecificArmor.getOrDefault(armorPosition, false)
+                || parents.stream().anyMatch(base -> base.usesExclusivelySpecificArmor(armorPosition));
+    }
+
+    public void setUsesExclusivelySpecificArmor(ArmorPosition armorPosition, boolean usesExclusivelySpecificArmor) {
+        this.usesExclusivelySpecificArmor.put(armorPosition, usesExclusivelySpecificArmor);
+    }
+
+    public boolean usesExclusivelySpecificJewellery() {
+        return usesExclusivelySpecificJewellery || parents.stream().anyMatch(GenerationBase::usesExclusivelySpecificJewellery);
+    }
+
+    public void setUsesExclusivelySpecificJewellery(boolean usesExclusivelySpecificJewellery) {
+        this.usesExclusivelySpecificJewellery = usesExclusivelySpecificJewellery;
+    }
+
     public void setUsesAlwaysShield(boolean usesAlwaysShield) {
         this.usesAlwaysShield = usesAlwaysShield;
     }
@@ -281,6 +323,14 @@ public abstract class GenerationBase {
 
     public void setSpecificArmor(ArmorPosition position, Collection<Armor> armor) {
         this.specificArmor.put(position, armor);
+    }
+
+    public Collection<Jewellery> getSpecificJewellery() {
+        return specificJewellery;
+    }
+
+    public void setSpecificJewellery(Collection<Jewellery> specificJewellery) {
+        this.specificJewellery = specificJewellery;
     }
 
     public Collection<String> getPrimaryWeaponTypes() {
