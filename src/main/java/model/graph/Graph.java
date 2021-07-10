@@ -32,6 +32,18 @@ public class Graph<N, E> {
         return this.nodes.remove(node);
     }
 
+    public boolean tryAddEdge(N origin, N target) {
+        return this.tryAddEdge(origin, target, null);
+    }
+
+    public boolean tryAddEdge(N origin, N target, E content) {
+        if (nodes.contains(origin) && nodes.contains(target)) {
+            this.edges.add(new Edge<>(origin, target, content));
+            return true;
+        }
+        return false;
+    }
+
     public void addEdge(N origin, N target) {
         this.addEdge(origin, target, null);
     }

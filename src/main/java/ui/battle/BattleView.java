@@ -206,7 +206,6 @@ public class BattleView extends ConfigurableViewPart {
 
             if (target == null) {
                 info.getChildren().add(emptyLabel);
-                getStage().sizeToScene();
                 return;
             }
 

@@ -9,7 +9,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import model.graph.Graph;
 import ui.part.interfaces.EdgeFactory;
-import ui.part.interfaces.PositioningStrategy;
+import ui.part.interfaces.IPositioningStrategy;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -20,7 +20,7 @@ public class GraphView<N, E> extends Region {
     protected ObjectProperty<Graph<N, E>> graph;
     protected Function<N, Region> nodeFactory;
     protected EdgeFactory<E> edgeFactory;
-    protected PositioningStrategy<N> positioningStrategy;
+    protected IPositioningStrategy<N> positioningStrategy;
 
     private final SetChangeListener<N> nodeListener;
     private final SetChangeListener<Graph.Edge<N, E>> edgeListener;
@@ -126,11 +126,11 @@ public class GraphView<N, E> extends Region {
         this.edgeFactory = edgeFactory;
     }
 
-    public PositioningStrategy<N> getPositioningStrategy() {
+    public IPositioningStrategy<N> getPositioningStrategy() {
         return positioningStrategy;
     }
 
-    public void setPositioningStrategy(PositioningStrategy<N> positioningStrategy) {
+    public void setPositioningStrategy(IPositioningStrategy<N> positioningStrategy) {
         this.positioningStrategy = positioningStrategy;
     }
 }

@@ -1,5 +1,8 @@
 package model.member.generation;
 
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import model.interfaces.WithToStringProperty;
 import model.item.Armor;
 import model.item.Jewellery;
 import model.item.Weapon;
@@ -8,7 +11,7 @@ import model.member.BattleMember;
 
 import java.util.*;
 
-public abstract class GenerationBase {
+public abstract class GenerationBase implements WithToStringProperty {
 
     protected Random random;
     protected String name;
@@ -360,5 +363,10 @@ public abstract class GenerationBase {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public ReadOnlyStringProperty toStringProperty() {
+        return new ReadOnlyStringWrapper(name);
     }
 }
