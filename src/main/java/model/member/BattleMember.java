@@ -1,15 +1,13 @@
 package model.member;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import manager.LanguageUtility;
-import manager.Utility;
-import manager.WorkbookUtility;
+import manager.*;
 import model.Battle;
+import model.item.Armor;
+import model.item.Item;
+import model.item.Weapon;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
@@ -17,6 +15,8 @@ import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
 
 import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.configuration2.Configuration;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,6 +36,7 @@ public class BattleMember extends Member implements IBattleMember {
     protected IntegerProperty level;
 
     protected LootTable lootTable;
+    // TODO change to map armorPiece -> Armor item
     protected HashMap<ArmorPiece, IntegerProperty> armor;
 
     protected Battle battle;
@@ -104,8 +105,74 @@ public class BattleMember extends Member implements IBattleMember {
 
     }
 
+    public BattleMember(Map<String, String> parameterMap) {
+        this.name = new SimpleStringProperty(parameterMap.getOrDefault("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
+        this.life = new SimpleIntegerProperty(1);
+        this.maxLife = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.health","1")));
+        this.mana = new SimpleIntegerProperty(1);
+        this.maxMana = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.mana","1")));
+        this.initiative = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.initiative","1")));
+        this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
+        this.counter = new SimpleIntegerProperty(startValue.get());
+        this.turns = new SimpleIntegerProperty(1);
+        this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.baseDefense = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.defense","1")));
+        this.level = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("character.level","1")));
+
+        String armorHead = parameterMap.getOrDefault("character.armor.head", "");
+        String armorChest = parameterMap.getOrDefault("character.armor.upperBody", "");
+        String armorLegs = parameterMap.getOrDefault("character.armor.legs", "");
+        String armorArms = parameterMap.getOrDefault("character.armor.arm", "");
+
+        // TODO if null, we need to create database entry
+        Item itemHead = Database.getItemOrElse(armorHead, null);
+        Item itemChest = Database.getItemOrElse(armorChest, null);
+        Item itemLegs = Database.getItemOrElse(armorLegs, null);
+        Item itemArms = Database.getItemOrElse(armorArms, null);
+
+        if (itemHead != null) this.armor.put(ArmorPiece.head, ((Armor) itemHead).protectionProperty());
+        if (itemChest != null) this.armor.put(ArmorPiece.head, ((Armor) itemChest).protectionProperty());
+        if (itemLegs != null) this.armor.put(ArmorPiece.head, ((Armor) itemLegs).protectionProperty());
+        if (itemArms != null) this.armor.put(ArmorPiece.head, ((Armor) itemArms).protectionProperty());
+
+        // TODO correct weapon loading
+        String weapon1 = parameterMap.getOrDefault("character.weapon.1", "");
+        String weapon2 = parameterMap.getOrDefault("character.weapon.1", "");
+        String weapon3 = parameterMap.getOrDefault("character.weapon.1", "");
+        String weapon4 = parameterMap.getOrDefault("character.weapon.1", "");
+
+        Item weaponItem1 = Database.getItemOrElse(weapon1, null);
+        Item weaponItem2 = Database.getItemOrElse(weapon2, null);
+        Item weaponItem3 = Database.getItemOrElse(weapon3, null);
+        Item weaponItem4 = Database.getItemOrElse(weapon4, null);
+
+        // TODO currently assume that weapons 1 and 2 are equipped
+        boolean hasShield = false;
+
+        if (weaponItem1 != null) {
+            if (weaponItem1 instanceof Weapon) {
+                if (((Weapon) weaponItem1).isShield()) {
+                    hasShield = true;
+                    this.setArmor(ArmorPiece.shield, ((Weapon) weaponItem1).getDamage());
+                };
+            }
+        }
+
+        // TODO currently only wearing one shield is supported
+        if (!hasShield && weaponItem2 != null) {
+            if (weaponItem2 instanceof Weapon) {
+                if (((Weapon) weaponItem2).isShield()) {
+                    this.setArmor(ArmorPiece.shield, ((Weapon) weaponItem2).getDamage());
+                };
+            }
+        }
+
+        // TODO loot
+
+    }
+
     public BattleMember(Workbook wb) {
-        LootTable lootTable = new LootTable();
+       /* LootTable lootTable = new LootTable();
 
         String lootName = Utility.getConfig().getString("character.sheet.loot");
         if (LanguageUtility.hasMessage("character.sheet." + lootName)) {
@@ -154,7 +221,9 @@ public class BattleMember extends Member implements IBattleMember {
         }
 
         this.setDefense(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.defense")));
-        this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.states = new SimpleListProperty<>(FXCollections.observableArrayList());*/
+
+        this(CharacterSheetParser.parseCharacterSheet(wb));
     }
 
     public void nextTurn() {

@@ -4,6 +4,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import model.member.interfaces.IMember;
 
+import java.util.Map;
+
 public abstract class Member implements IMember {
 
     protected StringProperty name;
@@ -18,5 +20,9 @@ public abstract class Member implements IMember {
 
     public StringProperty nameProperty() {
         return name;
+    }
+
+    protected Member(Map<String, String> parameterMap) {
+        this.name = new SimpleStringProperty(parameterMap.getOrDefault("character.name", ""));
     }
 }

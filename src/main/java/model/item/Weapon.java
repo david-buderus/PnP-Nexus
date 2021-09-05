@@ -4,6 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import manager.Database;
 
 public class Weapon extends Equipment {
 
@@ -12,6 +13,7 @@ public class Weapon extends Equipment {
     private final IntegerProperty damage;
     protected final IntegerBinding damageWithWear;
     private int hit;
+    private Boolean isShield = null;
 
     public Weapon() {
         super();
@@ -36,6 +38,14 @@ public class Weapon extends Equipment {
         weapon.setHit(this.getHit());
 
         return weapon;
+    }
+
+    public boolean isShield() {
+        if (isShield == null) {
+            isShield = Database.shieldTypes.stream().anyMatch(type -> type.equals(this.getSubtype()));
+        }
+
+        return isShield;
     }
 
     public String getInitiative() {
