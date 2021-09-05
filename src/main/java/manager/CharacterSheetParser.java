@@ -1,5 +1,7 @@
 package manager;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -12,19 +14,33 @@ public class CharacterSheetParser {
     final static int PARAMETER_COL = 0;
     final static int VALUE_COL = 1;
 
-    public static Map<String, String> parseCharacterSheet(Workbook wb) {
+    public static CharacterSheetParameterMap parseCharacterSheet(Workbook wb) {
         // TODO: localize
         Sheet sheet = wb.getSheet("manager_parse");
-        Map<String, String> paramMap = new HashMap<>();
+        CharacterSheetParameterMap paramMap = new CharacterSheetParameterMap();
 
-        int rowIndex = 0;
-        String cellParameter = sheet.getRow(rowIndex).getCell(PARAMETER_COL).getStringCellValue();
-        String cellValue = sheet.getRow(rowIndex).getCell(VALUE_COL).getStringCellValue();
-        while (!cellParameter.isEmpty()) {
-            paramMap.put(cellParameter.trim(), cellValue.trim());
-            rowIndex++;
-            cellParameter = sheet.getRow(rowIndex).getCell(VALUE_COL).getStringCellValue();
-            cellValue = sheet.getRow(rowIndex).getCell(VALUE_COL).getStringCellValue();
+        for (Row r : sheet) {
+            Cell parameterNameCell = r.getCell(PARAMETER_COL);
+            Cell valueCell = r.getCell(VALUE_COL);
+
+            switch (valueCell.getCellType()) {
+                case STRING:
+                    paramMap.put(parameterNameCell.getStringCellValue().trim(), valueCell.getStringCellValue());
+                    break;
+                case NUMERIC:
+                    paramMap.put(parameterNameCell.getStringCellValue().trim(), valueCell.getNumericCellValue());
+                    break;
+                case FORMULA:
+                    switch(valueCell.getCachedFormulaResultType()) {
+                        case STRING:
+                            paramMap.put(parameterNameCell.getStringCellValue().trim(), valueCell.getStringCellValue());
+                            break;
+                        case NUMERIC:
+                            paramMap.put(parameterNameCell.getStringCellValue().trim(), valueCell.getNumericCellValue());
+                            break;
+                    }
+                    break;
+            }
         }
 
         return paramMap;

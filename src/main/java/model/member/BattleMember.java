@@ -16,6 +16,7 @@ import model.member.state.interfaces.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.configuration2.Configuration;
 import org.apache.poi.ss.usermodel.Row;
@@ -105,41 +106,45 @@ public class BattleMember extends Member implements IBattleMember {
 
     }
 
-    public BattleMember(Map<String, String> parameterMap) {
-        this.name = new SimpleStringProperty(parameterMap.getOrDefault("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
+    public BattleMember(CharacterSheetParameterMap parameterMap) {
+        this.name = new SimpleStringProperty(parameterMap.getValueAsStringOrElse("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
         this.life = new SimpleIntegerProperty(1);
-        this.maxLife = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.health","1")));
+        this.maxLife = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health",1));
         this.mana = new SimpleIntegerProperty(1);
-        this.maxMana = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.mana","1")));
-        this.initiative = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.initiative","1")));
+        this.maxMana = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana",1));
+        this.initiative = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative",1));
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
         this.turns = new SimpleIntegerProperty(1);
         this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.baseDefense = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("secondaryAttribute.defense","1")));
-        this.level = new SimpleIntegerProperty(Integer.parseInt(parameterMap.getOrDefault("character.level","1")));
+        this.baseDefense = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense",1));
+        this.level = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("character.level",1));
 
-        String armorHead = parameterMap.getOrDefault("character.armor.head", "");
-        String armorChest = parameterMap.getOrDefault("character.armor.upperBody", "");
-        String armorLegs = parameterMap.getOrDefault("character.armor.legs", "");
-        String armorArms = parameterMap.getOrDefault("character.armor.arm", "");
+        this.armor = new HashMap<>();
+
+        String armorHead = parameterMap.getValueAsStringOrElse("character.armor.head", "");
+        System.out.println("head" + armorHead);
+        String armorChest = parameterMap.getValueAsStringOrElse("character.armor.upperBody", "");
+        String armorLegs = parameterMap.getValueAsStringOrElse("character.armor.legs", "");
+        String armorArms = parameterMap.getValueAsStringOrElse("character.armor.arm", "");
 
         // TODO if null, we need to create database entry
         Item itemHead = Database.getItemOrElse(armorHead, null);
         Item itemChest = Database.getItemOrElse(armorChest, null);
         Item itemLegs = Database.getItemOrElse(armorLegs, null);
         Item itemArms = Database.getItemOrElse(armorArms, null);
+        System.out.println("arm item " + itemArms);
 
-        if (itemHead != null) this.armor.put(ArmorPiece.head, ((Armor) itemHead).protectionProperty());
-        if (itemChest != null) this.armor.put(ArmorPiece.head, ((Armor) itemChest).protectionProperty());
-        if (itemLegs != null) this.armor.put(ArmorPiece.head, ((Armor) itemLegs).protectionProperty());
-        if (itemArms != null) this.armor.put(ArmorPiece.head, ((Armor) itemArms).protectionProperty());
+        this.armor.put(ArmorPiece.head, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemHead).protectionProperty());
+        this.armor.put(ArmorPiece.arm, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemArms).protectionProperty());
+        this.armor.put(ArmorPiece.upperBody, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemChest).protectionProperty());
+        this.armor.put(ArmorPiece.legs, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemLegs).protectionProperty());
 
         // TODO correct weapon loading
-        String weapon1 = parameterMap.getOrDefault("character.weapon.1", "");
-        String weapon2 = parameterMap.getOrDefault("character.weapon.1", "");
-        String weapon3 = parameterMap.getOrDefault("character.weapon.1", "");
-        String weapon4 = parameterMap.getOrDefault("character.weapon.1", "");
+        String weapon1 = parameterMap.getValueAsStringOrElse("character.weapon.1", "");
+        String weapon2 = parameterMap.getValueAsStringOrElse("character.weapon.2", "");
+        String weapon3 = parameterMap.getValueAsStringOrElse("character.weapon.3", "");
+        String weapon4 = parameterMap.getValueAsStringOrElse("character.weapon.4", "");
 
         Item weaponItem1 = Database.getItemOrElse(weapon1, null);
         Item weaponItem2 = Database.getItemOrElse(weapon2, null);
@@ -153,7 +158,7 @@ public class BattleMember extends Member implements IBattleMember {
             if (weaponItem1 instanceof Weapon) {
                 if (((Weapon) weaponItem1).isShield()) {
                     hasShield = true;
-                    this.setArmor(ArmorPiece.shield, ((Weapon) weaponItem1).getDamage());
+                    this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem1).damageProperty());
                 };
             }
         }
@@ -162,7 +167,7 @@ public class BattleMember extends Member implements IBattleMember {
         if (!hasShield && weaponItem2 != null) {
             if (weaponItem2 instanceof Weapon) {
                 if (((Weapon) weaponItem2).isShield()) {
-                    this.setArmor(ArmorPiece.shield, ((Weapon) weaponItem2).getDamage());
+                    this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem2).damageProperty());
                 };
             }
         }

@@ -29,6 +29,8 @@ public abstract class DatabaseLoader {
 
     private static final ObjectProperty<ResourceBundle> tables = new SimpleObjectProperty<>();
 
+    private static boolean loadSynchronous = false;
+
     static {
         reloadLanguage(tableLanguage.get());
         tableLanguage.addListener((ob, o, n) -> reloadLanguage(n));
@@ -36,7 +38,9 @@ public abstract class DatabaseLoader {
 
     private static final Map<String, String> talentTypes = new HashMap<>();
 
-    public static Collection<String> loadDatabase(Connection connection) throws SQLException {
+    public static Collection<String> loadDatabase(Connection connection, boolean loadSynchronous) throws SQLException {
+        DatabaseLoader.loadSynchronous = loadSynchronous;
+
         TypTranslation.clear();
         Collection<String> info = new ArrayList<>();
 
@@ -105,10 +109,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.weapons");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.weaponList.set(weaponList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.weaponList.set(weaponList);
+                    semaphore.release();
+                });
+            }
         }
 
         return "";
@@ -142,10 +151,16 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.armors");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.armorList.set(armorList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.armorList.set(armorList);
+                    semaphore.release();
+                });
+            }
+
         }
         return "";
     }
@@ -176,10 +191,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.jewellery");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.jewelleryList.set(jewelleryList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.jewelleryList.set(jewelleryList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -207,10 +227,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("column.type");
         } finally {
-            Platform.runLater(() -> {
-                Database.plantList.set(plantList);
-                semaphore.release();
-            });
+            if (loadSynchronous) {
+                    Database.plantList.set(plantList);
+                    semaphore.release();
+            } else {
+                Platform.runLater(() -> {
+                    Database.plantList.set(plantList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -237,14 +262,23 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.items");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.itemList.set(itemList);
                 Database.itemList.addAll(Database.weaponList);
                 Database.itemList.addAll(Database.armorList);
                 Database.itemList.addAll(Database.jewelleryList);
                 Database.itemList.addAll(Database.plantList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.itemList.set(itemList);
+                    Database.itemList.addAll(Database.weaponList);
+                    Database.itemList.addAll(Database.armorList);
+                    Database.itemList.addAll(Database.jewelleryList);
+                    Database.itemList.addAll(Database.plantList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -286,10 +320,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.talents");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.talentList.set(talentList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.talentList.set(talentList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -315,10 +354,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.spells");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.spellList.set(spellList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.spellList.set(spellList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -406,10 +450,15 @@ public abstract class DatabaseLoader {
         } catch (NoSuchElementException e) {
             return getErrorString("table.upgrades") + ". " + LanguageUtility.getMessage("database.missingMaterial");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.upgradeList.set(upgradeList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.upgradeList.set(upgradeList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -433,10 +482,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.loot");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.dungeonLootList.set(lootList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.dungeonLootList.set(lootList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -457,10 +511,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.manufacturingImprovements");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.craftingBonusList.set(craftingBonusList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.craftingBonusList.set(craftingBonusList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -500,10 +559,15 @@ public abstract class DatabaseLoader {
         } catch (SQLException e) {
             return getErrorString("table.manufacturing");
         } finally {
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.fabricationList.set(fabricationList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.fabricationList.set(fabricationList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -520,10 +584,15 @@ public abstract class DatabaseLoader {
         } finally {
             final ObservableList<String> fShieldTypList = shieldTypList;
 
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.shieldTypes.set(fShieldTypList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.shieldTypes.set(fShieldTypList);
+                    semaphore.release();
+                });
+            }
         }
         return "";
     }
@@ -700,14 +769,23 @@ public abstract class DatabaseLoader {
             final ObservableList<FightingStyle> fFightingStyleList = fightingStyleList;
             final ObservableList<Specialisation> fSpecialisationList = specialisationList;
 
-            Platform.runLater(() -> {
+            if (loadSynchronous) {
                 Database.characterisationList.set(fCharacterisationList);
                 Database.raceList.set(fRaceList);
                 Database.professionList.set(fProfessionList);
                 Database.fightingStyleList.set(fFightingStyleList);
                 Database.specialisationList.set(fSpecialisationList);
                 semaphore.release();
-            });
+            } else {
+                Platform.runLater(() -> {
+                    Database.characterisationList.set(fCharacterisationList);
+                    Database.raceList.set(fRaceList);
+                    Database.professionList.set(fProfessionList);
+                    Database.fightingStyleList.set(fFightingStyleList);
+                    Database.specialisationList.set(fSpecialisationList);
+                    semaphore.release();
+                });
+            }
         }
 
         return "";
@@ -1102,7 +1180,11 @@ public abstract class DatabaseLoader {
                 }
             }
         }
-        Platform.runLater(() -> Database.inconsistencyList.set(inconsistencyList));
+        if (loadSynchronous) {
+            Database.inconsistencyList.set(inconsistencyList);
+        } else {
+            Platform.runLater(() -> Database.inconsistencyList.set(inconsistencyList));
+        }
     }
 
     private static Talent getTalent(String typ) {

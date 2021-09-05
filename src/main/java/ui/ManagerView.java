@@ -192,7 +192,7 @@ public class ManagerView extends View {
                     protected Object call() {
 
                         try (Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + file.getPath())) {
-                            info.addAll(DatabaseLoader.loadDatabase(connection));
+                            info.addAll(DatabaseLoader.loadDatabase(connection, false));
                         } catch (SQLException e) {
                             info.add(ExceptionUtils.getFullStackTrace(e));
                             this.cancel();
