@@ -27,7 +27,7 @@ public class SQLView extends ViewPart {
         FilteredTableView<Item> itemTable = new FilteredTableView<>(Database.itemList);
         itemTable.setPadding(new Insets(10, 20, 20, 20));
         itemTable.addColumn("column.name", Item::getName);
-        itemTable.addColumn("column.type", Item::getTier);
+        itemTable.addColumn("column.type", Item::getType);
         itemTable.addColumn("column.item.subtype", Item::getSubtype);
         itemTable.addColumn("column.tier", Item::getTier);
         itemTable.addColumn("column.item.rarity", Item::getRarity);
