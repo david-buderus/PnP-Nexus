@@ -7,13 +7,13 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import manager.Database;
-import manager.LanguageUtility;
-import manager.Utility;
+import manager.*;
 import model.Battle;
+import model.Currency;
 import model.Rarity;
 import model.Spell;
 import model.item.*;
+import model.loot.Loot;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
@@ -21,6 +21,7 @@ import model.member.generation.*;
 import model.member.generation.specs.*;
 import model.member.interfaces.IExtendedBattleMember;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -269,6 +270,73 @@ public class ExtendedBattleMember extends BattleMember implements IExtendedBattl
 
         this.generateLoot();
         this.addDescription();
+    }
+
+    public ExtendedBattleMember(Workbook wb) {
+        this(CharacterSheetParser.parseCharacterSheet(wb));
+    }
+
+    public ExtendedBattleMember(CharacterSheetParameterMap parameterMap) {
+        super(parameterMap);
+
+        // load rings
+        for (int i = 1; i <= 8; i++) {
+            String ringx = parameterMap.getValueAsStringOrElse("character.armor.ring."+i, "");
+            Item ringItemx = Database.getItemOrElse(ringx, null);
+            // TODO if null create DB entry
+            if (ringItemx != null) {
+                jewellery.add((Jewellery) ringItemx);
+            }
+        }
+        // load amulet
+        String amulet = parameterMap.getValueAsStringOrElse("character.armor.amulet", "");
+        Item amuletItem = Database.getItemOrElse(amulet, null);
+        if (amuletItem != null) {
+            jewellery.add((Jewellery) amuletItem);
+        }
+
+        // load bracelets
+        String bracelet1 = parameterMap.getValueAsStringOrElse("character.armor.bracelet.1", "");
+        String bracelet2 = parameterMap.getValueAsStringOrElse("character.armor.bracelet.2", "");
+        Item bracelet1Item = Database.getItemOrElse(bracelet1, null);
+        Item bracelet2Item = Database.getItemOrElse(bracelet2, null);
+        if (bracelet1Item != null) {
+            jewellery.add((Jewellery) bracelet1Item);
+        }
+        if (bracelet2Item != null) {
+            jewellery.add((Jewellery) bracelet2Item);
+        }
+
+        // load misc
+        for (int i = 1; i <= 4; i++) {
+            String miscX = parameterMap.getValueAsStringOrElse("character.armor.misc."+i, "");
+            Item miscItemX = Database.getItemOrElse(miscX, null);
+            // TODO if null create DB entry
+            if (miscItemX != null) {
+                jewellery.add((Jewellery) miscItemX);
+            }
+        }
+
+        // load currency
+        int cp = parameterMap.getValueAsIntegerOrElse("character.money.copper", 0);
+        int sp = parameterMap.getValueAsIntegerOrElse("character.money.silver", 0);
+        int gp = parameterMap.getValueAsIntegerOrElse("character.money.gold", 0);
+
+        Currency currency = new Currency(cp, sp, gp);
+        this.lootTable.add(currency);
+
+
+        // load mental health
+        this.mentalHealth = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mentalHealth", 0));
+
+        // load advantages/disadvantages
+        addDescription("character.advantage", Collections.singleton(parameterMap.getValueAsStringOrElse("character.advantages", "")));
+        addDescription("character.disadvantage",  Collections.singleton(parameterMap.getValueAsStringOrElse("character.disadvantages", "")));
+
+        // load talents
+        // TODO 
+        // load spells
+
     }
 
     @Override

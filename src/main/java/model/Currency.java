@@ -53,6 +53,16 @@ public class Currency {
         }
     }
 
+    public Currency(int copper, int silver, int gold) {
+        this.tradeable = true;
+        Configuration config = Utility.getConfig();
+        int silverToCopper = config.getInt("coin.silver.toCopper");
+        int goldToCopper = config.getInt("coin.gold.toSilver") * silverToCopper;
+
+        this.coinValue = copper + silverToCopper * silver + goldToCopper * gold;
+        this.coinString = toCoinString(coinValue);
+    }
+
     public Currency add(Currency other) {
         return new Currency(getCoinValue() + other.getCoinValue());
     }

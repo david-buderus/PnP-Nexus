@@ -133,7 +133,6 @@ public class BattleMember extends Member implements IBattleMember {
         Item itemChest = Database.getItemOrElse(armorChest, null);
         Item itemLegs = Database.getItemOrElse(armorLegs, null);
         Item itemArms = Database.getItemOrElse(armorArms, null);
-        System.out.println("arm item " + itemArms);
 
         this.armor.put(ArmorPiece.head, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemHead).protectionProperty());
         this.armor.put(ArmorPiece.arm, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemArms).protectionProperty());
