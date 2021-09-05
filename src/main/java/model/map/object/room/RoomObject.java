@@ -31,6 +31,12 @@ public abstract class RoomObject extends MapObject {
                 RotationPoint point = passage.getRelativePosition();
                 canvas.drawPerspectiveImage(textureHandler.getWall(), this, point.getX(), point.getY(), point.getZ(),
                         1, 1, 1, (point.getRotation() + 2) % 4);
+            } else {
+              if (passage.hasDoor()) {
+                  RotationPoint point = passage.getRelativePosition();
+                  canvas.drawPerspectiveImage(textureHandler.getDoor(), this, point.getX(), point.getY(), point.getZ(),
+                          1, 1, 1, (point.getRotation() + 2) % 4);
+              }
             }
         }
     }

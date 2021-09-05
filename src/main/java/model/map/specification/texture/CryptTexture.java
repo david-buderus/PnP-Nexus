@@ -11,6 +11,7 @@ public class CryptTexture extends TextureHandler {
         this.stairs = new Image("map/crypt/room/CryptStairs.png");
         this.room = new Image("map/crypt/room/CryptRoom.png");
         this.wall = new Image("map/crypt/CryptWall.png");
+        this.door = new Image("map/crypt/CryptDoor.png");
         this.chest = new Image("map/crypt/SimpleChest.png");
         this.coffin = new Image("map/crypt/SimpleCoffin.png");
     }

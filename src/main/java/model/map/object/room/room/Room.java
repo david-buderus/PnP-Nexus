@@ -21,10 +21,10 @@ public class Room extends SimpleRoomObject implements Lootable {
     public Room(SeededRandom random) {
         super(random,5, 5);
         this.deadEnd = false;
-        addPassage(new Passage(this, new RotationPoint(2, 0, 4, 0)));
-        addPassage(new Passage(this, new RotationPoint(0, 0, 2, 1)));
-        addPassage(new Passage(this, new RotationPoint(2, 0, 0, 2)));
-        addPassage(new Passage(this, new RotationPoint(4, 0, 2, 3)));
+        addPassage(new Passage(this, new RotationPoint(2, 0, 4, 0), true));
+        addPassage(new Passage(this, new RotationPoint(0, 0, 2, 1), true));
+        addPassage(new Passage(this, new RotationPoint(2, 0, 0, 2), true));
+        addPassage(new Passage(this, new RotationPoint(4, 0, 2, 3), true));
     }
 
     @Override

@@ -13,6 +13,7 @@ public abstract class TextureHandler {
     protected Image stairs = DEFAULT_IMAGE;
     protected Image room = DEFAULT_IMAGE;
     protected Image wall = DEFAULT_IMAGE;
+    protected Image door = DEFAULT_IMAGE;
     protected Image chest = DEFAULT_IMAGE;
     protected Image coffin = DEFAULT_IMAGE;
 
@@ -38,6 +39,10 @@ public abstract class TextureHandler {
 
     public Image getWall() {
         return wall;
+    }
+
+    public Image getDoor() {
+        return door;
     }
 
     public Image getChest() {
