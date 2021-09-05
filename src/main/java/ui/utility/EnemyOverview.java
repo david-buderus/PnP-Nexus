@@ -2,8 +2,11 @@ package ui.utility;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -16,13 +19,18 @@ import javafx.scene.text.FontWeight;
 import manager.Database;
 import manager.LanguageUtility;
 import model.graph.Graph;
+import model.interfaces.WithToStringProperty;
+import model.member.generation.Drop;
 import model.member.generation.GenerationBase;
+import model.member.generation.Talent;
 import model.member.generation.TypedGenerationBase;
 import ui.part.GraphView;
 import ui.part.UpdatingListCell;
 import ui.utility.enemygraph.GenerationPositioningStrategy;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ui.ViewFactory.labelTextArea;
 import static ui.ViewFactory.labelTextField;
@@ -36,14 +44,22 @@ public class EnemyOverview extends BorderPane {
         this.graphView = new GraphView<>();
         this.selectedGenerationBase = new SimpleObjectProperty<>(null);
 
+        ComboBox<GenerationBase> selectBox = new ComboBox<>();
+
         graphView.setPositioningStrategy(new GenerationPositioningStrategy(200));
         graphView.setNodeFactory((n) -> {
             HBox box = new HBox(5);
             box.setMaxWidth(150);
             box.setPrefWidth(150);
-            box.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
+            box.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, BorderWidths.DEFAULT)));
+            box.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, null, null)));
 
-            box.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> selectedGenerationBase.set(n));
+            box.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+                if (event.isControlDown()) {
+                    selectBox.getSelectionModel().select(n);
+                }
+                selectedGenerationBase.set(n);
+            });
 
             Label name = new Label(n.getName());
             name.setPadding(new Insets(5));
@@ -68,7 +84,6 @@ public class EnemyOverview extends BorderPane {
         controlBox.setPadding(new Insets(5));
         this.setLeft(controlBox);
 
-        ComboBox<GenerationBase> selectBox = new ComboBox<>();
         selectBox.setCellFactory(list -> new UpdatingListCell<>());
         selectBox.setButtonCell(new UpdatingListCell<>());
         selectBox.setItems(Database.generationBaseList);
@@ -91,19 +106,29 @@ public class EnemyOverview extends BorderPane {
         });
         controlBox.getChildren().add(resetButton);
 
+        Label hintLabel = new Label();
+        hintLabel.textProperty().bind(LanguageUtility.getMessageProperty("search.enemies.filterHint"));
+        hintLabel.setWrapText(true);
+        controlBox.getChildren().add(hintLabel);
+
+        ScrollPane infoScrollPane = new ScrollPane();
+
         VBox info = new VBox(5);
         info.setPadding(new Insets(10));
         info.setAlignment(Pos.TOP_LEFT);
         info.setPrefWidth(280);
+        infoScrollPane.setContent(info);
 
         Label infoLabel = new Label();
         infoLabel.textProperty().bind(LanguageUtility.getMessageProperty("search.enemies.info"));
         infoLabel.setFont(Font.font("", FontWeight.BOLD, 20));
+        infoLabel.setPadding(new Insets(0, 0 ,0 , 20));
         info.getChildren().add(infoLabel);
 
         Label emptyLabel = new Label();
         emptyLabel.textProperty().bind(LanguageUtility.getMessageProperty("search.enemies.nothingSelected"));
         emptyLabel.setAlignment(Pos.CENTER);
+        emptyLabel.setPadding(new Insets(10));
         info.getChildren().add(emptyLabel);
 
         selectedGenerationBase.addListener((ob, o, n) -> {
@@ -112,14 +137,26 @@ public class EnemyOverview extends BorderPane {
 
             if (n != null) {
                 info.getChildren().add(labelTextField("search.enemies.name", n.getName()));
-                info.getChildren().add(labelTextArea("search.enemies.advantages", collectionToString(n.getAdvantages())));
-                info.getChildren().add(labelTextArea("search.enemies.disadvantages", collectionToString(n.getDisadvantages())));
+                addIfNotEmpty(info.getChildren(), "search.enemies.advantages", n.getAdvantages());
+                addIfNotEmpty(info.getChildren(), "search.enemies.disadvantages", n.getDisadvantages());
+                addIfNotEmpty(info.getChildren(), "search.enemies.properties", n.getPropertyList());
+                addIfNotEmpty(info.getChildren(), "search.enemies.groups", n.getParents()
+                        .stream().map(GenerationBase::getName));
+                addIfNotEmpty(info.getChildren(), "search.enemies.recommendedPrimaryAttributes", n.getPrimaryAttributes()
+                        .stream().map(WithToStringProperty::toStringProperty).map(ObservableObjectValue::get));
+                addIfNotEmpty(info.getChildren(), "search.enemies.recommendedSecondaryAttributes", n.getSecondaryAttributes()
+                        .stream().map(WithToStringProperty::toStringProperty).map(ObservableObjectValue::get));
+                addIfNotEmpty(info.getChildren(), "search.enemies.ableToWearInPrimary", n.getPrimaryWeaponTypes());
+                addIfNotEmpty(info.getChildren(), "search.enemies.ableToWearInSecondary", n.getSecondaryWeaponTypes());
+                addIfNotEmpty(info.getChildren(), "search.enemies.importantTalents", n.getMainTalents().stream().map(Talent::getName));
+                addIfNotEmpty(info.getChildren(), "search.enemies.forbiddenTalents", n.getForbiddenTalents().stream().map(Talent::getName));
+                addIfNotEmpty(info.getChildren(), "search.enemies.drops", n.getDrops().stream().map(Drop::getName));
             } else {
                 info.getChildren().add(emptyLabel);
             }
         });
 
-        this.setRight(info);
+        this.setRight(infoScrollPane);
     }
 
     private void reload() {
@@ -159,6 +196,16 @@ public class EnemyOverview extends BorderPane {
                 buildGraph(graph, child);
                 graph.addEdge(node, child);
             }
+        }
+    }
+
+    private void addIfNotEmpty(ObservableList<Node> list, String key, Stream<String> stream) {
+        addIfNotEmpty(list, key, stream.collect(Collectors.toList()));
+    }
+
+    private void addIfNotEmpty(ObservableList<Node> list, String key, Collection<String> collection) {
+        if (!collection.isEmpty()) {
+            list.add(labelTextArea(key, collectionToString(collection)));
         }
     }
 
