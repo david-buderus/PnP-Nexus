@@ -228,8 +228,8 @@ public abstract class DatabaseLoader {
             return getErrorString("column.type");
         } finally {
             if (loadSynchronous) {
-                    Database.plantList.set(plantList);
-                    semaphore.release();
+                Database.plantList.set(plantList);
+                semaphore.release();
             } else {
                 Platform.runLater(() -> {
                     Database.plantList.set(plantList);
@@ -801,11 +801,11 @@ public abstract class DatabaseLoader {
 
                 generation.setName(name);
                 generation.setAdvantages(getCollection(
-                        statement,format("SELECT * FROM %s WHERE %s=\"%s\"",
+                        statement, format("SELECT * FROM %s WHERE %s=\"%s\"",
                                 "table.enemies.advantages", "column.name", name),
                         getLocalized("column.advantages")));
                 generation.setDisadvantages(getCollection(
-                        statement,format("SELECT * FROM %s WHERE %s=\"%s\"",
+                        statement, format("SELECT * FROM %s WHERE %s=\"%s\"",
                                 "table.enemies.disadvantages", "column.name", name),
                         getLocalized("column.disadvantages")));
                 generation.setDropsWeapon(set.getBoolean(getLocalized("column.dropsWeapons")));

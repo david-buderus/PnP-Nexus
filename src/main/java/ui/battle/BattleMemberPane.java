@@ -12,7 +12,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import manager.LanguageUtility;
-import model.member.BattleMember;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IMemberState;
 

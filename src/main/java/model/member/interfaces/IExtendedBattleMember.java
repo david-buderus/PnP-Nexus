@@ -11,20 +11,26 @@ import model.item.Weapon;
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
 import model.member.generation.Talent;
+
 import java.util.Collection;
 
 public interface IExtendedBattleMember extends IBattleMember {
     IntegerProperty getTalent(Talent talent);
+
     Collection<Talent> getMainTalents();
 
     IntegerProperty getAttribute(PrimaryAttribute attribute);
+
     ReadOnlyIntegerProperty getAttribute(SecondaryAttribute attribute);
 
     IntegerProperty getModifier(SecondaryAttribute attribute);
 
     ObservableList<Weapon> getWeapons();
+
     ObservableList<Armor> getArmor();
+
     ObservableList<Jewellery> getJewelleries();
+
     ObservableList<Spell> getSpells();
 
     default int getStrength() {

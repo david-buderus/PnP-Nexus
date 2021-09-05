@@ -1,6 +1,6 @@
 package ui.part;
 
-import javafx.beans.property.*;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -96,7 +96,7 @@ public class CharacterTable<Obj> extends VBox {
         label.setWrapText(true);
         label.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
                 BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
-                bottom ? BorderStrokeStyle.SOLID: BorderStrokeStyle.NONE,
+                bottom ? BorderStrokeStyle.SOLID : BorderStrokeStyle.NONE,
                 left ? BorderStrokeStyle.SOLID : BorderStrokeStyle.NONE,
                 CornerRadii.EMPTY, BorderWidths.DEFAULT, Insets.EMPTY)));
         label.setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));

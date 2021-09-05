@@ -10,14 +10,18 @@ import java.util.List;
 import static manager.Utility.consumeNumber;
 import static manager.Utility.consumeString;
 
-/** The coin value is defined in copper coins */
+/**
+ * The coin value is defined in copper coins
+ */
 public class Currency {
 
     protected final int coinValue;
     protected final String coinString;
     protected final boolean tradeable;
 
-    /** Represents a not tradeable currency object */
+    /**
+     * Represents a not tradeable currency object
+     */
     public Currency() {
         this.tradeable = false;
         this.coinValue = 0;
@@ -167,17 +171,23 @@ public class Currency {
         return result.toString().trim();
     }
 
-    /** The amount of copper coins this currency object represents */
+    /**
+     * The amount of copper coins this currency object represents
+     */
     public int getCoinValue() {
         return coinValue;
     }
 
-    /** A human readable String of the value that this object represents  */
+    /**
+     * A human readable String of the value that this object represents
+     */
     public String getCoinString() {
         return coinString;
     }
 
-    /** If this currency object represents a tradeable value */
+    /**
+     * If this currency object represents a tradeable value
+     */
     public boolean isTradeable() {
         return tradeable;
     }

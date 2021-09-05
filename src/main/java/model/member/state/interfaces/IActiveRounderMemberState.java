@@ -1,13 +1,13 @@
 package model.member.state.interfaces;
 
 /**
-* Interface for MemberStates, that either decrease duration in active or inactive rounds (never both)
-*/
+ * Interface for MemberStates, that either decrease duration in active or inactive rounds (never both)
+ */
 public interface IActiveRounderMemberState extends IMemberState {
 
-  /**
-  * Method that returns, whether this MemberState decreses during active (true) or inactive (false) rounds
-  */
+    /**
+     * Method that returns, whether this MemberState decreses during active (true) or inactive (false) rounds
+     */
     boolean isActiveRounder();
 
     @Override

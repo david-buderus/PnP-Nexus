@@ -110,7 +110,7 @@ public class LootView extends View {
             Currency sellValue = Utility.sellLoot(lootTable.getItems());
 
             if (playerCount > 0) {
-                coinLabel.setText(sellValue.getCoinString() + "\t "+ LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
+                coinLabel.setText(sellValue.getCoinString() + "\t " + LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
                         sellValue.divide(playerCount).getCoinString());
             } else {
                 coinLabel.setText(sellValue.getCoinString());

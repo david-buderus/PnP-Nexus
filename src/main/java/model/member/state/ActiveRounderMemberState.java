@@ -1,7 +1,6 @@
 package model.member.state;
 
 import manager.LanguageUtility;
-import model.member.BattleMember;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IActiveRounderMemberState;
 

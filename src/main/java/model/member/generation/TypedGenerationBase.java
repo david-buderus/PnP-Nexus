@@ -17,7 +17,7 @@ public abstract class TypedGenerationBase<SubType extends GenerationBase> extend
     public Collection<SubType> getSubTypes() {
         Collection<SubType> result = new ArrayList<>(subTypes);
         for (GenerationBase parent : parents) {
-           result.addAll(((TypedGenerationBase<SubType>) parent).getSubTypes());
+            result.addAll(((TypedGenerationBase<SubType>) parent).getSubTypes());
         }
         return result;
     }

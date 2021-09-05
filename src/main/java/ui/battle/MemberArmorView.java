@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import model.member.BattleMember;
 import model.member.data.ArmorPiece;
 import model.member.interfaces.IBattleMember;
 import ui.View;

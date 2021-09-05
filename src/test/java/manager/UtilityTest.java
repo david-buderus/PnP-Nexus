@@ -66,7 +66,7 @@ public class UtilityTest {
         lootList.get(0).getItem().setAmount(0.5f);
         lootList.get(0).setAmount(2);
 
-        assertEquals(500 *modifier, Utility.sellLoot(lootList).getCoinValue());
+        assertEquals(500 * modifier, Utility.sellLoot(lootList).getCoinValue());
 
         // add one item with -500 copper
         lootList.get(1).getItem().setCurrency(new Currency(-500));
@@ -94,18 +94,18 @@ public class UtilityTest {
 
         item = new Item();
         item.setSubtype(currencyString);
-        item.setAmount(2/3f);
+        item.setAmount(2 / 3f);
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item, 3));
 
         assertEquals(503, Utility.sellLoot(lootList).getCoinValue());
 
         item = new Item();
-        item.setAmount(2/3f);
+        item.setAmount(2 / 3f);
         item.setCurrency(new Currency(1));
         lootList.add(new Loot(item, 3));
 
-        assertEquals(Math.round(503 + modifier*3), Utility.sellLoot(lootList).getCoinValue());
+        assertEquals(Math.round(503 + modifier * 3), Utility.sellLoot(lootList).getCoinValue());
     }
 
 }

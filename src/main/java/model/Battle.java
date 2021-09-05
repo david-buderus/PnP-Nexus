@@ -4,26 +4,16 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import manager.CopyService;
 import manager.LanguageUtility;
-import manager.Utility;
 import manager.WorkbookService;
-import model.loot.LootTable;
 import model.member.BattleMember;
 import model.member.ExtendedBattleMember;
-import model.member.data.ArmorPiece;
 import model.member.generation.specs.*;
 import model.member.interfaces.IBattleMember;
-import org.apache.commons.configuration2.Configuration;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Battle {
 
@@ -194,7 +184,6 @@ public class Battle {
             players.add(member);
         }
     }
-
 
 
     public String getName() {

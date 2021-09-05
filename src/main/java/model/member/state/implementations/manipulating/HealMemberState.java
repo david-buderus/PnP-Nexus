@@ -2,7 +2,6 @@ package model.member.state.implementations.manipulating;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
-import model.member.BattleMember;
 import model.member.interfaces.IBattleMember;
 import model.member.state.MemberStateIcon;
 import model.member.state.RandomPowerMemberState;

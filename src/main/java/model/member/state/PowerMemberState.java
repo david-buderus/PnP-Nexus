@@ -2,7 +2,6 @@ package model.member.state;
 
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
-import model.member.BattleMember;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IPowerMemberState;
 

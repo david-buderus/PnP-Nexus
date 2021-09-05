@@ -14,7 +14,7 @@ public abstract class MapObject implements IPosition {
     protected final List<MapObjectPart> parts;
     protected String infoText;
 
-    protected MapObject(SeededRandom random , MapObjectPart... parts) {
+    protected MapObject(SeededRandom random, MapObjectPart... parts) {
         this.rotation = 0;
         this.x = 0;
         this.y = 0;
@@ -72,7 +72,8 @@ public abstract class MapObject implements IPosition {
         return infoText;
     }
 
-    public void onDelete() { }
+    public void onDelete() {
+    }
 
     @Override
     public String toString() {

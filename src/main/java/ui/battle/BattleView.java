@@ -18,7 +18,6 @@ import manager.LanguageUtility;
 import model.Battle;
 import model.interfaces.WithToStringProperty;
 import model.loot.LootTable;
-import model.member.BattleMember;
 import model.member.ExtendedBattleMember;
 import model.member.data.AttackTypes;
 import model.member.interfaces.IBattleMember;

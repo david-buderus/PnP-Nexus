@@ -10,7 +10,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import model.Battle;
-import model.member.BattleMember;
 import model.member.interfaces.IBattleMember;
 import ui.View;
 

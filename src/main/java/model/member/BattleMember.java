@@ -13,15 +13,9 @@ import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.commons.configuration2.Configuration;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 public class BattleMember extends Member implements IBattleMember {
 
@@ -109,16 +103,16 @@ public class BattleMember extends Member implements IBattleMember {
     public BattleMember(CharacterSheetParameterMap parameterMap) {
         this.name = new SimpleStringProperty(parameterMap.getValueAsStringOrElse("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
         this.life = new SimpleIntegerProperty(1);
-        this.maxLife = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health",1));
+        this.maxLife = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1));
         this.mana = new SimpleIntegerProperty(1);
-        this.maxMana = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana",1));
-        this.initiative = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative",1));
+        this.maxMana = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1));
+        this.initiative = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1));
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
         this.turns = new SimpleIntegerProperty(1);
         this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.baseDefense = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense",1));
-        this.level = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("character.level",1));
+        this.baseDefense = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1));
+        this.level = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("character.level", 1));
 
         this.armor = new HashMap<>();
 
@@ -158,7 +152,8 @@ public class BattleMember extends Member implements IBattleMember {
                 if (((Weapon) weaponItem1).isShield()) {
                     hasShield = true;
                     this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem1).damageProperty());
-                };
+                }
+                ;
             }
         }
 
@@ -167,7 +162,8 @@ public class BattleMember extends Member implements IBattleMember {
             if (weaponItem2 instanceof Weapon) {
                 if (((Weapon) weaponItem2).isShield()) {
                     this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem2).damageProperty());
-                };
+                }
+                ;
             }
         }
 
@@ -255,7 +251,8 @@ public class BattleMember extends Member implements IBattleMember {
         }
     }
 
-    public void applyWearOnWeapons() { }
+    public void applyWearOnWeapons() {
+    }
 
     private int calculateInitiative() {
 

@@ -5,9 +5,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class CharacterSheetParser {
 
     // TODO get from config
@@ -31,7 +28,7 @@ public class CharacterSheetParser {
                     paramMap.put(parameterNameCell.getStringCellValue().trim(), valueCell.getNumericCellValue());
                     break;
                 case FORMULA:
-                    switch(valueCell.getCachedFormulaResultType()) {
+                    switch (valueCell.getCachedFormulaResultType()) {
                         case STRING:
                             paramMap.put(parameterNameCell.getStringCellValue().trim(), valueCell.getStringCellValue());
                             break;

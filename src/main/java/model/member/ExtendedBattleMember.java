@@ -13,7 +13,6 @@ import model.Currency;
 import model.Rarity;
 import model.Spell;
 import model.item.*;
-import model.loot.Loot;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
@@ -281,7 +280,7 @@ public class ExtendedBattleMember extends BattleMember implements IExtendedBattl
 
         // load rings
         for (int i = 1; i <= 8; i++) {
-            String ringx = parameterMap.getValueAsStringOrElse("character.armor.ring."+i, "");
+            String ringx = parameterMap.getValueAsStringOrElse("character.armor.ring." + i, "");
             Item ringItemx = Database.getItemOrElse(ringx, null);
             // TODO if null create DB entry
             if (ringItemx != null) {
@@ -309,7 +308,7 @@ public class ExtendedBattleMember extends BattleMember implements IExtendedBattl
 
         // load misc
         for (int i = 1; i <= 4; i++) {
-            String miscX = parameterMap.getValueAsStringOrElse("character.armor.misc."+i, "");
+            String miscX = parameterMap.getValueAsStringOrElse("character.armor.misc." + i, "");
             Item miscItemX = Database.getItemOrElse(miscX, null);
             // TODO if null create DB entry
             if (miscItemX != null) {
@@ -331,10 +330,10 @@ public class ExtendedBattleMember extends BattleMember implements IExtendedBattl
 
         // load advantages/disadvantages
         addDescription("character.advantage", Collections.singleton(parameterMap.getValueAsStringOrElse("character.advantages", "")));
-        addDescription("character.disadvantage",  Collections.singleton(parameterMap.getValueAsStringOrElse("character.disadvantages", "")));
+        addDescription("character.disadvantage", Collections.singleton(parameterMap.getValueAsStringOrElse("character.disadvantages", "")));
 
         // load talents
-        // TODO 
+        // TODO
         // load spells
 
     }

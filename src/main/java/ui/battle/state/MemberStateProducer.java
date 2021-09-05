@@ -1,6 +1,5 @@
 package ui.battle.state;
 
-import model.member.BattleMember;
 import model.member.data.AttackTypes;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IMemberState;

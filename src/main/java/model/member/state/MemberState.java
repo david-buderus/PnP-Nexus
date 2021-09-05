@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import manager.LanguageUtility;
 import model.interfaces.WithToStringProperty;
-import model.member.BattleMember;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IMemberState;
 

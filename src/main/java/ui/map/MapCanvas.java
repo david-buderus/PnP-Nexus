@@ -87,8 +87,8 @@ public class MapCanvas extends Pane implements IMapCanvas {
             infoContext.restore();
         });
         this.map.addListener((ob, o, n) -> {
-            this.offsetX = -(getWidth()/zoom - n.getWidth())/2;
-            this.offsetY = -(getHeight()/zoom - n.getDepth())/2;
+            this.offsetX = -(getWidth() / zoom - n.getWidth()) / 2;
+            this.offsetY = -(getHeight() / zoom - n.getDepth()) / 2;
         });
     }
 

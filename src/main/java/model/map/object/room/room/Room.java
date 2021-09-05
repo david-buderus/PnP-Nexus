@@ -19,7 +19,7 @@ import java.util.Optional;
 public class Room extends SimpleRoomObject implements Lootable {
 
     public Room(SeededRandom random) {
-        super(random,5, 5);
+        super(random, 5, 5);
         this.deadEnd = false;
         addPassage(new Passage(this, new RotationPoint(2, 0, 4, 0)));
         addPassage(new Passage(this, new RotationPoint(0, 0, 2, 1)));
@@ -45,7 +45,7 @@ public class Room extends SimpleRoomObject implements Lootable {
     @Override
     public Collection<LootObject> generateLoot() {
         ArrayList<LootObject> result = new ArrayList<>();
-        result.add(new Chest(random,this, 1, 0, 1));
+        result.add(new Chest(random, this, 1, 0, 1));
         return result;
     }
 }

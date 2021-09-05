@@ -2,7 +2,6 @@ package model.member.state.implementations.initiative;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
-import model.member.BattleMember;
 import model.member.interfaces.IBattleMember;
 import model.member.state.MemberState;
 import model.member.state.MemberStateIcon;

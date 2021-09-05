@@ -44,7 +44,9 @@ public abstract class Equipment extends Item {
 
     protected abstract boolean shouldBreak();
 
-    /** Applies one wear to this equipment */
+    /**
+     * Applies one wear to this equipment
+     */
     public void applyWear() {
         applyWear(1);
     }
