@@ -17,7 +17,7 @@ public interface IBattleMember extends IMember {
                     double block, IBattleMember source);
 
     default void decreaseMana(int amount, IBattleMember source) {
-        this.manaProperty().set(Math.min(0, this.getMana() - amount));
+        this.manaProperty().set(Math.max(0, this.getMana() - amount));
     }
 
     default void increaseMana(int amount, IBattleMember source) {
