@@ -12,18 +12,21 @@ import manager.Database;
 import manager.LanguageUtility;
 import model.Currency;
 import model.Spell;
+import model.interfaces.ILootable;
 import model.item.Item;
 import model.item.Jewellery;
 import model.loot.LootTable;
 import model.member.generation.SecondaryAttribute;
 import model.member.generation.Talent;
 import model.member.interfaces.IExtendedBattleMember;
+import model.member.interfaces.IPlayerBattleMember;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.Stream;
 
-public class PlayerBattleMember extends ExtendedBattleMember implements IExtendedBattleMember {
+public class PlayerBattleMember extends ExtendedBattleMember implements IPlayerBattleMember, ILootable {
 
     private final StringProperty occupation = new SimpleStringProperty("");
     private final IntegerProperty age = new SimpleIntegerProperty(0);
@@ -37,6 +40,7 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IExtende
 
     public PlayerBattleMember(CharacterSheetParameterMap parameterMap) {
         super(parameterMap);
+
         // load occupation
         occupation.set(parameterMap.getValueAsStringOrElse("character.occupation", ""));
 
@@ -105,36 +109,16 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IExtende
         Currency currency = new Currency(cp, sp, gp);
         this.lootTable.add(currency);
 
-
-        // load mental health
-        this.secondaryAttributes.put(SecondaryAttribute.mentalHealth, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mentalHealth", 0)));
-
         // load advantages/disadvantages
         addDescription("character.advantage", Collections.singleton(parameterMap.getValueAsStringOrElse("character.advantages", "")));
         addDescription("character.disadvantage", Collections.singleton(parameterMap.getValueAsStringOrElse("character.disadvantages", "")));
 
-        // load talents
-        Stream<String> talentKeys = parameterMap.keySet().stream().filter(key -> key.startsWith("talent."));
+        inventory.stream().filter(Objects::nonNull).forEach(item -> lootTable.add(item, 1, 1));
+    }
 
-        talentKeys.forEach(key -> {
-            // TODO imrpovised weapon needs primary attributes
-
-            String talentName = LanguageUtility.getMessageProperty(key).get();
-            Talent talent = Database.getTalent(talentName);
-
-            this.talents.put(talent, new SimpleIntegerProperty(parameterMap.getValueAsInteger(key)));
-        });
-
-        // TODO
-        // load spells
-        for (int i = 1; i <= 13; i++) {
-            String nameX = parameterMap.getValueAsStringOrElse("character.spell." + i, "");
-            Spell spellX = Database.getSpellOrElse(nameX, null);
-            // TODO if null create DB entry
-            if (spellX != null) {
-                spells.add(spellX);
-            }
-        }
+    @Override
+    public LootTable getLootTable() {
+        return lootTable;
     }
 
     @Override
@@ -150,5 +134,20 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IExtende
     @Override
     public boolean dropsJewellery() {
         return true;
+    }
+
+    @Override
+    public StringProperty occupationProperty() {
+        return occupation;
+    }
+
+    @Override
+    public IntegerProperty ageProperty() {
+        return age;
+    }
+
+    @Override
+    public StringProperty historyProperty() {
+        return history;
     }
 }

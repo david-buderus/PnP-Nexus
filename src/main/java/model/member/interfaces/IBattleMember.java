@@ -30,8 +30,6 @@ public interface IBattleMember extends IMember {
 
     void removeState(IMemberState state);
 
-    LootTable getLootTable();
-
     default boolean isDead() {
         return getLife() <= 0;
     }

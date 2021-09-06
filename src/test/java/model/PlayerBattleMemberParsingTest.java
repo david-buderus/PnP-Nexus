@@ -3,6 +3,7 @@ package model;
 import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 import manager.LanguageUtility;
+import model.loot.LootTable;
 import model.member.GeneratedExtendedBattleMember;
 import model.member.PlayerBattleMember;
 import model.member.data.ArmorPiece;
@@ -17,12 +18,14 @@ import testHelper.TestWithDatabaseAccess;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GeneratedExtendedBattleMemberParsingTest extends TestWithDatabaseAccess {
+public class PlayerBattleMemberParsingTest extends TestWithDatabaseAccess {
 
     protected static IExtendedBattleMember member;
     protected static String wbPath = "src/test/resources/workbooks/Charakterbogen.xlsx";
@@ -60,25 +63,41 @@ public class GeneratedExtendedBattleMemberParsingTest extends TestWithDatabaseAc
         assertEquals(16, member.getAttribute(SecondaryAttribute.mana).get());
         assertEquals(16, member.getMaxMana());
 
-        assertEquals(3, member.getArmor(ArmorPiece.arm));
-        assertEquals(4, member.getArmor(ArmorPiece.legs));
-        assertEquals(5, member.getArmor(ArmorPiece.upperBody));
-        assertEquals(4, member.getArmor(ArmorPiece.legs));
+        assertEquals(5, member.getArmor(ArmorPiece.arm));
+        assertEquals(6, member.getArmor(ArmorPiece.legs));
+        assertEquals(7, member.getArmor(ArmorPiece.upperBody));
+        assertEquals(5, member.getArmor(ArmorPiece.legs));
 
-        assertEquals(8, member.getArmor(ArmorPiece.shield));
+        assertEquals(16, member.getArmor(ArmorPiece.shield));
     }
 
-     @Test
+    @Test
     public void testTalents() {
-
          int talentSum = Database.talentList.stream().map(talent -> Objects.requireNonNullElse(member.getTalent(talent), new SimpleIntegerProperty(0)).get()).reduce(Integer::sum).get();
 
          // instinct is counted twice here but only once on the excel sheet
          int skillInstinct = member.getTalent(Database.getTalent(LanguageUtility.getMessage("talent.instinctNormal"))).get();
 
-         System.out.println(Database.talentList.stream().map(talent -> Objects.requireNonNullElse(member.getTalent(talent), new SimpleIntegerProperty(0)).get()).sorted(Integer::compareTo).collect(Collectors.toList()));
-
          assertEquals(6328, talentSum - skillInstinct);
+    }
 
-     }
+    @Test
+    public void testSpells() {
+        assertEquals(5, member.getSpells().size());
+
+        String[] spells = {"Arkane Geschosse", "Blenden", "Flux", "Frostnova", "Rufe Ent"};
+
+        Arrays.stream(spells).forEach(spell -> assertTrue(member.getSpells().stream().anyMatch(s -> s.getName().equals(spell))));
+    }
+
+    @Test
+    public void testInventory() {
+        LootTable lootTable = member.getLootTable();
+
+        assertTrue(lootTable.getLoot().stream().anyMatch(loot -> loot.getName().equals("Bogen")));
+        assertTrue(lootTable.getLoot().stream().anyMatch(loot -> loot.getName().equals("Stahlhelm")));
+        assertTrue(lootTable.getLoot().stream().anyMatch(loot -> loot.getName().equals("Diebische Amulett")));
+        assertTrue(lootTable.getLoot().stream().anyMatch(loot -> loot.getName().equals("Stahlkeule")));
+        assertTrue(lootTable.getLoot().stream().anyMatch(loot -> loot.getName().equals("Gold")));
+    }
 }

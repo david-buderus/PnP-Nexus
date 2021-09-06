@@ -5,6 +5,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import manager.*;
 import model.Battle;
+import model.interfaces.ILootable;
 import model.item.Armor;
 import model.item.Item;
 import model.item.Weapon;
@@ -19,7 +20,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.*;
 
-public class BattleMember extends Member implements IBattleMember {
+public class BattleMember extends Member implements IBattleMember, ILootable {
 
     protected final Map<SecondaryAttribute, IntegerProperty> secondaryAttributes = new HashMap<>();
 

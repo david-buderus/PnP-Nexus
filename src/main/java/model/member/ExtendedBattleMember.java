@@ -1,12 +1,10 @@
 package model.member;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import manager.CharacterSheetParameterMap;
+import manager.Database;
 import manager.LanguageUtility;
 import model.Battle;
 import model.Spell;
@@ -24,6 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public abstract class ExtendedBattleMember extends BattleMember implements IExtendedBattleMember {
 
@@ -52,6 +51,45 @@ public abstract class ExtendedBattleMember extends BattleMember implements IExte
 
     protected ExtendedBattleMember(CharacterSheetParameterMap parameterMap) {
         super(parameterMap);
+
+        // load spells
+        for (int i = 1; i <= 13; i++) {
+            String nameX = parameterMap.getValueAsStringOrElse("character.spell." + i, "");
+            Spell spellX = Database.getSpellOrElse(nameX, null);
+            // TODO if null create DB entry
+            if (spellX != null) {
+                spells.add(spellX);
+            }
+        }
+
+        // load talents
+        Stream<String> talentKeys = parameterMap.keySet().stream().filter(key -> key.startsWith("talent."));
+        talentKeys.forEach(key -> {
+            // TODO imrpovised weapon needs primary attributes
+
+            String talentName = LanguageUtility.getMessageProperty(key).get();
+            Talent talent = Database.getTalent(talentName);
+
+            this.talents.put(talent, new SimpleIntegerProperty(parameterMap.getValueAsInteger(key)));
+        });
+
+        // load missing secondary health
+        this.secondaryAttributes.put(SecondaryAttribute.mentalHealth, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mentalHealth", 0)));
+        this.secondaryAttributes.put(SecondaryAttribute.meleeDamage, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.meleeDamage", 0)));
+        this.secondaryAttributes.put(SecondaryAttribute.rangeDamage, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.rangeDamage", 0)));
+        this.secondaryAttributes.put(SecondaryAttribute.magicPower, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.magicPower", 0)));
+
+        // load primary attributes
+
+        primaryAttributes.put(PrimaryAttribute.strength, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.strength", 1)));
+        primaryAttributes.put(PrimaryAttribute.endurance, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.endurance", 1)));
+        primaryAttributes.put(PrimaryAttribute.precision, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.precision", 1)));
+        primaryAttributes.put(PrimaryAttribute.agility, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.agility", 1)));
+        primaryAttributes.put(PrimaryAttribute.resilience, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.resilience", 1)));
+        primaryAttributes.put(PrimaryAttribute.charisma, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.charisma", 1)));
+        primaryAttributes.put(PrimaryAttribute.intelligence, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.intelligence", 1)));
+        primaryAttributes.put(PrimaryAttribute.dexterity, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("primaryAttribute.dexterity", 1)));
+
     }
 
     protected ExtendedBattleMember(Workbook wb) {

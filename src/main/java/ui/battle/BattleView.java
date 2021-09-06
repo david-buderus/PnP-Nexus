@@ -16,6 +16,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import manager.LanguageUtility;
 import model.Battle;
+import model.interfaces.ILootable;
 import model.interfaces.WithToStringProperty;
 import model.loot.LootTable;
 import model.member.GeneratedExtendedBattleMember;
@@ -422,7 +423,9 @@ public class BattleView extends ConfigurableViewPart {
         LootTable lootTable = new LootTable();
 
         for (IBattleMember member : battle.enemiesProperty()) {
-            lootTable.add(member.getLootTable());
+            if (member instanceof ILootable) {
+                lootTable.add(((ILootable) member).getLootTable());
+            }
         }
 
         Collection<LootView.EXP> expCollection = new LinkedList<>();

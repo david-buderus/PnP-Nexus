@@ -5,6 +5,7 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import model.Spell;
+import model.interfaces.ILootable;
 import model.item.Armor;
 import model.item.Jewellery;
 import model.item.Weapon;
@@ -14,7 +15,7 @@ import model.member.generation.Talent;
 
 import java.util.Collection;
 
-public interface IExtendedBattleMember extends IBattleMember {
+public interface IExtendedBattleMember extends IBattleMember, ILootable {
     IntegerProperty getTalent(Talent talent);
 
     Collection<Talent> getTalents();
