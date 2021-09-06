@@ -684,6 +684,7 @@ public abstract class DatabaseLoader {
             try {
                 addSpecificJewellery(statement, combinedList);
             } catch (SQLException e) {
+                e.printStackTrace();
                 return getLocalized("table.enemies.equippedJewellery") + " " + LanguageUtility.getMessage("database.cantGetSet");
             }
 

@@ -7,11 +7,16 @@ import javafx.beans.property.MapProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
-import model.*;
+import model.CraftingBonus;
+import model.Fabrication;
+import model.Inconsistency;
+import model.Spell;
 import model.item.*;
 import model.loot.DungeonLootFactory;
+import model.member.generation.GenerationBase;
 import model.member.generation.Talent;
 import model.member.generation.specs.*;
 import model.upgrade.UpgradeFactory;
@@ -38,6 +43,8 @@ public abstract class Database {
     public static final ListProperty<Inconsistency> inconsistencyList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Talent> talentList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<String> shieldTypes = new SimpleListProperty<>(FXCollections.observableArrayList());
+
+    public static final ListProperty<GenerationBase> generationBaseList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Characterisation> characterisationList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Race> raceList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Profession> professionList = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -81,6 +88,12 @@ public abstract class Database {
                 }
             }
         });
+
+        addObservableList(generationBaseList, characterisationList);
+        addObservableList(generationBaseList, raceList);
+        addObservableList(generationBaseList, professionList);
+        addObservableList(generationBaseList, fightingStyleList);
+        addObservableList(generationBaseList, specialisationList);
     }
 
     /**
@@ -195,5 +208,14 @@ public abstract class Database {
 
     private static String trimSpaces(String string) {
         return Arrays.stream(string.split(" ")).map(String::trim).collect(Collectors.joining(" "));
+    }
+
+    private static <U, T extends U>  void addObservableList(Collection<U> collection, ObservableList<T> toAdd) {
+        toAdd.addListener((ListChangeListener<T>) c -> {
+            while(c.next()) {
+                collection.addAll(c.getAddedSubList());
+                collection.removeAll(c.getRemoved());
+            }
+        });
     }
 }

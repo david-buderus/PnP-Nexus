@@ -121,6 +121,11 @@ public class SQLView extends ViewPart {
         upgradeTable.addColumn("column.upgrade.materials", UpgradeModel::getMaterials);
         upgradeTab.setContent(upgradeTable);
 
+        Tab enemyTab = new Tab();
+        enemyTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.enemies"));
+        root.getTabs().add(enemyTab);
+        enemyTab.setContent(new EnemyOverview());
+
         this.setContent(root);
     }
 }

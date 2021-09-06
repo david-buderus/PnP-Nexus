@@ -26,13 +26,14 @@ public abstract class LanguageUtility {
 
     public static String getMessage(String key) {
         try {
-            return messages.get().getString(key);
+            return messages.get().getString(key.trim());
         } catch (MissingResourceException e) {
             return key;
         }
     }
 
     public static ReadOnlyStringProperty getMessageProperty(String key) {
+        key = key.trim();
         if (messageBindings.containsKey(key)) {
             return messageBindings.get(key);
         } else {
