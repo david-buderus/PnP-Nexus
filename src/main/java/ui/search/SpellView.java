@@ -79,6 +79,7 @@ public class SpellView extends ViewPart {
 
         TableView<Spell> searchTable = new TableView<>();
         searchTable.itemsProperty().bindBidirectional(list);
+        searchTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         searchTable.setPrefWidth(730);
 
         TableColumn<Spell, String> nameC = new TableColumn<>();

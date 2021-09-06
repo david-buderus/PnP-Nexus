@@ -18,10 +18,9 @@ import ui.ViewPart;
 import ui.part.NumStringConverter;
 import ui.part.UpdatingListCell;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static manager.LanguageUtility.getMessageProperty;
 
@@ -35,7 +34,7 @@ public class FoodView extends ViewPart {
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(20, 0, 20, 0));
 
-        // Titel
+        // Title
         HBox line = new HBox(10);
         line.setAlignment(Pos.CENTER_LEFT);
         line.setPadding(new Insets(0, 0, 10, 5));
@@ -108,7 +107,7 @@ public class FoodView extends ViewPart {
         scroll.setPadding(new Insets(5, 5, 5, 5));
 
         VBox inner = new VBox(10);
-        inner.setAlignment(Pos.CENTER);
+        inner.setAlignment(Pos.CENTER_LEFT);
         scroll.setContent(inner);
 
         root.setCenter(scroll);
@@ -175,7 +174,7 @@ public class FoodView extends ViewPart {
 
     private void addOne(VBox root, FoodMember member) {
         HBox line = new HBox(10);
-        line.setAlignment(Pos.TOP_CENTER);
+        line.setAlignment(Pos.TOP_LEFT);
         members.add(member);
 
         VBox box = new VBox(10);
@@ -197,14 +196,8 @@ public class FoodView extends ViewPart {
 
         line.getChildren().add(box);
 
-        try {
-            line.getChildren().add(createButtonBox(member, FoodMember.class.getMethod("eat", Double.class),
-                    member.eatenFoodProperty()));
-            line.getChildren().add(createButtonBox(member, FoodMember.class.getMethod("drink", Double.class),
-                    member.drunkDrinkingProperty()));
-        } catch (NoSuchMethodException | SecurityException e) {
-            e.printStackTrace();
-        }
+        line.getChildren().add(createButtonBox(member::eat, member.eatenFoodProperty()));
+        line.getChildren().add(createButtonBox(member::drink, member.drunkDrinkingProperty()));
 
         TextField hunger = new TextField();
         hunger.setPrefWidth(149);
@@ -239,7 +232,7 @@ public class FoodView extends ViewPart {
         root.getChildren().add(line);
     }
 
-    private VBox createButtonBox(FoodMember member, Method adder, DoubleProperty prop) {
+    private VBox createButtonBox(Consumer<Double> adder, DoubleProperty prop) {
         VBox box = new VBox(10);
 
         TextField value = new TextField();
@@ -253,25 +246,13 @@ public class FoodView extends ViewPart {
         add.setPrefSize(25, 25);
         buttons.getChildren().add(add);
 
-        add.setOnMouseClicked(ev -> {
-            try {
-                adder.invoke(member, ctrlValues(ev));
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
+        add.setOnMouseClicked(ev -> adder.accept(ctrlValues(ev)));
 
         Button remove = new Button("-");
         remove.setPrefSize(25, 25);
         buttons.getChildren().add(remove);
 
-        remove.setOnMouseClicked(ev -> {
-            try {
-                adder.invoke(member, -ctrlValues(ev));
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        });
+        remove.setOnMouseClicked(ev -> adder.accept(-ctrlValues(ev)));
 
         box.getChildren().add(buttons);
 

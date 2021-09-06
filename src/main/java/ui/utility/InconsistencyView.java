@@ -24,6 +24,7 @@ public class InconsistencyView extends ViewPart {
 
         TableView<Inconsistency> table = new TableView<>();
         table.itemsProperty().bind(Database.inconsistencyList);
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         root.getChildren().add(table);
 
         TableColumn<Inconsistency, String> name = new TableColumn<>();
@@ -33,13 +34,13 @@ public class InconsistencyView extends ViewPart {
         table.getColumns().add(name);
 
         TableColumn<Inconsistency, String> inconsistency = new TableColumn<>();
-        name.textProperty().bind(getMessageProperty("inconsistencies.column.inconsistencies"));
+        inconsistency.textProperty().bind(getMessageProperty("inconsistencies.column.inconsistencies"));
         inconsistency.setCellValueFactory(new PropertyValueFactory<>("inconsistency"));
         inconsistency.setPrefWidth(150);
         table.getColumns().add(inconsistency);
 
         TableColumn<Inconsistency, String> info = new TableColumn<>();
-        name.textProperty().bind(getMessageProperty("inconsistencies.column.moreInfo"));
+        info.textProperty().bind(getMessageProperty("inconsistencies.column.moreInfo"));
         info.setCellValueFactory(x -> new ReadOnlyStringWrapper(x.getValue().getInfoAsString()));
         info.setPrefWidth(600);
         table.getColumns().add(info);
