@@ -117,6 +117,36 @@ public abstract class Database {
     }
 
     /**
+     * If an spell with the given name exists in the {@link #spellList},
+     * it returns that spell.
+     * If there is no spell, it returns an spell with the name and the suffix
+     * "(database.notFound)".
+     *
+     * @param name of the searched spell
+     * @return the matching spell or a fallback spell with the given name
+     */
+    public static Spell getSpell(String name) {
+        Spell spell = new Spell();
+        spell.setName(name + " (" + LanguageUtility.getMessage("database.notFound") + ")");
+        return getSpellOrElse(name, spell);
+    }
+
+    /**
+     * If an spell with the given name exists in the {@link #spellList},
+     * it returns that spell.
+     * If there is no spell, it returns the spell specified in the
+     * parameters.
+     *
+     * @param name of the searched spell
+     * @param spell fallback spell
+     * @return a matching spell or the fallback
+     */
+    public static Spell getSpellOrElse(String name, Spell spell) {
+        return spellList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
+                .findFirst().orElse(spell);
+    }
+
+    /**
      * If an item with the given name exists in the {@link #itemList},
      * it returns that item.
      * If there is no item, it throws a {@link NoSuchElementException}.

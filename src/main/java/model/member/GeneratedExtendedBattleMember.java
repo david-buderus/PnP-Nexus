@@ -223,25 +223,6 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
         this.addDescription();
     }
 
-    @Override
-    public LootTable getLootTable() {
-        LootTable lootTable = super.getLootTable();
-
-        if (dropsWeapons()) {
-            weapons.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
-        }
-
-        if (dropsArmor()) {
-            armors.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
-        }
-
-        if (dropsJewellery()) {
-            jewellery.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
-        }
-
-        return lootTable;
-    }
-
     public void applyWearOnWeapons() {
         for (Weapon weapon : new ArrayList<>(weapons)) {
             if (!Database.shieldTypes.contains(weapon.getSubtype())) {
@@ -752,15 +733,15 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
         return getCollection(GenerationBase::getSpecificJewellery);
     }
 
-    private boolean dropsWeapons() {
+    public boolean dropsWeapons() {
         return getAnd(GenerationBase::dropsWeapon);
     }
 
-    private boolean dropsArmor() {
+    public boolean dropsArmor() {
         return getAnd(GenerationBase::dropsArmor);
     }
 
-    private boolean dropsJewellery() {
+    public boolean dropsJewellery() {
         return getAnd(GenerationBase::dropsJewellery);
     }
 

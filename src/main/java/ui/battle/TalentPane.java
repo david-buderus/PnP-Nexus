@@ -35,8 +35,6 @@ public class TalentPane extends HBox {
         NumberField points = new NumberField();
         points.setPrefWidth(30);
 
-        System.out.println(talent);
-        System.out.println(battleMember.getTalents());
         points.numberProperty().bindBidirectional(battleMember.getTalent(talent));
         this.getChildren().add(points);
     }

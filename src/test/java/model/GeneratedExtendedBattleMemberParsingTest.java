@@ -71,13 +71,6 @@ public class GeneratedExtendedBattleMemberParsingTest extends TestWithDatabaseAc
      @Test
     public void testTalents() {
 
-         Database.talentList.stream().forEach(talent -> {
-             if (member.getTalent(talent) == null) {
-                 System.out.println(talent);
-             }
-             //member.getTalent(talent).get()
-         });
-
          int talentSum = Database.talentList.stream().map(talent -> Objects.requireNonNullElse(member.getTalent(talent), new SimpleIntegerProperty(0)).get()).reduce(Integer::sum).get();
 
          // instinct is counted twice here but only once on the excel sheet
