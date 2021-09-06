@@ -26,7 +26,7 @@ public class CalenderView extends ViewPart {
     private final Label info;
 
     public CalenderView(IView parent) {
-        super("helper.calender.title", parent);
+        super("helper.calendar.title", parent);
 
         this.year = new SimpleIntegerProperty(0);
         this.year.addListener((ob, o, n) -> update());
@@ -91,12 +91,12 @@ public class CalenderView extends ViewPart {
         buttonLine.setAlignment(Pos.CENTER);
 
         Button prev = new Button();
-        prev.textProperty().bind(getMessageProperty("helper.calender.button.previous"));
+        prev.textProperty().bind(getMessageProperty("helper.calendar.button.previous"));
         prev.setOnAction(ev -> day.set(day.get() - 1));
         buttonLine.getChildren().add(prev);
 
         Button next = new Button();
-        next.textProperty().bind(getMessageProperty("helper.calender.button.next"));
+        next.textProperty().bind(getMessageProperty("helper.calendar.button.next"));
         next.setOnAction(ev -> day.set(day.get() + 1));
         buttonLine.getChildren().add(next);
 
@@ -119,20 +119,20 @@ public class CalenderView extends ViewPart {
         long phase = ((getAbsoluteDate() - newMoon) % circle + circle) % circle;
 
         if (phase == 0) {
-            return moon.concat(getMessageProperty("helper.calender.isInNewMoon")).concat(".");
+            return moon.concat(getMessageProperty("helper.calendar.isInNewMoon")).concat(".");
         }
         if (phase < circle / 2) {
-            return moon.concat(getMessageProperty("helper.calender.isInXDaysFullMoon"))
+            return moon.concat(getMessageProperty("helper.calendar.isInXDaysFullMoon"))
                     .concat(" ").concat(circle / 2 - phase).concat(" ")
-                    .concat(getMessageProperty("helper.calender.isInXDaysFullMoon.ending"));
+                    .concat(getMessageProperty("helper.calendar.isInXDaysFullMoon.ending"));
         }
         if (phase == circle / 2) {
-            return moon.concat(getMessageProperty("helper.calender.isInFullMoon")).concat(".");
+            return moon.concat(getMessageProperty("helper.calendar.isInFullMoon")).concat(".");
         }
 
-        return moon.concat(getMessageProperty("helper.calender.isInXDaysNewMoon"))
+        return moon.concat(getMessageProperty("helper.calendar.isInXDaysNewMoon"))
                 .concat(" ").concat(circle - phase).concat(" ")
-                .concat(getMessageProperty("helper.calender.isInXDaysNewMoon.ending"));
+                .concat(getMessageProperty("helper.calendar.isInXDaysNewMoon.ending"));
     }
 
     private long getAbsoluteDate() {
