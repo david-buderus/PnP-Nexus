@@ -15,10 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import manager.DatabaseLoader;
-import manager.Language;
-import manager.LanguageUtility;
-import manager.Utility;
+import manager.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import ui.battle.BattleOverview;
 import ui.map.MapView;
@@ -140,6 +137,25 @@ public class ManagerView extends View {
         languageTableBox.getSelectionModel().select(DatabaseLoader.tableLanguage.get());
         DatabaseLoader.tableLanguage.bind(languageTableBox.getSelectionModel().selectedItemProperty());
         settingsPane.add(languageTableBox, 1, 3);
+
+        Button checkUpdateButton = new Button();
+        checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
+        checkUpdateButton.setOnAction(ev -> {
+            var response = UpdateChecker.checkForUpdates();
+
+            if (response.updateDoesExists) {
+                InfoView updateView = new InfoView("update.title");
+                updateView.add(LanguageUtility.getMessage("update.intro") + " " + response.newVersion);
+                updateView.add("");
+                updateView.add(response.info);
+                updateView.show();
+                checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
+            } else {
+                checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.noUpdate"));
+            }
+        });
+        checkUpdateButton.setMaxWidth(Double.MAX_VALUE);
+        settingsPane.add(checkUpdateButton, 0, 4, 2, 1);
 
         Scene scene = new Scene(root);
         stage.setScene(scene);
