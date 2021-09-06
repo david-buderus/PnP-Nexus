@@ -1,5 +1,6 @@
 package ui;
 
+import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -33,7 +34,7 @@ public class ManagerView extends View {
     protected StringProperty fileName;
     protected StringProperty defaultPath;
 
-    public ManagerView(Stage stage) {
+    public ManagerView(Stage stage, Application application) {
         super("manager.title", stage);
         this.fileName = new SimpleStringProperty();
         this.fileName.bind(LanguageUtility.getMessageProperty("manager.noFile"));
@@ -141,7 +142,7 @@ public class ManagerView extends View {
             var response = UpdateChecker.checkForUpdates();
 
             if (response.updateDoesExists) {
-                new UpdateView(response).show();
+                new UpdateView(response, application).show();
                 checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
             } else {
                 checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.noUpdate"));
@@ -157,7 +158,7 @@ public class ManagerView extends View {
         var response = UpdateChecker.checkForUpdates();
 
         if (response.updateDoesExists) {
-            new UpdateView(response).show();
+            new UpdateView(response, application).show();
             checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
         }
 

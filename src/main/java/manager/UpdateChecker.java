@@ -63,7 +63,7 @@ public abstract class UpdateChecker {
 
                 if (!newestRelease.tag_name.equals(Utility.getConfig().getString("version.skip"))) {
                     if (comparator.compare(versionProperties.getString("version"), newestRelease.tag_name) > 0) {
-                        return new UpdateResponse(true, newestRelease.tag_name, newestRelease.body);
+                        return new UpdateResponse(true, newestRelease.tag_name, newestRelease.body, newestRelease.html_url);
                     }
                 }
             }
@@ -75,16 +75,18 @@ public abstract class UpdateChecker {
 
     public static class UpdateResponse {
 
-        public final static UpdateResponse NoNewUpdate = new UpdateResponse(false, null, null);
+        public final static UpdateResponse NoNewUpdate = new UpdateResponse(false, null, null, null);
 
         public final boolean updateDoesExists;
         public final String newVersion;
         public final String info;
+        public final String url;
 
-        public UpdateResponse(boolean updateDoesExists, String newVersion, String info) {
+        public UpdateResponse(boolean updateDoesExists, String newVersion, String info, String url) {
             this.updateDoesExists = updateDoesExists;
             this.newVersion = newVersion;
             this.info = info;
+            this.url = url;
         }
     }
 
