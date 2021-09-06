@@ -61,8 +61,10 @@ public abstract class UpdateChecker {
             if (optNewestRelease.isPresent()) {
                 Release newestRelease = optNewestRelease.get();
 
-                if (comparator.compare(versionProperties.getString("version"), newestRelease.tag_name) > 0) {
-                    return new UpdateResponse(true, newestRelease.tag_name, newestRelease.body);
+                if (!newestRelease.tag_name.equals(Utility.getConfig().getString("version.skip"))) {
+                    if (comparator.compare(versionProperties.getString("version"), newestRelease.tag_name) > 0) {
+                        return new UpdateResponse(true, newestRelease.tag_name, newestRelease.body);
+                    }
                 }
             }
 

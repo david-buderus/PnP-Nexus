@@ -20,10 +20,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import ui.battle.BattleOverview;
 import ui.map.MapView;
 import ui.search.SearchOverview;
-import ui.utility.InconsistencyView;
-import ui.utility.InfoView;
-import ui.utility.MemoryView;
-import ui.utility.SQLView;
+import ui.utility.*;
 import ui.utility.helper.HelperOverview;
 
 import java.io.File;
@@ -144,11 +141,7 @@ public class ManagerView extends View {
             var response = UpdateChecker.checkForUpdates();
 
             if (response.updateDoesExists) {
-                InfoView updateView = new InfoView("update.title");
-                updateView.add(LanguageUtility.getMessage("update.intro") + " " + response.newVersion);
-                updateView.add("");
-                updateView.add(response.info);
-                updateView.show();
+                new UpdateView(response).show();
                 checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
             } else {
                 checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.noUpdate"));
@@ -160,6 +153,13 @@ public class ManagerView extends View {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+        var response = UpdateChecker.checkForUpdates();
+
+        if (response.updateDoesExists) {
+            new UpdateView(response).show();
+            checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
+        }
 
         if (!defaultPath.get().isBlank()) {
             load(new File(defaultPath.get()));
