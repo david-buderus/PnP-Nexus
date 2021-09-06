@@ -86,4 +86,10 @@ public interface IExtendedBattleMember extends IBattleMember {
     }
 
     StringProperty notesProperty();
+
+    boolean dropsWeapons();
+
+    boolean dropsArmor();
+
+    boolean dropsJewellery();
 }

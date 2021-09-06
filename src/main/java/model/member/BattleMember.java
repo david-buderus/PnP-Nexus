@@ -17,8 +17,7 @@ import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class BattleMember extends Member implements IBattleMember {
 
@@ -32,7 +31,6 @@ public class BattleMember extends Member implements IBattleMember {
     protected IntegerProperty level;
 
     protected LootTable lootTable = new LootTable();
-    // TODO change to map armorPiece -> Armor item
     protected HashMap<ArmorPiece, IntegerProperty> armor;
 
     protected Battle battle;
@@ -119,59 +117,83 @@ public class BattleMember extends Member implements IBattleMember {
 
         this.armor = new HashMap<>();
 
-        String armorHead = parameterMap.getValueAsStringOrElse("character.armor.head", "");
-        System.out.println("head" + armorHead);
-        String armorChest = parameterMap.getValueAsStringOrElse("character.armor.upperBody", "");
-        String armorLegs = parameterMap.getValueAsStringOrElse("character.armor.legs", "");
-        String armorArms = parameterMap.getValueAsStringOrElse("character.armor.arm", "");
+        Collection<Item> allItems = new ArrayList<>();
 
         // TODO if null, we need to create database entry
-        Item itemHead = Database.getItemOrElse(armorHead, null);
-        Item itemChest = Database.getItemOrElse(armorChest, null);
-        Item itemLegs = Database.getItemOrElse(armorLegs, null);
-        Item itemArms = Database.getItemOrElse(armorArms, null);
+        String armorHead = parameterMap.getValueAsStringOrElse("character.armor.head", "");
+        if (!armorHead.isBlank()) {
+            Item itemHead = Database.getItemOrElse(armorHead, null);
+            this.armor.put(ArmorPiece.head, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemHead).protectionProperty());
+            allItems.add(itemHead);
+        }
 
-        this.armor.put(ArmorPiece.head, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemHead).protectionProperty());
-        this.armor.put(ArmorPiece.arm, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemArms).protectionProperty());
-        this.armor.put(ArmorPiece.upperBody, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemChest).protectionProperty());
-        this.armor.put(ArmorPiece.legs, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemLegs).protectionProperty());
+        String armorChest = parameterMap.getValueAsStringOrElse("character.armor.upperBody", "");
+        if (!armorChest.isBlank()) {
+            Item itemChest = Database.getItemOrElse(armorChest, null);
+            this.armor.put(ArmorPiece.upperBody, itemChest == null ? new SimpleIntegerProperty(0) : ((Armor) itemChest).protectionProperty());
+            allItems.add(itemChest);
+        }
 
-        // TODO correct weapon loading
-        String weapon1 = parameterMap.getValueAsStringOrElse("character.weapon.1", "");
-        String weapon2 = parameterMap.getValueAsStringOrElse("character.weapon.2", "");
-        String weapon3 = parameterMap.getValueAsStringOrElse("character.weapon.3", "");
-        String weapon4 = parameterMap.getValueAsStringOrElse("character.weapon.4", "");
+        String armorLegs = parameterMap.getValueAsStringOrElse("character.armor.legs", "");
+        if (!armorLegs.isBlank()) {
+            Item itemLegs = Database.getItemOrElse(armorLegs, null);
+            this.armor.put(ArmorPiece.legs, itemLegs == null ? new SimpleIntegerProperty(0) : ((Armor) itemLegs).protectionProperty());
+            allItems.add(itemLegs);
+        }
 
-        Item weaponItem1 = Database.getItemOrElse(weapon1, null);
-        Item weaponItem2 = Database.getItemOrElse(weapon2, null);
-        Item weaponItem3 = Database.getItemOrElse(weapon3, null);
-        Item weaponItem4 = Database.getItemOrElse(weapon4, null);
+        String armorArms = parameterMap.getValueAsStringOrElse("character.armor.arm", "");
+        if (!armorArms.isBlank()) {
+            Item itemArms = Database.getItemOrElse(armorArms, null);
+            this.armor.put(ArmorPiece.arm, itemArms == null ? new SimpleIntegerProperty(0) : ((Armor) itemArms).protectionProperty());
+            allItems.add(itemArms);
+        }
 
         // TODO currently assume that weapons 1 and 2 are equipped
         boolean hasShield = false;
 
-        if (weaponItem1 != null) {
-            if (weaponItem1 instanceof Weapon) {
-                if (((Weapon) weaponItem1).isShield()) {
-                    hasShield = true;
-                    this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem1).damageProperty());
+        // TODO correct weapon loading
+        String weapon1 = parameterMap.getValueAsStringOrElse("character.weapon.1", "");
+        if (!weapon1.isBlank()) {
+            Item weaponItem1 = Database.getItemOrElse(weapon1, null);
+            allItems.add(weaponItem1);
+
+            if (weaponItem1 != null) {
+                if (weaponItem1 instanceof Weapon) {
+                    if (((Weapon) weaponItem1).isShield()) {
+                        hasShield = true;
+                        this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem1).damageProperty());
+                    }
                 }
-                ;
             }
         }
 
-        // TODO currently only wearing one shield is supported
-        if (!hasShield && weaponItem2 != null) {
-            if (weaponItem2 instanceof Weapon) {
-                if (((Weapon) weaponItem2).isShield()) {
-                    this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem2).damageProperty());
+        String weapon2 = parameterMap.getValueAsStringOrElse("character.weapon.2", "");
+        if (!weapon2.isBlank()) {
+            Item weaponItem2 = Database.getItemOrElse(weapon2, null);
+            allItems.add(weaponItem2);
+
+            // TODO currently only wearing one shield is supported
+            if (!hasShield && weaponItem2 != null) {
+                if (weaponItem2 instanceof Weapon) {
+                    if (((Weapon) weaponItem2).isShield()) {
+                        this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem2).damageProperty());
+                    }
                 }
-                ;
             }
         }
+        String weapon3 = parameterMap.getValueAsStringOrElse("character.weapon.3", "");
+        if (!weapon3.isBlank()) {
+            Item weaponItem3 = Database.getItemOrElse(weapon3, null);
+            allItems.add(weaponItem3);
+        }
+        String weapon4 = parameterMap.getValueAsStringOrElse("character.weapon.4", "");
+        if (!weapon4.isBlank()) {
+            Item weaponItem4 = Database.getItemOrElse(weapon4, null);
+            allItems.add(weaponItem4);
+        }
 
-        // TODO loot
-
+        // Loot
+        allItems.stream().filter(Objects::nonNull).forEach(item -> lootTable.add(item, 1, 1));
     }
 
     public BattleMember(Workbook wb) {

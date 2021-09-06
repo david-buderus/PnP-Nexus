@@ -1,13 +1,20 @@
 package model.member;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import manager.CharacterSheetParameterMap;
 import manager.CharacterSheetParser;
 import manager.Database;
 import manager.LanguageUtility;
 import model.Currency;
+import model.Spell;
 import model.item.Item;
 import model.item.Jewellery;
+import model.loot.LootTable;
 import model.member.generation.SecondaryAttribute;
 import model.member.generation.Talent;
 import model.member.interfaces.IExtendedBattleMember;
@@ -18,6 +25,12 @@ import java.util.stream.Stream;
 
 public class PlayerBattleMember extends ExtendedBattleMember implements IExtendedBattleMember {
 
+    private final StringProperty occupation = new SimpleStringProperty("");
+    private final IntegerProperty age = new SimpleIntegerProperty(0);
+    private final StringProperty history = new SimpleStringProperty("");
+
+    private final ObservableList<Item> inventory = FXCollections.observableArrayList();
+
     public PlayerBattleMember(Workbook wb) {
         this(CharacterSheetParser.parseCharacterSheet(wb));
     }
@@ -25,10 +38,26 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IExtende
     public PlayerBattleMember(CharacterSheetParameterMap parameterMap) {
         super(parameterMap);
         // load occupation
+        occupation.set(parameterMap.getValueAsStringOrElse("character.occupation", ""));
+
         // load age
+        age.set(parameterMap.getValueAsIntegerOrElse("character.age", 0));
 
         // load inventory
+        for (int i = 1; i <= 21; i++) {
+            String nameX = parameterMap.getValueAsStringOrElse("character.inventory." + i, "");
+
+            if (nameX.isBlank()) continue;
+
+            Item itemX = Database.getItemOrElse(nameX, null);
+            // TODO if null create DB entry
+            if (itemX != null) {
+                inventory.add(itemX);
+            }
+        }
+
         // load history
+        history.set(parameterMap.getValueAsStringOrElse("character.history", ""));
 
         // load rings
         for (int i = 1; i <= 8; i++) {
@@ -91,11 +120,6 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IExtende
             // TODO imrpovised weapon needs primary attributes
 
             String talentName = LanguageUtility.getMessageProperty(key).get();
-
-            if (talentName.equals(key)) {
-                System.out.println(talentName);
-            }
-
             Talent talent = Database.getTalent(talentName);
 
             this.talents.put(talent, new SimpleIntegerProperty(parameterMap.getValueAsInteger(key)));
@@ -103,8 +127,28 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IExtende
 
         // TODO
         // load spells
-
+        for (int i = 1; i <= 13; i++) {
+            String nameX = parameterMap.getValueAsStringOrElse("character.spell." + i, "");
+            Spell spellX = Database.getSpellOrElse(nameX, null);
+            // TODO if null create DB entry
+            if (spellX != null) {
+                spells.add(spellX);
+            }
+        }
     }
 
-    // todo set loot dirferent
+    @Override
+    public boolean dropsWeapons() {
+        return true;
+    }
+
+    @Override
+    public boolean dropsArmor() {
+        return true;
+    }
+
+    @Override
+    public boolean dropsJewellery() {
+        return true;
+    }
 }

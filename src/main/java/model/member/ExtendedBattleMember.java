@@ -25,43 +25,41 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExtendedBattleMember extends BattleMember implements IExtendedBattleMember {
+public abstract class ExtendedBattleMember extends BattleMember implements IExtendedBattleMember {
 
     protected final Map<PrimaryAttribute, IntegerProperty> primaryAttributes = new HashMap<>();
     protected final Map<SecondaryAttribute, IntegerProperty> secondaryAttributeModifier = new HashMap<>();
 
-    protected final HashMap<Talent, IntegerProperty> talents = new HashMap<>();;
-    protected final ObservableList<Weapon> weapons = FXCollections.observableArrayList();;
+    protected final HashMap<Talent, IntegerProperty> talents = new HashMap<>();
+    protected final ObservableList<Weapon> weapons = FXCollections.observableArrayList();
     protected final ObservableList<Armor> armors = FXCollections.observableArrayList();
     protected final ObservableList<Jewellery> jewellery = FXCollections.observableArrayList();
     protected final ObservableList<Spell> spells = FXCollections.observableArrayList();
 
     protected final StringProperty notes = new SimpleStringProperty("");
 
-    public ExtendedBattleMember(Battle battle) {
+    protected ExtendedBattleMember(Battle battle) {
         super(battle);
     }
 
-    public ExtendedBattleMember(Battle battle, LootTable lootTable, HashMap<ArmorPiece, IntegerProperty> armor) {
+    protected ExtendedBattleMember(Battle battle, LootTable lootTable, HashMap<ArmorPiece, IntegerProperty> armor) {
         super(battle, lootTable, armor);
     }
 
-    public ExtendedBattleMember(Battle battle, LootTable lootTable) {
+    protected ExtendedBattleMember(Battle battle, LootTable lootTable) {
         super(battle, lootTable);
     }
 
-    public ExtendedBattleMember(CharacterSheetParameterMap parameterMap) {
+    protected ExtendedBattleMember(CharacterSheetParameterMap parameterMap) {
         super(parameterMap);
     }
 
-    public ExtendedBattleMember(Workbook wb) {
+    protected ExtendedBattleMember(Workbook wb) {
         super(wb);
     }
 
     @Override
     public IntegerProperty getTalent(Talent talent) {
-        System.out.println("->");
-        System.out.println(talents);
         return talents.get(talent);
     }
 
@@ -165,5 +163,24 @@ public class ExtendedBattleMember extends BattleMember implements IExtendedBattl
 
             }
         }
+    }
+
+    @Override
+    public LootTable getLootTable() {
+        LootTable lootTable = super.getLootTable();
+
+        if (dropsWeapons()) {
+            weapons.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
+        }
+
+        if (dropsArmor()) {
+            armors.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
+        }
+
+        if (dropsJewellery()) {
+            jewellery.stream().filter(e -> !e.getName().isEmpty()).forEach(e -> lootTable.add(e, 1, 1));
+        }
+
+        return lootTable;
     }
 }
