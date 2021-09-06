@@ -6,12 +6,12 @@ import model.map.specification.MapSpecification;
 import java.util.Collection;
 import java.util.Collections;
 
-public interface Lootable {
+public interface WithLootables {
 
     /**
      * Creates a collection of LootObjects
      */
-    default Collection<LootObject> generateLoot(MapSpecification specification) {
+    default Collection<LootObject> generateLootables(MapSpecification specification) {
         return Collections.emptyList();
     }
 }

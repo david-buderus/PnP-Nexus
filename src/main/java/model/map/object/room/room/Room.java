@@ -4,7 +4,7 @@ import model.map.RotationPoint;
 import model.map.SeededRandom;
 import model.map.object.loot.LootObject;
 import model.map.object.loot.LootObjectType;
-import model.map.object.room.Lootable;
+import model.map.object.room.WithLootables;
 import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.SimpleRoomObject;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-public class Room extends SimpleRoomObject implements Lootable {
+public class Room extends SimpleRoomObject implements WithLootables {
 
     public Room(SeededRandom random) {
         super(random,5, 5);
@@ -43,7 +43,7 @@ public class Room extends SimpleRoomObject implements Lootable {
     }
 
     @Override
-    public Collection<LootObject> generateLoot(MapSpecification specification) {
+    public Collection<LootObject> generateLootables(MapSpecification specification) {
         ArrayList<LootObject> result = new ArrayList<>();
         specification.getLootObject(LootObjectType.chest, random,this, 1, 0, 1)
                 .ifPresent(result::add);

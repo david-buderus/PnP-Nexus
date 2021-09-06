@@ -3,7 +3,7 @@ package model.map;
 import model.loot.Loot;
 import model.map.object.MapObjectMap;
 import model.map.object.loot.LootObject;
-import model.map.object.room.Lootable;
+import model.map.object.room.WithLootables;
 import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.room.Entrance;
@@ -194,8 +194,8 @@ public class Map implements SeededRandom {
         }
 
         for (RoomObject roomObject : roomMap.getAllMapObjects()) {
-            if (roomObject instanceof Lootable) {
-                for (LootObject lootObject : ((Lootable) roomObject).generateLoot(specification)) {
+            if (roomObject instanceof WithLootables) {
+                for (LootObject lootObject : ((WithLootables) roomObject).generateLootables(specification)) {
 
                     Collection<Loot> loot = specification.getLoot(lootObject.getContainer()).stream()
                             .map(factory -> factory.getLoot(random))
