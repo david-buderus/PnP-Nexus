@@ -16,6 +16,8 @@ import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.*;
@@ -195,6 +197,7 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
 
         // Loot
         allItems.stream().filter(Objects::nonNull).forEach(item -> lootTable.add(item, 1, 1));
+
     }
 
     public BattleMember(Workbook wb) {
@@ -250,6 +253,28 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
         this.states = new SimpleListProperty<>(FXCollections.observableArrayList());*/
 
         this(CharacterSheetParser.parseCharacterSheet(wb));
+
+        String lootName = Utility.getConfig().getString("character.sheet.loot");
+        if (LanguageUtility.hasMessage("character.sheet." + lootName)) {
+            lootName = LanguageUtility.getMessage("character.sheet." + lootName);
+        }
+
+        Sheet loot = wb.getSheet(lootName);
+
+        for (Row row : loot) {
+            if (row.getRowNum() > 0) {
+                String name = WorkbookUtility.getValue(row, 0);
+
+                if (name.isEmpty() || name.equals("0")) {
+                    continue;
+                }
+
+                int amount = (int) row.getCell(1).getNumericCellValue();
+                double chance = row.getCell(2).getNumericCellValue();
+
+                lootTable.add(name, amount, chance);
+            }
+        }
     }
 
     public void nextTurn() {

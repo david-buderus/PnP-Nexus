@@ -6,10 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import manager.CharacterSheetParameterMap;
-import manager.CharacterSheetParser;
-import manager.Database;
-import manager.LanguageUtility;
+import manager.*;
 import model.Currency;
 import model.Spell;
 import model.interfaces.ILootable;
@@ -64,7 +61,8 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IPlayerB
         history.set(parameterMap.getValueAsStringOrElse("character.history", ""));
 
         // load rings
-        for (int i = 1; i <= 8; i++) {
+        int amountOfRings = Utility.getConfig().getInt("character.jewellery.amount.ring");
+        for (int i = 1; i <= amountOfRings; i++) {
             String ringx = parameterMap.getValueAsStringOrElse("character.armor.ring." + i, "");
             Item ringItemx = Database.getItemOrElse(ringx, null);
             // TODO if null create DB entry
