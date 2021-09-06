@@ -307,10 +307,11 @@ public abstract class DatabaseLoader {
             while (talentSet.next()) {
                 Talent talent = new Talent();
                 talent.setName(getString(talentSet, getLocalized("column.name")));
+                // TODO attributes for imrpvovised weapons
                 talent.setAttributes(new PrimaryAttribute[]{
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute1"))),
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute2"))),
-                        PrimaryAttribute.getPrimaryAttribute(getString(talentSet, getLocalized("column.attribute3")))
+                        PrimaryAttribute.getPrimaryAttributeOrElse(getString(talentSet, getLocalized("column.attribute1")), PrimaryAttribute.DUMMY),
+                        PrimaryAttribute.getPrimaryAttributeOrElse(getString(talentSet, getLocalized("column.attribute2")), PrimaryAttribute.DUMMY),
+                        PrimaryAttribute.getPrimaryAttributeOrElse(getString(talentSet, getLocalized("column.attribute3")),PrimaryAttribute.DUMMY)
                 });
                 talent.setMagicTalent(talentSet.getBoolean(getLocalized("column.magicTalent")));
                 talent.setWeaponTalent(talentSet.getBoolean(getLocalized("column.weaponTalent")));

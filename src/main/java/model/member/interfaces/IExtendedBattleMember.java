@@ -17,7 +17,7 @@ import java.util.Collection;
 public interface IExtendedBattleMember extends IBattleMember {
     IntegerProperty getTalent(Talent talent);
 
-    Collection<Talent> getMainTalents();
+    Collection<Talent> getTalents();
 
     IntegerProperty getAttribute(PrimaryAttribute attribute);
 

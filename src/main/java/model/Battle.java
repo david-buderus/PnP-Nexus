@@ -6,7 +6,7 @@ import manager.CopyService;
 import manager.LanguageUtility;
 import manager.WorkbookService;
 import model.member.BattleMember;
-import model.member.ExtendedBattleMember;
+import model.member.GeneratedExtendedBattleMember;
 import model.member.generation.specs.*;
 import model.member.interfaces.IBattleMember;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -175,7 +175,7 @@ public class Battle {
 
     public void spawnMember(boolean enemy, int level, Characterisation characterisation, Race race,
                             Profession profession, FightingStyle fightingStyle, Specialisation specialisation) {
-        ExtendedBattleMember member = new ExtendedBattleMember(this, level, characterisation, race,
+        GeneratedExtendedBattleMember member = new GeneratedExtendedBattleMember(this, level, characterisation, race,
                 profession, fightingStyle, specialisation);
 
         if (enemy) {

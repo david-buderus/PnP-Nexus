@@ -18,7 +18,7 @@ import manager.LanguageUtility;
 import model.Battle;
 import model.interfaces.WithToStringProperty;
 import model.loot.LootTable;
-import model.member.ExtendedBattleMember;
+import model.member.GeneratedExtendedBattleMember;
 import model.member.data.AttackTypes;
 import model.member.interfaces.IBattleMember;
 import ui.ConfigurableViewPart;
@@ -225,9 +225,9 @@ public class BattleView extends ConfigurableViewPart {
 
             Button armorButton = new Button();
             armorButton.setPrefWidth(215);
-            if (target instanceof ExtendedBattleMember) {
+            if (target instanceof GeneratedExtendedBattleMember) {
                 armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.characterSheet"));
-                armorButton.setOnAction(ev -> new CharacterView((ExtendedBattleMember) target));
+                armorButton.setOnAction(ev -> new CharacterView((GeneratedExtendedBattleMember) target));
             } else {
                 armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.armor"));
                 armorButton.setOnAction(ev -> new MemberArmorView(target));

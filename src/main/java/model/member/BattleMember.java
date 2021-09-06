@@ -11,26 +11,27 @@ import model.item.Weapon;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
+import model.member.generation.PrimaryAttribute;
+import model.member.generation.SecondaryAttribute;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class BattleMember extends Member implements IBattleMember {
 
+    protected final Map<SecondaryAttribute, IntegerProperty> secondaryAttributes = new HashMap<>();
+
     protected IntegerProperty life;
-    protected IntegerProperty maxLife;
     protected IntegerProperty mana;
-    protected IntegerProperty maxMana;
-    protected IntegerProperty initiative;
     protected IntegerProperty startValue;
     protected IntegerProperty counter;
     protected IntegerProperty turns;
-    protected IntegerProperty baseDefense;
     protected IntegerProperty level;
 
-    protected LootTable lootTable;
+    protected LootTable lootTable = new LootTable();
     // TODO change to map armorPiece -> Armor item
     protected HashMap<ArmorPiece, IntegerProperty> armor;
 
@@ -73,16 +74,18 @@ public class BattleMember extends Member implements IBattleMember {
         super();
         this.name.set(LanguageUtility.getMessage("battleMember.defaultName"));
         this.life = new SimpleIntegerProperty(1);
-        this.maxLife = new SimpleIntegerProperty(1);
         this.mana = new SimpleIntegerProperty(1);
-        this.maxMana = new SimpleIntegerProperty(1);
-        this.initiative = new SimpleIntegerProperty(1);
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
         this.turns = new SimpleIntegerProperty(1);
         this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.baseDefense = new SimpleIntegerProperty(0);
         this.level = new SimpleIntegerProperty(1);
+
+        secondaryAttributes.put(SecondaryAttribute.health, new SimpleIntegerProperty(1));
+        secondaryAttributes.put(SecondaryAttribute.mana, new SimpleIntegerProperty(1));
+        secondaryAttributes.put(SecondaryAttribute.initiative, new SimpleIntegerProperty(1));
+        secondaryAttributes.put(SecondaryAttribute.defense, new SimpleIntegerProperty(0));
+
 
         this.life.addListener((ob, o, n) -> {
             if (isDead()) {
@@ -103,15 +106,15 @@ public class BattleMember extends Member implements IBattleMember {
     public BattleMember(CharacterSheetParameterMap parameterMap) {
         this.name = new SimpleStringProperty(parameterMap.getValueAsStringOrElse("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
         this.life = new SimpleIntegerProperty(1);
-        this.maxLife = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1));
         this.mana = new SimpleIntegerProperty(1);
-        this.maxMana = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1));
-        this.initiative = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1));
+        secondaryAttributes.put(SecondaryAttribute.health, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1)));
+        secondaryAttributes.put(SecondaryAttribute.mana, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1)));
+        secondaryAttributes.put(SecondaryAttribute.initiative, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1)));
+        secondaryAttributes.put(SecondaryAttribute.defense, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1)));
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
         this.turns = new SimpleIntegerProperty(1);
         this.states = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.baseDefense = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1));
         this.level = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("character.level", 1));
 
         this.armor = new HashMap<>();
@@ -325,7 +328,7 @@ public class BattleMember extends Member implements IBattleMember {
             }
         }
 
-        return defense + baseDefense.get();
+        return defense + baseDefenseProperty().get();
     }
 
     public void reset() {
@@ -366,7 +369,7 @@ public class BattleMember extends Member implements IBattleMember {
 
     public BattleMember cloneMember() {
         BattleMember member = new BattleMember(battle, lootTable, armor);
-        member.setDefense(baseDefense.get());
+        member.setDefense(baseDefenseProperty().get());
         member.setName(getName());
         member.setMaxLife(getMaxLife());
         member.setLife(getLife());
@@ -381,41 +384,43 @@ public class BattleMember extends Member implements IBattleMember {
     }
 
     protected void setDefense(int defense) {
-        this.baseDefense.set(defense);
+        this.baseDefenseProperty().set(defense);
     }
 
     protected void setMaxLife(int life) {
-        this.maxLife.set(life);
+        this.maxLifeProperty().set(life);
         this.life.set(life);
     }
 
     protected void setMaxMana(int mana) {
-        this.maxMana.set(mana);
+        this.maxManaProperty().set(mana);
         this.mana.set(mana);
     }
 
     private void setInitiative(int init) {
-        this.initiative.set(init);
+        this.initiativeProperty().set(init);
     }
 
     protected void setLife(int life) {
-        this.life.set(life);
+        this.life.set(Math.max(0, Math.min(life, getMaxLife())));
     }
 
     public IntegerProperty lifeProperty() {
         return life;
     }
 
+    @Override
     public IntegerProperty maxLifeProperty() {
-        return maxLife;
+        return secondaryAttributes.get(SecondaryAttribute.health);
     }
 
+    @Override
     public IntegerProperty maxManaProperty() {
-        return maxMana;
+        return secondaryAttributes.get(SecondaryAttribute.mana);
     }
 
     protected void setMana(int mana) {
-        this.mana.set(Math.max(0, Math.min(mana, getMana())));
+        this.mana.set(Math.max(0, Math.min(mana, getMaxMana())));
     }
 
     public IntegerProperty manaProperty() {
@@ -423,7 +428,7 @@ public class BattleMember extends Member implements IBattleMember {
     }
 
     public IntegerProperty initiativeProperty() {
-        return initiative;
+        return secondaryAttributes.get(SecondaryAttribute.initiative);
     }
 
     public IntegerProperty startValueProperty() {
@@ -443,7 +448,7 @@ public class BattleMember extends Member implements IBattleMember {
     }
 
     public IntegerProperty baseDefenseProperty() {
-        return baseDefense;
+        return secondaryAttributes.get(SecondaryAttribute.defense);
     }
 
     protected void setLevel(int level) {

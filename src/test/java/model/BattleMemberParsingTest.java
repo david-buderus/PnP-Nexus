@@ -10,17 +10,16 @@ import testHelper.TestWithDatabaseAccess;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BattleMemberParsingTest extends TestWithDatabaseAccess {
 
-    static BattleMember member;
-    static final String wbPath = "src/test/resources/workbooks/Gegnerbogen.xlsx";
+    protected static BattleMember member;
+    protected static String wbPath = "src/test/resources/workbooks/Gegnerbogen.xlsx";
 
     @BeforeAll
-    public static void parse() throws IOException, SQLException {
+    public static void parse() throws IOException {
         Workbook wb = WorkbookFactory.create(new File(wbPath));
         member = new BattleMember(wb);
     }

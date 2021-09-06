@@ -108,4 +108,5 @@ public interface IBattleMember extends IMember {
         return (int) Math.ceil(this.getLevel() / 5f);
     }
 
+
 }

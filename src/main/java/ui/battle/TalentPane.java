@@ -6,7 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import model.member.ExtendedBattleMember;
+import model.member.GeneratedExtendedBattleMember;
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.Talent;
 import ui.part.NumberField;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 
 public class TalentPane extends HBox {
 
-    public TalentPane(ExtendedBattleMember battleMember, Talent talent) {
+    public TalentPane(GeneratedExtendedBattleMember battleMember, Talent talent) {
         this.setPadding(new Insets(5));
         this.setAlignment(Pos.CENTER);
 
@@ -35,6 +35,8 @@ public class TalentPane extends HBox {
         NumberField points = new NumberField();
         points.setPrefWidth(30);
 
+        System.out.println(talent);
+        System.out.println(battleMember.getTalents());
         points.numberProperty().bindBidirectional(battleMember.getTalent(talent));
         this.getChildren().add(points);
     }

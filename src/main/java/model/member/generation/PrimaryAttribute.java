@@ -7,7 +7,7 @@ import model.interfaces.WithToStringProperty;
 import java.util.NoSuchElementException;
 
 public enum PrimaryAttribute implements WithToStringProperty {
-    strength, endurance, dexterity, intelligence, charisma, resilience, agility, precision;
+    strength, endurance, dexterity, intelligence, charisma, resilience, agility, precision, DUMMY;
 
     @Override
     public ReadOnlyStringProperty toStringProperty() {
@@ -29,5 +29,13 @@ public enum PrimaryAttribute implements WithToStringProperty {
             }
         }
         throw new NoSuchElementException("The PrimaryAttribute with the name " + name + " does not exists.");
+    }
+
+    public static PrimaryAttribute getPrimaryAttributeOrElse(String name, PrimaryAttribute fallback) {
+        try {
+           return getPrimaryAttribute(name);
+        } catch (NoSuchElementException e) {
+            return fallback;
+        }
     }
 }
