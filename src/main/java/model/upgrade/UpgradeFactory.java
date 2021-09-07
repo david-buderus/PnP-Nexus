@@ -84,18 +84,14 @@ public class UpgradeFactory {
         return currencyList[level - 1];
     }
 
-    public int getFullCostAsCopper(int level) {
-        int value = 0;
+    public Currency getFullCost(int level) {
+        Currency value = new Currency(0);
 
         for (int i = 1; i <= level; i++) {
-            value += getCostAsCopper(level);
+            value.add(getCurrency(level));
         }
 
         return value;
-    }
-
-    public int getCostAsCopper(int level) {
-        return currencyList[level - 1].getCoinValue();
     }
 
     public void setMana(int level, String mana) {
@@ -147,7 +143,7 @@ public class UpgradeFactory {
         int level = calculateLevel(1);
         upgrade.setLevel(level);
         upgrade.setEffect(getEffect(level));
-        upgrade.setCost(getFullCostAsCopper(level));
+        upgrade.setCost(getFullCost(level));
         return upgrade;
     }
 
