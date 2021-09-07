@@ -4,7 +4,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import manager.*;
@@ -12,11 +11,11 @@ import model.Battle;
 import model.Rarity;
 import model.Spell;
 import model.item.*;
-import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
 import model.member.generation.*;
 import model.member.generation.specs.*;
+import model.member.interfaces.IBattleMember;
 import model.member.interfaces.IExtendedBattleMember;
 import org.apache.commons.configuration2.Configuration;
 
@@ -227,33 +226,6 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
         for (Weapon weapon : new ArrayList<>(weapons)) {
             if (!Database.shieldTypes.contains(weapon.getSubtype())) {
                 weapon.applyWear();
-            }
-        }
-    }
-
-    public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, BattleMember source) {
-        super.takeDamage(amount, type, withShield, penetration, block, source);
-
-        if (withShield) {
-            for (Weapon shield : new ArrayList<>(weapons)) {
-                if (Database.shieldTypes.contains(shield.getSubtype())) {
-                    shield.applyWear();
-                }
-            }
-
-            if (getArmor(ArmorPiece.shield) < amount) {
-                for (Armor armor : new ArrayList<>(armors)) {
-                    if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
-                        armor.applyWear();
-                    }
-                }
-            }
-
-        } else {
-            for (Armor armor : new ArrayList<>(armors)) {
-                if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
-                    armor.applyWear();
-                }
             }
         }
     }

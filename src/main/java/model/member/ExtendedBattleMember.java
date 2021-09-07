@@ -13,15 +13,17 @@ import model.item.Jewellery;
 import model.item.Weapon;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
+import model.member.data.AttackTypes;
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
 import model.member.generation.Talent;
+import model.member.interfaces.IBattleMember;
 import model.member.interfaces.IExtendedBattleMember;
+import model.member.state.interfaces.IDefenseMemberState;
+import model.member.state.interfaces.IMemberState;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public abstract class ExtendedBattleMember extends BattleMember implements IExtendedBattleMember {
@@ -220,5 +222,72 @@ public abstract class ExtendedBattleMember extends BattleMember implements IExte
         }
 
         return lootTable;
+    }
+
+    @Override
+    protected int calculateDefense(AttackTypes type, boolean withShield, double penetration, double block) {
+        int defense = 0;
+        double reduction = 1 - penetration;
+
+        switch (type) {
+            case direct:
+                return 0;
+            case head:
+                defense += getArmorItem(ArmorPiece.head).isPresent() ? getArmorItem(ArmorPiece.head).get().getProtectionWithWear() : 0;
+                break;
+            case upperBody:
+                defense += getArmorItem(ArmorPiece.upperBody).isPresent() ? getArmorItem(ArmorPiece.upperBody).get().getProtectionWithWear() : 0;
+                break;
+            case arm:
+                defense += getArmorItem(ArmorPiece.arm).isPresent() ? getArmorItem(ArmorPiece.arm).get().getProtectionWithWear() : 0;
+                break;
+            case legs:
+                defense += getArmorItem(ArmorPiece.legs).isPresent() ? getArmorItem(ArmorPiece.legs).get().getProtectionWithWear() : 0;
+                break;
+        }
+        if (withShield) {
+            defense += (getArmorItem(ArmorPiece.shield).isPresent() ? getArmorItem(ArmorPiece.shield).get().getProtectionWithWear() : 0) * block;
+        }
+        defense *= reduction;
+
+        for (IMemberState state : this.states) {
+            if (state instanceof IDefenseMemberState) {
+                defense = ((IDefenseMemberState) state).apply(this, defense);
+            }
+        }
+
+        return defense + baseDefenseProperty().get();
+    }
+
+    @Override
+    public void takeDamage(int amount, AttackTypes type, boolean withShield, double penetration, double block, IBattleMember source) {
+        super.takeDamage(amount, type, withShield, penetration, block, source);
+
+        if (withShield) {
+            for (Weapon shield : new ArrayList<>(weapons)) {
+                if (Database.shieldTypes.contains(shield.getSubtype())) {
+                    shield.applyWear();
+                }
+            }
+
+            if (getArmor(ArmorPiece.shield) < amount) {
+                for (Armor armor : new ArrayList<>(armors)) {
+                    if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
+                        armor.applyWear();
+                    }
+                }
+            }
+
+        } else {
+            for (Armor armor : new ArrayList<>(armors)) {
+                if (armor.getSubtype().equalsIgnoreCase(type.toStringProperty().get())) {
+                    armor.applyWear();
+                }
+            }
+        }
+    }
+
+    private Optional<Armor> getArmorItem(ArmorPiece armorPiece) {
+        return this.armors.stream().filter(item -> ArmorPiece.getArmorPiece(item.getSubtype()).equals(armorPiece)).findFirst();
     }
 }

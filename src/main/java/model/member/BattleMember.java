@@ -42,7 +42,7 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
 
     protected Battle battle;
 
-    private final ListProperty<IMemberState> states;
+    protected final ListProperty<IMemberState> states;
 
     /**
      * Creates a BattleMember with default stats
@@ -385,7 +385,7 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
         battle.addToDamageStatistic(source, damage);
     }
 
-    private int calculateDefense(AttackTypes type, boolean withShield, double penetration, double block) {
+    protected int calculateDefense(AttackTypes type, boolean withShield, double penetration, double block) {
         int defense = 0;
         double reduction = 1 - penetration;
 
