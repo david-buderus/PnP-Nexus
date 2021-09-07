@@ -1,5 +1,7 @@
 package model.member;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -21,6 +23,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BattleMember extends Member implements IBattleMember, ILootable {
 
@@ -106,12 +110,14 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
 
     public BattleMember(CharacterSheetParameterMap parameterMap) {
         this.name = new SimpleStringProperty(parameterMap.getValueAsStringOrElse("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
-        this.life = new SimpleIntegerProperty(1);
-        this.mana = new SimpleIntegerProperty(1);
         secondaryAttributes.put(SecondaryAttribute.health, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1)));
         secondaryAttributes.put(SecondaryAttribute.mana, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1)));
         secondaryAttributes.put(SecondaryAttribute.initiative, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1)));
         secondaryAttributes.put(SecondaryAttribute.defense, new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1)));
+
+        this.life = new SimpleIntegerProperty(secondaryAttributes.get(SecondaryAttribute.health).get());
+        this.mana = new SimpleIntegerProperty(secondaryAttributes.get(SecondaryAttribute.mana).get());
+
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
         this.turns = new SimpleIntegerProperty(1);
@@ -123,6 +129,7 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
         Collection<Item> allItems = new ArrayList<>();
 
         // TODO if null, we need to create database entry
+        // TODO all items just use copies
         String armorHead = parameterMap.getValueAsStringOrElse("character.armor.head", "");
         if (!armorHead.isBlank()) {
             Item itemHead = Database.getItemOrElse(armorHead, null);
@@ -154,7 +161,6 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
         // TODO currently assume that weapons 1 and 2 are equipped
         boolean hasShield = false;
 
-        // TODO correct weapon loading
         String weapon1 = parameterMap.getValueAsStringOrElse("character.weapon.1", "");
         if (!weapon1.isBlank()) {
             Item weaponItem1 = Database.getItemOrElse(weapon1, null);
@@ -184,6 +190,40 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
                 }
             }
         }
+
+        // calculate intiative
+        List<Weapon> weapons = allItems.stream().filter(item -> item instanceof Weapon)
+                .map(item -> (Weapon) item)
+                .collect(Collectors.toList());
+
+        if (weapons.size() == 1) {
+            this.initiativeProperty().add(Integer.parseInt(weapons.get(0).getInitiative()));
+        } else if (weapons.size() == 2) {
+            int w1Init = Integer.parseInt(weapons.get(0).getInitiative());
+            int w2Init = Integer.parseInt(weapons.get(1).getInitiative());
+            int min = Math.min(Math.min(w1Init, w2Init), w1Init + w2Init);
+            this.initiativeProperty().add(min);
+        }
+
+        // TODO this aims to implement multiple shields
+        // problem: need to rework to bindings somehow
+        /*int allowedShields = Utility.getConfig().getInt("character.max_shields");
+        List<Weapon> shields = allItems.stream().filter(item -> item instanceof Weapon)
+                .map(item -> (Weapon) item)
+                .filter(Weapon::isShield)
+                .limit(allowedShields)
+                .collect(Collectors.toList());
+
+        NumberBinding shieldArmor = null;
+        if (!shields.isEmpty()) {
+            shieldArmor = Bindings.add(0, shields.get(0).damageProperty());
+            for (int i = 1; i < shields.size(); i++) {
+                shieldArmor.add(shields.get(i).damageProperty());
+            }
+        }
+
+        this.armor.put(ArmorPiece.shield, new SimpleIntegerProperty(shieldArmor));*/
+
         String weapon3 = parameterMap.getValueAsStringOrElse("character.weapon.3", "");
         if (!weapon3.isBlank()) {
             Item weaponItem3 = Database.getItemOrElse(weapon3, null);

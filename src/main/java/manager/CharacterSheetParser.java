@@ -7,13 +7,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public class CharacterSheetParser {
 
-    // TODO get from config
-    final static int PARAMETER_COL = 0;
-    final static int VALUE_COL = 1;
+    final static int PARAMETER_COL = Utility.getConfig().getInt("character.sheet.keyCol");
+    final static int VALUE_COL =  Utility.getConfig().getInt("character.sheet.valueCol");
 
     public static CharacterSheetParameterMap parseCharacterSheet(Workbook wb) {
-        // TODO: localize
-        Sheet sheet = wb.getSheet("manager_parse");
+        String sheetName = LanguageUtility.getMessage("character.sheet.manager_parse");
+        Sheet sheet = wb.getSheet(sheetName);
         CharacterSheetParameterMap paramMap = new CharacterSheetParameterMap();
 
         for (Row r : sheet) {
