@@ -135,6 +135,10 @@ public class Passage {
         return relativePosition;
     }
 
+    public RotationPoint getRelativeEntryPosition() {
+        return toEntryPosition(relativePosition);
+    }
+
     public RotationPoint getRelativePositionToMapObject() {
         return relativePositionToMapObject;
     }
@@ -144,23 +148,7 @@ public class Passage {
     }
 
     public RotationPoint getAbsoluteEntryPosition() {
-        RotationPoint exit = absolutePosition;
-        switch (absolutePosition.getRotation() % 4) {
-            case 0:
-                exit = absolutePosition.add(0, 0, 1);
-                break;
-            case 1:
-                exit = absolutePosition.sub(1, 0, 0);
-                break;
-            case 2:
-                exit = absolutePosition.sub(0, 0, 1);
-                break;
-            case 3:
-                exit = absolutePosition.add(1, 0, 0);
-                break;
-        }
-
-        return exit.withRotation((absolutePosition.getRotation() + 2) % 4);
+        return toEntryPosition(absolutePosition);
     }
 
     public int getWidth() {
@@ -218,5 +206,25 @@ public class Passage {
         this.relativePositionToMapObject =
                 relativePosition.rotate(rotation)
                         .correctPosition(rotation, width, depth);
+    }
+
+    private RotationPoint toEntryPosition(RotationPoint position) {
+        RotationPoint exit = position;
+        switch (position.getRotation() % 4) {
+            case 0:
+                exit = position.add(0, 0, 1);
+                break;
+            case 1:
+                exit = position.sub(1, 0, 0);
+                break;
+            case 2:
+                exit = position.sub(0, 0, 1);
+                break;
+            case 3:
+                exit = position.add(1, 0, 0);
+                break;
+        }
+
+        return exit.withRotation((position.getRotation() + 2) % 4);
     }
 }
