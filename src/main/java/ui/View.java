@@ -38,6 +38,10 @@ public abstract class View implements IView {
         stage.show();
     }
 
+    public void close() {
+        stage.close();
+    }
+
     public Stage getStage() {
         return stage;
     }

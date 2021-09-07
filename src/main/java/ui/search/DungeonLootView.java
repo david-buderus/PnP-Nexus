@@ -56,6 +56,7 @@ public class DungeonLootView extends ViewPart {
 
         VBox root = new VBox(10);
         root.setPadding(new Insets(10, 20, 20, 20));
+        root.setMaxWidth(500);
         root.setAlignment(Pos.CENTER);
 
         TableView<Loot> lootTable = new TableView<>();
@@ -123,7 +124,11 @@ public class DungeonLootView extends ViewPart {
         root.getChildren().add(clear);
 
         update();
-        this.setContent(root);
+
+        // Crude alignment fix
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(root);
+        this.setContent(borderPane);
     }
 
     private void clear() {

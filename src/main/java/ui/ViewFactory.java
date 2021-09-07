@@ -3,15 +3,25 @@ package ui;
 import javafx.beans.property.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import manager.LanguageUtility;
 import ui.part.NumberField;
 
 public abstract class ViewFactory {
 
+    public static HBox labelTextField(String key, String text) {
+        return labelTextField(key, new ReadOnlyStringWrapper(text), true);
+    }
+
     public static HBox labelTextField(String key, StringProperty property) {
+        return labelTextField(key, property, false);
+    }
+
+    public static HBox labelTextField(String key, StringProperty property, boolean readOnly) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -23,13 +33,17 @@ public abstract class ViewFactory {
         TextField field = new TextField();
         field.setPrefWidth(150);
         field.textProperty().bindBidirectional(property);
+        field.setEditable(!readOnly);
         box.getChildren().add(field);
 
         return box;
     }
 
-
     public static HBox labelTextField(String key, Property<Number> property) {
+        return labelTextField(key, property, false);
+    }
+
+    public static HBox labelTextField(String key, Property<Number> property, boolean readOnly) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -41,7 +55,34 @@ public abstract class ViewFactory {
         NumberField field = new NumberField();
         field.setPrefWidth(150);
         field.numberProperty().bindBidirectional(property);
+        field.setEditable(!readOnly);
         box.getChildren().add(field);
+
+        return box;
+    }
+
+    public static VBox labelTextArea(String key, String text) {
+        return labelTextArea(key, new ReadOnlyStringWrapper(text), true);
+    }
+
+    public static VBox labelTextArea(String key, StringProperty property) {
+        return labelTextArea(key, property, false);
+    }
+
+    public static VBox labelTextArea(String key, StringProperty property, boolean readOnly) {
+        VBox box = new VBox(5);
+        box.setAlignment(Pos.CENTER);
+
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
+        name.setPrefWidth(215);
+        box.getChildren().add(name);
+
+        TextArea area = new TextArea();
+        area.setMaxSize(215, 100);
+        area.textProperty().bindBidirectional(property);
+        area.setEditable(!readOnly);
+        box.getChildren().add(area);
 
         return box;
     }

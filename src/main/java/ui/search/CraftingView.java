@@ -1,19 +1,14 @@
 package ui.search;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import manager.Database;
+import manager.LanguageUtility;
 import manager.TypTranslation;
 import model.CraftingBonus;
 import ui.IView;
@@ -46,6 +41,28 @@ public class CraftingView extends SearchView<CraftingBonus> {
         tableView.setMaxWidth(455);
 
         addControls();
+
+        root.setPadding(new Insets(0));
+
+        HBox newRoot = new HBox(10);
+        newRoot.setAlignment(Pos.CENTER);
+        newRoot.setPadding(new Insets(10, 20, 20, 20));
+        newRoot.getChildren().add(root);
+        this.setContent(newRoot);
+
+        TableView<String> typeTable = new TableView<>();
+        typeTable.maxHeightProperty().bind(root.heightProperty().subtract(80));
+        typeTable.itemsProperty().bind(TypTranslation.allTypes);
+        typeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        typeTable.getSelectionModel().selectedItemProperty().addListener((ob, o, n) -> target.set(n));
+
+        TableColumn<String, String> column = new TableColumn<>();
+        column.textProperty().bind(LanguageUtility.getMessageProperty("column.type"));
+        column.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue()));
+        typeTable.getColumns().add(column);
+
+        newRoot.getChildren().add(typeTable);
+
     }
 
     private void search() {

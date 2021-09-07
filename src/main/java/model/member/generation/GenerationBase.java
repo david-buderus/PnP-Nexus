@@ -1,5 +1,9 @@
 package model.member.generation;
 
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import manager.LanguageUtility;
+import model.interfaces.WithToStringProperty;
 import model.item.Armor;
 import model.item.Jewellery;
 import model.item.Weapon;
@@ -8,7 +12,7 @@ import model.member.BattleMember;
 
 import java.util.*;
 
-public abstract class GenerationBase {
+public abstract class GenerationBase implements WithToStringProperty {
 
     protected Random random;
     protected String name;
@@ -360,5 +364,77 @@ public abstract class GenerationBase {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public ReadOnlyStringProperty toStringProperty() {
+        return new ReadOnlyStringWrapper(name);
+    }
+
+    public Collection<String> getPropertyList() {
+        Collection<String> list = new ArrayList<>();
+
+        if (dropsWeapon()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.dropWeapon"));
+        }
+        if (dropsArmor()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.dropArmor"));
+        }
+        if (dropsJewellery()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.dropJewellery"));
+        }
+        if (isAbleToUsesPrimaryHand()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesPrimaryHand"));
+        }
+        if (isAbleToUsesSecondaryHand()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesSecondaryHand"));
+        }
+        if (isAbleToUseShield()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.canUseShield"));
+        }
+        if (isAbleToUseArmor(ArmorPosition.head)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.canUseHelm"));
+        }
+        if (isAbleToUseArmor(ArmorPosition.upperBody)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.canUseHarness"));
+        }
+        if (isAbleToUseArmor(ArmorPosition.arm)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.canUseBracers"));
+        }
+        if (isAbleToUseArmor(ArmorPosition.legs)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.canUseLegArmor"));
+        }
+        if (isAbleToUseJewellery()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.canUseJewellery"));
+        }
+        if (usesAlwaysShield()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.useAlwaysShield"));
+        }
+        if (isAbleToUseSpells()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.canUseSpells"));
+        }
+        if (usesExclusivelySpecificPrimaryWeapons()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificPrimaryHand"));
+        }
+        if (usesExclusivelySpecificSecondaryWeapons()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificSecondaryHand"));
+        }
+        if (usesExclusivelySpecificArmor(ArmorPosition.head)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificHelm"));
+        }
+        if (usesExclusivelySpecificArmor(ArmorPosition.upperBody)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificHarness"));
+        }
+        if (usesExclusivelySpecificArmor(ArmorPosition.arm)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificBracers"));
+        }
+        if (usesExclusivelySpecificArmor(ArmorPosition.legs)) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificLegArmor"));
+        }
+        if (usesExclusivelySpecificJewellery()) {
+            list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificJewellery"));
+        }
+
+        return list;
     }
 }

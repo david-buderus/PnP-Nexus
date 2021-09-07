@@ -77,7 +77,7 @@ public class BattleView extends ConfigurableViewPart {
         headline.setFont(Font.font("", FontWeight.EXTRA_BOLD, 20));
         headlineBox.getChildren().add(headline);
 
-        HBox memberPart = new HBox(10);
+        BorderPane memberPart = new BorderPane();
         root.setCenter(memberPart);
 
         ScrollPane memberScroll = new ScrollPane();
@@ -85,8 +85,7 @@ public class BattleView extends ConfigurableViewPart {
         memberScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         memberScroll.setBackground(Background.EMPTY);
         memberScroll.setFitToWidth(true);
-        memberScroll.setPrefWidth(600);
-        memberPart.getChildren().add(memberScroll);
+        memberPart.setCenter(memberScroll);
 
         VBox memberLists = new VBox(5);
         memberLists.setPadding(new Insets(10));
@@ -157,15 +156,18 @@ public class BattleView extends ConfigurableViewPart {
             }
         });
 
+        HBox rightBox = new HBox(10);
+        memberPart.setRight(rightBox);
+
         Separator separator = new Separator();
         separator.setOrientation(Orientation.VERTICAL);
-        memberPart.getChildren().add(separator);
+        rightBox.getChildren().add(separator);
 
         VBox info = new VBox(5);
         info.setPadding(new Insets(10));
         info.setAlignment(Pos.TOP_CENTER);
         info.setPrefSize(280, 520);
-        memberPart.getChildren().add(info);
+        rightBox.getChildren().add(info);
 
         Label infoLabel = new Label();
         infoLabel.textProperty().bind(LanguageUtility.getMessageProperty("battle.info"));
@@ -207,7 +209,6 @@ public class BattleView extends ConfigurableViewPart {
 
             if (target == null) {
                 info.getChildren().add(emptyLabel);
-                getStage().sizeToScene();
                 return;
             }
 
@@ -300,6 +301,12 @@ public class BattleView extends ConfigurableViewPart {
                         info.getChildren().add(attackButton);
                     }
                 }
+            } else {
+                Label selectionHint = new Label();
+                selectionHint.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.selectionHint"));
+                selectionHint.setPadding(new Insets(30, 0, 5, 0));
+                selectionHint.setWrapText(true);
+                info.getChildren().add(selectionHint);
             }
         };
         selectedTarget.addListener(changeListener);

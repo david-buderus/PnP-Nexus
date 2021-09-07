@@ -53,6 +53,20 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/Version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = versionNumber
+            p.store w, null
+        }
+    }
+}
+
+classes {
+    dependsOn createProperties
+}
+
 jar {
     manifest {
         attributes 'Main-Class': 'manager.StartApplication'
