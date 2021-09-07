@@ -22,7 +22,7 @@ public class ManagerApplication extends Application {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        ManagerView view = new ManagerView(primaryStage);
+        ManagerView view = new ManagerView(primaryStage, this);
 
         if (this.getParameters().getRaw().size() > 0) {
             view.load(new File(this.getParameters().getRaw().get(0)));

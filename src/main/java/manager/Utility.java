@@ -234,5 +234,7 @@ public abstract class Utility {
         } catch (ConfigurationException e) {
             e.printStackTrace();
         }
+
+        config.setProperty(key, object);
     }
 }

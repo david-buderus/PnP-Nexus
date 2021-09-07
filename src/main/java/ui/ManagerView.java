@@ -1,5 +1,6 @@
 package ui;
 
+import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -15,18 +16,12 @@ import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import manager.DatabaseLoader;
-import manager.Language;
-import manager.LanguageUtility;
-import manager.Utility;
+import manager.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import ui.battle.BattleOverview;
 import ui.map.MapView;
 import ui.search.SearchOverview;
-import ui.utility.InconsistencyView;
-import ui.utility.InfoView;
-import ui.utility.MemoryView;
-import ui.utility.SQLView;
+import ui.utility.*;
 import ui.utility.helper.HelperOverview;
 
 import java.io.File;
@@ -39,7 +34,7 @@ public class ManagerView extends View {
     protected StringProperty fileName;
     protected StringProperty defaultPath;
 
-    public ManagerView(Stage stage) {
+    public ManagerView(Stage stage, Application application) {
         super("manager.title", stage);
         this.fileName = new SimpleStringProperty();
         this.fileName.bind(LanguageUtility.getMessageProperty("manager.noFile"));
@@ -141,9 +136,31 @@ public class ManagerView extends View {
         DatabaseLoader.tableLanguage.bind(languageTableBox.getSelectionModel().selectedItemProperty());
         settingsPane.add(languageTableBox, 1, 3);
 
+        Button checkUpdateButton = new Button();
+        checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
+        checkUpdateButton.setOnAction(ev -> {
+            var response = UpdateChecker.checkForUpdates();
+
+            if (response.updateDoesExists) {
+                new UpdateView(response, application).show();
+                checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
+            } else {
+                checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.noUpdate"));
+            }
+        });
+        checkUpdateButton.setMaxWidth(Double.MAX_VALUE);
+        settingsPane.add(checkUpdateButton, 0, 4, 2, 1);
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+        var response = UpdateChecker.checkForUpdates();
+
+        if (response.updateDoesExists) {
+            new UpdateView(response, application).show();
+            checkUpdateButton.textProperty().bind(LanguageUtility.getMessageProperty("manager.button.checkUpdate"));
+        }
 
         if (!defaultPath.get().isBlank()) {
             load(new File(defaultPath.get()));
