@@ -1,6 +1,7 @@
 package testHelper;
 
 import manager.DatabaseLoader;
+import net.ucanaccess.jdbc.UcanaccessDriver;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +15,13 @@ public abstract class TestWithDatabaseAccess {
 
     @BeforeAll
     @Test
-    public static void setup() {
+    public static void setup() throws SQLException {
         Properties properties = new Properties();
 
         // TODO localize/configure
         properties.put("ConnSettings", "SET LOCALE TO de_DE");
+
+        DriverManager.registerDriver(new UcanaccessDriver());
 
         try(Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + databasePath, properties)) {
             DatabaseLoader.loadDatabase(connection, true);
