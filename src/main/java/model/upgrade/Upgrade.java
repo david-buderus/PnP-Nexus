@@ -2,6 +2,7 @@ package model.upgrade;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import manager.Utility;
+import model.Currency;
 
 public class Upgrade {
 
@@ -9,7 +10,7 @@ public class Upgrade {
     private String target;
     private int level;
     private int slots;
-    private int cost;
+    private Currency cost;
     private String effect;
 
     public String getName() {
@@ -52,11 +53,11 @@ public class Upgrade {
         this.effect = effect;
     }
 
-    public int getCost() {
+    public Currency getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
+    public void setCost(Currency cost) {
         this.cost = cost;
     }
 
