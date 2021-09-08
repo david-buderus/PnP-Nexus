@@ -7,12 +7,12 @@ import ui.map.IMapCanvas;
 
 public class Chest extends SimpleLootObject {
 
-    public Chest(SeededRandom random, IPosition parent, int offsetX, int offsetY, int offsetZ) {
-        super(random, parent, offsetX, offsetY, offsetZ, 1, 1, "Schatztruhe");
+    public Chest(SeededRandom random, IPosition parent, int offsetX, int offsetY, int offsetZ, String container) {
+        super(random, parent, offsetX, offsetY, offsetZ, 1, 1, container);
     }
 
     @Override
     public void draw(IMapCanvas canvas, TextureHandler textureHandler) {
-        canvas.drawImage(textureHandler.getChest(), parent, offsetX, offsetY, offfsetZ, 1, 1, 0);
+        canvas.drawImage(textureHandler.getChest(), parent, offsetX, offsetY, offfsetZ, 1, 1, 4 - getRotation());
     }
 }

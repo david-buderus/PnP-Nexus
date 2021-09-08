@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 public class WeightedFactoryList<Item> {
 
-    protected ArrayList<Entry> entries;
+    protected ArrayList<Entry<Item>> entries;
     protected int sumWeight;
     protected SeededRandom random;
 
@@ -16,14 +16,14 @@ public class WeightedFactoryList<Item> {
     }
 
     public void add(int weight, Supplier<Item> supplier) {
-        this.entries.add(new Entry(sumWeight + weight, supplier));
+        this.entries.add(new Entry<>(sumWeight + weight, supplier));
         this.sumWeight += weight;
     }
 
     public Item getRandomItem() {
         if (sumWeight > 0) {
             int num = random.getRandom().nextInt(sumWeight);
-            for (Entry entry : entries) {
+            for (Entry<Item> entry : entries) {
                 if (num < entry.getWeight()) {
                     return entry.getSupplier().get();
                 }
@@ -32,7 +32,7 @@ public class WeightedFactoryList<Item> {
         return null;
     }
 
-    protected class Entry {
+    protected static class Entry<Item> {
 
         protected int weight;
         protected Supplier<Item> supplier;

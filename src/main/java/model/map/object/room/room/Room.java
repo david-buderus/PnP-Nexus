@@ -2,9 +2,9 @@ package model.map.object.room.room;
 
 import model.map.RotationPoint;
 import model.map.SeededRandom;
-import model.map.object.loot.Chest;
 import model.map.object.loot.LootObject;
-import model.map.object.room.Lootable;
+import model.map.object.loot.LootObjectType;
+import model.map.object.room.WithLootables;
 import model.map.object.room.Passage;
 import model.map.object.room.RoomObject;
 import model.map.object.room.SimpleRoomObject;
@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-public class Room extends SimpleRoomObject implements Lootable {
+public class Room extends SimpleRoomObject implements WithLootables {
 
     public Room(SeededRandom random) {
         super(random, 5, 5);
         this.deadEnd = false;
-        addPassage(new Passage(this, new RotationPoint(2, 0, 4, 0)));
-        addPassage(new Passage(this, new RotationPoint(0, 0, 2, 1)));
-        addPassage(new Passage(this, new RotationPoint(2, 0, 0, 2)));
-        addPassage(new Passage(this, new RotationPoint(4, 0, 2, 3)));
+        addPassage(new Passage(this, new RotationPoint(2, 0, 4, 0), true));
+        addPassage(new Passage(this, new RotationPoint(0, 0, 2, 1), true));
+        addPassage(new Passage(this, new RotationPoint(2, 0, 0, 2), true));
+        addPassage(new Passage(this, new RotationPoint(4, 0, 2, 3), true));
     }
 
     @Override
@@ -43,9 +43,12 @@ public class Room extends SimpleRoomObject implements Lootable {
     }
 
     @Override
-    public Collection<LootObject> generateLoot() {
+    public Collection<LootObject> generateLootables(MapSpecification specification) {
         ArrayList<LootObject> result = new ArrayList<>();
-        result.add(new Chest(random, this, 1, 0, 1));
+        specification.getLootObject(LootObjectType.chest, random,this, 1, 0, 1)
+                .ifPresent(result::add);
+        specification.getLootObject(LootObjectType.coffin, random,this, 3, 0, 1)
+                .ifPresent(result::add);
         return result;
     }
 }
