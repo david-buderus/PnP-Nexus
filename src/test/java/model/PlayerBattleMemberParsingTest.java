@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 import manager.LanguageUtility;
 import model.loot.LootTable;
-import model.member.GeneratedExtendedBattleMember;
 import model.member.PlayerBattleMember;
 import model.member.data.ArmorPiece;
 import model.member.generation.PrimaryAttribute;
@@ -20,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
