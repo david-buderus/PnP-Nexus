@@ -6,10 +6,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.util.Locale;
-
 public class Weapon extends Equipment {
 
     private float initiative;

@@ -1,7 +1,5 @@
 package model.member;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -14,7 +12,6 @@ import model.item.Weapon;
 import model.loot.LootTable;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
-import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
 import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
@@ -24,7 +21,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BattleMember extends Member implements IBattleMember, ILootable {
 

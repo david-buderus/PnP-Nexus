@@ -122,7 +122,7 @@ public class EnemyOverview extends BorderPane {
         Label infoLabel = new Label();
         infoLabel.textProperty().bind(LanguageUtility.getMessageProperty("search.enemies.info"));
         infoLabel.setFont(Font.font("", FontWeight.BOLD, 20));
-        infoLabel.setPadding(new Insets(0, 0 ,0 , 20));
+        infoLabel.setPadding(new Insets(0, 0, 0, 20));
         info.getChildren().add(infoLabel);
 
         Label emptyLabel = new Label();

@@ -6,22 +6,19 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import manager.*;
+import manager.CharacterSheetParameterMap;
+import manager.CharacterSheetParser;
+import manager.Database;
+import manager.Utility;
 import model.Currency;
-import model.Spell;
 import model.interfaces.ILootable;
 import model.item.Item;
 import model.item.Jewellery;
-import model.loot.LootTable;
-import model.member.generation.SecondaryAttribute;
-import model.member.generation.Talent;
-import model.member.interfaces.IExtendedBattleMember;
 import model.member.interfaces.IPlayerBattleMember;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.Collections;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class PlayerBattleMember extends ExtendedBattleMember implements IPlayerBattleMember, ILootable {
 

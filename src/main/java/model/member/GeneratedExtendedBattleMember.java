@@ -3,24 +3,23 @@ package model.member;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import manager.*;
+import manager.Database;
+import manager.LanguageUtility;
+import manager.Utility;
 import model.Battle;
 import model.Rarity;
 import model.Spell;
 import model.item.*;
 import model.member.data.ArmorPiece;
-import model.member.data.AttackTypes;
 import model.member.generation.*;
 import model.member.generation.specs.*;
-import model.member.interfaces.IBattleMember;
 import model.member.interfaces.IExtendedBattleMember;
 import org.apache.commons.configuration2.Configuration;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -60,14 +59,14 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
             this.secondaryAttributeModifier.put(s, new SimpleIntegerProperty());
         }
 
-        this.secondaryAttributes.put(SecondaryAttribute.meleeDamage, createSecondaryAttributeProperty("character.secondaryAttribute.damageMelee",getModifier(SecondaryAttribute.meleeDamage)));
-        this.secondaryAttributes.put(SecondaryAttribute.rangeDamage, createSecondaryAttributeProperty("character.secondaryAttribute.damageRange",getModifier(SecondaryAttribute.rangeDamage)));
-        this.secondaryAttributes.put(SecondaryAttribute.magicPower, createSecondaryAttributeProperty("character.secondaryAttribute.magicPower",getModifier(SecondaryAttribute.magicPower)));
-        this.secondaryAttributes.put(SecondaryAttribute.defense, createSecondaryAttributeProperty("character.secondaryAttribute.baseDefense",getModifier(SecondaryAttribute.defense)));
-        this.secondaryAttributes.put(SecondaryAttribute.initiative, createSecondaryAttributeProperty("character.secondaryAttribute.initiative",getModifier(SecondaryAttribute.initiative)));
-        this.secondaryAttributes.put(SecondaryAttribute.health, createSecondaryAttributeProperty("character.secondaryAttribute.maxLife",getModifier(SecondaryAttribute.health)));
-        this.secondaryAttributes.put(SecondaryAttribute.mana, createSecondaryAttributeProperty("character.secondaryAttribute.mentalHealth",getModifier(SecondaryAttribute.mana)));
-        this.secondaryAttributes.put(SecondaryAttribute.mentalHealth, createSecondaryAttributeProperty("character.secondaryAttribute.maxMana",getModifier(SecondaryAttribute.mentalHealth)));
+        this.secondaryAttributes.put(SecondaryAttribute.meleeDamage, createSecondaryAttributeProperty("character.secondaryAttribute.damageMelee", getModifier(SecondaryAttribute.meleeDamage)));
+        this.secondaryAttributes.put(SecondaryAttribute.rangeDamage, createSecondaryAttributeProperty("character.secondaryAttribute.damageRange", getModifier(SecondaryAttribute.rangeDamage)));
+        this.secondaryAttributes.put(SecondaryAttribute.magicPower, createSecondaryAttributeProperty("character.secondaryAttribute.magicPower", getModifier(SecondaryAttribute.magicPower)));
+        this.secondaryAttributes.put(SecondaryAttribute.defense, createSecondaryAttributeProperty("character.secondaryAttribute.baseDefense", getModifier(SecondaryAttribute.defense)));
+        this.secondaryAttributes.put(SecondaryAttribute.initiative, createSecondaryAttributeProperty("character.secondaryAttribute.initiative", getModifier(SecondaryAttribute.initiative)));
+        this.secondaryAttributes.put(SecondaryAttribute.health, createSecondaryAttributeProperty("character.secondaryAttribute.maxLife", getModifier(SecondaryAttribute.health)));
+        this.secondaryAttributes.put(SecondaryAttribute.mana, createSecondaryAttributeProperty("character.secondaryAttribute.mentalHealth", getModifier(SecondaryAttribute.mana)));
+        this.secondaryAttributes.put(SecondaryAttribute.mentalHealth, createSecondaryAttributeProperty("character.secondaryAttribute.maxMana", getModifier(SecondaryAttribute.mentalHealth)));
 
         for (Talent talent : Database.talentList) {
             talents.put(talent, new SimpleIntegerProperty(0));

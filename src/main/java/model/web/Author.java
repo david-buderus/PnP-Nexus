@@ -1,6 +1,6 @@
 package model.web;
 
-public class Author{
+public class Author {
     public String login;
     public int id;
     public String node_id;

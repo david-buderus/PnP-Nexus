@@ -34,7 +34,7 @@ public enum PrimaryAttribute implements WithToStringProperty {
 
     public static PrimaryAttribute getPrimaryAttributeOrElse(String name, PrimaryAttribute fallback) {
         try {
-           return getPrimaryAttribute(name);
+            return getPrimaryAttribute(name);
         } catch (NoSuchElementException e) {
             return fallback;
         }

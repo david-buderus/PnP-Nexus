@@ -2,7 +2,6 @@ package model.member.interfaces;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ListProperty;
-import model.loot.LootTable;
 import model.member.BattleMember;
 import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;

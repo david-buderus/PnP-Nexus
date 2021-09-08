@@ -1,6 +1,6 @@
 package model.web;
 
-public class Uploader{
+public class Uploader {
     public String login;
     public int id;
     public String node_id;

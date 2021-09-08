@@ -2,7 +2,7 @@ package model.web;
 
 import java.util.Date;
 
-public class Asset{
+public class Asset {
     public String url;
     public int id;
     public String node_id;

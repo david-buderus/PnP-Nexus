@@ -8,7 +8,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 public class CharacterSheetParser {
 
     final static int PARAMETER_COL = Utility.getConfig().getInt("character.sheet.keyCol");
-    final static int VALUE_COL =  Utility.getConfig().getInt("character.sheet.valueCol");
+    final static int VALUE_COL = Utility.getConfig().getInt("character.sheet.valueCol");
 
     public static CharacterSheetParameterMap parseCharacterSheet(Workbook wb) {
         String sheetName = LanguageUtility.getMessage("character.sheet.manager_parse");

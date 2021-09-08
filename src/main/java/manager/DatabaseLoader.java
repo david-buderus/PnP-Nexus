@@ -313,7 +313,7 @@ public abstract class DatabaseLoader {
                 talent.setAttributes(new PrimaryAttribute[]{
                         PrimaryAttribute.getPrimaryAttributeOrElse(getString(talentSet, getLocalized("column.attribute1")), PrimaryAttribute.DUMMY),
                         PrimaryAttribute.getPrimaryAttributeOrElse(getString(talentSet, getLocalized("column.attribute2")), PrimaryAttribute.DUMMY),
-                        PrimaryAttribute.getPrimaryAttributeOrElse(getString(talentSet, getLocalized("column.attribute3")),PrimaryAttribute.DUMMY)
+                        PrimaryAttribute.getPrimaryAttributeOrElse(getString(talentSet, getLocalized("column.attribute3")), PrimaryAttribute.DUMMY)
                 });
                 talent.setMagicTalent(talentSet.getBoolean(getLocalized("column.magicTalent")));
                 talent.setWeaponTalent(talentSet.getBoolean(getLocalized("column.weaponTalent")));
@@ -1214,7 +1214,7 @@ public abstract class DatabaseLoader {
         return string != null ? string : "";
     }
 
-    private static float getFloat(ResultSet resultSet, String label) throws  SQLException {
+    private static float getFloat(ResultSet resultSet, String label) throws SQLException {
         return resultSet.getFloat(label);
     }
 

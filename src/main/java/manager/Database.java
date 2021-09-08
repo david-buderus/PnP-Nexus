@@ -147,7 +147,7 @@ public abstract class Database {
      * If there is no spell, it returns the spell specified in the
      * parameters.
      *
-     * @param name of the searched spell
+     * @param name  of the searched spell
      * @param spell fallback spell
      * @return a matching spell or the fallback
      */
@@ -240,9 +240,9 @@ public abstract class Database {
         return Arrays.stream(string.split(" ")).map(String::trim).collect(Collectors.joining(" "));
     }
 
-    private static <U, T extends U>  void addObservableList(Collection<U> collection, ObservableList<T> toAdd) {
+    private static <U, T extends U> void addObservableList(Collection<U> collection, ObservableList<T> toAdd) {
         toAdd.addListener((ListChangeListener<T>) c -> {
-            while(c.next()) {
+            while (c.next()) {
                 collection.addAll(c.getAddedSubList());
                 collection.removeAll(c.getRemoved());
             }
