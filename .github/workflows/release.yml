@@ -25,10 +25,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle for Windows
-        run: ./gradlew jar -P platform=win
+        run: ./gradlew server:jar -P platform=win
 
       - name: Build with Gradle for Linux
-        run: ./gradlew jar -P platform=linux
+        run: ./gradlew server:jar -P platform=linux
 
       - name: Create Release
         id: create_release
@@ -43,8 +43,8 @@ jobs:
 
       - name: Set Paths to Artificats
         run: |
-          windowsPath="./build/libs/P&P-Manager-win-${GITHUB_REF#refs/tags/}.jar"
-          linuxPath="./build/libs/P&P-Manager-linux-${GITHUB_REF#refs/tags/}.jar"
+          windowsPath="./server/build/libs/server-win-${GITHUB_REF#refs/tags/}.jar"
+          linuxPath="./server/build/libs/server-linux-${GITHUB_REF#refs/tags/}.jar"
           echo "ARTIFACT_PATHNAME_WINDOWS=${windowsPath}" >> $GITHUB_ENV
           echo "ARTIFACT_PATHNAME_LINUX=${linuxPath}" >> $GITHUB_ENV
 
@@ -56,7 +56,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.ARTIFACT_PATHNAME_WINDOWS }}
-          asset_name: "PP-Manager-Windows.jar"
+          asset_name: "PnP-Manager-Windows.jar"
           asset_content_type: application/java-archive
 
       - name: Upload Release Asset for Linux
@@ -67,5 +67,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.ARTIFACT_PATHNAME_LINUX }}
-          asset_name: "PP-Manager-Linux.jar"
+          asset_name: "PnP-Manager-Linux.jar"
           asset_content_type: application/java-archive

@@ -7,5 +7,5 @@ public interface IMember {
         return this.nameProperty().get();
     }
 
-    public StringProperty nameProperty();
+    StringProperty nameProperty();
 }

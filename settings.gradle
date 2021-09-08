@@ -1,2 +1,3 @@
-rootProject.name = 'P&P-Manager'
+rootProject.name = 'PnP-Manager'
+include('server', 'shared')
 
