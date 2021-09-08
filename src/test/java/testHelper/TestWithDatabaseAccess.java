@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Locale;
 import java.util.Properties;
 
 public abstract class TestWithDatabaseAccess {
@@ -20,6 +21,8 @@ public abstract class TestWithDatabaseAccess {
 
         // TODO localize/configure
         properties.put("ConnSettings", "SET LOCALE TO de_DE");
+
+        Locale.setDefault(Locale.GERMAN);
 
         DriverManager.registerDriver(new UcanaccessDriver());
 
