@@ -16,7 +16,7 @@ public class ManaRegenerationMemberState extends RandomPowerMemberState implemen
 
     @Override
     public void apply(IBattleMember member) {
-        member.increaseMana(member.getMana() + Math.round(getEffectPower()), this.source);
+        member.increaseMana(Math.round(getEffectPower()), this.source);
     }
 
     @Override

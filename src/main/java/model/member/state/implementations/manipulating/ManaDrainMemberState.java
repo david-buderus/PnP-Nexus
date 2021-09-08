@@ -16,7 +16,7 @@ public class ManaDrainMemberState extends RandomPowerMemberState implements IRan
 
     @Override
     public void apply(IBattleMember member) {
-        member.decreaseMana(member.getMana() - Math.round(getEffectPower()), this.source);
+        member.decreaseMana(Math.round(getEffectPower()), this.source);
     }
 
     @Override

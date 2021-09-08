@@ -133,29 +133,49 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
         String armorHead = parameterMap.getValueAsStringOrElse("character.armor.head", "");
         if (!armorHead.isBlank()) {
             Item itemHead = Database.getItemOrElse(armorHead, null);
-            this.armor.put(ArmorPiece.head, itemHead == null ? new SimpleIntegerProperty(0) : ((Armor) itemHead).protectionProperty());
-            allItems.add(itemHead);
+            if (itemHead != null) {
+                Armor item = (Armor) itemHead.copy();
+                this.armor.put(ArmorPiece.head, item.protectionProperty());
+                allItems.add(item);
+            } else {
+                this.armor.put(ArmorPiece.head, new SimpleIntegerProperty(0));
+            }
         }
 
         String armorChest = parameterMap.getValueAsStringOrElse("character.armor.upperBody", "");
         if (!armorChest.isBlank()) {
             Item itemChest = Database.getItemOrElse(armorChest, null);
-            this.armor.put(ArmorPiece.upperBody, itemChest == null ? new SimpleIntegerProperty(0) : ((Armor) itemChest).protectionProperty());
-            allItems.add(itemChest);
+            if (itemChest != null) {
+                Armor item = (Armor) itemChest.copy();
+                this.armor.put(ArmorPiece.upperBody, item.protectionProperty());
+                allItems.add(item);
+            } else {
+                this.armor.put(ArmorPiece.upperBody, new SimpleIntegerProperty(0));
+            }
         }
 
         String armorLegs = parameterMap.getValueAsStringOrElse("character.armor.legs", "");
         if (!armorLegs.isBlank()) {
             Item itemLegs = Database.getItemOrElse(armorLegs, null);
-            this.armor.put(ArmorPiece.legs, itemLegs == null ? new SimpleIntegerProperty(0) : ((Armor) itemLegs).protectionProperty());
-            allItems.add(itemLegs);
+            if (itemLegs != null) {
+                Armor item = (Armor) itemLegs.copy();
+                this.armor.put(ArmorPiece.legs, item.protectionProperty());
+                allItems.add(item);
+            } else {
+                this.armor.put(ArmorPiece.legs, new SimpleIntegerProperty(0));
+            }
         }
 
         String armorArms = parameterMap.getValueAsStringOrElse("character.armor.arm", "");
         if (!armorArms.isBlank()) {
             Item itemArms = Database.getItemOrElse(armorArms, null);
-            this.armor.put(ArmorPiece.arm, itemArms == null ? new SimpleIntegerProperty(0) : ((Armor) itemArms).protectionProperty());
-            allItems.add(itemArms);
+            if (itemArms != null) {
+                Armor item = (Armor) itemArms.copy();
+                this.armor.put(ArmorPiece.arm, item.protectionProperty());
+                allItems.add(item);
+            } else {
+                this.armor.put(ArmorPiece.arm, new SimpleIntegerProperty(0));
+            }
         }
 
         // TODO currently assume that weapons 1 and 2 are equipped
@@ -164,13 +184,14 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
         String weapon1 = parameterMap.getValueAsStringOrElse("character.weapon.1", "");
         if (!weapon1.isBlank()) {
             Item weaponItem1 = Database.getItemOrElse(weapon1, null);
-            allItems.add(weaponItem1);
 
             if (weaponItem1 != null) {
-                if (weaponItem1 instanceof Weapon) {
-                    if (((Weapon) weaponItem1).isShield()) {
+                Item copy = weaponItem1.copy();
+                allItems.add(copy);
+                if (copy instanceof Weapon) {
+                    if (((Weapon) copy).isShield()) {
                         hasShield = true;
-                        this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem1).damageProperty());
+                        this.armor.put(ArmorPiece.shield, ((Weapon) copy).damageProperty());
                     }
                 }
             }
@@ -179,13 +200,14 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
         String weapon2 = parameterMap.getValueAsStringOrElse("character.weapon.2", "");
         if (!weapon2.isBlank()) {
             Item weaponItem2 = Database.getItemOrElse(weapon2, null);
-            allItems.add(weaponItem2);
 
             // TODO currently only wearing one shield is supported
             if (!hasShield && weaponItem2 != null) {
-                if (weaponItem2 instanceof Weapon) {
-                    if (((Weapon) weaponItem2).isShield()) {
-                        this.armor.put(ArmorPiece.shield, ((Weapon) weaponItem2).damageProperty());
+                Item copy = weaponItem2.copy();
+                allItems.add(copy);
+                if (copy instanceof Weapon) {
+                    if (((Weapon) copy).isShield()) {
+                        this.armor.put(ArmorPiece.shield, ((Weapon) copy).damageProperty());
                     }
                 }
             }
@@ -245,57 +267,6 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
     }
 
     public BattleMember(Workbook wb) {
-       /* LootTable lootTable = new LootTable();
-
-        String lootName = Utility.getConfig().getString("character.sheet.loot");
-        if (LanguageUtility.hasMessage("character.sheet." + lootName)) {
-            lootName = LanguageUtility.getMessage("character.sheet." + lootName);
-        }
-
-        Sheet loot = wb.getSheet(lootName);
-
-        for (Row row : loot) {
-            if (row.getRowNum() > 0) {
-                String name = WorkbookUtility.getValue(row, 0);
-
-                if (name.isEmpty() || name.equals("0")) {
-                    continue;
-                }
-
-                int amount = (int) row.getCell(1).getNumericCellValue();
-                double chance = row.getCell(2).getNumericCellValue();
-
-                lootTable.add(name, amount, chance);
-            }
-        }
-
-        Configuration config = Utility.getConfig();
-        String charName = config.getString("character.sheet.enemy");
-        if (LanguageUtility.hasMessage("character.sheet." + charName)) {
-            charName = LanguageUtility.getMessage("character.sheet." + charName);
-        }
-
-        Sheet character = wb.getSheet(charName);
-
-        this.setName(WorkbookUtility.getStringInCell(character, config.getString("character.cell.name")));
-        this.setMaxLife(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.maxLife")));
-        this.setMaxMana(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.maxMana")));
-        this.setInitiative(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.initiative")));
-        this.setLevel(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.level")));
-
-        // Protection
-        this.setArmor(ArmorPiece.head, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.head")));
-        this.setArmor(ArmorPiece.upperBody, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.upperBody")));
-        this.setArmor(ArmorPiece.legs, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.legs")));
-        this.setArmor(ArmorPiece.arm, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.arm")));
-
-        if (WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.hasShield")) == 2) {
-            this.setArmor(ArmorPiece.shield, WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.armor.shield")));
-        }
-
-        this.setDefense(WorkbookUtility.getIntegerInCell(character, config.getString("character.cell.defense")));
-        this.states = new SimpleListProperty<>(FXCollections.observableArrayList());*/
-
         this(CharacterSheetParser.parseCharacterSheet(wb));
 
         String lootName = Utility.getConfig().getString("character.sheet.loot");
