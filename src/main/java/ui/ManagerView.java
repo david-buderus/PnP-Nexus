@@ -28,6 +28,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ManagerView extends View {
 
@@ -207,8 +208,10 @@ public class ManagerView extends View {
                 return new Task<>() {
                     @Override
                     protected Object call() {
+                        Properties properties = new Properties();
+                        properties.put("ConnSettings", "SET LOCALE TO de_DE");
 
-                        try (Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + file.getPath())) {
+                        try (Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + file.getPath(), properties)) {
                             info.addAll(DatabaseLoader.loadDatabase(connection, false));
                         } catch (SQLException e) {
                             info.add(ExceptionUtils.getFullStackTrace(e));

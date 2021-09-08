@@ -108,6 +108,7 @@ public abstract class DatabaseLoader {
             }
 
         } catch (SQLException e) {
+            System.out.println(e);
             return getErrorString("table.weapons");
         } finally {
             if (loadSynchronous) {
@@ -988,7 +989,8 @@ public abstract class DatabaseLoader {
                 weapon.setSubtype(getString(weaponSet, getLocalized("column.weaponTyp")));
                 weapon.setTier(weaponSet.getInt(getLocalized("column.tier")));
                 weapon.setRarity(getRarity(weaponSet, getLocalized("column.rarity")));
-                weapon.setInitiative(getString(weaponSet, getLocalized("column.initiative")));
+                weapon.setInitiative(getFloat(weaponSet, getLocalized("column.initiative")));
+                weapon.setInitiativeModifier(getFloat(weaponSet, getLocalized("column.initiativeModifier")));
                 weapon.setDice(getString(weaponSet, getLocalized("column.dice_weight")));
                 weapon.setDamage(weaponSet.getInt(getLocalized("column.damage_protection")));
                 weapon.setHit(weaponSet.getInt(getLocalized("column.hit")));
