@@ -91,7 +91,8 @@ public abstract class DatabaseLoader {
                 weapon.setType(getString(weaponSet, getLocalized("column.type")));
                 weapon.setSubtype(getString(weaponSet, getLocalized("column.subtype")));
                 weapon.setRequirement(getString(weaponSet, getLocalized("column.requirement")));
-                weapon.setInitiative(getString(weaponSet, getLocalized("column.initiative")));
+                weapon.setInitiative(getFloat(weaponSet, getLocalized("column.initiative")));
+                weapon.setInitiativeModifier(getFloat(weaponSet, getLocalized("column.initiativeModifier")));
                 weapon.setDice(getString(weaponSet, getLocalized("column.dice_weight")));
                 weapon.setDamage(weaponSet.getInt(getLocalized("column.damage_protection")));
                 weapon.setHit(weaponSet.getInt(getLocalized("column.hit")));
@@ -1209,6 +1210,10 @@ public abstract class DatabaseLoader {
     private static String getString(ResultSet resultSet, String label) throws SQLException {
         String string = resultSet.getString(label);
         return string != null ? string : "";
+    }
+
+    private static float getFloat(ResultSet resultSet, String label) throws  SQLException {
+        return resultSet.getFloat(label);
     }
 
     private static Collection<String> getCollection(Statement statement, @org.intellij.lang.annotations.Language("SQL") String sql, String label) throws SQLException {

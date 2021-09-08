@@ -197,13 +197,17 @@ public class BattleMember extends Member implements IBattleMember, ILootable {
                 .collect(Collectors.toList());
 
         if (weapons.size() == 1) {
-            this.initiativeProperty().add(Integer.parseInt(weapons.get(0).getInitiative()));
+            this.initiativeProperty().add(weapons.get(0).getInitiative());
+            this.initiativeProperty().multiply(weapons.get(0).getInitiativeModifier());
         } else if (weapons.size() == 2) {
-            int w1Init = Integer.parseInt(weapons.get(0).getInitiative());
-            int w2Init = Integer.parseInt(weapons.get(1).getInitiative());
-            int min = Math.min(Math.min(w1Init, w2Init), w1Init + w2Init);
+            float w1Init = weapons.get(0).getInitiative();
+            float w2Init = weapons.get(1).getInitiative();
+            int min = (int) Math.min(Math.min(w1Init, w2Init), w1Init + w2Init);
             this.initiativeProperty().add(min);
+            this.initiativeProperty().multiply(weapons.get(0).getInitiativeModifier());
+            this.initiativeProperty().multiply(weapons.get(1).getInitiativeModifier());
         }
+
 
         // TODO this aims to implement multiple shields
         // problem: need to rework to bindings somehow

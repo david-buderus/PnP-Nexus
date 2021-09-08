@@ -74,6 +74,7 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IPlayerB
         String amulet = parameterMap.getValueAsStringOrElse("character.armor.amulet", "");
         Item amuletItem = Database.getItemOrElse(amulet, null);
         if (amuletItem != null) {
+            System.out.println(amuletItem);
             jewellery.add((Jewellery) amuletItem);
         }
 
@@ -112,11 +113,6 @@ public class PlayerBattleMember extends ExtendedBattleMember implements IPlayerB
         addDescription("character.disadvantage", Collections.singleton(parameterMap.getValueAsStringOrElse("character.disadvantages", "")));
 
         inventory.stream().filter(Objects::nonNull).forEach(item -> lootTable.add(item, 1, 1));
-    }
-
-    @Override
-    public LootTable getLootTable() {
-        return lootTable;
     }
 
     @Override

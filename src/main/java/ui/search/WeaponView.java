@@ -11,6 +11,7 @@ public class WeaponView extends EquipmentView<Weapon> {
     public WeaponView(IView parent) {
         super("search.weapon.title", parent, Database.weaponList);
 
+        // TODO add initivateModifier from weapon
         tableView.addObservableColumn("column.amount", Item::amountProperty);
         tableView.addColumn("column.name", Item::getName);
         tableView.addColumn("column.type", Item::getSubtype);

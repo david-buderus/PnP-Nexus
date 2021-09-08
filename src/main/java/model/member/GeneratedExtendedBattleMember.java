@@ -100,20 +100,20 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
 
             while (ob.next()) {
                 ObservableList<? extends Weapon> list = ob.getList();
-                DecimalFormat format = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.GERMANY);
 
                 for (Weapon weapon : list) {
                     weapon.addOnBreakListener(weaponListener);
                 }
 
+                // TODO add initaitveModifier from weapons
                 try {
                     if (list.size() == 1) {
-                        double init = Math.ceil(format.parse(list.get(0).getInitiative()).doubleValue());
+                        double init = Math.ceil(list.get(0).getInitiative());
                         this.getModifier(SecondaryAttribute.initiative).set((int) init);
                     }
                     if (list.size() == 2) {
-                        double init1 = format.parse(list.get(0).getInitiative()).doubleValue();
-                        double init2 = format.parse(list.get(1).getInitiative()).doubleValue();
+                        double init1 = list.get(0).getInitiative();
+                        double init2 = list.get(1).getInitiative();
                         this.getModifier(SecondaryAttribute.initiative).set(
                                 (int) Math.min(Math.min(Math.floor(init1), Math.floor(init2)), Math.floor(init1 + init2))
                         );
@@ -122,7 +122,7 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
                             this.setArmor(ArmorPiece.shield, list.get(1).getDamage());
                         }
                     }
-                } catch (NumberFormatException | ParseException e) {
+                } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
             }

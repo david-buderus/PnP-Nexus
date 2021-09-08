@@ -73,6 +73,7 @@ public class CharacterView extends View {
             secAttr.getChildren().add(attr);
         }
 
+        // TODO add initivateModifier from weapon
         EquipmentTable<Weapon> weaponTable = new EquipmentTable<>(character.getWeapons());
         weaponTable.addStringColumn("character.weapon.headline.name", 100, Weapon::getName);
         weaponTable.addStringColumn("character.weapon.headline.type", 90, Weapon::getSubtype);

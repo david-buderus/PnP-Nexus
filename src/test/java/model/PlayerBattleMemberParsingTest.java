@@ -66,7 +66,7 @@ public class PlayerBattleMemberParsingTest extends TestWithDatabaseAccess {
         assertEquals(5, member.getArmor(ArmorPiece.arm));
         assertEquals(6, member.getArmor(ArmorPiece.legs));
         assertEquals(7, member.getArmor(ArmorPiece.upperBody));
-        assertEquals(5, member.getArmor(ArmorPiece.legs));
+        assertEquals(6, member.getArmor(ArmorPiece.legs));
 
         assertEquals(16, member.getArmor(ArmorPiece.shield));
     }
