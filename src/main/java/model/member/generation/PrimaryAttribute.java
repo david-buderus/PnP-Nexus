@@ -4,6 +4,7 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
 import model.interfaces.WithToStringProperty;
 
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public enum PrimaryAttribute implements WithToStringProperty {
@@ -37,5 +38,9 @@ public enum PrimaryAttribute implements WithToStringProperty {
         } catch (NoSuchElementException e) {
             return fallback;
         }
+    }
+
+    public static PrimaryAttribute[] getValuesWithoutDummy() {
+        return Arrays.stream(PrimaryAttribute.values()).filter(primaryAttribute -> !(primaryAttribute.equals(PrimaryAttribute.DUMMY))).toArray(PrimaryAttribute[]::new);
     }
 }

@@ -55,7 +55,7 @@ public class CharacterView extends View {
         VBox primAttr = new VBox(4);
         attributes.getChildren().add(primAttr);
 
-        for (PrimaryAttribute attribute : PrimaryAttribute.values()) {
+        for (PrimaryAttribute attribute : PrimaryAttribute.getValuesWithoutDummy()) {
             HBox attr = labelShortTextField(attribute.toStringProperty(), character.getAttribute(attribute));
             primAttr.getChildren().add(attr);
         }

@@ -52,7 +52,7 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
         this.setLevel(level);
         this.setName(profession + " - " + specialisation);
 
-        for (PrimaryAttribute p : PrimaryAttribute.values()) {
+        for (PrimaryAttribute p : PrimaryAttribute.getValuesWithoutDummy()) {
             this.primaryAttributes.put(p, new SimpleIntegerProperty(2));
         }
 
@@ -575,7 +575,7 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
 
     private void generateStats() {
         NumberBinding remainingPoints = Bindings.createIntegerBinding(() -> 50);
-        for (PrimaryAttribute pm : PrimaryAttribute.values()) {
+        for (PrimaryAttribute pm : PrimaryAttribute.getValuesWithoutDummy()) {
             remainingPoints = remainingPoints.subtract(primaryAttributes.get(pm));
         }
 
@@ -601,7 +601,7 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
         generateStats(characterisation, remainingPoints);
 
         // Skill lastly into random attributes
-        PrimaryAttribute[] values = PrimaryAttribute.values();
+        PrimaryAttribute[] values = PrimaryAttribute.getValuesWithoutDummy();
         while (remainingPoints.intValue() != 0) {
             int gain = random.nextInt(3);
 
