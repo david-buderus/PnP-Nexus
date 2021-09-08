@@ -1,6 +1,6 @@
 package model.member.state;
 
-import model.member.BattleMember;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IRandomPowerMemberState;
 
 import java.util.Random;
@@ -11,7 +11,7 @@ public abstract class RandomPowerMemberState extends PowerMemberState implements
 
     protected boolean isRandom;
 
-    public RandomPowerMemberState(String name, int imageID, int duration, boolean activeRounder, BattleMember source, float maxPower, boolean isRandom) {
+    public RandomPowerMemberState(String name, int imageID, int duration, boolean activeRounder, IBattleMember source, float maxPower, boolean isRandom) {
         super(name, imageID, duration, activeRounder, source, maxPower);
         this.isRandom = isRandom;
     }

@@ -8,8 +8,6 @@ import model.map.object.room.corridor.TurningCorridor;
 import model.map.object.room.room.Room;
 import model.map.specification.texture.CryptTexture;
 
-import java.util.Random;
-
 public class CryptSpecification extends MapSpecification {
 
     public CryptSpecification(SeededRandom random) {

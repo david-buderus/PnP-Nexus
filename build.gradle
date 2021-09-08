@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'jacoco'
 }
 
 def versionNumber = "v1.3.0"
@@ -76,6 +77,14 @@ jar {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+    dependsOn test
 }

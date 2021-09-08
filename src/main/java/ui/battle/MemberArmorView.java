@@ -7,8 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import model.member.BattleMember;
 import model.member.data.ArmorPiece;
+import model.member.interfaces.IBattleMember;
 import ui.View;
 
 import static manager.LanguageUtility.getMessageProperty;
@@ -16,7 +16,7 @@ import static ui.ViewFactory.labelTextField;
 
 public class MemberArmorView extends View {
 
-    public MemberArmorView(BattleMember member) {
+    public MemberArmorView(IBattleMember member) {
         super("armor.title");
 
         VBox root = new VBox(5);

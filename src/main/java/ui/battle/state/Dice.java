@@ -12,8 +12,7 @@ public enum Dice implements WithToStringProperty {
     public ReadOnlyStringProperty toStringProperty() {
         if (this == with) {
             return LanguageUtility.getMessageProperty("state.info.dicePrefix");
-        }
-        else {
+        } else {
             return new ReadOnlyStringWrapper("");
         }
     }

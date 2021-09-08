@@ -18,7 +18,8 @@ public class Drop {
     protected int maxLevel;
     protected int maxTier;
 
-    public Drop() { }
+    public Drop() {
+    }
 
     public void addToLootTable(LootTable lootTable, BattleMember member) {
         if (member.getLevel() >= minLevel && member.getLevel() <= maxLevel &&

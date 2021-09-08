@@ -17,7 +17,7 @@ import model.Spell;
 import model.item.Armor;
 import model.item.Jewellery;
 import model.item.Weapon;
-import model.member.ExtendedBattleMember;
+import model.member.GeneratedExtendedBattleMember;
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
 import model.member.generation.Talent;
@@ -36,9 +36,9 @@ import static ui.ViewFactory.labelShortTextField;
 
 public class CharacterView extends View {
 
-    protected ExtendedBattleMember character;
+    protected GeneratedExtendedBattleMember character;
 
-    public CharacterView(ExtendedBattleMember character) {
+    public CharacterView(GeneratedExtendedBattleMember character) {
         super(LanguageUtility.getMessage("character.title"), new ReadOnlyStringWrapper(" ").concat(character.nameProperty()));
         this.character = character;
 
@@ -55,7 +55,7 @@ public class CharacterView extends View {
         VBox primAttr = new VBox(4);
         attributes.getChildren().add(primAttr);
 
-        for (PrimaryAttribute attribute : PrimaryAttribute.values()) {
+        for (PrimaryAttribute attribute : PrimaryAttribute.getValuesWithoutDummy()) {
             HBox attr = labelShortTextField(attribute.toStringProperty(), character.getAttribute(attribute));
             primAttr.getChildren().add(attr);
         }
@@ -73,6 +73,7 @@ public class CharacterView extends View {
             secAttr.getChildren().add(attr);
         }
 
+        // TODO add initivateModifier from weapon
         EquipmentTable<Weapon> weaponTable = new EquipmentTable<>(character.getWeapons());
         weaponTable.addStringColumn("character.weapon.headline.name", 100, Weapon::getName);
         weaponTable.addStringColumn("character.weapon.headline.type", 90, Weapon::getSubtype);
@@ -143,7 +144,7 @@ public class CharacterView extends View {
         }
 
         // All talents that the character uses but are not shown in the default layout
-        Queue<Talent> notListedTalents = this.character.getMainTalents().stream()
+        Queue<Talent> notListedTalents = this.character.getTalents().stream()
                 .filter(talent -> talentPages.stream().flatMap(List::stream)
                         .noneMatch(name -> name.equalsIgnoreCase(talent.getName())))
                 .collect(Collectors.toCollection(LinkedList::new));

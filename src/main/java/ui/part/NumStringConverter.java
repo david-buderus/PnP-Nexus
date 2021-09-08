@@ -3,7 +3,6 @@ package ui.part;
 import javafx.util.converter.NumberStringConverter;
 
 import java.text.MessageFormat;
-import java.util.Locale;
 
 public class NumStringConverter extends NumberStringConverter {
 

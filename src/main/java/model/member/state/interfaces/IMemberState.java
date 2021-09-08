@@ -2,7 +2,7 @@ package model.member.state.interfaces;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.StringProperty;
-import model.member.BattleMember;
+import model.member.interfaces.IBattleMember;
 
 public interface IMemberState {
 
@@ -12,7 +12,7 @@ public interface IMemberState {
 
     int getMaxDuration();
 
-    BattleMember getSource();
+    IBattleMember getSource();
 
     IntegerProperty durationProperty();
 

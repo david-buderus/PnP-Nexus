@@ -4,18 +4,30 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import manager.Database;
 
 public class Weapon extends Equipment {
 
-    private String initiative;
+    private float initiative;
+
+    public float getInitiativeModifier() {
+        return initiativeModifier;
+    }
+
+    public void setInitiativeModifier(float initiativeModifier) {
+        this.initiativeModifier = initiativeModifier;
+    }
+
+    private float initiativeModifier;
     private String dice;
     private final IntegerProperty damage;
     protected final IntegerBinding damageWithWear;
     private int hit;
+    private Boolean isShield = null;
 
     public Weapon() {
         super();
-        this.initiative = "0";
+        this.initiative = 0f;
         this.dice = "";
         this.damage = new SimpleIntegerProperty(0);
         this.damageWithWear = Bindings.createIntegerBinding(() -> Math.max(0, getDamage() - getWearStage()), damage, wearStage);
@@ -31,6 +43,7 @@ public class Weapon extends Equipment {
     public Weapon copy() {
         Weapon weapon = (Weapon) super.copy();
         weapon.setInitiative(this.getInitiative());
+        weapon.setInitiativeModifier(this.getInitiativeModifier());
         weapon.setDice(this.getDice());
         weapon.setDamage(this.getDamage());
         weapon.setHit(this.getHit());
@@ -38,11 +51,19 @@ public class Weapon extends Equipment {
         return weapon;
     }
 
-    public String getInitiative() {
+    public boolean isShield() {
+        if (isShield == null) {
+            isShield = Database.shieldTypes.stream().anyMatch(type -> type.equals(this.getSubtype()));
+        }
+
+        return isShield;
+    }
+
+    public float getInitiative() {
         return initiative;
     }
 
-    public void setInitiative(String initiative) {
+    public void setInitiative(float initiative) {
         this.initiative = initiative;
     }
 
@@ -87,7 +108,7 @@ public class Weapon extends Equipment {
 
         Weapon other = (Weapon) o;
 
-        return this.getInitiative().equals(other.getInitiative()) && this.getDice().equals(other.getDice())
-                && this.getDamage() == other.getDamage() && this.getHit() == other.getHit();
+        return this.getInitiative() == other.getInitiative() && this.getDice().equals(other.getDice())
+                && this.getDamage() == other.getDamage() && this.getHit() == other.getHit() && this.getInitiativeModifier() == other.getInitiativeModifier();
     }
 }

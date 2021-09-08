@@ -1,7 +1,6 @@
 package model.map;
 
 import model.loot.Loot;
-import model.loot.LootFactory;
 import model.map.object.MapObjectMap;
 import model.map.object.loot.LootObject;
 import model.map.object.room.Lootable;

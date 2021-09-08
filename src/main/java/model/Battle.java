@@ -4,34 +4,25 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import manager.CopyService;
 import manager.LanguageUtility;
-import manager.Utility;
 import manager.WorkbookService;
-import model.loot.LootTable;
 import model.member.BattleMember;
-import model.member.ExtendedBattleMember;
-import model.member.data.ArmorPiece;
+import model.member.GeneratedExtendedBattleMember;
 import model.member.generation.specs.*;
-import org.apache.commons.configuration2.Configuration;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+import model.member.interfaces.IBattleMember;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Battle {
 
     private final StringProperty name;
     private final IntegerProperty round;
-    private final ListProperty<BattleMember> players;
-    private final ListProperty<BattleMember> enemies;
-    private final HashMap<BattleMember, Integer> damageStatistic;
-    private final HashMap<BattleMember, Integer> healStatistic;
+    private final ListProperty<IBattleMember> players;
+    private final ListProperty<IBattleMember> enemies;
+    private final HashMap<IBattleMember, Integer> damageStatistic;
+    private final HashMap<IBattleMember, Integer> healStatistic;
 
     public Battle() {
         this.players = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -43,17 +34,17 @@ public class Battle {
     }
 
     public void nextTurn() {
-        for (BattleMember member : players) {
+        for (IBattleMember member : players) {
             member.nextTurn();
         }
-        for (BattleMember member : enemies) {
+        for (IBattleMember member : enemies) {
             member.nextTurn();
         }
         round.set(round.get() + 1);
     }
 
     public void reset() {
-        for (BattleMember member : players) {
+        for (IBattleMember member : players) {
             member.reset();
         }
         enemies.clear();
@@ -62,24 +53,24 @@ public class Battle {
         healStatistic.clear();
     }
 
-    public void removeMember(BattleMember member) {
+    public void removeMember(IBattleMember member) {
         players.remove(member);
         enemies.remove(member);
     }
 
-    public boolean isPlayer(BattleMember member) {
+    public boolean isPlayer(IBattleMember member) {
         return players.contains(member);
     }
 
     public double getAveragePlayerLevel() {
-        return players.stream().mapToDouble(BattleMember::getLevel).average().orElse(1);
+        return players.stream().mapToDouble(IBattleMember::getLevel).average().orElse(1);
     }
 
-    public boolean isSameTeam(BattleMember... members) {
+    public boolean isSameTeam(IBattleMember... members) {
         boolean allPlayers = true;
         boolean allEnemies = true;
 
-        for (BattleMember member : members) {
+        for (IBattleMember member : members) {
             if (isPlayer(member)) {
                 allEnemies = false;
             } else {
@@ -90,33 +81,33 @@ public class Battle {
         return allPlayers || allEnemies;
     }
 
-    public void addToDamageStatistic(BattleMember member, int damage) {
+    public void addToDamageStatistic(IBattleMember member, int damage) {
         if (!damageStatistic.containsKey(member)) {
             damageStatistic.put(member, 0);
         }
         damageStatistic.put(member, damageStatistic.get(member) + damage);
     }
 
-    public void addToHealStatistic(BattleMember member, int heal) {
+    public void addToHealStatistic(IBattleMember member, int heal) {
         if (!healStatistic.containsKey(member)) {
             healStatistic.put(member, 0);
         }
         healStatistic.put(member, healStatistic.get(member) + heal);
     }
 
-    public int getDamageDealt(BattleMember member) {
+    public int getDamageDealt(IBattleMember member) {
         return damageStatistic.getOrDefault(member, 0);
     }
 
-    public int getDamageHealed(BattleMember member) {
+    public int getDamageHealed(IBattleMember member) {
         return healStatistic.getOrDefault(member, 0);
     }
 
-    public ListProperty<BattleMember> playersProperty() {
+    public ListProperty<IBattleMember> playersProperty() {
         return players;
     }
 
-    public ListProperty<BattleMember> enemiesProperty() {
+    public ListProperty<IBattleMember> enemiesProperty() {
         return enemies;
     }
 
@@ -128,7 +119,7 @@ public class Battle {
         players.add(new BattleMember(this));
     }
 
-    public void createPlayer(BattleMember member) {
+    public void createPlayer(IBattleMember member) {
         players.add(member.cloneMember());
     }
 
@@ -136,7 +127,7 @@ public class Battle {
         enemies.add(new BattleMember(this));
     }
 
-    public void createEnemy(BattleMember member) {
+    public void createEnemy(IBattleMember member) {
         enemies.add(member.cloneMember());
     }
 
@@ -174,57 +165,7 @@ public class Battle {
     }
 
     private void createMember(Workbook wb, boolean enemy) {
-        LootTable lootTable = new LootTable();
-
-        String lootName = Utility.getConfig().getString("character.sheet.loot");
-        if (LanguageUtility.hasMessage("character.sheet." + lootName)) {
-            lootName = LanguageUtility.getMessage("character.sheet." + lootName);
-        }
-
-        Sheet loot = wb.getSheet(lootName);
-
-        for (Row row : loot) {
-            if (row.getRowNum() > 0) {
-                String name = this.getValue(row, 0);
-
-                if (name.isEmpty() || name.equals("0")) {
-                    continue;
-                }
-
-                int amount = (int) row.getCell(1).getNumericCellValue();
-                double chance = row.getCell(2).getNumericCellValue();
-
-                lootTable.add(name, amount, chance);
-            }
-        }
-
-        Configuration config = Utility.getConfig();
-        String charName = config.getString("character.sheet.enemy");
-        if (LanguageUtility.hasMessage("character.sheet." + charName)) {
-            charName = LanguageUtility.getMessage("character.sheet." + charName);
-        }
-
-        Sheet character = wb.getSheet(charName);
-        BattleMember member = new BattleMember(this, lootTable);
-
-        member.setName(this.getStringInCell(character, config.getString("character.cell.name")));
-        member.setMaxLife(this.getIntegerInCell(character, config.getString("character.cell.maxLife")));
-        member.setMaxMana(this.getIntegerInCell(character, config.getString("character.cell.maxMana")));
-        member.setInitiative(this.getIntegerInCell(character, config.getString("character.cell.initiative")));
-        member.setLevel(this.getIntegerInCell(character, config.getString("character.cell.level")));
-
-        // Protection
-        member.setArmor(ArmorPiece.head, this.getIntegerInCell(character, config.getString("character.cell.armor.head")));
-        member.setArmor(ArmorPiece.upperBody, this.getIntegerInCell(character, config.getString("character.cell.armor.upperBody")));
-        member.setArmor(ArmorPiece.legs, this.getIntegerInCell(character, config.getString("character.cell.armor.legs")));
-        member.setArmor(ArmorPiece.arm, this.getIntegerInCell(character, config.getString("character.cell.armor.arm")));
-
-        if (this.getIntegerInCell(character, config.getString("character.cell.hasShield")) == 2) {
-            member.setArmor(ArmorPiece.shield, this.getIntegerInCell(character, config.getString("character.cell.armor.shield")));
-        }
-
-        member.setDefense(this.getIntegerInCell(character, config.getString("character.cell.defense")));
-
+        IBattleMember member = new BattleMember(wb);
         if (enemy) {
             enemies.add(member);
         } else {
@@ -234,7 +175,7 @@ public class Battle {
 
     public void spawnMember(boolean enemy, int level, Characterisation characterisation, Race race,
                             Profession profession, FightingStyle fightingStyle, Specialisation specialisation) {
-        ExtendedBattleMember member = new ExtendedBattleMember(this, level, characterisation, race,
+        GeneratedExtendedBattleMember member = new GeneratedExtendedBattleMember(this, level, characterisation, race,
                 profession, fightingStyle, specialisation);
 
         if (enemy) {
@@ -244,41 +185,6 @@ public class Battle {
         }
     }
 
-    protected String getValue(Row row, int i) {
-        try {
-            return row.getCell(i).getStringCellValue();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    protected int getIntegerInCell(Sheet sheet, String pos) {
-        try {
-            return (int) getCell(sheet, pos).getNumericCellValue();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    protected String getStringInCell(Sheet sheet, String pos) {
-        try {
-            return getCell(sheet, pos).getStringCellValue();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    protected Cell getCell(Sheet sheet, String pos) {
-        List<Character> input = new ArrayList<>();
-        for (char c : pos.toCharArray()) {
-            input.add(c);
-        }
-
-        String letter = Utility.consumeString(input);
-        int x = Utility.consumeNumber(input);
-
-        return sheet.getRow(x - 1).getCell(CellReference.convertColStringToIndex(letter));
-    }
 
     public String getName() {
         return name.get();

@@ -7,14 +7,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import manager.LanguageUtility;
-import model.member.BattleMember;
 import model.member.data.AttackTypes;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.*;
 import ui.View;
 import ui.part.NumberField;
@@ -31,7 +34,7 @@ public class MemberStateView extends View {
     private final HashMap<IMemberState, MemberStatePane> panes;
     private final ObjectProperty<MemberStatePane> selected;
 
-    public MemberStateView(BattleMember target, BattleMember source) {
+    public MemberStateView(IBattleMember target, IBattleMember source) {
         super("state.title");
         this.panes = new HashMap<>();
         this.selected = new SimpleObjectProperty<>();

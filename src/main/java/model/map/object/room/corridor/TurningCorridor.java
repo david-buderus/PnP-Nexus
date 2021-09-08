@@ -4,12 +4,8 @@ import model.map.RotationPoint;
 import model.map.SeededRandom;
 import model.map.object.MapObjectPart;
 import model.map.object.room.Passage;
-import model.map.object.room.RoomObject;
-import model.map.specification.MapSpecification;
 import model.map.specification.texture.TextureHandler;
 import ui.map.IMapCanvas;
-
-import java.util.Optional;
 
 public class TurningCorridor extends AbstractCorridor {
 

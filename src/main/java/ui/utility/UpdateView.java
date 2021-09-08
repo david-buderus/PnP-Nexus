@@ -12,7 +12,7 @@ import manager.UpdateChecker;
 import manager.Utility;
 import ui.View;
 
-public class UpdateView  extends View {
+public class UpdateView extends View {
 
     public UpdateView(UpdateChecker.UpdateResponse response, Application application) {
         super("update.title");

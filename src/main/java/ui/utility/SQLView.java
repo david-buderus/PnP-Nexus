@@ -39,6 +39,7 @@ public class SQLView extends ViewPart {
         weaponTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.weapons"));
         root.getTabs().add(weaponTab);
 
+        // TODO add initivateModifier from weapon
         FilteredTableView<Weapon> weaponTable = new FilteredTableView<>(Database.weaponList);
         weaponTable.setPadding(new Insets(10, 20, 20, 20));
         weaponTable.addColumn("column.name", Item::getName);

@@ -68,7 +68,8 @@ public abstract class UpdateChecker {
                 }
             }
 
-        } catch (IOException | InterruptedException ignored) { }
+        } catch (IOException | InterruptedException ignored) {
+        }
 
         return UpdateResponse.NoNewUpdate;
     }

@@ -22,7 +22,7 @@ public class ConfigurableTab extends Tab {
         textField.textProperty().bindBidirectional(nameProperty());
 
         label.setOnMouseClicked(event -> {
-            if(event.getClickCount() == 2) {
+            if (event.getClickCount() == 2) {
                 setGraphic(textField);
                 textField.selectAll();
                 textField.requestFocus();
@@ -32,7 +32,7 @@ public class ConfigurableTab extends Tab {
         textField.setOnAction(event -> setGraphic(label));
 
         textField.focusedProperty().addListener((ob, o, n) -> {
-            if(!n) {
+            if (!n) {
                 setGraphic(label);
             }
         });

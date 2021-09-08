@@ -255,8 +255,7 @@ public class SpawnView extends View {
                     }
 
                     spawnParameters.add(spawnParameter);
-                }
-                catch (NullPointerException ignored) {
+                } catch (NullPointerException ignored) {
                     //No generation possible, missing some kind of type
                 }
             }

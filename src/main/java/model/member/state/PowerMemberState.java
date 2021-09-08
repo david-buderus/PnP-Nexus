@@ -2,7 +2,7 @@ package model.member.state;
 
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
-import model.member.BattleMember;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IPowerMemberState;
 
 public abstract class PowerMemberState extends ActiveRounderMemberState implements IPowerMemberState {
@@ -10,7 +10,7 @@ public abstract class PowerMemberState extends ActiveRounderMemberState implemen
     protected final float maxPower;
     protected final FloatProperty currentPower;
 
-    public PowerMemberState(String name, int imageID, int duration, boolean activeRounder, BattleMember source, float maxPower) {
+    public PowerMemberState(String name, int imageID, int duration, boolean activeRounder, IBattleMember source, float maxPower) {
         super(name, imageID, duration, activeRounder, source);
         this.maxPower = maxPower;
         this.currentPower = new SimpleFloatProperty(maxPower);

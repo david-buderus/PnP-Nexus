@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import manager.LanguageUtility;
 import model.interfaces.WithToStringProperty;
-import model.member.BattleMember;
+import model.member.interfaces.IBattleMember;
 import model.member.state.interfaces.IMemberState;
 
 public abstract class MemberState implements IMemberState, WithToStringProperty {
@@ -16,9 +16,9 @@ public abstract class MemberState implements IMemberState, WithToStringProperty 
     protected final String name;
     protected final IntegerProperty duration;
     protected final StringProperty durationDisplay;
-    protected final BattleMember source;
+    protected final IBattleMember source;
 
-    public MemberState(String name, int imageID, int duration, BattleMember source) {
+    public MemberState(String name, int imageID, int duration, IBattleMember source) {
         this.name = name;
         this.imageID = imageID;
         this.duration = new SimpleIntegerProperty(duration);
@@ -44,7 +44,7 @@ public abstract class MemberState implements IMemberState, WithToStringProperty 
     }
 
     @Override
-    public BattleMember getSource() {
+    public IBattleMember getSource() {
         return source;
     }
 

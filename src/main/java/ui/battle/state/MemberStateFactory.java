@@ -3,10 +3,10 @@ package ui.battle.state;
 import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
 import model.interfaces.WithToStringProperty;
-import model.member.BattleMember;
 import model.member.data.AttackTypes;
-import model.member.state.implementations.defense.ArmorMalusMemberState;
+import model.member.interfaces.IBattleMember;
 import model.member.state.implementations.defense.ArmorBonusMemberState;
+import model.member.state.implementations.defense.ArmorMalusMemberState;
 import model.member.state.implementations.incoming.ShieldMemberState;
 import model.member.state.implementations.initiative.*;
 import model.member.state.implementations.manipulating.DamageMemberState;
@@ -35,7 +35,7 @@ public class MemberStateFactory implements WithToStringProperty {
         this.defaultState = producer.create("default", 0, false, 0, false, AttackTypes.direct, null);
     }
 
-    public IMemberState create(String name, int duration, boolean activeRounder, float power, boolean isRandom, AttackTypes type, BattleMember source) {
+    public IMemberState create(String name, int duration, boolean activeRounder, float power, boolean isRandom, AttackTypes type, IBattleMember source) {
         return producer.create(name, duration, activeRounder, power, isRandom, type, source);
     }
 
