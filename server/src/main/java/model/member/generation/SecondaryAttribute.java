@@ -2,11 +2,12 @@ package model.member.generation;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
+import model.attribute.ISecondaryAttribute;
 import model.interfaces.WithToStringProperty;
 
 import java.util.NoSuchElementException;
 
-public enum SecondaryAttribute implements WithToStringProperty {
+public enum SecondaryAttribute implements ISecondaryAttribute, WithToStringProperty {
     meleeDamage, rangeDamage, magicPower, defense, initiative, health, mentalHealth, mana;
 
     public static SecondaryAttribute getSecondaryAttribute(String name) {

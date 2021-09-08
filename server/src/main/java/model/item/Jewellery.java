@@ -1,6 +1,6 @@
 package model.item;
 
-public class Jewellery extends Equipment {
+public class Jewellery extends Equipment implements IJewellery {
 
     private String gem;
 

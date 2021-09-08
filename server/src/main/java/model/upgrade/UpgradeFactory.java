@@ -1,15 +1,16 @@
 package model.upgrade;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import model.Currency;
+import model.ICurrency;
+import model.IItemList;
 import model.ItemList;
-import model.item.Item;
+import model.item.IItem;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-public class UpgradeFactory {
+public class UpgradeFactory implements IUpgradeFactory {
 
     private static final Random rand = new Random();
 
@@ -17,10 +18,10 @@ public class UpgradeFactory {
     private String target;
     private int slots;
     private String[] requirements = new String[0];
-    private Currency[] currencyList = new Currency[0];
+    private ICurrency[] currencyList = new ICurrency[0];
     private String[] manaList = new String[0];
     private String[] effectList = new String[0];
-    private ItemList[] materialsList = new ItemList[0];
+    private IItemList[] materialsList = new IItemList[0];
 
     public String getName() {
         return name;
@@ -51,7 +52,7 @@ public class UpgradeFactory {
         System.arraycopy(requirements, 0, regList, 0, requirements.length);
         requirements = regList;
 
-        Currency[] curList = new Currency[maxLevel];
+        ICurrency[] curList = new ICurrency[maxLevel];
         System.arraycopy(currencyList, 0, curList, 0, currencyList.length);
         currencyList = curList;
 
@@ -63,7 +64,7 @@ public class UpgradeFactory {
         System.arraycopy(effectList, 0, effList, 0, effectList.length);
         effectList = effList;
 
-        ItemList[] matList = new ItemList[maxLevel];
+        IItemList[] matList = new IItemList[maxLevel];
         System.arraycopy(materialsList, 0, matList, 0, materialsList.length);
         materialsList = matList;
     }
@@ -76,16 +77,16 @@ public class UpgradeFactory {
         this.slots = slots;
     }
 
-    public void setCurrency(int level, Currency currency) {
+    public void setCurrency(int level, ICurrency currency) {
         this.currencyList[level - 1] = currency;
     }
 
-    public Currency getCurrency(int level) {
+    public ICurrency getCurrency(int level) {
         return currencyList[level - 1];
     }
 
-    public Currency getFullCost(int level) {
-        Currency value = new Currency(0);
+    public ICurrency getFullCost(int level) {
+        ICurrency value = new Currency(0);
 
         for (int i = 1; i <= level; i++) {
             value.add(getCurrency(level));
@@ -110,21 +111,19 @@ public class UpgradeFactory {
         return effectList[level - 1];
     }
 
-    public void setMaterials(int level, ItemList materials) {
+    public void setMaterials(int level, IItemList materials) {
         this.materialsList[level - 1] = materials;
     }
 
-    public ItemList getMaterials(int level) {
+    public IItemList getMaterials(int level) {
         return materialsList[level - 1];
     }
 
-    @JsonIgnore
-    public ItemList getMaterialList() {
+    public IItemList getMaterialList() {
         return this.getMaterialList(1, this.getMaxLevel());
     }
 
-    @JsonIgnore
-    public ItemList getMaterialList(int from, int to) {
+    public IItemList getMaterialList(int from, int to) {
         ItemList items = new ItemList();
 
         for (int l = from; l <= to; l++) {
@@ -134,7 +133,6 @@ public class UpgradeFactory {
         return items;
     }
 
-    @JsonIgnore
     public Upgrade getUpgrade() {
         Upgrade upgrade = new Upgrade();
         upgrade.setName(getName());
@@ -157,9 +155,8 @@ public class UpgradeFactory {
         return i;
     }
 
-    @JsonIgnore
-    public Collection<UpgradeModel> getModels() {
-        ArrayList<UpgradeModel> list = new ArrayList<>();
+    public Collection<IUpgradeModel> getModels() {
+        ArrayList<IUpgradeModel> list = new ArrayList<>();
 
         for (int i = 1; i <= this.getMaxLevel(); i++) {
             UpgradeModel model = new UpgradeModel();
@@ -172,7 +169,7 @@ public class UpgradeFactory {
             model.setLevel(i);
             model.setRequirement(this.getRequirement(i));
 
-            for (Item item : getMaterials(i)) {
+            for (IItem item : getMaterials(i)) {
                 model.addMaterial(item != null ? item.getPrettyAmount() + " " + item.getName() : "");
             }
 

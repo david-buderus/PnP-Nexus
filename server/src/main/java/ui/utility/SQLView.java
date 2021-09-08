@@ -5,9 +5,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import manager.Database;
 import manager.LanguageUtility;
-import model.Spell;
 import model.item.*;
-import model.upgrade.UpgradeModel;
+import model.other.Spell;
+import model.upgrade.IUpgradeModel;
 import ui.IView;
 import ui.ViewPart;
 import ui.part.FilteredTableView;
@@ -110,16 +110,16 @@ public class SQLView extends ViewPart {
         upgradeTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.upgrades"));
         root.getTabs().add(upgradeTab);
 
-        FilteredTableView<UpgradeModel> upgradeTable = new FilteredTableView<>(Database.upgradeModelList);
+        FilteredTableView<IUpgradeModel> upgradeTable = new FilteredTableView<>(Database.upgradeModelList);
         upgradeTable.setPadding(new Insets(10, 20, 20, 20));
-        upgradeTable.addColumn("column.name", UpgradeModel::getName);
-        upgradeTable.addColumn("column.upgrade.level", UpgradeModel::getLevel);
-        upgradeTable.addColumn("column.target", UpgradeModel::getTarget);
-        upgradeTable.addColumn("column.effect", UpgradeModel::getEffect);
-        upgradeTable.addColumn("column.equipment.slots", UpgradeModel::getSlots);
-        upgradeTable.addColumn("column.item.price", UpgradeModel::getCost);
-        upgradeTable.addColumn("column.upgrade.mana", UpgradeModel::getMana);
-        upgradeTable.addColumn("column.upgrade.materials", UpgradeModel::getMaterials);
+        upgradeTable.addColumn("column.name", IUpgradeModel::getName);
+        upgradeTable.addColumn("column.upgrade.level", IUpgradeModel::getLevel);
+        upgradeTable.addColumn("column.target", IUpgradeModel::getTarget);
+        upgradeTable.addColumn("column.effect", IUpgradeModel::getEffect);
+        upgradeTable.addColumn("column.equipment.slots", IUpgradeModel::getSlots);
+        upgradeTable.addColumn("column.item.price", IUpgradeModel::getCost);
+        upgradeTable.addColumn("column.upgrade.mana", IUpgradeModel::getMana);
+        upgradeTable.addColumn("column.upgrade.materials", IUpgradeModel::getMaterials);
         upgradeTab.setContent(upgradeTable);
 
         Tab enemyTab = new Tab();

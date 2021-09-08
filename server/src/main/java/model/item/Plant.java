@@ -3,7 +3,7 @@ package model.item;
 import java.util.Collection;
 import java.util.Collections;
 
-public class Plant extends Item {
+public class Plant extends Item implements IPlant {
 
     private Collection<String> locations;
 
@@ -18,10 +18,6 @@ public class Plant extends Item {
 
     public void setLocations(Collection<String> locations) {
         this.locations = locations;
-    }
-
-    public String locationsAsString() {
-        return String.join(", ", this.locations);
     }
 
     @Override

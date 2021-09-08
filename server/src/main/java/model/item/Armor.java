@@ -5,7 +5,7 @@ import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
-public class Armor extends Equipment {
+public class Armor extends Equipment implements IArmor {
 
     protected final IntegerProperty protection;
     protected final IntegerBinding protectionWithWear;

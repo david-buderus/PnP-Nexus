@@ -4,7 +4,7 @@ import manager.Utility;
 
 import java.util.ArrayList;
 
-public class UpgradeModel {
+public class UpgradeModel implements IUpgradeModel {
     private String name;
     private String target;
     private int slots;

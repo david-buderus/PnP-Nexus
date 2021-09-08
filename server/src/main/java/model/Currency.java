@@ -13,7 +13,7 @@ import static manager.Utility.consumeString;
 /**
  * The coin value is defined in copper coins
  */
-public class Currency {
+public class Currency implements ICurrency {
 
     protected final int coinValue;
     protected final String coinString;
@@ -67,27 +67,33 @@ public class Currency {
         this.coinString = toCoinString(coinValue);
     }
 
-    public Currency add(Currency other) {
+    @Override
+    public ICurrency add(ICurrency other) {
         return new Currency(getCoinValue() + other.getCoinValue());
     }
 
-    public Currency add(int value) {
+    @Override
+    public ICurrency add(int value) {
         return new Currency(getCoinValue() + value);
     }
 
-    public Currency sub(Currency other) {
+    @Override
+    public ICurrency sub(ICurrency other) {
         return new Currency(getCoinValue() - other.getCoinValue());
     }
 
-    public Currency sub(int value) {
+    @Override
+    public ICurrency sub(int value) {
         return new Currency(getCoinValue() - value);
     }
 
-    public Currency multiply(float multiplicative) {
+    @Override
+    public ICurrency multiply(float multiplicative) {
         return new Currency(Math.round(getCoinValue() * multiplicative));
     }
 
-    public Currency divide(float d) {
+    @Override
+    public ICurrency divide(float d) {
         return new Currency(Math.round(getCoinValue() / d));
     }
 

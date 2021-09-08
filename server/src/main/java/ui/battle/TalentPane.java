@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import model.member.GeneratedExtendedBattleMember;
 import model.member.generation.PrimaryAttribute;
-import model.member.generation.Talent;
+import model.other.Talent;
 import ui.part.NumberField;
 
 import java.util.Arrays;
@@ -25,7 +25,9 @@ public class TalentPane extends HBox {
 
         Label attributes = new Label();
         attributes.textProperty().bind(
-                Arrays.stream(talent.getAttributes()).map(PrimaryAttribute::toShortStringProperty)
+                Arrays.stream(talent.getAttributes())
+                        .map(attribute -> (PrimaryAttribute) attribute)
+                        .map(PrimaryAttribute::toShortStringProperty)
                         .map(r -> (StringExpression) r)
                         .reduce((a, b) -> a.concat("/").concat(b))
                         .orElse(new ReadOnlyStringWrapper("--/--/--")));

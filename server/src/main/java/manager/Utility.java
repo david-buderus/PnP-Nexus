@@ -1,8 +1,9 @@
 package manager;
 
 import model.Currency;
-import model.item.Item;
-import model.loot.Loot;
+import model.ICurrency;
+import model.item.IItem;
+import model.loot.ILoot;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -134,13 +135,13 @@ public abstract class Utility {
         }
     }
 
-    public static Currency sellLoot(Collection<Loot> loot) {
-        Currency itemsSellingPrice = new Currency();
-        Currency valueOfTheCoins = new Currency();
+    public static ICurrency sellLoot(Collection<ILoot> loot) {
+        ICurrency itemsSellingPrice = new Currency();
+        ICurrency valueOfTheCoins = new Currency();
         String currencyString = LanguageUtility.getMessage("currency");
 
-        for (Loot l : loot) {
-            Item item = l.getItem();
+        for (ILoot l : loot) {
+            IItem item = l.getItem();
 
 
             if (item.getSubtype().equalsIgnoreCase(currencyString)) {

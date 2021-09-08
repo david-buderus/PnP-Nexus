@@ -1,16 +1,15 @@
 package model.upgrade;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import manager.Utility;
-import model.Currency;
+import model.ICurrency;
 
-public class Upgrade {
+public class Upgrade implements IUpgrade {
 
     private String name;
     private String target;
     private int level;
     private int slots;
-    private Currency cost;
+    private ICurrency cost;
     private String effect;
 
     public String getName() {
@@ -53,15 +52,14 @@ public class Upgrade {
         this.effect = effect;
     }
 
-    public Currency getCost() {
+    public ICurrency getCost() {
         return cost;
     }
 
-    public void setCost(Currency cost) {
+    public void setCost(ICurrency cost) {
         this.cost = cost;
     }
 
-    @JsonIgnore
     public String getFullName() {
         return getName() + " " + Utility.asRomanNumber(getLevel());
     }

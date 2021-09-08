@@ -4,30 +4,34 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import manager.LanguageUtility;
 import model.item.Equipment;
+import model.item.IItem;
 import model.item.Item;
 
-public class Loot {
+public class Loot implements ILoot {
 
-    private Item item;
+    private IItem item;
     private final IntegerProperty amount;
 
-    public Loot(Item item) {
+    public Loot(IItem item) {
         this(item, 1);
     }
 
-    public Loot(Item item, int amount) {
+    public Loot(IItem item, int amount) {
         this.item = item;
         this.amount = new SimpleIntegerProperty(amount);
     }
 
-    public Item getItem() {
+    @Override
+    public IItem getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
+    @Override
+    public void setItem(IItem item) {
         this.item = item;
     }
 
+    @Override
     public String getName() {
         if (item instanceof Equipment && !((Equipment) item).getUpgrades().isEmpty()) {
             return item.getName() + " (" + LanguageUtility.getMessage("item.upgraded") + ")";
@@ -35,18 +39,22 @@ public class Loot {
         return item.getName();
     }
 
+    @Override
     public int getAmount() {
         return amount.get();
     }
 
+    @Override
     public float getAmountWithItemAmount() {
         return amount.get() * item.getAmount();
     }
 
+    @Override
     public void setAmount(int amount) {
         this.amount.set(amount);
     }
 
+    @Override
     public void addAmount(int amount) {
         setAmount(getAmount() + amount);
     }

@@ -1,6 +1,6 @@
-package model;
+package model.other;
 
-public class CraftingBonus {
+public class CraftingBonus implements ICraftingBonus {
 
     private String name;
     private String target;

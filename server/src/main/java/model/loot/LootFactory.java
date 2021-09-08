@@ -1,32 +1,29 @@
 package model.loot;
 
+import model.item.IItem;
 import model.item.Item;
 
 import java.util.Random;
 
-public class LootFactory {
+public class LootFactory implements ILootFactory {
 
     private static final Random rand = new Random();
 
-    private Item item;
+    private IItem item;
     private int maxAmount;
     private double chance;
 
-    public LootFactory(Item item, int maxAmount, double chance) {
+    public LootFactory(IItem item, int maxAmount, double chance) {
         this.item = item;
         this.maxAmount = maxAmount;
         this.chance = chance;
     }
 
-    public String getName() {
-        return item.getName();
-    }
-
-    public Item getItem() {
+    public IItem getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(IItem item) {
         this.item = item;
     }
 

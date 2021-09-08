@@ -1,9 +1,12 @@
-package model.member.generation;
+package model.other;
 
-public class Talent {
+import model.attribute.IPrimaryAttribute;
+import model.member.generation.PrimaryAttribute;
+
+public class Talent implements ITalent {
 
     protected String name;
-    protected PrimaryAttribute[] attributes;
+    protected IPrimaryAttribute[] attributes;
     protected boolean magicTalent;
     protected boolean weaponTalent;
 
@@ -20,11 +23,11 @@ public class Talent {
         this.name = name;
     }
 
-    public PrimaryAttribute[] getAttributes() {
+    public IPrimaryAttribute[] getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(PrimaryAttribute[] attributes) {
+    public void setAttributes(IPrimaryAttribute[] attributes) {
         this.attributes = attributes;
     }
 

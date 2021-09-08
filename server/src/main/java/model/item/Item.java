@@ -4,6 +4,8 @@ import javafx.beans.property.FloatProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import manager.Database;
 import model.Currency;
+import model.ICurrency;
+import model.IRarity;
 import model.Rarity;
 
 import java.lang.reflect.InvocationTargetException;
@@ -13,15 +15,15 @@ import java.lang.reflect.InvocationTargetException;
  * If you need an item with a specific name use
  * {@link Database#getItem(String)}.
  */
-public class Item {
+public class Item implements IItem {
 
     protected String name;
     protected String type;
     protected String subtype;
     protected String requirement;
     protected String effect;
-    protected Rarity rarity;
-    protected Currency currency;
+    protected IRarity rarity;
+    protected ICurrency currency;
     protected int tier;
     protected FloatProperty amount;
 
@@ -66,11 +68,11 @@ public class Item {
         return type;
     }
 
-    public Currency getCurrency() {
+    public ICurrency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(ICurrency currency) {
         this.currency = currency;
     }
 
@@ -98,11 +100,11 @@ public class Item {
         this.effect = effect;
     }
 
-    public Rarity getRarity() {
+    public IRarity getRarity() {
         return rarity;
     }
 
-    public void setRarity(Rarity rarity) {
+    public void setRarity(IRarity rarity) {
         this.rarity = rarity;
     }
 
@@ -139,7 +141,7 @@ public class Item {
         return this.amount;
     }
 
-    public Currency getCurrencyWithAmount() {
+    public ICurrency getCurrencyWithAmount() {
         return currency.multiply(getAmount());
     }
 

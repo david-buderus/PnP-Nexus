@@ -12,12 +12,14 @@ import manager.LanguageUtility;
 import manager.Utility;
 import model.Battle;
 import model.Rarity;
-import model.Spell;
+import model.attribute.IPrimaryAttribute;
+import model.other.Spell;
 import model.item.*;
 import model.member.data.ArmorPiece;
 import model.member.generation.*;
 import model.member.generation.specs.*;
 import model.member.interfaces.IExtendedBattleMember;
+import model.other.Talent;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.*;
@@ -469,7 +471,7 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
     protected boolean checkRequirements(final Talent talent) {
         int counter = 3;
 
-        for (PrimaryAttribute attribute : talent.getAttributes()) {
+        for (IPrimaryAttribute attribute : talent.getAttributes()) {
             if (getAttribute(attribute).get() < 7) {
                 counter--;
             }
@@ -579,7 +581,7 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
         }
 
         // Skill first into the attributes the main talents need
-        for (PrimaryAttribute attribute : getMainTalents().stream()
+        for (IPrimaryAttribute attribute : getMainTalents().stream()
                 .map(Talent::getAttributes).map(Arrays::asList).flatMap(Collection::stream).collect(Collectors.toList())) {
             IntegerProperty att = getAttribute(attribute);
 

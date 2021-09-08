@@ -3,6 +3,7 @@ package model;
 import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 import manager.LanguageUtility;
+import model.loot.ILootTable;
 import model.loot.LootTable;
 import model.member.PlayerBattleMember;
 import model.member.data.ArmorPiece;
@@ -90,7 +91,7 @@ public class PlayerBattleMemberParsingTest extends TestWithDatabaseAccess {
 
     @Test
     public void testInventory() {
-        LootTable lootTable = member.getLootTable();
+        ILootTable lootTable = member.getLootTable();
 
         assertTrue(lootTable.getLoot().stream().anyMatch(loot -> loot.getName().equals("Bogen")));
         assertTrue(lootTable.getLoot().stream().anyMatch(loot -> loot.getName().equals("Stahlhelm")));

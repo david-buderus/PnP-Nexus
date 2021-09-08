@@ -1,38 +1,41 @@
 package model;
 
+import model.item.IItem;
 import model.item.Item;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class ItemList extends ArrayList<Item> {
+public class ItemList extends ArrayList<IItem> implements IItemList {
 
     public ItemList() {
         super();
     }
 
-    public ItemList(Item... items) {
+    public ItemList(IItem... items) {
         this(Arrays.asList(items));
     }
 
-    public ItemList(Collection<? extends Item> collection) {
+    public ItemList(Collection<? extends IItem> collection) {
         super(collection);
     }
 
     @Override
-    public boolean add(Item item) {
+    public boolean add(IItem item) {
         if (this.contains(item)) {
             this.get(this.indexOf(item)).addAmount(item.getAmount());
             return true;
         } else {
-            Item toAdd = item.copy();
+            IItem toAdd = item.copy();
             toAdd.setAmount(item.getAmount());
             return super.add(toAdd);
         }
     }
 
-    public boolean remove(Item item) {
+    @Override
+    public boolean remove(IItem item) {
         if (this.contains(item)) {
             this.get(this.indexOf(item)).addAmount(-item.getAmount());
             return true;
@@ -40,8 +43,9 @@ public class ItemList extends ArrayList<Item> {
         return false;
     }
 
-    public boolean remove(Collection<? extends Item> collection) {
-        for (Item item : collection) {
+    @Override
+    public boolean remove(Collection<? extends IItem> collection) {
+        for (IItem item : collection) {
             if (!remove(item)) {
                 return false;
             }
@@ -50,8 +54,8 @@ public class ItemList extends ArrayList<Item> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends Item> collection) {
-        for (Item item : collection) {
+    public boolean addAll(@NotNull Collection<? extends IItem> collection) {
+        for (IItem item : collection) {
             if (!add(item)) {
                 return false;
             }
@@ -59,38 +63,13 @@ public class ItemList extends ArrayList<Item> {
         return true;
     }
 
-    public boolean containsAmount(Item item) {
-        return this.get(this.indexOf(item)).getAmount() >= item.getAmount();
-    }
-
-    public boolean containsAmount(Collection<? extends Item> items) {
-        for (Item item : items) {
-            if (!containsAmount(item)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public float difference(Item item) {
-        if (this.contains(item)) {
-            float existing = this.get(this.indexOf(item)).getAmount();
-            if (existing < item.getAmount()) {
-                return item.getAmount() - existing;
-            }
-            return 0;
-        }
-        return item.getAmount();
-    }
-
-    public Collection<? extends Item> difference(Collection<? extends Item> collection) {
+    public Collection<? extends IItem> difference(Collection<? extends IItem> collection) {
         ItemList items = new ItemList();
 
-        for (Item item : collection) {
+        for (IItem item : collection) {
             float difference = difference(item);
             if (difference > 0) {
-                Item dif = item.copy();
+                IItem dif = item.copy();
                 dif.setAmount(difference);
                 items.add(dif);
             }

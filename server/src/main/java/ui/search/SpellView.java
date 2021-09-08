@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
 import manager.Database;
-import model.Spell;
+import model.other.Spell;
 import ui.IView;
 import ui.ViewPart;
 

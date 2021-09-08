@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import manager.Database;
 import manager.LanguageUtility;
 import manager.TypTranslation;
-import model.CraftingBonus;
+import model.other.CraftingBonus;
 import ui.IView;
 import ui.part.NumStringConverter;
 

@@ -1,15 +1,13 @@
-package model;
+package model.other;
 
-import model.member.generation.Talent;
-
-public class Spell {
+public class Spell implements ISpell {
 
     private String name;
     private String effect;
     private String type;
     private String cost;
     private String castTime;
-    private Talent talent;
+    private ITalent talent;
     private int tier;
 
     public Spell() {
@@ -70,11 +68,11 @@ public class Spell {
         this.castTime = castTime;
     }
 
-    public Talent getTalent() {
+    public ITalent getTalent() {
         return talent;
     }
 
-    public void setTalent(Talent talent) {
+    public void setTalent(ITalent talent) {
         this.talent = talent;
     }
 }

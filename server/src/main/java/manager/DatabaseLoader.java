@@ -11,6 +11,9 @@ import model.item.*;
 import model.loot.DungeonLootFactory;
 import model.member.generation.*;
 import model.member.generation.specs.*;
+import model.other.CraftingBonus;
+import model.other.Spell;
+import model.other.Talent;
 import model.upgrade.UpgradeFactory;
 import net.ucanaccess.complex.SingleValue;
 
@@ -1124,15 +1127,15 @@ public abstract class DatabaseLoader {
 
             for (int level = 1; level <= upgrade.getMaxLevel(); level++) {
 
-                Currency currency = new Currency(0);
+                ICurrency currency = new Currency(0);
 
-                for (Item item : upgrade.getMaterials(level)) {
+                for (IItem item : upgrade.getMaterials(level)) {
                     if (item != null) {
                         currency = currency.add(item.getCurrencyWithAmount());
                     }
                 }
 
-                Currency actualCurrency = upgrade.getCurrency(level);
+                ICurrency actualCurrency = upgrade.getCurrency(level);
 
                 if (currency.getCoinValue() > actualCurrency.getCoinValue()) {
                     Inconsistency inconsistency = new Inconsistency();
@@ -1140,7 +1143,7 @@ public abstract class DatabaseLoader {
                     inconsistency.setInconsistency(currency.getCoinString() + " > " + actualCurrency.getCoinString());
 
                     ArrayList<String> information = new ArrayList<>();
-                    for (Item material : upgrade.getMaterials(level)) {
+                    for (IItem material : upgrade.getMaterials(level)) {
                         if (material != null) {
                             String matCost = material.getCurrencyWithAmount().getCoinString();
                             information.add(material.getPrettyAmount() + " " + material + " (" + matCost + ")");
@@ -1156,9 +1159,9 @@ public abstract class DatabaseLoader {
         for (Fabrication fabrication : Database.fabricationList) {
 
             if (fabrication.getProduct().isTradeable()) {
-                Currency currency = new Currency(0);
+                ICurrency currency = new Currency(0);
 
-                for (Item item : fabrication.getMaterials()) {
+                for (IItem item : fabrication.getMaterials()) {
                     if (item != null) {
                         currency = currency.add(item.getCurrencyWithAmount());
                     }
@@ -1166,7 +1169,7 @@ public abstract class DatabaseLoader {
 
                 currency = currency.divide(fabrication.getProductAmount());
 
-                Currency actualCurrency = fabrication.getProduct().getCurrency().multiply(fabrication.getProductAmount());
+                ICurrency actualCurrency = fabrication.getProduct().getCurrency().multiply(fabrication.getProductAmount());
                 if (currency.getCoinValue() > actualCurrency.getCoinValue()) {
                     Inconsistency inconsistency = new Inconsistency();
                     inconsistency.setName(fabrication.getProduct().getName());
@@ -1174,7 +1177,7 @@ public abstract class DatabaseLoader {
                             + " > " + actualCurrency.getCoinString());
 
                     ArrayList<String> information = new ArrayList<>();
-                    for (Item material : fabrication.getMaterials()) {
+                    for (IItem material : fabrication.getMaterials()) {
                         if (material != null) {
                             String matCost = material.getCurrency().getCoinString();
                             information.add(material.getAmount() + " " + material + " (" + matCost + ")");

@@ -7,21 +7,21 @@ import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 import manager.TypTranslation;
 import manager.Utility;
-import model.Currency;
-import model.upgrade.Upgrade;
+import model.ICurrency;
+import model.upgrade.IUpgrade;
 import model.upgrade.UpgradeFactory;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public abstract class Equipment extends Item {
+public abstract class Equipment extends Item implements IEquipment {
 
     protected static Random rand = new Random();
 
     protected String material;
     protected int upgradeSlots;
-    protected ArrayList<Upgrade> upgrades;
+    protected ArrayList<IUpgrade> upgrades;
     protected IntegerProperty wearStage;
     protected IntegerProperty wearTick;
     protected Collection<Consumer<Equipment>> onBreakListeners;
@@ -43,13 +43,6 @@ public abstract class Equipment extends Item {
     }
 
     protected abstract boolean shouldBreak();
-
-    /**
-     * Applies one wear to this equipment
-     */
-    public void applyWear() {
-        applyWear(1);
-    }
 
     /**
      * Applies wear to this equipment
@@ -121,24 +114,20 @@ public abstract class Equipment extends Item {
         this.upgradeSlots = upgradeSlots;
     }
 
-    public Collection<Upgrade> getUpgrades() {
+    public Collection<IUpgrade> getUpgrades() {
         return upgrades;
     }
 
-    public void setUpgrades(ArrayList<Upgrade> upgrades) {
+    public void setUpgrades(ArrayList<IUpgrade> upgrades) {
         this.upgrades = upgrades;
-        this.upgrades.sort(Comparator.comparing(Upgrade::getFullName));
-    }
-
-    public String upgradesAsString() {
-        return this.upgrades.stream().map(Upgrade::getFullName).collect(Collectors.joining(", "));
+        this.upgrades.sort(Comparator.comparing(IUpgrade::getFullName));
     }
 
     @Override
-    public Currency getCurrency() {
-        Currency currency = super.getCurrency();
+    public ICurrency getCurrency() {
+        ICurrency currency = super.getCurrency();
 
-        for (Upgrade upgrade : upgrades) {
+        for (IUpgrade upgrade : upgrades) {
             currency = currency.add(upgrade.getCost());
         }
 
@@ -174,8 +163,8 @@ public abstract class Equipment extends Item {
 
         Equipment other = (Equipment) o;
 
-        this.upgrades.sort(Comparator.comparing(Upgrade::getFullName));
-        other.upgrades.sort(Comparator.comparing(Upgrade::getFullName));
+        this.upgrades.sort(Comparator.comparing(IUpgrade::getFullName));
+        other.upgrades.sort(Comparator.comparing(IUpgrade::getFullName));
 
         return this.getMaterial().equals(other.getMaterial()) && this.getUpgradeSlots() == other.getUpgradeSlots() &&
                 this.upgradesAsString().equals(other.upgradesAsString());

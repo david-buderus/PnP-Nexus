@@ -3,16 +3,17 @@ package model.loot;
 import manager.Database;
 import manager.LanguageUtility;
 import manager.Utility;
-import model.Currency;
+import model.ICurrency;
+import model.item.IItem;
 import model.item.Item;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class LootTable {
+public class LootTable implements ILootTable {
 
-    private final ArrayList<LootFactory> list;
+    private final ArrayList<ILootFactory> list;
 
     public LootTable() {
         this.list = new ArrayList<>();
@@ -22,11 +23,11 @@ public class LootTable {
         list.add(new LootFactory(Database.getItem(name), amount, chance));
     }
 
-    public void add(LootFactory factory) {
+    public void add(ILootFactory factory) {
         list.add(factory);
     }
 
-    public void add(Currency currency) {
+    public void add(ICurrency currency) {
         Configuration config = Utility.getConfig();
         int silverToCopper = config.getInt("coin.silver.toCopper");
         int goldToCopper = config.getInt("coin.gold.toSilver") * silverToCopper;
@@ -49,21 +50,27 @@ public class LootTable {
         add(copper, cp, 1);
     }
 
-    public void add(Item item, int amount, double chance) {
+    public void add(IItem item, int amount, double chance) {
         list.add(new LootFactory(item, amount, chance));
     }
 
-    public void add(LootTable other) {
-        this.list.addAll(other.list);
+    public void add(ILootTable other) {
+        this.list.addAll(other.getLootFactories());
     }
 
-    public Collection<Loot> getLoot() {
+    @Override
+    public Collection<ILootFactory> getLootFactories() {
+        return list;
+    }
 
-        ArrayList<Loot> lootList = new ArrayList<>();
+    @Override
+    public Collection<ILoot> getLoot() {
 
-        for (LootFactory factory : list) {
-            Loot loot = factory.getLoot();
-            Loot own = getLoot(factory.getItem(), lootList);
+        ArrayList<ILoot> lootList = new ArrayList<>();
+
+        for (ILootFactory factory : list) {
+            ILoot loot = factory.getLoot();
+            ILoot own = getLoot(factory.getItem(), lootList);
 
             if (own != null) {
                 own.addAmount(loot.getAmount());
@@ -77,8 +84,8 @@ public class LootTable {
         return lootList;
     }
 
-    private Loot getLoot(Item artifact, ArrayList<Loot> list) {
-        for (Loot l : list) {
+    private ILoot getLoot(IItem artifact, ArrayList<ILoot> list) {
+        for (ILoot l : list) {
             if (l.getItem().equals(artifact)) {
                 return l;
             }

@@ -22,7 +22,7 @@ import model.graph.Graph;
 import model.interfaces.WithToStringProperty;
 import model.member.generation.Drop;
 import model.member.generation.GenerationBase;
-import model.member.generation.Talent;
+import model.other.Talent;
 import model.member.generation.TypedGenerationBase;
 import ui.part.GraphView;
 import ui.part.UpdatingListCell;

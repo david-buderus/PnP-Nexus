@@ -10,17 +10,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
-import model.CraftingBonus;
 import model.Fabrication;
 import model.Inconsistency;
-import model.Spell;
 import model.item.*;
 import model.loot.DungeonLootFactory;
 import model.member.generation.GenerationBase;
-import model.member.generation.Talent;
 import model.member.generation.specs.*;
+import model.other.CraftingBonus;
+import model.other.Spell;
+import model.other.Talent;
+import model.upgrade.IUpgradeModel;
 import model.upgrade.UpgradeFactory;
-import model.upgrade.UpgradeModel;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,7 +36,7 @@ public abstract class Database {
     public static final ListProperty<Spell> spellList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Weapon> weaponList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<UpgradeFactory> upgradeList = new SimpleListProperty<>(FXCollections.observableArrayList());
-    public static final ListProperty<UpgradeModel> upgradeModelList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<IUpgradeModel> upgradeModelList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Item> itemList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<CraftingBonus> craftingBonusList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Fabrication> fabricationList = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -51,7 +51,7 @@ public abstract class Database {
     public static final ListProperty<FightingStyle> fightingStyleList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Specialisation> specialisationList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-    public static final MapProperty<UpgradeModel, UpgradeFactory> upgradeMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
+    public static final MapProperty<IUpgradeModel, UpgradeFactory> upgradeMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
 
     public static final BooleanBinding inconsistent = Bindings.isEmpty(inconsistencyList).not();
 
@@ -60,13 +60,13 @@ public abstract class Database {
     static {
         upgradeList.addListener((ob, o, n) -> {
             upgradeMap.clear();
-            ObservableList<UpgradeModel> list = FXCollections.observableArrayList();
+            ObservableList<IUpgradeModel> list = FXCollections.observableArrayList();
 
             for (UpgradeFactory factory : n) {
-                Collection<UpgradeModel> models = factory.getModels();
+                Collection<IUpgradeModel> models = factory.getModels();
                 list.addAll(models);
 
-                for (UpgradeModel model : models) {
+                for (IUpgradeModel model : models) {
                     upgradeMap.put(model, factory);
                 }
             }

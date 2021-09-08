@@ -122,7 +122,7 @@ public class PlantView extends ViewPart {
 
         TableColumn<Plant, String> rarityC = new TableColumn<>();
         rarityC.textProperty().bind(getMessageProperty("column.item.rarity"));
-        rarityC.setCellValueFactory(cell -> cell.getValue().getRarity().toStringProperty());
+        rarityC.setCellValueFactory(cell -> ((Rarity) cell.getValue().getRarity()).toStringProperty());
         rarityC.prefWidthProperty().bind(searchTable.widthProperty().subtract(nameC.widthProperty()).subtract(reqC.widthProperty())
                 .subtract(effectC.widthProperty()).subtract(typC.widthProperty()).subtract(locationsC.widthProperty()));
         searchTable.getColumns().add(rarityC);

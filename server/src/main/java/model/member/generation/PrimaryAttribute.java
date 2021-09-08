@@ -2,12 +2,13 @@ package model.member.generation;
 
 import javafx.beans.property.ReadOnlyStringProperty;
 import manager.LanguageUtility;
+import model.attribute.IPrimaryAttribute;
 import model.interfaces.WithToStringProperty;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-public enum PrimaryAttribute implements WithToStringProperty {
+public enum PrimaryAttribute implements IPrimaryAttribute, WithToStringProperty {
     strength, endurance, dexterity, intelligence, charisma, resilience, agility, precision, DUMMY;
 
     @Override
@@ -19,6 +20,7 @@ public enum PrimaryAttribute implements WithToStringProperty {
         return LanguageUtility.getMessageProperty("primaryAttribute." + super.toString() + ".short");
     }
 
+    @Override
     public String toShortString() {
         return toShortStringProperty().get();
     }

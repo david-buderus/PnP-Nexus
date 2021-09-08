@@ -7,7 +7,9 @@ import manager.CharacterSheetParameterMap;
 import manager.Database;
 import manager.LanguageUtility;
 import model.Battle;
-import model.Spell;
+import model.attribute.IPrimaryAttribute;
+import model.attribute.ISecondaryAttribute;
+import model.other.Spell;
 import model.item.Armor;
 import model.item.Jewellery;
 import model.item.Weapon;
@@ -16,7 +18,7 @@ import model.member.data.ArmorPiece;
 import model.member.data.AttackTypes;
 import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
-import model.member.generation.Talent;
+import model.other.Talent;
 import model.member.interfaces.IBattleMember;
 import model.member.interfaces.IExtendedBattleMember;
 import model.member.state.interfaces.IDefenseMemberState;
@@ -28,8 +30,8 @@ import java.util.stream.Stream;
 
 public abstract class ExtendedBattleMember extends BattleMember implements IExtendedBattleMember {
 
-    protected final Map<PrimaryAttribute, IntegerProperty> primaryAttributes = new HashMap<>();
-    protected final Map<SecondaryAttribute, IntegerProperty> secondaryAttributeModifier = new HashMap<>();
+    protected final Map<IPrimaryAttribute, IntegerProperty> primaryAttributes = new HashMap<>();
+    protected final Map<ISecondaryAttribute, IntegerProperty> secondaryAttributeModifier = new HashMap<>();
 
     protected final HashMap<Talent, IntegerProperty> talents = new HashMap<>();
     protected final ObservableList<Weapon> weapons = FXCollections.observableArrayList();
@@ -109,7 +111,7 @@ public abstract class ExtendedBattleMember extends BattleMember implements IExte
     }
 
     @Override
-    public IntegerProperty getAttribute(PrimaryAttribute attribute) {
+    public IntegerProperty getAttribute(IPrimaryAttribute attribute) {
         return primaryAttributes.get(attribute);
     }
 

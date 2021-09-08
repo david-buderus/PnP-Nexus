@@ -6,7 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import manager.Database;
 
-public class Weapon extends Equipment {
+public class Weapon extends Equipment implements IWeapon {
 
     private float initiative;
 

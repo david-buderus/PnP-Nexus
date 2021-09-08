@@ -2,7 +2,7 @@ package model.loot;
 
 import manager.Database;
 
-public class DungeonLootFactory extends LootFactory {
+public class DungeonLootFactory extends LootFactory implements IDungeonLootFactory {
 
     private String container;
     private String place;

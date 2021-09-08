@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public enum Rarity implements WithToStringProperty {
+public enum Rarity implements IRarity, WithToStringProperty {
     unknown, common, rare, epic, legendary, godlike;
 
     private static final Random rand = new Random();
@@ -19,6 +19,7 @@ public enum Rarity implements WithToStringProperty {
         return LanguageUtility.getMessageProperty("rarity." + super.toString());
     }
 
+    @Override
     public Rarity getLowerRarity() {
         switch (this) {
             case rare:

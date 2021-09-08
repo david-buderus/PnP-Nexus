@@ -13,11 +13,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import manager.LanguageUtility;
 import manager.Utility;
-import model.Currency;
-import model.item.Equipment;
-import model.item.Item;
+import model.ICurrency;
+import model.item.IEquipment;
+import model.item.IItem;
+import model.loot.ILoot;
 import model.loot.Loot;
-import model.upgrade.Upgrade;
+import model.upgrade.IUpgrade;
 import ui.View;
 
 import java.util.Collection;
@@ -26,7 +27,7 @@ import static manager.LanguageUtility.getMessageProperty;
 
 public class LootView extends View {
 
-    public LootView(Collection<Loot> loot, Collection<EXP> exp, int playerCount) {
+    public LootView(Collection<ILoot> loot, Collection<EXP> exp, int playerCount) {
         super("loot.title");
 
         VBox root = new VBox();
@@ -34,20 +35,20 @@ public class LootView extends View {
 
         Scene scene = new Scene(root);
 
-        TableView<Loot> lootTable = new TableView<>();
+        TableView<ILoot> lootTable = new TableView<>();
         VBox.setVgrow(lootTable, Priority.ALWAYS);
         lootTable.setItems(FXCollections.observableArrayList(loot));
         lootTable.setRowFactory(table -> new LootRow());
         lootTable.setPrefWidth(800);
 
-        TableColumn<Loot, String> name = new TableColumn<>();
+        TableColumn<ILoot, String> name = new TableColumn<>();
         name.textProperty().bind(getMessageProperty("loot.item.name"));
         name.setCellValueFactory(new PropertyValueFactory<>("name"));
         lootTable.getColumns().add(name);
 
-        TableColumn<Loot, Integer> amount = new TableColumn<>();
+        TableColumn<ILoot, Integer> amount = new TableColumn<>();
         amount.textProperty().bind(getMessageProperty("loot.item.amount"));
-        amount.setCellValueFactory(cell -> cell.getValue().amountProperty().asObject());
+        amount.setCellValueFactory(cell -> ((Loot) cell.getValue()).amountProperty().asObject());
         amount.setPrefWidth(100);
         lootTable.getColumns().add(amount);
 
@@ -107,7 +108,7 @@ public class LootView extends View {
         buttonPane.setRight(sell);
 
         sell.setOnAction(ev -> {
-            Currency sellValue = Utility.sellLoot(lootTable.getItems());
+            ICurrency sellValue = Utility.sellLoot(lootTable.getItems());
 
             if (playerCount > 0) {
                 coinLabel.setText(sellValue.getCoinString() + "\t " + LanguageUtility.getMessage("loot.sell.perPlayer") + ": " +
@@ -127,7 +128,7 @@ public class LootView extends View {
         public int amount;
     }
 
-    public static class LootRow extends TableRow<Loot> {
+    public static class LootRow extends TableRow<ILoot> {
 
         public LootRow() {
             super();
@@ -139,16 +140,16 @@ public class LootView extends View {
                     return;
                 }
 
-                Item item = n.getItem();
+                IItem item = n.getItem();
 
-                if (item instanceof Equipment) {
-                    Collection<Upgrade> upgrades = ((Equipment) item).getUpgrades();
+                if (item instanceof IEquipment) {
+                    Collection<IUpgrade> upgrades = ((IEquipment) item).getUpgrades();
 
                     if (!upgrades.isEmpty()) {
                         ContextMenu upgradeMenu = new ContextMenu();
                         this.setOnContextMenuRequested(ev -> upgradeMenu.show(this, ev.getScreenX(), ev.getScreenY()));
 
-                        for (Upgrade upgrade : upgrades) {
+                        for (IUpgrade upgrade : upgrades) {
                             MenuItem upgradeItem = new MenuItem(upgrade.getFullName());
                             upgradeMenu.getItems().add(upgradeItem);
                         }

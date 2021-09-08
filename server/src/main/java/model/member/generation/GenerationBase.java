@@ -9,6 +9,7 @@ import model.item.Jewellery;
 import model.item.Weapon;
 import model.loot.LootTable;
 import model.member.BattleMember;
+import model.other.Talent;
 
 import java.util.*;
 

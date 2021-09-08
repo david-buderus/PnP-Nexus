@@ -4,14 +4,14 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import model.Spell;
+import model.attribute.IPrimaryAttribute;
+import model.other.Spell;
 import model.interfaces.ILootable;
 import model.item.Armor;
 import model.item.Jewellery;
 import model.item.Weapon;
-import model.member.generation.PrimaryAttribute;
 import model.member.generation.SecondaryAttribute;
-import model.member.generation.Talent;
+import model.other.Talent;
 
 import java.util.Collection;
 
@@ -20,7 +20,7 @@ public interface IExtendedBattleMember extends IBattleMember, ILootable {
 
     Collection<Talent> getTalents();
 
-    IntegerProperty getAttribute(PrimaryAttribute attribute);
+    IntegerProperty getAttribute(IPrimaryAttribute attribute);
 
     ReadOnlyIntegerProperty getAttribute(SecondaryAttribute attribute);
 

@@ -1,9 +1,9 @@
 package model.interfaces;
 
-import model.loot.LootTable;
+import model.loot.ILootTable;
 
 public interface ILootable {
 
-    LootTable getLootTable();
+    ILootTable getLootTable();
 
 }
