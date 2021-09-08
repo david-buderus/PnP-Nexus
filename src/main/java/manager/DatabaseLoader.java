@@ -74,6 +74,7 @@ public abstract class DatabaseLoader {
                 checkInconsistencies();
 
             } catch (InterruptedException ignored) {
+                ignored.printStackTrace();
             }
         }
 
