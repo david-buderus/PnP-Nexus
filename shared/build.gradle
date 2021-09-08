@@ -11,8 +11,7 @@ version = "v1.3.0"
 
 dependencies {
     compile group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
-
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'

@@ -1,5 +1,6 @@
 package model.upgrade;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import model.ICurrency;
 
 public interface IUpgrade {
@@ -28,5 +29,6 @@ public interface IUpgrade {
 
     void setCost(ICurrency cost);
 
+    @JsonIgnore
     String getFullName();
 }

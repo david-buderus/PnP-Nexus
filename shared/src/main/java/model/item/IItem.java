@@ -1,7 +1,9 @@
 package model.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import model.ICurrency;
 import model.IRarity;
+
 
 public interface IItem {
 
@@ -17,9 +19,9 @@ public interface IItem {
 
     void setCurrency(ICurrency currency);
 
-    void setSubtype(String subtype);
-
     String getSubtype();
+
+    void setSubtype(String subtype);
 
     String getRequirement();
 
@@ -39,14 +41,17 @@ public interface IItem {
 
     float getAmount();
 
+    @JsonIgnore
     String getPrettyAmount();
 
     void setAmount(float amount);
 
     void addAmount(float amount);
 
+    @JsonIgnore
     ICurrency getCurrencyWithAmount();
 
+    @JsonIgnore
     boolean isTradeable();
 
     IItem copy();

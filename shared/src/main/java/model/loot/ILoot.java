@@ -1,5 +1,6 @@
 package model.loot;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import model.item.IItem;
 
 public interface ILoot {
@@ -8,6 +9,7 @@ public interface ILoot {
 
     void setItem(IItem item);
 
+    @JsonIgnore
     default String getName() {
         return getItem().getName();
     }

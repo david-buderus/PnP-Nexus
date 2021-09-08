@@ -1,5 +1,6 @@
 package model.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import model.upgrade.IUpgrade;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public interface IEquipment extends IItem {
      */
     void applyWear(int wear);
 
+    @JsonIgnore
     IEquipment getWithUpgrade();
 
     String getMaterial();
@@ -36,10 +38,12 @@ public interface IEquipment extends IItem {
 
     void setUpgrades(ArrayList<IUpgrade> upgrades);
 
+    @JsonIgnore
     default String upgradesAsString() {
         return getUpgrades().stream().map(IUpgrade::getFullName).collect(Collectors.joining(", "));
     }
 
+    @JsonIgnore
     int getWearStage();
 
     int getWearTick();

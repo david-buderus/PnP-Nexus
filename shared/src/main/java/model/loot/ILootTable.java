@@ -19,5 +19,7 @@ public interface ILootTable {
 
     Collection<ILootFactory> getLootFactories();
 
+    void setLootFactories(Collection<ILootFactory> factories);
+
     Collection<ILoot> getLoot();
 }

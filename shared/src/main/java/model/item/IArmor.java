@@ -1,5 +1,8 @@
 package model.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import network.serializer.DeserializerIdentifier;
+
 public interface IArmor extends IEquipment {
 
     IArmor copy();
@@ -8,8 +11,10 @@ public interface IArmor extends IEquipment {
 
     void setProtection(int protection);
 
+    @JsonIgnore
     int getProtectionWithWear();
 
+    @DeserializerIdentifier
     double getWeight();
 
     void setWeight(double weight);

@@ -13,7 +13,7 @@ import java.util.Collection;
 
 public class LootTable implements ILootTable {
 
-    private final ArrayList<ILootFactory> list;
+    private ArrayList<ILootFactory> list;
 
     public LootTable() {
         this.list = new ArrayList<>();
@@ -61,6 +61,11 @@ public class LootTable implements ILootTable {
     @Override
     public Collection<ILootFactory> getLootFactories() {
         return list;
+    }
+
+    @Override
+    public void setLootFactories(Collection<ILootFactory> factories) {
+        this.list = new ArrayList<>(factories);
     }
 
     @Override

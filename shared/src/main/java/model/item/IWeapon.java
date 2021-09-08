@@ -1,10 +1,14 @@
 package model.item;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import network.serializer.DeserializerIdentifier;
+
 public interface IWeapon extends IEquipment {
 
     @Override
     IWeapon copy();
 
+    @JsonIgnore
     boolean isShield();
 
     float getInitiative();
@@ -15,6 +19,7 @@ public interface IWeapon extends IEquipment {
 
     void setDice(String dice);
 
+    @DeserializerIdentifier
     int getDamage();
 
     void setDamage(int damage);

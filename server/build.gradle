@@ -42,7 +42,7 @@ dependencies {
     compile "org.openjfx:javafx-controls:11:${platform}"
     compile "org.openjfx:javafx-fxml:11:${platform}"
 
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'

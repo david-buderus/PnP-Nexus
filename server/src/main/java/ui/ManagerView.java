@@ -1,5 +1,11 @@
 package ui;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.deser.std.ObjectArrayDeserializer;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,6 +23,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import manager.*;
+import model.ICurrency;
+import model.IRarity;
+import model.attribute.IPrimaryAttribute;
+import model.attribute.ISecondaryAttribute;
+import model.item.*;
+import model.other.ISpell;
+import model.other.ITalent;
+import model.other.Spell;
+import model.other.Talent;
+import network.serializer.*;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import ui.battle.BattleOverview;
 import ui.map.MapView;
@@ -25,9 +41,12 @@ import ui.utility.*;
 import ui.utility.helper.HelperOverview;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 
 public class ManagerView extends View {
@@ -152,6 +171,10 @@ public class ManagerView extends View {
         checkUpdateButton.setMaxWidth(Double.MAX_VALUE);
         settingsPane.add(checkUpdateButton, 0, 4, 2, 1);
 
+        Button test = new Button();
+        test.setOnAction(ev -> test());
+        settingsPane.add(test, 0, 5);
+
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -165,6 +188,29 @@ public class ManagerView extends View {
 
         if (!defaultPath.get().isBlank()) {
             load(new File(defaultPath.get()));
+        }
+    }
+
+    private void test() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        SimpleModule module = new SimpleModule();
+        module.addDeserializer(IRarity.class, new RarityDeserializer());
+        module.addDeserializer(IPrimaryAttribute.class, new PrimaryAttributeDeserializer());
+        module.addDeserializer(ISecondaryAttribute.class, new SecondaryAttributeDeserializer());
+        module.addDeserializer(IItem.class, new IItemDeserializer(Item.class, Plant.class, Armor.class, Weapon.class, Jewellery.class));
+        module.addDeserializer(ICurrency.class, new CurrencyDeserializer());
+        module.addSerializer(ICurrency.class, new CurrencySerializer());
+        module.addAbstractTypeMapping(ITalent.class, Talent.class);
+        mapper.registerModule(module);
+
+        try {
+            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(Database.talentList);
+            System.out.println(json);
+            ITalent[] spell = mapper.readValue(json, ITalent[].class);
+            System.out.println(Arrays.toString(spell));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

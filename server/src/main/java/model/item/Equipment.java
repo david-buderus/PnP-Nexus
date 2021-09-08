@@ -1,6 +1,5 @@
 package model.item;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -66,7 +65,6 @@ public abstract class Equipment extends Item implements IEquipment {
         return equipment;
     }
 
-    @JsonIgnore
     public Equipment getWithUpgrade() {
 
         Equipment equipment = this.copy();
