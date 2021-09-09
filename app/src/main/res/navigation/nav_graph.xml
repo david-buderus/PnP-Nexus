@@ -3,7 +3,23 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/nav_graph"
-  app:startDestination="@id/FirstFragment">
+  app:startDestination="@id/StartFragment">
+
+  <fragment
+    android:id="@+id/StartFragment"
+    android:label="@string/fragment_start_label"
+    android:name="de.pnp.manager.app.StartFragment"
+    tools:layout="@layout/fragment_start">
+    <action
+      android:id="@+id/action_StartFragment_to_LoginFragment"
+      app:destination="@id/LoginFragment"/>
+  </fragment>
+
+  <fragment
+    android:id="@+id/LoginFragment"
+    android:label="@string/fragment_login_label"
+    android:name="de.pnp.manager.app.LoginFragment"
+    tools:layout="@layout/fragment_login"/>
 
   <fragment
     android:id="@+id/FirstFragment"

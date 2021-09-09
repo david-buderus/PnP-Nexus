@@ -1,23 +1,44 @@
 package de.pnp.manager.app
 
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
+import info.androidhive.fontawesome.FontDrawable
+
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+        navView.setupWithNavController(navController)
 
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+        val drawable = FontDrawable(this, R.string.fa_address_book_solid, true, false)
+        drawable.setTextColor(ContextCompat.getColor(this, R.color.black))
+        drawable.textSize = 22f
+
+        navView.menu.forEach { item ->
+            run {
+                item.icon =drawable
+            }
         }
+
+        //setSupportActionBar(findViewById(R.id.toolbar))
+
+        //findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+        //    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        //            .setAction("Action", null).show()
+        //}
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
