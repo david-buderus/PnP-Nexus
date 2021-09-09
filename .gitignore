@@ -21,7 +21,6 @@ gradle-app.setting
 
 # other
 run
-gradle.properties
 bin/
 
 # vs code
@@ -31,3 +30,5 @@ bin/
 .classpath
 .project
 src/test/resources/Welteninhalt.laccdb
+
+local.properties
