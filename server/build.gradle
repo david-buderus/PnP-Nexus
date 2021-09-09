@@ -41,6 +41,9 @@ dependencies {
     implementation "org.openjfx:javafx-controls:11:${platform}"
     implementation "org.openjfx:javafx-fxml:11:${platform}"
 
+    implementation group: 'org.bouncycastle', name: 'bctls-jdk15on', version: '1.69'
+    implementation group: 'org.bouncycastle', name: 'bc-fips', version: '1.0.2.1'
+
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
