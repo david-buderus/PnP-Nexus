@@ -2,6 +2,7 @@ package manager;
 
 import model.Currency;
 import model.item.Item;
+import model.loot.ILoot;
 import model.loot.Loot;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +47,7 @@ public class UtilityTest {
     @Test
     public void sellLootTest() {
         float modifier = Utility.getConfig().getFloat("loot.sell.modifier");
-        List<Loot> lootList = new ArrayList<>();
+        List<ILoot> lootList = new ArrayList<>();
 
         assertEquals(0, Utility.sellLoot(lootList).getCoinValue());
 

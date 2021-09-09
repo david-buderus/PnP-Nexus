@@ -3,6 +3,8 @@ package model.other;
 import model.attribute.IPrimaryAttribute;
 import model.member.generation.PrimaryAttribute;
 
+import java.util.Arrays;
+
 public class Talent implements ITalent {
 
     protected String name;
@@ -50,5 +52,17 @@ public class Talent implements ITalent {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ITalent)) {
+            return false;
+        }
+
+        ITalent other = (ITalent) o;
+
+        return getName().equals(other.getName()) && Arrays.equals(getAttributes(), other.getAttributes())
+                && isMagicTalent() == other.isMagicTalent() && isWeaponTalent() == other.isWeaponTalent();
     }
 }

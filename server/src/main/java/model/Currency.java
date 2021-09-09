@@ -2,6 +2,7 @@ package model;
 
 import manager.LanguageUtility;
 import manager.Utility;
+import model.item.Item;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.ArrayList;
@@ -205,5 +206,16 @@ public class Currency implements ICurrency {
         } else {
             return LanguageUtility.getMessage("coin.notTradeable");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ICurrency)) {
+            return false;
+        }
+
+        ICurrency other = (ICurrency) o;
+
+        return other.getCoinValue() == getCoinValue() && other.isTradeable() == isTradeable();
     }
 }

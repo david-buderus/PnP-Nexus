@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.util.EnumResolver;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -25,9 +26,12 @@ import javafx.stage.Stage;
 import manager.*;
 import model.ICurrency;
 import model.IRarity;
+import model.Rarity;
 import model.attribute.IPrimaryAttribute;
 import model.attribute.ISecondaryAttribute;
 import model.item.*;
+import model.member.generation.PrimaryAttribute;
+import model.member.generation.SecondaryAttribute;
 import model.other.ISpell;
 import model.other.ITalent;
 import model.other.Spell;
@@ -171,10 +175,6 @@ public class ManagerView extends View {
         checkUpdateButton.setMaxWidth(Double.MAX_VALUE);
         settingsPane.add(checkUpdateButton, 0, 4, 2, 1);
 
-        Button test = new Button();
-        test.setOnAction(ev -> test());
-        settingsPane.add(test, 0, 5);
-
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -188,29 +188,6 @@ public class ManagerView extends View {
 
         if (!defaultPath.get().isBlank()) {
             load(new File(defaultPath.get()));
-        }
-    }
-
-    private void test() {
-        ObjectMapper mapper = new ObjectMapper();
-
-        SimpleModule module = new SimpleModule();
-        module.addDeserializer(IRarity.class, new RarityDeserializer());
-        module.addDeserializer(IPrimaryAttribute.class, new PrimaryAttributeDeserializer());
-        module.addDeserializer(ISecondaryAttribute.class, new SecondaryAttributeDeserializer());
-        module.addDeserializer(IItem.class, new IItemDeserializer(Item.class, Plant.class, Armor.class, Weapon.class, Jewellery.class));
-        module.addDeserializer(ICurrency.class, new CurrencyDeserializer());
-        module.addSerializer(ICurrency.class, new CurrencySerializer());
-        module.addAbstractTypeMapping(ITalent.class, Talent.class);
-        mapper.registerModule(module);
-
-        try {
-            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(Database.talentList);
-            System.out.println(json);
-            ITalent[] spell = mapper.readValue(json, ITalent[].class);
-            System.out.println(Arrays.toString(spell));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
