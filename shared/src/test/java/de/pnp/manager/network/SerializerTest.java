@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.MessageType;
+import de.pnp.manager.network.message.login.LoginRequestMessage;
+import de.pnp.manager.network.serializer.BaseModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -20,19 +22,18 @@ public class SerializerTest {
     @Test
     public static void createMapper() {
         MAPPER = new ObjectMapper();
-
+        MAPPER.registerModule(new BaseModule());
     }
 
     @Test
     public void baseMessageSerializer() throws JsonProcessingException {
 
-        MessageType type = MessageType.createSession;
         Date time = Calendar.getInstance().getTime();
 
-        String json = MAPPER.writeValueAsString(new BaseMessage(type, time));
-        BaseMessage message = MAPPER.readValue(json, BaseMessage.class);
+        String json = MAPPER.writeValueAsString(new LoginRequestMessage("Test", time));
+        BaseMessage<?> message = MAPPER.readValue(json, BaseMessage.class);
 
-        assertEquals(type, message.type);
-        assertEquals(time, message.timestamp);
+        assertEquals(MessageType.loginRequest, message.getType());
+        assertEquals(time, message.getTimestamp());
     }
 }
