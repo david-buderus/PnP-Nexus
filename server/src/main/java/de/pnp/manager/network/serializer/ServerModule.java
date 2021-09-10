@@ -12,9 +12,9 @@ import de.pnp.manager.model.member.generation.SecondaryAttribute;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Talent;
 
-public class BaseModule extends SimpleModule {
+public class ServerModule extends BaseModule {
 
-    public BaseModule() {
+    public ServerModule() {
         super();
 
         this.addAbstractTypeMapping(IRarity.class, Rarity.class);
