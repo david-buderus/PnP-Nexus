@@ -1,6 +1,7 @@
 package de.pnp.manager.network;
 
 import de.pnp.manager.main.Utility;
+import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.MessageType;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
@@ -23,7 +24,7 @@ public class ConnectionTest {
     @BeforeAll
     @Test
     public static void setup() {
-        server = new ServerNetworkHandler();
+        server = new ServerNetworkHandler(new Manager());
         server.start();
 
         try {
@@ -38,10 +39,10 @@ public class ConnectionTest {
 
     @Test
     public void test() throws IOException {
-        BaseMessage<?> resp1 = client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
+        BaseMessage resp1 = client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
 
         assertEquals(MessageType.loginResponse, resp1.getType());
-        assertEquals("Test", ((LoginResponseMessage.LoginResponseData) resp1.getData()).getName());
+        assertEquals("Test", ((LoginResponseMessage) resp1).getData().getName());
     }
 
     @AfterAll

@@ -2,11 +2,10 @@ package de.pnp.manager.network.message;
 
 import java.util.Date;
 
-public abstract class BaseMessage<Data> {
+public abstract class BaseMessage {
 
     protected MessageType type;
     protected Date timestamp;
-    protected Data data;
 
     protected BaseMessage() { }
 
@@ -29,13 +28,5 @@ public abstract class BaseMessage<Data> {
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public Data getData() {
-        return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
     }
 }

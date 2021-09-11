@@ -31,7 +31,7 @@ public class SerializerTest {
         Date time = Calendar.getInstance().getTime();
 
         String json = MAPPER.writeValueAsString(new LoginRequestMessage("Test", time));
-        BaseMessage<?> message = MAPPER.readValue(json, BaseMessage.class);
+        BaseMessage message = MAPPER.readValue(json, BaseMessage.class);
 
         assertEquals(MessageType.loginRequest, message.getType());
         assertEquals(time, message.getTimestamp());

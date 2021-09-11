@@ -2,10 +2,14 @@ package de.pnp.manager.network;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.pnp.manager.network.client.IClient;
+import de.pnp.manager.model.manager.Manager;
+import de.pnp.manager.network.interfaces.Client;
+import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.DataMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
+import de.pnp.manager.network.message.session.SessionQueryResponse;
 import de.pnp.manager.network.serializer.ServerModule;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -15,13 +19,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.function.Consumer;
 
-public class ClientHandler extends Thread implements IClient {
+public class ClientHandler extends Thread implements Client {
 
     private static int ID_COUNTER = 0;
 
-    public static synchronized String getNextClientID(){
-        return DigestUtils.sha256Hex(String.valueOf(++ID_COUNTER));
+    protected static synchronized String getNextClientID(){
+        return "client-" + DigestUtils.sha256Hex(String.valueOf(++ID_COUNTER));
     }
 
     protected Socket clientSocket;
@@ -32,14 +38,18 @@ public class ClientHandler extends Thread implements IClient {
 
     protected String clientId;
     protected String clientName;
+    protected final Manager manager;
 
-    public ClientHandler(Socket socket) {
+    protected Consumer<Client> onDisconnect;
+
+    public ClientHandler(Socket socket, Manager manager) {
         this.clientSocket = socket;
         this.mapper = new ObjectMapper();
         this.mapper.registerModule(new ServerModule());
         this.calendar = Calendar.getInstance();
         this.clientId = getNextClientID();
         this.clientName = clientId;
+        this.manager = manager;
     }
 
     public void run() {
@@ -59,9 +69,24 @@ public class ClientHandler extends Thread implements IClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.onDisconnect.accept(this);
+    }
+    protected void handleMessage(BaseMessage message) {
+        switch (message.getType()) {
+            case loginRequest:
+                LoginRequestMessage.LoginRequestData data = ((LoginRequestMessage) message).getData();
+                this.clientName = data.getName();
+                sendMessage(new LoginResponseMessage(clientId, clientName, calendar.getTime()));
+                break;
+
+            case querySessions:
+                sendMessage(new SessionQueryResponse(manager.getNetworkHandler().getActiveSessions(), calendar.getTime()));
+                break;
+        }
     }
 
-    protected void write(BaseMessage<?> message) {
+    @Override
+    public void sendMessage(BaseMessage message) {
         try {
             out.println(mapper.writeValueAsString(message));
         } catch (JsonProcessingException e) {
@@ -69,14 +94,9 @@ public class ClientHandler extends Thread implements IClient {
         }
     }
 
-    protected void handleMessage(BaseMessage<?> message) {
-        switch (message.getType()) {
-            case loginRequest:
-                LoginRequestMessage.LoginRequestData data = (LoginRequestMessage.LoginRequestData) message.getData();
-                this.clientName = data.getName();
-                write(new LoginResponseMessage(clientId, clientName, calendar.getTime()));
-                break;
-        }
+    @Override
+    public void setOnDisconnect(Consumer<Client> onDisconnect) {
+        this.onDisconnect = onDisconnect;
     }
 
     @Override

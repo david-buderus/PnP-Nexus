@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MessageDeserializer extends StdDeserializer<BaseMessage<?>> {
+public class MessageDeserializer extends StdDeserializer<BaseMessage> {
 
-    protected Map<MessageType, Class<? extends BaseMessage<?>>> typeClassMap;
+    protected Map<MessageType, Class<? extends BaseMessage>> typeClassMap;
 
     public MessageDeserializer() {
         super(BaseMessage.class);
@@ -26,7 +26,7 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage<?>> {
     }
 
     @Override
-    public BaseMessage<?> deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
+    public BaseMessage deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
         ObjectMapper mapper = (ObjectMapper) parser.getCodec();
         JsonNode node = parser.getCodec().readTree(parser);
 

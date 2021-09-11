@@ -1,11 +1,11 @@
 package de.pnp.manager.network.message.login;
 
-import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.DataMessage;
 import de.pnp.manager.network.message.MessageType;
 
 import java.util.Date;
 
-public class LoginResponseMessage extends BaseMessage<LoginResponseMessage.LoginResponseData> {
+public class LoginResponseMessage extends DataMessage<LoginResponseMessage.LoginResponseData> {
 
     public LoginResponseMessage() { }
 
