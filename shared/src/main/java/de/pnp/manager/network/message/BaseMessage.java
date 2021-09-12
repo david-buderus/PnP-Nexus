@@ -4,22 +4,32 @@ import java.util.Date;
 
 public abstract class BaseMessage {
 
-    protected MessageType type;
+    /**
+     * <pre>
+     * Format: SONN
+     * Example: 1203
+     *
+     * S := State (1 := PreLogin)
+     * O := Origin (0 := Server, 1 := DM, 2 := Player/DM)
+     * N := ID of the message
+     * </pre>
+     */
+    protected int id;
     protected Date timestamp;
 
     protected BaseMessage() { }
 
-    protected BaseMessage(MessageType type, Date timestamp) {
-        this.type = type;
+    protected BaseMessage(int id, Date timestamp) {
+        this.id = id;
         this.timestamp = timestamp;
     }
 
-    public MessageType getType() {
-        return type;
+    public int getId() {
+        return id;
     }
 
-    public void setType(MessageType type) {
-        this.type = type;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Date getTimestamp() {

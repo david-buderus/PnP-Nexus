@@ -4,13 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.network.interfaces.Client;
-import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
-import de.pnp.manager.network.message.DataMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.session.SessionQueryResponse;
 import de.pnp.manager.network.serializer.ServerModule;
+import de.pnp.manager.network.state.BaseMessageStateMachine;
+import de.pnp.manager.network.state.StateMachine;
+import de.pnp.manager.network.state.States;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.BufferedReader;
@@ -19,14 +20,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.function.Consumer;
 
 public class ClientHandler extends Thread implements Client {
 
     private static int ID_COUNTER = 0;
 
-    protected static synchronized String getNextClientID(){
+    protected static synchronized String getNextClientID() {
         return "client-" + DigestUtils.sha256Hex(String.valueOf(++ID_COUNTER));
     }
 
@@ -35,6 +35,7 @@ public class ClientHandler extends Thread implements Client {
     protected BufferedReader in;
     protected ObjectMapper mapper;
     protected Calendar calendar;
+    protected StateMachine<BaseMessage> stateMachine;
 
     protected String clientId;
     protected String clientName;
@@ -50,6 +51,7 @@ public class ClientHandler extends Thread implements Client {
         this.clientId = getNextClientID();
         this.clientName = clientId;
         this.manager = manager;
+        this.stateMachine = createStateMachine();
     }
 
     public void run() {
@@ -71,18 +73,9 @@ public class ClientHandler extends Thread implements Client {
         }
         this.onDisconnect.accept(this);
     }
-    protected void handleMessage(BaseMessage message) {
-        switch (message.getType()) {
-            case loginRequest:
-                LoginRequestMessage.LoginRequestData data = ((LoginRequestMessage) message).getData();
-                this.clientName = data.getName();
-                sendMessage(new LoginResponseMessage(clientId, clientName, calendar.getTime()));
-                break;
 
-            case querySessions:
-                sendMessage(new SessionQueryResponse(manager.getNetworkHandler().getActiveSessions(), calendar.getTime()));
-                break;
-        }
+    protected void handleMessage(BaseMessage message) {
+        stateMachine.fire(message);
     }
 
     @Override
@@ -107,5 +100,21 @@ public class ClientHandler extends Thread implements Client {
     @Override
     public String getClientName() {
         return clientName;
+    }
+
+    private StateMachine<BaseMessage> createStateMachine() {
+        BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
+
+        stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, 1200, message -> {
+            LoginRequestMessage.LoginRequestData data = ((LoginRequestMessage) message).getData();
+            this.clientName = data.getName();
+            sendMessage(new LoginResponseMessage(clientId, clientName, calendar.getTime()));
+        });
+
+        stateMachine.registerTransition(States.LOGGED_IN, 2200, message ->
+                sendMessage(new SessionQueryResponse(manager.getNetworkHandler().getActiveSessions(), calendar.getTime()))
+        );
+
+        return stateMachine;
     }
 }

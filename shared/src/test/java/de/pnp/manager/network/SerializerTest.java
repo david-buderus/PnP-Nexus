@@ -3,7 +3,6 @@ package de.pnp.manager.network;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.network.message.BaseMessage;
-import de.pnp.manager.network.message.MessageType;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.serializer.BaseModule;
 import org.junit.jupiter.api.BeforeAll;
@@ -33,7 +32,7 @@ public class SerializerTest {
         String json = MAPPER.writeValueAsString(new LoginRequestMessage("Test", time));
         BaseMessage message = MAPPER.readValue(json, BaseMessage.class);
 
-        assertEquals(MessageType.loginRequest, message.getType());
+        assertEquals(1200, message.getId());
         assertEquals(time, message.getTimestamp());
     }
 }

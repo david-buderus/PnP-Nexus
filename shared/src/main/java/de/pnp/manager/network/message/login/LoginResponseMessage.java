@@ -1,7 +1,6 @@
 package de.pnp.manager.network.message.login;
 
 import de.pnp.manager.network.message.DataMessage;
-import de.pnp.manager.network.message.MessageType;
 
 import java.util.Date;
 
@@ -10,7 +9,7 @@ public class LoginResponseMessage extends DataMessage<LoginResponseMessage.Login
     public LoginResponseMessage() { }
 
     public LoginResponseMessage(String id, String name, Date timestamp) {
-        super(MessageType.loginResponse, timestamp);
+        super(1000, timestamp);
         LoginResponseData data = new LoginResponseData();
         data.setId(id);
         data.setName(name);

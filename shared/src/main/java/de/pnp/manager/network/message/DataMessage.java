@@ -9,7 +9,7 @@ public abstract class DataMessage<Data> extends BaseMessage {
     public DataMessage() {
     }
 
-    public DataMessage(MessageType type, Date timestamp) {
+    public DataMessage(int type, Date timestamp) {
         super(type, timestamp);
     }
 

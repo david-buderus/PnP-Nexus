@@ -1,7 +1,6 @@
 package de.pnp.manager.network.message.session;
 
 import de.pnp.manager.network.message.DataMessage;
-import de.pnp.manager.network.message.MessageType;
 import de.pnp.manager.network.session.ISession;
 
 import java.util.Collection;
@@ -13,7 +12,7 @@ public class SessionQueryResponse extends DataMessage<Collection<? extends ISess
     }
 
     public SessionQueryResponse( Collection<? extends ISession> sessions, Date timestamp) {
-        super(MessageType.sessionQueryResponse, timestamp);
+        super(2000, timestamp);
         this.setData(sessions);
     }
 }
