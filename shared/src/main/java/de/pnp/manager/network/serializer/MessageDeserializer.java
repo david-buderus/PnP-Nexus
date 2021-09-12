@@ -34,10 +34,9 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         JsonNode node = parser.getCodec().readTree(parser);
 
         try {
-            int id = node.get("id").asInt();
-            return mapper.treeToValue(node, typeClassMap.get(id));
+            return mapper.treeToValue(node, typeClassMap.get(node.get("id").asInt()));
         } catch (IllegalArgumentException e) {
-            throw new IOException("Unknown message type: " + node.get("type").asText());
+            throw new IOException("Unknown message id: " + node.get("id").asInt());
         }
     }
 }
