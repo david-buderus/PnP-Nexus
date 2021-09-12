@@ -12,7 +12,7 @@ public class TestClient {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     public TestClient() {
         this.socket = null;
@@ -25,6 +25,7 @@ public class TestClient {
     public void connect(String ip, int port){
         try {
             socket = new Socket(ip, port);
+            socket.setSoTimeout(1000);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {

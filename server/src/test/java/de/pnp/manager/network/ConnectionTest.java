@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConnectionTest {
 
-    protected static TestClient client;
     protected static ServerNetworkHandler server;
 
     @BeforeAll
@@ -37,13 +36,11 @@ public class ConnectionTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        client = new TestClient();
-        client.connect("127.0.0.1", Utility.getConfig().getInt("server.port"));
     }
 
     @Test
     public void test() throws IOException {
+        TestClient client = createTestClient();
         BaseMessage resp1 = client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
 
         assertEquals(1000, resp1.getId());
@@ -52,6 +49,7 @@ public class ConnectionTest {
 
     @Test
     public void sessionTest() throws IOException {
+        TestClient client = createTestClient();
         client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
         String resp1 = client.sendMessageWithRawResponse(new QuerySessions(Calendar.getInstance().getTime()));
 
@@ -67,9 +65,15 @@ public class ConnectionTest {
     @AfterAll
     @Test
     public static void tearDown() {
-        client.closeConnection();
         server.stop();
     }
 
-    private static class SessionMessage extends DataMessage<Collection<Map<String, Object>>> { }
+    private static class SessionMessage extends DataMessage<Collection<Map<String, Object>>> {
+    }
+
+    private TestClient createTestClient() {
+        TestClient client = new TestClient();
+        client.connect("127.0.0.1", Utility.getConfig().getInt("server.port"));
+        return client;
+    }
 }
