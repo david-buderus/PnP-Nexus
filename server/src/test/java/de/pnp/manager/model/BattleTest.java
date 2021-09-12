@@ -12,7 +12,7 @@ public class BattleTest extends TestWithDatabaseAccess {
 
     @Test
     public void test() {
-        Battle b = new Battle();
+        Battle b = new Battle("Test");
 
         b.createEnemy();
         b.createPlayer();
