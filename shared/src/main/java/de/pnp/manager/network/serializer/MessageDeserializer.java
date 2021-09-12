@@ -9,6 +9,8 @@ import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.MessageType;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
+import de.pnp.manager.network.message.session.QuerySessions;
+import de.pnp.manager.network.message.session.SessionQueryResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,6 +25,8 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap = new HashMap<>();
         this.typeClassMap.put(MessageType.loginRequest, LoginRequestMessage.class);
         this.typeClassMap.put(MessageType.loginResponse, LoginResponseMessage.class);
+        this.typeClassMap.put(MessageType.querySessions, QuerySessions.class);
+        this.typeClassMap.put(MessageType.sessionQueryResponse, SessionQueryResponse.class);
     }
 
     @Override

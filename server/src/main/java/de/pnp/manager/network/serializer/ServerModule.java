@@ -1,6 +1,5 @@
 package de.pnp.manager.network.serializer;
 
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.IRarity;
 import de.pnp.manager.model.Rarity;
@@ -17,12 +16,22 @@ public class ServerModule extends BaseModule {
     public ServerModule() {
         super();
 
+        // Enums
         this.addAbstractTypeMapping(IRarity.class, Rarity.class);
         this.addAbstractTypeMapping(IPrimaryAttribute.class, PrimaryAttribute.class);
         this.addAbstractTypeMapping(ISecondaryAttribute.class, SecondaryAttribute.class);
-        this.addAbstractTypeMapping(ITalent.class, Talent.class);
 
+        // Classes
+        this.addAbstractTypeMapping(ITalent.class, Talent.class);
+        this.addAbstractTypeMapping(IArmor.class, Armor.class);
+        this.addAbstractTypeMapping(IWeapon.class, Weapon.class);
+        this.addAbstractTypeMapping(IJewellery.class, Jewellery.class);
+
+        // Inheritance
         this.addDeserializer(IItem.class, new IItemDeserializer(Item.class, Plant.class, Armor.class, Weapon.class, Jewellery.class));
+        this.addDeserializer(IEquipment.class, new IEquipmentDeserializer(Armor.class, Weapon.class, Jewellery.class));
+
+        // Special
         this.addDeserializer(ICurrency.class, new CurrencyDeserializer());
         this.addSerializer(ICurrency.class, new CurrencySerializer());
     }

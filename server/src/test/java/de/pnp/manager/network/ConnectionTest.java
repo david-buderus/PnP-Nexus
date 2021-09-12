@@ -1,11 +1,14 @@
 package de.pnp.manager.network;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.main.Utility;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.DataMessage;
 import de.pnp.manager.network.message.MessageType;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
+import de.pnp.manager.network.message.session.QuerySessions;
 import de.pnp.manager.testHelper.TestClient;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,8 +16,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConnectionTest {
 
@@ -45,10 +51,25 @@ public class ConnectionTest {
         assertEquals("Test", ((LoginResponseMessage) resp1).getData().getName());
     }
 
+    @Test
+    public void sessionTest() throws IOException {
+        String resp1 = client.sendMessageWithRawResponse(new QuerySessions(Calendar.getInstance().getTime()));
+
+        //Sessions deserialization is not needed at the server side
+        SessionMessage message = new ObjectMapper().readValue(resp1, SessionMessage.class);
+
+        assertEquals(message.getType(), MessageType.sessionQueryResponse);
+        assertTrue(message.getData().stream().findFirst().isPresent());
+        assertEquals(message.getData().stream().findFirst().get().get("sessionID"), "0");
+        assertEquals(message.getData().stream().findFirst().get().get("sessionName"), "PnP");
+    }
+
     @AfterAll
     @Test
     public static void tearDown() {
         client.closeConnection();
         server.stop();
     }
+
+    private static class SessionMessage extends DataMessage<Collection<Map<String, Object>>> { }
 }

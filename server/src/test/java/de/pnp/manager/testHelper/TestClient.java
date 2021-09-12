@@ -46,4 +46,9 @@ public class TestClient {
         out.println(mapper.writeValueAsString(message));
         return mapper.readValue(in.readLine(), BaseMessage.class);
     }
+
+    public String sendMessageWithRawResponse(BaseMessage message) throws IOException {
+        out.println(mapper.writeValueAsString(message));
+        return in.readLine();
+    }
 }
