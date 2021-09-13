@@ -57,6 +57,7 @@ object TCPClient {
             }
         }
         thread.start()
+        thread.join()
     }
 
     fun sendTo(message: BaseMessage?) {

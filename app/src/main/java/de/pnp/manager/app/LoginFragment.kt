@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.navigation.fragment.findNavController
 import de.pnp.manager.app.network.TCPClient
+import de.pnp.manager.network.message.login.LoginRequestMessage
+import java.util.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -32,6 +34,8 @@ class LoginFragment : Fragment() {
             val ip = view.findViewById<EditText>(R.id.editTextIP).text.toString()
 
             TCPClient.start(ip, port)
+
+            TCPClient.sendTo(LoginRequestMessage("test", Date()))
 
             findNavController().navigate(R.id.action_LoginFragment_to_SessionOverviewFragment)
         }
