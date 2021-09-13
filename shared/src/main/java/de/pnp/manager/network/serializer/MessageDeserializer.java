@@ -12,10 +12,7 @@ import de.pnp.manager.network.message.error.WrongStateMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.login.LogoutRequestMessage;
-import de.pnp.manager.network.message.session.JoinSessionRequestMessage;
-import de.pnp.manager.network.message.session.JoinSessionResponseMessage;
-import de.pnp.manager.network.message.session.QuerySessions;
-import de.pnp.manager.network.message.session.SessionQueryResponse;
+import de.pnp.manager.network.message.session.*;
 import de.pnp.manager.network.message.universal.OkMessage;
 
 import java.io.IOException;
@@ -40,8 +37,11 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(SESSION_QUERY_RESPONSE, SessionQueryResponse.class);
         this.typeClassMap.put(JOIN_SESSION_REQUEST, JoinSessionRequestMessage.class);
         this.typeClassMap.put(JOIN_SESSION_RESPONSE, JoinSessionResponseMessage.class);
+        //In Session
+        this.typeClassMap.put(UPDATE_SESSION, UpdateSessionMessage.class);
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);
+        this.typeClassMap.put(LEAVE_SESSION_REQUEST, LeaveSessionRequestMessage.class);
         //Error
         this.typeClassMap.put(ERROR, ErrorMessage.class);
         this.typeClassMap.put(WRONG_STATE, WrongStateMessage.class);

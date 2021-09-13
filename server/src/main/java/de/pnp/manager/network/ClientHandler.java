@@ -3,6 +3,7 @@ package de.pnp.manager.network;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.model.manager.Manager;
+import de.pnp.manager.network.eventhandler.LeaveSessionHandler;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
@@ -51,6 +52,7 @@ public class ClientHandler extends Thread implements Client {
 
     protected String clientId;
     protected String clientName;
+    protected Session currentSession;
     protected final Manager manager;
 
     protected Consumer<Client> onDisconnect;
@@ -114,6 +116,15 @@ public class ClientHandler extends Thread implements Client {
         return clientName;
     }
 
+    @Override
+    public Session getCurrentSession() {
+        return currentSession;
+    }
+
+    public void setCurrentSession(Session session) {
+        this.currentSession = session;
+    }
+
     private StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
         stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(calendar.getTime())));
@@ -142,7 +153,7 @@ public class ClientHandler extends Thread implements Client {
             sendMessage(new OkMessage(calendar.getTime()));
         });
 
-        stateMachine.registerTransition(States.LOGGED_IN, States.PRE_SESSION, JOIN_SESSION_REQUEST, baseMessage -> {
+        stateMachine.registerTransition(States.LOGGED_IN, States.IN_SESSION, JOIN_SESSION_REQUEST, baseMessage -> {
             JoinSessionRequestMessage message =  (JoinSessionRequestMessage) baseMessage;
 
             NetworkHandler handler = manager.getNetworkHandler();
@@ -152,11 +163,20 @@ public class ClientHandler extends Thread implements Client {
             if (optSession.isPresent()) {
                 Session session = (Session) optSession.get();
                 session.addClient(this);
+                this.currentSession = session;
                 sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
             } else {
                 sendMessage(new ErrorMessage("The session with the given id does not exist", calendar.getTime()));
             }
         });
+
+        //In Session
+        stateMachine.registerTransition(States.IN_SESSION, States.LOGGED_IN, LEAVE_SESSION_REQUEST,
+                message -> new LeaveSessionHandler(this, manager.getNetworkHandler(), calendar));
+
+        //In Character
+        stateMachine.registerTransition(States.IN_CHARACTER, States.LOGGED_IN, LEAVE_SESSION_REQUEST,
+                message -> new LeaveSessionHandler(this, manager.getNetworkHandler(), calendar));
 
         return stateMachine;
     }

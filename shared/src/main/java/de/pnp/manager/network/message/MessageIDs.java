@@ -23,8 +23,12 @@ public abstract class MessageIDs {
     public static final int JOIN_SESSION_REQUEST = 2202;
     public static final int JOIN_SESSION_RESPONSE = 2002;
 
+    //In Session
+    public static final int UPDATE_SESSION = 3000;
+
     //Universal
     public static final int OK = 8000;
+    public static final int LEAVE_SESSION_REQUEST = 8201;
 
     //Error
     public static final int ERROR = 9000;
