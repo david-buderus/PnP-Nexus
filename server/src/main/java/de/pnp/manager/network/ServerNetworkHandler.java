@@ -44,13 +44,6 @@ public class ServerNetworkHandler implements NetworkHandler {
 
         try {
 
-            /*SSLContext sslContext = SSLContext.getInstance("TLS", new BouncyCastleJsseProvider(new BouncyCastleFipsProvider()));
-            KeyManagerFactory keyMgrFact = KeyManagerFactory.getInstance("PKIX", new BouncyCastleJsseProvider(new BouncyCastleFipsProvider()));
-            keyMgrFact.init(null, "password".toCharArray());
-            sslContext.init(keyMgrFact.getKeyManagers(), null, null);
-
-            SSLServerSocketFactory fact = sslContext.getServerSocketFactory();
-            serverSocket = (SSLServerSocket) fact.createServerSocket(Utility.getConfig().getInt("server.port"));*/
 
             serverSocket = new ServerSocket(Utility.getConfig().getInt("server.port"));
             active = true;
