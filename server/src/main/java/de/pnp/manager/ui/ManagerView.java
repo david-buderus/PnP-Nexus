@@ -1,6 +1,7 @@
 package de.pnp.manager.ui;
 
 import de.pnp.manager.main.*;
+import de.pnp.manager.model.manager.Manager;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -34,9 +35,11 @@ public class ManagerView extends View {
 
     protected StringProperty fileName;
     protected StringProperty defaultPath;
+    protected final Manager manager;
 
     public ManagerView(Stage stage, Application application) {
         super("manager.title", stage);
+        this.manager = new Manager();
         this.fileName = new SimpleStringProperty();
         this.fileName.bind(LanguageUtility.getMessageProperty("manager.noFile"));
         this.defaultPath = new SimpleStringProperty(Utility.getConfig().getString("home.defaultLoadingPath", ""));
@@ -44,7 +47,7 @@ public class ManagerView extends View {
 
         TabPane root = new TabPane();
 
-        Tab battleTab = new BattleOverview(this);
+        Tab battleTab = new BattleOverview(this, manager.getBattleHandler());
         root.getTabs().add(battleTab);
 
         Tab itemTab = new SQLView(this);

@@ -1,6 +1,7 @@
 package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.manager.BattleHandler;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -51,9 +52,9 @@ public class BattleView extends ConfigurableViewPart {
     private final FlowPane players;
     private final FlowPane enemies;
 
-    public BattleView(IView parent) {
+    public BattleView(IView parent, BattleHandler battleHandler) {
         super(parent);
-        this.battle = new Battle();
+        this.battle = battleHandler.createBattle();
         this.nameProperty().bindBidirectional(battle.nameProperty());
         this.panes = new HashMap<>();
         this.selectedSource = new SimpleObjectProperty<>();
@@ -529,5 +530,9 @@ public class BattleView extends ConfigurableViewPart {
         public ReadOnlyStringProperty toStringProperty() {
             return LanguageUtility.getMessageProperty("battle.shieldEnum." + super.toString());
         }
+    }
+
+    public Battle getBattle() {
+        return battle;
     }
 }
