@@ -37,6 +37,8 @@ class LoginFragment : Fragment() {
 
             TCPClient.sendTo(LoginRequestMessage("test", Date()))
 
+            Thread.sleep(50)
+
             findNavController().navigate(R.id.action_LoginFragment_to_SessionOverviewFragment)
         }
 

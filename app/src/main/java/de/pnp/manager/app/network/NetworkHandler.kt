@@ -44,6 +44,9 @@ object TCPClient {
                         try {
                             val inputLine: String = input.readLine()
                             val message = mapper.readValue(inputLine, BaseMessage::class.java)
+
+                            MessageHandler.stateMachine.fire(message)
+
                             println(message)
                         } catch (e: IOException) {
 
