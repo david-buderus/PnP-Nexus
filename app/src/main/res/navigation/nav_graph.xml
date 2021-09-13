@@ -3,7 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/nav_graph"
-  app:startDestination="@id/CharacterFragment">
+  app:startDestination="@id/StartFragment">
 
   <fragment
     android:id="@+id/StartFragment"
@@ -19,7 +19,11 @@
     android:id="@+id/LoginFragment"
     android:label="@string/fragment_login_label"
     android:name="de.pnp.manager.app.LoginFragment"
-    tools:layout="@layout/fragment_login"/>
+    tools:layout="@layout/fragment_login">
+    <action
+      android:id="@+id/action_LoginFragment_to_SessionOverviewFragment"
+      app:destination="@id/SessionOverviewFragment"/>
+  </fragment>
 
   <fragment
     android:id="@+id/CharacterFragment"
@@ -44,4 +48,15 @@
     android:label="@string/first_fragment_label"
     android:name="de.pnp.manager.app.TalentsFragment"
     tools:layout="@layout/fragment_talents"/>
+
+  <fragment
+    android:id="@+id/SessionOverviewFragment"
+    android:label="@string/fragment_session_overview_fragment_label"
+    android:name="de.pnp.manager.app.SessionOverview"
+    tools:layout="@layout/fragment_sessions"
+    >
+    <action
+      android:id="@+id/action_SessionOverviewFragment_to_CharacterFragment"
+      app:destination="@id/CharacterFragment"/>
+  </fragment>
 </navigation>
