@@ -17,6 +17,7 @@ public class BattleHandler {
         return "battle-" + DigestUtils.sha256Hex(String.valueOf(++ID_COUNTER));
     }
 
+    // maps sessionId to battles
     public Map<String, ArrayList<Battle>> sessionBattleMap;
 
     private final Manager manager;
