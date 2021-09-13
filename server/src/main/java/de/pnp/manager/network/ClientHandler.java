@@ -2,11 +2,13 @@ package de.pnp.manager.network;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.pnp.manager.main.Database;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.network.eventhandler.LeaveSessionHandler;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.ErrorMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
@@ -173,6 +175,17 @@ public class ClientHandler extends Thread implements Client {
         //In Session
         stateMachine.registerTransition(States.IN_SESSION, States.LOGGED_IN, LEAVE_SESSION_REQUEST,
                 message -> new LeaveSessionHandler(this, manager.getNetworkHandler(), calendar));
+
+        stateMachine.registerTransition(States.IN_SESSION, DATABASE_REQUEST,
+                message -> sendMessage(
+                        new DatabaseResponseMessage(
+                                Database.itemList,
+                                Database.fabricationList,
+                                Database.upgradeModelList,
+                                calendar.getTime()
+                        )
+                )
+        );
 
         //In Character
         stateMachine.registerTransition(States.IN_CHARACTER, States.LOGGED_IN, LEAVE_SESSION_REQUEST,

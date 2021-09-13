@@ -1,5 +1,16 @@
 package de.pnp.manager.main;
 
+import de.pnp.manager.model.IFabrication;
+import de.pnp.manager.model.Inconsistency;
+import de.pnp.manager.model.item.*;
+import de.pnp.manager.model.loot.DungeonLootFactory;
+import de.pnp.manager.model.member.generation.GenerationBase;
+import de.pnp.manager.model.member.generation.specs.*;
+import de.pnp.manager.model.other.CraftingBonus;
+import de.pnp.manager.model.other.Spell;
+import de.pnp.manager.model.other.Talent;
+import de.pnp.manager.model.upgrade.UpgradeFactory;
+import de.pnp.manager.model.upgrade.UpgradeModel;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ListProperty;
@@ -10,17 +21,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
-import de.pnp.manager.model.Fabrication;
-import de.pnp.manager.model.Inconsistency;
-import de.pnp.manager.model.item.*;
-import de.pnp.manager.model.loot.DungeonLootFactory;
-import de.pnp.manager.model.member.generation.GenerationBase;
-import de.pnp.manager.model.member.generation.specs.*;
-import de.pnp.manager.model.other.CraftingBonus;
-import de.pnp.manager.model.other.Spell;
-import de.pnp.manager.model.other.Talent;
-import de.pnp.manager.model.upgrade.IUpgradeModel;
-import de.pnp.manager.model.upgrade.UpgradeFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,10 +36,10 @@ public abstract class Database {
     public static final ListProperty<Spell> spellList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Weapon> weaponList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<UpgradeFactory> upgradeList = new SimpleListProperty<>(FXCollections.observableArrayList());
-    public static final ListProperty<IUpgradeModel> upgradeModelList = new SimpleListProperty<>(FXCollections.observableArrayList());
-    public static final ListProperty<Item> itemList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<UpgradeModel> upgradeModelList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<IItem> itemList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<CraftingBonus> craftingBonusList = new SimpleListProperty<>(FXCollections.observableArrayList());
-    public static final ListProperty<Fabrication> fabricationList = new SimpleListProperty<>(FXCollections.observableArrayList());
+    public static final ListProperty<IFabrication> fabricationList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Inconsistency> inconsistencyList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Talent> talentList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<String> shieldTypes = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -51,7 +51,7 @@ public abstract class Database {
     public static final ListProperty<FightingStyle> fightingStyleList = new SimpleListProperty<>(FXCollections.observableArrayList());
     public static final ListProperty<Specialisation> specialisationList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
-    public static final MapProperty<IUpgradeModel, UpgradeFactory> upgradeMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
+    public static final MapProperty<UpgradeModel, UpgradeFactory> upgradeMap = new SimpleMapProperty<>(FXCollections.observableHashMap());
 
     public static final BooleanBinding inconsistent = Bindings.isEmpty(inconsistencyList).not();
 
@@ -60,13 +60,13 @@ public abstract class Database {
     static {
         upgradeList.addListener((ob, o, n) -> {
             upgradeMap.clear();
-            ObservableList<IUpgradeModel> list = FXCollections.observableArrayList();
+            ObservableList<UpgradeModel> list = FXCollections.observableArrayList();
 
             for (UpgradeFactory factory : n) {
-                Collection<IUpgradeModel> models = factory.getModels();
+                Collection<UpgradeModel> models = factory.getModels();
                 list.addAll(models);
 
-                for (IUpgradeModel model : models) {
+                for (UpgradeModel model : models) {
                     upgradeMap.put(model, factory);
                 }
             }
@@ -76,7 +76,7 @@ public abstract class Database {
         itemList.addListener((ob, o, n) -> {
             materialsMap.clear();
 
-            for (Item item : n) {
+            for (IItem item : n) {
                 if (item instanceof Equipment) {
                     Equipment equipment = (Equipment) item;
 
@@ -122,7 +122,7 @@ public abstract class Database {
      * @return a matching item or the fallback
      */
     public static Item getItemOrElse(String name, Item item) {
-        return itemList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
+        return (Item) itemList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
                 .findFirst().orElse(item);
     }
 
@@ -166,7 +166,7 @@ public abstract class Database {
      * @throws NoSuchElementException if there is no item with the given name
      */
     public static Item getItemWithoutDefault(String name) throws NoSuchElementException {
-        return itemList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
+        return (Item) itemList.stream().filter(x -> trimSpaces(x.getName()).equalsIgnoreCase(trimSpaces(name)))
                 .findFirst().orElseThrow();
     }
 

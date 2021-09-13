@@ -120,15 +120,6 @@ public class Item implements IItem {
         return amount.get();
     }
 
-    public String getPrettyAmount() {
-        float amount = getAmount();
-        if (amount == (int) amount) {
-            return Integer.toString((int) amount);
-        } else {
-            return Float.toString(amount);
-        }
-    }
-
     public void setAmount(float amount) {
         this.amount.set(amount);
     }

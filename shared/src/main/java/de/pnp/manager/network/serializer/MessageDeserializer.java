@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.database.DatabaseRequestMessage;
+import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.DeniedMessage;
 import de.pnp.manager.network.message.error.ErrorMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
@@ -39,6 +41,8 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(JOIN_SESSION_RESPONSE, JoinSessionResponseMessage.class);
         //In Session
         this.typeClassMap.put(UPDATE_SESSION, UpdateSessionMessage.class);
+        this.typeClassMap.put(DATABASE_RESPONSE, DatabaseResponseMessage.class);
+        this.typeClassMap.put(DATABASE_REQUEST, DatabaseRequestMessage.class);
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);
         this.typeClassMap.put(LEAVE_SESSION_REQUEST, LeaveSessionRequestMessage.class);

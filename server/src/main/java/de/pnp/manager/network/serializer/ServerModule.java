@@ -1,8 +1,6 @@
 package de.pnp.manager.network.serializer;
 
-import de.pnp.manager.model.ICurrency;
-import de.pnp.manager.model.IRarity;
-import de.pnp.manager.model.Rarity;
+import de.pnp.manager.model.*;
 import de.pnp.manager.model.attribute.IPrimaryAttribute;
 import de.pnp.manager.model.attribute.ISecondaryAttribute;
 import de.pnp.manager.model.item.*;
@@ -26,6 +24,8 @@ public class ServerModule extends BaseModule {
         this.addAbstractTypeMapping(IArmor.class, Armor.class);
         this.addAbstractTypeMapping(IWeapon.class, Weapon.class);
         this.addAbstractTypeMapping(IJewellery.class, Jewellery.class);
+        this.addAbstractTypeMapping(IFabrication.class, Fabrication.class);
+        this.addAbstractTypeMapping(IItemList.class, ItemList.class);
 
         // Inheritance
         this.addDeserializer(IItem.class, new IItemDeserializer(Item.class, Plant.class, Armor.class, Weapon.class, Jewellery.class));
