@@ -30,8 +30,19 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.findViewById<Button>(R.id.button_connect_to_server).setOnClickListener {
-            val port : Int = view.findViewById<EditText>(R.id.editTextPort).text.toString().toInt()
-            val ip = view.findViewById<EditText>(R.id.editTextIP).text.toString()
+            val port : Int =
+                if (view.findViewById<EditText>(R.id.editTextPort).text.toString().isEmpty())
+                    42020
+                else
+                    view.findViewById<EditText>(R.id.editTextPort).text.toString().toInt()
+
+
+            val ip =
+                if (view.findViewById<EditText>(R.id.editTextIP).text.toString().isEmpty())
+                    "192.168.0.59"
+                else
+                    view.findViewById<EditText>(R.id.editTextIP).text.toString()
+
 
             TCPClient.start(ip, port)
 
