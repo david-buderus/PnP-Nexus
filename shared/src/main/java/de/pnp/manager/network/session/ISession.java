@@ -1,8 +1,10 @@
 package de.pnp.manager.network.session;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.network.client.IClient;
 
 import java.util.Collection;
+import java.util.Map;
 
 public interface ISession {
 
@@ -10,5 +12,18 @@ public interface ISession {
 
     String getSessionName();
 
+    int getMaxClients();
+
+    boolean isPasswordProtected();
+
+    String getInfo();
+
     Collection<? extends IClient> getParticipatingClients();
+
+    Map<String, Object> getConfig();
+
+    @JsonIgnore
+    default SessionInfo getSessionInfo() {
+        return new SessionInfo(getSessionID(), getSessionName(), getParticipatingClients().size(), getMaxClients(), isPasswordProtected(), getInfo());
+    }
 }

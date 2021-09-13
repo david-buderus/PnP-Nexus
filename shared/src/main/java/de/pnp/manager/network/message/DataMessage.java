@@ -9,8 +9,8 @@ public abstract class DataMessage<Data> extends BaseMessage {
     public DataMessage() {
     }
 
-    public DataMessage(int type, Date timestamp) {
-        super(type, timestamp);
+    public DataMessage(int id, Date timestamp) {
+        super(id, timestamp);
     }
 
     public Data getData() {

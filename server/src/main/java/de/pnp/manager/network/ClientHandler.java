@@ -4,11 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.network.interfaces.Client;
+import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.error.ErrorMessage;
+import de.pnp.manager.network.message.error.WrongStateMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
+import de.pnp.manager.network.message.session.JoinSessionRequestMessage;
+import de.pnp.manager.network.message.session.JoinSessionResponseMessage;
 import de.pnp.manager.network.message.session.SessionQueryResponse;
+import de.pnp.manager.network.message.universal.OkMessage;
 import de.pnp.manager.network.serializer.ServerModule;
+import de.pnp.manager.network.session.ISession;
+import de.pnp.manager.network.session.Session;
 import de.pnp.manager.network.state.BaseMessageStateMachine;
 import de.pnp.manager.network.state.StateMachine;
 import de.pnp.manager.network.state.States;
@@ -20,7 +28,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import static de.pnp.manager.network.message.MessageIDs.*;
 
 public class ClientHandler extends Thread implements Client {
 
@@ -104,16 +116,47 @@ public class ClientHandler extends Thread implements Client {
 
     private StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
+        stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(calendar.getTime())));
 
-        stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, 1200, message -> {
+        // Pre login
+        stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, LOGIN_REQUEST, message -> {
             LoginRequestMessage.LoginRequestData data = ((LoginRequestMessage) message).getData();
             this.clientName = data.getName();
             sendMessage(new LoginResponseMessage(clientId, clientName, calendar.getTime()));
         });
 
-        stateMachine.registerTransition(States.LOGGED_IN, 2200, message ->
-                sendMessage(new SessionQueryResponse(manager.getNetworkHandler().getActiveSessions(), calendar.getTime()))
+        // Logged in
+        stateMachine.registerTransition(States.LOGGED_IN, QUERY_SESSIONS, message ->
+                sendMessage(
+                        new SessionQueryResponse(
+                                manager.getNetworkHandler().getActiveSessions()
+                                        .stream().map(ISession::getSessionInfo)
+                                        .collect(Collectors.toList()),
+                                calendar.getTime()
+                        )
+                )
         );
+
+        stateMachine.registerTransition(States.LOGGED_IN, States.PRE_LOGIN, LOGOUT_REQUEST, message -> {
+            this.clientName = clientId;
+            sendMessage(new OkMessage(calendar.getTime()));
+        });
+
+        stateMachine.registerTransition(States.LOGGED_IN, States.PRE_SESSION, JOIN_SESSION_REQUEST, baseMessage -> {
+            JoinSessionRequestMessage message =  (JoinSessionRequestMessage) baseMessage;
+
+            NetworkHandler handler = manager.getNetworkHandler();
+            Optional<? extends ISession> optSession = handler.getActiveSessions().stream()
+                    .filter(s -> s.getSessionID().equals(message.getData().getSessionId())).findFirst();
+
+            if (optSession.isPresent()) {
+                Session session = (Session) optSession.get();
+                session.addClient(this);
+                sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
+            } else {
+                sendMessage(new ErrorMessage("The session with the given id does not exist", calendar.getTime()));
+            }
+        });
 
         return stateMachine;
     }

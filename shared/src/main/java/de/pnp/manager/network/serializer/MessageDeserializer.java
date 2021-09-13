@@ -6,10 +6,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.error.DeniedMessage;
+import de.pnp.manager.network.message.error.ErrorMessage;
+import de.pnp.manager.network.message.error.WrongStateMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
+import de.pnp.manager.network.message.login.LogoutRequestMessage;
+import de.pnp.manager.network.message.session.JoinSessionRequestMessage;
+import de.pnp.manager.network.message.session.JoinSessionResponseMessage;
 import de.pnp.manager.network.message.session.QuerySessions;
 import de.pnp.manager.network.message.session.SessionQueryResponse;
+import de.pnp.manager.network.message.universal.OkMessage;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,10 +31,21 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
     public MessageDeserializer() {
         super(BaseMessage.class);
         this.typeClassMap = new HashMap<>();
+        //Pre login
         this.typeClassMap.put(LOGIN_REQUEST, LoginRequestMessage.class);
         this.typeClassMap.put(LOGIN_RESPONSE, LoginResponseMessage.class);
+        //Logged In
+        this.typeClassMap.put(LOGOUT_REQUEST, LogoutRequestMessage.class);
         this.typeClassMap.put(QUERY_SESSIONS, QuerySessions.class);
         this.typeClassMap.put(SESSION_QUERY_RESPONSE, SessionQueryResponse.class);
+        this.typeClassMap.put(JOIN_SESSION_REQUEST, JoinSessionRequestMessage.class);
+        this.typeClassMap.put(JOIN_SESSION_RESPONSE, JoinSessionResponseMessage.class);
+        //Universal
+        this.typeClassMap.put(OK, OkMessage.class);
+        //Error
+        this.typeClassMap.put(ERROR, ErrorMessage.class);
+        this.typeClassMap.put(WRONG_STATE, WrongStateMessage.class);
+        this.typeClassMap.put(DENIED, DeniedMessage.class);
     }
 
     @Override
