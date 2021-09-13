@@ -9,6 +9,7 @@ import androidx.core.view.forEach
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import de.pnp.manager.app.network.TCPClient
 import info.androidhive.fontawesome.FontDrawable
 
 
