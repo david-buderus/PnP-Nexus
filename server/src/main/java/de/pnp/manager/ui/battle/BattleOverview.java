@@ -1,5 +1,6 @@
 package de.pnp.manager.ui.battle;
 
+import de.pnp.manager.model.manager.BattleHandler;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import de.pnp.manager.ui.IView;
@@ -7,12 +8,13 @@ import de.pnp.manager.ui.ViewPart;
 
 public class BattleOverview extends ViewPart {
 
-    public BattleOverview(IView parent) {
+    public BattleOverview(IView parent, BattleHandler battleHandler) {
         super("battle.tabName", parent);
 
         TabPane root = new TabPane();
 
-        Tab battleTab = new BattleView(this);
+        BattleView battleTab = new BattleView(this, battleHandler);
+        battleTab.setOnClosed(ev -> battleHandler.deleteBattle(battleTab.getBattle().getBattleID()));
         root.getTabs().add(battleTab);
 
         Tab addTab = new Tab(" + ");
@@ -21,7 +23,8 @@ public class BattleOverview extends ViewPart {
 
         root.getSelectionModel().selectedItemProperty().addListener((ob, o, n) -> {
             if (n.equals(addTab)) {
-                Tab newTab = new BattleView(this);
+                Tab newTab = new BattleView(this, battleHandler);
+                newTab.setOnClosed(ev -> battleHandler.deleteBattle(battleTab.getBattle().getBattleID()));
                 root.getTabs().add(root.getTabs().size() - 1, newTab);
                 root.getSelectionModel().select(newTab);
             }

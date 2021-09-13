@@ -1,8 +1,10 @@
 package de.pnp.manager.model;
 
 import de.pnp.manager.main.CopyService;
+import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.WorkbookService;
+import de.pnp.manager.model.manager.BattleHandler;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import de.pnp.manager.model.member.BattleMember;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 
 public class Battle {
 
+    private final String battleID;
     private final StringProperty name;
     private final IntegerProperty round;
     private final ListProperty<IBattleMember> players;
@@ -24,7 +27,12 @@ public class Battle {
     private final HashMap<IBattleMember, Integer> damageStatistic;
     private final HashMap<IBattleMember, Integer> healStatistic;
 
-    public Battle() {
+    /**
+     * Don't create a battle this way.
+     * Use {@link BattleHandler#createBattle(String)}.
+     */
+    public Battle(String battleID) {
+        this.battleID = battleID;
         this.players = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.enemies = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.damageStatistic = new HashMap<>();
@@ -196,5 +204,9 @@ public class Battle {
 
     public void setName(String name) {
         this.name.set(name);
+    }
+
+    public String getBattleID() {
+        return battleID;
     }
 }

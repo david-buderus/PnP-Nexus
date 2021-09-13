@@ -7,7 +7,7 @@ import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.item.IItem;
 import de.pnp.manager.model.other.ITalent;
-import de.pnp.manager.network.serializer.BaseModule;
+import de.pnp.manager.network.serializer.ServerModule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import de.pnp.manager.testHelper.TestWithDatabaseAccess;
@@ -26,7 +26,7 @@ public class SerializerTest extends TestWithDatabaseAccess {
     @Test
     public static void createMapper() {
         MAPPER = new ObjectMapper();
-        MAPPER.registerModule(new BaseModule());
+        MAPPER.registerModule(new ServerModule());
 
     }
 
