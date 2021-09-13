@@ -49,6 +49,11 @@ public class Session implements ISession {
     }
 
     @Override
+    public String getHost() {
+        return "Dungeon Master";
+    }
+
+    @Override
     public String getInfo() {
         return "";
     }

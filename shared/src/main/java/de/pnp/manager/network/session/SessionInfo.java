@@ -8,16 +8,18 @@ public class SessionInfo {
     /** -1 := unlimited clients */
     protected int maxClients;
     protected boolean passwordProtected;
+    protected String host;
     protected String info;
 
     public SessionInfo() { }
 
-    public SessionInfo(String sessionID, String sessionName, int actualClients, int maxClients, boolean passwordProtected, String info) {
+    public SessionInfo(String sessionID, String sessionName, int actualClients, int maxClients, boolean passwordProtected, String host, String info) {
         this.sessionID = sessionID;
         this.sessionName = sessionName;
         this.actualClients = actualClients;
         this.maxClients = maxClients;
         this.passwordProtected = passwordProtected;
+        this.host = host;
         this.info = info;
     }
 
@@ -59,6 +61,14 @@ public class SessionInfo {
 
     public void setPasswordProtected(boolean passwordProtected) {
         this.passwordProtected = passwordProtected;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
     }
 
     public String getInfo() {

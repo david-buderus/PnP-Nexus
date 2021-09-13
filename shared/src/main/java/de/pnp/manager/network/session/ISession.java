@@ -16,6 +16,8 @@ public interface ISession {
 
     boolean isPasswordProtected();
 
+    String getHost();
+
     String getInfo();
 
     Collection<? extends IClient> getParticipatingClients();
@@ -24,6 +26,6 @@ public interface ISession {
 
     @JsonIgnore
     default SessionInfo getSessionInfo() {
-        return new SessionInfo(getSessionID(), getSessionName(), getParticipatingClients().size(), getMaxClients(), isPasswordProtected(), getInfo());
+        return new SessionInfo(getSessionID(), getSessionName(), getParticipatingClients().size(), getMaxClients(), isPasswordProtected(), getHost(), getInfo());
     }
 }
