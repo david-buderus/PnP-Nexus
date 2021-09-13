@@ -13,9 +13,16 @@
 
   <string name="fragment_login_header">Connect to custom server</string>
   <string name="fragment_login_connect">Connect</string>
-
   <string name="fragment_login_placeholder_port">Port</string>
   <string name="fragment_login_placeholder_ip">IP</string>
+
+  <string name="fragment_info_character_name">Character Name:</string>
+  <string name="fragment_info_character_age">Age:</string>
+  <string name="fragment_info_character_race">Race:</string>
+  <string name="fragment_info_character_gender">Gender:</string>
+  <string name="fragment_info_character_advantages">Advantages:</string>
+  <string name="fragment_info_character_disadvantages">Disadvantages:</string>
+  <string name="fragment_info_character_history">History:</string>
 
   <string name="navigation_button_default_server">Connect to default server</string>
   <string name="navigation_button_custom_server">Connect to custom server</string>

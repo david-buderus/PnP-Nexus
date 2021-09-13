@@ -8,7 +8,9 @@
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_constraintTop_toTopOf="parent"/>
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_marginTop="28dp"
+    />
   <com.google.android.material.tabs.TabLayout
     android:id="@+id/tab_layout"
     android:layout_width="match_parent"
