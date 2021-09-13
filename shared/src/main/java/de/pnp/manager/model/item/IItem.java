@@ -42,7 +42,14 @@ public interface IItem {
     float getAmount();
 
     @JsonIgnore
-    String getPrettyAmount();
+    default String getPrettyAmount() {
+        float amount = getAmount();
+        if (amount == (int) amount) {
+            return Integer.toString((int) amount);
+        } else {
+            return Float.toString(amount);
+        }
+    }
 
     void setAmount(float amount);
 

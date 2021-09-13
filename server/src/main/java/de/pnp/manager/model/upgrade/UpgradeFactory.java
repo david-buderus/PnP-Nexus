@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
-public class UpgradeFactory implements IUpgradeFactory {
+public class UpgradeFactory {
 
     private static final Random rand = new Random();
 
@@ -155,23 +155,20 @@ public class UpgradeFactory implements IUpgradeFactory {
         return i;
     }
 
-    public Collection<IUpgradeModel> getModels() {
-        ArrayList<IUpgradeModel> list = new ArrayList<>();
+    public Collection<UpgradeModel> getModels() {
+        ArrayList<UpgradeModel> list = new ArrayList<>();
 
         for (int i = 1; i <= this.getMaxLevel(); i++) {
             UpgradeModel model = new UpgradeModel();
             model.setName(this.getName());
             model.setTarget(this.getTarget());
             model.setSlots(this.getSlots());
-            model.setCost(this.getCurrency(i).getCoinString());
+            model.setCost(this.getCurrency(i));
             model.setMana(this.getMana(i));
             model.setEffect(this.getEffect(i));
             model.setLevel(i);
             model.setRequirement(this.getRequirement(i));
-
-            for (IItem item : getMaterials(i)) {
-                model.addMaterial(item != null ? item.getPrettyAmount() + " " + item.getName() : "");
-            }
+            model.setMaterials(getMaterials(i));
 
             list.add(model);
         }

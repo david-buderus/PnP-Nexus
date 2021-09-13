@@ -25,6 +25,8 @@ public abstract class MessageIDs {
 
     //In Session
     public static final int UPDATE_SESSION = 3000;
+    public static final int DATABASE_REQUEST = 3201;
+    public static final int DATABASE_RESPONSE = 3001;
 
     //Universal
     public static final int OK = 8000;

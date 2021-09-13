@@ -2,12 +2,12 @@ package de.pnp.manager.ui.utility;
 
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.upgrade.UpgradeModel;
 import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.other.Spell;
-import de.pnp.manager.model.upgrade.IUpgradeModel;
 import de.pnp.manager.ui.IView;
 import de.pnp.manager.ui.ViewPart;
 import de.pnp.manager.ui.part.FilteredTableView;
@@ -24,15 +24,15 @@ public class SQLView extends ViewPart {
         itemTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.items"));
         root.getTabs().add(itemTab);
 
-        FilteredTableView<Item> itemTable = new FilteredTableView<>(Database.itemList);
+        FilteredTableView<IItem> itemTable = new FilteredTableView<>(Database.itemList);
         itemTable.setPadding(new Insets(10, 20, 20, 20));
-        itemTable.addColumn("column.name", Item::getName);
-        itemTable.addColumn("column.type", Item::getType);
-        itemTable.addColumn("column.item.subtype", Item::getSubtype);
-        itemTable.addColumn("column.tier", Item::getTier);
-        itemTable.addColumn("column.item.rarity", Item::getRarity);
-        itemTable.addColumn("column.item.price", Item::getCurrency);
-        itemTable.addColumn("column.effect", Item::getEffect);
+        itemTable.addColumn("column.name", IItem::getName);
+        itemTable.addColumn("column.type", IItem::getType);
+        itemTable.addColumn("column.item.subtype", IItem::getSubtype);
+        itemTable.addColumn("column.tier", IItem::getTier);
+        itemTable.addColumn("column.item.rarity", IItem::getRarity);
+        itemTable.addColumn("column.item.price", IItem::getCurrency);
+        itemTable.addColumn("column.effect", IItem::getEffect);
         itemTab.setContent(itemTable);
 
         Tab weaponTab = new Tab();
@@ -110,16 +110,16 @@ public class SQLView extends ViewPart {
         upgradeTab.textProperty().bind(LanguageUtility.getMessageProperty("sql.tab.upgrades"));
         root.getTabs().add(upgradeTab);
 
-        FilteredTableView<IUpgradeModel> upgradeTable = new FilteredTableView<>(Database.upgradeModelList);
+        FilteredTableView<UpgradeModel> upgradeTable = new FilteredTableView<>(Database.upgradeModelList);
         upgradeTable.setPadding(new Insets(10, 20, 20, 20));
-        upgradeTable.addColumn("column.name", IUpgradeModel::getName);
-        upgradeTable.addColumn("column.upgrade.level", IUpgradeModel::getLevel);
-        upgradeTable.addColumn("column.target", IUpgradeModel::getTarget);
-        upgradeTable.addColumn("column.effect", IUpgradeModel::getEffect);
-        upgradeTable.addColumn("column.equipment.slots", IUpgradeModel::getSlots);
-        upgradeTable.addColumn("column.item.price", IUpgradeModel::getCost);
-        upgradeTable.addColumn("column.upgrade.mana", IUpgradeModel::getMana);
-        upgradeTable.addColumn("column.upgrade.materials", IUpgradeModel::getMaterials);
+        upgradeTable.addColumn("column.name", UpgradeModel::getName);
+        upgradeTable.addColumn("column.upgrade.level", UpgradeModel::getLevel);
+        upgradeTable.addColumn("column.target", UpgradeModel::getTarget);
+        upgradeTable.addColumn("column.effect", UpgradeModel::getEffect);
+        upgradeTable.addColumn("column.equipment.slots", UpgradeModel::getSlots);
+        upgradeTable.addColumn("column.item.price", UpgradeModel::getCost);
+        upgradeTable.addColumn("column.upgrade.mana", UpgradeModel::getMana);
+        upgradeTable.addColumn("column.upgrade.materials", UpgradeModel::getMaterialsAsString);
         upgradeTab.setContent(upgradeTable);
 
         Tab enemyTab = new Tab();

@@ -245,7 +245,7 @@ public abstract class DatabaseLoader {
     }
 
     private static String loadItems(Statement statement, Semaphore semaphore) {
-        ObservableList<Item> itemList = FXCollections.observableArrayList();
+        ObservableList<IItem> itemList = FXCollections.observableArrayList();
 
         try (ResultSet itemSet = statement.executeQuery(
                 format("SELECT * FROM %s WHERE %s NOT IN (\"%s\", \"%s\", \"%s\", \"%s\")",
@@ -530,7 +530,7 @@ public abstract class DatabaseLoader {
     }
 
     private static String loadFabrication(Statement statement, Semaphore semaphore) {
-        ObservableList<Fabrication> fabricationList = FXCollections.observableArrayList();
+        ObservableList<IFabrication> fabricationList = FXCollections.observableArrayList();
 
         try (ResultSet fabricationSet = statement.executeQuery(format("SELECT * FROM %s", "table.manufacturing"))) {
 
@@ -542,7 +542,12 @@ public abstract class DatabaseLoader {
                 fabrication.setOtherCircumstances(getString(fabricationSet, getLocalized("column.otherCircumstances")));
                 fabrication.setProductAmount(fabricationSet.getInt(getLocalized("column.createdAmount")));
                 fabrication.setSideProductAmount(fabricationSet.getInt(getLocalized("column.createdSideAmount")));
-                fabrication.setSideProductName(getString(fabricationSet, getLocalized("column.sideProduct")));
+
+                String sideProductName = getString(fabricationSet, getLocalized("column.sideProduct"));
+
+                if (!sideProductName.isBlank()) {
+                    fabrication.setSideProductName(sideProductName);
+                }
 
                 int id = fabricationSet.getInt(getLocalized("column.id"));
 
@@ -1154,7 +1159,7 @@ public abstract class DatabaseLoader {
             }
         }
 
-        for (Fabrication fabrication : Database.fabricationList) {
+        for (IFabrication fabrication : Database.fabricationList) {
 
             if (fabrication.getProduct().isTradeable()) {
                 ICurrency currency = new Currency(0);

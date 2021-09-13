@@ -1,17 +1,21 @@
 package de.pnp.manager.model.upgrade;
 
-import de.pnp.manager.main.Utility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.pnp.manager.model.ICurrency;
+import de.pnp.manager.model.item.IItem;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
-public class UpgradeModel implements IUpgradeModel {
+public class UpgradeModel {
     private String name;
     private String target;
     private int slots;
-    private String cost;
+    private ICurrency cost;
     private String mana;
     private String effect;
-    private final ArrayList<String> materialList = new ArrayList<>();
+    private Collection<IItem> materialList = Collections.emptyList();
     private int level;
     private String requirement;
 
@@ -39,11 +43,11 @@ public class UpgradeModel implements IUpgradeModel {
         this.slots = slots;
     }
 
-    public String getCost() {
+    public ICurrency getCost() {
         return cost;
     }
 
-    public void setCost(String cost) {
+    public void setCost(ICurrency cost) {
         this.cost = cost;
     }
 
@@ -63,15 +67,12 @@ public class UpgradeModel implements IUpgradeModel {
         this.effect = effect;
     }
 
-    public void setMaterials(String empty) {
+    public Collection<IItem> getMaterials() {
+        return this.materialList;
     }
 
-    public String getMaterials() {
-        return String.join("\n", materialList);
-    }
-
-    public void addMaterial(String material) {
-        this.materialList.add(material);
+    public void setMaterials(Collection<IItem> materials) {
+        this.materialList = materials;
     }
 
     public int getLevel() {
@@ -90,7 +91,9 @@ public class UpgradeModel implements IUpgradeModel {
         this.requirement = requirement;
     }
 
-    public String getFullName() {
-        return getName() + " " + Utility.asRomanNumber(getLevel());
+    @JsonIgnore
+    public String getMaterialsAsString() {
+        return materialList.stream().map(item -> item.getPrettyAmount() + " " + item.getName())
+                .collect(Collectors.joining("\n"));
     }
 }
