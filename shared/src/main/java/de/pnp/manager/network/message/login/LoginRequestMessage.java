@@ -4,12 +4,14 @@ import de.pnp.manager.network.message.DataMessage;
 
 import java.util.Date;
 
+import static de.pnp.manager.network.message.MessageIDs.LOGIN_REQUEST;
+
 public class LoginRequestMessage extends DataMessage<LoginRequestMessage.LoginRequestData> {
 
     public LoginRequestMessage() { }
 
     public LoginRequestMessage(String name, Date timestamp) {
-        super(1200, timestamp);
+        super(LOGIN_REQUEST, timestamp);
         LoginRequestData data = new LoginRequestData();
         data.setName(name);
         this.setData(data);

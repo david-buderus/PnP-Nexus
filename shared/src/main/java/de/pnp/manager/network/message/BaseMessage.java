@@ -9,8 +9,8 @@ public abstract class BaseMessage {
      * Format: SONN
      * Example: 1203
      *
-     * S := State (1 := PreLogin)
-     * O := Origin (0 := Server, 1 := DM, 2 := Player/DM)
+     * S := State (1 := PreLogin, 2 := Logged In, ...)
+     * O := Origin (0 := Server, 1 := DM, 2 := Player/DM, 3 := everyone)
      * N := ID of the message
      * </pre>
      */

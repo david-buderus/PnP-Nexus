@@ -2,9 +2,7 @@ package de.pnp.manager.network.state;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -12,19 +10,19 @@ public class StateMachine<Event> {
 
     protected Set<State> states;
     protected State currentState;
-    protected Collection<Transition<Event>> transitions;
+    protected Map<State, Collection<Transition<Event>>> transitions;
     protected Consumer<Event> onNoTransition;
 
     public StateMachine(Set<State> states, State start) {
         this.states = states;
         this.currentState = start;
-        this.transitions = new ArrayList<>();
+        this.transitions = new HashMap<>();
         this.onNoTransition = null;
     }
 
     public boolean fire(Event event) {
 
-        for (Transition<Event> transition : transitions) {
+        for (Transition<Event> transition : transitions.getOrDefault(currentState, Collections.emptyList())) {
             if (
                     transition.from == currentState &&
                             transition.eventCheck.apply(event) &&
@@ -46,11 +44,13 @@ public class StateMachine<Event> {
     }
 
     public void registerTransition(State from, State to, @NotNull Function<Event, Boolean> eventCheck, Consumer<Event> eventHandler) {
-        transitions.add(new Transition<>(from, to, eventCheck, eventHandler));
+        if (states.contains(from) && states.contains(to)) {
+            transitions.computeIfAbsent(from, s -> new ArrayList<>()).add(new Transition<>(from, to, eventCheck, eventHandler));
+        }
     }
 
     public void registerTransition(State fromTo, @NotNull Function<Event, Boolean> eventCheck, Consumer<Event> eventHandler) {
-        transitions.add(new Transition<>(fromTo, fromTo, eventCheck, eventHandler));
+        this.registerTransition(fromTo, fromTo, eventCheck, eventHandler);
     }
 
     public void setOnNoTransition(Consumer<Event> onNoTransition) {
