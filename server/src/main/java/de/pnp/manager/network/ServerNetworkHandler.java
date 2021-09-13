@@ -64,7 +64,7 @@ public class ServerNetworkHandler implements NetworkHandler {
             serverThread.setDaemon(true);
             serverThread.start();
 
-        } catch (IOException /* | UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException | NoSuchProviderException | KeyManagementException*/ e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
