@@ -8,7 +8,7 @@
   tools:context=".FirstFragment">
 
   <Button
-    android:id="@+id/button"
+    android:id="@+id/button_connect_to_server"
     android:layout_width="192dp"
     android:layout_height="41dp"
     android:layout_marginTop="416dp"
