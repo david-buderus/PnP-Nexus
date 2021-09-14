@@ -1,4 +1,4 @@
-package de.pnp.manager.model.member.generation;
+package de.pnp.manager.model.member.data;
 
 import de.pnp.manager.main.LanguageUtility;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -6,7 +6,7 @@ import de.pnp.manager.model.interfaces.WithToStringProperty;
 
 import java.util.NoSuchElementException;
 
-public enum ArmorPosition implements WithToStringProperty {
+public enum ArmorPosition implements IArmorPosition, WithToStringProperty {
     head, upperBody, arm, legs;
 
     @Override

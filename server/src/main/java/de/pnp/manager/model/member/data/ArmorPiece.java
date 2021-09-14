@@ -6,7 +6,7 @@ import de.pnp.manager.model.interfaces.WithToStringProperty;
 
 import java.util.NoSuchElementException;
 
-public enum ArmorPiece implements WithToStringProperty {
+public enum ArmorPiece implements IArmorPiece, WithToStringProperty {
     head, upperBody, legs, arm, shield;
 
     @Override

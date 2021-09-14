@@ -1,4 +1,4 @@
-package de.pnp.manager.model.attribute;
+package de.pnp.manager.model.member.data;
 
 public interface IPrimaryAttribute {
 

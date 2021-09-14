@@ -1,17 +1,17 @@
 package de.pnp.manager.model.member.interfaces;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.ObservableList;
-import de.pnp.manager.model.attribute.IPrimaryAttribute;
 import de.pnp.manager.model.interfaces.ILootable;
 import de.pnp.manager.model.item.Armor;
 import de.pnp.manager.model.item.Jewellery;
 import de.pnp.manager.model.item.Weapon;
-import de.pnp.manager.model.member.generation.SecondaryAttribute;
+import de.pnp.manager.model.member.data.IPrimaryAttribute;
+import de.pnp.manager.model.member.data.SecondaryAttribute;
 import de.pnp.manager.model.other.Spell;
 import de.pnp.manager.model.other.Talent;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 
 import java.util.Collection;
 

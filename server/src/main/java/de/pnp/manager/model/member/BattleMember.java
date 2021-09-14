@@ -12,7 +12,7 @@ import de.pnp.manager.model.item.Weapon;
 import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.member.data.ArmorPiece;
 import de.pnp.manager.model.member.data.AttackTypes;
-import de.pnp.manager.model.member.generation.SecondaryAttribute;
+import de.pnp.manager.model.member.data.SecondaryAttribute;
 import de.pnp.manager.model.member.interfaces.IBattleMember;
 import de.pnp.manager.model.member.state.interfaces.*;
 import org.apache.poi.ss.usermodel.Row;

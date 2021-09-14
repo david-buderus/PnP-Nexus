@@ -1,11 +1,8 @@
 package de.pnp.manager.network.serializer;
 
 import de.pnp.manager.model.*;
-import de.pnp.manager.model.attribute.IPrimaryAttribute;
-import de.pnp.manager.model.attribute.ISecondaryAttribute;
 import de.pnp.manager.model.item.*;
-import de.pnp.manager.model.member.generation.PrimaryAttribute;
-import de.pnp.manager.model.member.generation.SecondaryAttribute;
+import de.pnp.manager.model.member.data.*;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Talent;
 
@@ -16,6 +13,9 @@ public class ServerModule extends BaseModule {
 
         // Enums
         this.addAbstractTypeMapping(IRarity.class, Rarity.class);
+        this.addAbstractTypeMapping(IArmorPiece.class, ArmorPiece.class);
+        this.addAbstractTypeMapping(IArmorPosition.class, ArmorPosition.class);
+        this.addAbstractTypeMapping(IAttackTypes.class, AttackTypes.class);
         this.addAbstractTypeMapping(IPrimaryAttribute.class, PrimaryAttribute.class);
         this.addAbstractTypeMapping(ISecondaryAttribute.class, SecondaryAttribute.class);
 

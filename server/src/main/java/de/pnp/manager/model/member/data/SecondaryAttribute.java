@@ -1,9 +1,8 @@
-package de.pnp.manager.model.member.generation;
+package de.pnp.manager.model.member.data;
 
 import de.pnp.manager.main.LanguageUtility;
-import javafx.beans.property.ReadOnlyStringProperty;
-import de.pnp.manager.model.attribute.ISecondaryAttribute;
 import de.pnp.manager.model.interfaces.WithToStringProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 
 import java.util.NoSuchElementException;
 

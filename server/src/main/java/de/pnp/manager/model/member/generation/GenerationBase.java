@@ -1,6 +1,9 @@
 package de.pnp.manager.model.member.generation;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.member.data.ArmorPosition;
+import de.pnp.manager.model.member.data.PrimaryAttribute;
+import de.pnp.manager.model.member.data.SecondaryAttribute;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import de.pnp.manager.model.interfaces.WithToStringProperty;

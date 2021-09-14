@@ -4,7 +4,7 @@ import de.pnp.manager.main.LanguageUtility;
 import javafx.beans.property.ReadOnlyStringProperty;
 import de.pnp.manager.model.interfaces.WithToStringProperty;
 
-public enum AttackTypes implements WithToStringProperty {
+public enum AttackTypes implements IAttackTypes, WithToStringProperty {
     head, upperBody, legs, arm, ignoreArmor, direct;
 
     @Override

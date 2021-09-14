@@ -1,7 +1,7 @@
 package de.pnp.manager.model.member;
 
-import javafx.beans.property.*;
 import de.pnp.manager.model.member.data.FoodRequirement;
+import javafx.beans.property.*;
 
 import static de.pnp.manager.main.LanguageUtility.getMessageProperty;
 

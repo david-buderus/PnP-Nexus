@@ -1,5 +1,6 @@
 package de.pnp.manager.model.loot;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.item.IItem;
 
@@ -21,5 +22,6 @@ public interface ILootTable {
 
     void setLootFactories(Collection<ILootFactory> factories);
 
+    @JsonIgnore
     Collection<ILoot> getLoot();
 }

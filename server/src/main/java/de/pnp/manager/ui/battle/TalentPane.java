@@ -7,7 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import de.pnp.manager.model.member.GeneratedExtendedBattleMember;
-import de.pnp.manager.model.member.generation.PrimaryAttribute;
+import de.pnp.manager.model.member.data.PrimaryAttribute;
 import de.pnp.manager.model.other.Talent;
 import de.pnp.manager.ui.part.NumberField;
 

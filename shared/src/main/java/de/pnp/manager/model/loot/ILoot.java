@@ -16,6 +16,7 @@ public interface ILoot {
 
     int getAmount();
 
+    @JsonIgnore
     float getAmountWithItemAmount();
 
     void setAmount(int amount);

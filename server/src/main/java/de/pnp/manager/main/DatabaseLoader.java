@@ -1,5 +1,8 @@
 package de.pnp.manager.main;
 
+import de.pnp.manager.model.member.data.ArmorPosition;
+import de.pnp.manager.model.member.data.PrimaryAttribute;
+import de.pnp.manager.model.member.data.SecondaryAttribute;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

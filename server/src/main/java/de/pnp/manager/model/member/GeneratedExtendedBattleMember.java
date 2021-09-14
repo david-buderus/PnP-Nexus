@@ -3,6 +3,15 @@ package de.pnp.manager.model.member;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
+import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.Rarity;
+import de.pnp.manager.model.item.*;
+import de.pnp.manager.model.member.data.*;
+import de.pnp.manager.model.member.generation.GenerationBase;
+import de.pnp.manager.model.member.generation.specs.*;
+import de.pnp.manager.model.member.interfaces.IExtendedBattleMember;
+import de.pnp.manager.model.other.Spell;
+import de.pnp.manager.model.other.Talent;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.NumberBinding;
@@ -10,19 +19,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.Rarity;
-import de.pnp.manager.model.attribute.IPrimaryAttribute;
-import de.pnp.manager.model.item.*;
-import de.pnp.manager.model.member.data.ArmorPiece;
-import de.pnp.manager.model.member.generation.ArmorPosition;
-import de.pnp.manager.model.member.generation.GenerationBase;
-import de.pnp.manager.model.member.generation.PrimaryAttribute;
-import de.pnp.manager.model.member.generation.SecondaryAttribute;
-import de.pnp.manager.model.member.generation.specs.*;
-import de.pnp.manager.model.member.interfaces.IExtendedBattleMember;
-import de.pnp.manager.model.other.Spell;
-import de.pnp.manager.model.other.Talent;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.*;
@@ -56,11 +52,11 @@ public class GeneratedExtendedBattleMember extends ExtendedBattleMember implemen
         this.setLevel(level);
         this.setName(profession + " - " + specialisation);
 
-        for (PrimaryAttribute p : PrimaryAttribute.getValuesWithoutDummy()) {
+        for (IPrimaryAttribute p : PrimaryAttribute.getValuesWithoutDummy()) {
             this.primaryAttributes.put(p, new SimpleIntegerProperty(2));
         }
 
-        for (SecondaryAttribute s : SecondaryAttribute.values()) {
+        for (ISecondaryAttribute s : SecondaryAttribute.values()) {
             this.secondaryAttributeModifier.put(s, new SimpleIntegerProperty());
         }
 
