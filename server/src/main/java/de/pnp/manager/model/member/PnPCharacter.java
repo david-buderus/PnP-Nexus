@@ -1,25 +1,28 @@
 package de.pnp.manager.model.member;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import de.pnp.manager.main.Database;
+import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.item.IArmor;
 import de.pnp.manager.model.item.IJewellery;
 import de.pnp.manager.model.item.IWeapon;
 import de.pnp.manager.model.loot.ILootTable;
-import de.pnp.manager.model.member.data.IArmorPosition;
-import de.pnp.manager.model.member.data.IPrimaryAttribute;
-import de.pnp.manager.model.member.data.ISecondaryAttribute;
+import de.pnp.manager.model.member.data.*;
+import de.pnp.manager.model.member.part.SecondaryAttributeModifier;
 import de.pnp.manager.model.member.state.IMemberState;
 import de.pnp.manager.model.other.ISpell;
 import de.pnp.manager.model.other.ITalent;
+import de.pnp.manager.model.other.Talent;
 import javafx.beans.binding.IntegerBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.MapProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,6 +31,7 @@ public class PnPCharacter implements IPnPCharacter {
 
     protected StringProperty name;
     protected IntegerProperty level;
+    protected Battle battle;
 
     protected IntegerProperty health;
     protected IntegerProperty mana;
@@ -42,14 +46,7 @@ public class PnPCharacter implements IPnPCharacter {
     protected ListProperty<ISpell> spells;
     protected MapProperty<ITalent, IntegerProperty> talents;
 
-    protected IntegerProperty maxHealthModifier;
-    protected IntegerBinding maxHealth;
-    protected IntegerProperty maxManaModifier;
-    protected IntegerBinding maxMana;
-    protected IntegerProperty maxMentalHealthModifier;
-    protected IntegerBinding maxMentalHealth;
-    protected IntegerProperty staticInitiativeModifier;
-    protected IntegerBinding staticInitiative;
+    protected Map<ISecondaryAttribute, SecondaryAttributeModifier> secondaryAttributeModifiers;
 
     protected Collection<String> advantages;
     protected Collection<String> disadvantages;
@@ -57,6 +54,32 @@ public class PnPCharacter implements IPnPCharacter {
     protected Map<ISecondaryAttribute, Integer> secondaryAttributes;
     protected ILootTable lootTable;
     protected IInventory inventory;
+
+    public PnPCharacter(Battle battle, ILootTable lootTable) {
+        this.name = new SimpleStringProperty(LanguageUtility.getMessage("battleMember.defaultName"));
+        this.level = new SimpleIntegerProperty(1);
+        this.advantages = Collections.emptyList();
+        this.disadvantages = Collections.emptyList();
+        this.primaryAttributes = new HashMap<>();
+        for (PrimaryAttribute attribute : PrimaryAttribute.getValuesWithoutDummy()) {
+            this.primaryAttributes.put(attribute, 0);
+        }
+        this.secondaryAttributes = new HashMap<>();
+        for (SecondaryAttribute attribute : SecondaryAttribute.values()) {
+            this.secondaryAttributes.put(attribute, 0);
+        }
+        this.lootTable = lootTable;
+        this.inventory = Inventory.EMPTY_INVENTORY;
+        this.battle = battle;
+
+        this.createModifierBindings();
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.health).setModifier(1);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).setModifier(1);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(1);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(1);
+
+        this.createProperties();
+    }
 
     @Override
     public int getInitiative() {
@@ -66,6 +89,31 @@ public class PnPCharacter implements IPnPCharacter {
     @Override
     public int getBaseDefense() {
         return 0;
+    }
+
+    protected void createModifierBindings() {
+        this.secondaryAttributeModifiers = new HashMap<>();
+        for (SecondaryAttribute attribute : SecondaryAttribute.values()) {
+            this.secondaryAttributeModifiers.put(attribute, new SecondaryAttributeModifier(this.secondaryAttributes.get(attribute)));
+        }
+    }
+
+    protected void createProperties() {
+        this.health = new SimpleIntegerProperty(getMaxHealth());
+        this.mana = new SimpleIntegerProperty(getMaxMana());
+        this.mentalHealth = new SimpleIntegerProperty(getMaxMentalHealth());
+        this.memberStates = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.weapons = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.equippedWeapons = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.jewellery = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.equippedJewellery = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.armor = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.equippedArmor = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
+        this.spells = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.talents = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
+        for (Talent talent : Database.talentList) {
+            this.talents.put(talent, new SimpleIntegerProperty(0));
+        }
     }
 
     @Override
@@ -119,23 +167,23 @@ public class PnPCharacter implements IPnPCharacter {
 
     @Override
     public int getMaxHealth() {
-        return maxHealth.get();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.health).getResult();
     }
 
     public IntegerBinding maxHealthProperty() {
-        return maxHealth;
+        return secondaryAttributeModifiers.get(SecondaryAttribute.health).resultProperty();
     }
 
     public int getMaxHealthModifier() {
-        return maxHealthModifier.get();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.health).getModifier();
     }
 
     public IntegerProperty maxHealthModifierProperty() {
-        return maxHealthModifier;
+        return secondaryAttributeModifiers.get(SecondaryAttribute.health).modifierProperty();
     }
 
     public void setMaxHealthModifier(int maxHealthModifier) {
-        this.maxHealthModifier.set(maxHealthModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.health).setModifier(maxHealthModifier);
     }
 
     @Override
@@ -153,23 +201,23 @@ public class PnPCharacter implements IPnPCharacter {
 
     @Override
     public int getMaxMana() {
-        return maxMana.get();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).getResult();
     }
 
     public IntegerBinding maxManaProperty() {
-        return maxMana;
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).resultProperty();
     }
 
     public int getMaxManaModifier() {
-        return maxManaModifier.get();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).getModifier();
     }
 
     public IntegerProperty maxManaModifierProperty() {
-        return maxManaModifier;
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).modifierProperty();
     }
 
     public void setMaxManaModifier(int maxManaModifier) {
-        this.maxManaModifier.set(maxManaModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).setModifier(maxManaModifier);
     }
 
     @Override
@@ -187,44 +235,65 @@ public class PnPCharacter implements IPnPCharacter {
 
     @Override
     public int getMaxMentalHealth() {
-        return maxMentalHealth.get();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getResult();
     }
 
     public IntegerBinding maxMentalHealthProperty() {
-        return maxMentalHealth;
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).resultProperty();
     }
 
     public int getMaxMentalHealthModifier() {
-        return maxMentalHealthModifier.get();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getModifier();
     }
 
     public IntegerProperty maxMentalHealthModifierProperty() {
-        return maxMentalHealthModifier;
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).modifierProperty();
     }
 
     public void setMaxMentalHealthModifier(int maxMentalHealthModifier) {
-        this.maxMentalHealthModifier.set(maxMentalHealthModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(maxMentalHealthModifier);
     }
 
     @Override
     public int getStaticInitiative() {
-        return staticInitiative.get();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getResult();
     }
 
     public IntegerBinding staticInitiativeProperty() {
-        return staticInitiative;
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).resultProperty();
     }
 
     public int getStaticInitiativeModifier() {
-        return staticInitiativeModifier.get();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getModifier();
     }
 
     public IntegerProperty staticInitiativeModifierProperty() {
-        return staticInitiativeModifier;
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).modifierProperty();
     }
 
     public void setStaticInitiativeModifier(int staticInitiativeModifier) {
-        this.staticInitiativeModifier.set(staticInitiativeModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(staticInitiativeModifier);
+    }
+
+    @Override
+    public int getStaticBaseDefense() {
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getResult();
+    }
+
+    public IntegerBinding staticBaseDefenseProperty() {
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).resultProperty();
+    }
+
+    public int getStaticBaseDefenseModifier() {
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getModifier();
+    }
+
+    public IntegerProperty staticBaseDefenseModifierProperty() {
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).modifierProperty();
+    }
+
+    public void setStaticBaseDefenseModifier(int staticBaseDefenseModifier) {
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).setModifier(staticBaseDefenseModifier);
     }
 
     @Override

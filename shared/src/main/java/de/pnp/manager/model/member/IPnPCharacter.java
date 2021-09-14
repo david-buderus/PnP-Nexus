@@ -1,5 +1,6 @@
 package de.pnp.manager.model.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.model.item.IArmor;
 import de.pnp.manager.model.item.IJewellery;
 import de.pnp.manager.model.item.IWeapon;
@@ -29,6 +30,7 @@ public interface IPnPCharacter {
     /**
      * The tier of the character
      */
+    @JsonIgnore
     default int getTier() {
         return (int) Math.ceil(((float) getLevel())/5);
     }
@@ -57,8 +59,9 @@ public interface IPnPCharacter {
     /**
      * If the player is dead
      */
+    @JsonIgnore
     default boolean isDead() {
-        return getHealth() <= 0;
+        return getHealth() <= 0 || getMentalHealth() <= 0;
     }
 
     /**
@@ -104,6 +107,13 @@ public interface IPnPCharacter {
     int getBaseDefense();
 
     /**
+     * The base defense of the character
+     * used to calculate incoming damage.
+     * Includes all modifier except memberstates
+     */
+    int getStaticBaseDefense();
+
+    /**
      * The base value of each primary attribute
      */
     Map<IPrimaryAttribute, Integer> getPrimaryAttributes();
@@ -139,14 +149,23 @@ public interface IPnPCharacter {
     Collection<IJewellery> getEquippedJewellery();
 
     /**
-     * All jewellery the character has
+     * All armor the character has
      */
     Collection<IArmor> getArmor();
 
     /**
-     * The jewellery the character currently uses
+     * The armor the character currently uses
      */
     Map<IArmorPosition, IArmor> getEquippedArmor();
+
+    /**
+     *  The protection the character has at the specific position
+     */
+    @JsonIgnore
+    default int getProtection(IArmorPosition position) {
+        IArmor armor = getEquippedArmor().get(position);
+        return armor != null ? armor.getProtection() : 0;
+    }
 
     /**
      * All spells the character can use
