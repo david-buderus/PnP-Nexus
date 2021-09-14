@@ -1,5 +1,6 @@
 package de.pnp.manager.model.member;
 
+import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.network.serializer.DeserializerIdentifier;
 
 public interface IPlayerCharacter extends IPnPCharacter {
@@ -23,6 +24,11 @@ public interface IPlayerCharacter extends IPnPCharacter {
      * The profession of the player
      */
     String getProfession();
+
+    /**
+     * The current currency the character owns
+     */
+    ICurrency getCurrency();
 
     /**
      * The history of the player

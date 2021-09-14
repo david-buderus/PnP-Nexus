@@ -1,6 +1,5 @@
 package de.pnp.manager.model.member;
 
-import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.item.IArmor;
 import de.pnp.manager.model.item.IJewellery;
 import de.pnp.manager.model.item.IWeapon;
@@ -56,6 +55,13 @@ public interface IPnPCharacter {
     int getMaxHealth();
 
     /**
+     * If the player is dead
+     */
+    default boolean isDead() {
+        return getHealth() <= 0;
+    }
+
+    /**
      * The current mana
      */
     int getMana();
@@ -83,6 +89,12 @@ public interface IPnPCharacter {
      * Includes all modifier
      */
     int getInitiative();
+
+    /**
+     * The initiative of the character.
+     * Includes weapons except memberstates
+     */
+    int getStaticInitiative();
 
     /**
      * The base defense of the character
@@ -151,11 +163,6 @@ public interface IPnPCharacter {
      * The inventory of the character
      */
     IInventory getInventory();
-
-    /**
-     * The current currency the character owns
-     */
-    ICurrency getCurrency();
 
     /**
      * Loottable of the character.
