@@ -1,5 +1,6 @@
 package de.pnp.manager.model.member;
 
+import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.item.IArmor;
 import de.pnp.manager.model.item.IJewellery;
 import de.pnp.manager.model.item.IWeapon;
@@ -7,6 +8,7 @@ import de.pnp.manager.model.loot.ILootTable;
 import de.pnp.manager.model.member.data.IArmorPosition;
 import de.pnp.manager.model.member.data.IPrimaryAttribute;
 import de.pnp.manager.model.member.data.ISecondaryAttribute;
+import de.pnp.manager.model.member.state.IMemberState;
 import de.pnp.manager.model.other.ISpell;
 import de.pnp.manager.model.other.ITalent;
 
@@ -14,6 +16,33 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface IPnPCharacter {
+
+    /**
+     * The name of the character
+     */
+    String getName();
+
+    /**
+     * The level of the character
+     */
+    int getLevel();
+
+    /**
+     * The tier of the character
+     */
+    default int getTier() {
+        return (int) Math.ceil(((float) getLevel())/5);
+    }
+
+    /**
+     * The advantages of the character
+     */
+    Collection<String> getAdvantages();
+
+    /**
+     * The advantages of the character
+     */
+    Collection<String> getDisadvantages();
 
     /**
      * The current health
@@ -73,6 +102,11 @@ public interface IPnPCharacter {
     Map<ISecondaryAttribute, Integer> getSecondaryAttributes();
 
     /**
+     * The memberstates of the character
+     */
+    Collection<IMemberState> getMemberStates();
+
+    /**
      * All weapons the character has
      */
     Collection<IWeapon> getWeapons();
@@ -114,9 +148,19 @@ public interface IPnPCharacter {
     Map<ITalent, Integer> getTalents();
 
     /**
+     * The inventory of the character
+     */
+    IInventory getInventory();
+
+    /**
+     * The current currency the character owns
+     */
+    ICurrency getCurrency();
+
+    /**
      * Loottable of the character.
-     * This includes all equipment the character
-     * should drop.
+     * This includes all equipment of the character
+     * that should drop and the inventory.
      */
     ILootTable getLootTable();
 }
