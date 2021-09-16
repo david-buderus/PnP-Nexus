@@ -4,6 +4,7 @@ import de.pnp.manager.model.IItemList;
 import de.pnp.manager.model.item.IItem;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 public interface IInventory extends Iterable<IItem> {
@@ -18,6 +19,10 @@ public interface IInventory extends Iterable<IItem> {
 
     default void add(IItem item) {
         getItems().add(item);
+    }
+
+    default void addAll(Collection<IItem> items) {
+        getItems().addAll(items);
     }
 
     IItemList getItems();

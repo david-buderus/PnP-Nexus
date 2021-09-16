@@ -351,6 +351,64 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         return defense;
     }
 
+    public PnPCharacter cloneCharacter(String characterID, Battle battle) {
+        PnPCharacter character = new PnPCharacter(characterID, battle, lootTable);
+
+        character.setName(getName());
+        character.setLevel(getLevel());
+
+        // Load stats
+        for (IPrimaryAttribute attribute : getPrimaryAttributes().keySet()) {
+            character.primaryAttributes.put(attribute, getPrimaryAttributes().get(attribute));
+        }
+        for (ISecondaryAttribute attribute : getSecondaryAttributes().keySet()) {
+            character.secondaryAttributes.put(attribute, getSecondaryAttributes().get(attribute));
+        }
+
+        character.createModifierBindings();
+
+        for (ISecondaryAttribute attribute : secondaryAttributeModifiers.keySet()) {
+            character.getSecondaryAttributeModifier(attribute).setModifier(getSecondaryAttributeModifier(attribute).getModifier());
+        }
+
+        character.createResourceProperties();
+
+        // Load info and co
+        character.advantages = new ArrayList<>(getAdvantages());
+        character.disadvantages = new ArrayList<>(getDisadvantages());
+        character.notes.set(getNotes());
+        character.inventory.addAll(getInventory().getItems());
+
+        // Load Equipment
+        for (IWeapon weapon : getEquippedWeapons()) {
+            character.equippedWeapons.add(weapon.copy());
+        }
+        for (IWeapon weapon : getWeapons()) {
+            character.weapons.add(weapon.copy());
+        }
+        character.equippedArmor.put(ArmorPosition.head, getEquippedArmor().get(ArmorPosition.head));
+        character.equippedArmor.put(ArmorPosition.upperBody, getEquippedArmor().get(ArmorPosition.upperBody));
+        character.equippedArmor.put(ArmorPosition.arm, getEquippedArmor().get(ArmorPosition.arm));
+        character.equippedArmor.put(ArmorPosition.legs, getEquippedArmor().get(ArmorPosition.legs));
+        for (IArmor armor : getArmor()) {
+            character.armor.add(armor.copy());
+        }
+        for (IJewellery jewellery : getEquippedJewellery()) {
+            character.equippedJewellery.add(jewellery.copy());
+        }
+        for (IJewellery jewellery : getJewellery()) {
+            character.jewellery.add(jewellery.copy());
+        }
+
+        //Load Talents and spells
+        character.spells.addAll(getSpells());
+        for (ITalent talent : getTalents().keySet()) {
+            character.talents.put(talent, new SimpleIntegerProperty(getTalents().get(talent)));
+        }
+
+        return character;
+    }
+
     /**
      * Needs to be called after the SecondaryAttributes have been set
      */

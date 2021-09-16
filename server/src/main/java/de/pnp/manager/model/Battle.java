@@ -3,6 +3,7 @@ package de.pnp.manager.model;
 import de.pnp.manager.main.CopyService;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.WorkbookService;
+import de.pnp.manager.model.character.PnPCharacterFactory;
 import de.pnp.manager.model.manager.BattleHandler;
 import de.pnp.manager.model.manager.CharacterHandler;
 import de.pnp.manager.model.manager.PnPCharacterProducer;
@@ -132,7 +133,7 @@ public class Battle {
     }
 
     public void createPlayer(PnPCharacter character) {
-        //players.add(character.cloneMember());
+        players.add(characterHandler.createOneTimeCharacter(this, character::cloneCharacter));
     }
 
     public void createEnemy() {
@@ -140,7 +141,7 @@ public class Battle {
     }
 
     public void createEnemy(PnPCharacter character) {
-        //enemies.add(character.cloneMember());
+        enemies.add(characterHandler.createOneTimeCharacter(this, character::cloneCharacter));
     }
 
     public void load(File file, boolean enemy) {
@@ -177,12 +178,14 @@ public class Battle {
     }
 
     private void createMember(Workbook wb, boolean enemy) {
-        /*PnPCharacter character = new BattleMember(wb);
+        PnPCharacter character = characterHandler.createOneTimeCharacter(this, (characterID, battle) ->
+                PnPCharacterFactory.createCharacter(characterID, battle, wb)
+        );
         if (enemy) {
             enemies.add(character);
         } else {
             players.add(character);
-        }*/
+        }
     }
 
     public void spawnMember(boolean enemy, int level, Characterisation characterisation, Race race,

@@ -465,11 +465,11 @@ public class BattleView extends ConfigurableViewPart {
 
     private void cloneMember() {
         if (selectedTarget.get() != null) {
-            PnPCharacter member = selectedTarget.get().getCharacter();
-            if (battle.isPlayer(member)) {
-                battle.createPlayer(member);
+            PnPCharacter character = selectedTarget.get().getCharacter();
+            if (battle.isPlayer(character)) {
+                battle.createPlayer(character);
             } else {
-                battle.createEnemy(member);
+                battle.createEnemy(character);
             }
         }
     }
