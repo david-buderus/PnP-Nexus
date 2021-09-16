@@ -1,7 +1,7 @@
 package de.pnp.manager.model.other;
 
-import de.pnp.manager.model.member.data.IPrimaryAttribute;
-import de.pnp.manager.model.member.data.PrimaryAttribute;
+import de.pnp.manager.model.character.data.IPrimaryAttribute;
+import de.pnp.manager.model.character.data.PrimaryAttribute;
 
 import java.util.Arrays;
 

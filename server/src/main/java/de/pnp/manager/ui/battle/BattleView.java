@@ -1,7 +1,19 @@
 package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.interfaces.ILootable;
+import de.pnp.manager.model.interfaces.WithToStringProperty;
+import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.manager.BattleHandler;
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.AttackTypes;
+import de.pnp.manager.ui.ConfigurableViewPart;
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.battle.state.AllMemberStateView;
+import de.pnp.manager.ui.battle.state.MemberStateView;
+import de.pnp.manager.ui.part.NumStringConverter;
+import de.pnp.manager.ui.part.UpdatingListCell;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -16,19 +28,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
-import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.interfaces.ILootable;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
-import de.pnp.manager.model.loot.LootTable;
-import de.pnp.manager.model.member.GeneratedExtendedBattleMember;
-import de.pnp.manager.model.member.data.AttackTypes;
-import de.pnp.manager.model.member.interfaces.IBattleMember;
-import de.pnp.manager.ui.ConfigurableViewPart;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.battle.state.AllMemberStateView;
-import de.pnp.manager.ui.battle.state.MemberStateView;
-import de.pnp.manager.ui.part.NumStringConverter;
-import de.pnp.manager.ui.part.UpdatingListCell;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -41,9 +40,9 @@ public class BattleView extends ConfigurableViewPart {
 
     private final Battle battle;
 
-    private final HashMap<IBattleMember, BattleMemberPane> panes;
-    private final ObjectProperty<BattleMemberPane> selectedSource;
-    private final ObjectProperty<BattleMemberPane> selectedTarget;
+    private final HashMap<PnPCharacter, PnPCharacterPane> panes;
+    private final ObjectProperty<PnPCharacterPane> selectedSource;
+    private final ObjectProperty<PnPCharacterPane> selectedTarget;
 
     private final IntegerProperty damage;
     private final IntegerProperty heal;
@@ -101,11 +100,11 @@ public class BattleView extends ConfigurableViewPart {
         this.players = new FlowPane();
         memberLists.getChildren().add(players);
 
-        battle.playersProperty().addListener((ListChangeListener<IBattleMember>) change -> {
+        battle.playersProperty().addListener((ListChangeListener<PnPCharacter>) change -> {
             while (change.next()) {
 
-                for (IBattleMember member : change.getAddedSubList()) {
-                    BattleMemberPane pane = new BattleMemberPane(member);
+                for (PnPCharacter character : change.getAddedSubList()) {
+                    PnPCharacterPane pane = new PnPCharacterPane(character);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
                         if (event.isControlDown()) {
                             selectSource(pane);
@@ -113,12 +112,12 @@ public class BattleView extends ConfigurableViewPart {
                             selectTarget(pane);
                         }
                     });
-                    panes.put(member, pane);
+                    panes.put(character, pane);
 
                     players.getChildren().add(pane);
                 }
 
-                for (IBattleMember member : change.getRemoved()) {
+                for (PnPCharacter member : change.getRemoved()) {
                     players.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
@@ -133,11 +132,11 @@ public class BattleView extends ConfigurableViewPart {
         this.enemies = new FlowPane();
         memberLists.getChildren().add(enemies);
 
-        battle.enemiesProperty().addListener((ListChangeListener<IBattleMember>) change -> {
+        battle.enemiesProperty().addListener((ListChangeListener<PnPCharacter>) change -> {
             while (change.next()) {
 
-                for (IBattleMember member : change.getAddedSubList()) {
-                    BattleMemberPane pane = new BattleMemberPane(member);
+                for (PnPCharacter member : change.getAddedSubList()) {
+                    PnPCharacterPane pane = new PnPCharacterPane(member);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
                         if (event.isControlDown()) {
                             selectSource(pane);
@@ -150,7 +149,7 @@ public class BattleView extends ConfigurableViewPart {
                     enemies.getChildren().add(pane);
                 }
 
-                for (IBattleMember member : change.getRemoved()) {
+                for (PnPCharacter member : change.getRemoved()) {
                     enemies.getChildren().remove(panes.get(member));
                     panes.remove(member);
                 }
@@ -201,12 +200,12 @@ public class BattleView extends ConfigurableViewPart {
 
         HBox blockBox = labelRegion("battle.info.block", 40, blockField, 110, blockCombo);
 
-        ChangeListener<BattleMemberPane> changeListener = (ob, o, memberPane) -> {
+        ChangeListener<PnPCharacterPane> changeListener = (ob, o, memberPane) -> {
             info.getChildren().clear();
             info.getChildren().add(infoLabel);
 
-            final IBattleMember target = selectedTarget.get() != null ? selectedTarget.get().getBattleMember() : null;
-            final IBattleMember source = selectedSource.get() != null ? selectedSource.get().getBattleMember() : null;
+            final PnPCharacter target = selectedTarget.get() != null ? selectedTarget.get().getCharacter() : null;
+            final PnPCharacter source = selectedSource.get() != null ? selectedSource.get().getCharacter() : null;
 
             if (target == null) {
                 info.getChildren().add(emptyLabel);
@@ -220,21 +219,16 @@ public class BattleView extends ConfigurableViewPart {
             lvlField.textProperty().bindBidirectional(target.levelProperty(), new NumStringConverter());
 
             info.getChildren().add(labelRegion("battle.info.name", 120, nameField, 30, lvlField));
-            info.getChildren().add(labelTextField("battle.info.hitPoints", target.lifeProperty(), target.maxLifeProperty()));
+            info.getChildren().add(labelTextField("battle.info.hitPoints", target.healthProperty(), target.maxHealthProperty()));
             info.getChildren().add(labelTextField("battle.info.mana", target.manaProperty(), target.maxManaProperty()));
-            info.getChildren().add(labelTextField("battle.info.initiative", target.initiativeProperty()));
+            info.getChildren().add(labelTextField("battle.info.initiative", target.staticInitiativeProperty()));
             info.getChildren().add(labelTextField("battle.info.counter", target.counterProperty()));
             info.getChildren().add(labelTextField("battle.info.start", target.startValueProperty()));
 
             Button armorButton = new Button();
             armorButton.setPrefWidth(215);
-            if (target instanceof GeneratedExtendedBattleMember) {
-                armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.characterSheet"));
-                armorButton.setOnAction(ev -> new CharacterView((GeneratedExtendedBattleMember) target));
-            } else {
-                armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.armor"));
-                armorButton.setOnAction(ev -> new MemberArmorView(target));
-            }
+            armorButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.info.characterSheet"));
+            armorButton.setOnAction(ev -> new CharacterView(target));
             info.getChildren().add(armorButton);
 
             Button statusButton = new Button();
@@ -413,7 +407,7 @@ public class BattleView extends ConfigurableViewPart {
         allStatusButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.allStatus"));
         allStatusButton.setPrefWidth(110);
         allStatusButton.setOnAction(event -> {
-            IBattleMember source = selectedSource.get() != null ? selectedSource.get().getBattleMember() : null;
+            PnPCharacter source = selectedSource.get() != null ? selectedSource.get().getCharacter() : null;
             new AllMemberStateView(battle, source);
         });
         utilityButtons.add(allStatusButton, 1, 1);
@@ -430,18 +424,16 @@ public class BattleView extends ConfigurableViewPart {
     private void loot() {
         LootTable lootTable = new LootTable();
 
-        for (IBattleMember member : battle.enemiesProperty()) {
-            if (member instanceof ILootable) {
-                lootTable.add(((ILootable) member).getLootTable());
-            }
+        for (PnPCharacter character : battle.enemiesProperty()) {
+            lootTable.add(character.getFinishedLootTable());
         }
 
         Collection<LootView.EXP> expCollection = new LinkedList<>();
 
-        for (IBattleMember player : battle.playersProperty()) {
+        for (PnPCharacter player : battle.playersProperty()) {
             double amount = 0;
 
-            for (IBattleMember enemy : battle.enemiesProperty()) {
+            for (PnPCharacter enemy : battle.enemiesProperty()) {
                 int level = enemy.getLevel();
 
                 if (enemy.getTier() > player.getTier()) {
@@ -464,7 +456,7 @@ public class BattleView extends ConfigurableViewPart {
 
     private void removeMember() {
         if (selectedTarget.get() != null) {
-            battle.removeMember(selectedTarget.get().getBattleMember());
+            battle.removeMember(selectedTarget.get().getCharacter());
             players.getChildren().remove(selectedTarget.get());
             enemies.getChildren().remove(selectedTarget.get());
             selectTarget(null);
@@ -473,7 +465,7 @@ public class BattleView extends ConfigurableViewPart {
 
     private void cloneMember() {
         if (selectedTarget.get() != null) {
-            IBattleMember member = selectedTarget.get().getBattleMember();
+            PnPCharacter member = selectedTarget.get().getCharacter();
             if (battle.isPlayer(member)) {
                 battle.createPlayer(member);
             } else {
@@ -482,7 +474,7 @@ public class BattleView extends ConfigurableViewPart {
         }
     }
 
-    private void selectTarget(BattleMemberPane pane) {
+    private void selectTarget(PnPCharacterPane pane) {
         if (selectedTarget.get() != null) {
             selectedTarget.get().setPrimarySelected(false);
         }
@@ -492,7 +484,7 @@ public class BattleView extends ConfigurableViewPart {
         }
     }
 
-    private void selectSource(BattleMemberPane pane) {
+    private void selectSource(PnPCharacterPane pane) {
         if (selectedSource.get() != null) {
             selectedSource.get().setSecondarySelected(false);
         }

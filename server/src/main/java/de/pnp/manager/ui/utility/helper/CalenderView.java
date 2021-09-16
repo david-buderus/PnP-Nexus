@@ -1,5 +1,8 @@
 package de.pnp.manager.ui.utility.helper;
 
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
+import de.pnp.manager.ui.part.NumStringConverter;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -12,9 +15,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
-import de.pnp.manager.ui.part.NumStringConverter;
 
 import static de.pnp.manager.main.LanguageUtility.getMessageProperty;
 

@@ -1,8 +1,8 @@
 package de.pnp.manager.ui.part.interfaces;
 
-import javafx.scene.layout.Region;
 import de.pnp.manager.model.graph.Graph;
 import de.pnp.manager.ui.part.GraphView;
+import javafx.scene.layout.Region;
 
 import java.util.Map;
 

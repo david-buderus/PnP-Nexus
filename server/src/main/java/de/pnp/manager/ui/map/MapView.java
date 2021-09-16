@@ -1,6 +1,12 @@
 package de.pnp.manager.ui.map;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.interfaces.WithToStringProperty;
+import de.pnp.manager.model.map.Map;
+import de.pnp.manager.model.map.specification.CryptSpecification;
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
+import de.pnp.manager.ui.part.UpdatingListCell;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -11,12 +17,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
-import de.pnp.manager.model.map.Map;
-import de.pnp.manager.model.map.specification.CryptSpecification;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
-import de.pnp.manager.ui.part.UpdatingListCell;
 
 import java.util.Random;
 

@@ -1,6 +1,11 @@
 package de.pnp.manager.ui.utility.helper;
 
-import de.pnp.manager.model.member.data.FoodRequirement;
+import de.pnp.manager.model.character.FoodMember;
+import de.pnp.manager.model.character.data.FoodRequirement;
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
+import de.pnp.manager.ui.part.NumStringConverter;
+import de.pnp.manager.ui.part.UpdatingListCell;
 import javafx.beans.property.DoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -12,11 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import de.pnp.manager.model.member.FoodMember;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
-import de.pnp.manager.ui.part.NumStringConverter;
-import de.pnp.manager.ui.part.UpdatingListCell;
 
 import java.util.ArrayList;
 import java.util.List;

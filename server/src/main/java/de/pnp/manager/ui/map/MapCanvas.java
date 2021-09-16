@@ -1,5 +1,9 @@
 package de.pnp.manager.ui.map;
 
+import de.pnp.manager.model.map.Map;
+import de.pnp.manager.model.map.object.IPosition;
+import de.pnp.manager.model.map.object.loot.LootObject;
+import de.pnp.manager.model.map.object.room.RoomObject;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -12,10 +16,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
-import de.pnp.manager.model.map.Map;
-import de.pnp.manager.model.map.object.IPosition;
-import de.pnp.manager.model.map.object.loot.LootObject;
-import de.pnp.manager.model.map.object.room.RoomObject;
 
 public class MapCanvas extends StackPane implements IMapCanvas {
 

@@ -4,6 +4,7 @@ import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.item.IItem;
 import de.pnp.manager.model.loot.ILoot;
+import de.pnp.manager.ui.utility.MemoryView;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
@@ -11,7 +12,6 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import de.pnp.manager.ui.utility.MemoryView;
 
 import java.io.IOException;
 import java.nio.file.Path;

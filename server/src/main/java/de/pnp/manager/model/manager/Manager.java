@@ -7,10 +7,12 @@ public class Manager {
 
     protected BattleHandler battleHandler;
     protected ServerNetworkHandler networkHandler;
+    protected CharacterHandler characterHandler;
 
     public Manager() {
         this.battleHandler = new BattleHandler(this);
         this.networkHandler = new ServerNetworkHandler(this);
+        this.characterHandler = new CharacterHandler();
 
         this.networkHandler.start();
     }
@@ -21,5 +23,9 @@ public class Manager {
 
     public NetworkHandler getNetworkHandler() {
         return networkHandler;
+    }
+
+    public CharacterHandler getCharacterHandler() {
+        return characterHandler;
     }
 }

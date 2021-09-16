@@ -3,11 +3,11 @@ package de.pnp.manager.network.serializer;
 import de.pnp.manager.model.*;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.loot.*;
-import de.pnp.manager.model.member.IInventory;
-import de.pnp.manager.model.member.IPnPCharacter;
-import de.pnp.manager.model.member.Inventory;
-import de.pnp.manager.model.member.PnPCharacter;
-import de.pnp.manager.model.member.data.*;
+import de.pnp.manager.model.character.IInventory;
+import de.pnp.manager.model.character.IPnPCharacter;
+import de.pnp.manager.model.character.Inventory;
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Talent;
 

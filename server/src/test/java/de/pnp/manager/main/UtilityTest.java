@@ -1,7 +1,5 @@
 package de.pnp.manager.main;
 
-import de.pnp.manager.main.LanguageUtility;
-import de.pnp.manager.main.Utility;
 import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.item.Item;
 import de.pnp.manager.model.loot.ILoot;

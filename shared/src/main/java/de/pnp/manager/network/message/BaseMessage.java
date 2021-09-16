@@ -17,7 +17,8 @@ public abstract class BaseMessage {
     protected int id;
     protected Date timestamp;
 
-    protected BaseMessage() { }
+    protected BaseMessage() {
+    }
 
     protected BaseMessage(int id, Date timestamp) {
         this.id = id;

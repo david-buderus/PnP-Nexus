@@ -1,10 +1,10 @@
 package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.model.manager.BattleHandler;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import de.pnp.manager.ui.IView;
 import de.pnp.manager.ui.ViewPart;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 public class BattleOverview extends ViewPart {
 

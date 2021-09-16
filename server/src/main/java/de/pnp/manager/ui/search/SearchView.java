@@ -1,5 +1,8 @@
 package de.pnp.manager.ui.search;
 
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
+import de.pnp.manager.ui.part.FilteredTableView;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -7,9 +10,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
-import de.pnp.manager.ui.part.FilteredTableView;
 
 import java.util.Random;
 

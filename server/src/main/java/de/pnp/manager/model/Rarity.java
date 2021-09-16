@@ -2,8 +2,8 @@ package de.pnp.manager.model;
 
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
-import javafx.beans.property.ReadOnlyStringProperty;
 import de.pnp.manager.model.interfaces.WithToStringProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;

@@ -1,16 +1,16 @@
 package de.pnp.manager.ui.part;
 
+import de.pnp.manager.model.item.IEquipment;
 import javafx.beans.property.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import de.pnp.manager.model.item.Equipment;
 
 import java.util.function.Function;
 
-public class EquipmentTable<Eq extends Equipment> extends CharacterTable<Eq> {
+public class EquipmentTable<Eq extends IEquipment> extends CharacterTable<Eq> {
 
     protected BooleanProperty withSeparatedUpgradeLine;
     protected ObjectProperty<Function<Eq, ObservableValue<String>>> upgradeFactory;

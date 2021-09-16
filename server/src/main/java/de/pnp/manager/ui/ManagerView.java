@@ -2,6 +2,11 @@ package de.pnp.manager.ui;
 
 import de.pnp.manager.main.*;
 import de.pnp.manager.model.manager.Manager;
+import de.pnp.manager.ui.battle.BattleOverview;
+import de.pnp.manager.ui.map.MapView;
+import de.pnp.manager.ui.search.SearchOverview;
+import de.pnp.manager.ui.utility.*;
+import de.pnp.manager.ui.utility.helper.HelperOverview;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -19,11 +24,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import org.apache.commons.lang.exception.ExceptionUtils;
-import de.pnp.manager.ui.battle.BattleOverview;
-import de.pnp.manager.ui.map.MapView;
-import de.pnp.manager.ui.search.SearchOverview;
-import de.pnp.manager.ui.utility.*;
-import de.pnp.manager.ui.utility.helper.HelperOverview;
 
 import java.io.File;
 import java.sql.Connection;

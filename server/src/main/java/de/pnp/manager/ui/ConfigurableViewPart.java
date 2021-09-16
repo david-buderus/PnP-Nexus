@@ -1,7 +1,7 @@
 package de.pnp.manager.ui;
 
-import javafx.stage.Stage;
 import de.pnp.manager.ui.part.ConfigurableTab;
+import javafx.stage.Stage;
 
 public class ConfigurableViewPart extends ConfigurableTab implements IView {
 

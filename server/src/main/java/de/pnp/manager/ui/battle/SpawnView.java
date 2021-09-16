@@ -1,6 +1,12 @@
 package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.Database;
+import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.character.generation.GenerationBase;
+import de.pnp.manager.model.character.generation.TypedGenerationBase;
+import de.pnp.manager.model.character.generation.specs.*;
+import de.pnp.manager.ui.View;
+import de.pnp.manager.ui.part.NumStringConverter;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -11,12 +17,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.member.generation.GenerationBase;
-import de.pnp.manager.model.member.generation.TypedGenerationBase;
-import de.pnp.manager.model.member.generation.specs.*;
-import de.pnp.manager.ui.View;
-import de.pnp.manager.ui.part.NumStringConverter;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -5,13 +5,16 @@ public class SessionInfo {
     protected String sessionID;
     protected String sessionName;
     protected int actualClients;
-    /** -1 := unlimited clients */
+    /**
+     * -1 := unlimited clients
+     */
     protected int maxClients;
     protected boolean passwordProtected;
     protected String host;
     protected String info;
 
-    public SessionInfo() { }
+    public SessionInfo() {
+    }
 
     public SessionInfo(String sessionID, String sessionName, int actualClients, int maxClients, boolean passwordProtected, String host, String info) {
         this.sessionID = sessionID;

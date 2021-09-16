@@ -2,15 +2,15 @@ package de.pnp.manager.ui.utility;
 
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
-import de.pnp.manager.model.upgrade.UpgradeModel;
-import javafx.geometry.Insets;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.other.Spell;
+import de.pnp.manager.model.upgrade.UpgradeModel;
 import de.pnp.manager.ui.IView;
 import de.pnp.manager.ui.ViewPart;
 import de.pnp.manager.ui.part.FilteredTableView;
+import javafx.geometry.Insets;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 public class SQLView extends ViewPart {
 

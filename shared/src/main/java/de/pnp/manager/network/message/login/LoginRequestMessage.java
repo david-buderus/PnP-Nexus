@@ -8,7 +8,8 @@ import static de.pnp.manager.network.message.MessageIDs.LOGIN_REQUEST;
 
 public class LoginRequestMessage extends DataMessage<LoginRequestMessage.LoginRequestData> {
 
-    public LoginRequestMessage() { }
+    public LoginRequestMessage() {
+    }
 
     public LoginRequestMessage(String name, Date timestamp) {
         super(LOGIN_REQUEST, timestamp);

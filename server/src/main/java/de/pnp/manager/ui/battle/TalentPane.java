@@ -1,21 +1,21 @@
 package de.pnp.manager.ui.battle;
 
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.PrimaryAttribute;
+import de.pnp.manager.model.other.ITalent;
+import de.pnp.manager.ui.part.NumberField;
 import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import de.pnp.manager.model.member.GeneratedExtendedBattleMember;
-import de.pnp.manager.model.member.data.PrimaryAttribute;
-import de.pnp.manager.model.other.Talent;
-import de.pnp.manager.ui.part.NumberField;
 
 import java.util.Arrays;
 
 public class TalentPane extends HBox {
 
-    public TalentPane(GeneratedExtendedBattleMember battleMember, Talent talent) {
+    public TalentPane(PnPCharacter character, ITalent talent) {
         this.setPadding(new Insets(5));
         this.setAlignment(Pos.CENTER);
 
@@ -37,7 +37,7 @@ public class TalentPane extends HBox {
         NumberField points = new NumberField();
         points.setPrefWidth(30);
 
-        points.numberProperty().bindBidirectional(battleMember.getTalent(talent));
+        points.numberProperty().bindBidirectional(character.getObservableTalents().get(talent));
         this.getChildren().add(points);
     }
 }

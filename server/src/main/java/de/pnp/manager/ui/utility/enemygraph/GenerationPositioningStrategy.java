@@ -1,14 +1,14 @@
 package de.pnp.manager.ui.utility.enemygraph;
 
+import de.pnp.manager.model.graph.Graph;
+import de.pnp.manager.model.character.generation.GenerationBase;
+import de.pnp.manager.model.character.generation.TypedGenerationBase;
+import de.pnp.manager.model.character.generation.specs.*;
+import de.pnp.manager.ui.part.GraphView;
+import de.pnp.manager.ui.part.interfaces.IPositioningStrategy;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.layout.Region;
-import de.pnp.manager.model.graph.Graph;
-import de.pnp.manager.model.member.generation.GenerationBase;
-import de.pnp.manager.model.member.generation.TypedGenerationBase;
-import de.pnp.manager.model.member.generation.specs.*;
-import de.pnp.manager.ui.part.GraphView;
-import de.pnp.manager.ui.part.interfaces.IPositioningStrategy;
 
 import java.util.*;
 import java.util.stream.Collectors;

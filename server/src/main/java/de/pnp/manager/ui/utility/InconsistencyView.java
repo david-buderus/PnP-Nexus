@@ -1,15 +1,15 @@
 package de.pnp.manager.ui.utility;
 
 import de.pnp.manager.main.Database;
+import de.pnp.manager.model.Inconsistency;
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.geometry.Insets;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
-import de.pnp.manager.model.Inconsistency;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
 
 import static de.pnp.manager.main.LanguageUtility.getMessageProperty;
 

@@ -1,6 +1,6 @@
 package de.pnp.manager.model.other;
 
-import de.pnp.manager.model.member.data.IPrimaryAttribute;
+import de.pnp.manager.model.character.data.IPrimaryAttribute;
 
 public interface ITalent {
 

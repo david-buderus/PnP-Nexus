@@ -1,22 +1,22 @@
 package de.pnp.manager.ui.battle.state;
 
 import de.pnp.manager.main.LanguageUtility;
-import javafx.beans.property.ReadOnlyStringProperty;
 import de.pnp.manager.model.interfaces.WithToStringProperty;
-import de.pnp.manager.model.member.data.AttackTypes;
-import de.pnp.manager.model.member.interfaces.IBattleMember;
-import de.pnp.manager.model.member.state.implementations.defense.ArmorBonusMemberState;
-import de.pnp.manager.model.member.state.implementations.defense.ArmorMalusMemberState;
-import de.pnp.manager.model.member.state.implementations.incoming.ShieldMemberState;
-import de.pnp.manager.model.member.state.implementations.initiative.*;
-import de.pnp.manager.model.member.state.implementations.manipulating.DamageMemberState;
-import de.pnp.manager.model.member.state.implementations.manipulating.HealMemberState;
-import de.pnp.manager.model.member.state.implementations.manipulating.ManaDrainMemberState;
-import de.pnp.manager.model.member.state.implementations.manipulating.ManaRegenerationMemberState;
-import de.pnp.manager.model.member.state.implementations.other.FearMemberState;
-import de.pnp.manager.model.member.state.implementations.other.OtherMemberState;
-import de.pnp.manager.model.member.state.implementations.other.SnareMemberState;
-import de.pnp.manager.model.member.state.interfaces.IMemberState;
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.AttackTypes;
+import de.pnp.manager.model.character.state.implementations.defense.ArmorBonusMemberState;
+import de.pnp.manager.model.character.state.implementations.defense.ArmorMalusMemberState;
+import de.pnp.manager.model.character.state.implementations.incoming.ShieldMemberState;
+import de.pnp.manager.model.character.state.implementations.initiative.*;
+import de.pnp.manager.model.character.state.implementations.manipulating.DamageMemberState;
+import de.pnp.manager.model.character.state.implementations.manipulating.HealMemberState;
+import de.pnp.manager.model.character.state.implementations.manipulating.ManaDrainMemberState;
+import de.pnp.manager.model.character.state.implementations.manipulating.ManaRegenerationMemberState;
+import de.pnp.manager.model.character.state.implementations.other.FearMemberState;
+import de.pnp.manager.model.character.state.implementations.other.OtherMemberState;
+import de.pnp.manager.model.character.state.implementations.other.SnareMemberState;
+import de.pnp.manager.model.character.state.interfaces.IMemberStateImpl;
+import javafx.beans.property.ReadOnlyStringProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class MemberStateFactory implements WithToStringProperty {
 
     private final String key;
     private final MemberStateProducer producer;
-    private final IMemberState defaultState;
+    private final IMemberStateImpl defaultState;
 
     private MemberStateFactory(String key, MemberStateProducer producer) {
         this.key = key;
@@ -35,11 +35,11 @@ public class MemberStateFactory implements WithToStringProperty {
         this.defaultState = producer.create("default", 0, false, 0, false, AttackTypes.direct, null);
     }
 
-    public IMemberState create(String name, int duration, boolean activeRounder, float power, boolean isRandom, AttackTypes type, IBattleMember source) {
+    public IMemberStateImpl create(String name, int duration, boolean activeRounder, float power, boolean isRandom, AttackTypes type, PnPCharacter source) {
         return producer.create(name, duration, activeRounder, power, isRandom, type, source);
     }
 
-    public IMemberState getDefaultState() {
+    public IMemberStateImpl getDefaultState() {
         return defaultState;
     }
 

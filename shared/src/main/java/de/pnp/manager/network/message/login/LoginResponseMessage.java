@@ -8,7 +8,8 @@ import static de.pnp.manager.network.message.MessageIDs.LOGIN_RESPONSE;
 
 public class LoginResponseMessage extends DataMessage<LoginResponseMessage.LoginResponseData> {
 
-    public LoginResponseMessage() { }
+    public LoginResponseMessage() {
+    }
 
     public LoginResponseMessage(String id, String name, Date timestamp) {
         super(LOGIN_RESPONSE, timestamp);

@@ -1,5 +1,6 @@
 package de.pnp.manager.ui.utility;
 
+import de.pnp.manager.ui.View;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -7,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Font;
-import de.pnp.manager.ui.View;
 
 public class InfoView extends View {
 

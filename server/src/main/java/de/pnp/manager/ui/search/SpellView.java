@@ -1,6 +1,9 @@
 package de.pnp.manager.ui.search;
 
 import de.pnp.manager.main.Database;
+import de.pnp.manager.model.other.Spell;
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,9 +14,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.util.converter.NumberStringConverter;
-import de.pnp.manager.model.other.Spell;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
 
 import java.util.List;
 import java.util.Random;

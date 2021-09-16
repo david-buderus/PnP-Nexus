@@ -1,6 +1,8 @@
 package de.pnp.manager.ui;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.ui.part.NumberField;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -9,7 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import de.pnp.manager.ui.part.NumberField;
 
 public abstract class ViewFactory {
 
@@ -56,6 +57,24 @@ public abstract class ViewFactory {
         field.setPrefWidth(150);
         field.numberProperty().bindBidirectional(property);
         field.setEditable(!readOnly);
+        box.getChildren().add(field);
+
+        return box;
+    }
+
+    public static HBox labelTextField(String key, NumberBinding binding) {
+        HBox box = new HBox(5);
+        box.setAlignment(Pos.CENTER);
+
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
+        name.setPrefWidth(60);
+        box.getChildren().add(name);
+
+        NumberField field = new NumberField();
+        field.setPrefWidth(150);
+        field.numberProperty().bind(binding);
+        field.setEditable(false);
         box.getChildren().add(field);
 
         return box;
@@ -108,11 +127,29 @@ public abstract class ViewFactory {
         return box;
     }
 
-    public static HBox labelShortTextField(String key, ReadOnlyIntegerProperty property, IntegerProperty modifier) {
-        return labelShortTextField(LanguageUtility.getMessageProperty(key), property, modifier);
+    public static HBox labelShortTextField(ReadOnlyStringProperty nameProperty, double value) {
+        HBox box = new HBox(5);
+        box.setAlignment(Pos.CENTER);
+
+        Label name = new Label();
+        name.textProperty().bind(nameProperty);
+        name.setPrefWidth(150);
+        box.getChildren().add(name);
+
+        NumberField field = new NumberField();
+        field.setPrefWidth(30);
+        field.numberProperty().set(value);
+        field.setEditable(false);
+        box.getChildren().add(field);
+
+        return box;
     }
 
-    public static HBox labelShortTextField(ReadOnlyStringProperty nameProperty, ReadOnlyIntegerProperty property, IntegerProperty modifier) {
+    public static HBox labelShortTextField(String key, NumberBinding binding, IntegerProperty modifier) {
+        return labelShortTextField(LanguageUtility.getMessageProperty(key), binding, modifier);
+    }
+
+    public static HBox labelShortTextField(ReadOnlyStringProperty nameProperty, NumberBinding binding, IntegerProperty modifier) {
         HBox box = new HBox(5);
         box.setAlignment(Pos.CENTER);
 
@@ -124,13 +161,46 @@ public abstract class ViewFactory {
         NumberField field = new NumberField();
         field.setPrefWidth(30);
         field.setEditable(false);
-        field.numberProperty().bind(property);
+        field.numberProperty().bind(binding);
         box.getChildren().add(field);
 
         NumberField mField = new NumberField();
         mField.setPrefWidth(30);
         mField.numberProperty().bindBidirectional(modifier);
         box.getChildren().add(mField);
+
+        return box;
+    }
+
+    public static HBox labelTextField(String key, IntegerProperty property, NumberBinding binding) {
+        HBox box = new HBox(5);
+        box.setAlignment(Pos.CENTER);
+
+        Label name = new Label();
+        name.textProperty().bind(LanguageUtility.getMessageProperty(key));
+        name.setPrefWidth(60);
+        box.getChildren().add(name);
+
+        HBox fieldBox = new HBox();
+        fieldBox.setAlignment(Pos.CENTER);
+
+        NumberField field1 = new NumberField();
+        field1.setPrefWidth(70);
+        field1.numberProperty().bindBidirectional(property);
+        fieldBox.getChildren().add(field1);
+
+        Label mid = new Label("/");
+        mid.setAlignment(Pos.CENTER);
+        mid.setPrefWidth(10);
+        fieldBox.getChildren().add(mid);
+
+        NumberField field2 = new NumberField();
+        field2.setPrefWidth(70);
+        field2.numberProperty().bind(binding);
+        field2.setEditable(false);
+        fieldBox.getChildren().add(field2);
+
+        box.getChildren().add(fieldBox);
 
         return box;
     }

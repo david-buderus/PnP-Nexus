@@ -1,6 +1,11 @@
 package de.pnp.manager.ui.utility;
 
 import de.pnp.manager.main.Utility;
+import de.pnp.manager.model.loot.ILoot;
+import de.pnp.manager.model.loot.Loot;
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
+import de.pnp.manager.ui.battle.LootView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -12,11 +17,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import de.pnp.manager.model.loot.ILoot;
-import de.pnp.manager.model.loot.Loot;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
-import de.pnp.manager.ui.battle.LootView;
 
 import static de.pnp.manager.main.LanguageUtility.getMessageProperty;
 

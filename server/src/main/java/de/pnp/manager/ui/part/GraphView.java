@@ -1,5 +1,8 @@
 package de.pnp.manager.ui.part;
 
+import de.pnp.manager.model.graph.Graph;
+import de.pnp.manager.ui.part.interfaces.EdgeFactory;
+import de.pnp.manager.ui.part.interfaces.IPositioningStrategy;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -7,9 +10,6 @@ import javafx.collections.SetChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
-import de.pnp.manager.model.graph.Graph;
-import de.pnp.manager.ui.part.interfaces.EdgeFactory;
-import de.pnp.manager.ui.part.interfaces.IPositioningStrategy;
 
 import java.util.HashMap;
 import java.util.Random;

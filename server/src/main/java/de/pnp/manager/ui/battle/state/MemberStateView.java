@@ -1,6 +1,16 @@
 package de.pnp.manager.ui.battle.state;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.AttackTypes;
+import de.pnp.manager.model.character.state.IActiveRounderMemberState;
+import de.pnp.manager.model.character.state.IAttackTypeMemberState;
+import de.pnp.manager.model.character.state.IMemberState;
+import de.pnp.manager.model.character.state.interfaces.IPowerMemberStateImpl;
+import de.pnp.manager.model.character.state.interfaces.IRandomPowerMemberStateImpl;
+import de.pnp.manager.ui.View;
+import de.pnp.manager.ui.part.NumberField;
+import de.pnp.manager.ui.part.UpdatingListCell;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -16,12 +26,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import de.pnp.manager.model.member.data.AttackTypes;
-import de.pnp.manager.model.member.interfaces.IBattleMember;
-import de.pnp.manager.model.member.state.interfaces.*;
-import de.pnp.manager.ui.View;
-import de.pnp.manager.ui.part.NumberField;
-import de.pnp.manager.ui.part.UpdatingListCell;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -34,7 +38,7 @@ public class MemberStateView extends View {
     private final HashMap<IMemberState, MemberStatePane> panes;
     private final ObjectProperty<MemberStatePane> selected;
 
-    public MemberStateView(IBattleMember target, IBattleMember source) {
+    public MemberStateView(PnPCharacter target, PnPCharacter source) {
         super("state.title");
         this.panes = new HashMap<>();
         this.selected = new SimpleObjectProperty<>();
@@ -84,7 +88,7 @@ public class MemberStateView extends View {
         FlowPane states = new FlowPane();
         memberLists.getChildren().add(states);
 
-        target.statesProperty().addListener((ListChangeListener<? super IMemberState>) change -> {
+        target.memberStatesProperty().addListener((ListChangeListener<? super IMemberState>) change -> {
             while (change.next()) {
 
                 for (IMemberState state : change.getAddedSubList()) {
@@ -102,7 +106,7 @@ public class MemberStateView extends View {
             }
         });
 
-        for (IMemberState state : target.statesProperty()) {
+        for (IMemberState state : target.memberStatesProperty()) {
             MemberStatePane pane = new MemberStatePane(state);
             pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
             panes.put(state, pane);
@@ -179,8 +183,8 @@ public class MemberStateView extends View {
             info.getChildren().add(nameBox);
             info.getChildren().add(effectBox);
 
-            if (factory.getDefaultState() instanceof IPowerMemberState) {
-                if (factory.getDefaultState() instanceof IRandomPowerMemberState) {
+            if (factory.getDefaultState() instanceof IPowerMemberStateImpl) {
+                if (factory.getDefaultState() instanceof IRandomPowerMemberStateImpl) {
                     info.getChildren().add(randomPowerBox);
                 } else {
                     info.getChildren().add(powerBox);

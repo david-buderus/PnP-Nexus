@@ -1,12 +1,12 @@
 package de.pnp.manager.model.item;
 
 import de.pnp.manager.main.Database;
-import javafx.beans.property.FloatProperty;
-import javafx.beans.property.SimpleFloatProperty;
 import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.IRarity;
 import de.pnp.manager.model.Rarity;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
 
 import java.lang.reflect.InvocationTargetException;
 

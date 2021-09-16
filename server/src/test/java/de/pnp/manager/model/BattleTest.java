@@ -1,9 +1,10 @@
 package de.pnp.manager.model;
 
-import de.pnp.manager.model.member.data.AttackTypes;
-import de.pnp.manager.model.member.interfaces.IBattleMember;
-import org.junit.jupiter.api.Test;
+import de.pnp.manager.model.manager.Manager;
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.AttackTypes;
 import de.pnp.manager.testHelper.TestWithDatabaseAccess;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,13 +13,15 @@ public class BattleTest extends TestWithDatabaseAccess {
 
     @Test
     public void test() {
-        Battle b = new Battle("Test");
+        Manager manager = new Manager();
+
+        Battle b = manager.getBattleHandler().createBattle();
 
         b.createEnemy();
         b.createPlayer();
 
-        IBattleMember enemy = b.enemiesProperty().stream().findFirst().get();
-        IBattleMember player = b.playersProperty().stream().findFirst().get();
+        PnPCharacter enemy = b.enemiesProperty().stream().findFirst().get();
+        PnPCharacter player = b.playersProperty().stream().findFirst().get();
 
         assertFalse(b.isSameTeam(enemy, player));
         assertTrue(b.isPlayer(player));
@@ -29,7 +32,7 @@ public class BattleTest extends TestWithDatabaseAccess {
         while (!finished) {
             enemy.takeDamage(5, AttackTypes.direct, false, 1, 0, player);
             b.nextTurn();
-            finished = b.enemiesProperty().stream().anyMatch(IBattleMember::isDead) || b.playersProperty().stream().anyMatch(IBattleMember::isDead);
+            finished = b.enemiesProperty().stream().anyMatch(PnPCharacter::isDead) || b.playersProperty().stream().anyMatch(PnPCharacter::isDead);
         }
 
         assertTrue(b.roundProperty().get() > 0);

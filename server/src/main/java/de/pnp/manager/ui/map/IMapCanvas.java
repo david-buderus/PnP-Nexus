@@ -1,8 +1,8 @@
 package de.pnp.manager.ui.map;
 
+import de.pnp.manager.model.map.object.IPosition;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import de.pnp.manager.model.map.object.IPosition;
 
 public interface IMapCanvas {
 

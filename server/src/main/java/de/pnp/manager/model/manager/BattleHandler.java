@@ -38,7 +38,7 @@ public class BattleHandler {
     }
 
     public Battle createBattle(String sessionID) {
-        Battle battle = new Battle(getNextBattleID());
+        Battle battle = new Battle(getNextBattleID(), sessionID, manager.getCharacterHandler());
 
         ArrayList<Battle> battles = this.sessionBattleMap.computeIfAbsent(sessionID, k -> new ArrayList<>());
         battles.add(battle);

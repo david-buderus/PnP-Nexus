@@ -3,12 +3,12 @@ package de.pnp.manager.model.item;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.TypTranslation;
 import de.pnp.manager.main.Utility;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.upgrade.IUpgrade;
 import de.pnp.manager.model.upgrade.UpgradeFactory;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.*;
 import java.util.function.Consumer;

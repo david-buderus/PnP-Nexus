@@ -2,6 +2,13 @@ package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
+import de.pnp.manager.model.ICurrency;
+import de.pnp.manager.model.item.IEquipment;
+import de.pnp.manager.model.item.IItem;
+import de.pnp.manager.model.loot.ILoot;
+import de.pnp.manager.model.loot.Loot;
+import de.pnp.manager.model.upgrade.IUpgrade;
+import de.pnp.manager.ui.View;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
@@ -13,13 +20,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import de.pnp.manager.model.ICurrency;
-import de.pnp.manager.model.item.IEquipment;
-import de.pnp.manager.model.item.IItem;
-import de.pnp.manager.model.loot.ILoot;
-import de.pnp.manager.model.loot.Loot;
-import de.pnp.manager.model.upgrade.IUpgrade;
-import de.pnp.manager.ui.View;
 
 import java.util.Collection;
 

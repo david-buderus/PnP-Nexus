@@ -1,13 +1,13 @@
 package de.pnp.manager.ui.search;
 
 import de.pnp.manager.main.Database;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import de.pnp.manager.model.Rarity;
 import de.pnp.manager.model.item.Equipment;
 import de.pnp.manager.model.item.Item;
 import de.pnp.manager.model.item.Jewellery;
 import de.pnp.manager.ui.IView;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.Collection;
 import java.util.Collections;

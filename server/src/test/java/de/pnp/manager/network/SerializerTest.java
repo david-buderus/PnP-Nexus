@@ -8,9 +8,9 @@ import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.item.IItem;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.serializer.ServerModule;
+import de.pnp.manager.testHelper.TestWithDatabaseAccess;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import de.pnp.manager.testHelper.TestWithDatabaseAccess;
 
 import java.util.Arrays;
 import java.util.List;

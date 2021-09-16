@@ -1,6 +1,9 @@
 package de.pnp.manager.ui.battle.state;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.character.state.IMemberState;
+import de.pnp.manager.model.character.state.interfaces.IMemberStateImpl;
+import de.pnp.manager.model.character.state.interfaces.IPowerMemberStateImpl;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -9,19 +12,17 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import de.pnp.manager.model.member.state.interfaces.IMemberState;
-import de.pnp.manager.model.member.state.interfaces.IPowerMemberState;
 
 public class MemberStatePane extends VBox {
 
     private static final Image ICONS = new Image("Icons.png");
 
-    private final IMemberState state;
+    private final IMemberStateImpl state;
     private boolean selected;
 
     public MemberStatePane(IMemberState state) {
         this.selected = false;
-        this.state = state;
+        this.state = (IMemberStateImpl) state;
 
         this.setPadding(new Insets(5));
         this.setAlignment(Pos.CENTER);
@@ -42,21 +43,21 @@ public class MemberStatePane extends VBox {
 
         ProgressBar durationBar = new ProgressBar();
         durationBar.setStyle("-fx-accent: #ff0000;");
-        state.durationProperty().addListener((ob, o, n) ->
+        this.state.durationProperty().addListener((ob, o, n) ->
                 durationBar.setProgress((double) state.getDuration() / state.getMaxDuration()));
         durationBar.setProgress((double) state.getDuration() / state.getMaxDuration());
         this.getChildren().add(durationBar);
 
-        if (state instanceof IPowerMemberState) {
+        if (state instanceof IPowerMemberStateImpl) {
             Label power = new Label();
-            power.textProperty().bind(LanguageUtility.getMessageProperty("state.info.power").concat(": ").concat(((IPowerMemberState) state).getPowerAsString()));
+            power.textProperty().bind(LanguageUtility.getMessageProperty("state.info.power").concat(": ").concat(((IPowerMemberStateImpl) state).getPowerAsString()));
             power.setPadding(new Insets(5, 0, 5, 0));
             this.getChildren().add(power);
 
         }
 
         Label duration = new Label();
-        duration.textProperty().bind(state.durationDisplayProperty());
+        duration.textProperty().bind(this.state.durationDisplayProperty());
         this.getChildren().add(duration);
     }
 
@@ -73,7 +74,7 @@ public class MemberStatePane extends VBox {
         }
     }
 
-    public IMemberState getState() {
+    public IMemberStateImpl getState() {
         return state;
     }
 }

@@ -1,9 +1,9 @@
 package de.pnp.manager.ui.utility.helper;
 
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import de.pnp.manager.ui.IView;
 import de.pnp.manager.ui.ViewPart;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 
 public class HelperOverview extends ViewPart {
 

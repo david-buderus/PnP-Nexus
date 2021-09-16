@@ -3,6 +3,15 @@ package de.pnp.manager.ui.battle;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
+import de.pnp.manager.model.item.*;
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.PrimaryAttribute;
+import de.pnp.manager.model.character.data.SecondaryAttribute;
+import de.pnp.manager.model.other.ISpell;
+import de.pnp.manager.model.other.ITalent;
+import de.pnp.manager.ui.View;
+import de.pnp.manager.ui.part.CharacterTable;
+import de.pnp.manager.ui.part.EquipmentTable;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -13,32 +22,18 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
-import de.pnp.manager.model.item.Armor;
-import de.pnp.manager.model.item.Jewellery;
-import de.pnp.manager.model.item.Weapon;
-import de.pnp.manager.model.member.GeneratedExtendedBattleMember;
-import de.pnp.manager.model.member.data.PrimaryAttribute;
-import de.pnp.manager.model.member.data.SecondaryAttribute;
-import de.pnp.manager.model.other.Spell;
-import de.pnp.manager.model.other.Talent;
 import org.apache.commons.configuration2.Configuration;
-import de.pnp.manager.ui.View;
-import de.pnp.manager.ui.part.CharacterTable;
-import de.pnp.manager.ui.part.EquipmentTable;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.pnp.manager.ui.ViewFactory.labelShortTextField;
 
 public class CharacterView extends View {
 
-    protected GeneratedExtendedBattleMember character;
+    protected PnPCharacter character;
 
-    public CharacterView(GeneratedExtendedBattleMember character) {
+    public CharacterView(PnPCharacter character) {
         super(LanguageUtility.getMessage("character.title"), new ReadOnlyStringWrapper(" ").concat(character.nameProperty()));
         this.character = character;
 
@@ -56,7 +51,7 @@ public class CharacterView extends View {
         attributes.getChildren().add(primAttr);
 
         for (PrimaryAttribute attribute : PrimaryAttribute.getValuesWithoutDummy()) {
-            HBox attr = labelShortTextField(attribute.toStringProperty(), character.getAttribute(attribute));
+            HBox attr = labelShortTextField(attribute.toStringProperty(), character.getPrimaryAttributes().get(attribute));
             primAttr.getChildren().add(attr);
         }
 
@@ -69,29 +64,29 @@ public class CharacterView extends View {
 
         for (SecondaryAttribute attribute : SecondaryAttribute.values()) {
             HBox attr = labelShortTextField(attribute.toStringProperty(),
-                    character.getAttribute(attribute), character.getModifier(attribute));
+                    character.getSecondaryAttributeModifier(attribute).resultProperty(), character.getSecondaryAttributeModifier(attribute).modifierProperty());
             secAttr.getChildren().add(attr);
         }
 
         // TODO add initivateModifier from weapon
-        EquipmentTable<Weapon> weaponTable = new EquipmentTable<>(character.getWeapons());
-        weaponTable.addStringColumn("character.weapon.headline.name", 100, Weapon::getName);
-        weaponTable.addStringColumn("character.weapon.headline.type", 90, Weapon::getSubtype);
-        weaponTable.addStringColumn("character.weapon.headline.initiative", 55, Weapon::getInitiative);
-        weaponTable.addStringColumn("character.weapon.headline.dice", 55, Weapon::getDice);
-        weaponTable.addColumn("character.weapon.headline.damage", 55, Weapon::damageWithWearBinding);
-        weaponTable.addStringColumn("character.weapon.headline.hit", 55, Weapon::getHit);
-        weaponTable.addStringColumn("character.weapon.headline.effect", 150, Weapon::getEffect);
+        EquipmentTable<IWeapon> weaponTable = new EquipmentTable<>(character.getEquippedWeapons());
+        weaponTable.addStringColumn("character.weapon.headline.name", 100, IWeapon::getName);
+        weaponTable.addStringColumn("character.weapon.headline.type", 90, IWeapon::getSubtype);
+        weaponTable.addStringColumn("character.weapon.headline.initiative", 55, IWeapon::getInitiative);
+        weaponTable.addStringColumn("character.weapon.headline.dice", 55, IWeapon::getDice);
+        weaponTable.addColumn("character.weapon.headline.damage", 55, weapon -> ((Weapon) weapon).damageWithWearBinding());
+        weaponTable.addStringColumn("character.weapon.headline.hit", 55, IWeapon::getHit);
+        weaponTable.addStringColumn("character.weapon.headline.effect", 150, IWeapon::getEffect);
         info.getChildren().add(weaponTable);
 
         HBox armorNotes = new HBox(5);
         info.getChildren().add(armorNotes);
 
-        EquipmentTable<Armor> armorTable = new EquipmentTable<>(character.getArmor());
-        armorTable.addStringColumn("character.armor.headline.position", 100, Armor::getSubtype);
-        armorTable.addStringColumn("character.armor.headline.name", 130, Armor::getName);
-        armorTable.addColumn("character.armor.headline.protection", 60, Armor::protectionWithWearBinding);
-        armorTable.addStringColumn("character.armor.headline.weight", 60, Armor::getWeight);
+        EquipmentTable<IArmor> armorTable = new EquipmentTable<>(character.getEquippedArmorAsList());
+        armorTable.addStringColumn("character.armor.headline.position", 100, IArmor::getSubtype);
+        armorTable.addStringColumn("character.armor.headline.name", 130, IArmor::getName);
+        armorTable.addColumn("character.armor.headline.protection", 60, armor -> ((Armor) armor).protectionWithWearBinding());
+        armorTable.addStringColumn("character.armor.headline.weight", 60, IArmor::getWeight);
         armorTable.setUpgradeFactory(armor -> {
             if (armor.getEffect().isBlank()) {
                 return new ReadOnlyStringWrapper(armor.upgradesAsString());
@@ -108,10 +103,10 @@ public class CharacterView extends View {
         notes.textProperty().bindBidirectional(character.notesProperty());
         armorNotes.getChildren().add(notes);
 
-        if (character.getJewelleries().size() > 0) {
-            EquipmentTable<Jewellery> jewelleryTable = new EquipmentTable<>(character.getJewelleries());
-            jewelleryTable.addStringColumn("character.jewellery.headline.name", 100, Jewellery::getName);
-            jewelleryTable.addStringColumn("character.jewellery.headline.effect", 460, Jewellery::getEffect);
+        if (character.getEquippedJewellery().size() > 0) {
+            EquipmentTable<IJewellery> jewelleryTable = new EquipmentTable<>(character.getEquippedJewellery());
+            jewelleryTable.addStringColumn("character.jewellery.headline.name", 100, IJewellery::getName);
+            jewelleryTable.addStringColumn("character.jewellery.headline.effect", 460, IJewellery::getEffect);
             info.getChildren().add(jewelleryTable);
         }
 
@@ -144,7 +139,9 @@ public class CharacterView extends View {
         }
 
         // All talents that the character uses but are not shown in the default layout
-        Queue<Talent> notListedTalents = this.character.getTalents().stream()
+        Queue<ITalent> notListedTalents = this.character.getTalents().entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
+                .map(Map.Entry::getKey)
                 .filter(talent -> talentPages.stream().flatMap(List::stream)
                         .noneMatch(name -> name.equalsIgnoreCase(talent.getName())))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -166,7 +163,7 @@ public class CharacterView extends View {
             for (String talentName : page) {
 
                 if (talentName.equals(customs) && !notListedTalents.isEmpty()) {
-                    for (Talent talent : notListedTalents) {
+                    for (ITalent talent : notListedTalents) {
                         talents.add(new TalentPane(character, talent), pos % columnCount, pos / columnCount);
                         pos++;
                     }
@@ -199,12 +196,12 @@ public class CharacterView extends View {
             spellTab.setClosable(false);
             talentTabs.getTabs().add(spellTab);
 
-            CharacterTable<Spell> spellTable = new CharacterTable<>(character.getSpells());
-            spellTable.addStringColumn("character.spell.headline.name", 100, Spell::getName);
-            spellTable.addStringColumn("character.spell.headline.effect", 250, Spell::getEffect);
-            spellTable.addStringColumn("character.spell.headline.type", 90, Spell::getType);
-            spellTable.addStringColumn("character.spell.headline.costs", 51, Spell::getCost);
-            spellTable.addStringColumn("character.spell.headline.castTime", 51, Spell::getCastTime);
+            CharacterTable<ISpell> spellTable = new CharacterTable<>(character.getSpells());
+            spellTable.addStringColumn("character.spell.headline.name", 100, ISpell::getName);
+            spellTable.addStringColumn("character.spell.headline.effect", 250, ISpell::getEffect);
+            spellTable.addStringColumn("character.spell.headline.type", 90, ISpell::getType);
+            spellTable.addStringColumn("character.spell.headline.costs", 51, ISpell::getCost);
+            spellTable.addStringColumn("character.spell.headline.castTime", 51, ISpell::getCastTime);
             spellTab.setContent(spellTable);
         }
 

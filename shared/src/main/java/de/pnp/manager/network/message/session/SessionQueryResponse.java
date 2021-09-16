@@ -1,7 +1,6 @@
 package de.pnp.manager.network.message.session;
 
 import de.pnp.manager.network.message.DataMessage;
-import de.pnp.manager.network.session.ISession;
 import de.pnp.manager.network.session.SessionInfo;
 
 import java.util.Collection;

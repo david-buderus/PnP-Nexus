@@ -1,6 +1,12 @@
 package de.pnp.manager.ui.search;
 
 import de.pnp.manager.main.Database;
+import de.pnp.manager.model.Rarity;
+import de.pnp.manager.model.item.Plant;
+import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.ViewPart;
+import de.pnp.manager.ui.part.NumberField;
+import de.pnp.manager.ui.part.UpdatingListCell;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,12 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
-import de.pnp.manager.model.Rarity;
-import de.pnp.manager.model.item.Plant;
-import de.pnp.manager.ui.IView;
-import de.pnp.manager.ui.ViewPart;
-import de.pnp.manager.ui.part.NumberField;
-import de.pnp.manager.ui.part.UpdatingListCell;
 
 import java.util.List;
 import java.util.Random;

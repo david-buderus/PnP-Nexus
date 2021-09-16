@@ -1,10 +1,10 @@
 package de.pnp.manager.model.loot;
 
 import de.pnp.manager.main.LanguageUtility;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import de.pnp.manager.model.item.Equipment;
 import de.pnp.manager.model.item.IItem;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 public class Loot implements ILoot {
 

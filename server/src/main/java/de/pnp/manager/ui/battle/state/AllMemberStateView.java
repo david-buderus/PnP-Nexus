@@ -1,6 +1,17 @@
 package de.pnp.manager.ui.battle.state;
 
 import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.character.data.AttackTypes;
+import de.pnp.manager.model.character.state.IActiveRounderMemberState;
+import de.pnp.manager.model.character.state.IAttackTypeMemberState;
+import de.pnp.manager.model.character.state.interfaces.IPowerMemberStateImpl;
+import de.pnp.manager.model.character.state.interfaces.IRandomPowerMemberStateImpl;
+import de.pnp.manager.ui.View;
+import de.pnp.manager.ui.battle.PnPCharacterPane;
+import de.pnp.manager.ui.part.NumberField;
+import de.pnp.manager.ui.part.UpdatingListCell;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -16,17 +27,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.member.data.AttackTypes;
-import de.pnp.manager.model.member.interfaces.IBattleMember;
-import de.pnp.manager.model.member.state.interfaces.IActiveRounderMemberState;
-import de.pnp.manager.model.member.state.interfaces.IAttackTypeMemberState;
-import de.pnp.manager.model.member.state.interfaces.IPowerMemberState;
-import de.pnp.manager.model.member.state.interfaces.IRandomPowerMemberState;
-import de.pnp.manager.ui.View;
-import de.pnp.manager.ui.battle.BattleMemberPane;
-import de.pnp.manager.ui.part.NumberField;
-import de.pnp.manager.ui.part.UpdatingListCell;
 
 import java.util.HashMap;
 
@@ -35,10 +35,10 @@ import static de.pnp.manager.ui.ViewFactory.labelTextField;
 
 public class AllMemberStateView extends View {
 
-    private final HashMap<IBattleMember, BattleMemberPane> panes;
-    private final ListProperty<BattleMemberPane> selected;
+    private final HashMap<PnPCharacter, PnPCharacterPane> panes;
+    private final ListProperty<PnPCharacterPane> selected;
 
-    public AllMemberStateView(Battle battle, IBattleMember source) {
+    public AllMemberStateView(Battle battle, PnPCharacter source) {
         super("allState.title");
         this.panes = new HashMap<>();
         this.selected = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -80,28 +80,28 @@ public class AllMemberStateView extends View {
         FlowPane players = new FlowPane();
         memberLists.getChildren().add(players);
 
-        battle.playersProperty().addListener((ListChangeListener<IBattleMember>) change -> {
+        battle.playersProperty().addListener((ListChangeListener<PnPCharacter>) change -> {
             while (change.next()) {
 
-                for (IBattleMember member : change.getAddedSubList()) {
-                    BattleMemberPane pane = new BattleMemberPane(member);
+                for (PnPCharacter character : change.getAddedSubList()) {
+                    PnPCharacterPane pane = new PnPCharacterPane(character);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
-                    panes.put(member, pane);
+                    panes.put(character, pane);
 
                     players.getChildren().add(pane);
                 }
 
-                for (IBattleMember member : change.getRemoved()) {
-                    players.getChildren().remove(panes.get(member));
-                    panes.remove(member);
+                for (PnPCharacter character : change.getRemoved()) {
+                    players.getChildren().remove(panes.get(character));
+                    panes.remove(character);
                 }
             }
         });
 
-        for (IBattleMember member : battle.playersProperty()) {
-            BattleMemberPane pane = new BattleMemberPane(member);
+        for (PnPCharacter character : battle.playersProperty()) {
+            PnPCharacterPane pane = new PnPCharacterPane(character);
             pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
-            panes.put(member, pane);
+            panes.put(character, pane);
 
             players.getChildren().add(pane);
         }
@@ -114,28 +114,28 @@ public class AllMemberStateView extends View {
         FlowPane enemies = new FlowPane();
         memberLists.getChildren().add(enemies);
 
-        battle.enemiesProperty().addListener((ListChangeListener<IBattleMember>) change -> {
+        battle.enemiesProperty().addListener((ListChangeListener<PnPCharacter>) change -> {
             while (change.next()) {
 
-                for (IBattleMember member : change.getAddedSubList()) {
-                    BattleMemberPane pane = new BattleMemberPane(member);
+                for (PnPCharacter character : change.getAddedSubList()) {
+                    PnPCharacterPane pane = new PnPCharacterPane(character);
                     pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
-                    panes.put(member, pane);
+                    panes.put(character, pane);
 
                     enemies.getChildren().add(pane);
                 }
 
-                for (IBattleMember member : change.getRemoved()) {
-                    enemies.getChildren().remove(panes.get(member));
-                    panes.remove(member);
+                for (PnPCharacter character : change.getRemoved()) {
+                    enemies.getChildren().remove(panes.get(character));
+                    panes.remove(character);
                 }
             }
         });
 
-        for (IBattleMember member : battle.enemiesProperty()) {
-            BattleMemberPane pane = new BattleMemberPane(member);
+        for (PnPCharacter character : battle.enemiesProperty()) {
+            PnPCharacterPane pane = new PnPCharacterPane(character);
             pane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> select(pane));
-            panes.put(member, pane);
+            panes.put(character, pane);
 
             enemies.getChildren().add(pane);
         }
@@ -209,8 +209,8 @@ public class AllMemberStateView extends View {
             info.getChildren().add(nameBox);
             info.getChildren().add(effectBox);
 
-            if (factory.getDefaultState() instanceof IPowerMemberState) {
-                if (factory.getDefaultState() instanceof IRandomPowerMemberState) {
+            if (factory.getDefaultState() instanceof IPowerMemberStateImpl) {
+                if (factory.getDefaultState() instanceof IRandomPowerMemberStateImpl) {
                     info.getChildren().add(randomPowerBox);
                 } else {
                     info.getChildren().add(powerBox);
@@ -229,8 +229,8 @@ public class AllMemberStateView extends View {
             createButton.textProperty().bind(LanguageUtility.getMessageProperty("state.info.add"));
             createButton.setPrefWidth(215);
             createButton.setOnAction(ev -> {
-                for (BattleMemberPane pane : selected) {
-                    pane.getBattleMember().addState(
+                for (PnPCharacterPane pane : selected) {
+                    pane.getCharacter().addState(
                             effectComboBox.getValue().create(name.getName(), Integer.parseInt(durationField.getText()),
                                     activeComboBox.getValue() == Rounds.activeRounds, Float.parseFloat(powerField.getText()),
                                     randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), source));
@@ -250,7 +250,7 @@ public class AllMemberStateView extends View {
         show();
     }
 
-    private void select(BattleMemberPane pane) {
+    private void select(PnPCharacterPane pane) {
         pane.setPrimarySelected(!pane.isPrimarySelected());
         if (pane.isPrimarySelected()) {
             selected.add(pane);

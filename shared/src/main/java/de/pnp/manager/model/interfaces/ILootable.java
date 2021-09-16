@@ -4,6 +4,9 @@ import de.pnp.manager.model.loot.ILootTable;
 
 public interface ILootable {
 
-    ILootTable getLootTable();
+    /**
+     * Returns a LootTable where all items were taken into account
+     */
+    ILootTable getFinishedLootTable();
 
 }

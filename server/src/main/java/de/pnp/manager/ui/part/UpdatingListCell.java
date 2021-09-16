@@ -1,9 +1,9 @@
 package de.pnp.manager.ui.part;
 
+import de.pnp.manager.model.interfaces.WithToStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ListCell;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
 
 public class UpdatingListCell<T extends WithToStringProperty> extends ListCell<T> {
 

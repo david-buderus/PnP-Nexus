@@ -4,7 +4,6 @@ import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.IItemList;
 import de.pnp.manager.model.ItemList;
-import de.pnp.manager.model.item.IItem;
 
 import java.util.ArrayList;
 import java.util.Collection;

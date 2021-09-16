@@ -1,8 +1,8 @@
 package de.pnp.manager.ui.battle.state;
 
 import de.pnp.manager.main.LanguageUtility;
-import javafx.beans.property.ReadOnlyStringProperty;
 import de.pnp.manager.model.interfaces.WithToStringProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 
 public enum Rounds implements WithToStringProperty {
     rounds, activeRounds;
