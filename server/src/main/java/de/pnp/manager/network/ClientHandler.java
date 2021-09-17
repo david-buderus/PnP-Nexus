@@ -23,6 +23,8 @@ import de.pnp.manager.network.session.Session;
 import de.pnp.manager.network.state.BaseMessageStateMachine;
 import de.pnp.manager.network.state.StateMachine;
 import de.pnp.manager.network.state.States;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.BufferedReader;
@@ -36,6 +38,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static de.pnp.manager.network.message.MessageIDs.*;
+import static javafx.application.Platform.runLater;
 
 public class ClientHandler extends Thread implements Client {
 
@@ -53,7 +56,7 @@ public class ClientHandler extends Thread implements Client {
     protected StateMachine<BaseMessage> stateMachine;
 
     protected String clientId;
-    protected String clientName;
+    protected StringProperty clientName;
     protected Session currentSession;
     protected final Manager manager;
 
@@ -65,7 +68,7 @@ public class ClientHandler extends Thread implements Client {
         this.mapper.registerModule(new ServerModule());
         this.calendar = Calendar.getInstance();
         this.clientId = getNextClientID();
-        this.clientName = clientId;
+        this.clientName = new SimpleStringProperty(clientId);
         this.manager = manager;
         this.stateMachine = createStateMachine();
     }
@@ -115,6 +118,11 @@ public class ClientHandler extends Thread implements Client {
 
     @Override
     public String getClientName() {
+        return clientName.get();
+    }
+
+    @Override
+    public StringProperty clientNameProperty() {
         return clientName;
     }
 
@@ -134,8 +142,8 @@ public class ClientHandler extends Thread implements Client {
         // Pre login
         stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, LOGIN_REQUEST, message -> {
             LoginRequestMessage.LoginRequestData data = ((LoginRequestMessage) message).getData();
-            this.clientName = data.getName();
-            sendMessage(new LoginResponseMessage(clientId, clientName, calendar.getTime()));
+            runLater(() -> clientName.set(data.getName()));
+            sendMessage(new LoginResponseMessage(clientId, clientName.get(), calendar.getTime()));
         });
 
         // Logged in
@@ -151,7 +159,7 @@ public class ClientHandler extends Thread implements Client {
         );
 
         stateMachine.registerTransition(States.LOGGED_IN, States.PRE_LOGIN, LOGOUT_REQUEST, message -> {
-            this.clientName = clientId;
+            runLater(() -> clientName.set(clientId));
             sendMessage(new OkMessage(calendar.getTime()));
         });
 

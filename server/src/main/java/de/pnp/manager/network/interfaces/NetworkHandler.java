@@ -3,6 +3,7 @@ package de.pnp.manager.network.interfaces;
 import de.pnp.manager.network.client.IClient;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.session.ISession;
+import javafx.beans.property.ListProperty;
 
 import java.util.Collection;
 
@@ -17,4 +18,6 @@ public interface NetworkHandler {
     void sendTo(BaseMessage message, String... clientIDs);
 
     Collection<? extends ISession> getActiveSessions();
+
+    ListProperty<Client> clientsProperty();
 }

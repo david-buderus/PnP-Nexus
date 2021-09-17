@@ -4,6 +4,7 @@ import de.pnp.manager.main.*;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.ui.battle.BattleOverview;
 import de.pnp.manager.ui.map.MapView;
+import de.pnp.manager.ui.network.NetworkView;
 import de.pnp.manager.ui.search.SearchOverview;
 import de.pnp.manager.ui.utility.*;
 import de.pnp.manager.ui.utility.helper.HelperOverview;
@@ -46,6 +47,9 @@ public class ManagerView extends View {
         this.defaultPath.addListener((ob, o, n) -> Utility.saveToCustomConfig("home.defaultLoadingPath", n));
 
         TabPane root = new TabPane();
+
+        Tab networkTab = new NetworkView(this, manager.getNetworkHandler(), manager.getCharacterHandler());
+        root.getTabs().add(networkTab);
 
         Tab battleTab = new BattleOverview(this, manager.getBattleHandler());
         root.getTabs().add(battleTab);

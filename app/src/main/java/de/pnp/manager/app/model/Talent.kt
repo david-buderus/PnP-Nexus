@@ -1,6 +1,6 @@
 package de.pnp.manager.app.model
 
-import de.pnp.manager.model.attribute.IPrimaryAttribute
+import de.pnp.manager.model.character.data.IPrimaryAttribute
 import de.pnp.manager.model.other.ITalent
 
 class Talent : ITalent {

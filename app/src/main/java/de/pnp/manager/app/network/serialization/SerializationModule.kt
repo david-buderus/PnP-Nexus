@@ -3,8 +3,8 @@ package de.pnp.manager.app.network.serialization
 import de.pnp.manager.app.model.*
 import de.pnp.manager.model.ICurrency
 import de.pnp.manager.model.IRarity
-import de.pnp.manager.model.attribute.IPrimaryAttribute
-import de.pnp.manager.model.attribute.ISecondaryAttribute
+import de.pnp.manager.model.character.data.IPrimaryAttribute
+import de.pnp.manager.model.character.data.ISecondaryAttribute
 import de.pnp.manager.model.item.*
 import de.pnp.manager.model.other.ITalent
 import de.pnp.manager.network.serializer.BaseModule

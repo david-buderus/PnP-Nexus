@@ -7,10 +7,16 @@ import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.session.ISession;
 import de.pnp.manager.network.session.Session;
+import javafx.application.Platform;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
+
+import static javafx.application.Platform.runLater;
 
 public class ServerNetworkHandler implements NetworkHandler {
 
@@ -18,14 +24,16 @@ public class ServerNetworkHandler implements NetworkHandler {
     protected Thread serverThread;
     protected boolean active;
 
-    protected Map<String, Client> clients;
+    protected Map<String, Client> clientMap;
+    protected ListProperty<Client> clients;
     protected List<Session> sessions;
     protected final Manager manager;
 
     public ServerNetworkHandler(Manager manager) {
         this.active = false;
-        this.clients = Collections.synchronizedMap(new HashMap<>());
+        this.clientMap = Collections.synchronizedMap(new HashMap<>());
         this.sessions = Collections.singletonList(new Session("0", "PnP"));
+        this.clients = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.manager = manager;
     }
 
@@ -52,10 +60,14 @@ public class ServerNetworkHandler implements NetworkHandler {
                 while (active) {
                     try {
                         ClientHandler client =  new ClientHandler(serverSocket.accept(), manager);
-                        client.setOnDisconnect(c -> clients.remove(c.getClientID()));
+                        client.setOnDisconnect(c -> {
+                            clientMap.remove(c.getClientID());
+                            runLater(() -> clients.remove(c));
+                        });
                         client.setDaemon(true);
                         client.start();
-                        clients.put(client.getClientID(), client);
+                        clientMap.put(client.getClientID(), client);
+                        runLater(() -> clients.add(client));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -71,7 +83,7 @@ public class ServerNetworkHandler implements NetworkHandler {
 
     @Override
     public void broadcast(BaseMessage message) {
-        for (Client client : this.clients.values()) {
+        for (Client client : this.clientMap.values()) {
             client.sendMessage(message);
         }
     }
@@ -79,7 +91,7 @@ public class ServerNetworkHandler implements NetworkHandler {
     @Override
     public void sendTo(BaseMessage message, String... clientIDs) {
         for (String clientID : clientIDs) {
-            Client client = this.clients.get(clientID);
+            Client client = this.clientMap.get(clientID);
 
             if (client != null) {
                 client.sendMessage(message);
@@ -90,5 +102,10 @@ public class ServerNetworkHandler implements NetworkHandler {
     @Override
     public Collection<? extends ISession> getActiveSessions() {
         return sessions;
+    }
+
+    @Override
+    public ListProperty<Client> clientsProperty() {
+        return clients;
     }
 }
