@@ -6,11 +6,11 @@ import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.session.UpdateSessionMessage;
 import de.pnp.manager.network.message.universal.OkMessage;
 import de.pnp.manager.network.session.Session;
+import de.pnp.manager.network.state.INonConditionalEventHandler;
 
 import java.util.Calendar;
-import java.util.function.Consumer;
 
-public class LeaveSessionHandler implements Consumer<BaseMessage> {
+public class LeaveSessionHandler implements INonConditionalEventHandler<BaseMessage> {
 
     protected Client client;
     protected NetworkHandler handler;
@@ -23,10 +23,11 @@ public class LeaveSessionHandler implements Consumer<BaseMessage> {
     }
 
     @Override
-    public void accept(BaseMessage message) {
+    public void applyNonConditionalEvent(BaseMessage message) {
         Session session = client.getCurrentSession();
         session.removeClient(client);
         client.setCurrentSession(null);
+        client.getControlledCharacters().clear();
         client.sendMessage(new OkMessage());
         handler.broadcast(new UpdateSessionMessage(session, calendar.getTime()), session);
     }

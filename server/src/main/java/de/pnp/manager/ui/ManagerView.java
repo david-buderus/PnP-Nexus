@@ -2,6 +2,7 @@ package de.pnp.manager.ui;
 
 import de.pnp.manager.main.*;
 import de.pnp.manager.model.manager.Manager;
+import de.pnp.manager.network.session.ISession;
 import de.pnp.manager.ui.battle.BattleOverview;
 import de.pnp.manager.ui.map.MapView;
 import de.pnp.manager.ui.network.NetworkView;
@@ -48,7 +49,10 @@ public class ManagerView extends View {
 
         TabPane root = new TabPane();
 
-        Tab networkTab = new NetworkView(this, manager.getNetworkHandler(), manager.getCharacterHandler());
+        Tab networkTab = new NetworkView(this,
+                manager.getNetworkHandler().getActiveSessions().stream().map(ISession::getSessionID).findFirst().orElse(""),
+                manager.getNetworkHandler(), manager.getCharacterHandler()
+        );
         root.getTabs().add(networkTab);
 
         Tab battleTab = new BattleOverview(this, manager.getBattleHandler());

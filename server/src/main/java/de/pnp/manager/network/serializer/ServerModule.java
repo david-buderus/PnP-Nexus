@@ -1,12 +1,9 @@
 package de.pnp.manager.network.serializer;
 
 import de.pnp.manager.model.*;
+import de.pnp.manager.model.character.*;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.loot.*;
-import de.pnp.manager.model.character.IInventory;
-import de.pnp.manager.model.character.IPnPCharacter;
-import de.pnp.manager.model.character.Inventory;
-import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Talent;
@@ -37,10 +34,12 @@ public class ServerModule extends BaseModule {
         this.addAbstractTypeMapping(IDungeonLootFactory.class, DungeonLootFactory.class);
         this.addAbstractTypeMapping(IInventory.class, Inventory.class);
         this.addAbstractTypeMapping(IPnPCharacter.class, PnPCharacter.class);
+        this.addAbstractTypeMapping(IPlayerCharacter.class, PlayerCharacter.class);
 
         // Inheritance
         this.addDeserializer(IItem.class, new IItemDeserializer(Item.class, Plant.class, Armor.class, Weapon.class, Jewellery.class));
         this.addDeserializer(IEquipment.class, new IEquipmentDeserializer(Armor.class, Weapon.class, Jewellery.class));
+        this.addDeserializer(IPnPCharacter.class, new IPnPCharacterDeserializer(PnPCharacter.class, PlayerCharacter.class));
 
         // Special
         this.addDeserializer(ICurrency.class, new CurrencyDeserializer());

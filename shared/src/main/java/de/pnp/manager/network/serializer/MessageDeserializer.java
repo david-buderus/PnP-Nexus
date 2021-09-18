@@ -6,6 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.character.AssignCharactersMessage;
+import de.pnp.manager.network.message.character.ControlledCharacterRequestMessage;
+import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
+import de.pnp.manager.network.message.character.DismissCharactersMessage;
 import de.pnp.manager.network.message.database.DatabaseRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.DeniedMessage;
@@ -43,9 +47,15 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(UPDATE_SESSION, UpdateSessionMessage.class);
         this.typeClassMap.put(DATABASE_RESPONSE, DatabaseResponseMessage.class);
         this.typeClassMap.put(DATABASE_REQUEST, DatabaseRequestMessage.class);
+        //In Character
+        this.typeClassMap.put(DISMISS_CHARACTERS, DismissCharactersMessage.class);
+
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);
         this.typeClassMap.put(LEAVE_SESSION_REQUEST, LeaveSessionRequestMessage.class);
+        this.typeClassMap.put(ASSIGN_CHARACTERS, AssignCharactersMessage.class);
+        this.typeClassMap.put(CONTROLLED_CHARACTER_REQUEST, ControlledCharacterRequestMessage.class);
+        this.typeClassMap.put(CONTROLLED_CHARACTER_RESPONSE, ControlledCharacterResponseMessage.class);
         //Error
         this.typeClassMap.put(ERROR, ErrorMessage.class);
         this.typeClassMap.put(WRONG_STATE, WrongStateMessage.class);

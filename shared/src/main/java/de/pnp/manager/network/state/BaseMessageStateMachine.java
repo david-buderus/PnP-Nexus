@@ -11,11 +11,19 @@ public class BaseMessageStateMachine extends StateMachine<BaseMessage> {
         super(states, start);
     }
 
-    public void registerTransition(State from, State to, int messageID, Consumer<BaseMessage> eventHandler) {
+    public void registerTransition(State from, State to, int messageID, IEventHandler<BaseMessage> eventHandler) {
         registerTransition(from, to, event -> event.getId() == messageID, eventHandler);
     }
 
-    public void registerTransition(State fromTo, int messageID, Consumer<BaseMessage> eventHandler) {
+    public void registerTransition(State from, State to, int messageID, INonConditionalEventHandler<BaseMessage> eventHandler) {
+        registerTransition(from, to, event -> event.getId() == messageID, eventHandler);
+    }
+
+    public void registerTransition(State fromTo, int messageID, IEventHandler<BaseMessage> eventHandler) {
+        registerTransition(fromTo, fromTo, messageID, eventHandler);
+    }
+
+    public void registerTransition(State fromTo, int messageID, INonConditionalEventHandler<BaseMessage> eventHandler) {
         registerTransition(fromTo, fromTo, messageID, eventHandler);
     }
 }

@@ -1,13 +1,15 @@
 package de.pnp.manager.model.manager;
 
 import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.character.IPnPCharacter;
+import de.pnp.manager.model.character.PnPCharacter;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CharacterHandler {
@@ -19,7 +21,7 @@ public class CharacterHandler {
     }
 
     // maps sessionId to character
-    public Map<String, ArrayList<IPnPCharacter>> sessionCharacterMap;
+    protected Map<String, ObservableList<PnPCharacter>> sessionCharacterMap;
 
     public CharacterHandler() {
         this.sessionCharacterMap = new HashMap<>();
@@ -35,9 +37,9 @@ public class CharacterHandler {
      * @param producer the function to create the character
      * @return the resulting character
      */
-    public <C extends IPnPCharacter> C createCharacter(String sessionID, Battle battle, PnPCharacterProducer<C> producer) {
+    public <C extends PnPCharacter> C createCharacter(String sessionID, Battle battle, PnPCharacterProducer<C> producer) {
         C character = producer.create(getNextCharacterID(), battle);
-        this.sessionCharacterMap.computeIfAbsent(sessionID, k -> new ArrayList<>()).add(character);
+        this.sessionCharacterMap.computeIfAbsent(sessionID, k -> FXCollections.observableArrayList()).add(character);
 
         return character;
     }
@@ -50,12 +52,12 @@ public class CharacterHandler {
      * @param producer the function to create the character
      * @return the resulting one time use character
      */
-    public <C extends IPnPCharacter> C createOneTimeCharacter(@NotNull Battle battle, PnPCharacterProducer<C> producer) {
+    public <C extends PnPCharacter> C createOneTimeCharacter(@NotNull Battle battle, PnPCharacterProducer<C> producer) {
         return producer.create(getNextCharacterID(), battle);
     }
 
     public void deleteCharacter(String sessionID, String characterID) {
-        Collection<IPnPCharacter> characters = this.sessionCharacterMap.get(sessionID);
+        Collection<PnPCharacter> characters = this.sessionCharacterMap.get(sessionID);
 
         if (characters != null) {
             characters.removeIf(battle -> battle.getCharacterID().equals(characterID));
@@ -63,8 +65,12 @@ public class CharacterHandler {
     }
 
     public void deleteCharacter(String characterID) {
-        for (ArrayList<IPnPCharacter> characters : this.sessionCharacterMap.values()) {
+        for (List<PnPCharacter> characters : this.sessionCharacterMap.values()) {
             characters.removeIf(battle -> battle.getCharacterID().equals(characterID));
         }
+    }
+
+    public ObservableList<PnPCharacter> getCharacters(String sessionID) {
+        return sessionCharacterMap.computeIfAbsent(sessionID, id -> FXCollections.observableArrayList());
     }
 }

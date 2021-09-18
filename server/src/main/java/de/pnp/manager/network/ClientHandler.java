@@ -2,12 +2,17 @@ package de.pnp.manager.network;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.model.manager.Manager;
+import de.pnp.manager.network.client.IClient;
+import de.pnp.manager.network.eventhandler.AssignCharacterHandler;
+import de.pnp.manager.network.eventhandler.DismissCharacterHandler;
 import de.pnp.manager.network.eventhandler.LeaveSessionHandler;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
 import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.ErrorMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
@@ -32,7 +37,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -40,6 +47,7 @@ import java.util.stream.Collectors;
 import static de.pnp.manager.network.message.MessageIDs.*;
 import static javafx.application.Platform.runLater;
 
+@JsonSerialize(as = IClient.class)
 public class ClientHandler extends Thread implements Client {
 
     private static int ID_COUNTER = 0;
@@ -58,6 +66,7 @@ public class ClientHandler extends Thread implements Client {
     protected String clientId;
     protected StringProperty clientName;
     protected Session currentSession;
+    protected Collection<String> controlledCharacters;
     protected final Manager manager;
 
     protected Consumer<Client> onDisconnect;
@@ -71,6 +80,7 @@ public class ClientHandler extends Thread implements Client {
         this.clientName = new SimpleStringProperty(clientId);
         this.manager = manager;
         this.stateMachine = createStateMachine();
+        this.controlledCharacters = new ArrayList<>();
     }
 
     public void run() {
@@ -107,6 +117,13 @@ public class ClientHandler extends Thread implements Client {
     }
 
     @Override
+    public void sendActiveMessage(BaseMessage message) {
+        if (stateMachine.fire(message)) {
+            sendMessage(message);
+        }
+    }
+
+    @Override
     public void setOnDisconnect(Consumer<Client> onDisconnect) {
         this.onDisconnect = onDisconnect;
     }
@@ -131,8 +148,14 @@ public class ClientHandler extends Thread implements Client {
         return currentSession;
     }
 
+    @Override
     public void setCurrentSession(Session session) {
         this.currentSession = session;
+    }
+
+    @Override
+    public Collection<String> getControlledCharacters() {
+        return controlledCharacters;
     }
 
     private StateMachine<BaseMessage> createStateMachine() {
@@ -143,7 +166,7 @@ public class ClientHandler extends Thread implements Client {
         stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, LOGIN_REQUEST, message -> {
             LoginRequestMessage.LoginRequestData data = ((LoginRequestMessage) message).getData();
             runLater(() -> clientName.set(data.getName()));
-            sendMessage(new LoginResponseMessage(clientId, clientName.get(), calendar.getTime()));
+            sendMessage(new LoginResponseMessage(clientId, data.getName(), calendar.getTime()));
         });
 
         // Logged in
@@ -182,7 +205,7 @@ public class ClientHandler extends Thread implements Client {
 
         //In Session
         stateMachine.registerTransition(States.IN_SESSION, States.LOGGED_IN, LEAVE_SESSION_REQUEST,
-                message -> new LeaveSessionHandler(this, manager.getNetworkHandler(), calendar));
+                new LeaveSessionHandler(this, manager.getNetworkHandler(), calendar));
 
         stateMachine.registerTransition(States.IN_SESSION, DATABASE_REQUEST,
                 message -> sendMessage(
@@ -195,9 +218,33 @@ public class ClientHandler extends Thread implements Client {
                 )
         );
 
+        stateMachine.registerTransition(States.IN_SESSION, CONTROLLED_CHARACTER_REQUEST, message ->
+                sendMessage(
+                        new ControlledCharacterResponseMessage(
+                                manager.getCharacterHandler().getCharacters(getCurrentSession().getSessionID())
+                                        .filtered(c -> controlledCharacters.contains(c.getCharacterID())),
+                                calendar.getTime()
+                        )
+                )
+        );
+
+        stateMachine.registerTransition(States.IN_SESSION, States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
+
         //In Character
         stateMachine.registerTransition(States.IN_CHARACTER, States.LOGGED_IN, LEAVE_SESSION_REQUEST,
-                message -> new LeaveSessionHandler(this, manager.getNetworkHandler(), calendar));
+                new LeaveSessionHandler(this, manager.getNetworkHandler(), calendar));
+        stateMachine.registerTransition(States.IN_CHARACTER, CONTROLLED_CHARACTER_REQUEST, message ->
+                sendMessage(
+                        new ControlledCharacterResponseMessage(
+                                manager.getCharacterHandler().getCharacters(getCurrentSession().getSessionID())
+                                        .filtered(c -> controlledCharacters.contains(c.getCharacterID())),
+                                calendar.getTime()
+                        )
+                )
+        );
+
+        stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
+        stateMachine.registerTransition(States.IN_CHARACTER, States.IN_SESSION, DISMISS_CHARACTERS, new DismissCharacterHandler(this));
 
         return stateMachine;
     }

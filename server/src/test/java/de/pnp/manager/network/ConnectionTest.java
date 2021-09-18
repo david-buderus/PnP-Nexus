@@ -9,6 +9,7 @@ import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.session.QuerySessions;
 import de.pnp.manager.testHelper.TestClient;
+import de.pnp.manager.testHelper.TestWithJavaFX;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ConnectionTest {
+public class ConnectionTest extends TestWithJavaFX {
 
     protected static ServerNetworkHandler server;
 

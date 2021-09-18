@@ -28,9 +28,15 @@ public abstract class MessageIDs {
     public static final int DATABASE_REQUEST = 3201;
     public static final int DATABASE_RESPONSE = 3001;
 
+    //In Character
+    public static final int DISMISS_CHARACTERS = 4301;
+
     //Universal
     public static final int OK = 8000;
     public static final int LEAVE_SESSION_REQUEST = 8201;
+    public static final int ASSIGN_CHARACTERS = 8001;
+    public static final int CONTROLLED_CHARACTER_REQUEST = 8203;
+    public static final int CONTROLLED_CHARACTER_RESPONSE = 8003;
 
     //Error
     public static final int ERROR = 9000;

@@ -20,7 +20,7 @@ public class IEquipmentDeserializer extends StdDeserializer<IEquipment> {
             Class<? extends IArmor> armorClass,
             Class<? extends IWeapon> weaponClass,
             Class<? extends IJewellery> jewelleryClass) {
-        super(IItem.class);
+        super(IEquipment.class);
         this.armorClass = armorClass;
         this.weaponClass = weaponClass;
         this.jewelleryClass = jewelleryClass;

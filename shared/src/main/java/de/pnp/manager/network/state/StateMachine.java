@@ -11,7 +11,7 @@ public class StateMachine<Event> {
     protected Set<State> states;
     protected State currentState;
     protected Map<State, Collection<Transition<Event>>> transitions;
-    protected Consumer<Event> onNoTransition;
+    protected INonConditionalEventHandler<Event> onNoTransition;
 
     public StateMachine(Set<State> states, State start) {
         this.states = states;
@@ -20,6 +20,9 @@ public class StateMachine<Event> {
         this.onNoTransition = null;
     }
 
+    /**
+     * Returns true if a transition was used
+     */
     public boolean fire(Event event) {
 
         for (Transition<Event> transition : transitions.getOrDefault(currentState, Collections.emptyList())) {
@@ -29,31 +32,34 @@ public class StateMachine<Event> {
                             states.contains(transition.to)
             ) {
                 if (transition.eventHandler != null) {
-                    transition.eventHandler.accept(event);
+                    if (transition.eventHandler.applyEvent(event)) {
+                        this.currentState = transition.to;
+                    }
+                } else {
+                    this.currentState = transition.to;
                 }
-                this.currentState = transition.to;
                 return true;
             }
         }
 
         if (onNoTransition != null) {
-            onNoTransition.accept(event);
+            onNoTransition.applyEvent(event);
         }
 
         return false;
     }
 
-    public void registerTransition(State from, State to, @NotNull Function<Event, Boolean> eventCheck, Consumer<Event> eventHandler) {
+    public void registerTransition(State from, State to, @NotNull Function<Event, Boolean> eventCheck, IEventHandler<Event> eventHandler) {
         if (states.contains(from) && states.contains(to)) {
             transitions.computeIfAbsent(from, s -> new ArrayList<>()).add(new Transition<>(from, to, eventCheck, eventHandler));
         }
     }
 
-    public void registerTransition(State fromTo, @NotNull Function<Event, Boolean> eventCheck, Consumer<Event> eventHandler) {
+    public void registerTransition(State fromTo, @NotNull Function<Event, Boolean> eventCheck, IEventHandler<Event> eventHandler) {
         this.registerTransition(fromTo, fromTo, eventCheck, eventHandler);
     }
 
-    public void setOnNoTransition(Consumer<Event> onNoTransition) {
+    public void setOnNoTransition(INonConditionalEventHandler<Event> onNoTransition) {
         this.onNoTransition = onNoTransition;
     }
 
@@ -61,9 +67,9 @@ public class StateMachine<Event> {
         final State from;
         final State to;
         final Function<T, Boolean> eventCheck;
-        final Consumer<T> eventHandler;
+        final IEventHandler<T> eventHandler;
 
-        public Transition(State from, State to, @NotNull Function<T, Boolean> eventCheck, Consumer<T> eventHandler) {
+        public Transition(State from, State to, @NotNull Function<T, Boolean> eventCheck, IEventHandler<T> eventHandler) {
             this.from = from;
             this.to = to;
             this.eventCheck = eventCheck;
