@@ -1,7 +1,6 @@
 package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.Database;
-import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.character.generation.GenerationBase;
 import de.pnp.manager.model.character.generation.TypedGenerationBase;
 import de.pnp.manager.model.character.generation.specs.*;
@@ -23,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static de.pnp.manager.main.LanguageUtility.getMessageProperty;
 
@@ -31,18 +31,16 @@ public class SpawnView extends View {
     private static final Random random = new Random();
 
     private final List<SpawnBox> spawns;
-    private final Battle battle;
-    private final boolean enemy;
+    private final Consumer<Collection<SpawnParameter>> onSpawn;
 
-    public SpawnView(Battle battle, boolean enemy) {
+    public SpawnView(double averageLevel, Consumer<Collection<SpawnParameter>> onSpawn) {
         super("spawn.title");
 
         VBox root = new VBox(10);
         root.setAlignment(Pos.TOP_CENTER);
 
         this.spawns = new ArrayList<>();
-        this.battle = battle;
-        this.enemy = enemy;
+        this.onSpawn = onSpawn;
 
         ScrollPane scroll = new ScrollPane();
         VBox.setVgrow(scroll, Priority.ALWAYS);
@@ -63,7 +61,7 @@ public class SpawnView extends View {
         addButton.textProperty().bind(getMessageProperty("spawn.button.add"));
         addButton.setPrefWidth(100);
         addButton.setOnAction(ev -> {
-            SpawnBox box = new SpawnBox(battle.getAveragePlayerLevel(),
+            SpawnBox box = new SpawnBox(averageLevel,
                     spawnBox -> {
                         flow.getChildren().remove(spawnBox);
                         spawns.remove(spawnBox);
@@ -86,12 +84,7 @@ public class SpawnView extends View {
     }
 
     private void spawn() {
-        for (SpawnBox box : spawns) {
-            for (SpawnParameter parameter : box.getParameters()) {
-                battle.spawnMember(enemy, parameter.level, parameter.characterisation, parameter.race,
-                        parameter.profession, parameter.fightingStyle, parameter.specialisation);
-            }
-        }
+        onSpawn.accept(spawns.stream().map(SpawnBox::getParameters).flatMap(Collection::stream).collect(Collectors.toList()));
     }
 
     private static class SpawnBox extends VBox {
@@ -264,7 +257,7 @@ public class SpawnView extends View {
         }
     }
 
-    private static class SpawnParameter {
+    public static class SpawnParameter {
         public int level;
         public Characterisation characterisation;
         public Race race;

@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.rmi.server.UID;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +15,10 @@ import java.util.Map;
 
 public class CharacterHandler {
 
-    private static int ID_COUNTER = 0;
+    private static short ID_COUNTER = 0;
 
     protected static synchronized String getNextCharacterID(){
-        return "character-" + DigestUtils.sha256Hex(String.valueOf(++ID_COUNTER));
+        return "P-" + new UID(++ID_COUNTER);
     }
 
     // maps sessionId to character

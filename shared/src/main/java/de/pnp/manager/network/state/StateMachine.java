@@ -3,7 +3,6 @@ package de.pnp.manager.network.state;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class StateMachine<Event> {

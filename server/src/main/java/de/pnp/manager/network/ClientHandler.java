@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -50,10 +51,10 @@ import static javafx.application.Platform.runLater;
 @JsonSerialize(as = IClient.class)
 public class ClientHandler extends Thread implements Client {
 
-    private static int ID_COUNTER = 0;
+    private static short ID_COUNTER = 0;
 
     protected static synchronized String getNextClientID() {
-        return "client-" + DigestUtils.sha256Hex(String.valueOf(++ID_COUNTER));
+        return "C-" + new UID(++ID_COUNTER);
     }
 
     protected Socket clientSocket;

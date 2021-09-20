@@ -4,6 +4,7 @@ import de.pnp.manager.model.character.IPnPCharacter;
 import de.pnp.manager.network.message.DataMessage;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import static de.pnp.manager.network.message.MessageIDs.ASSIGN_CHARACTERS;
@@ -11,6 +12,10 @@ import static de.pnp.manager.network.message.MessageIDs.ASSIGN_CHARACTERS;
 public class AssignCharactersMessage extends DataMessage<Collection<IPnPCharacter>> {
 
     public AssignCharactersMessage() {
+    }
+
+    public AssignCharactersMessage(IPnPCharacter character, Date timestamp) {
+        this(Collections.singletonList(character), timestamp);
     }
 
     public AssignCharactersMessage(Collection<IPnPCharacter> characters, Date timestamp) {

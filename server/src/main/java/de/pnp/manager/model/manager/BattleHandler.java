@@ -4,6 +4,7 @@ import de.pnp.manager.model.Battle;
 import de.pnp.manager.network.session.ISession;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,10 +12,10 @@ import java.util.Map;
 
 public class BattleHandler {
 
-    private static int ID_COUNTER = 0;
+    private static short ID_COUNTER = 0;
 
     protected static synchronized String getNextBattleID(){
-        return "battle-" + DigestUtils.sha256Hex(String.valueOf(++ID_COUNTER));
+        return "B-" + new UID(++ID_COUNTER);
     }
 
     // maps sessionId to battles

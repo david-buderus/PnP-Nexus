@@ -503,7 +503,12 @@ public class BattleView extends ConfigurableViewPart {
     }
 
     private void spawn(boolean enemy) {
-        new SpawnView(battle, enemy);
+        new SpawnView(battle.getAveragePlayerLevel(), spawnParameters -> {
+            for (SpawnView.SpawnParameter parameter : spawnParameters) {
+                battle.spawnMember(enemy, parameter.level, parameter.characterisation, parameter.race,
+                        parameter.profession, parameter.fightingStyle, parameter.specialisation);
+            }
+        });
     }
 
     private enum ShieldEnum implements WithToStringProperty {
