@@ -2,9 +2,9 @@ package de.pnp.manager.network.serializer;
 
 import de.pnp.manager.model.*;
 import de.pnp.manager.model.character.*;
+import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.loot.*;
-import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Talent;
 
