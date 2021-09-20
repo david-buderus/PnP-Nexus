@@ -242,6 +242,18 @@ public class ClientHandler extends Thread implements Client {
                 )
         );
 
+        stateMachine.registerTransition(States.IN_CHARACTER, DATABASE_REQUEST,
+                message -> sendMessage(
+                        new DatabaseResponseMessage(
+                                Database.itemList,
+                                Database.talentList,
+                                Database.fabricationList,
+                                Database.upgradeModelList,
+                                calendar.getTime()
+                        )
+                )
+        );
+
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
         stateMachine.registerTransition(States.IN_CHARACTER, States.IN_SESSION, DISMISS_CHARACTERS, new DismissCharacterHandler(this));
 
