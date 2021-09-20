@@ -28,9 +28,9 @@ import de.pnp.manager.network.session.Session;
 import de.pnp.manager.network.state.BaseMessageStateMachine;
 import de.pnp.manager.network.state.StateMachine;
 import de.pnp.manager.network.state.States;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class ClientHandler extends Thread implements Client {
 
     protected String clientId;
     protected StringProperty clientName;
-    protected Session currentSession;
+    protected ObjectProperty<Session> currentSession;
     protected Collection<String> controlledCharacters;
     protected final Manager manager;
 
@@ -145,13 +145,8 @@ public class ClientHandler extends Thread implements Client {
     }
 
     @Override
-    public Session getCurrentSession() {
+    public ObjectProperty<Session> currentSessionProperty() {
         return currentSession;
-    }
-
-    @Override
-    public void setCurrentSession(Session session) {
-        this.currentSession = session;
     }
 
     @Override
@@ -197,8 +192,7 @@ public class ClientHandler extends Thread implements Client {
             if (optSession.isPresent()) {
                 Session session = (Session) optSession.get();
                 session.addClient(this);
-                this.currentSession = session;
-                System.out.println("HERE " + session);
+                runLater(() -> setCurrentSession(session));
                 sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
             } else {
                 sendMessage(new ErrorMessage("The session with the given id does not exist", calendar.getTime()));

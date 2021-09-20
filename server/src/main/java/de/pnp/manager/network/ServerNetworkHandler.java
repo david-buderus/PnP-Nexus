@@ -7,7 +7,7 @@ import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.session.ISession;
 import de.pnp.manager.network.session.Session;
-import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -33,7 +33,7 @@ public class ServerNetworkHandler implements NetworkHandler {
         this.active = false;
         this.clientMap = Collections.synchronizedMap(new HashMap<>());
         this.sessions = Collections.singletonList(new Session("0", "PnP"));
-        this.clients = new SimpleListProperty<>(FXCollections.observableArrayList());
+        this.clients = new SimpleListProperty<>(FXCollections.observableArrayList(c -> new Observable[]{c.currentSessionProperty()}));
         this.manager = manager;
     }
 
@@ -59,7 +59,7 @@ public class ServerNetworkHandler implements NetworkHandler {
             serverThread = new Thread(() -> {
                 while (active) {
                     try {
-                        ClientHandler client =  new ClientHandler(serverSocket.accept(), manager);
+                        ClientHandler client = new ClientHandler(serverSocket.accept(), manager);
                         client.setOnDisconnect(c -> {
                             clientMap.remove(c.getClientID());
                             runLater(() -> clients.remove(c));

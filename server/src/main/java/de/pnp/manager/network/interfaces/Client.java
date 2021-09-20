@@ -3,6 +3,7 @@ package de.pnp.manager.network.interfaces;
 import de.pnp.manager.network.client.IClient;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.session.Session;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 
 import java.util.Collection;
@@ -19,9 +20,15 @@ public interface Client extends IClient {
 
     void setOnDisconnect(Consumer<Client> onDisconnect);
 
-    Session getCurrentSession();
+    default Session getCurrentSession() {
+        return currentSessionProperty().get();
+    }
 
-    void setCurrentSession(Session session);
+    default void setCurrentSession(Session session) {
+        currentSessionProperty().set(session);
+    }
+
+    ObjectProperty<Session> currentSessionProperty();
 
     StringProperty clientNameProperty();
 
