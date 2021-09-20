@@ -65,7 +65,9 @@ public class NetworkView extends ViewPart {
         clientPlaceholder.textProperty().bind(LanguageUtility.getMessageProperty("network.noPlayers"));
         clientTable.setPlaceholder(clientPlaceholder);
         clientTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        clientTable.setItems(networkHandler.clientsProperty().filtered(c -> c.getCurrentSession().getSessionID().equals(sessionID)));
+        clientTable.setItems(networkHandler.clientsProperty().filtered(c ->
+                c.getCurrentSession() != null && c.getCurrentSession().getSessionID().equals(sessionID))
+        );
         selectedClient.bind(clientTable.getSelectionModel().selectedItemProperty());
         tableBox.getChildren().add(clientTable);
 

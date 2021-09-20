@@ -198,6 +198,7 @@ public class ClientHandler extends Thread implements Client {
                 Session session = (Session) optSession.get();
                 session.addClient(this);
                 this.currentSession = session;
+                System.out.println("HERE " + session);
                 sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
             } else {
                 sendMessage(new ErrorMessage("The session with the given id does not exist", calendar.getTime()));
