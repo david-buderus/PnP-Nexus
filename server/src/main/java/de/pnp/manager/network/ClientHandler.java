@@ -29,6 +29,7 @@ import de.pnp.manager.network.state.BaseMessageStateMachine;
 import de.pnp.manager.network.state.StateMachine;
 import de.pnp.manager.network.state.States;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -79,6 +80,7 @@ public class ClientHandler extends Thread implements Client {
         this.calendar = Calendar.getInstance();
         this.clientId = getNextClientID();
         this.clientName = new SimpleStringProperty(clientId);
+        this.currentSession = new SimpleObjectProperty<>(null);
         this.manager = manager;
         this.stateMachine = createStateMachine();
         this.controlledCharacters = new ArrayList<>();

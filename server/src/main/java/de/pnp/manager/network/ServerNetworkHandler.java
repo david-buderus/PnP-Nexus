@@ -52,7 +52,6 @@ public class ServerNetworkHandler implements NetworkHandler {
 
         try {
 
-
             serverSocket = new ServerSocket(Utility.getConfig().getInt("server.port"));
             active = true;
 
