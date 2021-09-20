@@ -209,6 +209,7 @@ public class ClientHandler extends Thread implements Client {
                 message -> sendMessage(
                         new DatabaseResponseMessage(
                                 Database.itemList,
+                                Database.talentList,
                                 Database.fabricationList,
                                 Database.upgradeModelList,
                                 calendar.getTime()
