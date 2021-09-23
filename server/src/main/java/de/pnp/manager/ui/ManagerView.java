@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -249,5 +250,15 @@ public class ManagerView extends View {
                 info.show();
         });
         service.start();
+    }
+
+    @Override
+    protected void onClose() {
+        super.onClose();
+        try {
+            this.manager.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

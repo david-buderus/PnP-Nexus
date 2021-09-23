@@ -3,7 +3,10 @@ package de.pnp.manager.model.manager;
 import de.pnp.manager.network.ServerNetworkHandler;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 
-public class Manager {
+import java.io.Closeable;
+import java.io.IOException;
+
+public class Manager implements Closeable {
 
     protected BattleHandler battleHandler;
     protected ServerNetworkHandler networkHandler;
@@ -27,5 +30,10 @@ public class Manager {
 
     public CharacterHandler getCharacterHandler() {
         return characterHandler;
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.networkHandler.close();
     }
 }

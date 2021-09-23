@@ -12,13 +12,14 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
 
 import static javafx.application.Platform.runLater;
 
-public class ServerNetworkHandler implements NetworkHandler {
+public class ServerNetworkHandler implements NetworkHandler, Closeable {
 
     protected ServerSocket serverSocket;
     protected Thread serverThread;
@@ -35,17 +36,6 @@ public class ServerNetworkHandler implements NetworkHandler {
         this.sessions = Collections.singletonList(new Session("0", "PnP"));
         this.clients = new SimpleListProperty<>(FXCollections.observableArrayList(c -> new Observable[]{c.currentSessionProperty()}));
         this.manager = manager;
-    }
-
-    public void stop() {
-        try {
-            this.active = false;
-            if (serverSocket != null) {
-                serverSocket.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void start() {
@@ -66,8 +56,7 @@ public class ServerNetworkHandler implements NetworkHandler {
                         client.start();
                         clientMap.put(client.getClientID(), client);
                         runLater(() -> clients.add(client));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ignored) {
                     }
                 }
             });
@@ -105,5 +94,13 @@ public class ServerNetworkHandler implements NetworkHandler {
     @Override
     public ListProperty<Client> clientsProperty() {
         return clients;
+    }
+
+    @Override
+    public void close() throws IOException {
+        this.active = false;
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
     }
 }

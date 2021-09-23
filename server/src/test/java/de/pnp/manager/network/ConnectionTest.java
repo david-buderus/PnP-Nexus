@@ -27,12 +27,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
 public class ConnectionTest extends TestWithJavaFX {
 
-    protected static ServerNetworkHandler server;
+    protected static Manager manager;
 
     @BeforeAll
     @Test
     public static void setup() {
-        server = (ServerNetworkHandler) new Manager().getNetworkHandler();
+        manager = new Manager();
 
         try {
             Thread.sleep(1000);
@@ -67,8 +67,8 @@ public class ConnectionTest extends TestWithJavaFX {
 
     @AfterAll
     @Test
-    public static void tearDown() {
-        server.stop();
+    public static void tearDown() throws IOException {
+        manager.close();
     }
 
     private static class SessionMessage extends DataMessage<Collection<Map<String, Object>>> {
