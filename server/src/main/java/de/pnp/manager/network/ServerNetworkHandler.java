@@ -49,14 +49,9 @@ public class ServerNetworkHandler implements NetworkHandler {
     }
 
     public void start() {
-        start(Utility.getConfig().getInt("server.port"));
-    }
-
-    public void start(int port) {
-
         try {
 
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(Utility.getConfig().getInt("server.port"));
             active = true;
 
             serverThread = new Thread(() -> {

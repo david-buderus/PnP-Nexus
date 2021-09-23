@@ -28,16 +28,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ConnectionTest extends TestWithJavaFX {
 
     protected static ServerNetworkHandler server;
-    protected static int PORT = 55555;
 
     @BeforeAll
     @Test
     public static void setup() {
-        server = new ServerNetworkHandler(new Manager());
-        server.start(PORT);
+        server = (ServerNetworkHandler) new Manager().getNetworkHandler();
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -78,7 +76,7 @@ public class ConnectionTest extends TestWithJavaFX {
 
     private TestClient createTestClient() {
         TestClient client = new TestClient();
-        client.connect("127.0.0.1", PORT);
+        client.connect("localhost", Utility.getConfig().getInt("server.port"));
         return client;
     }
 }
