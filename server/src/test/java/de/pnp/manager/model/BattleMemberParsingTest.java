@@ -23,6 +23,7 @@ public class BattleMemberParsingTest extends TestWithDatabaseAccess {
     public static void parse() throws IOException {
         Workbook wb = WorkbookFactory.create(new File(wbPath));
         character = PnPCharacterFactory.createCharacter("ID", null, wb);
+        wb.close();
     }
 
     @Test

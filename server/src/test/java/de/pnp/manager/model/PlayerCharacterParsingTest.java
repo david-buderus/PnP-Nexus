@@ -30,6 +30,7 @@ public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
     public static void parse() throws IOException {
         Workbook wb = WorkbookFactory.create(new File(wbPath));
         character = PnPCharacterFactory.createPlayer("Test", null, wb);
+        wb.close();
     }
 
     @Test
