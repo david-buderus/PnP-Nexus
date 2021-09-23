@@ -10,6 +10,8 @@ import de.pnp.manager.network.state.INonConditionalEventHandler;
 
 import java.util.Calendar;
 
+import static javafx.application.Platform.runLater;
+
 public class LeaveSessionHandler implements INonConditionalEventHandler<BaseMessage> {
 
     protected Client client;
@@ -26,7 +28,7 @@ public class LeaveSessionHandler implements INonConditionalEventHandler<BaseMess
     public void applyNonConditionalEvent(BaseMessage message) {
         Session session = client.getCurrentSession();
         session.removeClient(client);
-        client.setCurrentSession(null);
+        runLater(() -> client.setCurrentSession(null));
         client.getControlledCharacters().clear();
         client.sendMessage(new OkMessage());
         handler.broadcast(new UpdateSessionMessage(session, calendar.getTime()), session);
