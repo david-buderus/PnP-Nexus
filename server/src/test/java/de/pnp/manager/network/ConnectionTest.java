@@ -9,12 +9,13 @@ import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.session.QuerySessions;
 import de.pnp.manager.testHelper.TestClient;
-import de.pnp.manager.testHelper.TestWithJavaFX;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
+import org.testfx.framework.junit5.ApplicationExtension;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -25,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
-public class ConnectionTest extends TestWithJavaFX {
+@ExtendWith(ApplicationExtension.class)
+public class ConnectionTest {
 
     protected static Manager manager;
 
