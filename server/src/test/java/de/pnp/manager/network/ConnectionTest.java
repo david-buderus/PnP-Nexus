@@ -13,6 +13,8 @@ import de.pnp.manager.testHelper.TestWithJavaFX;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -22,6 +24,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
 public class ConnectionTest extends TestWithJavaFX {
 
     protected static ServerNetworkHandler server;

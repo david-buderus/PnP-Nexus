@@ -5,10 +5,13 @@ import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.data.AttackTypes;
 import de.pnp.manager.testHelper.TestWithDatabaseAccess;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceAccessMode;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
 public class BattleTest extends TestWithDatabaseAccess {
 
     @Test
