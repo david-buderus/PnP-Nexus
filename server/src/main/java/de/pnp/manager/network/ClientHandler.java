@@ -163,8 +163,11 @@ public class ClientHandler extends Thread implements Client {
         // Pre login
         stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, LOGIN_REQUEST, message -> {
             LoginRequestMessage.LoginRequestData data = ((LoginRequestMessage) message).getData();
+            System.out.println("Got Login");
             runLater(() -> clientName.set(data.getName()));
+            System.out.println("Set Name");
             sendMessage(new LoginResponseMessage(clientId, data.getName(), calendar.getTime()));
+            System.out.println("Send data");
         });
 
         // Logged in
