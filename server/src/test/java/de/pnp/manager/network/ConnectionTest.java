@@ -25,16 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ConnectionTest extends TestWithJavaFX {
 
     protected static ServerNetworkHandler server;
+    protected static int PORT = 55555;
 
     @BeforeAll
     @Test
     public static void setup() {
         server = new ServerNetworkHandler(new Manager());
-        server.start();
+        server.start(PORT);
 
         try {
             Thread.sleep(100);
-            System.out.println("Created Server");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -43,7 +43,6 @@ public class ConnectionTest extends TestWithJavaFX {
     @Test
     public void test() throws IOException {
         TestClient client = createTestClient();
-        System.out.println("Connected Client 1");
         BaseMessage resp1 = client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
 
         assertEquals(1000, resp1.getId());
@@ -53,7 +52,6 @@ public class ConnectionTest extends TestWithJavaFX {
     @Test
     public void sessionTest() throws IOException {
         TestClient client = createTestClient();
-        System.out.println("Connected Client 2");
         client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
         String resp1 = client.sendMessageWithRawResponse(new QuerySessions(Calendar.getInstance().getTime()));
 
@@ -77,7 +75,7 @@ public class ConnectionTest extends TestWithJavaFX {
 
     private TestClient createTestClient() {
         TestClient client = new TestClient();
-        client.connect("127.0.0.1", Utility.getConfig().getInt("server.port"));
+        client.connect("127.0.0.1", PORT);
         return client;
     }
 }
