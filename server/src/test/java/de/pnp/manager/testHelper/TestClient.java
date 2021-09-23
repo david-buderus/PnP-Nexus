@@ -25,7 +25,7 @@ public class TestClient {
     public void connect(String ip, int port){
         try {
             socket = new Socket(ip, port);
-            socket.setSoTimeout(2000);
+            //socket.setSoTimeout(2000);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
