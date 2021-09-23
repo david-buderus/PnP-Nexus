@@ -1,5 +1,6 @@
 package de.pnp.manager.network.serializer;
 
+import de.pnp.manager.main.Database;
 import de.pnp.manager.model.*;
 import de.pnp.manager.model.character.*;
 import de.pnp.manager.model.character.data.*;
@@ -44,5 +45,8 @@ public class ServerModule extends BaseModule {
         // Special
         this.addDeserializer(ICurrency.class, new CurrencyDeserializer());
         this.addSerializer(ICurrency.class, new CurrencySerializer());
+
+        // Keys
+        this.addKeyDeserializer(ITalent.class, new TalentKeyDeserializer(() -> Database.talentList));
     }
 }
