@@ -4,93 +4,100 @@ import de.pnp.manager.model.ICurrency
 import de.pnp.manager.model.IRarity
 import de.pnp.manager.model.item.IItem
 
-class Item : IItem {
-    override fun getName(): String {
-        TODO("Not yet implemented")
+open class Item : IItem {
+    private var name: String? = null
+    private var type: String? = null
+    private var subtype: String? = null
+    private var requirement: String? = null
+    private var effect: String? = null
+    private var rarity: IRarity? = null
+    private var currency: ICurrency? = null
+    private var tier: Int = 0
+    private var amount: Float = 0.0f
+    private var tradeable: Boolean = false
+
+    override fun getName(): String? {
+        return name
     }
 
-    override fun setName(name: String?) {
-        TODO("Not yet implemented")
+    override fun setName(value: String?) {
+        name = value
     }
 
-    override fun setType(type: String?) {
-        TODO("Not yet implemented")
+    override fun getType(): String? {
+        return type
     }
 
-    override fun getType(): String {
-        TODO("Not yet implemented")
+    override fun setType(value: String?) {
+        type = value
     }
 
-    override fun getCurrency(): ICurrency {
-        TODO("Not yet implemented")
+    override fun getSubtype(): String? {
+        return subtype
     }
 
-    override fun setCurrency(currency: ICurrency?) {
-        TODO("Not yet implemented")
+    override fun setSubtype(value: String?) {
+        subtype = value
     }
 
-    override fun getSubtype(): String {
-        TODO("Not yet implemented")
+    override fun getRequirement(): String? {
+        return requirement
     }
 
-    override fun setSubtype(subtype: String?) {
-        TODO("Not yet implemented")
+    override fun setRequirement(value: String?) {
+        requirement = value
     }
 
-    override fun getRequirement(): String {
-        TODO("Not yet implemented")
+    override fun getEffect(): String? {
+        return effect
     }
 
-    override fun setRequirement(requirement: String?) {
-        TODO("Not yet implemented")
+    override fun setEffect(value: String?) {
+        effect = value
     }
 
-    override fun getEffect(): String {
-        TODO("Not yet implemented")
+    override fun getRarity(): IRarity? {
+        return rarity
     }
 
-    override fun setEffect(effect: String?) {
-        TODO("Not yet implemented")
+    override fun setRarity(value: IRarity?) {
+        rarity = value
     }
 
-    override fun getRarity(): IRarity {
-        TODO("Not yet implemented")
+    override fun getCurrency(): ICurrency? {
+        return currency
     }
 
-    override fun setRarity(rarity: IRarity?) {
-        TODO("Not yet implemented")
+    override fun setCurrency(value: ICurrency) {
+        currency = value
     }
 
     override fun getTier(): Int {
-        TODO("Not yet implemented")
+        return tier
     }
 
-    override fun setTier(tier: Int) {
-        TODO("Not yet implemented")
+    override fun setTier(value: Int) {
+        tier = value
     }
 
     override fun getAmount(): Float {
-        TODO("Not yet implemented")
+        return amount
     }
 
-    override fun getPrettyAmount(): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun setAmount(amount: Float) {
-        TODO("Not yet implemented")
+    override fun setAmount(value: Float) {
+        amount = value
     }
 
     override fun addAmount(amount: Float) {
-        TODO("Not yet implemented")
+        this.amount += amount
     }
 
     override fun getCurrencyWithAmount(): ICurrency {
-        TODO("Not yet implemented")
+        return this.currency?.multiply(this.amount) ?: Currency()
     }
 
     override fun isTradeable(): Boolean {
-        TODO("Not yet implemented")
+        return tradeable
     }
 
     override fun copy(): IItem {

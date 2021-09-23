@@ -53,4 +53,6 @@ dependencies {
     implementation 'info.androidhive:fontawesome:0.0.5'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.12.5"
 }

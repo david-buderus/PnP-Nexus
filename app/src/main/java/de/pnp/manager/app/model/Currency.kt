@@ -2,34 +2,48 @@ package de.pnp.manager.app.model
 
 import de.pnp.manager.model.ICurrency
 
-class Currency(valueAsString: String) : ICurrency {
+class Currency() : ICurrency {
+
+    private var coinValue = 0
+    private var coinString: String = ""
+    protected var tradeable = false
+
+    constructor(valueAsString: String): this() {
+
+    }
+
+    constructor(copperValue : Int) : this() {
+        coinValue = copperValue
+    }
 
     init {
-        TODO("NOT YET IMPLEMENTED")
+        this.tradeable = false
+        this.coinValue = 0
+        this.coinString = "" //TODO LanguageUtility.getMessage("coin.notTradeable")
     }
 
     override fun add(other: ICurrency?): ICurrency {
-        TODO("Not yet implemented")
+        return Currency(getCoinValue() + other!!.coinValue)
     }
 
     override fun add(value: Int): ICurrency {
-        TODO("Not yet implemented")
+        return Currency(getCoinValue() + value)
     }
 
     override fun sub(other: ICurrency?): ICurrency {
-        TODO("Not yet implemented")
+        return Currency(getCoinValue() - other!!.coinValue)
     }
 
     override fun sub(value: Int): ICurrency {
-        TODO("Not yet implemented")
+        return Currency(getCoinValue() - value)
     }
 
     override fun multiply(multiplicative: Float): ICurrency {
-        TODO("Not yet implemented")
+        return Currency(Math.round(getCoinValue() * multiplicative))
     }
 
     override fun divide(d: Float): ICurrency {
-        TODO("Not yet implemented")
+        return Currency(Math.round(getCoinValue() / d))
     }
 
     override fun getCoinValue(): Int {

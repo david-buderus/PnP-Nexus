@@ -1,8 +1,5 @@
 package de.pnp.manager.app
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,17 +14,16 @@ import de.pnp.manager.app.state.ApplicationState
 import info.androidhive.fontawesome.FontDrawable
 
 
-class MainActivity : AppCompatActivity() {
+class SessionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ApplicationState.messageHandler.activity = this
-
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_session)
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.nav_session_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        val navView = findViewById<NavigationView>(R.id.nav_view)
+        val navView = findViewById<NavigationView>(R.id.nav_view_session)
         navView.setupWithNavController(navController)
 
         val drawable = FontDrawable(this, R.string.fa_address_book_solid, true, false)
@@ -48,12 +44,6 @@ class MainActivity : AppCompatActivity() {
         //}
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -62,11 +52,5 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    fun changeToSessionActivity() {
-        println("changing activity")
-        val intent = Intent(this, SessionActivity::class.java)
-        startActivity(intent)
     }
 }

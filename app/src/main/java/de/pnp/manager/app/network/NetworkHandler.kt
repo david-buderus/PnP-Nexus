@@ -2,9 +2,13 @@ package de.pnp.manager.app.network
 
 import android.os.StrictMode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import de.pnp.manager.app.network.serialization.SerializationModule
+import de.pnp.manager.app.state.ApplicationState
 import de.pnp.manager.network.message.BaseMessage
+import de.pnp.manager.network.message.session.JoinSessionRequestMessage
 import de.pnp.manager.network.session.ISession
+import de.pnp.manager.network.session.SessionInfo
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -25,6 +29,7 @@ object TCPClient {
     private lateinit var currentSession: ISession
 
     init {
+        this.mapper.registerKotlinModule()
         this.mapper.registerModule(SerializationModule())
     }
 
@@ -43,13 +48,13 @@ object TCPClient {
                     while (active) {
                         try {
                             val inputLine: String = input.readLine()
+                            println("new message: " + inputLine)
                             val message = mapper.readValue(inputLine, BaseMessage::class.java)
-
-                            MessageHandler.stateMachine.fire(message)
+                            ApplicationState.messageHandler.stateMachine.fire(message)
 
                             println(message)
                         } catch (e: IOException) {
-
+                            e.printStackTrace()
                         }
                     }
                 }
@@ -69,5 +74,12 @@ object TCPClient {
                 output.println(mapper.writeValueAsString(message))
             }
         }.start()
+    }
+
+    fun connectToSession(sessionInfo: SessionInfo) {
+
+        val message = JoinSessionRequestMessage(sessionInfo.sessionID, null, Date())
+
+        sendTo(message)
     }
 }

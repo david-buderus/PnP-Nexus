@@ -35,4 +35,5 @@
   <string name="session_host_label">Host</string>
   <string name="placeholder">Placeholder</string>
   <string name="session_state_label">State</string>
+  <string name="fragment_session_lobby_label">Session Lobby</string>
 </resources>

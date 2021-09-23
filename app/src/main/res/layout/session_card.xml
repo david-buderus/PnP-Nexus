@@ -4,6 +4,7 @@
     <variable
       name="sessionInfo"
       type="de.pnp.manager.network.session.SessionInfo"/>
+    <import type="de.pnp.manager.app.network.TCPClient"/>
   </data>
 
   <androidx.cardview.widget.CardView
@@ -31,6 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="158dp"
         android:text="@string/session_join_button"
+        android:onClick="@{() -> TCPClient.INSTANCE.connectToSession(sessionInfo)}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
       <ImageView
