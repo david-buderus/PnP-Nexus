@@ -34,6 +34,7 @@ public class ConnectionTest extends TestWithJavaFX {
 
         try {
             Thread.sleep(100);
+            System.out.println("Created Server");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -42,6 +43,7 @@ public class ConnectionTest extends TestWithJavaFX {
     @Test
     public void test() throws IOException {
         TestClient client = createTestClient();
+        System.out.println("Connected Client 1");
         BaseMessage resp1 = client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
 
         assertEquals(1000, resp1.getId());
@@ -51,6 +53,7 @@ public class ConnectionTest extends TestWithJavaFX {
     @Test
     public void sessionTest() throws IOException {
         TestClient client = createTestClient();
+        System.out.println("Connected Client 2");
         client.sendMessage(new LoginRequestMessage("Test", Calendar.getInstance().getTime()));
         String resp1 = client.sendMessageWithRawResponse(new QuerySessions(Calendar.getInstance().getTime()));
 
