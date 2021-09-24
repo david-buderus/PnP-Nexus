@@ -126,6 +126,8 @@ public class GeneratedCharacter extends PnPCharacter {
             }
         }
 
+        this.getAdvantages().addAll(getCollection(GenerationBase::getAdvantages));
+        this.getDisadvantages().addAll(getCollection(GenerationBase::getDisadvantages));
         this.useSkillPoints();
         this.generateSpells();
         this.createResourceProperties();
