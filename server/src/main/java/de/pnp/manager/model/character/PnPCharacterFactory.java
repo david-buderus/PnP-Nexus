@@ -48,6 +48,12 @@ public class PnPCharacterFactory {
         // load age
         character.age.set(parameterMap.getValueAsStringOrElse("character.age", ""));
 
+        // load age
+        character.race.set(parameterMap.getValueAsStringOrElse("character.race", ""));
+
+        // load age
+        character.gender.set(parameterMap.getValueAsStringOrElse("character.gender", ""));
+
         // load inventory
         for (int i = 1; i <= 21; i++) {
             String nameX = parameterMap.getValueAsStringOrElse("character.inventory." + i, "");
