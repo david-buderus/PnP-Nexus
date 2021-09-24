@@ -6,32 +6,26 @@ import de.pnp.manager.model.item.IItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Iterator;
 
-public interface IInventory extends Iterable<IItem> {
+public interface IInventory extends IItemList {
 
-    int getMaxSize();
+    double getMaxSize();
+
+    @JsonIgnore
+    default double getCurrentSize() {
+        return stream().mapToDouble(IItem::getAmount).sum();
+    }
 
     int getMaxStackSize();
 
     @JsonIgnore
-    default int getSize() {
-        return getItems().size();
+    default int getCurrentStackSize() {
+        return size();
     }
 
-    default void add(IItem item) {
-        getItems().add(item);
-    }
-
-    default void addAll(Collection<IItem> items) {
-        getItems().addAll(items);
-    }
-
-    IItemList getItems();
-
-    @NotNull
     @Override
-    default Iterator<IItem> iterator() {
-        return getItems().iterator();
-    }
+    boolean add(IItem item);
+
+    @Override
+    boolean addAll(@NotNull Collection<? extends IItem> collection);
 }

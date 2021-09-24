@@ -378,7 +378,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         character.advantages = new ArrayList<>(getAdvantages());
         character.disadvantages = new ArrayList<>(getDisadvantages());
         character.notes.set(getNotes());
-        character.inventory.addAll(getInventory().getItems());
+        character.inventory.addAll(getInventory());
 
         // Load Equipment
         for (IWeapon weapon : getEquippedWeapons()) {

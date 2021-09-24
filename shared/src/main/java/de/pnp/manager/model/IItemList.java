@@ -4,23 +4,28 @@ import de.pnp.manager.model.item.IItem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.List;
 
-public interface IItemList extends List<IItem> {
+public interface IItemList extends Collection<IItem> {
 
     @Override
     boolean add(IItem item);
 
-    boolean remove(IItem item);
-
-    boolean remove(Collection<? extends IItem> collection);
-
     @Override
     boolean addAll(@NotNull Collection<? extends IItem> collection);
+
+    @Override
+    boolean remove(Object object);
+
+    @Override
+    boolean removeAll(@NotNull Collection<?> collection);
 
     default boolean containsAmount(IItem item) {
         return this.get(this.indexOf(item)).getAmount() >= item.getAmount();
     }
+
+    IItem get(int position);
+
+    int indexOf(Object item);
 
     default boolean containsAmount(Collection<? extends IItem> items) {
         for (IItem item : items) {
