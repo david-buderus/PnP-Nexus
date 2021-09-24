@@ -15,7 +15,7 @@ public class Manager implements Closeable {
     public Manager() {
         this.battleHandler = new BattleHandler(this);
         this.networkHandler = new ServerNetworkHandler(this);
-        this.characterHandler = new CharacterHandler();
+        this.characterHandler = new CharacterHandler(this);
 
         this.networkHandler.start();
     }

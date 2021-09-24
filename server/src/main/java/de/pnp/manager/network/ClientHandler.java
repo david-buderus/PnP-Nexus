@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
+import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.manager.Manager;
+import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.client.IClient;
 import de.pnp.manager.network.eventhandler.AssignCharacterHandler;
 import de.pnp.manager.network.eventhandler.DismissCharacterHandler;
@@ -13,7 +15,10 @@ import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
+import de.pnp.manager.network.message.character.update.talent.UpdateTalentsData;
+import de.pnp.manager.network.message.character.update.talent.UpdateTalentsRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseResponseMessage;
+import de.pnp.manager.network.message.error.DeniedMessage;
 import de.pnp.manager.network.message.error.ErrorMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
@@ -39,13 +44,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.rmi.server.UID;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static de.pnp.manager.main.LanguageUtility.getMessage;
 import static de.pnp.manager.network.message.MessageIDs.*;
 import static javafx.application.Platform.runLater;
 
@@ -197,7 +200,7 @@ public class ClientHandler extends Thread implements Client {
                 runLater(() -> setCurrentSession(session));
                 sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
             } else {
-                sendMessage(new ErrorMessage("The session with the given id does not exist", calendar.getTime()));
+                sendMessage(new ErrorMessage(getMessage("message.error.notExists"), calendar.getTime()));
             }
         });
 
@@ -252,6 +255,30 @@ public class ClientHandler extends Thread implements Client {
                                 calendar.getTime()
                         )
                 )
+        );
+
+        stateMachine.registerTransition(States.IN_CHARACTER, UPDATE_TALENTS_REQUEST,
+                message -> {
+                    UpdateTalentsData data = ((UpdateTalentsRequestMessage) message).getData();
+
+                    if (controlledCharacters.contains(data.getCharacterID())) {
+                        PnPCharacter character = manager.getCharacterHandler().getCharacter(getCurrentSession().getSessionID(), data.getCharacterID());
+
+                        if (character != null) {
+                            runLater(() -> {
+                                Map<ITalent, Integer> newValues = data.getNewValues();
+                                for (ITalent talent : newValues.keySet()) {
+                                    character.getObservableTalents().get(talent).set(newValues.get(talent));
+                                }
+                            });
+                        } else {
+                            sendMessage(new ErrorMessage(getMessage("message.error.notExists"), calendar.getTime()));
+                        }
+                    } else {
+                        sendMessage(new DeniedMessage(calendar.getTime()));
+                    }
+
+                }
         );
 
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));

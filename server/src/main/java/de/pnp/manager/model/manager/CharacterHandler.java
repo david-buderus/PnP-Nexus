@@ -2,16 +2,18 @@ package de.pnp.manager.model.manager;
 
 import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.other.ITalent;
+import de.pnp.manager.network.interfaces.Client;
+import de.pnp.manager.network.message.character.update.talent.UpdateTalentsNotificationMessage;
+import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.rmi.server.UID;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CharacterHandler {
 
@@ -23,9 +25,11 @@ public class CharacterHandler {
 
     // maps sessionId to character
     protected Map<String, ObservableList<PnPCharacter>> sessionCharacterMap;
+    protected Manager manager;
 
-    public CharacterHandler() {
+    public CharacterHandler(Manager manager) {
         this.sessionCharacterMap = new HashMap<>();
+        this.manager = manager;
     }
 
     /**
@@ -40,7 +44,7 @@ public class CharacterHandler {
      */
     public <C extends PnPCharacter> C createCharacter(String sessionID, Battle battle, PnPCharacterProducer<C> producer) {
         C character = producer.create(getNextCharacterID(), battle);
-        this.sessionCharacterMap.computeIfAbsent(sessionID, k -> FXCollections.observableArrayList()).add(character);
+        this.sessionCharacterMap.computeIfAbsent(sessionID, k -> createObservableList()).add(character);
 
         return character;
     }
@@ -72,6 +76,66 @@ public class CharacterHandler {
     }
 
     public ObservableList<PnPCharacter> getCharacters(String sessionID) {
-        return sessionCharacterMap.computeIfAbsent(sessionID, id -> FXCollections.observableArrayList());
+        return sessionCharacterMap.computeIfAbsent(sessionID, id -> createObservableList());
+    }
+
+    public PnPCharacter getCharacter(String sessionID, String characterID) {
+        return getCharacters(sessionID).stream().filter(c -> c.getCharacterID().equals(characterID)).findFirst().orElse(null);
+    }
+
+    private ObservableList<PnPCharacter> createObservableList() {
+        ObservableList<PnPCharacter> list = FXCollections.observableArrayList();
+
+        list.addListener((ListChangeListener<PnPCharacter>) listChange -> {
+            while (listChange.next()) {
+                if (listChange.wasAdded()) {
+                    for (PnPCharacter character : listChange.getAddedSubList()) {
+
+                        character.getObservableTalents().addListener((MapChangeListener<ITalent, IntegerProperty>) mapChange -> {
+                            if (mapChange.wasAdded()) {
+                                mapChange.getValueAdded().addListener((ob, o, n) -> {
+                                    Calendar calendar = Calendar.getInstance();
+
+                                    for (Client client : manager.getNetworkHandler().clientsProperty()) {
+                                        if (client.getControlledCharacters().contains(character.getCharacterID())) {
+                                            client.sendMessage(
+                                                    new UpdateTalentsNotificationMessage(
+                                                            character.getCharacterID(),
+                                                            mapChange.getKey(),
+                                                            n.intValue(),
+                                                            calendar.getTime()
+                                                    )
+                                            );
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        for (ITalent talent : character.getObservableTalents().keySet()) {
+                            IntegerProperty property = character.getObservableTalents().get(talent);
+
+                            property.addListener((ob, o, n) -> {
+                                Calendar calendar = Calendar.getInstance();
+
+                                for (Client client : manager.getNetworkHandler().clientsProperty()) {
+                                    if (client.getControlledCharacters().contains(character.getCharacterID())) {
+                                        client.sendMessage(
+                                                new UpdateTalentsNotificationMessage(
+                                                        character.getCharacterID(),
+                                                        talent,
+                                                        n.intValue(),
+                                                        calendar.getTime()
+                                                )
+                                        );
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+        return list;
     }
 }
