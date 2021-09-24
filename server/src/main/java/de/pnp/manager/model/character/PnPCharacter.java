@@ -85,7 +85,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
             this.secondaryAttributes.put(attribute, 0);
         }
         this.lootTable = lootTable;
-        this.inventory = Inventory.EMPTY_INVENTORY;
+        this.inventory = Inventory.UNLIMITED_INVENTORY;
         this.battle = battle;
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
@@ -378,7 +378,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         character.advantages = new ArrayList<>(getAdvantages());
         character.disadvantages = new ArrayList<>(getDisadvantages());
         character.notes.set(getNotes());
-        character.inventory.addAll(getInventory());
+        character.inventory = new Inventory(getInventory().getMaxSize(), getInventory().getNumberOfSlots(), getInventory());
 
         // Load Equipment
         for (IWeapon weapon : getEquippedWeapons()) {
