@@ -1,6 +1,7 @@
 package de.pnp.manager.app.network.serialization
 
 import de.pnp.manager.app.model.*
+import de.pnp.manager.app.state.ApplicationState
 import de.pnp.manager.model.*
 import de.pnp.manager.model.character.IInventory
 import de.pnp.manager.model.character.IPlayerCharacter
@@ -11,6 +12,7 @@ import de.pnp.manager.model.loot.IDungeonLootFactory
 import de.pnp.manager.model.loot.ILoot
 import de.pnp.manager.model.loot.ILootFactory
 import de.pnp.manager.model.loot.ILootTable
+import de.pnp.manager.model.other.ISpell
 import de.pnp.manager.model.other.ITalent
 import de.pnp.manager.network.client.IClient
 import de.pnp.manager.network.serializer.*
@@ -34,6 +36,13 @@ class SerializationModule() : BaseModule() {
             ArmorPiece::class.java
         )
         addKeyDeserializer(IArmorPosition::class.java, EnumKeyDeserializer(ArmorPosition::class.java))
+        addKeyDeserializer(ITalent::class.java, TalentKeyDeserializer{ApplicationState.databaseData?.talents})
+        addKeyDeserializer(IPrimaryAttribute::class.java, EnumKeyDeserializer(PrimaryAttribute::class.java))
+        addKeyDeserializer(ISecondaryAttribute::class.java, EnumKeyDeserializer(SecondaryAttribute::class.java))
+        addKeyDeserializer(IAttackTypes::class.java, EnumKeyDeserializer(AttackTypes::class.java))
+        addKeyDeserializer(IArmorPiece::class.java, EnumKeyDeserializer(ArmorPiece::class.java))
+        addKeyDeserializer(IRarity::class.java, EnumKeyDeserializer(Rarity::class.java))
+
         addAbstractTypeMapping(IArmorPosition::class.java, ArmorPosition::class.java)
         addAbstractTypeMapping(IAttackTypes::class.java, AttackTypes::class.java)
 
@@ -53,7 +62,7 @@ class SerializationModule() : BaseModule() {
         addAbstractTypeMapping(IPlayerCharacter::class.java, PlayerCharacter::class.java)
         addAbstractTypeMapping(ISession::class.java, Session::class.java)
         addAbstractTypeMapping(IClient::class.java, Client::class.java)
-
+        addAbstractTypeMapping(ISpell::class.java, Spell::class.java)
 
         // inheritance
         addDeserializer(

@@ -5,67 +5,76 @@ import de.pnp.manager.model.IItemList
 import de.pnp.manager.model.item.IItem
 
 class Fabrication : IFabrication {
-    override fun getProduct(): IItem {
-        TODO("Not yet implemented")
+    private var product : IItem? = null
+    private var profession : String = ""
+    private var requirement: String = ""
+    private var otherCircumstances : String = ""
+    private var productAmount: Int = 0
+    private var sideProduct : IItem? = null
+    private var sideProductAmount: Int = 0
+    private var materials: IItemList? = null
+
+    override fun getProduct(): IItem? {
+        return this.product
     }
 
     override fun setProduct(product: IItem?) {
-        TODO("Not yet implemented")
+        this.product = product
     }
 
     override fun getProfession(): String {
-        TODO("Not yet implemented")
+        return this.profession
     }
 
-    override fun setProfession(profession: String?) {
-        TODO("Not yet implemented")
+    override fun setProfession(profession: String) {
+        this.profession = profession
     }
 
     override fun getRequirement(): String {
-        TODO("Not yet implemented")
+        return requirement
     }
 
-    override fun setRequirement(requirement: String?) {
-        TODO("Not yet implemented")
+    override fun setRequirement(requirement: String) {
+        this.requirement = requirement
     }
 
     override fun getOtherCircumstances(): String {
-        TODO("Not yet implemented")
+        return otherCircumstances
     }
 
-    override fun setOtherCircumstances(otherCircumstances: String?) {
-        TODO("Not yet implemented")
+    override fun setOtherCircumstances(otherCircumstances: String) {
+        this.otherCircumstances = otherCircumstances
     }
 
     override fun getProductAmount(): Int {
-        TODO("Not yet implemented")
+        return productAmount
     }
 
     override fun setProductAmount(productAmount: Int) {
-        TODO("Not yet implemented")
+        this.productAmount = productAmount
     }
 
-    override fun getSideProduct(): IItem {
-        TODO("Not yet implemented")
+    override fun getSideProduct(): IItem? {
+        return sideProduct
     }
 
     override fun setSideProduct(sideProduct: IItem?) {
-        TODO("Not yet implemented")
+        this.sideProduct = sideProduct
     }
 
     override fun getSideProductAmount(): Int {
-        TODO("Not yet implemented")
+        return this.sideProductAmount
     }
 
     override fun setSideProductAmount(sideProductAmount: Int) {
-        TODO("Not yet implemented")
+        this.sideProductAmount = sideProductAmount
     }
 
-    override fun getMaterials(): IItemList {
-        TODO("Not yet implemented")
+    override fun getMaterials(): IItemList? {
+        return materials
     }
 
     override fun setMaterials(materials: IItemList?) {
-        TODO("Not yet implemented")
+        this.materials = materials
     }
 }

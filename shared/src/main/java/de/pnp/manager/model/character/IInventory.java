@@ -1,5 +1,6 @@
 package de.pnp.manager.model.character;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.model.IItemList;
 import de.pnp.manager.model.item.IItem;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ public interface IInventory extends Iterable<IItem> {
 
     int getMaxStackSize();
 
+    @JsonIgnore
     default int getSize() {
         return getItems().size();
     }

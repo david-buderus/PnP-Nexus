@@ -5,7 +5,9 @@ import de.pnp.manager.model.loot.ILoot
 import de.pnp.manager.model.loot.ILootFactory
 import java.util.*
 
-class LootFactory : ILootFactory {
+class LootFactory(item: IItem?, maxAmount: Int, chance: Double) : ILootFactory {
+    private val rand = Random()
+
     override fun getItem(): IItem {
         TODO("Not yet implemented")
     }

@@ -1,5 +1,6 @@
 package de.pnp.manager.model.character;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
@@ -519,6 +520,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
+    @JsonIgnore
     public int getMaxHealth() {
         return secondaryAttributeModifiers.get(SecondaryAttribute.health).getResult();
     }
@@ -561,6 +563,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
+    @JsonIgnore
     public int getMaxMana() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).getResult();
     }
@@ -595,6 +598,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
+    @JsonIgnore
     public int getMaxMentalHealth() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getResult();
     }
@@ -616,6 +620,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
+    @JsonIgnore
     public int getStaticInitiative() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getResult();
     }
@@ -637,6 +642,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
+    @JsonIgnore
     public int getStaticBaseDefense() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getResult();
     }
@@ -808,6 +814,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
                 ));
     }
 
+    @JsonIgnore
     public ObservableMap<ITalent, IntegerProperty> getObservableTalents() {
         return talents.get();
     }

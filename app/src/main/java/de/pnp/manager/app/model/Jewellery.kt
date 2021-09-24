@@ -11,7 +11,9 @@ class Jewellery: IJewellery, Equipment() {
     private var gem : String = ""
 
     override fun copy(): IJewellery {
-        TODO("Not yet implemented")
+        val jewellery = super.copy() as IJewellery
+        jewellery.gem = this.gem
+        return jewellery
     }
 
     override fun getGem(): String {

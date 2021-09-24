@@ -1,5 +1,6 @@
 package de.pnp.manager.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.model.item.IItem;
 import de.pnp.manager.model.item.Item;
@@ -74,6 +75,7 @@ public class Fabrication implements IFabrication {
         this.sideProductAmount = sideProductAmount;
     }
 
+    @JsonIgnore
     public String getProductName() {
         return Objects.requireNonNullElse(product.getName(), "");
     }
@@ -82,6 +84,7 @@ public class Fabrication implements IFabrication {
         product = Database.getItem(itemName);
     }
 
+    @JsonIgnore
     public String getSideProductName() {
         return Objects.requireNonNullElse(sideProduct.getName(), "");
     }
@@ -98,6 +101,7 @@ public class Fabrication implements IFabrication {
         this.materials = materials;
     }
 
+    @JsonIgnore
     public String getMaterialsAsString() {
         return materials.stream().map(item -> item.getPrettyAmount() + " " + item.getName()).collect(Collectors.joining("\n"));
     }
