@@ -598,7 +598,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
-    @JsonIgnore
     public int getMaxMentalHealth() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getResult();
     }
@@ -619,8 +618,10 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(maxMentalHealthModifier);
     }
 
-    @Override
-    @JsonIgnore
+    /**
+     * The initiative of the character.
+     * Includes weapons except memberstates
+     */
     public int getStaticInitiative() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getResult();
     }
@@ -641,8 +642,11 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(staticInitiativeModifier);
     }
 
-    @Override
-    @JsonIgnore
+    /**
+     * The base defense of the character
+     * used to calculate incoming damage.
+     * Includes all modifier except memberstates
+     */
     public int getStaticBaseDefense() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getResult();
     }
