@@ -11,11 +11,13 @@ public class Manager implements Closeable {
     protected BattleHandler battleHandler;
     protected ServerNetworkHandler networkHandler;
     protected CharacterHandler characterHandler;
+    protected InventoryHandler inventoryHandler;
 
     public Manager() {
         this.battleHandler = new BattleHandler(this);
         this.networkHandler = new ServerNetworkHandler(this);
         this.characterHandler = new CharacterHandler(this);
+        this.inventoryHandler = new InventoryHandler(this);
 
         this.networkHandler.start();
     }
@@ -30,6 +32,10 @@ public class Manager implements Closeable {
 
     public CharacterHandler getCharacterHandler() {
         return characterHandler;
+    }
+
+    public InventoryHandler getInventoryHandler() {
+        return inventoryHandler;
     }
 
     @Override

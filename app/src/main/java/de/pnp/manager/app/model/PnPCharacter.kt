@@ -3,6 +3,7 @@ package de.pnp.manager.app.model
 import de.pnp.manager.app.state.ConfigHelper
 import de.pnp.manager.model.character.IInventory
 import de.pnp.manager.model.character.IPnPCharacter
+import de.pnp.manager.model.character.Inventory
 import de.pnp.manager.model.character.data.IArmorPosition
 import de.pnp.manager.model.character.data.IPrimaryAttribute
 import de.pnp.manager.model.character.data.ISecondaryAttribute
@@ -140,28 +141,12 @@ open class PnPCharacter() : IPnPCharacter {
         return initiative
     }
 
-    override fun getStaticInitiative(): Int {
-        return secondaryAttributes[SecondaryAttribute.initiative]?: 0
-    }
-
-    fun setStaticInitiative(staticInitiative : Int) {
-        this.secondaryAttributes[SecondaryAttribute.initiative] = staticInitiative
-    }
-
     override fun getBaseDefense(): Int {
        return this.baseDefense
     }
 
     fun setBaseDefense(baseDefense : Int) {
         this.baseDefense = baseDefense
-    }
-
-    override fun getStaticBaseDefense(): Int {
-        return secondaryAttributes[SecondaryAttribute.defense]?: 0
-    }
-
-    fun setStaticBaseDefense(staticBaseDefense : Int) {
-        this.secondaryAttributes[SecondaryAttribute.defense] = staticBaseDefense
     }
 
     override fun getPrimaryAttributes(): MutableMap<IPrimaryAttribute, Int> {
@@ -253,7 +238,7 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getInventory(): IInventory {
-        return inventory?:Inventory()
+        return inventory?:Inventory.EMPTY_INVENTORY
     }
 
     fun setInventory(inventory: IInventory) {

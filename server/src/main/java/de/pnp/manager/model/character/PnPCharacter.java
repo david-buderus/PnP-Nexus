@@ -85,7 +85,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
             this.secondaryAttributes.put(attribute, 0);
         }
         this.lootTable = lootTable;
-        this.inventory = Inventory.EMPTY_INVENTORY;
+        this.inventory = Inventory.UNLIMITED_INVENTORY;
         this.battle = battle;
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
@@ -378,7 +378,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         character.advantages = new ArrayList<>(getAdvantages());
         character.disadvantages = new ArrayList<>(getDisadvantages());
         character.notes.set(getNotes());
-        character.inventory.addAll(getInventory().getItems());
+        character.inventory = new Inventory(getInventory().getMaxSize(), getInventory().getNumberOfSlots(), getInventory());
 
         // Load Equipment
         for (IWeapon weapon : getEquippedWeapons()) {
@@ -598,7 +598,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
-    @JsonIgnore
     public int getMaxMentalHealth() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getResult();
     }
@@ -619,8 +618,10 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(maxMentalHealthModifier);
     }
 
-    @Override
-    @JsonIgnore
+    /**
+     * The initiative of the character.
+     * Includes weapons except memberstates
+     */
     public int getStaticInitiative() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getResult();
     }
@@ -641,8 +642,11 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(staticInitiativeModifier);
     }
 
-    @Override
-    @JsonIgnore
+    /**
+     * The base defense of the character
+     * used to calculate incoming damage.
+     * Includes all modifier except memberstates
+     */
     public int getStaticBaseDefense() {
         return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getResult();
     }

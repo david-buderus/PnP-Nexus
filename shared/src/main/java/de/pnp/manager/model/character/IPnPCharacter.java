@@ -96,27 +96,16 @@ public interface IPnPCharacter {
      * used to calculate his turn timer in a battle.
      * Includes all modifier
      */
+    @JsonIgnore
     int getInitiative();
-
-    /**
-     * The initiative of the character.
-     * Includes weapons except memberstates
-     */
-    int getStaticInitiative();
 
     /**
      * The base defense of the character
      * used to calculate incoming damage.
      * Includes all modifier
      */
+    @JsonIgnore
     int getBaseDefense();
-
-    /**
-     * The base defense of the character
-     * used to calculate incoming damage.
-     * Includes all modifier except memberstates
-     */
-    int getStaticBaseDefense();
 
     /**
      * The base value of each primary attribute
