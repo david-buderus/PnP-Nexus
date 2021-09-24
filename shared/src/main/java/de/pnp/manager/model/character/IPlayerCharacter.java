@@ -11,6 +11,11 @@ public interface IPlayerCharacter extends IPnPCharacter {
     String getRace();
 
     /**
+     * The gender of the player
+     */
+    String getGender();
+
+    /**
      * The age of the player
      */
     String getAge();

@@ -10,6 +10,7 @@ import de.pnp.manager.app.model.Client
 import de.pnp.manager.app.state.ApplicationState
 import de.pnp.manager.network.message.BaseMessage
 import de.pnp.manager.network.message.MessageIDs
+import de.pnp.manager.network.message.character.AssignCharactersMessage
 import de.pnp.manager.network.message.database.DatabaseRequestMessage
 import de.pnp.manager.network.message.database.DatabaseResponseMessage
 import de.pnp.manager.network.message.login.LoginResponseMessage
@@ -62,6 +63,16 @@ class MessageHandler {
             ApplicationState.databaseData = message.data
 
             println(message.data.talents)
+        })
+
+        stateMachine.registerTransition(States.IN_SESSION, MessageIDs.ASSIGN_CHARACTERS, INonConditionalEventHandler {
+            val message = it as AssignCharactersMessage
+
+            ApplicationState.myCharacters = message.data
+            message.data.forEach { a -> println(a.talents) }
+
+            if (activity is SessionActivity)
+                (activity as SessionActivity).runOnUiThread { (activity as SessionActivity).updateNavMenu() }
         })
     }
 }

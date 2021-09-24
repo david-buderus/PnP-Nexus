@@ -22,8 +22,8 @@ object TCPClient {
     private lateinit var readerThread: Thread
     var active = false
     private val handler = null
-    private lateinit var output: PrintWriter
-    private lateinit var input: BufferedReader
+    private var output: PrintWriter? = null
+    private var input: BufferedReader? = null
     private val mapper: ObjectMapper = ObjectMapper()
 
     private lateinit var currentSession: ISession
@@ -47,7 +47,7 @@ object TCPClient {
 
                     while (active) {
                         try {
-                            val inputLine: String = input.readLine()
+                            val inputLine: String = input!!.readLine()
                             println("new message: " + inputLine)
                             val message = mapper.readValue(inputLine, BaseMessage::class.java)
                             ApplicationState.messageHandler.stateMachine.fire(message)
@@ -71,7 +71,7 @@ object TCPClient {
     fun sendTo(message: BaseMessage?) {
         Thread {
             if (message != null) {
-                output.println(mapper.writeValueAsString(message))
+                output?.println(mapper.writeValueAsString(message))
             }
         }.start()
     }
