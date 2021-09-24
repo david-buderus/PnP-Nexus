@@ -13,14 +13,29 @@ class Weapon : IWeapon, Equipment() {
     private var dice: String = ""
     private var damage: Int = 0
     private var hit: Int = 0
-
+    private var initiativeModifier: Float = 0.0f
 
     override fun copy(): IWeapon {
-        TODO("Not yet implemented")
+        val weapon = super.copy() as Weapon
+        weapon.damage = this.damage
+        weapon.isShield = this.isShield
+        weapon.initiative = this.initiative
+        weapon.dice = this.dice
+        weapon.hit = this.hit
+        weapon.initiativeModifier = this.initiativeModifier
+        return weapon
     }
 
     override fun isShield(): Boolean {
         return isShield
+    }
+
+    override fun getInitiativeModifier(): Float {
+        return this.initiativeModifier
+    }
+
+    override fun setInitiativeModifier(initiativeModifier: Float) {
+        this.initiativeModifier = initiativeModifier
     }
 
     fun setIsShield(value: Boolean) {

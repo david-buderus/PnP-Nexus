@@ -31,6 +31,14 @@ open class PnPCharacter() : IPnPCharacter {
     private var spells : MutableCollection<ISpell> = Collections.emptyList()
     private var inventory : IInventory? = null
     private var talents : MutableMap<ITalent, Int> = Collections.emptyMap()
+    private var lootTable : ILootTable? = null
+    private var memberStates : MutableCollection<IMemberState> = Collections.emptyList()
+
+    private var baseDefense: Int = 0
+    private var initiative: Int = 0
+    private var health: Int = 0
+    private var mana: Int = 0
+    private var mentalHealth : Int = 0
 
     override fun getName(): String {
         return name
@@ -73,94 +81,171 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getHealth(): Int {
-        TODO("Not yet implemented")
+        return health
     }
 
     override fun getMaxHealth(): Int {
-        TODO("Not yet implemented")
+        return secondaryAttributes[SecondaryAttribute.health]?:0
     }
 
+    fun setMaxHealth(maxHealth: Int) {
+        secondaryAttributes[SecondaryAttribute.health] = maxHealth
+    }
     override fun getMana(): Int {
-        TODO("Not yet implemented")
+        return mana
     }
 
     override fun getMaxMana(): Int {
-        TODO("Not yet implemented")
+        return secondaryAttributes[SecondaryAttribute.mana]?:0
+    }
+
+    fun setMaxMana(maxMana: Int) {
+        println("setting maxMana")
+        println(" " + secondaryAttributes + " " + secondaryAttributes[SecondaryAttribute.mana] + " " + maxMana)
+        secondaryAttributes[SecondaryAttribute.mana] = maxMana
     }
 
     override fun getMentalHealth(): Int {
-        TODO("Not yet implemented")
+        return mentalHealth
     }
 
     override fun getMaxMentalHealth(): Int {
-        TODO("Not yet implemented")
+        return secondaryAttributes[SecondaryAttribute.mentalHealth]?: 0
+    }
+
+    fun setMaxMentalHealth(maxMentalHealth : Int) {
+        this.secondaryAttributes[SecondaryAttribute.mentalHealth] = maxMentalHealth
     }
 
     override fun getInitiative(): Int {
-        TODO("Not yet implemented")
+        return initiative
     }
 
     override fun getStaticInitiative(): Int {
         return secondaryAttributes[SecondaryAttribute.initiative]?: 0
     }
 
+    fun setStaticInitiative(staticInitiative : Int) {
+        this.secondaryAttributes[SecondaryAttribute.initiative] = staticInitiative
+    }
+
     override fun getBaseDefense(): Int {
-        TODO("Not yet implemented")
+       return this.baseDefense
+    }
+
+    fun setBaseDefense(baseDefense : Int) {
+        this.baseDefense = baseDefense
     }
 
     override fun getStaticBaseDefense(): Int {
         return secondaryAttributes[SecondaryAttribute.defense]?: 0
     }
 
+    fun setStaticBaseDefense(staticBaseDefense : Int) {
+        this.secondaryAttributes[SecondaryAttribute.defense] = staticBaseDefense
+    }
+
     override fun getPrimaryAttributes(): MutableMap<IPrimaryAttribute, Int> {
         return primaryAttributes
+    }
+
+    fun setPrimaryAttributes(primaryAttribute: MutableMap<IPrimaryAttribute, Int>) {
+        this.primaryAttributes = primaryAttributes
     }
 
     override fun getSecondaryAttributes(): MutableMap<ISecondaryAttribute, Int> {
         return secondaryAttributes
     }
 
+    fun setSecondaryAttributes(secondaryAttributes : MutableMap<ISecondaryAttribute, Int>) {
+        this.secondaryAttributes = secondaryAttributes
+    }
+
     override fun getMemberStates(): MutableCollection<IMemberState> {
-        TODO("Not yet implemented")
+        return memberStates
+    }
+
+    fun setMemberStates(memberStates : MutableCollection<IMemberState>) {
+        this.memberStates = memberStates
     }
 
     override fun getWeapons(): MutableCollection<IWeapon> {
         return weapons
     }
 
+    fun setWeapons(weapons: MutableCollection<IWeapon>) {
+        this.weapons = weapons
+    }
+
     override fun getEquippedWeapons(): MutableCollection<IWeapon> {
         return equippedWeapons
+    }
+
+    fun setEquippedWeapons(equippedWeapons: MutableCollection<IWeapon>) {
+        this.equippedWeapons = equippedWeapons
     }
 
     override fun getJewellery(): MutableCollection<IJewellery> {
         return jewellery
     }
 
+    fun setJewellery(jewellery:  MutableCollection<IJewellery>) {
+        this.jewellery = jewellery
+    }
+
     override fun getEquippedJewellery(): MutableCollection<IJewellery> {
         return equippedJewellery
+    }
+
+    fun setEquippedJewellery(equippedJewellery:  MutableCollection<IJewellery>) {
+        this.equippedJewellery = equippedJewellery
     }
 
     override fun getArmor(): MutableCollection<IArmor> {
         return armor
     }
 
+    fun setArmor(armor: MutableCollection<IArmor>) {
+        this.armor = armor
+    }
+
     override fun getEquippedArmor(): MutableMap<IArmorPosition, IArmor> {
         return equippedArmor
+    }
+
+    fun setEquippedArmor(armor: MutableMap<IArmorPosition, IArmor>) {
+        this.equippedArmor = armor
     }
 
     override fun getSpells(): MutableCollection<ISpell> {
         return spells
     }
 
+    fun setSpells(spells: MutableCollection<ISpell>) {
+        this.spells = spells
+    }
+
     override fun getTalents(): MutableMap<ITalent, Int> {
         return talents
+    }
+
+    fun setTalents(talents: MutableMap<ITalent, Int>) {
+        this.talents = talents
     }
 
     override fun getInventory(): IInventory {
         return inventory?:Inventory()
     }
 
+    fun setInventory(inventory: IInventory) {
+        this.inventory = inventory
+    }
+
     override fun getLootTable(): ILootTable {
-        TODO("Not yet implemented")
+        return this.getLootTable()
+    }
+
+    fun setLootTable(lootTable: LootTable) {
+        this.lootTable = lootTable
     }
 }

@@ -6,8 +6,8 @@ import de.pnp.manager.model.other.ITalent
 class Talent : ITalent {
     private var name : String = ""
     private var attributes : Array<IPrimaryAttribute> = Array(0){PrimaryAttribute.DUMMY}
-    private var isMagicTalent : Boolean = false
-    private var isWeaponTalent: Boolean = false
+    private var magicTalent : Boolean = false
+    private var weaponTalent: Boolean = false
 
     override fun getName(): String {
         return name
@@ -26,18 +26,18 @@ class Talent : ITalent {
     }
 
     override fun isMagicTalent(): Boolean {
-        return this.isMagicTalent
+        return this.magicTalent
     }
 
     override fun setMagicTalent(magicTalent: Boolean) {
-        this.isMagicTalent = magicTalent
+        this.magicTalent = magicTalent
     }
 
     override fun isWeaponTalent(): Boolean {
-        return isWeaponTalent
+        return weaponTalent
     }
 
     override fun setWeaponTalent(weaponTalent: Boolean) {
-        this.isWeaponTalent = weaponTalent
+        this.weaponTalent = weaponTalent
     }
 }

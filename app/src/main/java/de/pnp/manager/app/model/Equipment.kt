@@ -22,7 +22,12 @@ open class Equipment : IEquipment, Item() {
     }
 
     override fun copy(): IEquipment {
-        TODO("Not yet implemented")
+        val equipment = super.copy() as IEquipment
+        equipment.wearTick = this.wearTick
+        equipment.material = this.material
+        equipment.upgradeSlots = this.upgradeSlots
+
+        return equipment
     }
 
     override fun applyWear(wear: Int) {

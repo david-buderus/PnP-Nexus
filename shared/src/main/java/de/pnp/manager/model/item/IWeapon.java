@@ -11,6 +11,10 @@ public interface IWeapon extends IEquipment {
     @JsonIgnore
     boolean isShield();
 
+    float getInitiativeModifier();
+
+    void setInitiativeModifier(float initiativeModifier);
+
     float getInitiative();
 
     void setInitiative(float initiative);

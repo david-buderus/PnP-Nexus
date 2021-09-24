@@ -9,7 +9,10 @@ class Plant : IPlant, Item() {
     private var locations: MutableCollection<String> = Collections.emptyList()
 
     override fun copy(): IPlant {
-        TODO("Not yet implemented")
+        val plant = super.copy() as IPlant
+        plant.locations = this.locations
+
+        return plant
     }
 
     override fun getLocations(): MutableCollection<String> {

@@ -100,7 +100,23 @@ open class Item : IItem {
         return tradeable
     }
 
+    fun setTradeable(value: Boolean) {
+        this.tradeable = value
+    }
+
     override fun copy(): IItem {
-        TODO("Not yet implemented")
+        val item = this.javaClass.getConstructor().newInstance()
+        item.amount = this.amount
+        item.currency = this.currency
+        item.effect = this.effect
+        item.isTradeable = this.isTradeable
+        item.name = this.name
+        item.rarity = this.rarity
+        item.requirement = this.requirement
+        item.subtype = this.subtype
+        item.tier = this.tier
+        item.type = this.type
+
+        return item
     }
 }
