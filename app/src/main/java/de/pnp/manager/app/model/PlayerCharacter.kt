@@ -1,5 +1,6 @@
 package de.pnp.manager.app.model
 
+import de.pnp.manager.app.state.ConfigHelper
 import de.pnp.manager.model.ICurrency
 import de.pnp.manager.model.character.IInventory
 import de.pnp.manager.model.character.IPlayerCharacter
@@ -22,6 +23,18 @@ class PlayerCharacter : IPlayerCharacter, PnPCharacter() {
     private var profession: String = ""
     private var currency: ICurrency? = null
     private var history: String = ""
+
+    fun getExperiencePercentage(): Int {
+        val modifier = ConfigHelper.getInt("character.experienceLevelModifier")
+        val neededXP = this.level * modifier
+        return (experience / neededXP) * 100
+    }
+
+    fun getExperiencePercentageString() : String {
+        val modifier = ConfigHelper.getInt("character.experienceLevelModifier")
+        val neededXP = this.level * modifier
+        return "$experience/$neededXP"
+    }
 
     override fun getRace(): String {
         return race

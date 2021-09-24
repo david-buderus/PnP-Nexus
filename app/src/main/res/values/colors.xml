@@ -7,4 +7,7 @@
   <color name="teal_700">#FF018786</color>
   <color name="black">#FF000000</color>
   <color name="white">#FFFFFFFF</color>
+  <color name="health_red">#A12626</color>
+  <color name="mana_blue">#397CB6</color>
+  <color name="experience_lila">#9443C6</color>
 </resources>

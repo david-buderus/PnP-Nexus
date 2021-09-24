@@ -58,8 +58,8 @@ class SerializationModule() : BaseModule() {
         addAbstractTypeMapping(ILootFactory::class.java, LootFactory::class.java)
         addAbstractTypeMapping(IDungeonLootFactory::class.java, DungeonLootFactory::class.java)
         addAbstractTypeMapping(IInventory::class.java, Inventory::class.java)
-        addAbstractTypeMapping(IPnPCharacter::class.java, PnPCharacter::class.java)
-        addAbstractTypeMapping(IPlayerCharacter::class.java, PlayerCharacter::class.java)
+/*        addAbstractTypeMapping(IPnPCharacter::class.java, PnPCharacter::class.java)
+        addAbstractTypeMapping(IPlayerCharacter::class.java, PlayerCharacter::class.java)*/
         addAbstractTypeMapping(ISession::class.java, Session::class.java)
         addAbstractTypeMapping(IClient::class.java, Client::class.java)
         addAbstractTypeMapping(ISpell::class.java, Spell::class.java)

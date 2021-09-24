@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.pnp.manager.app.databinding.FragmentCharacterViewBinding
 import de.pnp.manager.app.databinding.FragmentSessionsBinding
+import de.pnp.manager.app.model.PnPCharacter
 import de.pnp.manager.model.character.IPnPCharacter
 
 /**
@@ -48,8 +49,9 @@ class CharacterFragment(var character: IPnPCharacter) : Fragment() {
             run {
                 when (position) {
                     0 -> tab.text = "Info"
-                    1 -> tab.text = "Equipment"
-                    2 -> tab.text = "Talents"
+                    1 -> tab.text = "Stats"
+                    2 -> tab.text = "Equipment"
+                    3 -> tab.text = "Talents"
                     else -> tab.text = "Info"
                 }
             }
@@ -65,15 +67,16 @@ class CharacterFragment(var character: IPnPCharacter) : Fragment() {
 class CharacterFragmentPagerAdapter(fm: Fragment, var character: IPnPCharacter) : FragmentStateAdapter(fm) {
 
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 4
 
     override fun createFragment(position: Int): Fragment {
         val fragment: Fragment
 
         when (position) {
             0 -> fragment = InfoFragment(character)
-            1 -> fragment = EquipmentFragment(character)
-            2 -> fragment = TalentsFragment(character)
+            1 -> fragment = StatsFragment(character as PnPCharacter)
+            2 -> fragment = EquipmentFragment(character)
+            3 -> fragment = TalentsFragment(character)
             else -> fragment = InfoFragment(character)
         }
 

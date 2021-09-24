@@ -1,5 +1,6 @@
 package de.pnp.manager.app.model
 
+import de.pnp.manager.app.state.ConfigHelper
 import de.pnp.manager.model.character.IInventory
 import de.pnp.manager.model.character.IPnPCharacter
 import de.pnp.manager.model.character.data.IArmorPosition
@@ -40,6 +41,22 @@ open class PnPCharacter() : IPnPCharacter {
     private var health: Int = 0
     private var mana: Int = 0
     private var mentalHealth : Int = 0
+
+    fun getHealthPercentage() : Int {
+        return (this.health / this.maxHealth) * 100
+    }
+
+    fun getManaPercentage() : Int {
+        return (this.mana / this.maxMana) * 100
+    }
+
+    fun getHealthPercentageString() : String {
+        return "$health/$maxHealth"
+    }
+
+    fun getManaPercentageString() : String {
+        return "$mana/$maxMana"
+    }
 
     override fun getName(): String {
         return name

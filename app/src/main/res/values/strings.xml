@@ -37,4 +37,7 @@
   <string name="placeholder">Placeholder</string>
   <string name="session_state_label">State</string>
   <string name="fragment_session_lobby_label">Session Lobby</string>
+  <string name="healthBarLabel">Health</string>
+  <string name="manaBarLabel">Mana</string>
+  <string name="experienceBarLabel">Experience</string>
 </resources>
