@@ -40,4 +40,5 @@
   <string name="healthBarLabel">Health</string>
   <string name="manaBarLabel">Mana</string>
   <string name="experienceBarLabel">Experience</string>
+  <string name="arrow"><![CDATA[->]]></string>
 </resources>

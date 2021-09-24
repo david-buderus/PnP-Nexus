@@ -4,8 +4,8 @@ import de.pnp.manager.app.model.*
 import de.pnp.manager.app.state.ApplicationState
 import de.pnp.manager.model.*
 import de.pnp.manager.model.character.IInventory
-import de.pnp.manager.model.character.IPlayerCharacter
 import de.pnp.manager.model.character.IPnPCharacter
+import de.pnp.manager.model.character.Inventory
 import de.pnp.manager.model.character.data.*
 import de.pnp.manager.model.item.*
 import de.pnp.manager.model.loot.IDungeonLootFactory

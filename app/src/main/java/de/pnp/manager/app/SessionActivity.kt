@@ -14,7 +14,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import de.pnp.manager.app.network.TCPClient
 import de.pnp.manager.app.state.ApplicationState
 import info.androidhive.fontawesome.FontDrawable
@@ -40,7 +42,7 @@ class SessionActivity : AppCompatActivity() {
 
         //setSupportActionBar(findViewById(R.id.toolbar))
 
-        //findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
+        //findViewById<FloatingActionButton>(R.id.floatingActionButton).setOnClickListener { view ->
         //    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //            .setAction("Action", null).show()
         //}

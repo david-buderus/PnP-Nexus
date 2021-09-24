@@ -15,12 +15,14 @@ import java.io.InputStreamReader
 import java.io.PrintWriter
 import java.net.Socket
 import java.util.*
+import java.util.concurrent.Semaphore
 
 object TCPClient {
 
     private lateinit var socket: Socket
     private lateinit var readerThread: Thread
     var active = false
+    var sendingSemaphore : Semaphore = Semaphore(-1)
     private val handler = null
     private var output: PrintWriter? = null
     private var input: BufferedReader? = null
@@ -44,7 +46,6 @@ object TCPClient {
                 active = true
 
                 readerThread = Thread {
-
                     while (active) {
                         try {
                             val inputLine: String = input!!.readLine()
@@ -60,6 +61,7 @@ object TCPClient {
                 }
                 readerThread.isDaemon = true
                 readerThread.start()
+                sendingSemaphore.release()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -70,6 +72,9 @@ object TCPClient {
 
     fun sendTo(message: BaseMessage?) {
         Thread {
+            if (sendingSemaphore.availablePermits() == -1) {
+                sendingSemaphore.acquire()
+            }
             if (message != null) {
                 output?.println(mapper.writeValueAsString(message))
             }

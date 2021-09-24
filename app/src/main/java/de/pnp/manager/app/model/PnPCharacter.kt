@@ -25,6 +25,7 @@ open class PnPCharacter() : IPnPCharacter {
     private var disadvantages : MutableCollection<String> = ArrayList()
     private var primaryAttributes : MutableMap<IPrimaryAttribute, Int> = HashMap()
     private var secondaryAttributes : MutableMap<ISecondaryAttribute, Int> = HashMap()
+    private var effectiveSecondaryAttributes : MutableMap<ISecondaryAttribute, Int> = HashMap()
     private var weapons : MutableCollection<IWeapon> = ArrayList()
     private var equippedWeapons : MutableCollection<IWeapon> = ArrayList()
     private var jewellery : MutableCollection<IJewellery> = ArrayList()
@@ -42,6 +43,19 @@ open class PnPCharacter() : IPnPCharacter {
     private var health: Int = 0
     private var mana: Int = 0
     private var mentalHealth : Int = 0
+
+    init {
+        updateEffectiveSecondaryAttributes()
+    }
+
+    private fun updateEffectiveSecondaryAttributes() {
+        effectiveSecondaryAttributes = HashMap(secondaryAttributes)
+
+        // TODO
+        // weapons -> init
+        // armor belastung -> init
+        // member states
+    }
 
     fun getHealthPercentage() : Int {
         return (this.health / this.maxHealth) * 100
@@ -161,8 +175,13 @@ open class PnPCharacter() : IPnPCharacter {
         return secondaryAttributes
     }
 
+    fun getEffectiveSecondaryAttributes(): MutableMap<ISecondaryAttribute, Int> {
+        return effectiveSecondaryAttributes
+    }
+
     fun setSecondaryAttributes(secondaryAttributes : MutableMap<ISecondaryAttribute, Int>) {
         this.secondaryAttributes = secondaryAttributes
+        updateEffectiveSecondaryAttributes()
     }
 
     override fun getMemberStates(): MutableCollection<IMemberState> {
