@@ -168,7 +168,7 @@ open class PnPCharacter() : IPnPCharacter {
         return primaryAttributes
     }
 
-    fun setPrimaryAttributes(primaryAttribute: MutableMap<IPrimaryAttribute, Int>) {
+    fun setPrimaryAttributes(primaryAttributes: MutableMap<IPrimaryAttribute, Int>) {
         this.primaryAttributes = primaryAttributes
     }
 
