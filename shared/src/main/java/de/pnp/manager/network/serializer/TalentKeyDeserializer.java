@@ -19,7 +19,7 @@ public class TalentKeyDeserializer extends KeyDeserializer {
     @Override
     public ITalent deserializeKey(String key, DeserializationContext ctxt) throws IOException {
         for (ITalent talent : talentsGetter.get()) {
-            if (talent.getName().equalsIgnoreCase(key)) {
+            if (talent != null && talent.getName() != null && talent.getName().equalsIgnoreCase(key)) {
                 return talent;
             }
         }
