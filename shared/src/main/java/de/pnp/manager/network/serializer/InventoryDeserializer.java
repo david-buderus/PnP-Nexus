@@ -22,10 +22,10 @@ public class InventoryDeserializer extends StdDeserializer<Inventory> {
         TreeNode node = parser.getCodec().readTree(parser);
 
         double maxSize = mapper.treeToValue(node.get("maxSize"), Double.class);
-        int maxStackSize = mapper.treeToValue(node.get("maxStackSize"), Integer.class);
+        int numberOfSlots = mapper.treeToValue(node.get("numberOfSlots"), Integer.class);
         IItem[] items = mapper.treeToValue(node.get("items"), IItem[].class);
 
 
-        return new Inventory(maxSize, maxStackSize, items);
+        return new Inventory(maxSize, numberOfSlots, items);
     }
 }

@@ -11,24 +11,24 @@ public class Inventory extends ItemList implements IInventory {
     public static final Inventory EMPTY_INVENTORY = new Inventory(0, 0);
 
     protected double maxSize;
-    protected int maxStackSize;
+    protected int numberOfSlots;
 
-    public Inventory(double maxSize, int maxStackSize) {
+    public Inventory(double maxSize, int numberOfSlots) {
         super();
         this.maxSize = maxSize;
-        this.maxStackSize = maxStackSize;
+        this.numberOfSlots = numberOfSlots;
     }
 
-    public Inventory(double maxSize, int maxStackSize, IItem... items) {
+    public Inventory(double maxSize, int numberOfSlots, IItem... items) {
         super(items);
         this.maxSize = maxSize;
-        this.maxStackSize = maxStackSize;
+        this.numberOfSlots = numberOfSlots;
     }
 
-    public Inventory(double maxSize, int maxStackSize, Collection<IItem> items) {
+    public Inventory(double maxSize, int numberOfSlots, Collection<IItem> items) {
         super(items);
         this.maxSize = maxSize;
-        this.maxStackSize = maxStackSize;
+        this.numberOfSlots = numberOfSlots;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class Inventory extends ItemList implements IInventory {
             if (contains(item)) {
                 return super.add(item);
             } else {
-                if (getCurrentStackSize() < getMaxStackSize()) {
+                if (getNumberOfOccupiedSlots() < getNumberOfSlots()) {
                     return super.add(item);
                 }
             }
@@ -51,7 +51,7 @@ public class Inventory extends ItemList implements IInventory {
         if (collection.stream().mapToDouble(IItem::getAmount).sum() + getCurrentSize() <= getMaxSize()) {
             long notContainedItemStacks = collection.stream().filter(i -> !contains(i)).count();
 
-            if (getCurrentStackSize() + notContainedItemStacks <= getMaxStackSize()) {
+            if (getNumberOfOccupiedSlots() + notContainedItemStacks <= getNumberOfSlots()) {
                 return super.addAll(collection);
             }
         }
@@ -65,15 +65,15 @@ public class Inventory extends ItemList implements IInventory {
     }
 
     @Override
-    public int getMaxStackSize() {
-        return maxStackSize;
+    public int getNumberOfSlots() {
+        return numberOfSlots;
     }
 
     public void setMaxSize(double maxSize) {
         this.maxSize = maxSize;
     }
 
-    public void setMaxStackSize(int maxStackSize) {
-        this.maxStackSize = maxStackSize;
+    public void setNumberOfSlots(int numberOfSlots) {
+        this.numberOfSlots = numberOfSlots;
     }
 }

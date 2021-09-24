@@ -17,7 +17,7 @@ public class InventorySerializer extends StdSerializer<Inventory> {
     public void serialize(Inventory inventory, JsonGenerator gen, SerializerProvider provider) throws IOException {
         gen.writeStartObject();
         gen.writeNumberField("maxSize", inventory.getMaxSize());
-        gen.writeNumberField("maxStackSize", inventory.getMaxStackSize());
+        gen.writeNumberField("numberOfSlots", inventory.getNumberOfSlots());
         gen.writeObjectField("items", inventory.toArray());
         gen.writeEndObject();
     }

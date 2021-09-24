@@ -17,7 +17,7 @@ class Inventory : IInventory {
         this.maxSize = maxSize
     }
 
-    override fun getMaxStackSize(): Int {
+    override fun getNumberOfSlots(): Int {
         return maxStackSize
     }
 

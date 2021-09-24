@@ -16,11 +16,16 @@ public interface IInventory extends IItemList {
         return stream().mapToDouble(IItem::getAmount).sum();
     }
 
-    int getMaxStackSize();
+    int getNumberOfSlots();
 
     @JsonIgnore
-    default int getCurrentStackSize() {
+    default int getNumberOfOccupiedSlots() {
         return size();
+    }
+
+    @JsonIgnore
+    default int getNumberOfFreeSlots() {
+        return getNumberOfSlots() - getNumberOfOccupiedSlots();
     }
 
     @Override
