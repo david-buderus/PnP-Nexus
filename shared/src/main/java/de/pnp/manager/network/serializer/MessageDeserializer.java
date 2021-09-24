@@ -18,6 +18,7 @@ import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.DeniedMessage;
 import de.pnp.manager.network.message.error.ErrorMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
+import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.login.LogoutRequestMessage;
@@ -54,6 +55,7 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(DISMISS_CHARACTERS, DismissCharactersMessage.class);
         this.typeClassMap.put(UPDATE_TALENTS_NOTIFICATION, UpdateTalentsNotificationMessage.class);
         this.typeClassMap.put(UPDATE_TALENTS_REQUEST, UpdateTalentsRequestMessage.class);
+        this.typeClassMap.put(UPDATE_INVENTORY_NOTIFICATION, InventoryUpdateNotificationMessage.class);
 
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);

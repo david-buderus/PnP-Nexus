@@ -31,6 +31,7 @@ public abstract class MessageIDs {
     //In Character
     public static final int DISMISS_CHARACTERS = 4301;
     public static final int UPDATE_TALENTS_NOTIFICATION = 4002;
+    public static final int UPDATE_INVENTORY_NOTIFICATION = 4003;
     public static final int UPDATE_TALENTS_REQUEST = 4302;
 
     //Universal
