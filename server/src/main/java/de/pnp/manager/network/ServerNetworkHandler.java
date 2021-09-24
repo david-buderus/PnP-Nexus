@@ -49,6 +49,9 @@ public class ServerNetworkHandler implements NetworkHandler, Closeable {
                         ClientHandler client = new ClientHandler(serverSocket.accept(), manager);
                         client.setOnDisconnect(c -> {
                             clientMap.remove(c.getClientID());
+                            if (client.getCurrentSession() != null) {
+                                client.getCurrentSession().removeClient(c);
+                            }
                             runLater(() -> clients.remove(c));
                         });
                         client.setDaemon(true);
