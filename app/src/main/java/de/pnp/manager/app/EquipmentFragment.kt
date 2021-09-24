@@ -7,11 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
+import de.pnp.manager.model.character.IPnPCharacter
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class EquipmentFragment : Fragment() {
+class EquipmentFragment(var character: IPnPCharacter) : Fragment() {
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,

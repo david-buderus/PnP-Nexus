@@ -19,6 +19,7 @@ public class PlayerCharacter extends PnPCharacter implements IPlayerCharacter {
     protected StringProperty profession;
     protected ObjectProperty<ICurrency> currency;
     protected StringProperty history;
+    protected StringProperty gender;
 
     public PlayerCharacter(String characterID, Battle battle) {
         this(characterID, battle, new LootTable());
@@ -32,6 +33,7 @@ public class PlayerCharacter extends PnPCharacter implements IPlayerCharacter {
         this.profession = new SimpleStringProperty("");
         this.currency = new SimpleObjectProperty<>(new Currency(0));
         this.history = new SimpleStringProperty("");
+        this.gender = new SimpleStringProperty("");
     }
 
     @Override
@@ -45,6 +47,15 @@ public class PlayerCharacter extends PnPCharacter implements IPlayerCharacter {
     @Override
     public String getRace() {
         return race.get();
+    }
+
+    @Override
+    public String getGender() {
+        return gender.get();
+    }
+
+    public void setGender(String gender) {
+        this.gender.set(gender);
     }
 
     public StringProperty raceProperty() {

@@ -15,28 +15,68 @@ import de.pnp.manager.model.other.ISpell
 import de.pnp.manager.model.other.ITalent
 
 class PlayerCharacter : IPlayerCharacter, PnPCharacter() {
+    private var race: String = ""
+    private var gender: String = ""
+    private var age: String = ""
+    private var experience: Int = 0
+    private var profession: String = ""
+    private var currency: ICurrency? = null
+    private var history: String = ""
+
     override fun getRace(): String {
-        TODO("Not yet implemented")
+        return race
+    }
+
+    fun setRace(race: String) {
+        this.race = race
+    }
+
+    override fun getGender(): String {
+        return gender
+    }
+
+    fun setGender(gender: String) {
+        this.gender = gender
     }
 
     override fun getAge(): String {
-        TODO("Not yet implemented")
+        return age
+    }
+
+    fun setAge(age: String) {
+        this.age = age
     }
 
     override fun getExperience(): Int {
-        TODO("Not yet implemented")
+        return experience
+    }
+
+    fun setExperience(experience: Int) {
+        this.experience = experience
     }
 
     override fun getProfession(): String {
-        TODO("Not yet implemented")
+        return profession
     }
 
-    override fun getCurrency(): ICurrency {
-        TODO("Not yet implemented")
+    fun setProfession(profession: String) {
+        this.profession = profession
+    }
+
+    override fun getCurrency(): ICurrency? {
+        return currency
+    }
+
+    fun setCurrency(currency: ICurrency) {
+        this.currency=  currency
     }
 
     override fun getHistory(): String {
-        TODO("Not yet implemented")
+        return history
+    }
+
+    fun setHistory(history: String) {
+        this.history = history
     }
 
 }

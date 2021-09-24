@@ -10,6 +10,7 @@
   <string name="previous">Previous</string>
 
   <string name="fragment_start_welcome">Welcome!</string>
+  <string name="placeholder_dash">-</string>
 
   <string name="fragment_login_header">Connect to custom server</string>
   <string name="fragment_login_connect">Connect</string>

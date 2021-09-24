@@ -13,26 +13,27 @@ import de.pnp.manager.model.loot.ILootTable
 import de.pnp.manager.model.other.ISpell
 import de.pnp.manager.model.other.ITalent
 import java.util.*
+import kotlin.collections.HashMap
 
 open class PnPCharacter() : IPnPCharacter {
     private var name: String = ""
     private var characterID : String = ""
     private var level: Int = 0
-    private var advantages : MutableCollection<String> = Collections.emptyList()
-    private var disadvantages : MutableCollection<String> = Collections.emptyList()
-    private var primaryAttributes : MutableMap<IPrimaryAttribute, Int> = Collections.emptyMap()
-    private var secondaryAttributes : MutableMap<ISecondaryAttribute, Int> = Collections.emptyMap()
-    private var weapons : MutableCollection<IWeapon> = Collections.emptyList()
-    private var equippedWeapons : MutableCollection<IWeapon> = Collections.emptyList()
-    private var jewellery : MutableCollection<IJewellery> = Collections.emptyList()
-    private var equippedJewellery : MutableCollection<IJewellery> = Collections.emptyList()
-    private var armor : MutableCollection<IArmor> = Collections.emptyList()
-    private var equippedArmor : MutableMap<IArmorPosition, IArmor> = Collections.emptyMap()
-    private var spells : MutableCollection<ISpell> = Collections.emptyList()
+    private var advantages : MutableCollection<String> = ArrayList()
+    private var disadvantages : MutableCollection<String> = ArrayList()
+    private var primaryAttributes : MutableMap<IPrimaryAttribute, Int> = HashMap()
+    private var secondaryAttributes : MutableMap<ISecondaryAttribute, Int> = HashMap()
+    private var weapons : MutableCollection<IWeapon> = ArrayList()
+    private var equippedWeapons : MutableCollection<IWeapon> = ArrayList()
+    private var jewellery : MutableCollection<IJewellery> = ArrayList()
+    private var equippedJewellery : MutableCollection<IJewellery> = ArrayList()
+    private var armor : MutableCollection<IArmor> = ArrayList()
+    private var equippedArmor : MutableMap<IArmorPosition, IArmor> = HashMap()
+    private var spells : MutableCollection<ISpell> = ArrayList()
     private var inventory : IInventory? = null
-    private var talents : MutableMap<ITalent, Int> = Collections.emptyMap()
+    private var talents : MutableMap<ITalent, Int> = HashMap()
     private var lootTable : ILootTable? = null
-    private var memberStates : MutableCollection<IMemberState> = Collections.emptyList()
+    private var memberStates : MutableCollection<IMemberState> = ArrayList()
 
     private var baseDefense: Int = 0
     private var initiative: Int = 0
@@ -102,7 +103,8 @@ open class PnPCharacter() : IPnPCharacter {
     fun setMaxMana(maxMana: Int) {
         println("setting maxMana")
         println(" " + secondaryAttributes + " " + secondaryAttributes[SecondaryAttribute.mana] + " " + maxMana)
-        secondaryAttributes[SecondaryAttribute.mana] = maxMana
+        println(maxMana.javaClass)
+        secondaryAttributes.put(SecondaryAttribute.mana, maxMana)
     }
 
     override fun getMentalHealth(): Int {
