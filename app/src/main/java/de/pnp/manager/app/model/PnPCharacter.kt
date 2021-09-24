@@ -124,14 +124,6 @@ open class PnPCharacter() : IPnPCharacter {
         return initiative
     }
 
-    override fun getStaticInitiative(): Int {
-        return secondaryAttributes[SecondaryAttribute.initiative]?: 0
-    }
-
-    fun setStaticInitiative(staticInitiative : Int) {
-        this.secondaryAttributes[SecondaryAttribute.initiative] = staticInitiative
-    }
-
     override fun getBaseDefense(): Int {
        return this.baseDefense
     }
@@ -140,19 +132,11 @@ open class PnPCharacter() : IPnPCharacter {
         this.baseDefense = baseDefense
     }
 
-    override fun getStaticBaseDefense(): Int {
-        return secondaryAttributes[SecondaryAttribute.defense]?: 0
-    }
-
-    fun setStaticBaseDefense(staticBaseDefense : Int) {
-        this.secondaryAttributes[SecondaryAttribute.defense] = staticBaseDefense
-    }
-
     override fun getPrimaryAttributes(): MutableMap<IPrimaryAttribute, Int> {
         return primaryAttributes
     }
 
-    fun setPrimaryAttributes(primaryAttribute: MutableMap<IPrimaryAttribute, Int>) {
+    fun setPrimaryAttributes(primaryAttributes: MutableMap<IPrimaryAttribute, Int>) {
         this.primaryAttributes = primaryAttributes
     }
 

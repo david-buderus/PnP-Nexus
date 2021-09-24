@@ -106,7 +106,7 @@ public class PnPCharacterFactory {
         character.name = new SimpleStringProperty(parameterMap.getValueAsStringOrElse("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
 
         //Primary
-        int minPrim = Utility.getConfig().getInt("character.skillpoints.min");
+        int minPrim = Utility.getConfig().getInt("character.skillPoints.min");
         character.primaryAttributes.put(PrimaryAttribute.strength, parameterMap.getValueAsIntegerOrElse("primaryAttribute.strength", minPrim));
         character.primaryAttributes.put(PrimaryAttribute.endurance, parameterMap.getValueAsIntegerOrElse("primaryAttribute.endurance", minPrim));
         character.primaryAttributes.put(PrimaryAttribute.precision, parameterMap.getValueAsIntegerOrElse("primaryAttribute.precision", minPrim));

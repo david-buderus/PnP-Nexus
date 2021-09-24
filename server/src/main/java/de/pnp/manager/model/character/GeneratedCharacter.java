@@ -53,10 +53,11 @@ public class GeneratedCharacter extends PnPCharacter {
         this.setName(profession + " - " + specialisation);
 
         for (IPrimaryAttribute p : PrimaryAttribute.getValuesWithoutDummy()) {
-            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.skillpoints.min"));
+            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.skillPoints.min"));
         }
         this.generateStats();
         this.calculateSecondaryAttributes();
+        this.useSkillPoints();
         this.createModifierBindings();
 
         //Generate Weapons
@@ -128,7 +129,6 @@ public class GeneratedCharacter extends PnPCharacter {
 
         this.getAdvantages().addAll(getCollection(GenerationBase::getAdvantages));
         this.getDisadvantages().addAll(getCollection(GenerationBase::getDisadvantages));
-        this.useSkillPoints();
         this.generateSpells();
         this.createResourceProperties();
         this.generateLoot();
@@ -137,8 +137,8 @@ public class GeneratedCharacter extends PnPCharacter {
 
     private void generateStats() {
         Configuration config = Utility.getConfig();
-        int remainingPoints = config.getInt("character.skillpoints.max")
-                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.skillpoints.min");
+        int remainingPoints = config.getInt("character.skillPoints.max")
+                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.skillPoints.min");
 
         // Skill first into the attributes the main talents need
         for (IPrimaryAttribute attribute : getMainTalents().stream()
@@ -229,11 +229,12 @@ public class GeneratedCharacter extends PnPCharacter {
 
     private void useSkillPoints() {
         int skillPoints = getLevel();
-        int talentPoints = 13; //Smaller character sheet, so less points
+        int talentPoints = Utility.getConfig().getInt("character.talentPoints");
         Collection<SecondaryAttribute> secondaryAttributes = getMainSecondaryAttributes();
 
         while (skillPoints > 0) {
-            if (random.nextDouble() < 0.25 && secondaryAttributes.size() > 0) { //25% chance to buff a secondary attribute
+            if (random.nextDouble() < Utility.getConfig().getDouble("character.skillPoints.chanceSecondaryAttribute")
+                    && secondaryAttributes.size() > 0) {
                 SecondaryAttribute attribute = secondaryAttributes.stream()
                         .skip(random.nextInt(secondaryAttributes.size())).findFirst().orElse(null);
 
@@ -241,21 +242,19 @@ public class GeneratedCharacter extends PnPCharacter {
                     continue;
                 }
 
-                IntegerProperty modifier = secondaryAttributeModifiers.get(attribute).modifierProperty();
-
                 switch (attribute) {
                     case meleeDamage:
                     case rangeDamage:
                     case magicPower:
                     case defense:
                         if (skillPoints > 4) {
-                            modifier.set(modifier.get() + 1);
+                            getSecondaryAttributes().put(attribute, getSecondaryAttributes().get(attribute) + 1);
                             skillPoints -= 5;
                         }
                         break;
                     case health:
                     case mana:
-                        modifier.set(modifier.get() + 1);
+                        getSecondaryAttributes().put(attribute, getSecondaryAttributes().get(attribute) + 1);
                         skillPoints -= 1;
                         break;
                 }
