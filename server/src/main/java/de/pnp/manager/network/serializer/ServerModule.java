@@ -48,5 +48,11 @@ public class ServerModule extends BaseModule {
 
         // Keys
         this.addKeyDeserializer(ITalent.class, new TalentKeyDeserializer(() -> Database.talentList));
+        this.addKeyDeserializer(IArmorPosition.class, new EnumKeyDeserializer<>(ArmorPosition.class));
+        this.addKeyDeserializer(IArmorPiece.class, new EnumKeyDeserializer<>(ArmorPiece.class));
+        this.addKeyDeserializer(IAttackTypes.class, new EnumKeyDeserializer<>(AttackTypes.class));
+        this.addKeyDeserializer(IPrimaryAttribute.class, new EnumKeyDeserializer<>(PrimaryAttribute.class));
+        this.addKeyDeserializer(ISecondaryAttribute.class, new EnumKeyDeserializer<>(SecondaryAttribute.class));
+        this.addKeyDeserializer(IRarity.class, new EnumKeyDeserializer<>(Rarity.class));
     }
 }
