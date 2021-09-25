@@ -33,6 +33,7 @@ public abstract class MessageIDs {
     public static final int UPDATE_TALENTS_NOTIFICATION = 4002;
     public static final int UPDATE_INVENTORY_NOTIFICATION = 4003;
     public static final int UPDATE_TALENTS_REQUEST = 4302;
+    public static final int MOVE_ITEM_REQUEST = 4303;
 
     //Universal
     public static final int OK = 8000;
@@ -45,4 +46,6 @@ public abstract class MessageIDs {
     public static final int ERROR = 9000;
     public static final int WRONG_STATE = 9001;
     public static final int DENIED = 9002;
+    public static final int NOT_FOUND = 9003;
+    public static final int NOT_POSSIBLE = 9004;
 }

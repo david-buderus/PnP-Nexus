@@ -10,15 +10,13 @@ import de.pnp.manager.network.message.character.AssignCharactersMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterRequestMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
 import de.pnp.manager.network.message.character.DismissCharactersMessage;
-import de.pnp.manager.network.message.character.update.talent.UpdateTalentsMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsNotificationMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseResponseMessage;
-import de.pnp.manager.network.message.error.DeniedMessage;
-import de.pnp.manager.network.message.error.ErrorMessage;
-import de.pnp.manager.network.message.error.WrongStateMessage;
+import de.pnp.manager.network.message.error.*;
 import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
+import de.pnp.manager.network.message.inventory.MoveItemRequestMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.login.LogoutRequestMessage;
@@ -56,6 +54,7 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(UPDATE_TALENTS_NOTIFICATION, UpdateTalentsNotificationMessage.class);
         this.typeClassMap.put(UPDATE_TALENTS_REQUEST, UpdateTalentsRequestMessage.class);
         this.typeClassMap.put(UPDATE_INVENTORY_NOTIFICATION, InventoryUpdateNotificationMessage.class);
+        this.typeClassMap.put(MOVE_ITEM_REQUEST, MoveItemRequestMessage.class);
 
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);
@@ -65,8 +64,10 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(CONTROLLED_CHARACTER_RESPONSE, ControlledCharacterResponseMessage.class);
         //Error
         this.typeClassMap.put(ERROR, ErrorMessage.class);
+        this.typeClassMap.put(NOT_FOUND, NotFoundMessage.class);
         this.typeClassMap.put(WRONG_STATE, WrongStateMessage.class);
         this.typeClassMap.put(DENIED, DeniedMessage.class);
+        this.typeClassMap.put(NOT_POSSIBLE, NotPossibleMessage.class);
     }
 
     @Override

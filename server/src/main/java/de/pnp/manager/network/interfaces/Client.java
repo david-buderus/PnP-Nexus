@@ -33,4 +33,6 @@ public interface Client extends IClient {
     StringProperty clientNameProperty();
 
     Collection<String> getControlledCharacters();
+
+    boolean hasAccessToInventory(String id);
 }

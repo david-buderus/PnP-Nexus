@@ -15,6 +15,8 @@ public interface NetworkHandler {
         sendTo(message, session.getParticipatingClients().stream().map(IClient::getClientID).toArray(String[]::new));
     }
 
+    void broadcast(BaseMessage message, Collection<Client> clients);
+
     void sendTo(BaseMessage message, String... clientIDs);
 
     Collection<? extends ISession> getActiveSessions();

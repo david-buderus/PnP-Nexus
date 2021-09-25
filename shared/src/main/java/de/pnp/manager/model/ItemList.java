@@ -64,11 +64,11 @@ public class ItemList extends ArrayList<IItem> implements IItemList {
 
     @Override
     public boolean removeAll(@NotNull Collection<?> collection) {
-        boolean removed = false;
+        boolean removed = true;
 
         for (Object item : collection) {
-            if (remove(item)) {
-                removed = true;
+            if (!remove(item)) {
+                removed = false;
             }
         }
         return removed;

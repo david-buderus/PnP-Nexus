@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
+import de.pnp.manager.model.character.IInventory;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.other.ITalent;
@@ -19,8 +20,11 @@ import de.pnp.manager.network.message.character.update.talent.UpdateTalentsData;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.DeniedMessage;
-import de.pnp.manager.network.message.error.ErrorMessage;
+import de.pnp.manager.network.message.error.NotFoundMessage;
+import de.pnp.manager.network.message.error.NotPossibleMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
+import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
+import de.pnp.manager.network.message.inventory.MoveItemRequestMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.session.JoinSessionRequestMessage;
@@ -72,6 +76,7 @@ public class ClientHandler extends Thread implements Client {
     protected StringProperty clientName;
     protected ObjectProperty<Session> currentSession;
     protected Collection<String> controlledCharacters;
+    protected Collection<String> accessibleInventories;
     protected final Manager manager;
 
     protected Consumer<Client> onDisconnect;
@@ -159,6 +164,15 @@ public class ClientHandler extends Thread implements Client {
         return controlledCharacters;
     }
 
+    private String getSessionID() {
+        return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
+    }
+
+    @Override
+    public boolean hasAccessToInventory(String id) {
+        return controlledCharacters.contains(id) || accessibleInventories.contains(id);
+    }
+
     private StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
         stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(calendar.getTime())));
@@ -200,7 +214,7 @@ public class ClientHandler extends Thread implements Client {
                 runLater(() -> setCurrentSession(session));
                 sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
             } else {
-                sendMessage(new ErrorMessage(getMessage("message.error.notExists"), calendar.getTime()));
+                sendMessage(new NotFoundMessage(getMessage("message.error.notExists"), calendar.getTime()));
             }
         });
 
@@ -272,7 +286,7 @@ public class ClientHandler extends Thread implements Client {
                                 }
                             });
                         } else {
-                            sendMessage(new ErrorMessage(getMessage("message.error.notExists"), calendar.getTime()));
+                            sendMessage(new NotFoundMessage(getMessage("message.error.notExists"), calendar.getTime()));
                         }
                     } else {
                         sendMessage(new DeniedMessage(calendar.getTime()));
@@ -283,6 +297,45 @@ public class ClientHandler extends Thread implements Client {
 
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
         stateMachine.registerTransition(States.IN_CHARACTER, States.IN_SESSION, DISMISS_CHARACTERS, new DismissCharacterHandler(this));
+
+        stateMachine.registerTransition(States.IN_CHARACTER, MOVE_ITEM_REQUEST, message -> {
+            MoveItemRequestMessage.MoveItemData data = ((MoveItemRequestMessage) message).getData();
+
+            if (hasAccessToInventory(data.getFrom())) {
+                IInventory from = manager.getInventoryHandler().getInventory(getSessionID(), data.getFrom());
+
+                if (from != null && from.containsAmount(data.getItems())) {
+
+                    IInventory to = manager.getInventoryHandler().getInventory(getSessionID(), data.getTo());
+
+                    if (to != null && to.addAll(data.getItems())) {
+                        from.removeAll(data.getItems());
+
+                        manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
+                                data.getFrom(),
+                                Collections.emptyList(),
+                                data.getItems(),
+                                calendar.getTime()
+                        ), manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.hasAccessToInventory(data.getFrom())).collect(Collectors.toList()));
+                        manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
+                                data.getTo(),
+                                data.getItems(),
+                                Collections.emptyList(),
+                                calendar.getTime()
+                        ), manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.hasAccessToInventory(data.getTo())).collect(Collectors.toList()));
+
+                    } else {
+                        sendMessage(new NotPossibleMessage(getMessage("message.items.space.notEnough"), calendar.getTime()));
+                    }
+
+                } else {
+                    sendMessage(new NotPossibleMessage(getMessage("message.items.amount.notEnough"), calendar.getTime()));
+                }
+
+            } else {
+                sendMessage(new DeniedMessage(calendar.getTime()));
+            }
+        });
 
         return stateMachine;
     }
