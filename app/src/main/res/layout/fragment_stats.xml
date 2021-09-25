@@ -226,106 +226,10 @@
           <GridLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.15">
+            android:layout_weight="0.7">
 
           </GridLayout>
-          <TableLayout
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            tools:layout_editor_absoluteX="18dp"
-            android:stretchColumns="1,2">
 
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Meele Damage"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.meleeDamage).toString()}"/>
-            </TableRow>
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Range Damage"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.rangeDamage).toString()}"/>
-            </TableRow>
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Magic Power"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.magicPower).toString()}"/>
-            </TableRow>
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Defense"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.defense).toString()}"/>
-            </TableRow>
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Initiative"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.initiative).toString()}"/>
-            </TableRow>
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Health"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.health).toString()}"/>
-            </TableRow>
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Mental Health"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.mentalHealth).toString()}"/>
-            </TableRow>
-            <TableRow
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-              <TextView
-                android:layout_column="1"
-                android:text = "Mana"
-                />
-              <TextView
-                android:layout_column="2"
-                android:text = "@{character.secondaryAttributes.get(de.pnp.manager.app.model.SecondaryAttribute.mana).toString()}"/>
-            </TableRow>
-          </TableLayout>
         </LinearLayout>
         <TextView
           android:id="@+id/stats_effective_stats_label"

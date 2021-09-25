@@ -9,11 +9,9 @@ import de.pnp.manager.network.message.BaseMessage
 import de.pnp.manager.network.message.session.JoinSessionRequestMessage
 import de.pnp.manager.network.session.ISession
 import de.pnp.manager.network.session.SessionInfo
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.io.PrintWriter
+import java.io.*
 import java.net.Socket
+import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.Semaphore
 
@@ -41,8 +39,8 @@ object TCPClient {
                 println(ip + " " + port)
                 socket =
                     Socket(ip, port)
-                this.input = BufferedReader(InputStreamReader(socket.getInputStream()));
-                this.output = PrintWriter(socket.getOutputStream(), true)
+                this.input = BufferedReader(InputStreamReader(socket.getInputStream(), Charsets.UTF_8));
+                this.output = PrintWriter(OutputStreamWriter(socket.getOutputStream(), Charsets.UTF_8), true)
                 active = true
 
                 readerThread = Thread {
