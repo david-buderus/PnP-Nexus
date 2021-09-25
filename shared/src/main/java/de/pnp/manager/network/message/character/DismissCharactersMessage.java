@@ -3,6 +3,7 @@ package de.pnp.manager.network.message.character;
 import de.pnp.manager.network.message.DataMessage;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import static de.pnp.manager.network.message.MessageIDs.DISMISS_CHARACTERS;
@@ -10,6 +11,10 @@ import static de.pnp.manager.network.message.MessageIDs.DISMISS_CHARACTERS;
 public class DismissCharactersMessage extends DataMessage<Collection<String>> {
 
     public DismissCharactersMessage() {
+    }
+
+    public DismissCharactersMessage(String characterID, Date timestamp) {
+        this(Collections.singletonList(characterID), timestamp);
     }
 
     public DismissCharactersMessage(Collection<String> characterIDs, Date timestamp) {

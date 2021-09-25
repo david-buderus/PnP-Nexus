@@ -17,6 +17,11 @@ public interface NetworkHandler {
 
     void broadcast(BaseMessage message, Collection<Client> clients);
 
+    /**
+     * This message can change the state of each client
+     */
+    void activeBroadcast(BaseMessage message, Collection<Client> clients);
+
     void sendTo(BaseMessage message, String... clientIDs);
 
     Collection<? extends ISession> getActiveSessions();

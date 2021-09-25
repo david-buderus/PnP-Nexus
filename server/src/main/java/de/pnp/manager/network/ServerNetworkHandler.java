@@ -98,6 +98,15 @@ public class ServerNetworkHandler implements NetworkHandler, Closeable {
     }
 
     @Override
+    public void activeBroadcast(BaseMessage message, Collection<Client> clients) {
+        for (Client client : clients) {
+            if (client != null) {
+                client.sendActiveMessage(message);
+            }
+        }
+    }
+
+    @Override
     public Collection<? extends ISession> getActiveSessions() {
         return sessions;
     }

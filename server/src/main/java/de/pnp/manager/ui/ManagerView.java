@@ -52,7 +52,7 @@ public class ManagerView extends View {
 
         Tab networkTab = new NetworkView(this,
                 manager.getNetworkHandler().getActiveSessions().stream().map(ISession::getSessionID).findFirst().orElse(""),
-                manager.getNetworkHandler(), manager.getCharacterHandler()
+                manager.getNetworkHandler(), manager.getCharacterHandler(), manager.getInventoryHandler()
         );
         root.getTabs().add(networkTab);
 
