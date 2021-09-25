@@ -9,9 +9,7 @@ import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.client.IClient;
-import de.pnp.manager.network.eventhandler.AssignCharacterHandler;
-import de.pnp.manager.network.eventhandler.DismissCharacterHandler;
-import de.pnp.manager.network.eventhandler.LeaveSessionHandler;
+import de.pnp.manager.network.eventhandler.*;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
@@ -23,6 +21,7 @@ import de.pnp.manager.network.message.error.DeniedMessage;
 import de.pnp.manager.network.message.error.NotFoundMessage;
 import de.pnp.manager.network.message.error.NotPossibleMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
+import de.pnp.manager.network.message.inventory.AccessibleContainerResponseMessage;
 import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
 import de.pnp.manager.network.message.inventory.MoveItemRequestMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
@@ -164,13 +163,18 @@ public class ClientHandler extends Thread implements Client {
         return controlledCharacters;
     }
 
-    private String getSessionID() {
-        return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
+    @Override
+    public Collection<String> getAccessibleInventories() {
+        return accessibleInventories;
     }
 
     @Override
     public boolean hasAccessToInventory(String id) {
         return controlledCharacters.contains(id) || accessibleInventories.contains(id);
+    }
+
+    private String getSessionID() {
+        return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
     }
 
     private StateMachine<BaseMessage> createStateMachine() {
@@ -244,7 +248,19 @@ public class ClientHandler extends Thread implements Client {
                 )
         );
 
+        stateMachine.registerTransition(States.IN_SESSION, ACCESSIBLE_CONTAINER_REQUEST, message ->
+                sendMessage(
+                        new AccessibleContainerResponseMessage(
+                                manager.getInventoryHandler().getContainers(getCurrentSession().getSessionID())
+                                        .stream().filter(c -> hasAccessToInventory(c.getInventoryID())).collect(Collectors.toList()),
+                                calendar.getTime()
+                        )
+                )
+        );
+
         stateMachine.registerTransition(States.IN_SESSION, States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
+        stateMachine.registerTransition(States.IN_SESSION, ASSIGN_INVENTORIES, new AssignInventoryHandler(this));
+        stateMachine.registerTransition(States.IN_SESSION, DISMISS_INVENTORIES, new DismissInventoryHandler(this));
 
         //In Character
         stateMachine.registerTransition(States.IN_CHARACTER, States.LOGGED_IN, LEAVE_SESSION_REQUEST,
@@ -254,6 +270,15 @@ public class ClientHandler extends Thread implements Client {
                         new ControlledCharacterResponseMessage(
                                 manager.getCharacterHandler().getCharacters(getCurrentSession().getSessionID())
                                         .filtered(c -> controlledCharacters.contains(c.getCharacterID())),
+                                calendar.getTime()
+                        )
+                )
+        );
+        stateMachine.registerTransition(States.IN_CHARACTER, ACCESSIBLE_CONTAINER_REQUEST, message ->
+                sendMessage(
+                        new AccessibleContainerResponseMessage(
+                                manager.getInventoryHandler().getContainers(getCurrentSession().getSessionID())
+                                        .stream().filter(c -> hasAccessToInventory(c.getInventoryID())).collect(Collectors.toList()),
                                 calendar.getTime()
                         )
                 )
@@ -297,6 +322,8 @@ public class ClientHandler extends Thread implements Client {
 
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
         stateMachine.registerTransition(States.IN_CHARACTER, States.IN_SESSION, DISMISS_CHARACTERS, new DismissCharacterHandler(this));
+        stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_INVENTORIES, new AssignInventoryHandler(this));
+        stateMachine.registerTransition(States.IN_CHARACTER, DISMISS_INVENTORIES, new DismissInventoryHandler(this));
 
         stateMachine.registerTransition(States.IN_CHARACTER, MOVE_ITEM_REQUEST, message -> {
             MoveItemRequestMessage.MoveItemData data = ((MoveItemRequestMessage) message).getData();

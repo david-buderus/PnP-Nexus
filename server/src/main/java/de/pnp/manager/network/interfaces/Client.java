@@ -34,5 +34,7 @@ public interface Client extends IClient {
 
     Collection<String> getControlledCharacters();
 
+    Collection<String> getAccessibleInventories();
+
     boolean hasAccessToInventory(String id);
 }

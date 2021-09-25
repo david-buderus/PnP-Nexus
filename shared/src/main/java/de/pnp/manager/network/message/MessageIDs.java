@@ -41,6 +41,10 @@ public abstract class MessageIDs {
     public static final int ASSIGN_CHARACTERS = 8001;
     public static final int CONTROLLED_CHARACTER_REQUEST = 8203;
     public static final int CONTROLLED_CHARACTER_RESPONSE = 8003;
+    public static final int ASSIGN_INVENTORIES = 8004;
+    public static final int DISMISS_INVENTORIES = 8005;
+    public static final int ACCESSIBLE_CONTAINER_REQUEST = 8206;
+    public static final int ACCESSIBLE_CONTAINER_RESPONSE = 8006;
 
     //Error
     public static final int ERROR = 9000;
