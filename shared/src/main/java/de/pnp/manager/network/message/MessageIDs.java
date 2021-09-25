@@ -34,6 +34,8 @@ public abstract class MessageIDs {
     public static final int UPDATE_INVENTORY_NOTIFICATION = 4003;
     public static final int UPDATE_TALENTS_REQUEST = 4302;
     public static final int MOVE_ITEM_REQUEST = 4303;
+    public static final int CREATE_ITEM_REQUEST = 4304;
+    public static final int DELETE_ITEM_REQUEST = 4305;
 
     //Universal
     public static final int OK = 8000;

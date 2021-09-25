@@ -21,9 +21,7 @@ import de.pnp.manager.network.message.error.DeniedMessage;
 import de.pnp.manager.network.message.error.NotFoundMessage;
 import de.pnp.manager.network.message.error.NotPossibleMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
-import de.pnp.manager.network.message.inventory.AccessibleContainerResponseMessage;
-import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
-import de.pnp.manager.network.message.inventory.MoveItemRequestMessage;
+import de.pnp.manager.network.message.inventory.*;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.session.JoinSessionRequestMessage;
@@ -177,6 +175,10 @@ public class ClientHandler extends Thread implements Client {
         return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
     }
 
+    private Collection<Client> getClientsWithInventoryAccess(String id) {
+        return manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.hasAccessToInventory(id)).collect(Collectors.toList());
+    }
+
     private StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
         stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(calendar.getTime())));
@@ -206,7 +208,7 @@ public class ClientHandler extends Thread implements Client {
         });
 
         stateMachine.registerTransition(States.LOGGED_IN, States.IN_SESSION, JOIN_SESSION_REQUEST, baseMessage -> {
-            JoinSessionRequestMessage message =  (JoinSessionRequestMessage) baseMessage;
+            JoinSessionRequestMessage message = (JoinSessionRequestMessage) baseMessage;
 
             NetworkHandler handler = manager.getNetworkHandler();
             Optional<? extends ISession> optSession = handler.getActiveSessions().stream()
@@ -325,6 +327,51 @@ public class ClientHandler extends Thread implements Client {
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_INVENTORIES, new AssignInventoryHandler(this));
         stateMachine.registerTransition(States.IN_CHARACTER, DISMISS_INVENTORIES, new DismissInventoryHandler(this));
 
+        stateMachine.registerTransition(States.IN_CHARACTER, CREATE_ITEM_REQUEST, message -> {
+            CreateItemRequestMessage.CreateItemData data = ((CreateItemRequestMessage) message).getData();
+
+            if (hasAccessToInventory(data.getInventoryID())) {
+                IInventory inventory = manager.getInventoryHandler().getInventory(getSessionID(), data.getInventoryID());
+
+                if (inventory != null && inventory.addAll(data.getItems())) {
+                    manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
+                            data.getInventoryID(),
+                            Collections.emptyList(),
+                            data.getItems(),
+                            calendar.getTime()
+                    ), getClientsWithInventoryAccess(data.getInventoryID()));
+                } else {
+                    sendMessage(new NotPossibleMessage(getMessage("message.items.space.notEnough"), calendar.getTime()));
+                }
+
+            } else {
+                sendMessage(new DeniedMessage(calendar.getTime()));
+            }
+        });
+
+        stateMachine.registerTransition(States.IN_CHARACTER, DELETE_ITEM_REQUEST, message -> {
+            DeleteItemRequestMessage.DeleteItemData data = ((DeleteItemRequestMessage) message).getData();
+
+            if (hasAccessToInventory(data.getInventoryID())) {
+                IInventory inventory = manager.getInventoryHandler().getInventory(getSessionID(), data.getInventoryID());
+
+                if (inventory != null && inventory.removeAll(data.getItems())) {
+                    manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
+                            data.getInventoryID(),
+                            Collections.emptyList(),
+                            data.getItems(),
+                            calendar.getTime()
+                    ), getClientsWithInventoryAccess(data.getInventoryID()));
+                } else {
+                    sendMessage(new NotPossibleMessage(getMessage("message.items.amount.notEnough"), calendar.getTime()));
+                }
+
+            } else {
+                sendMessage(new DeniedMessage(calendar.getTime()));
+            }
+        });
+
+
         stateMachine.registerTransition(States.IN_CHARACTER, MOVE_ITEM_REQUEST, message -> {
             MoveItemRequestMessage.MoveItemData data = ((MoveItemRequestMessage) message).getData();
 
@@ -343,13 +390,13 @@ public class ClientHandler extends Thread implements Client {
                                 Collections.emptyList(),
                                 data.getItems(),
                                 calendar.getTime()
-                        ), manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.hasAccessToInventory(data.getFrom())).collect(Collectors.toList()));
+                        ), getClientsWithInventoryAccess(data.getFrom()));
                         manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
                                 data.getTo(),
                                 data.getItems(),
                                 Collections.emptyList(),
                                 calendar.getTime()
-                        ), manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.hasAccessToInventory(data.getTo())).collect(Collectors.toList()));
+                        ), getClientsWithInventoryAccess(data.getTo()));
 
                     } else {
                         sendMessage(new NotPossibleMessage(getMessage("message.items.space.notEnough"), calendar.getTime()));

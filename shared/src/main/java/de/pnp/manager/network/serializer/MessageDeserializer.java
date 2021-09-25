@@ -15,10 +15,7 @@ import de.pnp.manager.network.message.character.update.talent.UpdateTalentsReque
 import de.pnp.manager.network.message.database.DatabaseRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.*;
-import de.pnp.manager.network.message.inventory.AssignInventoryMessage;
-import de.pnp.manager.network.message.inventory.DismissInventoriesMessage;
-import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
-import de.pnp.manager.network.message.inventory.MoveItemRequestMessage;
+import de.pnp.manager.network.message.inventory.*;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.login.LogoutRequestMessage;
@@ -61,6 +58,8 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(UPDATE_TALENTS_REQUEST, UpdateTalentsRequestMessage.class);
         this.typeClassMap.put(UPDATE_INVENTORY_NOTIFICATION, InventoryUpdateNotificationMessage.class);
         this.typeClassMap.put(MOVE_ITEM_REQUEST, MoveItemRequestMessage.class);
+        this.typeClassMap.put(CREATE_ITEM_REQUEST, CreateItemRequestMessage.class);
+        this.typeClassMap.put(DELETE_ITEM_REQUEST, DeleteItemRequestMessage.class);
 
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);
