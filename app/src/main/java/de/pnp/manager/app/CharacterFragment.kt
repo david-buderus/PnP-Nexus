@@ -75,7 +75,7 @@ class CharacterFragmentPagerAdapter(fm: Fragment, var character: IPnPCharacter) 
         when (position) {
             0 -> fragment = InfoFragment(character)
             1 -> fragment = StatsFragment(character as PnPCharacter)
-            2 -> fragment = EquipmentFragment(character)
+            2 -> fragment = EquipmentFragment(character as PnPCharacter)
             3 -> fragment = TalentsFragment(character)
             else -> fragment = InfoFragment(character)
         }

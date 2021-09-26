@@ -1,18 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<layout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  tools:context=".FirstFragment">
-  <TextView
-    android:id="@+id/textview_first2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="344dp"
-    android:text="equipment"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+  <data>
+    <variable
+      name="character"
+      type="de.pnp.manager.app.model.PnPCharacter"/>
+  </data>
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+      android:id="@+id/textview_first2"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="384dp"
+      android:text="equipment"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.498"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"/>
+    <androidx.cardview.widget.CardView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="24dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
+      app:contentPadding="1dp"
+      app:layout_constraintDimensionRatio="w,16:1"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+      <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="2,5"
+        >
+        <TableRow
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
+
+          <TextView
+            android:id="@+id/equip_currency_gold_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@{character instanceof de.pnp.manager.app.model.PlayerCharacter ? Integer.toString(((de.pnp.manager.app.model.PlayerCharacter) character).currency.getGoldAmount()) : @string/placeholder_dash}"/>
+          <TextView
+            android:id="@+id/equip_currency_gold_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gold"/>
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""/>
+
+          <TextView
+            android:id="@+id/equip_currency_silver_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@{character instanceof de.pnp.manager.app.model.PlayerCharacter ? Integer.toString(((de.pnp.manager.app.model.PlayerCharacter) character).currency.getSilverAmount()) : @string/placeholder_dash}"/>
+          <TextView
+            android:id="@+id/equip_currency_silver_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="@string/silver"/>
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""/>
+          <TextView
+            android:id="@+id/equip_currency_copper_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@{character instanceof de.pnp.manager.app.model.PlayerCharacter ? Integer.toString(((de.pnp.manager.app.model.PlayerCharacter) character).currency.getCopperAmount()) : @string/placeholder_dash}"/>
+          <TextView
+            android:id="@+id/equip_currency_copper_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/copper"/>
+        </TableRow>
+      </TableLayout>
+    </androidx.cardview.widget.CardView>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -41,4 +41,7 @@
   <string name="manaBarLabel">Mana</string>
   <string name="experienceBarLabel">Experience</string>
   <string name="arrow"><![CDATA[->]]></string>
+  <string name="gold">Gold</string>
+  <string name="silver">Silver</string>
+  <string name="copper">Copper</string>
 </resources>

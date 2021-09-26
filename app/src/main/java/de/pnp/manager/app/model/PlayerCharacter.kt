@@ -21,7 +21,7 @@ class PlayerCharacter : IPlayerCharacter, PnPCharacter() {
     private var age: String = ""
     private var experience: Int = 0
     private var profession: String = ""
-    private var currency: ICurrency? = null
+    private var currency: Currency? = null
     private var history: String = ""
 
     fun getExperiencePercentage(): Int {
@@ -76,11 +76,12 @@ class PlayerCharacter : IPlayerCharacter, PnPCharacter() {
         this.profession = profession
     }
 
-    override fun getCurrency(): ICurrency? {
+    override fun getCurrency(): Currency? {
         return currency
     }
 
-    fun setCurrency(currency: ICurrency) {
+    fun setCurrency(currency: Currency) {
+        println("currency: " + currency.coinValue)
         this.currency=  currency
     }
 
