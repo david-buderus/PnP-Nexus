@@ -14,9 +14,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-public class SpawnInventoryView extends View {
+public class InventorySpawningView extends View {
 
-    public SpawnInventoryView(String sessionID, InventoryHandler handler) {
+    public InventorySpawningView(String sessionID, InventoryHandler handler) {
         super("spawn.title");
         StringProperty name = new SimpleStringProperty(LanguageUtility.getMessage("inventory.spawn.text.default"));
         IntegerProperty amountOfSlots = new SimpleIntegerProperty(10);

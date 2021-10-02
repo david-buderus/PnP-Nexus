@@ -219,7 +219,7 @@ public class NetworkView extends ViewPart {
         Button spawnInventory = new Button();
         spawnInventory.textProperty().bind(LanguageUtility.getMessageProperty("network.button.spawn.inventory"));
         spawnInventory.setPrefWidth(200);
-        spawnInventory.setOnAction(ev -> new SpawnInventoryView(sessionID, inventoryHandler));
+        spawnInventory.setOnAction(ev -> new InventorySpawningView(sessionID, inventoryHandler));
         controlBox.getChildren().add(spawnInventory);
 
 
