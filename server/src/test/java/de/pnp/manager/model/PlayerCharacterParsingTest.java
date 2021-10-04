@@ -38,6 +38,8 @@ public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
         assertEquals("MyName", character.getName());
         assertEquals(42, character.getLevel());
         assertEquals(9, character.getTier());
+        assertEquals("MyGender", character.getGender());
+        assertEquals("MyRace", character.getRace());
 
         assertEquals(1, (int) character.getPrimaryAttributes().get(PrimaryAttribute.strength));
         assertEquals(2, (int) character.getPrimaryAttributes().get(PrimaryAttribute.endurance));

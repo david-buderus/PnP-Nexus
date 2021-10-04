@@ -52,6 +52,12 @@ public class PnPCharacterFactory {
         // load age
         character.age.set(parameterMap.getValueAsStringOrElse("character.age", ""));
 
+        // load age
+        character.race.set(parameterMap.getValueAsStringOrElse("character.race", ""));
+
+        // load age
+        character.gender.set(parameterMap.getValueAsStringOrElse("character.gender", ""));
+
         // load inventory
         for (int i = 1; i <= 21; i++) {
             String nameX = parameterMap.getValueAsStringOrElse("character.inventory." + i, "");
@@ -110,7 +116,7 @@ public class PnPCharacterFactory {
         character.name = new SimpleStringProperty(parameterMap.getValueAsStringOrElse("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
 
         //Primary
-        int minPrim = Utility.getConfig().getInt("character.skillpoints.min");
+        int minPrim = Utility.getConfig().getInt("character.skillPoints.min");
         character.primaryAttributes.put(PrimaryAttribute.strength, parameterMap.getValueAsIntegerOrElse("primaryAttribute.strength", minPrim));
         character.primaryAttributes.put(PrimaryAttribute.endurance, parameterMap.getValueAsIntegerOrElse("primaryAttribute.endurance", minPrim));
         character.primaryAttributes.put(PrimaryAttribute.precision, parameterMap.getValueAsIntegerOrElse("primaryAttribute.precision", minPrim));

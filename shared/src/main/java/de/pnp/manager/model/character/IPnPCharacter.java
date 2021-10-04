@@ -100,27 +100,12 @@ public interface IPnPCharacter {
     int getInitiative();
 
     /**
-     * The initiative of the character.
-     * Includes weapons except memberstates
-     */
-    @JsonIgnore
-    int getStaticInitiative();
-
-    /**
      * The base defense of the character
      * used to calculate incoming damage.
      * Includes all modifier
      */
     @JsonIgnore
     int getBaseDefense();
-
-    /**
-     * The base defense of the character
-     * used to calculate incoming damage.
-     * Includes all modifier except memberstates
-     */
-    @JsonIgnore
-    int getStaticBaseDefense();
 
     /**
      * The base value of each primary attribute

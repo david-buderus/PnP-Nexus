@@ -212,7 +212,7 @@ public abstract class Utility {
         Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
 
         try {
-            if (home.toFile().createNewFile()) {
+            if (home.toFile().getParentFile().mkdirs() && home.toFile().createNewFile()) {
                 Logger.getLogger("Utility").info("Custom Configuration.properties created");
             }
         } catch (IOException e) {
