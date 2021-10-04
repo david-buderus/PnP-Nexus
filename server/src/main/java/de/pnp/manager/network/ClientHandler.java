@@ -262,7 +262,7 @@ public class ClientHandler extends Thread implements Client {
 
         stateMachine.registerTransition(States.IN_SESSION, States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
         stateMachine.registerTransition(States.IN_SESSION, ASSIGN_INVENTORIES, new AssignInventoryHandler(this));
-        stateMachine.registerTransition(States.IN_SESSION, DISMISS_INVENTORIES, new DismissInventoryHandler(this));
+        stateMachine.registerTransition(States.IN_SESSION, REVOKE_INVENTORIES, new RevokeInventoryHandler(this));
 
         //In Character
         stateMachine.registerTransition(States.IN_CHARACTER, States.LOGGED_IN, LEAVE_SESSION_REQUEST,
@@ -323,9 +323,9 @@ public class ClientHandler extends Thread implements Client {
         );
 
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_CHARACTERS, new AssignCharacterHandler(this));
-        stateMachine.registerTransition(States.IN_CHARACTER, States.IN_SESSION, DISMISS_CHARACTERS, new DismissCharacterHandler(this));
+        stateMachine.registerTransition(States.IN_CHARACTER, States.IN_SESSION, REVOKE_CHARACTERS, new RevokeCharacterHandler(this));
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_INVENTORIES, new AssignInventoryHandler(this));
-        stateMachine.registerTransition(States.IN_CHARACTER, DISMISS_INVENTORIES, new DismissInventoryHandler(this));
+        stateMachine.registerTransition(States.IN_CHARACTER, REVOKE_INVENTORIES, new RevokeInventoryHandler(this));
 
         stateMachine.registerTransition(States.IN_CHARACTER, CREATE_ITEM_REQUEST, message -> {
             CreateItemRequestMessage.CreateItemData data = ((CreateItemRequestMessage) message).getData();

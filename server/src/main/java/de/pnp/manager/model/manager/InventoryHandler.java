@@ -3,8 +3,7 @@ package de.pnp.manager.model.manager;
 import de.pnp.manager.model.character.Inventory;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.other.Container;
-import de.pnp.manager.network.message.character.DismissCharactersMessage;
-import de.pnp.manager.network.message.inventory.DismissInventoriesMessage;
+import de.pnp.manager.network.message.inventory.RevokeInventoriesMessage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -43,7 +42,7 @@ public class InventoryHandler {
         if (containers != null) {
             containers.removeIf(c -> c.getInventoryID().equals(inventoryID));
             manager.getNetworkHandler().activeBroadcast(
-                    new DismissInventoriesMessage(inventoryID, Calendar.getInstance().getTime()),
+                    new RevokeInventoriesMessage(inventoryID, Calendar.getInstance().getTime()),
                     manager.getNetworkHandler().clientsProperty().filtered(c -> c.hasAccessToInventory(inventoryID))
             );
         }

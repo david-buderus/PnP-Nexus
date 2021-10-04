@@ -9,7 +9,7 @@ import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.character.AssignCharactersMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterRequestMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
-import de.pnp.manager.network.message.character.DismissCharactersMessage;
+import de.pnp.manager.network.message.character.RevokeCharactersMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsNotificationMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseRequestMessage;
@@ -53,7 +53,7 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(DATABASE_REQUEST, DatabaseRequestMessage.class);
 
         //In Character
-        this.typeClassMap.put(DISMISS_CHARACTERS, DismissCharactersMessage.class);
+        this.typeClassMap.put(REVOKE_CHARACTERS, RevokeCharactersMessage.class);
         this.typeClassMap.put(UPDATE_TALENTS_NOTIFICATION, UpdateTalentsNotificationMessage.class);
         this.typeClassMap.put(UPDATE_TALENTS_REQUEST, UpdateTalentsRequestMessage.class);
         this.typeClassMap.put(UPDATE_INVENTORY_NOTIFICATION, InventoryUpdateNotificationMessage.class);
@@ -68,7 +68,7 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(CONTROLLED_CHARACTER_REQUEST, ControlledCharacterRequestMessage.class);
         this.typeClassMap.put(CONTROLLED_CHARACTER_RESPONSE, ControlledCharacterResponseMessage.class);
         this.typeClassMap.put(ASSIGN_INVENTORIES, AssignInventoryMessage.class);
-        this.typeClassMap.put(DISMISS_INVENTORIES, DismissInventoriesMessage.class);
+        this.typeClassMap.put(REVOKE_INVENTORIES, RevokeInventoriesMessage.class);
 
         //Error
         this.typeClassMap.put(ERROR, ErrorMessage.class);

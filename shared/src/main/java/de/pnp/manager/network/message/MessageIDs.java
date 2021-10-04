@@ -29,7 +29,7 @@ public abstract class MessageIDs {
     public static final int DATABASE_RESPONSE = 3001;
 
     //In Character
-    public static final int DISMISS_CHARACTERS = 4301;
+    public static final int REVOKE_CHARACTERS = 4301;
     public static final int UPDATE_TALENTS_NOTIFICATION = 4002;
     public static final int UPDATE_INVENTORY_NOTIFICATION = 4003;
     public static final int UPDATE_TALENTS_REQUEST = 4302;
@@ -44,7 +44,7 @@ public abstract class MessageIDs {
     public static final int CONTROLLED_CHARACTER_REQUEST = 8203;
     public static final int CONTROLLED_CHARACTER_RESPONSE = 8003;
     public static final int ASSIGN_INVENTORIES = 8004;
-    public static final int DISMISS_INVENTORIES = 8005;
+    public static final int REVOKE_INVENTORIES = 8005;
     public static final int ACCESSIBLE_CONTAINER_REQUEST = 8206;
     public static final int ACCESSIBLE_CONTAINER_RESPONSE = 8006;
 
