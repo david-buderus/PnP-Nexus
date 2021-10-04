@@ -20,7 +20,7 @@ public interface IItemList extends Collection<IItem> {
     boolean removeAll(@NotNull Collection<?> collection);
 
     default boolean containsAmount(IItem item) {
-        return this.get(this.indexOf(item)).getAmount() >= item.getAmount();
+        return this.contains(item) && this.get(this.indexOf(item)).getAmount() >= item.getAmount();
     }
 
     IItem get(int position);

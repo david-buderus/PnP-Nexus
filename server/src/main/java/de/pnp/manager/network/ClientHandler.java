@@ -89,6 +89,7 @@ public class ClientHandler extends Thread implements Client {
         this.manager = manager;
         this.stateMachine = createStateMachine();
         this.controlledCharacters = new ArrayList<>();
+        this.accessibleInventories = new ArrayList<>();
     }
 
     public void run() {
@@ -336,8 +337,8 @@ public class ClientHandler extends Thread implements Client {
                 if (inventory != null && inventory.addAll(data.getItems())) {
                     manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
                             data.getInventoryID(),
-                            Collections.emptyList(),
                             data.getItems(),
+                            Collections.emptyList(),
                             calendar.getTime()
                     ), getClientsWithInventoryAccess(data.getInventoryID()));
                 } else {

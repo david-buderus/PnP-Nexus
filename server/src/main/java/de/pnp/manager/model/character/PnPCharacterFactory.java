@@ -22,7 +22,11 @@ import java.util.stream.Stream;
 public class PnPCharacterFactory {
 
     public static PnPCharacter createDefaultCharacter(String characterID, Battle battle) {
-        PnPCharacter character = new PnPCharacter(characterID, battle, new LootTable());
+        return createDefaultCharacter(characterID, battle, ((c, b) -> new PnPCharacter(c, b, new LootTable())));
+    }
+
+    public static <C extends PnPCharacter> C createDefaultCharacter(String characterID, Battle battle, PnPCharacterProducer<C> producer) {
+        C character = producer.create(characterID, battle);
 
         character.createModifierBindings();
         character.secondaryAttributeModifiers.get(SecondaryAttribute.health).setModifier(1);
