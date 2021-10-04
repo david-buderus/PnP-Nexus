@@ -30,9 +30,7 @@ public class PnPCharacterImpl implements IPnPCharacter {
     protected int mentalHealth;
     protected int maxMentalHealth;
     protected int initiative;
-    protected int staticInitiative;
     protected int baseDefense;
-    protected int staticBaseDefense;
     protected Map<IPrimaryAttribute, Integer> primaryAttributes;
     protected Map<ISecondaryAttribute, Integer> secondaryAttributes;
     protected Collection<IMemberState> memberStates;
@@ -156,30 +154,12 @@ public class PnPCharacterImpl implements IPnPCharacter {
     }
 
     @Override
-    public int getStaticInitiative() {
-        return staticInitiative;
-    }
-
-    public void setStaticInitiative(int staticInitiative) {
-        this.staticInitiative = staticInitiative;
-    }
-
-    @Override
     public int getBaseDefense() {
         return baseDefense;
     }
 
     public void setBaseDefense(int baseDefense) {
         this.baseDefense = baseDefense;
-    }
-
-    @Override
-    public int getStaticBaseDefense() {
-        return staticBaseDefense;
-    }
-
-    public void setStaticBaseDefense(int staticBaseDefense) {
-        this.staticBaseDefense = staticBaseDefense;
     }
 
     @Override
