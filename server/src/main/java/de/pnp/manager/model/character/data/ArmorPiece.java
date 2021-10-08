@@ -2,12 +2,27 @@ package de.pnp.manager.model.character.data;
 
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.model.interfaces.WithToStringProperty;
+import de.pnp.manager.model.interfaces.WithUnlocalizedName;
 import javafx.beans.property.ReadOnlyStringProperty;
 
 import java.util.NoSuchElementException;
 
-public enum ArmorPiece implements IArmorPiece, WithToStringProperty {
-    head, upperBody, legs, arm, shield;
+public enum ArmorPiece implements IArmorPiece, WithUnlocalizedName {
+
+    HEAD("armorPiece.head"), UPPER_BODY("armorPiece.upperBody"),
+    LEGS("armorPiece.legs"), ARM("armorPiece.arm"),
+    SHIELD("armorPiece.shield");
+
+    private final String unlocalizedName;
+
+    ArmorPiece(String unlocalizedName) {
+        this.unlocalizedName = unlocalizedName;
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return unlocalizedName;
+    }
 
     @Override
     public ReadOnlyStringProperty toStringProperty() {
