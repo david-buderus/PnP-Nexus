@@ -161,12 +161,12 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
                 try {
                     if (list.size() == 1) {
                         double init = Math.ceil(list.get(0).getInitiative());
-                        this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier((int) init);
+                        this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier((int) init);
                     }
                     if (list.size() == 2) {
                         double init1 = list.get(0).getInitiative();
                         double init2 = list.get(1).getInitiative();
-                        this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(
+                        this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier(
                                 (int) Math.min(Math.min(Math.floor(init1), Math.floor(init2)), Math.floor(init1 + init2))
                         );
                     }
@@ -522,23 +522,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     @Override
     @JsonIgnore
     public int getMaxHealth() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).getResult();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).getResult();
     }
 
     public IntegerBinding maxHealthProperty() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).resultProperty();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).resultProperty();
     }
 
     public int getMaxHealthModifier() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).getModifier();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).getModifier();
     }
 
     public IntegerProperty maxHealthModifierProperty() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).modifierProperty();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).modifierProperty();
     }
 
     public void setMaxHealthModifier(int maxHealthModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.health).setModifier(maxHealthModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).setModifier(maxHealthModifier);
     }
 
     @Override
@@ -565,23 +565,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     @Override
     @JsonIgnore
     public int getMaxMana() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).getResult();
     }
 
     public IntegerBinding maxManaProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).resultProperty();
     }
 
     public int getMaxManaModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).getModifier();
     }
 
     public IntegerProperty maxManaModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).modifierProperty();
     }
 
     public void setMaxManaModifier(int maxManaModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).setModifier(maxManaModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).setModifier(maxManaModifier);
     }
 
     @Override
@@ -599,23 +599,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
 
     @Override
     public int getMaxMentalHealth() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).getResult();
     }
 
     public IntegerBinding maxMentalHealthProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).resultProperty();
     }
 
     public int getMaxMentalHealthModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).getModifier();
     }
 
     public IntegerProperty maxMentalHealthModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).modifierProperty();
     }
 
     public void setMaxMentalHealthModifier(int maxMentalHealthModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(maxMentalHealthModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).setModifier(maxMentalHealthModifier);
     }
 
     /**
@@ -623,23 +623,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
      * Includes weapons except memberstates
      */
     public int getStaticInitiative() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).getResult();
     }
 
     public IntegerBinding staticInitiativeProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).resultProperty();
     }
 
     public int getStaticInitiativeModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).getModifier();
     }
 
     public IntegerProperty staticInitiativeModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).modifierProperty();
     }
 
     public void setStaticInitiativeModifier(int staticInitiativeModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(staticInitiativeModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier(staticInitiativeModifier);
     }
 
     /**
@@ -648,23 +648,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
      * Includes all modifier except memberstates
      */
     public int getStaticBaseDefense() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).getResult();
     }
 
     public IntegerBinding staticBaseDefenseProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).resultProperty();
     }
 
     public int getStaticBaseDefenseModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).getModifier();
     }
 
     public IntegerProperty staticBaseDefenseModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).modifierProperty();
     }
 
     public void setStaticBaseDefenseModifier(int staticBaseDefenseModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).setModifier(staticBaseDefenseModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).setModifier(staticBaseDefenseModifier);
     }
 
     @Override

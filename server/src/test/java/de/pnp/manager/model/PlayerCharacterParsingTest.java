@@ -50,16 +50,16 @@ public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
         assertEquals(7, (int) character.getPrimaryAttributes().get(PrimaryAttribute.AGILITY));
         assertEquals(8, (int) character.getPrimaryAttributes().get(PrimaryAttribute.PRECISION));
 
-        assertEquals(9, (int) character.getSecondaryAttributes().get(SecondaryAttribute.meleeDamage));
-        assertEquals(10, (int) character.getSecondaryAttributes().get(SecondaryAttribute.rangeDamage));
-        assertEquals(11, (int) character.getSecondaryAttributes().get(SecondaryAttribute.magicPower));
-        assertEquals(12, (int) character.getSecondaryAttributes().get(SecondaryAttribute.defense));
-        assertEquals(13, (int) character.getSecondaryAttributes().get(SecondaryAttribute.initiative));
+        assertEquals(9, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MELEE_DAMAGE));
+        assertEquals(10, (int) character.getSecondaryAttributes().get(SecondaryAttribute.RANGE_DAMAGE));
+        assertEquals(11, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MAGIC_POWER));
+        assertEquals(12, (int) character.getSecondaryAttributes().get(SecondaryAttribute.DEFENSE));
+        assertEquals(13, (int) character.getSecondaryAttributes().get(SecondaryAttribute.INITIATIVE));
         assertEquals(11, character.getStaticInitiative());
-        assertEquals(14, (int) character.getSecondaryAttributes().get(SecondaryAttribute.health));
+        assertEquals(14, (int) character.getSecondaryAttributes().get(SecondaryAttribute.HEALTH));
         assertEquals(14, character.getMaxHealth());
-        assertEquals(15, (int) character.getSecondaryAttributes().get(SecondaryAttribute.mentalHealth));
-        assertEquals(16, (int) character.getSecondaryAttributes().get(SecondaryAttribute.mana));
+        assertEquals(15, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MENTAL_HEALTH));
+        assertEquals(16, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MANA));
         assertEquals(16, character.getMaxMana());
 
         assertEquals(5, character.getProtection(ArmorPosition.ARM));

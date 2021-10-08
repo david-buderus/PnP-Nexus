@@ -194,14 +194,14 @@ public class GeneratedCharacter extends PnPCharacter {
     }
 
     private void calculateSecondaryAttributes() {
-        this.secondaryAttributes.put(SecondaryAttribute.meleeDamage, calculateSecondaryAttribute("character.secondaryAttribute.damageMelee"));
-        this.secondaryAttributes.put(SecondaryAttribute.rangeDamage, calculateSecondaryAttribute("character.secondaryAttribute.damageRange"));
-        this.secondaryAttributes.put(SecondaryAttribute.magicPower, calculateSecondaryAttribute("character.secondaryAttribute.magicPower"));
-        this.secondaryAttributes.put(SecondaryAttribute.defense, calculateSecondaryAttribute("character.secondaryAttribute.baseDefense"));
-        this.secondaryAttributes.put(SecondaryAttribute.initiative, calculateSecondaryAttribute("character.secondaryAttribute.initiative"));
-        this.secondaryAttributes.put(SecondaryAttribute.health, calculateSecondaryAttribute("character.secondaryAttribute.maxLife"));
-        this.secondaryAttributes.put(SecondaryAttribute.mana, calculateSecondaryAttribute("character.secondaryAttribute.mentalHealth"));
-        this.secondaryAttributes.put(SecondaryAttribute.mentalHealth, calculateSecondaryAttribute("character.secondaryAttribute.maxMana"));
+        this.secondaryAttributes.put(SecondaryAttribute.MELEE_DAMAGE, calculateSecondaryAttribute("character.secondaryAttribute.damageMelee"));
+        this.secondaryAttributes.put(SecondaryAttribute.RANGE_DAMAGE, calculateSecondaryAttribute("character.secondaryAttribute.damageRange"));
+        this.secondaryAttributes.put(SecondaryAttribute.MAGIC_POWER, calculateSecondaryAttribute("character.secondaryAttribute.magicPower"));
+        this.secondaryAttributes.put(SecondaryAttribute.DEFENSE, calculateSecondaryAttribute("character.secondaryAttribute.baseDefense"));
+        this.secondaryAttributes.put(SecondaryAttribute.INITIATIVE, calculateSecondaryAttribute("character.secondaryAttribute.initiative"));
+        this.secondaryAttributes.put(SecondaryAttribute.HEALTH, calculateSecondaryAttribute("character.secondaryAttribute.maxLife"));
+        this.secondaryAttributes.put(SecondaryAttribute.MANA, calculateSecondaryAttribute("character.secondaryAttribute.mentalHealth"));
+        this.secondaryAttributes.put(SecondaryAttribute.MENTAL_HEALTH, calculateSecondaryAttribute("character.secondaryAttribute.maxMana"));
     }
 
     private int calculateSecondaryAttribute(String key) {
@@ -242,17 +242,17 @@ public class GeneratedCharacter extends PnPCharacter {
                 }
 
                 switch (attribute) {
-                    case meleeDamage:
-                    case rangeDamage:
-                    case magicPower:
-                    case defense:
+                    case MELEE_DAMAGE:
+                    case RANGE_DAMAGE:
+                    case MAGIC_POWER:
+                    case DEFENSE:
                         if (skillPoints > 4) {
                             getSecondaryAttributes().put(attribute, getSecondaryAttributes().get(attribute) + 1);
                             skillPoints -= 5;
                         }
                         break;
-                    case health:
-                    case mana:
+                    case HEALTH:
+                    case MANA:
                         getSecondaryAttributes().put(attribute, getSecondaryAttributes().get(attribute) + 1);
                         skillPoints -= 1;
                         break;

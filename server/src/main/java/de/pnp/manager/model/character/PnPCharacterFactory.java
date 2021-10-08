@@ -25,10 +25,10 @@ public class PnPCharacterFactory {
         PnPCharacter character = new PnPCharacter(characterID, battle, new LootTable());
 
         character.createModifierBindings();
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.health).setModifier(1);
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.mana).setModifier(1);
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(1);
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier(1);
         character.createResourceProperties();
 
         return character;
@@ -123,14 +123,14 @@ public class PnPCharacterFactory {
         character.primaryAttributes.put(PrimaryAttribute.DEXTERITY, parameterMap.getValueAsIntegerOrElse("primaryAttribute.dexterity", minPrim));
 
         //Secondary
-        character.secondaryAttributes.put(SecondaryAttribute.meleeDamage, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.meleeDamage", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.rangeDamage, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.rangeDamage", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.magicPower, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.magicPower", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.health, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1));
-        character.secondaryAttributes.put(SecondaryAttribute.mentalHealth, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mentalHealth", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.mana, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1));
-        character.secondaryAttributes.put(SecondaryAttribute.initiative, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1));
-        character.secondaryAttributes.put(SecondaryAttribute.defense, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.MELEE_DAMAGE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.meleeDamage", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.RANGE_DAMAGE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.rangeDamage", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.MAGIC_POWER, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.magicPower", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.HEALTH, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.MENTAL_HEALTH, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mentalHealth", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.MANA, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.INITIATIVE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.DEFENSE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1));
         character.level = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("character.level", 1));
         character.createModifierBindings();
         character.createResourceProperties();
