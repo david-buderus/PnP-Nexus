@@ -385,12 +385,12 @@ public class GeneratedCharacter extends PnPCharacter {
 
                 rarity = rarity.getLowerRarity();
 
-            } while (weapons.size() == 0 && rarity != Rarity.common);
+            } while (weapons.size() == 0 && rarity != Rarity.COMMON);
 
             if (weapons.size() == 0) {
                 weapons = weaponPool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity() == Rarity.common)
+                        .filter(x -> x.getRarity() == Rarity.COMMON)
                         .filter(this::checkRequirements)
                         .filter(x -> types.stream().anyMatch(y -> x.getSubtype().equals(y)))
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -510,12 +510,12 @@ public class GeneratedCharacter extends PnPCharacter {
 
                 rarity = rarity.getLowerRarity();
 
-            } while (equipment.size() == 0 && rarity != Rarity.common);
+            } while (equipment.size() == 0 && rarity != Rarity.COMMON);
 
             if (equipment.size() == 0) {
                 equipment = pool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity() == Rarity.common)
+                        .filter(x -> x.getRarity() == Rarity.COMMON)
                         .filter(x -> x.getSubtype().equals(typ))
                         .filter(this::checkRequirements)
                         .collect(Collectors.toCollection(ArrayList::new));

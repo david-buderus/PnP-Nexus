@@ -53,7 +53,7 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
         this.name = new SimpleStringProperty(defaultName.get());
         this.material = new SimpleStringProperty(defaultMaterial.get());
         this.typ = new SimpleStringProperty(defaultTyp.get());
-        this.rarity = new SimpleObjectProperty<>(Rarity.unknown);
+        this.rarity = new SimpleObjectProperty<>(Rarity.UNKNOWN);
         this.names = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.names.add(defaultName.get());
         this.materials = new SimpleListProperty<>(FXCollections.observableArrayList());
@@ -101,7 +101,7 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
         rarityB.setItems(FXCollections.observableArrayList(Rarity.values()));
         rarityB.setButtonCell(new UpdatingListCell<>());
         rarityB.setCellFactory(list -> new UpdatingListCell<>());
-        rarityB.getSelectionModel().select(Rarity.unknown);
+        rarityB.getSelectionModel().select(Rarity.UNKNOWN);
         rarityB.setPrefWidth((double) width / 2 - 5);
         infos2.getChildren().add(rarityB);
 
@@ -135,7 +135,7 @@ public abstract class EquipmentView<Eq extends Equipment> extends SearchView<Eq>
     @SuppressWarnings("unchecked")
     protected void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            Rarity rarity = this.rarity.get() == Rarity.unknown ? Rarity.getRandomRarity() : this.rarity.get();
+            Rarity rarity = this.rarity.get() == Rarity.UNKNOWN ? Rarity.getRandomRarity() : this.rarity.get();
             Collection<String> material = this.material.get().equals(defaultMaterial.get()) ? Database.getRandomMaterial()
                     : Collections.singletonList(this.material.get());
 

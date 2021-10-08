@@ -43,7 +43,7 @@ public class JewelleryView extends EquipmentView<Jewellery> {
     @Override
     protected void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            Rarity rarity = this.rarity.get() == Rarity.unknown ? Rarity.getRandomRarity() : this.rarity.get();
+            Rarity rarity = this.rarity.get() == Rarity.UNKNOWN ? Rarity.getRandomRarity() : this.rarity.get();
             Collection<String> material = this.material.get().equals(defaultMaterial.get()) ? Database.getRandomMaterial()
                     : Collections.singletonList(this.material.get());
 

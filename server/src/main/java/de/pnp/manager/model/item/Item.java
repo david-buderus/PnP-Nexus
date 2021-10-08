@@ -37,7 +37,7 @@ public class Item implements IItem {
         this.subtype = "";
         this.requirement = "";
         this.effect = "";
-        this.rarity = Rarity.common;
+        this.rarity = Rarity.COMMON;
         this.currency = new Currency(0);
         this.tier = 1;
         this.amount = new SimpleFloatProperty(1);
