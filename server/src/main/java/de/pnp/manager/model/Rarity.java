@@ -76,7 +76,6 @@ public enum Rarity implements IRarity, WithUnlocalizedName {
 
     public static Rarity getRarity(String name) {
         for (Rarity rarity : values()) {
-            System.out.println(rarity.getUnlocalizedName() + " -> " + rarity.toStringProperty().get() + " ?= " + name.trim());
             if (rarity.toStringProperty().get().equalsIgnoreCase(name.trim())) {
                 return rarity;
             }

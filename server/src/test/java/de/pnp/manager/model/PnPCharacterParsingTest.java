@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BattleMemberParsingTest extends TestWithDatabaseAccess {
+public class PnPCharacterParsingTest extends TestWithDatabaseAccess {
 
     protected static PnPCharacter character;
     protected static String wbPath = "src/test/resources/workbooks/Gegnerbogen.xlsx";
