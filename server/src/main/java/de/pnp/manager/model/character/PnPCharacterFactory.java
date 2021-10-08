@@ -113,14 +113,14 @@ public class PnPCharacterFactory {
 
         //Primary
         int minPrim = Utility.getConfig().getInt("character.skillPoints.min");
-        character.primaryAttributes.put(PrimaryAttribute.strength, parameterMap.getValueAsIntegerOrElse("primaryAttribute.strength", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.endurance, parameterMap.getValueAsIntegerOrElse("primaryAttribute.endurance", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.precision, parameterMap.getValueAsIntegerOrElse("primaryAttribute.precision", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.agility, parameterMap.getValueAsIntegerOrElse("primaryAttribute.agility", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.resilience, parameterMap.getValueAsIntegerOrElse("primaryAttribute.resilience", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.charisma, parameterMap.getValueAsIntegerOrElse("primaryAttribute.charisma", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.intelligence, parameterMap.getValueAsIntegerOrElse("primaryAttribute.intelligence", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.dexterity, parameterMap.getValueAsIntegerOrElse("primaryAttribute.dexterity", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.STRENGTH, parameterMap.getValueAsIntegerOrElse("primaryAttribute.strength", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.ENDURANCE, parameterMap.getValueAsIntegerOrElse("primaryAttribute.endurance", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.PRECISION, parameterMap.getValueAsIntegerOrElse("primaryAttribute.precision", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.AGILITY, parameterMap.getValueAsIntegerOrElse("primaryAttribute.agility", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.RESILIENCE, parameterMap.getValueAsIntegerOrElse("primaryAttribute.resilience", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.CHARISMA, parameterMap.getValueAsIntegerOrElse("primaryAttribute.charisma", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.INTELLIGENCE, parameterMap.getValueAsIntegerOrElse("primaryAttribute.intelligence", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.DEXTERITY, parameterMap.getValueAsIntegerOrElse("primaryAttribute.dexterity", minPrim));
 
         //Secondary
         character.secondaryAttributes.put(SecondaryAttribute.meleeDamage, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.meleeDamage", 0));

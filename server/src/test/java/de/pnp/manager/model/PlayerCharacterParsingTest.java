@@ -41,14 +41,14 @@ public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
         assertEquals("MyGender", character.getGender());
         assertEquals("MyRace", character.getRace());
 
-        assertEquals(1, (int) character.getPrimaryAttributes().get(PrimaryAttribute.strength));
-        assertEquals(2, (int) character.getPrimaryAttributes().get(PrimaryAttribute.endurance));
-        assertEquals(3, (int) character.getPrimaryAttributes().get(PrimaryAttribute.dexterity));
-        assertEquals(4, (int) character.getPrimaryAttributes().get(PrimaryAttribute.intelligence));
-        assertEquals(5, (int) character.getPrimaryAttributes().get(PrimaryAttribute.charisma));
-        assertEquals(6, (int) character.getPrimaryAttributes().get(PrimaryAttribute.resilience));
-        assertEquals(7, (int) character.getPrimaryAttributes().get(PrimaryAttribute.agility));
-        assertEquals(8, (int) character.getPrimaryAttributes().get(PrimaryAttribute.precision));
+        assertEquals(1, (int) character.getPrimaryAttributes().get(PrimaryAttribute.STRENGTH));
+        assertEquals(2, (int) character.getPrimaryAttributes().get(PrimaryAttribute.ENDURANCE));
+        assertEquals(3, (int) character.getPrimaryAttributes().get(PrimaryAttribute.DEXTERITY));
+        assertEquals(4, (int) character.getPrimaryAttributes().get(PrimaryAttribute.INTELLIGENCE));
+        assertEquals(5, (int) character.getPrimaryAttributes().get(PrimaryAttribute.CHARISMA));
+        assertEquals(6, (int) character.getPrimaryAttributes().get(PrimaryAttribute.RESILIENCE));
+        assertEquals(7, (int) character.getPrimaryAttributes().get(PrimaryAttribute.AGILITY));
+        assertEquals(8, (int) character.getPrimaryAttributes().get(PrimaryAttribute.PRECISION));
 
         assertEquals(9, (int) character.getSecondaryAttributes().get(SecondaryAttribute.meleeDamage));
         assertEquals(10, (int) character.getSecondaryAttributes().get(SecondaryAttribute.rangeDamage));

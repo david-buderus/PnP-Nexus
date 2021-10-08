@@ -18,7 +18,6 @@ import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Spell;
 import de.pnp.manager.model.other.Talent;
-import javafx.beans.property.IntegerProperty;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.*;
@@ -214,14 +213,14 @@ public class GeneratedCharacter extends PnPCharacter {
             factors[i] = loadedFactors[i];
         }
 
-        float result = getPrimaryAttributes().get(PrimaryAttribute.strength) * factors[0] +
-                getPrimaryAttributes().get(PrimaryAttribute.endurance) * factors[1] +
-                getPrimaryAttributes().get(PrimaryAttribute.dexterity) * factors[2] +
-                getPrimaryAttributes().get(PrimaryAttribute.intelligence) * factors[3] +
-                getPrimaryAttributes().get(PrimaryAttribute.charisma) * factors[4] +
-                getPrimaryAttributes().get(PrimaryAttribute.resilience) * factors[5] +
-                getPrimaryAttributes().get(PrimaryAttribute.agility) * factors[6] +
-                getPrimaryAttributes().get(PrimaryAttribute.precision) * factors[7] +
+        float result = getPrimaryAttributes().get(PrimaryAttribute.STRENGTH) * factors[0] +
+                getPrimaryAttributes().get(PrimaryAttribute.ENDURANCE) * factors[1] +
+                getPrimaryAttributes().get(PrimaryAttribute.DEXTERITY) * factors[2] +
+                getPrimaryAttributes().get(PrimaryAttribute.INTELLIGENCE) * factors[3] +
+                getPrimaryAttributes().get(PrimaryAttribute.CHARISMA) * factors[4] +
+                getPrimaryAttributes().get(PrimaryAttribute.RESILIENCE) * factors[5] +
+                getPrimaryAttributes().get(PrimaryAttribute.AGILITY) * factors[6] +
+                getPrimaryAttributes().get(PrimaryAttribute.PRECISION) * factors[7] +
                 baseValue;
 
         return Math.round(result);
@@ -441,36 +440,36 @@ public class GeneratedCharacter extends PnPCharacter {
             int x = Utility.consumeNumber(requirementsList);
             String attribute = Utility.consumeString(requirementsList);
 
-            if (attribute.equalsIgnoreCase(PrimaryAttribute.strength.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.strength)) {
+            if (attribute.equalsIgnoreCase(PrimaryAttribute.STRENGTH.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.STRENGTH)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.endurance.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.endurance)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.ENDURANCE.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.ENDURANCE)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.dexterity.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.dexterity)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.DEXTERITY.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.DEXTERITY)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.intelligence.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.intelligence)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.INTELLIGENCE.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.INTELLIGENCE)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.charisma.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.charisma)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.CHARISMA.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.CHARISMA)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.resilience.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.resilience)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.RESILIENCE.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.RESILIENCE)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.agility.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.agility)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.AGILITY.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.AGILITY)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.precision.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.precision)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.PRECISION.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.PRECISION)) {
                     return false;
                 }
             }
