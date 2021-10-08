@@ -6,11 +6,11 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 
 public enum Dice implements WithToStringProperty {
-    with, withOut;
+    WITH, WITH_OUT;
 
     @Override
     public ReadOnlyStringProperty toStringProperty() {
-        if (this == with) {
+        if (this == WITH) {
             return LanguageUtility.getMessageProperty("state.info.dicePrefix");
         } else {
             return new ReadOnlyStringWrapper("");

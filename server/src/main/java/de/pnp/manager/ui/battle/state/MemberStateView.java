@@ -205,8 +205,8 @@ public class MemberStateView extends View {
             createButton.setOnAction(ev ->
                     target.addState(
                             effectComboBox.getValue().create(name.get(), Integer.parseInt(durationField.getText()),
-                                    activeComboBox.getValue() == Rounds.activeRounds, powerProperty.get(),
-                                    randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), Objects.requireNonNullElse(source, target))));
+                                    activeComboBox.getValue() == Rounds.ACTIVE_ROUNDS, powerProperty.get(),
+                                    randomComboBox.getValue() == Dice.WITH, typeComboBox.getValue(), Objects.requireNonNullElse(source, target))));
             info.getChildren().add(createButton);
         });
         effectComboBox.getSelectionModel().selectFirst();

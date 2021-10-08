@@ -232,8 +232,8 @@ public class AllMemberStateView extends View {
                 for (PnPCharacterPane pane : selected) {
                     pane.getCharacter().addState(
                             effectComboBox.getValue().create(name.getName(), Integer.parseInt(durationField.getText()),
-                                    activeComboBox.getValue() == Rounds.activeRounds, Float.parseFloat(powerField.getText()),
-                                    randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), source));
+                                    activeComboBox.getValue() == Rounds.ACTIVE_ROUNDS, Float.parseFloat(powerField.getText()),
+                                    randomComboBox.getValue() == Dice.WITH, typeComboBox.getValue(), source));
                 }
                 info.getChildren().add(createButton);
             });
