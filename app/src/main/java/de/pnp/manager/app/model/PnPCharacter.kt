@@ -87,25 +87,25 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getMaxHealth(): Int {
-        return secondaryAttributes[SecondaryAttribute.health]?:0
+        return secondaryAttributes[SecondaryAttribute.HEALTH]?:0
     }
 
     fun setMaxHealth(maxHealth: Int) {
-        secondaryAttributes[SecondaryAttribute.health] = maxHealth
+        secondaryAttributes[SecondaryAttribute.HEALTH] = maxHealth
     }
     override fun getMana(): Int {
         return mana
     }
 
     override fun getMaxMana(): Int {
-        return secondaryAttributes[SecondaryAttribute.mana]?:0
+        return secondaryAttributes[SecondaryAttribute.MANA]?:0
     }
 
     fun setMaxMana(maxMana: Int) {
         println("setting maxMana")
-        println(" " + secondaryAttributes + " " + secondaryAttributes[SecondaryAttribute.mana] + " " + maxMana)
+        println(" " + secondaryAttributes + " " + secondaryAttributes[SecondaryAttribute.MANA] + " " + maxMana)
         println(maxMana.javaClass)
-        secondaryAttributes.put(SecondaryAttribute.mana, maxMana)
+        secondaryAttributes.put(SecondaryAttribute.MANA, maxMana)
     }
 
     override fun getMentalHealth(): Int {
@@ -113,11 +113,11 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getMaxMentalHealth(): Int {
-        return secondaryAttributes[SecondaryAttribute.mentalHealth]?: 0
+        return secondaryAttributes[SecondaryAttribute.MENTAL_HEALTH]?: 0
     }
 
     fun setMaxMentalHealth(maxMentalHealth : Int) {
-        this.secondaryAttributes[SecondaryAttribute.mentalHealth] = maxMentalHealth
+        this.secondaryAttributes[SecondaryAttribute.MENTAL_HEALTH] = maxMentalHealth
     }
 
     override fun getInitiative(): Int {
