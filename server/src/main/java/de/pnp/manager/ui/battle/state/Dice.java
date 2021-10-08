@@ -6,7 +6,7 @@ import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 
 public enum Dice implements WithToStringProperty {
-    WITH, WITH_OUT;
+    WITH, WITHOUT;
 
     @Override
     public ReadOnlyStringProperty toStringProperty() {
