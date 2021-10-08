@@ -174,7 +174,7 @@ public class MemberStateView extends View {
         typeComboBox.setItems(FXCollections.observableArrayList(AttackTypes.values()));
         typeComboBox.setCellFactory(list -> new UpdatingListCell<>());
         typeComboBox.setButtonCell(new UpdatingListCell<>());
-        typeComboBox.getSelectionModel().select(AttackTypes.direct);
+        typeComboBox.getSelectionModel().select(AttackTypes.DIRECT);
         HBox typeBox = labelRegion("state.info.target", typeComboBox);
 
         effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, factory) -> {

@@ -1,18 +1,20 @@
 package de.pnp.manager.model.character.data;
 
-import de.pnp.manager.main.LanguageUtility;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
+import de.pnp.manager.model.interfaces.WithUnlocalizedName;
 
-public enum AttackTypes implements IAttackTypes, WithToStringProperty {
-    head, upperBody, legs, arm, ignoreArmor, direct;
+public enum AttackTypes implements IAttackTypes, WithUnlocalizedName {
+    HEAD("attackTypes.head"), UPPER_BODY("attackTypes.upperBody"),
+    LEGS("attackTypes.legs"), ARM("attackTypes.arm"),
+    IGNORE_ARMOR("attackTypes.ignoreArmor"), DIRECT("attackTypes.direct");
 
-    @Override
-    public String toString() {
-        return toStringProperty().get();
+    private final String unlocalizedName;
+
+    AttackTypes(String unlocalizedName) {
+        this.unlocalizedName = unlocalizedName;
     }
 
-    public ReadOnlyStringProperty toStringProperty() {
-        return LanguageUtility.getMessageProperty("attackTypes." + super.toString());
+    @Override
+    public String getUnlocalizedName() {
+        return unlocalizedName;
     }
 }

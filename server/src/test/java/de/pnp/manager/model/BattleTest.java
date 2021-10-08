@@ -5,7 +5,6 @@ import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.data.AttackTypes;
 import de.pnp.manager.testHelper.TestWithDatabaseAccess;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
@@ -13,7 +12,6 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 
 @ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
 public class BattleTest extends TestWithDatabaseAccess {
@@ -26,8 +24,8 @@ public class BattleTest extends TestWithDatabaseAccess {
             b.createEnemy();
             b.createPlayer();
 
-            PnPCharacter enemy = b.enemiesProperty().stream().findFirst().get();
-            PnPCharacter player = b.playersProperty().stream().findFirst().get();
+            PnPCharacter enemy = b.enemiesProperty().stream().findFirst().orElseThrow();
+            PnPCharacter player = b.playersProperty().stream().findFirst().orElseThrow();
 
             assertFalse(b.isSameTeam(enemy, player));
             assertTrue(b.isPlayer(player));
@@ -36,7 +34,7 @@ public class BattleTest extends TestWithDatabaseAccess {
             boolean finished = false;
 
             while (!finished) {
-                enemy.takeDamage(5, AttackTypes.direct, false, 1, 0, player);
+                enemy.takeDamage(5, AttackTypes.DIRECT, false, 1, 0, player);
                 b.nextTurn();
                 finished = b.enemiesProperty().stream().anyMatch(PnPCharacter::isDead) || b.playersProperty().stream().anyMatch(PnPCharacter::isDead);
             }

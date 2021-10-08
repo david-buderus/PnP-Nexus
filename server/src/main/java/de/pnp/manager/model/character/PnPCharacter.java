@@ -293,18 +293,18 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         double reduction = 1 - penetration;
 
         switch (type) {
-            case direct:
+            case DIRECT:
                 return 0;
-            case head:
+            case HEAD:
                 armorDefense += getProtection(ArmorPosition.HEAD);
                 break;
-            case upperBody:
+            case UPPER_BODY:
                 armorDefense += getProtection(ArmorPosition.UPPER_BODY);
                 break;
-            case arm:
+            case ARM:
                 armorDefense += getProtection(ArmorPosition.ARM);
                 break;
-            case legs:
+            case LEGS:
                 armorDefense += getProtection(ArmorPosition.LEGS);
                 break;
         }

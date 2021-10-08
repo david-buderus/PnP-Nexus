@@ -2,7 +2,6 @@ package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.interfaces.ILootable;
 import de.pnp.manager.model.interfaces.WithToStringProperty;
 import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.manager.BattleHandler;
@@ -187,7 +186,7 @@ public class BattleView extends ConfigurableViewPart {
         attackCombo.setItems(FXCollections.observableArrayList(AttackTypes.values()));
         attackCombo.setCellFactory(list -> new UpdatingListCell<>());
         attackCombo.setButtonCell(new UpdatingListCell<>());
-        attackCombo.getSelectionModel().select(AttackTypes.upperBody);
+        attackCombo.getSelectionModel().select(AttackTypes.UPPER_BODY);
         HBox attackBox = labelRegion("battle.info.target", attackCombo);
 
         TextField blockField = new TextField("1");
