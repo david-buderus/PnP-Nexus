@@ -141,7 +141,7 @@ public class PnPCharacterFactory {
             Item itemHead = Database.getItemOrElse(armorHead, null);
             if (itemHead != null) {
                 Armor item = (Armor) itemHead.copy();
-                character.getEquippedArmor().put(ArmorPosition.head, item);
+                character.getEquippedArmor().put(ArmorPosition.HEAD, item);
             }
         }
 
@@ -150,7 +150,7 @@ public class PnPCharacterFactory {
             Item itemChest = Database.getItemOrElse(armorChest, null);
             if (itemChest != null) {
                 Armor item = (Armor) itemChest.copy();
-                character.getEquippedArmor().put(ArmorPosition.upperBody, item);
+                character.getEquippedArmor().put(ArmorPosition.UPPER_BODY, item);
             }
         }
 
@@ -159,7 +159,7 @@ public class PnPCharacterFactory {
             Item itemLegs = Database.getItemOrElse(armorLegs, null);
             if (itemLegs != null) {
                 Armor item = (Armor) itemLegs.copy();
-                character.getEquippedArmor().put(ArmorPosition.legs, item);
+                character.getEquippedArmor().put(ArmorPosition.LEGS, item);
             }
         }
 
@@ -168,7 +168,7 @@ public class PnPCharacterFactory {
             Item itemArms = Database.getItemOrElse(armorArms, null);
             if (itemArms != null) {
                 Armor item = (Armor) itemArms.copy();
-                character.getEquippedArmor().put(ArmorPosition.arm, item);
+                character.getEquippedArmor().put(ArmorPosition.ARM, item);
             }
         }
 

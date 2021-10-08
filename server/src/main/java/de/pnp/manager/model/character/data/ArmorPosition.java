@@ -1,17 +1,24 @@
 package de.pnp.manager.model.character.data;
 
-import de.pnp.manager.main.LanguageUtility;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
+import de.pnp.manager.model.interfaces.WithUnlocalizedName;
 
 import java.util.NoSuchElementException;
 
-public enum ArmorPosition implements IArmorPosition, WithToStringProperty {
-    head, upperBody, arm, legs;
+public enum ArmorPosition implements IArmorPosition, WithUnlocalizedName {
+
+    HEAD("armorPosition.head"), UPPER_BODY("armorPosition.upperBody"),
+    ARM("armorPosition.arm"),
+    LEGS("armorPosition.legs");
+
+    private final String unlocalizedName;
+
+    ArmorPosition(String unlocalizedName) {
+        this.unlocalizedName = unlocalizedName;
+    }
 
     @Override
-    public ReadOnlyStringProperty toStringProperty() {
-        return LanguageUtility.getMessageProperty("armorPosition." + super.toString());
+    public String getUnlocalizedName() {
+        return unlocalizedName;
     }
 
     public static ArmorPosition getArmorPosition(String name) {

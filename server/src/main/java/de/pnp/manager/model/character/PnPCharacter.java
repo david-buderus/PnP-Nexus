@@ -296,16 +296,16 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
             case direct:
                 return 0;
             case head:
-                armorDefense += getProtection(ArmorPosition.head);
+                armorDefense += getProtection(ArmorPosition.HEAD);
                 break;
             case upperBody:
-                armorDefense += getProtection(ArmorPosition.upperBody);
+                armorDefense += getProtection(ArmorPosition.UPPER_BODY);
                 break;
             case arm:
-                armorDefense += getProtection(ArmorPosition.arm);
+                armorDefense += getProtection(ArmorPosition.ARM);
                 break;
             case legs:
-                armorDefense += getProtection(ArmorPosition.legs);
+                armorDefense += getProtection(ArmorPosition.LEGS);
                 break;
         }
         if (withShield) {
@@ -387,10 +387,10 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         for (IWeapon weapon : getWeapons()) {
             character.weapons.add(weapon.copy());
         }
-        character.equippedArmor.put(ArmorPosition.head, getEquippedArmor().get(ArmorPosition.head));
-        character.equippedArmor.put(ArmorPosition.upperBody, getEquippedArmor().get(ArmorPosition.upperBody));
-        character.equippedArmor.put(ArmorPosition.arm, getEquippedArmor().get(ArmorPosition.arm));
-        character.equippedArmor.put(ArmorPosition.legs, getEquippedArmor().get(ArmorPosition.legs));
+        character.equippedArmor.put(ArmorPosition.HEAD, getEquippedArmor().get(ArmorPosition.HEAD));
+        character.equippedArmor.put(ArmorPosition.UPPER_BODY, getEquippedArmor().get(ArmorPosition.UPPER_BODY));
+        character.equippedArmor.put(ArmorPosition.ARM, getEquippedArmor().get(ArmorPosition.ARM));
+        character.equippedArmor.put(ArmorPosition.LEGS, getEquippedArmor().get(ArmorPosition.LEGS));
         for (IArmor armor : getArmor()) {
             character.armor.add(armor.copy());
         }
@@ -780,17 +780,17 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     public ObservableList<IArmor> getEquippedArmorAsList() {
         ObservableList<IArmor> list = FXCollections.observableList(new ArrayList<>());
 
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.head, new Armor()));
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.upperBody, new Armor()));
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.arm, new Armor()));
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.legs, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.HEAD, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.UPPER_BODY, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.ARM, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.LEGS, new Armor()));
 
         list.addListener((ListChangeListener<IArmor>) c -> {
             list.clear();
-            list.add(getEquippedArmor().get(ArmorPosition.head));
-            list.add(getEquippedArmor().get(ArmorPosition.upperBody));
-            list.add(getEquippedArmor().get(ArmorPosition.arm));
-            list.add(getEquippedArmor().get(ArmorPosition.legs));
+            list.add(getEquippedArmor().get(ArmorPosition.HEAD));
+            list.add(getEquippedArmor().get(ArmorPosition.UPPER_BODY));
+            list.add(getEquippedArmor().get(ArmorPosition.ARM));
+            list.add(getEquippedArmor().get(ArmorPosition.LEGS));
         });
 
         return list;

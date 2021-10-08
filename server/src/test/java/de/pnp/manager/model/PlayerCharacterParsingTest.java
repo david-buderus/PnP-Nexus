@@ -62,10 +62,10 @@ public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
         assertEquals(16, (int) character.getSecondaryAttributes().get(SecondaryAttribute.mana));
         assertEquals(16, character.getMaxMana());
 
-        assertEquals(5, character.getProtection(ArmorPosition.arm));
-        assertEquals(6, character.getProtection(ArmorPosition.legs));
-        assertEquals(7, character.getProtection(ArmorPosition.upperBody));
-        assertEquals(6, character.getProtection(ArmorPosition.legs));
+        assertEquals(5, character.getProtection(ArmorPosition.ARM));
+        assertEquals(6, character.getProtection(ArmorPosition.LEGS));
+        assertEquals(7, character.getProtection(ArmorPosition.UPPER_BODY));
+        assertEquals(6, character.getProtection(ArmorPosition.LEGS));
 
         assertEquals(16, character.getShieldProtection());
     }
