@@ -1,6 +1,8 @@
 package de.pnp.manager.testHelper;
 
 import de.pnp.manager.main.DatabaseLoader;
+import de.pnp.manager.main.Language;
+import de.pnp.manager.main.LanguageUtility;
 import net.ucanaccess.jdbc.UcanaccessDriver;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,7 @@ public abstract class TestWithDatabaseAccess {
         properties.put("ConnSettings", "SET LOCALE TO de_DE");
 
         Locale.setDefault(Locale.GERMAN);
+        LanguageUtility.language.set(Language.german);
 
         DriverManager.registerDriver(new UcanaccessDriver());
 

@@ -2,12 +2,11 @@ package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.interfaces.ILootable;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
-import de.pnp.manager.model.loot.LootTable;
-import de.pnp.manager.model.manager.BattleHandler;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.data.AttackTypes;
+import de.pnp.manager.model.interfaces.WithUnlocalizedName;
+import de.pnp.manager.model.loot.LootTable;
+import de.pnp.manager.model.manager.BattleHandler;
 import de.pnp.manager.ui.ConfigurableViewPart;
 import de.pnp.manager.ui.IView;
 import de.pnp.manager.ui.battle.state.AllMemberStateView;
@@ -187,7 +186,7 @@ public class BattleView extends ConfigurableViewPart {
         attackCombo.setItems(FXCollections.observableArrayList(AttackTypes.values()));
         attackCombo.setCellFactory(list -> new UpdatingListCell<>());
         attackCombo.setButtonCell(new UpdatingListCell<>());
-        attackCombo.getSelectionModel().select(AttackTypes.upperBody);
+        attackCombo.getSelectionModel().select(AttackTypes.UPPER_BODY);
         HBox attackBox = labelRegion("battle.info.target", attackCombo);
 
         TextField blockField = new TextField("1");
@@ -196,7 +195,7 @@ public class BattleView extends ConfigurableViewPart {
         blockCombo.setCellFactory(list -> new UpdatingListCell<>());
         blockCombo.setButtonCell(new UpdatingListCell<>());
         blockCombo.setItems(FXCollections.observableArrayList(ShieldEnum.values()));
-        blockCombo.getSelectionModel().select(ShieldEnum.without);
+        blockCombo.getSelectionModel().select(ShieldEnum.WITHOUT);
 
         HBox blockBox = labelRegion("battle.info.block", 40, blockField, 110, blockCombo);
 
@@ -511,8 +510,19 @@ public class BattleView extends ConfigurableViewPart {
         });
     }
 
-    private enum ShieldEnum implements WithToStringProperty {
-        with, without;
+    private enum ShieldEnum implements WithUnlocalizedName {
+        WITH("battle.shieldEnum.with"), WITHOUT("battle.shieldEnum.without");
+
+        private final String unlocalizedName;
+
+        ShieldEnum(String unlocalizedName) {
+            this.unlocalizedName = unlocalizedName;
+        }
+
+        @Override
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
 
         @Override
         public String toString() {
@@ -520,12 +530,7 @@ public class BattleView extends ConfigurableViewPart {
         }
 
         public boolean toBool() {
-            return this == ShieldEnum.with;
-        }
-
-        @Override
-        public ReadOnlyStringProperty toStringProperty() {
-            return LanguageUtility.getMessageProperty("battle.shieldEnum." + super.toString());
+            return this == ShieldEnum.WITH;
         }
     }
 

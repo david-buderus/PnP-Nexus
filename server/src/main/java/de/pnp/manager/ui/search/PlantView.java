@@ -272,7 +272,7 @@ public class PlantView extends ViewPart {
 
     private void search() {
         for (int i = 0; i < searchCount.intValue(); i++) {
-            Rarity rarity = this.rarity.get() == Rarity.unknown ? Rarity.getRandomRarity() : this.rarity.get();
+            Rarity rarity = this.rarity.get() == Rarity.UNKNOWN ? Rarity.getRandomRarity() : this.rarity.get();
 
             Stream<Plant> stream = Database.plantList.stream().filter(w -> w.getRarity() == rarity);
 

@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BattleMemberParsingTest extends TestWithDatabaseAccess {
+public class PnPCharacterParsingTest extends TestWithDatabaseAccess {
 
     protected static PnPCharacter character;
     protected static String wbPath = "src/test/resources/workbooks/Gegnerbogen.xlsx";
@@ -35,10 +35,10 @@ public class BattleMemberParsingTest extends TestWithDatabaseAccess {
         assertEquals(15, character.getMaxMana());
         assertEquals(13, character.getInitiative());
 
-        assertEquals(3, character.getProtection(ArmorPosition.arm));
-        assertEquals(4, character.getProtection(ArmorPosition.legs));
-        assertEquals(5, character.getProtection(ArmorPosition.upperBody));
-        assertEquals(4, character.getProtection(ArmorPosition.legs));
+        assertEquals(3, character.getProtection(ArmorPosition.ARM));
+        assertEquals(4, character.getProtection(ArmorPosition.LEGS));
+        assertEquals(5, character.getProtection(ArmorPosition.UPPER_BODY));
+        assertEquals(4, character.getProtection(ArmorPosition.LEGS));
 
         assertEquals(8, character.getShieldProtection());
     }

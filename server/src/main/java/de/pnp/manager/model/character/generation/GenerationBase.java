@@ -396,16 +396,16 @@ public abstract class GenerationBase implements WithToStringProperty {
         if (isAbleToUseShield()) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.canUseShield"));
         }
-        if (isAbleToUseArmor(ArmorPosition.head)) {
+        if (isAbleToUseArmor(ArmorPosition.HEAD)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.canUseHelm"));
         }
-        if (isAbleToUseArmor(ArmorPosition.upperBody)) {
+        if (isAbleToUseArmor(ArmorPosition.UPPER_BODY)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.canUseHarness"));
         }
-        if (isAbleToUseArmor(ArmorPosition.arm)) {
+        if (isAbleToUseArmor(ArmorPosition.ARM)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.canUseBracers"));
         }
-        if (isAbleToUseArmor(ArmorPosition.legs)) {
+        if (isAbleToUseArmor(ArmorPosition.LEGS)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.canUseLegArmor"));
         }
         if (isAbleToUseJewellery()) {
@@ -423,16 +423,16 @@ public abstract class GenerationBase implements WithToStringProperty {
         if (usesExclusivelySpecificSecondaryWeapons()) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificSecondaryHand"));
         }
-        if (usesExclusivelySpecificArmor(ArmorPosition.head)) {
+        if (usesExclusivelySpecificArmor(ArmorPosition.HEAD)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificHelm"));
         }
-        if (usesExclusivelySpecificArmor(ArmorPosition.upperBody)) {
+        if (usesExclusivelySpecificArmor(ArmorPosition.UPPER_BODY)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificHarness"));
         }
-        if (usesExclusivelySpecificArmor(ArmorPosition.arm)) {
+        if (usesExclusivelySpecificArmor(ArmorPosition.ARM)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificBracers"));
         }
-        if (usesExclusivelySpecificArmor(ArmorPosition.legs)) {
+        if (usesExclusivelySpecificArmor(ArmorPosition.LEGS)) {
             list.add(LanguageUtility.getMessage("search.enemies.properties.usesOnlySpecificLegArmor"));
         }
         if (usesExclusivelySpecificJewellery()) {

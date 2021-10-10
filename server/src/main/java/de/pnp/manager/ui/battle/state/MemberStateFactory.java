@@ -32,7 +32,7 @@ public class MemberStateFactory implements WithToStringProperty {
     private MemberStateFactory(String key, MemberStateProducer producer) {
         this.key = key;
         this.producer = producer;
-        this.defaultState = producer.create("default", 0, false, 0, false, AttackTypes.direct, null);
+        this.defaultState = producer.create("default", 0, false, 0, false, AttackTypes.DIRECT, null);
     }
 
     public IMemberStateImpl create(String name, int duration, boolean activeRounder, float power, boolean isRandom, AttackTypes type, PnPCharacter source) {

@@ -1,22 +1,36 @@
 package de.pnp.manager.model.character.data;
 
 import de.pnp.manager.main.LanguageUtility;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
+import de.pnp.manager.model.interfaces.WithUnlocalizedName;
 import javafx.beans.property.ReadOnlyStringProperty;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-public enum PrimaryAttribute implements IPrimaryAttribute, WithToStringProperty {
-    strength, endurance, dexterity, intelligence, charisma, resilience, agility, precision, DUMMY;
+public enum PrimaryAttribute implements IPrimaryAttribute, WithUnlocalizedName {
+    STRENGTH("primaryAttribute.strength"), ENDURANCE("primaryAttribute.endurance"),
+    DEXTERITY("primaryAttribute.dexterity"), INTELLIGENCE("primaryAttribute.intelligence"),
+    CHARISMA("primaryAttribute.charisma"), RESILIENCE("primaryAttribute.resilience"),
+    AGILITY("primaryAttribute.agility"), PRECISION("primaryAttribute.precision"),
+    DUMMY("primaryAttribute.dummy");
+
+    private final String unlocalizedName;
+
+    PrimaryAttribute(String unlocalizedName) {
+        this.unlocalizedName = unlocalizedName;
+    }
 
     @Override
-    public ReadOnlyStringProperty toStringProperty() {
-        return LanguageUtility.getMessageProperty("primaryAttribute." + super.toString());
+    public String getUnlocalizedName() {
+        return unlocalizedName;
+    }
+
+    public String getUnlocalizedShortName() {
+        return unlocalizedName + ".short";
     }
 
     public ReadOnlyStringProperty toShortStringProperty() {
-        return LanguageUtility.getMessageProperty("primaryAttribute." + super.toString() + ".short");
+        return LanguageUtility.getMessageProperty(getUnlocalizedShortName());
     }
 
     @Override

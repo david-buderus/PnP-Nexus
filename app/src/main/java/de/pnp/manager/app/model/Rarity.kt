@@ -3,16 +3,16 @@ package de.pnp.manager.app.model
 import de.pnp.manager.model.IRarity
 
 enum class Rarity : IRarity {
-    unknown, common, rare, epic, legendary, godlike;
+    UNKNOWN, COMMON, RARE, EPIC, LEGENDARY, GODLIKE;
 
     override fun getLowerRarity(): IRarity {
         return when(this) {
-            unknown -> unknown
-            common -> unknown
-            rare -> common
-            epic -> rare
-            legendary -> epic
-            godlike -> legendary
+            UNKNOWN -> UNKNOWN
+            COMMON -> COMMON
+            RARE -> COMMON
+            EPIC -> RARE
+            LEGENDARY -> EPIC
+            GODLIKE -> LEGENDARY
         }
     }
 }

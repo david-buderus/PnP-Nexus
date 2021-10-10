@@ -25,10 +25,10 @@ public class PnPCharacterFactory {
         PnPCharacter character = new PnPCharacter(characterID, battle, new LootTable());
 
         character.createModifierBindings();
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.health).setModifier(1);
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.mana).setModifier(1);
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(1);
-        character.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).setModifier(1);
+        character.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier(1);
         character.createResourceProperties();
 
         return character;
@@ -113,24 +113,24 @@ public class PnPCharacterFactory {
 
         //Primary
         int minPrim = Utility.getConfig().getInt("character.skillPoints.min");
-        character.primaryAttributes.put(PrimaryAttribute.strength, parameterMap.getValueAsIntegerOrElse("primaryAttribute.strength", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.endurance, parameterMap.getValueAsIntegerOrElse("primaryAttribute.endurance", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.precision, parameterMap.getValueAsIntegerOrElse("primaryAttribute.precision", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.agility, parameterMap.getValueAsIntegerOrElse("primaryAttribute.agility", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.resilience, parameterMap.getValueAsIntegerOrElse("primaryAttribute.resilience", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.charisma, parameterMap.getValueAsIntegerOrElse("primaryAttribute.charisma", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.intelligence, parameterMap.getValueAsIntegerOrElse("primaryAttribute.intelligence", minPrim));
-        character.primaryAttributes.put(PrimaryAttribute.dexterity, parameterMap.getValueAsIntegerOrElse("primaryAttribute.dexterity", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.STRENGTH, parameterMap.getValueAsIntegerOrElse("primaryAttribute.strength", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.ENDURANCE, parameterMap.getValueAsIntegerOrElse("primaryAttribute.endurance", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.PRECISION, parameterMap.getValueAsIntegerOrElse("primaryAttribute.precision", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.AGILITY, parameterMap.getValueAsIntegerOrElse("primaryAttribute.agility", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.RESILIENCE, parameterMap.getValueAsIntegerOrElse("primaryAttribute.resilience", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.CHARISMA, parameterMap.getValueAsIntegerOrElse("primaryAttribute.charisma", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.INTELLIGENCE, parameterMap.getValueAsIntegerOrElse("primaryAttribute.intelligence", minPrim));
+        character.primaryAttributes.put(PrimaryAttribute.DEXTERITY, parameterMap.getValueAsIntegerOrElse("primaryAttribute.dexterity", minPrim));
 
         //Secondary
-        character.secondaryAttributes.put(SecondaryAttribute.meleeDamage, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.meleeDamage", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.rangeDamage, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.rangeDamage", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.magicPower, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.magicPower", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.health, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1));
-        character.secondaryAttributes.put(SecondaryAttribute.mentalHealth, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mentalHealth", 0));
-        character.secondaryAttributes.put(SecondaryAttribute.mana, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1));
-        character.secondaryAttributes.put(SecondaryAttribute.initiative, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1));
-        character.secondaryAttributes.put(SecondaryAttribute.defense, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.MELEE_DAMAGE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.meleeDamage", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.RANGE_DAMAGE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.rangeDamage", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.MAGIC_POWER, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.magicPower", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.HEALTH, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.health", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.MENTAL_HEALTH, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mentalHealth", 0));
+        character.secondaryAttributes.put(SecondaryAttribute.MANA, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.mana", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.INITIATIVE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.initiative", 1));
+        character.secondaryAttributes.put(SecondaryAttribute.DEFENSE, parameterMap.getValueAsIntegerOrElse("secondaryAttribute.defense", 1));
         character.level = new SimpleIntegerProperty(parameterMap.getValueAsIntegerOrElse("character.level", 1));
         character.createModifierBindings();
         character.createResourceProperties();
@@ -141,7 +141,7 @@ public class PnPCharacterFactory {
             Item itemHead = Database.getItemOrElse(armorHead, null);
             if (itemHead != null) {
                 Armor item = (Armor) itemHead.copy();
-                character.getEquippedArmor().put(ArmorPosition.head, item);
+                character.getEquippedArmor().put(ArmorPosition.HEAD, item);
             }
         }
 
@@ -150,7 +150,7 @@ public class PnPCharacterFactory {
             Item itemChest = Database.getItemOrElse(armorChest, null);
             if (itemChest != null) {
                 Armor item = (Armor) itemChest.copy();
-                character.getEquippedArmor().put(ArmorPosition.upperBody, item);
+                character.getEquippedArmor().put(ArmorPosition.UPPER_BODY, item);
             }
         }
 
@@ -159,7 +159,7 @@ public class PnPCharacterFactory {
             Item itemLegs = Database.getItemOrElse(armorLegs, null);
             if (itemLegs != null) {
                 Armor item = (Armor) itemLegs.copy();
-                character.getEquippedArmor().put(ArmorPosition.legs, item);
+                character.getEquippedArmor().put(ArmorPosition.LEGS, item);
             }
         }
 
@@ -168,7 +168,7 @@ public class PnPCharacterFactory {
             Item itemArms = Database.getItemOrElse(armorArms, null);
             if (itemArms != null) {
                 Armor item = (Armor) itemArms.copy();
-                character.getEquippedArmor().put(ArmorPosition.arm, item);
+                character.getEquippedArmor().put(ArmorPosition.ARM, item);
             }
         }
 
