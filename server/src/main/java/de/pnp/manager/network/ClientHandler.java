@@ -220,6 +220,7 @@ public class ClientHandler extends Thread implements Client {
                 session.addClient(this);
                 runLater(() -> setCurrentSession(session));
                 sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
+                System.out.println("Joined Session");
             } else {
                 sendMessage(new NotFoundMessage(getMessage("message.error.notExists"), calendar.getTime()));
             }
