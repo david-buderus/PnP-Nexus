@@ -62,6 +62,14 @@ public class StateMachine<Event> {
         this.onNoTransition = onNoTransition;
     }
 
+    @Override
+    public String toString() {
+        return
+                "State:\t\t" + currentState.name + "\n" +
+                "States:\t\t" + states + "\n" +
+                "Transitions:\t" + transitions;
+    }
+
     private static class Transition<T> {
         final State from;
         final State to;
@@ -73,6 +81,11 @@ public class StateMachine<Event> {
             this.to = to;
             this.eventCheck = eventCheck;
             this.eventHandler = eventHandler;
+        }
+
+        @Override
+        public String toString() {
+            return "Transition ("  + from + " -> " + to + ")";
         }
     }
 }

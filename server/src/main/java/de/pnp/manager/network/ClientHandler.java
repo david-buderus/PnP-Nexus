@@ -179,7 +179,10 @@ public class ClientHandler extends Thread implements Client {
 
     private StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
-        stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(calendar.getTime())));
+        stateMachine.setOnNoTransition(event -> {
+            System.out.println(stateMachine);
+            sendMessage(new WrongStateMessage(calendar.getTime()));
+        });
 
         // Pre login
         stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, LOGIN_REQUEST, message -> {
