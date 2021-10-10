@@ -3,10 +3,12 @@ package de.pnp.manager.model.manager;
 import de.pnp.manager.model.character.Inventory;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.other.Container;
+import de.pnp.manager.network.message.inventory.RevokeInventoriesMessage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.rmi.server.UID;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +36,19 @@ public class InventoryHandler {
         return container;
     }
 
-    public Collection<Container> getContainers(String sessionID) {
+    public void deleteContainer(String sessionID, String inventoryID) {
+        Collection<Container> containers = this.sessionContainerMap.get(sessionID);
+
+        if (containers != null) {
+            containers.removeIf(c -> c.getInventoryID().equals(inventoryID));
+            manager.getNetworkHandler().activeBroadcast(
+                    new RevokeInventoriesMessage(inventoryID, Calendar.getInstance().getTime()),
+                    manager.getNetworkHandler().clientsProperty().filtered(c -> c.hasAccessToInventory(inventoryID))
+            );
+        }
+    }
+
+    public ObservableList<Container> getContainers(String sessionID) {
         return sessionContainerMap.computeIfAbsent(sessionID, id -> createObservableList());
     }
 

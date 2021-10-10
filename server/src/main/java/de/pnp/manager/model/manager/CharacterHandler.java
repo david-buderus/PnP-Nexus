@@ -4,6 +4,7 @@ import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.interfaces.Client;
+import de.pnp.manager.network.message.character.RevokeCharactersMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsNotificationMessage;
 import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
@@ -66,6 +67,10 @@ public class CharacterHandler {
 
         if (characters != null) {
             characters.removeIf(battle -> battle.getCharacterID().equals(characterID));
+            manager.getNetworkHandler().activeBroadcast(
+                    new RevokeCharactersMessage(characterID, Calendar.getInstance().getTime()),
+                    manager.getNetworkHandler().clientsProperty().filtered(c -> c.getControlledCharacters().contains(characterID))
+            );
         }
     }
 
