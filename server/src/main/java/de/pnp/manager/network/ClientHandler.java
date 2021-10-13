@@ -116,11 +116,6 @@ public class ClientHandler extends Thread implements Client {
     @Override
     public void sendMessage(BaseMessage message) {
         try {
-            System.out.println(
-                    "Out" +
-                    "\nClass:\t" + message.getClass().getSimpleName() +
-                            "\nEvent:\t" + mapper.writeValueAsString(message)
-            );
             out.println(mapper.writeValueAsString(message));
         } catch (JsonProcessingException e) {
             e.printStackTrace();

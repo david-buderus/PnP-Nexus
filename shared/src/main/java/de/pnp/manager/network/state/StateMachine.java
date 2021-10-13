@@ -28,17 +28,6 @@ public class StateMachine<Event> {
      */
     public boolean fire(Event event) {
 
-        try {
-            System.out.println(
-                    "In" +
-                            "\nClass:\t" + event.getClass().getSimpleName() +
-                    "\nEvent:\t" + mapper.writeValueAsString(event) +
-                    "\nState:\t" + currentState
-            );
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
         for (Transition<Event> transition : transitions.getOrDefault(currentState, Collections.emptyList())) {
             if (
                     transition.from == currentState &&
