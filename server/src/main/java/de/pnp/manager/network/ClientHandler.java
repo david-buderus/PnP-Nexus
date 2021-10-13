@@ -116,6 +116,11 @@ public class ClientHandler extends Thread implements Client {
     @Override
     public void sendMessage(BaseMessage message) {
         try {
+            System.out.println(
+                    "Out" +
+                    "\nClass:\t" + message.getClass().getSimpleName() +
+                            "\nEvent:\t" + mapper.writeValueAsString(message)
+            );
             out.println(mapper.writeValueAsString(message));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -179,10 +184,7 @@ public class ClientHandler extends Thread implements Client {
 
     private StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
-        stateMachine.setOnNoTransition(event -> {
-            System.out.println(stateMachine);
-            sendMessage(new WrongStateMessage(calendar.getTime()));
-        });
+        stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(calendar.getTime())));
 
         // Pre login
         stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, LOGIN_REQUEST, message -> {
@@ -220,7 +222,6 @@ public class ClientHandler extends Thread implements Client {
                 session.addClient(this);
                 runLater(() -> setCurrentSession(session));
                 sendMessage(new JoinSessionResponseMessage(session, calendar.getTime()));
-                System.out.println("Joined Session");
             } else {
                 sendMessage(new NotFoundMessage(getMessage("message.error.notExists"), calendar.getTime()));
             }

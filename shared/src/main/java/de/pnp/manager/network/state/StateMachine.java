@@ -1,5 +1,7 @@
 package de.pnp.manager.network.state;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -11,18 +13,31 @@ public class StateMachine<Event> {
     protected State currentState;
     protected Map<State, Collection<Transition<Event>>> transitions;
     protected INonConditionalEventHandler<Event> onNoTransition;
+    protected ObjectMapper mapper;
 
     public StateMachine(Set<State> states, State start) {
         this.states = states;
         this.currentState = start;
         this.transitions = new HashMap<>();
         this.onNoTransition = null;
+        this.mapper = new ObjectMapper();
     }
 
     /**
      * Returns true if a transition was used
      */
     public boolean fire(Event event) {
+
+        try {
+            System.out.println(
+                    "In" +
+                            "\nClass:\t" + event.getClass().getSimpleName() +
+                    "\nEvent:\t" + mapper.writeValueAsString(event) +
+                    "\nState:\t" + currentState
+            );
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
         for (Transition<Event> transition : transitions.getOrDefault(currentState, Collections.emptyList())) {
             if (
