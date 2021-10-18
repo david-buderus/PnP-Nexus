@@ -343,7 +343,7 @@ public class ClientHandler extends Thread implements Client {
                 }
 
             } else {
-                sendMessage(new DeniedMessage(getMessage("message.denied.inventory"), calendar.getTime()));
+                sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
             }
         });
 
@@ -365,7 +365,7 @@ public class ClientHandler extends Thread implements Client {
                 }
 
             } else {
-                sendMessage(new DeniedMessage(getMessage("message.denied.inventory"), calendar.getTime()));
+                sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
             }
         });
 
@@ -405,7 +405,7 @@ public class ClientHandler extends Thread implements Client {
                 }
 
             } else {
-                sendMessage(new DeniedMessage(getMessage("message.denied.inventory"), calendar.getTime()));
+                sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
             }
         });
 
