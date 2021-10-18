@@ -26,7 +26,7 @@ public class StateMachine<Event> {
     /**
      * Returns true if a transition was used
      */
-    public boolean fire(Event event) {
+    public synchronized boolean fire(Event event) {
 
         for (Transition<Event> transition : transitions.getOrDefault(currentState, Collections.emptyList())) {
             if (
