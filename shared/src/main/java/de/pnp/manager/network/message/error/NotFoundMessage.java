@@ -1,12 +1,10 @@
 package de.pnp.manager.network.message.error;
 
-import de.pnp.manager.network.message.DataMessage;
-
 import java.util.Date;
 
 import static de.pnp.manager.network.message.MessageIDs.NOT_FOUND;
 
-public class NotFoundMessage extends DataMessage<String> {
+public class NotFoundMessage extends ErrorMessage<String> {
 
     public NotFoundMessage() {
     }
