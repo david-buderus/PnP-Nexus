@@ -26,6 +26,13 @@ public interface TestClientHelper {
     default TestClient createTestClient() {
         TestClient client = new TestClient();
         client.connect("localhost", Utility.getConfig().getInt("server.port"));
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return client;
     }
 
