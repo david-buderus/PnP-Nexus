@@ -1,4 +1,4 @@
-package de.pnp.manager.network.eventhandler;
+package de.pnp.manager.network.eventhandler.inventory;
 
 import de.pnp.manager.model.other.IContainer;
 import de.pnp.manager.network.ClientHandler;

@@ -17,6 +17,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class Item implements IItem {
 
+    public static final Item EMPTY_ITEM = new Item();
+
     protected String name;
     protected String type;
     protected String subtype;

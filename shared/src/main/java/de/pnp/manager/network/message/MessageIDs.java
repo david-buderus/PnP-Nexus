@@ -36,6 +36,7 @@ public abstract class MessageIDs {
     public static final int MOVE_ITEM_REQUEST = 4303;
     public static final int CREATE_ITEM_REQUEST = 4304;
     public static final int DELETE_ITEM_REQUEST = 4305;
+    public static final int FABRICATE_ITEM_REQUEST = 4206;
 
     //Universal
     public static final int OK = 8000;
