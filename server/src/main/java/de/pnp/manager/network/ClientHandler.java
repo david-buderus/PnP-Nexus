@@ -170,7 +170,7 @@ public class ClientHandler extends Thread implements Client {
 
     private StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
-        stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(calendar.getTime())));
+        stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(getMessage("message.error.wrongState"), calendar.getTime())));
 
         // Pre login
         stateMachine.registerTransition(States.PRE_LOGIN, States.LOGGED_IN, LOGIN_REQUEST, message -> {
@@ -305,7 +305,7 @@ public class ClientHandler extends Thread implements Client {
                             sendMessage(new NotFoundMessage(getMessage("message.error.notExists"), calendar.getTime()));
                         }
                     } else {
-                        sendMessage(new DeniedMessage(calendar.getTime()));
+                        sendMessage(new DeniedMessage(getMessage("message.error.denied.character"), calendar.getTime()));
                     }
 
                 }
