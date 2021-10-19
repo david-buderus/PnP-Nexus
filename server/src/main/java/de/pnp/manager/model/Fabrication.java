@@ -117,6 +117,6 @@ public class Fabrication implements IFabrication {
         return getProduct().equals(other.getProduct()) && getProfession().equals(other.getProfession())
                 && getRequirement().equals(other.getRequirement()) && getOtherCircumstances().equals(other.getOtherCircumstances())
                 && getProductAmount() == other.getProductAmount() && getSideProduct().equals(other.getSideProduct())
-                && getProductAmount() == other.getSideProductAmount() && getMaterials().equals(other.getMaterials());
+                && getSideProductAmount() == other.getSideProductAmount() && getMaterials().equals(other.getMaterials());
     }
 }

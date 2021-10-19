@@ -18,7 +18,7 @@ public abstract class TestWithDatabaseAccess {
 
     @BeforeAll
     @Test
-    public static void setup() throws SQLException {
+    public static void setupDatabase() throws SQLException {
         Properties properties = new Properties();
 
         // TODO localize/configure

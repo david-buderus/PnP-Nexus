@@ -27,6 +27,9 @@ public class FabricateItemRequestMessage extends DataMessage<FabricateItemReques
         protected String inventoryID;
         protected IFabrication fabrication;
 
+        public FabricateItemData() {
+        }
+
         public FabricateItemData(String inventoryID, IFabrication fabrication) {
             this.inventoryID = inventoryID;
             this.fabrication = fabrication;
