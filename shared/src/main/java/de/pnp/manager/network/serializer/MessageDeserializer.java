@@ -71,7 +71,6 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(REVOKE_INVENTORIES, RevokeInventoriesMessage.class);
 
         //Error
-        this.typeClassMap.put(ERROR, ErrorMessage.class);
         this.typeClassMap.put(NOT_FOUND, NotFoundMessage.class);
         this.typeClassMap.put(WRONG_STATE, WrongStateMessage.class);
         this.typeClassMap.put(DENIED, DeniedMessage.class);
