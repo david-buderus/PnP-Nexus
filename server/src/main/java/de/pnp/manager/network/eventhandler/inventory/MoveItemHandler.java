@@ -64,7 +64,7 @@ public class MoveItemHandler implements INonConditionalEventHandler<BaseMessage>
                 }
 
             } else {
-                client.sendMessage(new DeniedMessage(calendar.getTime()));
+                client.sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
             }
         }
     }

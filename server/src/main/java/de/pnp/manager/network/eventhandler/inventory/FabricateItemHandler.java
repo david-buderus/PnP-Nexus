@@ -81,10 +81,10 @@ public class FabricateItemHandler implements INonConditionalEventHandler<BaseMes
                     }
 
                 } else {
-                    client.sendMessage(new DeniedMessage(calendar.getTime()));
+                    client.sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
                 }
             } else {
-                client.sendMessage(new DeniedMessage(calendar.getTime()));
+                client.sendMessage(new DeniedMessage(getMessage("message.error.denied.fabrication"), calendar.getTime()));
             }
         }
     }
