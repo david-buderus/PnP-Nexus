@@ -61,7 +61,7 @@ public class FabricationTest extends TestWithDatabaseAccess implements TestClien
         assertEquals(playerCharacter.getInventory().stream().findFirst().orElseThrow().getAmount(), fabrication.getProductAmount());
         assertEquals(data.getInventoryID(), playerCharacter.getCharacterID());
         assertTrue(data.getAddedItems().contains(fabrication.getProduct()));
-        assertEquals(data.getRemovedItems(), fabrication.getMaterials());
+        assertEquals(fabrication.getMaterials(), data.getRemovedItems());
     }
 
     @Test

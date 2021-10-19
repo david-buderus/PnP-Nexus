@@ -15,7 +15,7 @@ public class FabricateItemRequestMessage extends DataMessage<FabricateItemReques
     }
 
     public FabricateItemRequestMessage(String inventoryID, IFabrication fabrication, Date timestamp) {
-        this(new FabricateItemData(inventoryID, fabrication), timestamp);
+        this(new FabricateItemData(Collections.singleton(inventoryID), inventoryID, fabrication), timestamp);
     }
 
     public FabricateItemRequestMessage(FabricateItemData data, Date timestamp) {
@@ -24,23 +24,39 @@ public class FabricateItemRequestMessage extends DataMessage<FabricateItemReques
     }
 
     public static class FabricateItemData {
-        protected String inventoryID;
+        /**
+         * Inventories that contain the materials
+         */
+        protected Collection<String> from;
+        /**
+         * Inventory that will contain the product
+         */
+        protected String to;
         protected IFabrication fabrication;
 
         public FabricateItemData() {
         }
 
-        public FabricateItemData(String inventoryID, IFabrication fabrication) {
-            this.inventoryID = inventoryID;
+        public FabricateItemData(Collection<String> from, String to, IFabrication fabrication) {
+            this.from = from;
+            this.to = to;
             this.fabrication = fabrication;
         }
 
-        public String getInventoryID() {
-            return inventoryID;
+        public Collection<String> getFrom() {
+            return from;
         }
 
-        public void setInventoryID(String inventoryID) {
-            this.inventoryID = inventoryID;
+        public void setFrom(Collection<String> from) {
+            this.from = from;
+        }
+
+        public String getTo() {
+            return to;
+        }
+
+        public void setTo(String to) {
+            this.to = to;
         }
 
         public IFabrication getFabrication() {
