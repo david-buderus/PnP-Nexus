@@ -52,7 +52,7 @@ public class FabricationTest extends TestWithDatabaseAccess implements TestClien
 
     @Test
     public void simpleFabricateItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
         IFabrication fabrication = Database.fabricationList.stream().findFirst().orElseThrow();
@@ -71,7 +71,7 @@ public class FabricationTest extends TestWithDatabaseAccess implements TestClien
 
     @Test
     public void fabricateItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
         Container container1 = assignDefaultInventory(manager, client);
         Container container2 = assignDefaultInventory(manager, client);
@@ -152,7 +152,7 @@ public class FabricationTest extends TestWithDatabaseAccess implements TestClien
 
     @Test
     public void simpleFabricateItemWithoutEnoughItemsTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
         IFabrication fabrication = Database.fabricationList.stream().findFirst().orElseThrow();
@@ -164,7 +164,7 @@ public class FabricationTest extends TestWithDatabaseAccess implements TestClien
 
     @Test
     public void fabricateItemWithoutEnoughSpaceTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
         Container container = assignDefaultInventory(manager, client);
         Container fullContainer = assignDefaultInventory(manager, client, 0, 0);

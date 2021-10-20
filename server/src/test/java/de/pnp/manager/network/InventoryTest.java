@@ -45,7 +45,7 @@ public class InventoryTest implements TestClientHelper {
 
     @Test
     public void createItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
         Item testItem = new Item();
@@ -62,7 +62,7 @@ public class InventoryTest implements TestClientHelper {
 
     @Test
     public void deleteItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         assignDefaultCharacter(manager, client);
         Container container = assignDefaultInventory(manager, client);
 
@@ -83,7 +83,7 @@ public class InventoryTest implements TestClientHelper {
 
     @Test
     public void moveItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
         Container container = assignDefaultInventory(manager, client);
 

@@ -8,8 +8,13 @@ import java.util.Collection;
 
 public class Inventory extends ItemList implements IInventory {
 
-    public static final Inventory EMPTY_INVENTORY = new Inventory(0, 0);
-    public static final Inventory UNLIMITED_INVENTORY = new Inventory(Double.MAX_VALUE, Integer.MAX_VALUE);
+    public static Inventory createEmptyInventory()  {
+        return new Inventory(0, 0);
+    }
+
+    public static Inventory createUnlimitedInventory()  {
+        return new Inventory(Double.MAX_VALUE, Integer.MAX_VALUE);
+    }
 
     protected double maxSize;
     protected int numberOfSlots;

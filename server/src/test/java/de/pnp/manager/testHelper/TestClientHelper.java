@@ -27,16 +27,10 @@ public interface TestClientHelper {
         TestClient client = new TestClient();
         client.connect("localhost", Utility.getConfig().getInt("server.port"));
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         return client;
     }
 
-    default void prepareTestClient(TestClient client) {
+    default void prepareTestClient(TestClient client, Manager manager) {
 
         try {
             LoginResponseMessage loginResponse = (LoginResponseMessage) client.sendMessage(new LoginRequestMessage("Test", calender.getTime()));
@@ -48,7 +42,12 @@ public interface TestClientHelper {
             client.sendMessage(new JoinSessionRequestMessage(id, null, calender.getTime()));
             client.setSessionID(id);
 
-        } catch (IOException e) {
+            // The waiting time is only needed in tests, a server admin can not use a client without a refreshed UI
+            while (manager.getNetworkHandler().clientsProperty().stream().noneMatch(c -> c.getClientID().equals(client.getClientID()))) {
+                Thread.sleep(100);
+            }
+
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -88,9 +87,9 @@ public interface TestClientHelper {
         return container;
     }
 
-    default TestClient createPreparedClient() {
+    default TestClient createPreparedClient(Manager manager) {
         TestClient client = createTestClient();
-        prepareTestClient(client);
+        prepareTestClient(client, manager);
         return client;
     }
 }

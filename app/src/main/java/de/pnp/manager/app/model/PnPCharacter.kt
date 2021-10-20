@@ -221,7 +221,7 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getInventory(): IInventory {
-        return inventory?:Inventory.EMPTY_INVENTORY
+        return inventory?:Inventory.createEmptyInventory()
     }
 
     fun setInventory(inventory: IInventory) {

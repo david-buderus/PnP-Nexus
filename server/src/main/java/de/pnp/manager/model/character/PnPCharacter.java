@@ -85,7 +85,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
             this.secondaryAttributes.put(attribute, 0);
         }
         this.lootTable = lootTable;
-        this.inventory = Inventory.UNLIMITED_INVENTORY;
+        this.inventory = Inventory.createUnlimitedInventory();
         this.battle = battle;
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
