@@ -100,7 +100,7 @@ public class FabricateItemHandler implements INonConditionalEventHandler<BaseMes
 
                                 if (fromID.equals(data.getTo())) {
                                     manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
-                                            data.getTo(),
+                                            fromID,
                                             toAdd,
                                             sourceTakeMap.get(fromID),
                                             calendar.getTime()
@@ -108,7 +108,7 @@ public class FabricateItemHandler implements INonConditionalEventHandler<BaseMes
                                     updatedResultInventory = true;
                                 } else {
                                     manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
-                                            data.getTo(),
+                                            fromID,
                                             Collections.emptyList(),
                                             sourceTakeMap.get(fromID),
                                             calendar.getTime()

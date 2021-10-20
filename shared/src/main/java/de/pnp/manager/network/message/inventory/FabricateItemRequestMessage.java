@@ -18,6 +18,10 @@ public class FabricateItemRequestMessage extends DataMessage<FabricateItemReques
         this(new FabricateItemData(Collections.singleton(inventoryID), inventoryID, fabrication), timestamp);
     }
 
+    public FabricateItemRequestMessage(Collection<String> from, String to, IFabrication fabrication, Date timestamp) {
+        this(new FabricateItemData(from, to, fabrication), timestamp);
+    }
+
     public FabricateItemRequestMessage(FabricateItemData data, Date timestamp) {
         super(FABRICATE_ITEM_REQUEST, timestamp);
         this.setData(data);
@@ -25,7 +29,9 @@ public class FabricateItemRequestMessage extends DataMessage<FabricateItemReques
 
     public static class FabricateItemData {
         /**
-         * Inventories that contain the materials
+         * Inventories that contain the materials.
+         * It also specifies the priority of which
+         * inventory the items are taken from first
          */
         protected Collection<String> from;
         /**
