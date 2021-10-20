@@ -14,9 +14,9 @@ public class Fabrication implements IFabrication {
     protected String profession = "";
     protected String requirement = "";
     protected String otherCircumstances = "";
-    private int productAmount = 1;
+    private float productAmount = 1;
     private IItem sideProduct = Item.EMPTY_ITEM;
-    private int sideProductAmount = 1;
+    private float sideProductAmount = 1;
     private IItemList materials = new ItemList();
 
     public IItem getProduct() {
@@ -51,11 +51,11 @@ public class Fabrication implements IFabrication {
         this.otherCircumstances = otherCircumstances;
     }
 
-    public int getProductAmount() {
+    public float getProductAmount() {
         return productAmount;
     }
 
-    public void setProductAmount(int productAmount) {
+    public void setProductAmount(float productAmount) {
         this.productAmount = productAmount;
     }
 
@@ -67,11 +67,11 @@ public class Fabrication implements IFabrication {
         this.sideProduct = sideProduct;
     }
 
-    public int getSideProductAmount() {
+    public float getSideProductAmount() {
         return sideProductAmount;
     }
 
-    public void setSideProductAmount(int sideProductAmount) {
+    public void setSideProductAmount(float sideProductAmount) {
         this.sideProductAmount = sideProductAmount;
     }
 

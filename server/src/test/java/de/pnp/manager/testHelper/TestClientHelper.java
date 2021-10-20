@@ -70,8 +70,12 @@ public interface TestClientHelper {
     }
 
     default Container assignDefaultInventory(Manager manager, TestClient client) {
+        return assignDefaultInventory(manager, client, 10, 1000);
+    }
+
+    default Container assignDefaultInventory(Manager manager, TestClient client, int size, int slots) {
         Client serverClient = manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.getClientID().equals(client.getClientID())).findFirst().orElseThrow();
-        Container container = manager.getInventoryHandler().createContainer(client.getSessionID(), "Test Inventory", new Inventory(10, 1000));
+        Container container = manager.getInventoryHandler().createContainer(client.getSessionID(), "Test Inventory", new Inventory(size, slots));
         serverClient.sendActiveMessage(new AssignInventoryMessage(container, calender.getTime()));
 
         try {
