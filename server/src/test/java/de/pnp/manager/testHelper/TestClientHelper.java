@@ -18,7 +18,6 @@ import de.pnp.manager.network.message.session.SessionQueryResponse;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
