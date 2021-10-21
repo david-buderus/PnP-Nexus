@@ -17,6 +17,7 @@ import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessa
 import de.pnp.manager.testHelper.TestClient;
 import de.pnp.manager.testHelper.TestClientHelper;
 import de.pnp.manager.testHelper.TestWithDatabaseAccess;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,6 +47,16 @@ public class FabricationTest extends TestWithDatabaseAccess implements TestClien
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @AfterAll
+    @Test
+    public static void close() {
+        try {
+            manager.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
