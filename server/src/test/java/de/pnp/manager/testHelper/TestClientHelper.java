@@ -45,9 +45,7 @@ public interface TestClientHelper {
             client.sendMessage(new JoinSessionRequestMessage(id, null, calender.getTime()));
             client.setSessionID(id);
 
-            Thread.sleep(200);
-            System.out.println(Calendar.getInstance().getTimeInMillis() + " Checked " + client.getClientID());
-            System.out.println(manager.getNetworkHandler().clientsProperty().stream().map(Client::getClientID).collect(Collectors.joining(", ")));
+            Thread.sleep(100);
             assertThat(manager.getNetworkHandler().clientsProperty()).extracting(Client::getClientID).contains(client.getClientID());
 
         } catch (IOException | InterruptedException e) {

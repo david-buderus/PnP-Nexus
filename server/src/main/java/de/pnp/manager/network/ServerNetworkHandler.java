@@ -58,11 +58,7 @@ public class ServerNetworkHandler implements NetworkHandler, Closeable {
                         client.setDaemon(true);
                         client.start();
                         clientMap.put(client.getClientID(), client);
-                        runLater(() -> {
-                            clients.add(client);
-                            System.out.println(clients.stream().map(Client::getClientID).collect(Collectors.joining(", ")));
-                            System.out.println(Calendar.getInstance().getTimeInMillis() + " Added Client " + client.getClientID());
-                        });
+                        runLater(() -> clients.add(client));
                     } catch (IOException ignored) {
                     }
                 }

@@ -16,10 +16,10 @@ import de.pnp.manager.network.message.inventory.FabricateItemRequestMessage;
 import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
 import de.pnp.manager.testHelper.TestClient;
 import de.pnp.manager.testHelper.TestClientHelper;
-import de.pnp.manager.testHelper.TestWithDatabaseAccess;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import de.pnp.manager.testHelper.DatabaseAccessExtension;
+import de.pnp.manager.testHelper.TestWithManager;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
@@ -35,31 +35,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
 @ExtendWith(ApplicationExtension.class)
-public class FabricationTest extends TestWithDatabaseAccess implements TestClientHelper {
-
-    protected static Manager manager;
-
-    @BeforeAll
-    @Test
-    public static void setup() {
-        manager = new Manager();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @AfterAll
-    @Test
-    public static void close() {
-        try {
-            manager.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+@ExtendWith(DatabaseAccessExtension.class)
+public class FabricationTest extends TestWithManager implements TestClientHelper {
 
     @Test
     public void simpleFabricateItemTest() throws IOException {
