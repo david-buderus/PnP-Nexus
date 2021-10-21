@@ -18,6 +18,7 @@ import de.pnp.manager.network.message.session.SessionQueryResponse;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +46,8 @@ public interface TestClientHelper {
             client.setSessionID(id);
 
             Thread.sleep(200);
-            System.out.println(Calendar.getInstance().getTime() + " Checked " + client.getClientID());
+            System.out.println(Calendar.getInstance().getTimeInMillis() + " Checked " + client.getClientID());
+            System.out.println(manager.getNetworkHandler().clientsProperty().stream().map(Client::getClientID).collect(Collectors.joining(", ")));
             assertThat(manager.getNetworkHandler().clientsProperty()).extracting(Client::getClientID).contains(client.getClientID());
 
         } catch (IOException | InterruptedException e) {

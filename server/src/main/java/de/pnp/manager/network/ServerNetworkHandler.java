@@ -16,6 +16,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static javafx.application.Platform.runLater;
 
@@ -59,7 +60,8 @@ public class ServerNetworkHandler implements NetworkHandler, Closeable {
                         clientMap.put(client.getClientID(), client);
                         runLater(() -> {
                             clients.add(client);
-                            System.out.println(Calendar.getInstance().getTime() + " Added Client " + client.getClientID());
+                            System.out.println(clients.stream().map(Client::getClientID).collect(Collectors.joining(", ")));
+                            System.out.println(Calendar.getInstance().getTimeInMillis() + " Added Client " + client.getClientID());
                         });
                     } catch (IOException ignored) {
                     }
