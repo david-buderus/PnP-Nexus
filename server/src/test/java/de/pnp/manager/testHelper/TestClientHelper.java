@@ -19,6 +19,8 @@ import de.pnp.manager.network.message.session.SessionQueryResponse;
 import java.io.IOException;
 import java.util.Calendar;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public interface TestClientHelper {
 
     Calendar calender = Calendar.getInstance();
@@ -42,10 +44,8 @@ public interface TestClientHelper {
             client.sendMessage(new JoinSessionRequestMessage(id, null, calender.getTime()));
             client.setSessionID(id);
 
-            // The waiting time is only needed in tests, a server admin can not use a client without a refreshed UI
-            while (manager.getNetworkHandler().clientsProperty().stream().noneMatch(c -> c.getClientID().equals(client.getClientID()))) {
-                Thread.sleep(100);
-            }
+            Thread.sleep(100);
+            assertThat(manager.getNetworkHandler().clientsProperty()).extracting(Client::getClientID).contains(client.getClientID());
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
