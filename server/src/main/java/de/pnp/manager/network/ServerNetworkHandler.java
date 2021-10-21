@@ -59,7 +59,7 @@ public class ServerNetworkHandler implements NetworkHandler, Closeable {
                         clientMap.put(client.getClientID(), client);
                         runLater(() -> {
                             clients.add(client);
-                            System.out.println("Added Client " + client.getClientID());
+                            System.out.println(Calendar.getInstance().getTime() + " Added Client " + client.getClientID());
                         });
                     } catch (IOException ignored) {
                     }

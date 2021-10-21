@@ -45,6 +45,7 @@ public interface TestClientHelper {
             client.setSessionID(id);
 
             Thread.sleep(100);
+            System.out.println(Calendar.getInstance().getTime() + " Checked " + client.getClientID());
             assertThat(manager.getNetworkHandler().clientsProperty()).extracting(Client::getClientID).contains(client.getClientID());
 
         } catch (IOException | InterruptedException e) {
