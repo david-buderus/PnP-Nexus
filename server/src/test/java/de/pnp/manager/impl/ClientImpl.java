@@ -71,6 +71,4 @@ public class ClientImpl implements Client {
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
-
-
 }
