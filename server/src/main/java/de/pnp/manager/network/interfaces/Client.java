@@ -37,4 +37,8 @@ public interface Client extends IClient {
     Collection<String> getAccessibleInventories();
 
     boolean hasAccessToInventory(String id);
+
+    default String getSessionID() {
+        return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
+    }
 }

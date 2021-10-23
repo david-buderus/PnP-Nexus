@@ -10,6 +10,9 @@ import de.pnp.manager.network.message.character.AssignCharactersMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterRequestMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
 import de.pnp.manager.network.message.character.RevokeCharactersMessage;
+import de.pnp.manager.network.message.character.equipment.ChangeEquippedWeaponsRequestMessage;
+import de.pnp.manager.network.message.character.equipment.EquipRequestMessage;
+import de.pnp.manager.network.message.character.equipment.EquipmentUpdateNotificationMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsNotificationMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseRequestMessage;
@@ -60,6 +63,9 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(MOVE_ITEM_REQUEST, MoveItemRequestMessage.class);
         this.typeClassMap.put(CREATE_ITEM_REQUEST, CreateItemRequestMessage.class);
         this.typeClassMap.put(DELETE_ITEM_REQUEST, DeleteItemRequestMessage.class);
+        this.typeClassMap.put(EQUIP_REQUEST, EquipRequestMessage.class);
+        this.typeClassMap.put(UPDATE_EQUIPMENT_NOTIFICATION, EquipmentUpdateNotificationMessage.class);
+        this.typeClassMap.put(CHANGE_EQUIPPED_WEAPONS, ChangeEquippedWeaponsRequestMessage.class);
 
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);

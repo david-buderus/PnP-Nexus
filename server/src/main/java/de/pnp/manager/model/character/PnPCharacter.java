@@ -42,9 +42,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     protected ListProperty<IMemberState> memberStates;
     protected ListProperty<IWeapon> weapons;
     protected ListProperty<IWeapon> equippedWeapons;
-    protected ListProperty<IJewellery> jewellery;
     protected ListProperty<IJewellery> equippedJewellery;
-    protected ListProperty<IArmor> armor;
     protected MapProperty<IArmorPosition, IArmor> equippedArmor;
     protected ListProperty<ISpell> spells;
     protected MapProperty<ITalent, IntegerProperty> talents;
@@ -93,9 +91,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         this.memberStates = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.weapons = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.equippedWeapons = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.jewellery = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.equippedJewellery = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.armor = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.equippedArmor = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
         this.spells = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.talents = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
@@ -118,8 +114,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
                 if (getEquippedArmor().get(position).equals(armor)) {
                     getEquippedArmor().put(position, null);
                 }
-
-                getArmor().remove(armor);
             }
         };
 
@@ -177,21 +171,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         });
 
         //Prepare armor
-        this.armor.addListener((ListChangeListener<? super IArmor>) ob -> {
-            while (ob.next()) {
-                for (IArmor armor : ob.getRemoved()) {
-                    if (armor instanceof Armor) {
-                        ((Armor) armor).removeOnBreakListener(armorListener);
-                    }
-                }
-
-                for (IArmor armor : ob.getAddedSubList()) {
-                    if (armor instanceof Armor) {
-                        ((Armor) armor).addOnBreakListener(armorListener);
-                    }
-                }
-            }
-        });
         this.equippedArmor.addListener((MapChangeListener<IArmorPosition, IArmor>) change -> {
             if (change.wasRemoved()) {
                 IArmor prevArmor = change.getValueRemoved();
@@ -391,14 +370,9 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         character.equippedArmor.put(ArmorPosition.UPPER_BODY, getEquippedArmor().get(ArmorPosition.UPPER_BODY));
         character.equippedArmor.put(ArmorPosition.ARM, getEquippedArmor().get(ArmorPosition.ARM));
         character.equippedArmor.put(ArmorPosition.LEGS, getEquippedArmor().get(ArmorPosition.LEGS));
-        for (IArmor armor : getArmor()) {
-            character.armor.add(armor.copy());
-        }
+
         for (IJewellery jewellery : getEquippedJewellery()) {
             character.equippedJewellery.add(jewellery.copy());
-        }
-        for (IJewellery jewellery : getJewellery()) {
-            character.jewellery.add(jewellery.copy());
         }
 
         //Load Talents and spells
@@ -451,13 +425,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         for (IEquipment equipment : getEquippedWeapons()) {
             result.add(equipment, 1,1);
         }
-        for (IEquipment equipment : getArmor()) {
-            result.add(equipment, 1,1);
-        }
         for (IEquipment equipment : getEquippedArmor().values()) {
-            result.add(equipment, 1,1);
-        }
-        for (IEquipment equipment : getJewellery()) {
             result.add(equipment, 1,1);
         }
         for (IEquipment equipment : getEquippedJewellery()) {
@@ -726,19 +694,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
-    public ObservableList<IJewellery> getJewellery() {
-        return jewellery.get();
-    }
-
-    public ListProperty<IJewellery> jewelleryProperty() {
-        return jewellery;
-    }
-
-    public void setJewellery(ObservableList<IJewellery> jewellery) {
-        this.jewellery.set(jewellery);
-    }
-
-    @Override
     public ObservableList<IJewellery> getEquippedJewellery() {
         return equippedJewellery.get();
     }
@@ -749,19 +704,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
 
     public void setEquippedJewellery(ObservableList<IJewellery> equippedJewellery) {
         this.equippedJewellery.set(equippedJewellery);
-    }
-
-    @Override
-    public ObservableList<IArmor> getArmor() {
-        return armor.get();
-    }
-
-    public ListProperty<IArmor> armorProperty() {
-        return armor;
-    }
-
-    public void setArmor(ObservableList<IArmor> armor) {
-        this.armor.set(armor);
     }
 
     @Override

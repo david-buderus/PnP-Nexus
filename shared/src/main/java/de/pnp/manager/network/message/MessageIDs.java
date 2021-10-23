@@ -36,6 +36,10 @@ public abstract class MessageIDs {
     public static final int MOVE_ITEM_REQUEST = 4303;
     public static final int CREATE_ITEM_REQUEST = 4304;
     public static final int DELETE_ITEM_REQUEST = 4305;
+    public static final int EQUIP_REQUEST = 4307;
+    public static final int UNEQUIP_REQUEST = 4308;
+    public static final int CHANGE_EQUIPPED_WEAPONS = 4009;
+    public static final int UPDATE_EQUIPMENT_NOTIFICATION = 4010;
 
     //Universal
     public static final int OK = 8000;

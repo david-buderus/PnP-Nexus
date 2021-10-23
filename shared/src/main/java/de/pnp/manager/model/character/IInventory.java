@@ -33,4 +33,30 @@ public interface IInventory extends IItemList {
 
     @Override
     boolean addAll(@NotNull Collection<? extends IItem> collection);
+
+    /**
+     * @param item which may be added to the inventory
+     * @return if this inventory could hold additionally this item
+     */
+    default boolean hasSpaceFor(IItem item) {
+        if (getCurrentSize() + item.getAmount() <= getMaxSize()) {
+            return contains(item) || getNumberOfFreeSlots() > 0;
+        }
+        return false;
+    }
+
+    /**
+     * @param collection which bay be added to the inventory
+     * @return if this inventory could hold additionally these items
+     */
+    default boolean hasSpaceFor(@NotNull Collection<? extends IItem> collection) {
+
+        if (collection.stream().mapToDouble(IItem::getAmount).sum() + getCurrentSize() <= getMaxSize()) {
+            long notContainedItemStacks = collection.stream().filter(i -> !contains(i)).count();
+
+            return notContainedItemStacks <= getNumberOfFreeSlots();
+        }
+
+        return false;
+    }
 }

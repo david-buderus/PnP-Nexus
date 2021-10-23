@@ -36,9 +36,7 @@ public class PnPCharacterImpl implements IPnPCharacter {
     protected Collection<IMemberState> memberStates;
     protected Collection<IWeapon> weapons;
     protected Collection<IWeapon> equippedWeapons;
-    protected Collection<IJewellery> jewellery;
     protected Collection<IJewellery> equippedJewellery;
-    protected Collection<IArmor> armor;
     protected Map<IArmorPosition, IArmor> equippedArmor;
     protected Collection<ISpell> spells;
     protected Map<ITalent, Integer> talents;
@@ -208,30 +206,12 @@ public class PnPCharacterImpl implements IPnPCharacter {
     }
 
     @Override
-    public Collection<IJewellery> getJewellery() {
-        return jewellery;
-    }
-
-    public void setJewellery(Collection<IJewellery> jewellery) {
-        this.jewellery = jewellery;
-    }
-
-    @Override
     public Collection<IJewellery> getEquippedJewellery() {
         return equippedJewellery;
     }
 
     public void setEquippedJewellery(Collection<IJewellery> equippedJewellery) {
         this.equippedJewellery = equippedJewellery;
-    }
-
-    @Override
-    public Collection<IArmor> getArmor() {
-        return armor;
-    }
-
-    public void setArmor(Collection<IArmor> armor) {
-        this.armor = armor;
     }
 
     @Override

@@ -10,6 +10,9 @@ import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.client.IClient;
 import de.pnp.manager.network.eventhandler.*;
+import de.pnp.manager.network.eventhandler.equipment.ChangeEquippedWeaponsHandler;
+import de.pnp.manager.network.eventhandler.equipment.EquipHandler;
+import de.pnp.manager.network.eventhandler.equipment.UnequipHandler;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
@@ -167,10 +170,6 @@ public class ClientHandler extends Thread implements Client {
     @Override
     public boolean hasAccessToInventory(String id) {
         return controlledCharacters.contains(id) || accessibleInventories.contains(id);
-    }
-
-    private String getSessionID() {
-        return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
     }
 
     private Collection<Client> getClientsWithInventoryAccess(String id) {
@@ -408,6 +407,9 @@ public class ClientHandler extends Thread implements Client {
                 sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
             }
         });
+        stateMachine.registerTransition(States.IN_CHARACTER, EQUIP_REQUEST, new EquipHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, UNEQUIP_REQUEST, new UnequipHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, CHANGE_EQUIPPED_WEAPONS, new ChangeEquippedWeaponsHandler(this, calendar, manager));
 
         return stateMachine;
     }
