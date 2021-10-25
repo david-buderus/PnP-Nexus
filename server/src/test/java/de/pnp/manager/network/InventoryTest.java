@@ -2,7 +2,6 @@ package de.pnp.manager.network;
 
 import de.pnp.manager.model.character.PlayerCharacter;
 import de.pnp.manager.model.item.Item;
-import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.other.Container;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.MessageIDs;
@@ -12,7 +11,7 @@ import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessa
 import de.pnp.manager.network.message.inventory.MoveItemRequestMessage;
 import de.pnp.manager.testHelper.TestClient;
 import de.pnp.manager.testHelper.TestClientHelper;
-import org.junit.jupiter.api.BeforeAll;
+import de.pnp.manager.testHelper.TestWithManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
@@ -27,25 +26,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
 @ExtendWith(ApplicationExtension.class)
-public class InventoryTest implements TestClientHelper {
-
-    protected static Manager manager;
-
-    @BeforeAll
-    @Test
-    public static void setup() {
-        manager = new Manager();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+public class InventoryTest extends TestWithManager implements TestClientHelper {
 
     @Test
     public void createItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
         Item testItem = new Item();
@@ -62,7 +47,7 @@ public class InventoryTest implements TestClientHelper {
 
     @Test
     public void deleteItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         assignDefaultCharacter(manager, client);
         Container container = assignDefaultInventory(manager, client);
 
@@ -83,7 +68,7 @@ public class InventoryTest implements TestClientHelper {
 
     @Test
     public void moveItemTest() throws IOException {
-        TestClient client = createPreparedClient();
+        TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
         Container container = assignDefaultInventory(manager, client);
 

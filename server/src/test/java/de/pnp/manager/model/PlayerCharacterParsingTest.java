@@ -8,11 +8,12 @@ import de.pnp.manager.model.character.PnPCharacterFactory;
 import de.pnp.manager.model.character.data.ArmorPosition;
 import de.pnp.manager.model.character.data.PrimaryAttribute;
 import de.pnp.manager.model.character.data.SecondaryAttribute;
-import de.pnp.manager.testHelper.TestWithDatabaseAccess;
+import de.pnp.manager.testHelper.DatabaseAccessExtension;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,8 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
+@ExtendWith(DatabaseAccessExtension.class)
+public class PlayerCharacterParsingTest {
 
     protected static PlayerCharacter character;
     protected static String wbPath = "src/test/resources/workbooks/Charakterbogen.xlsx";

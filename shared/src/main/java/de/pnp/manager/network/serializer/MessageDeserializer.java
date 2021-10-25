@@ -63,6 +63,7 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(MOVE_ITEM_REQUEST, MoveItemRequestMessage.class);
         this.typeClassMap.put(CREATE_ITEM_REQUEST, CreateItemRequestMessage.class);
         this.typeClassMap.put(DELETE_ITEM_REQUEST, DeleteItemRequestMessage.class);
+        this.typeClassMap.put(FABRICATE_ITEM_REQUEST, FabricateItemRequestMessage.class);
         this.typeClassMap.put(EQUIP_REQUEST, EquipRequestMessage.class);
         this.typeClassMap.put(UPDATE_EQUIPMENT_NOTIFICATION, EquipmentUpdateNotificationMessage.class);
         this.typeClassMap.put(CHANGE_EQUIPPED_WEAPONS, ChangeEquippedWeaponsRequestMessage.class);

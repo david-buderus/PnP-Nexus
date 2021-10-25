@@ -9,9 +9,9 @@ class Fabrication : IFabrication {
     private var profession : String = ""
     private var requirement: String = ""
     private var otherCircumstances : String = ""
-    private var productAmount: Int = 0
+    private var productAmount: Float = 0f
     private var sideProduct : IItem? = null
-    private var sideProductAmount: Int = 0
+    private var sideProductAmount: Float = 0f
     private var materials: IItemList? = null
 
     override fun getProduct(): IItem? {
@@ -46,11 +46,11 @@ class Fabrication : IFabrication {
         this.otherCircumstances = otherCircumstances
     }
 
-    override fun getProductAmount(): Int {
+    override fun getProductAmount(): Float {
         return productAmount
     }
 
-    override fun setProductAmount(productAmount: Int) {
+    override fun setProductAmount(productAmount: Float) {
         this.productAmount = productAmount
     }
 
@@ -62,11 +62,11 @@ class Fabrication : IFabrication {
         this.sideProduct = sideProduct
     }
 
-    override fun getSideProductAmount(): Int {
+    override fun getSideProductAmount(): Float {
         return this.sideProductAmount
     }
 
-    override fun setSideProductAmount(sideProductAmount: Int) {
+    override fun setSideProductAmount(sideProductAmount: Float) {
         this.sideProductAmount = sideProductAmount
     }
 
