@@ -37,7 +37,6 @@ public class SettingsOverview extends ViewPart {
                     Collection<String> content = reader.lines().filter(s -> !s.isBlank()).collect(Collectors.toList());
 
                     root.getTabs().add(new SettingsView(title, content, this));
-
                 }
             }
 
