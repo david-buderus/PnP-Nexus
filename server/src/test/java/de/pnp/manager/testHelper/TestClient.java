@@ -72,7 +72,9 @@ public class TestClient {
     }
 
     public BaseMessage receiveMessage() throws IOException {
-        return mapper.readValue(in.readLine(), BaseMessage.class);
+        final String s = in.readLine();
+        System.out.println(s);
+        return mapper.readValue(s, BaseMessage.class);
     }
 
     public String sendMessageWithRawResponse(BaseMessage message) throws IOException {
