@@ -1,4 +1,4 @@
-package de.pnp.manager.network;
+package de.pnp.manager.network.equipment;
 
 import de.pnp.manager.model.character.PlayerCharacter;
 import de.pnp.manager.model.character.data.ArmorPosition;
@@ -7,10 +7,8 @@ import de.pnp.manager.model.item.IEquipment;
 import de.pnp.manager.model.item.Jewellery;
 import de.pnp.manager.model.item.Weapon;
 import de.pnp.manager.network.message.BaseMessage;
-import de.pnp.manager.network.message.character.equipment.EquipRequestMessage;
-import de.pnp.manager.network.message.character.equipment.EquipmentData;
-import de.pnp.manager.network.message.character.equipment.EquipmentType;
-import de.pnp.manager.network.message.character.equipment.EquipmentUpdateNotificationMessage;
+import de.pnp.manager.network.message.character.equipment.*;
+import de.pnp.manager.network.message.error.ErrorMessage;
 import de.pnp.manager.network.message.inventory.InventoryUpdateNotificationMessage;
 import de.pnp.manager.testHelper.TestClient;
 import de.pnp.manager.testHelper.TestClientHelper;
@@ -30,62 +28,60 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
 @ExtendWith(ApplicationExtension.class)
-public class EquipmentTest extends TestWithManager implements TestClientHelper {
+public class UnequipTest extends TestWithManager implements TestClientHelper {
 
     @Test
-    public void simpleEquipWeaponTest() throws IOException {
+    public void simpleUnequipWeaponTest() throws IOException {
         TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
         Weapon weapon = new Weapon();
         weapon.setName("Sword");
 
-        playerCharacter.getInventory().add(weapon);
+        playerCharacter.getWeapons().add(weapon);
+        playerCharacter.getEquippedWeapons().add(weapon);
 
-        BaseMessage message1 = client.sendMessage(new EquipRequestMessage(new EquipmentData(
+        BaseMessage message1 = client.sendMessage(new UnequipRequestMessage(new EquipmentData(
                 playerCharacter.getCharacterID(),
                 playerCharacter.getCharacterID(),
                 weapon,
                 EquipmentType.WEAPON
         ), calender.getTime()));
 
-        BaseMessage message2 = client.receiveMessage();
+        simpleMessageCheck(Arrays.asList(message1, client.receiveMessage(), client.receiveMessage()), weapon, playerCharacter.getCharacterID());
 
-        simpleMessageCheck(Arrays.asList(message1, message2), weapon, playerCharacter.getCharacterID());
-
-        assertThat(playerCharacter.getInventory()).isEmpty();
-        assertThat(playerCharacter.getWeapons()).contains(weapon);
+        assertThat(playerCharacter.getInventory()).contains(weapon);
+        assertThat(playerCharacter.getWeapons()).isEmpty();
         assertThat(playerCharacter.getEquippedWeapons()).isEmpty();
     }
 
     @Test
-    public void simpleEquipDirectWeaponTest() throws IOException {
+    public void simpleUnequipDirectWeaponTest() throws IOException {
         TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
         Weapon weapon = new Weapon();
         weapon.setName("Sword");
 
-        playerCharacter.getInventory().add(weapon);
+        playerCharacter.getWeapons().add(weapon);
+        playerCharacter.getEquippedWeapons().add(weapon);
 
-        BaseMessage message1 = client.sendMessage(new EquipRequestMessage(new EquipmentData(
+        BaseMessage message1 = client.sendMessage(new UnequipRequestMessage(new EquipmentData(
                 playerCharacter.getCharacterID(),
                 playerCharacter.getCharacterID(),
                 weapon,
                 EquipmentType.EQUIPPED_WEAPON
         ), calender.getTime()));
 
-        BaseMessage message2 = client.receiveMessage();
+        simpleMessageCheck(Arrays.asList(message1, client.receiveMessage(), client.receiveMessage()), weapon, playerCharacter.getCharacterID());
 
-        simpleMessageCheck(Arrays.asList(message1, message2), weapon, playerCharacter.getCharacterID());
-
-        assertThat(playerCharacter.getInventory()).isEmpty();
-        assertThat(playerCharacter.getWeapons()).contains(weapon);
-        assertThat(playerCharacter.getEquippedWeapons()).contains(weapon);
+        assertThat(playerCharacter.getInventory()).contains(weapon);
+        assertThat(playerCharacter.getWeapons()).isEmpty();
+        assertThat(playerCharacter.getEquippedWeapons()).isEmpty();
     }
 
     @Test
-    public void simpleEquipJewelleryTest() throws IOException {
+    public void simpleUnequipJewelleryTest() throws IOException {
         TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
@@ -93,9 +89,9 @@ public class EquipmentTest extends TestWithManager implements TestClientHelper {
         jewellery.setName("Ring");
         jewellery.setType("Ring");
 
-        playerCharacter.getInventory().add(jewellery);
+        playerCharacter.getEquippedJewellery().add(jewellery);
 
-        BaseMessage message1 = client.sendMessage(new EquipRequestMessage(new EquipmentData(
+        BaseMessage message1 = client.sendMessage(new UnequipRequestMessage(new EquipmentData(
                 playerCharacter.getCharacterID(),
                 playerCharacter.getCharacterID(),
                 jewellery,
@@ -106,22 +102,22 @@ public class EquipmentTest extends TestWithManager implements TestClientHelper {
 
         simpleMessageCheck(Arrays.asList(message1, message2), jewellery, playerCharacter.getCharacterID());
 
-        assertThat(playerCharacter.getInventory()).isEmpty();
-        assertThat(playerCharacter.getEquippedJewellery()).contains(jewellery);
+        assertThat(playerCharacter.getInventory()).contains(jewellery);
+        assertThat(playerCharacter.getEquippedJewellery()).isEmpty();
     }
 
     @Test
-    public void simpleEquipArmorTest() throws IOException {
+    public void simpleUnequipArmorTest() throws IOException {
         TestClient client = createPreparedClient(manager);
         PlayerCharacter playerCharacter = assignDefaultCharacter(manager, client);
 
         Armor armor = new Armor();
-        armor.setName("Helmet");
-        armor.setSubtype(ArmorPosition.HEAD.toStringProperty().get());
+        armor.setName("Legs");
+        armor.setSubtype(ArmorPosition.LEGS.toStringProperty().get());
 
-        playerCharacter.getInventory().add(armor);
+        playerCharacter.getEquippedArmor().put(ArmorPosition.LEGS, armor);
 
-        BaseMessage message1 = client.sendMessage(new EquipRequestMessage(new EquipmentData(
+        BaseMessage message1 = client.sendMessage(new UnequipRequestMessage(new EquipmentData(
                 playerCharacter.getCharacterID(),
                 playerCharacter.getCharacterID(),
                 armor,
@@ -132,14 +128,13 @@ public class EquipmentTest extends TestWithManager implements TestClientHelper {
 
         simpleMessageCheck(Arrays.asList(message1, message2), armor, playerCharacter.getCharacterID());
 
-        assertThat(playerCharacter.getInventory()).isEmpty();
-        assertThat(playerCharacter.getEquippedArmor().get(ArmorPosition.HEAD)).isEqualTo(armor);
+        assertThat(playerCharacter.getInventory()).contains(armor);
+        assertThat(playerCharacter.getEquippedArmor().get(ArmorPosition.LEGS)).isNull();
     }
 
     protected void simpleMessageCheck(Collection<BaseMessage> messages, IEquipment equipment, String invID) {
         assertThat(messages).anyMatch(message -> message instanceof InventoryUpdateNotificationMessage);
         assertThat(messages).anyMatch(message -> message instanceof EquipmentUpdateNotificationMessage);
-        assertThat(messages).hasSize(2);
 
         for (BaseMessage message : messages) {
             if (message instanceof InventoryUpdateNotificationMessage) {
@@ -147,16 +142,16 @@ public class EquipmentTest extends TestWithManager implements TestClientHelper {
                         ((InventoryUpdateNotificationMessage) message).getData().stream().findFirst().orElseThrow();
 
                 assertThat(data.getInventoryID()).isEqualTo(invID);
-                assertThat(data.getAddedItems()).isEmpty();
-                assertThat(data.getRemovedItems()).asList().containsExactlyInAnyOrder(equipment);
+                assertThat(data.getAddedItems()).asList().containsExactlyInAnyOrder(equipment);
+                assertThat(data.getRemovedItems()).isEmpty();
 
             } else if (message instanceof EquipmentUpdateNotificationMessage) {
                 final EquipmentUpdateNotificationMessage.EquipmentUpdateData data =
                         ((EquipmentUpdateNotificationMessage) message).getData().stream().findFirst().orElseThrow();
 
                 assertThat(data.getCharacterID()).isEqualTo(invID);
-                assertThat(data.getAddedItems()).asList().containsExactlyInAnyOrder(equipment);
-                assertThat(data.getRemovedItems()).isEmpty();
+                assertThat(data.getAddedItems()).isEmpty();
+                assertThat(data.getRemovedItems()).asList().containsExactlyInAnyOrder(equipment);
             } else {
                 fail();
             }

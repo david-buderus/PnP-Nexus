@@ -132,9 +132,9 @@ public class UnequipHandler implements INonConditionalEventHandler<BaseMessage> 
     private void handleArmor(EquipmentData data, IInventory inventory, PnPCharacter character) {
         try {
             Armor armor = (Armor) data.getEquipment();
-            ArmorPosition position = ArmorPosition.getArmorPosition(armor.getType());
+            ArmorPosition position = ArmorPosition.getArmorPosition(armor.getSubtype());
 
-            if (character.getEquippedArmor().get(position).equals(armor)) {
+            if (armor.equals(character.getEquippedArmor().get(position))) {
 
                 runLater(() -> character.getEquippedArmor().put(position, null));
                 inventory.add(armor);
