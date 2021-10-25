@@ -107,7 +107,7 @@ public class EquipHandler implements INonConditionalEventHandler<BaseMessage> {
     private void handleArmor(EquipmentData data, IInventory inventory, PnPCharacter character) {
         try {
             Armor armor = (Armor) data.getEquipment();
-            ArmorPosition position = ArmorPosition.getArmorPosition(armor.getType());
+            ArmorPosition position = ArmorPosition.getArmorPosition(armor.getSubtype());
 
             if (character.getEquippedArmor().get(position) == null) {
 

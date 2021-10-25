@@ -9,6 +9,16 @@ public class EquipmentData {
     protected IEquipment equipment;
     protected EquipmentType type;
 
+    public EquipmentData() {
+    }
+
+    public EquipmentData(String characterID, String inventoryID, IEquipment equipment, EquipmentType type) {
+        this.characterID = characterID;
+        this.inventoryID = inventoryID;
+        this.equipment = equipment;
+        this.type = type;
+    }
+
     public String getCharacterID() {
         return characterID;
     }
