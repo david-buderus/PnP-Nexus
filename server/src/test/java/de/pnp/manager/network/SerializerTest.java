@@ -8,9 +8,10 @@ import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.item.IItem;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.serializer.ServerModule;
-import de.pnp.manager.testHelper.TestWithDatabaseAccess;
+import de.pnp.manager.testHelper.DatabaseAccessExtension;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,7 +19,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SerializerTest extends TestWithDatabaseAccess {
+@ExtendWith(DatabaseAccessExtension.class)
+public class SerializerTest {
 
     private static ObjectMapper MAPPER;
 

@@ -1,4 +1,4 @@
-package de.pnp.manager.network.eventhandler;
+package de.pnp.manager.network.eventhandler.inventory;
 
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.message.BaseMessage;

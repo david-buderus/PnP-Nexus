@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 public class Fabrication implements IFabrication {
 
-    protected IItem product = new Item();
+    protected IItem product = Item.EMPTY_ITEM;
     protected String profession = "";
     protected String requirement = "";
     protected String otherCircumstances = "";
-    private int productAmount = 1;
-    private IItem sideProduct = new Item();
-    private int sideProductAmount = 1;
+    private float productAmount = 1;
+    private IItem sideProduct = Item.EMPTY_ITEM;
+    private float sideProductAmount = 1;
     private IItemList materials = new ItemList();
 
     public IItem getProduct() {
@@ -51,11 +51,11 @@ public class Fabrication implements IFabrication {
         this.otherCircumstances = otherCircumstances;
     }
 
-    public int getProductAmount() {
+    public float getProductAmount() {
         return productAmount;
     }
 
-    public void setProductAmount(int productAmount) {
+    public void setProductAmount(float productAmount) {
         this.productAmount = productAmount;
     }
 
@@ -67,11 +67,11 @@ public class Fabrication implements IFabrication {
         this.sideProduct = sideProduct;
     }
 
-    public int getSideProductAmount() {
+    public float getSideProductAmount() {
         return sideProductAmount;
     }
 
-    public void setSideProductAmount(int sideProductAmount) {
+    public void setSideProductAmount(float sideProductAmount) {
         this.sideProductAmount = sideProductAmount;
     }
 
@@ -104,5 +104,19 @@ public class Fabrication implements IFabrication {
     @JsonIgnore
     public String getMaterialsAsString() {
         return materials.stream().map(item -> item.getPrettyAmount() + " " + item.getName()).collect(Collectors.joining("\n"));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Fabrication)) {
+            return false;
+        }
+
+        Fabrication other = (Fabrication) obj;
+
+        return getProduct().equals(other.getProduct()) && getProfession().equals(other.getProfession())
+                && getRequirement().equals(other.getRequirement()) && getOtherCircumstances().equals(other.getOtherCircumstances())
+                && getProductAmount() == other.getProductAmount() && getSideProduct().equals(other.getSideProduct())
+                && getSideProductAmount() == other.getSideProductAmount() && getMaterials().equals(other.getMaterials());
     }
 }

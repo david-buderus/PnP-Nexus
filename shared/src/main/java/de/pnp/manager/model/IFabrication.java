@@ -20,17 +20,17 @@ public interface IFabrication {
 
     void setOtherCircumstances(String otherCircumstances);
 
-    int getProductAmount();
+    float getProductAmount();
 
-    void setProductAmount(int productAmount);
+    void setProductAmount(float productAmount);
 
     IItem getSideProduct();
 
     void setSideProduct(IItem sideProduct);
 
-    int getSideProductAmount();
+    float getSideProductAmount();
 
-    void setSideProductAmount(int sideProductAmount);
+    void setSideProductAmount(float sideProductAmount);
 
     IItemList getMaterials();
 

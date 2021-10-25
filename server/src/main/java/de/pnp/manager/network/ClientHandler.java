@@ -4,12 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
-import de.pnp.manager.model.character.IInventory;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.client.IClient;
 import de.pnp.manager.network.eventhandler.*;
+import de.pnp.manager.network.eventhandler.inventory.*;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
@@ -19,7 +19,6 @@ import de.pnp.manager.network.message.character.update.talent.UpdateTalentsReque
 import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.DeniedMessage;
 import de.pnp.manager.network.message.error.NotFoundMessage;
-import de.pnp.manager.network.message.error.NotPossibleMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
 import de.pnp.manager.network.message.inventory.*;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
@@ -167,14 +166,6 @@ public class ClientHandler extends Thread implements Client {
     @Override
     public boolean hasAccessToInventory(String id) {
         return controlledCharacters.contains(id) || accessibleInventories.contains(id);
-    }
-
-    private String getSessionID() {
-        return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
-    }
-
-    private Collection<Client> getClientsWithInventoryAccess(String id) {
-        return manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.hasAccessToInventory(id)).collect(Collectors.toList());
     }
 
     private StateMachine<BaseMessage> createStateMachine() {
@@ -325,89 +316,10 @@ public class ClientHandler extends Thread implements Client {
         stateMachine.registerTransition(States.IN_CHARACTER, ASSIGN_INVENTORIES, new AssignInventoryHandler(this));
         stateMachine.registerTransition(States.IN_CHARACTER, REVOKE_INVENTORIES, new RevokeInventoryHandler(this));
 
-        stateMachine.registerTransition(States.IN_CHARACTER, CREATE_ITEM_REQUEST, message -> {
-            CreateItemRequestMessage.CreateItemData data = ((CreateItemRequestMessage) message).getData();
-
-            if (hasAccessToInventory(data.getInventoryID())) {
-                IInventory inventory = manager.getInventoryHandler().getInventory(getSessionID(), data.getInventoryID());
-
-                if (inventory != null && inventory.addAll(data.getItems())) {
-                    manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
-                            data.getInventoryID(),
-                            data.getItems(),
-                            Collections.emptyList(),
-                            calendar.getTime()
-                    ), getClientsWithInventoryAccess(data.getInventoryID()));
-                } else {
-                    sendMessage(new NotPossibleMessage(getMessage("message.items.space.notEnough"), calendar.getTime()));
-                }
-
-            } else {
-                sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
-            }
-        });
-
-        stateMachine.registerTransition(States.IN_CHARACTER, DELETE_ITEM_REQUEST, message -> {
-            DeleteItemRequestMessage.DeleteItemData data = ((DeleteItemRequestMessage) message).getData();
-
-            if (hasAccessToInventory(data.getInventoryID())) {
-                IInventory inventory = manager.getInventoryHandler().getInventory(getSessionID(), data.getInventoryID());
-
-                if (inventory != null && inventory.removeAll(data.getItems())) {
-                    manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
-                            data.getInventoryID(),
-                            Collections.emptyList(),
-                            data.getItems(),
-                            calendar.getTime()
-                    ), getClientsWithInventoryAccess(data.getInventoryID()));
-                } else {
-                    sendMessage(new NotPossibleMessage(getMessage("message.items.amount.notEnough"), calendar.getTime()));
-                }
-
-            } else {
-                sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
-            }
-        });
-
-
-        stateMachine.registerTransition(States.IN_CHARACTER, MOVE_ITEM_REQUEST, message -> {
-            MoveItemRequestMessage.MoveItemData data = ((MoveItemRequestMessage) message).getData();
-
-            if (hasAccessToInventory(data.getFrom())) {
-                IInventory from = manager.getInventoryHandler().getInventory(getSessionID(), data.getFrom());
-
-                if (from != null && from.containsAmount(data.getItems())) {
-
-                    IInventory to = manager.getInventoryHandler().getInventory(getSessionID(), data.getTo());
-
-                    if (to != null && to.addAll(data.getItems())) {
-                        from.removeAll(data.getItems());
-
-                        manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
-                                data.getFrom(),
-                                Collections.emptyList(),
-                                data.getItems(),
-                                calendar.getTime()
-                        ), getClientsWithInventoryAccess(data.getFrom()));
-                        manager.getNetworkHandler().broadcast(new InventoryUpdateNotificationMessage(
-                                data.getTo(),
-                                data.getItems(),
-                                Collections.emptyList(),
-                                calendar.getTime()
-                        ), getClientsWithInventoryAccess(data.getTo()));
-
-                    } else {
-                        sendMessage(new NotPossibleMessage(getMessage("message.items.space.notEnough"), calendar.getTime()));
-                    }
-
-                } else {
-                    sendMessage(new NotPossibleMessage(getMessage("message.items.amount.notEnough"), calendar.getTime()));
-                }
-
-            } else {
-                sendMessage(new DeniedMessage(getMessage("message.error.denied.inventory"), calendar.getTime()));
-            }
-        });
+        stateMachine.registerTransition(States.IN_CHARACTER, CREATE_ITEM_REQUEST, new CreateItemHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, DELETE_ITEM_REQUEST, new DeleteItemHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, MOVE_ITEM_REQUEST, new MoveItemHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, FABRICATE_ITEM_REQUEST, new FabricateItemHandler(this, calendar, manager));
 
         return stateMachine;
     }

@@ -6,6 +6,7 @@ import de.pnp.manager.network.session.ISession;
 import javafx.beans.property.ListProperty;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public interface NetworkHandler {
 
@@ -27,4 +28,8 @@ public interface NetworkHandler {
     Collection<? extends ISession> getActiveSessions();
 
     ListProperty<Client> clientsProperty();
+
+    default Collection<Client> getClientsWithInventoryAccess(String id) {
+        return clientsProperty().stream().filter(c -> c.hasAccessToInventory(id)).collect(Collectors.toList());
+    }
 }

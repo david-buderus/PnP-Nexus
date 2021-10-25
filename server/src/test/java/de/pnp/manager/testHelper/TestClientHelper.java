@@ -19,6 +19,8 @@ import de.pnp.manager.network.message.session.SessionQueryResponse;
 import java.io.IOException;
 import java.util.Calendar;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public interface TestClientHelper {
 
     Calendar calender = Calendar.getInstance();
@@ -27,16 +29,10 @@ public interface TestClientHelper {
         TestClient client = new TestClient();
         client.connect("localhost", Utility.getConfig().getInt("server.port"));
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         return client;
     }
 
-    default void prepareTestClient(TestClient client) {
+    default void prepareTestClient(TestClient client, Manager manager) {
 
         try {
             LoginResponseMessage loginResponse = (LoginResponseMessage) client.sendMessage(new LoginRequestMessage("Test", calender.getTime()));
@@ -48,7 +44,10 @@ public interface TestClientHelper {
             client.sendMessage(new JoinSessionRequestMessage(id, null, calender.getTime()));
             client.setSessionID(id);
 
-        } catch (IOException e) {
+            Thread.sleep(100);
+            assertThat(manager.getNetworkHandler().clientsProperty()).extracting(Client::getClientID).contains(client.getClientID());
+
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -70,8 +69,12 @@ public interface TestClientHelper {
     }
 
     default Container assignDefaultInventory(Manager manager, TestClient client) {
+        return assignDefaultInventory(manager, client, 10, 1000);
+    }
+
+    default Container assignDefaultInventory(Manager manager, TestClient client, int size, int slots) {
         Client serverClient = manager.getNetworkHandler().clientsProperty().stream().filter(c -> c.getClientID().equals(client.getClientID())).findFirst().orElseThrow();
-        Container container = manager.getInventoryHandler().createContainer(client.getSessionID(), "Test Inventory", new Inventory(10, 1000));
+        Container container = manager.getInventoryHandler().createContainer(client.getSessionID(), "Test Inventory", new Inventory(size, slots));
         serverClient.sendActiveMessage(new AssignInventoryMessage(container, calender.getTime()));
 
         try {
@@ -84,9 +87,9 @@ public interface TestClientHelper {
         return container;
     }
 
-    default TestClient createPreparedClient() {
+    default TestClient createPreparedClient(Manager manager) {
         TestClient client = createTestClient();
-        prepareTestClient(client);
+        prepareTestClient(client, manager);
         return client;
     }
 }

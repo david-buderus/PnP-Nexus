@@ -24,6 +24,6 @@ public class TalentKeyDeserializer extends KeyDeserializer {
             }
         }
 
-        throw new IOException("Unknown Talent");
+        throw new IOException("Unknown Talent (" + key + ")");
     }
 }

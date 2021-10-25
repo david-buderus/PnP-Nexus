@@ -74,7 +74,7 @@ public class ItemList extends ArrayList<IItem> implements IItemList {
         return removed;
     }
 
-    public Collection<? extends IItem> difference(Collection<? extends IItem> collection) {
+    public IItemList difference(Collection<? extends IItem> collection) {
         ItemList items = new ItemList();
 
         for (IItem item : collection) {

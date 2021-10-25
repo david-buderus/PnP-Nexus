@@ -3,8 +3,9 @@ package de.pnp.manager.model;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.data.AttackTypes;
-import de.pnp.manager.testHelper.TestWithDatabaseAccess;
+import de.pnp.manager.testHelper.DatabaseAccessExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 
@@ -13,8 +14,9 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(DatabaseAccessExtension.class)
 @ResourceLock(value = "SERVER_SOCKET", mode = ResourceAccessMode.READ_WRITE)
-public class BattleTest extends TestWithDatabaseAccess {
+public class BattleTest {
 
     @Test
     public void test() {
