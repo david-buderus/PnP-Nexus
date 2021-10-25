@@ -75,9 +75,7 @@ public class EquipTest extends TestWithManager implements TestClientHelper {
                 EquipmentType.EQUIPPED_WEAPON
         ), calender.getTime()));
 
-        BaseMessage message2 = client.receiveMessage();
-
-        simpleMessageCheck(Arrays.asList(message1, message2), weapon, playerCharacter.getCharacterID());
+        simpleMessageCheck(Arrays.asList(message1, client.receiveMessage()), weapon, playerCharacter.getCharacterID());
 
         assertThat(playerCharacter.getInventory()).isEmpty();
         assertThat(playerCharacter.getWeapons()).contains(weapon);
@@ -151,12 +149,13 @@ public class EquipTest extends TestWithManager implements TestClientHelper {
                 assertThat(data.getRemovedItems()).asList().containsExactlyInAnyOrder(equipment);
 
             } else if (message instanceof EquipmentUpdateNotificationMessage) {
-                final EquipmentUpdateNotificationMessage.EquipmentUpdateData data =
-                        ((EquipmentUpdateNotificationMessage) message).getData().stream().findFirst().orElseThrow();
+                assertThat(((EquipmentUpdateNotificationMessage) message).getData()).isNotEmpty();
 
-                assertThat(data.getCharacterID()).isEqualTo(invID);
-                assertThat(data.getAddedItems()).asList().containsExactlyInAnyOrder(equipment);
-                assertThat(data.getRemovedItems()).isEmpty();
+                for (EquipmentUpdateNotificationMessage.EquipmentUpdateData data : ((EquipmentUpdateNotificationMessage) message).getData()) {
+                    assertThat(data.getCharacterID()).isEqualTo(invID);
+                    assertThat(data.getAddedItems()).asList().containsExactlyInAnyOrder(equipment);
+                    assertThat(data.getRemovedItems()).isEmpty();
+                }
             } else {
                 fail();
             }
