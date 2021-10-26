@@ -32,4 +32,8 @@ public interface NetworkHandler {
     default Collection<Client> getClientsWithInventoryAccess(String id) {
         return clientsProperty().stream().filter(c -> c.hasAccessToInventory(id)).collect(Collectors.toList());
     }
+
+    default Collection<Client> getClientsWithCharacterControl(String id) {
+        return clientsProperty().stream().filter(c -> c.getControlledCharacters().contains(id)).collect(Collectors.toList());
+    }
 }
