@@ -52,7 +52,7 @@ public class GeneratedCharacter extends PnPCharacter {
         this.setName(profession + " - " + specialisation);
 
         for (IPrimaryAttribute p : PrimaryAttribute.getValuesWithoutDummy()) {
-            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.skillPoints.min"));
+            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.primaryAttributes.min"));
         }
         this.generateStats();
         this.calculateSecondaryAttributes();
@@ -136,8 +136,8 @@ public class GeneratedCharacter extends PnPCharacter {
 
     private void generateStats() {
         Configuration config = Utility.getConfig();
-        int remainingPoints = config.getInt("character.skillPoints.max")
-                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.skillPoints.min");
+        int remainingPoints = config.getInt("character.primaryAttributes.max")
+                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.primaryAttributes.min");
 
         // Skill first into the attributes the main talents need
         for (IPrimaryAttribute attribute : getMainTalents().stream()

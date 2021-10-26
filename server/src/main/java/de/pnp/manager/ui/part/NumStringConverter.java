@@ -3,6 +3,7 @@ package de.pnp.manager.ui.part;
 import javafx.util.converter.NumberStringConverter;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 public class NumStringConverter extends NumberStringConverter {
 
@@ -16,7 +17,7 @@ public class NumStringConverter extends NumberStringConverter {
     }
 
     public NumStringConverter(int defaultValue) {
-        super();
+        super(Locale.ENGLISH);
         this.defaultValue = defaultValue;
     }
 
@@ -25,7 +26,11 @@ public class NumStringConverter extends NumberStringConverter {
         if (value == null) {
             return "";
         } else {
-            return MessageFormat.format("{0,number,#}", value);
+            if (Math.rint(value.doubleValue()) == value.doubleValue()) {
+                return String.valueOf(value.intValue());
+            } else {
+                return String.valueOf(value);
+            }
         }
     }
 

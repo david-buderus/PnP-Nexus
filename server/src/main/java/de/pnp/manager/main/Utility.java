@@ -6,12 +6,14 @@ import de.pnp.manager.model.item.IItem;
 import de.pnp.manager.model.loot.ILoot;
 import de.pnp.manager.ui.utility.MemoryView;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.ConfigurationUtils;
 import org.apache.commons.configuration2.FileBasedConfiguration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -25,6 +27,7 @@ public abstract class Utility {
 
     private static final Random rand = new Random();
     private static Configuration config = null;
+    private static Configuration defaultConfig = null;
 
 
     static {
@@ -36,10 +39,12 @@ public abstract class Utility {
                                 .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
 
         try {
-            config = builder.getConfiguration();
+            defaultConfig = builder.getConfiguration();
 
             // Load external configuration file
-            Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
+            Path home = Paths.get(System.getProperty("user.home"), defaultConfig.getString("home.folder"), "Configuration.properties");
+
+            config = ConfigurationUtils.cloneConfiguration(defaultConfig);
 
             if (home.toFile().exists()) {
                 builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
@@ -60,6 +65,10 @@ public abstract class Utility {
 
     public static Configuration getConfig() {
         return config;
+    }
+
+    public static Configuration getDefaultConfig() {
+        return defaultConfig;
     }
 
     /**
@@ -208,6 +217,10 @@ public abstract class Utility {
     }
 
     public static void saveToCustomConfig(String key, Object object) {
+        saveToCustomConfig(Collections.singleton(new ImmutablePair<>(key, object)));
+    }
+
+    public static void saveToCustomConfig(Collection<ImmutablePair<String, Object>> properties) {
 
         Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
 
@@ -228,7 +241,10 @@ public abstract class Utility {
 
         try {
             Configuration customConfig = builder.getConfiguration();
-            customConfig.setProperty(key, object);
+
+            for (ImmutablePair<String, Object> property : properties) {
+                customConfig.setProperty(property.getLeft(), property.getRight());
+            }
 
             builder.save();
 
@@ -236,6 +252,8 @@ public abstract class Utility {
             e.printStackTrace();
         }
 
-        config.setProperty(key, object);
+        for (ImmutablePair<String, Object> property : properties) {
+            config.setProperty(property.getLeft(), property.getRight());
+        }
     }
 }

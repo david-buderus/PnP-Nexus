@@ -1,0 +1,33 @@
+settings.character.title
+
+#settings.character.details
+settings.character.wear.stepsNeeded, character.wear.stepsNeeded, INTEGER
+settings.character.initiative.start, character.initiative.start, INTEGER
+settings.character.primaryAttributes.min, character.primaryAttributes.min, INTEGER
+settings.character.primaryAttributes.max, character.primaryAttributes.max, INTEGER
+settings.character.talentPoints, character.talentPoints, INTEGER
+settings.character.skillPoints.chanceSecondaryAttribute, character.skillPoints.chanceSecondaryAttribute, PERCENT
+settings.character.chance_to_wear.shield, character.chance_to_wear.shield, PERCENT
+settings.character.max_shields, character.max_shields, INTEGER
+settings.character.second_shield_modifier, character.second_shield_modifier, PERCENT
+settings.character.advantages_disadvantages.separatedByType, character.advantages_disadvantages.separatedByType, BOOLEAN
+
+#settings.secondaryAttributes.calculation, settings.secondaryAttributes.calculation.tooltip
+secondaryAttribute.meleeDamage, character.secondaryAttribute.damageMelee, DOUBLE_LIST
+secondaryAttribute.rangeDamage, character.secondaryAttribute.damageRange, DOUBLE_LIST
+secondaryAttribute.magicPower, character.secondaryAttribute.magicPower, DOUBLE_LIST
+secondaryAttribute.defense, character.secondaryAttribute.baseDefense, DOUBLE_LIST
+secondaryAttribute.initiative, character.secondaryAttribute.initiative, DOUBLE_LIST
+secondaryAttribute.health, character.secondaryAttribute.maxLife, DOUBLE_LIST
+secondaryAttribute.mentalHealth, character.secondaryAttribute.mentalHealth, DOUBLE_LIST
+secondaryAttribute.mana, character.secondaryAttribute.maxMana, DOUBLE_LIST
+
+#settings.secondaryAttributes.base, settings.secondaryAttributes.base.tooltip
+secondaryAttribute.meleeDamage, character.secondaryAttribute.damageMelee.base, INTEGER
+secondaryAttribute.rangeDamage, character.secondaryAttribute.damageRange.base, INTEGER
+secondaryAttribute.magicPower, character.secondaryAttribute.magicPower.base, INTEGER
+secondaryAttribute.defense, character.secondaryAttribute.baseDefense.base, INTEGER
+secondaryAttribute.initiative, character.secondaryAttribute.initiative.base, INTEGER
+secondaryAttribute.health, character.secondaryAttribute.maxLife.base, INTEGER
+secondaryAttribute.mentalHealth, character.secondaryAttribute.mentalHealth.base, INTEGER
+secondaryAttribute.mana, character.secondaryAttribute.maxMana.base, INTEGER
