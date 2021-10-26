@@ -10,6 +10,7 @@ import de.pnp.manager.network.message.character.AssignCharactersMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterRequestMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
 import de.pnp.manager.network.message.character.RevokeCharactersMessage;
+import de.pnp.manager.network.message.character.currency.*;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsNotificationMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsRequestMessage;
 import de.pnp.manager.network.message.database.DatabaseRequestMessage;
@@ -61,6 +62,12 @@ public class MessageDeserializer extends StdDeserializer<BaseMessage> {
         this.typeClassMap.put(CREATE_ITEM_REQUEST, CreateItemRequestMessage.class);
         this.typeClassMap.put(DELETE_ITEM_REQUEST, DeleteItemRequestMessage.class);
         this.typeClassMap.put(FABRICATE_ITEM_REQUEST, FabricateItemRequestMessage.class);
+        this.typeClassMap.put(CREATE_CURRENCY_REQUEST, CreateCurrencyRequestMessage.class);
+        this.typeClassMap.put(DELETE_CURRENCY_REQUEST, DeleteCurrencyRequestMessage.class);
+        this.typeClassMap.put(UPDATE_CURRENCY_NOTIFICATION, CurrencyUpdateNotificationMessage.class);
+        this.typeClassMap.put(MOVE_CURRENCY_REQUEST, MoveCurrencyRequestMessage.class);
+        this.typeClassMap.put(MOVE_CURRENCY_TO_INVENTORY_REQUEST, MoveCurrencyToInventoryRequestMessage.class);
+        this.typeClassMap.put(MOVE_CURRENCY_FROM_INVENTORY_REQUEST, MoveCurrencyFromInventoryRequestMessage.class);
 
         //Universal
         this.typeClassMap.put(OK, OkMessage.class);
