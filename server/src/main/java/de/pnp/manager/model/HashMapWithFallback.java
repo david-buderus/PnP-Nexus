@@ -57,7 +57,10 @@ public class HashMapWithFallback<K, V> extends HashMap<K, V> {
      */
     @Override
     public V get(Object key) {
-        final V v = super.get(key);
-        return v == null ? fallbackValue : v;
+        if (containsKey(key)) {
+            return super.get(key);
+        } else {
+            return fallbackValue;
+        }
     }
 }
