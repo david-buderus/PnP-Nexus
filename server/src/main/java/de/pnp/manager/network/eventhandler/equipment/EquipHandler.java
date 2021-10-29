@@ -132,7 +132,7 @@ public class EquipHandler implements INonConditionalEventHandler<BaseMessage> {
             Jewellery jewellery = (Jewellery) data.getEquipment();
 
             Map<String, Integer> slots = Utility.getJewelleryCharacterSlots();
-            int max = slots.getOrDefault(jewellery.getType(), slots.get(null));
+            int max = slots.get(jewellery.getType());
 
             if (character.getEquippedJewellery().stream().filter(j -> j.getType().equalsIgnoreCase(jewellery.getType())).count() < max) {
 

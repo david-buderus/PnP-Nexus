@@ -1,6 +1,7 @@
 package de.pnp.manager.main;
 
 import de.pnp.manager.model.Currency;
+import de.pnp.manager.model.HashMapWithFallback;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.character.IPnPCharacter;
 import de.pnp.manager.model.item.IItem;
@@ -67,12 +68,12 @@ public abstract class Utility {
      * Creates a map that maps localized jewellery types
      * to the max amount a {@link IPnPCharacter}
      * can carry.
-     * Maps the null string to the 'other' category.
+     * The map has a fallback value of the 'other' category.
      *
      * @return the given map
      */
     public static Map<String, Integer> getJewelleryCharacterSlots() {
-        Map<String, Integer> amountPerType = new HashMap<>();
+        Map<String, Integer> amountPerType = new HashMapWithFallback<>(config.getInt("character.jewellery.amount.other"));
 
         for (String type : config.getStringArray("character.jewellery.types")) {
             int amount = config.getInt("character.jewellery.amount." + type);
@@ -83,8 +84,6 @@ public abstract class Utility {
                 amountPerType.put(localizedType, amount);
             }
         }
-
-        amountPerType.put(null, config.getInt("character.jewellery.amount.other"));
 
         return Collections.unmodifiableMap(amountPerType);
     }
