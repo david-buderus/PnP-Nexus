@@ -1,8 +1,7 @@
 package de.pnp.manager.model.manager;
 
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.network.session.ISession;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.rmi.server.UID;
 import java.util.ArrayList;

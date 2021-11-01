@@ -1,6 +1,6 @@
 package de.pnp.manager.ui.battle;
 
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.ui.View;
 import javafx.beans.property.ReadOnlyDoubleWrapper;

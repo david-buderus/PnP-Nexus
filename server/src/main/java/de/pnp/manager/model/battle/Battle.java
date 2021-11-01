@@ -1,14 +1,14 @@
-package de.pnp.manager.model;
+package de.pnp.manager.model.battle;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.CopyService;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.WorkbookService;
-import de.pnp.manager.model.character.PnPCharacterFactory;
+import de.pnp.manager.model.IBattle;
+import de.pnp.manager.model.character.*;
 import de.pnp.manager.model.manager.BattleHandler;
 import de.pnp.manager.model.manager.CharacterHandler;
 import de.pnp.manager.model.manager.PnPCharacterProducer;
-import de.pnp.manager.model.character.GeneratedCharacter;
-import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.generation.specs.*;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -16,9 +16,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
-public class Battle {
+@JsonSerialize(as = IBattle.class)
+public class Battle implements IBattle {
 
     private final String battleID;
     private final String sessionID;
@@ -204,6 +207,21 @@ public class Battle {
 
     public String getName() {
         return name.get();
+    }
+
+    @Override
+    public int getCurrentRound() {
+        return roundProperty().get();
+    }
+
+    @Override
+    public Collection<PnPCharacterInfo> getPlayers() {
+        return playersProperty().stream().map(PnPCharacter::asInfo).collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<PnPCharacterInfo> getEnemies() {
+        return enemiesProperty().stream().map(PnPCharacter::asInfo).collect(Collectors.toList());
     }
 
     public StringProperty nameProperty() {

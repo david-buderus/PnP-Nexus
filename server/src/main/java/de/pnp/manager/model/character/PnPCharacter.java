@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.character.part.SecondaryAttributeModifier;
 import de.pnp.manager.model.character.state.*;
@@ -350,6 +350,10 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         }
 
         return defense;
+    }
+
+    public PnPCharacterInfo asInfo() {
+        return new PnPCharacterInfo(getCharacterID(), getName());
     }
 
     public PnPCharacter cloneCharacter(String characterID, Battle battle) {

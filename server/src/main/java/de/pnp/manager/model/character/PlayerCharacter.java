@@ -1,7 +1,7 @@
 package de.pnp.manager.model.character;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.ICurrency;
 import de.pnp.manager.model.loot.ILootTable;

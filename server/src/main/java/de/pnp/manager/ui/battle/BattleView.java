@@ -1,7 +1,7 @@
 package de.pnp.manager.ui.battle;
 
 import de.pnp.manager.main.LanguageUtility;
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.data.AttackTypes;
 import de.pnp.manager.model.interfaces.WithUnlocalizedName;

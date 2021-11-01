@@ -1,5 +1,6 @@
 package de.pnp.manager.model;
 
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.data.AttackTypes;

@@ -2,6 +2,7 @@ package de.pnp.manager.network.serializer;
 
 import de.pnp.manager.main.Database;
 import de.pnp.manager.model.*;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.character.*;
 import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.item.*;

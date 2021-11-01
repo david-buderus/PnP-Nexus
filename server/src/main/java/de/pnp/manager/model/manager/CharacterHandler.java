@@ -1,6 +1,6 @@
 package de.pnp.manager.model.manager;
 
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.interfaces.Client;

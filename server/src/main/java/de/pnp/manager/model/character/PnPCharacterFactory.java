@@ -1,7 +1,7 @@
 package de.pnp.manager.model.character;
 
 import de.pnp.manager.main.*;
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.loot.LootTable;
