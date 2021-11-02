@@ -9,6 +9,7 @@ import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.manager.BattleHandler;
 import de.pnp.manager.ui.ConfigurableViewPart;
 import de.pnp.manager.ui.IView;
+import de.pnp.manager.ui.battle.battlefield.BattlefieldView;
 import de.pnp.manager.ui.battle.state.AllMemberStateView;
 import de.pnp.manager.ui.battle.state.MemberStateView;
 import de.pnp.manager.ui.part.NumStringConverter;
@@ -384,23 +385,29 @@ public class BattleView extends ConfigurableViewPart {
         utilityButtons.setVgap(5);
         buttonPane.setRight(utilityButtons);
 
+        Button fieldButton = new Button();
+        fieldButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.field"));
+        fieldButton.setPrefWidth(110);
+        fieldButton.setOnAction(event -> new BattlefieldView(battle).show());
+        utilityButtons.add(fieldButton, 0, 1);
+
         Button lootButton = new Button();
         lootButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.loot"));
         lootButton.setPrefWidth(110);
         lootButton.setOnAction(event -> loot());
-        utilityButtons.add(lootButton, 0, 0);
+        utilityButtons.add(lootButton, 1, 0);
 
         Button statisticButton = new Button();
         statisticButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.statistics"));
         statisticButton.setPrefWidth(110);
         statisticButton.setOnAction(event -> new StatisticView(battle.playersProperty(), battle));
-        utilityButtons.add(statisticButton, 1, 0);
+        utilityButtons.add(statisticButton, 2, 0);
 
         Button resetButton = new Button();
         resetButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.reset"));
         resetButton.setPrefWidth(110);
         resetButton.setOnAction(event -> reset());
-        utilityButtons.add(resetButton, 0, 1);
+        utilityButtons.add(resetButton, 1, 1);
 
         Button allStatusButton = new Button();
         allStatusButton.textProperty().bind(LanguageUtility.getMessageProperty("battle.button.allStatus"));
@@ -409,7 +416,7 @@ public class BattleView extends ConfigurableViewPart {
             PnPCharacter source = selectedSource.get() != null ? selectedSource.get().getCharacter() : null;
             new AllMemberStateView(battle, source);
         });
-        utilityButtons.add(allStatusButton, 1, 1);
+        utilityButtons.add(allStatusButton, 2, 1);
 
         this.setContent(root);
     }

@@ -32,6 +32,7 @@ public class Battle implements IBattle {
     private final ListProperty<PnPCharacter> enemies;
     private final HashMap<PnPCharacter, Integer> damageStatistic;
     private final HashMap<PnPCharacter, Integer> healStatistic;
+    private Battlefield battlefield;
 
     /**
      * Don't create a battle this way.
@@ -47,6 +48,7 @@ public class Battle implements IBattle {
         this.healStatistic = new HashMap<>();
         this.round = new SimpleIntegerProperty(1);
         this.name = new SimpleStringProperty(LanguageUtility.getMessage("battle.defaultName"));
+        this.battlefield = null;
     }
 
     public void nextTurn() {
@@ -234,5 +236,13 @@ public class Battle implements IBattle {
 
     public String getBattleID() {
         return battleID;
+    }
+
+    public Battlefield getBattlefield() {
+        return battlefield;
+    }
+
+    public void setBattlefield(Battlefield battlefield) {
+        this.battlefield = battlefield;
     }
 }

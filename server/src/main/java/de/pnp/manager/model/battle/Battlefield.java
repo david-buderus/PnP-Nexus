@@ -1,8 +1,6 @@
 package de.pnp.manager.model.battle;
 
-import de.pnp.manager.main.Utility;
 import de.pnp.manager.model.character.PnPCharacter;
-import javafx.scene.image.Image;
 
 public class Battlefield {
 
@@ -11,15 +9,15 @@ public class Battlefield {
     protected final int height;
     protected final double[] padding;
     protected final BattlefieldTile[][] map;
-    protected Image background;
+    protected final String imagePath;
 
     public Battlefield(Battle battle, BattlefieldDetails details) {
         this.battle = battle;
         this.width = details.getWidth();
         this.height = details.getHeight();
         this.padding = details.getPadding();
+        this.imagePath = details.getImagePath();
         this.map = new BattlefieldTile[width][height];
-        this.background = new Image(Utility.getHomeFolder().resolve("maps").resolve(details.getImagePath()).toUri().toString());
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -83,8 +81,8 @@ public class Battlefield {
         return padding;
     }
 
-    public Image getBackground() {
-        return background;
+    public String getImagePath() {
+        return imagePath;
     }
 
     protected static class BattlefieldTile {
