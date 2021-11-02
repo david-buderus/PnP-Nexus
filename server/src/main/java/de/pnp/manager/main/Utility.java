@@ -92,6 +92,10 @@ public abstract class Utility {
         return 1;
     }
 
+    public static Path getHomeFolder() {
+        return Paths.get(System.getProperty("user.home"), config.getString("home.folder"));
+    }
+
     /**
      * Converts an int into a representation
      * in a roman number
@@ -222,7 +226,7 @@ public abstract class Utility {
 
     public static void saveToCustomConfig(Collection<ImmutablePair<String, Object>> properties) {
 
-        Path home = Paths.get(System.getProperty("user.home"), config.getString("home.folder"), "Configuration.properties");
+        Path home = getHomeFolder().resolve("Configuration.properties");
 
         try {
             if (home.toFile().getParentFile().mkdirs() && home.toFile().createNewFile()) {

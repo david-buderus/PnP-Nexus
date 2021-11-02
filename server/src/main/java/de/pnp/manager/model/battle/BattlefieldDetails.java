@@ -7,6 +7,7 @@ public class BattlefieldDetails {
 
     protected final int width;
     protected final int height;
+    protected final double[] padding;
     protected final String imagePath;
     protected final TileInfo[][] tileInfos;
 
@@ -14,10 +15,12 @@ public class BattlefieldDetails {
     public BattlefieldDetails(
             @JsonProperty("width") int width,
             @JsonProperty("height") int height,
+            @JsonProperty("padding") double[] padding,
             @JsonProperty("imagePath") String imagePath,
             @JsonProperty("tileInfos") TileInfo[][] tileInfos) {
         this.width = width;
         this.height = height;
+        this.padding = padding;
         this.imagePath = imagePath;
         this.tileInfos = tileInfos;
     }
@@ -30,6 +33,10 @@ public class BattlefieldDetails {
         return height;
     }
 
+    public double[] getPadding() {
+        return padding;
+    }
+
     public TileInfo[][] getTileInfos() {
         return tileInfos;
     }
@@ -38,9 +45,14 @@ public class BattlefieldDetails {
         return imagePath;
     }
 
-    protected static class TileInfo {
+    public static class TileInfo {
         protected boolean accessible;
         protected boolean blockingVisibility;
+
+        public TileInfo() {
+            this.accessible = true;
+            this.blockingVisibility = false;
+        }
 
         public boolean isAccessible() {
             return accessible;

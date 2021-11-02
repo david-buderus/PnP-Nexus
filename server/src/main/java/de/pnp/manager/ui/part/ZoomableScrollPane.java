@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 
 public class ZoomableScrollPane extends ScrollPane {
     private double scaleValue;
-    private double zoomIntensity;
+    private final double zoomIntensity;
     private Node target;
     private Node zoomNode;
     private ChangeListener<Node> listener;
@@ -46,8 +46,10 @@ public class ZoomableScrollPane extends ScrollPane {
         VBox box = new VBox(node);
         box.setAlignment(Pos.CENTER);
         box.setOnScroll(event -> {
-            onScroll(event.getDeltaY(), new Point2D(event.getX(), event.getY()));
-            event.consume();
+            if (event.isControlDown()) {
+                onScroll(event.getDeltaY(), new Point2D(event.getX(), event.getY()));
+                event.consume();
+            }
         });
         return box;
     }
