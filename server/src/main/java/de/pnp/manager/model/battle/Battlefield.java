@@ -1,7 +1,5 @@
 package de.pnp.manager.model.battle;
 
-import de.pnp.manager.model.character.PnPCharacter;
-
 public class Battlefield {
 
     protected final Battle battle;
@@ -24,16 +22,9 @@ public class Battlefield {
                 BattlefieldTile tile = new BattlefieldTile();
                 var tileInfo = details.getTileInfos()[x][y];
                 tile.setAccessible(tileInfo.isAccessible());
-                tile.setBlockingVisibility(tile.isBlockingVisibility());
+                tile.setBlockingVisibility(tileInfo.isBlockingVisibility());
                 this.map[x][y] = tile;
             }
-        }
-    }
-
-    protected void move(int fromX, int fromY, int toX, int toY) {
-        if (!isOccupied(toX, toY)) {
-            this.setCharacter(toX, toY, getCharacter(fromX, fromY));
-            this.setCharacter(fromX, fromY, null);
         }
     }
 
@@ -57,18 +48,6 @@ public class Battlefield {
         getTile(x, y).setBlockingVisibility(blockingVisibility);
     }
 
-    public PnPCharacter getCharacter(int x, int y) {
-        return getTile(x, y).getCharacter();
-    }
-
-    public void setCharacter(int x, int y, PnPCharacter character) {
-        getTile(x, y).setCharacter(character);
-    }
-
-    public boolean isOccupied(int x, int y) {
-        return getTile(x, y).isOccupied();
-    }
-
     public int getWidth() {
         return width;
     }
@@ -88,12 +67,10 @@ public class Battlefield {
     protected static class BattlefieldTile {
         protected boolean accessible;
         protected boolean blockingVisibility;
-        protected PnPCharacter character;
 
         protected BattlefieldTile() {
             this.accessible = true;
             this.blockingVisibility = false;
-            this.character = null;
         }
 
         public boolean isAccessible() {
@@ -110,18 +87,6 @@ public class Battlefield {
 
         public void setBlockingVisibility(boolean blockingVisibility) {
             this.blockingVisibility = blockingVisibility;
-        }
-
-        public PnPCharacter getCharacter() {
-            return character;
-        }
-
-        public void setCharacter(PnPCharacter character) {
-            this.character = character;
-        }
-
-        public boolean isOccupied() {
-            return getCharacter() != null && !getCharacter().isDead();
         }
     }
 }
