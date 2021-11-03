@@ -54,6 +54,7 @@ public class BattlefieldCreationView extends ViewPart {
     protected VBox currentControls;
     protected ObjectMapper mapper;
 
+    protected double widthHeightRatio;
     protected StringProperty name;
     protected BooleanProperty nameAlreadyUsed;
     protected ObjectProperty<Path> imagePath;
@@ -83,6 +84,8 @@ public class BattlefieldCreationView extends ViewPart {
         this.leftPadding = new SimpleDoubleProperty(0);
         this.width.addListener((ob, o, n) -> drawGrid());
         this.height.addListener((ob, o, n) -> drawGrid());
+        this.width.addListener((ob, o, n) -> height.set((int) (n.doubleValue() * widthHeightRatio)));
+        this.height.addListener((ob, o, n) -> width.set((int) (n.doubleValue() / widthHeightRatio)));
         this.topPadding.addListener((ob, o, n) -> drawGrid());
         this.rightPadding.addListener((ob, o, n) -> drawGrid());
         this.bottomPadding.addListener((ob, o, n) -> drawGrid());
@@ -288,6 +291,7 @@ public class BattlefieldCreationView extends ViewPart {
             gridCanvas.setWidth(background.getWidth());
             fieldCanvas.setHeight(background.getHeight());
             fieldCanvas.setWidth(background.getWidth());
+            widthHeightRatio = background.getHeight() / background.getWidth();
             imageView.setImage(background);
             next();
             drawGrid();
