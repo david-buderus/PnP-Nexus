@@ -5,10 +5,13 @@ import de.pnp.manager.main.Utility;
 import de.pnp.manager.model.battle.Battle;
 import de.pnp.manager.model.battle.Battlefield;
 import de.pnp.manager.model.battle.BattlefieldDetails;
+import de.pnp.manager.model.battle.battlefield.BattlefieldObject;
+import de.pnp.manager.model.battle.battlefield.RectEffect;
 import de.pnp.manager.ui.View;
 import de.pnp.manager.ui.part.ZoomableScrollPane;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -37,6 +40,7 @@ public class BattlefieldView extends View {
     protected GraphicsContext gridContext;
     protected Canvas fieldCanvas;
     protected GraphicsContext fieldContext;
+    protected BattlefieldCanvasCalculator calculator;
     protected BorderPane root;
     protected ObservableList<SavedMap> savedMaps;
 
@@ -102,6 +106,11 @@ public class BattlefieldView extends View {
                 BattlefieldDetails details = mapper.readValue(map.path.toFile(), BattlefieldDetails.class);
                 battlefield = new Battlefield(battle, details);
                 battle.setBattlefield(battlefield);
+                // TEST
+                battlefield.getBattlefieldObjects().add(new RectEffect(2, 2, 3, 2));
+                // ---
+                battlefield.getBattlefieldObjects().addListener(
+                        (ListChangeListener<? super BattlefieldObject>) ob -> refreshField());
                 loadBattlefield();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -137,19 +146,33 @@ public class BattlefieldView extends View {
         stackPane.getChildren().add(imageView);
 
         gridCanvas = new Canvas();
+        gridCanvas.widthProperty().bind(imageView.getImage().widthProperty());
+        gridCanvas.heightProperty().bind(imageView.getImage().heightProperty());
         gridContext = gridCanvas.getGraphicsContext2D();
         stackPane.getChildren().add(gridCanvas);
         drawGrid();
 
         this.fieldCanvas = new Canvas();
+        fieldCanvas.widthProperty().bind(imageView.getImage().widthProperty());
+        fieldCanvas.heightProperty().bind(imageView.getImage().heightProperty());
         this.fieldContext = fieldCanvas.getGraphicsContext2D();
         stackPane.getChildren().add(fieldCanvas);
 
-
+        calculator = new BattlefieldCanvasCalculator(battlefield.getPadding()[0], battlefield.getPadding()[3],
+                fieldCanvas.getWidth()/(battlefield.getWidth() + battlefield.getPadding()[1] + battlefield.getPadding()[3]));
+        refreshField();
     }
 
     protected Path getMapPath() {
         return Utility.getHomeFolder().resolve("maps");
+    }
+
+    protected void refreshField() {
+        fieldContext.clearRect(0, 0, fieldCanvas.getWidth(), fieldCanvas.getHeight());
+
+        for (BattlefieldObject object : battlefield.getBattlefieldObjects()) {
+            object.draw(fieldContext, calculator);
+        }
     }
 
     protected void drawGrid() {

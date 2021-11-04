@@ -1,5 +1,9 @@
 package de.pnp.manager.model.battle;
 
+import de.pnp.manager.model.battle.battlefield.BattlefieldObject;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 public class Battlefield {
 
     protected final Battle battle;
@@ -8,6 +12,7 @@ public class Battlefield {
     protected final double[] padding;
     protected final BattlefieldTile[][] map;
     protected final String imagePath;
+    protected final ObservableList<BattlefieldObject> battlefieldObjects;
 
     public Battlefield(Battle battle, BattlefieldDetails details) {
         this.battle = battle;
@@ -16,6 +21,7 @@ public class Battlefield {
         this.padding = details.getPadding();
         this.imagePath = details.getImagePath();
         this.map = new BattlefieldTile[width][height];
+        this.battlefieldObjects = FXCollections.observableArrayList();
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -62,6 +68,10 @@ public class Battlefield {
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public ObservableList<BattlefieldObject> getBattlefieldObjects() {
+        return battlefieldObjects;
     }
 
     protected static class BattlefieldTile {
