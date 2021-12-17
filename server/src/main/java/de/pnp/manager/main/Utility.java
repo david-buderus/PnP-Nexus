@@ -1,7 +1,9 @@
 package de.pnp.manager.main;
 
 import de.pnp.manager.model.Currency;
+import de.pnp.manager.model.HashMapWithFallback;
 import de.pnp.manager.model.ICurrency;
+import de.pnp.manager.model.character.IPnPCharacter;
 import de.pnp.manager.model.item.IItem;
 import de.pnp.manager.model.loot.ILoot;
 import de.pnp.manager.ui.utility.MemoryView;
@@ -69,6 +71,30 @@ public abstract class Utility {
 
     public static Configuration getDefaultConfig() {
         return defaultConfig;
+    }
+
+    /**
+     * Creates a map that maps localized jewellery types
+     * to the max amount a {@link IPnPCharacter}
+     * can carry.
+     * The map has a fallback value of the 'other' category.
+     *
+     * @return the given map
+     */
+    public static Map<String, Integer> getJewelleryCharacterSlots() {
+        Map<String, Integer> amountPerType = new HashMapWithFallback<>(config.getInt("character.jewellery.amount.other"));
+
+        for (String type : config.getStringArray("character.jewellery.types")) {
+            int amount = config.getInt("character.jewellery.amount." + type);
+            String localizedType = LanguageUtility.hasMessage("jewellery.type." + type) ?
+                    LanguageUtility.getMessage("jewellery.type." + type) : type;
+
+            if (amount > 0) {
+                amountPerType.put(localizedType, amount);
+            }
+        }
+
+        return Collections.unmodifiableMap(amountPerType);
     }
 
     /**

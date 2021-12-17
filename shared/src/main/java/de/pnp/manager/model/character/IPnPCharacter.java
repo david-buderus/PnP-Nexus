@@ -128,24 +128,15 @@ public interface IPnPCharacter {
     Collection<IWeapon> getWeapons();
 
     /**
-     * The weapons the character currently uses
+     * The weapons the character currently uses.
+     * Always a subset of {@link #getWeapons()}
      */
     Collection<IWeapon> getEquippedWeapons();
-
-    /**
-     * All jewellery the character has
-     */
-    Collection<IJewellery> getJewellery();
 
     /**
      * The jewellery the character currently uses
      */
     Collection<IJewellery> getEquippedJewellery();
-
-    /**
-     * All armor the character has
-     */
-    Collection<IArmor> getArmor();
 
     /**
      * The armor the character currently uses

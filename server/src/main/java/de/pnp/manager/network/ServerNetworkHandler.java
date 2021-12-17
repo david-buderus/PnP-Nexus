@@ -116,6 +116,10 @@ public class ServerNetworkHandler implements NetworkHandler, Closeable {
         return clients;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     @Override
     public void close() throws IOException {
         this.active = false;
