@@ -76,13 +76,17 @@ public abstract class Equipment extends Item implements IEquipment {
             return equipment;
         }
 
-        while (rand.nextDouble() <= Utility.getConfig().getDouble("equipment.chance.upgraded")) {
+        int counter = 0;
+
+        while (rand.nextDouble() <= Utility.getConfig().getDouble("equipment.chance.upgraded")
+                && equipment.getUpgradeSlots() > 0 && counter < 100) {
             UpgradeFactory factory = list.get(rand.nextInt(list.size()));
             if (factory.getSlots() <= equipment.getUpgradeSlots()) {
                 equipment.getUpgrades().add(factory.getUpgrade());
                 equipment.setUpgradeSlots(getUpgradeSlots() - factory.getSlots());
                 list.remove(factory);
             }
+            counter++;
         }
 
         return equipment;
