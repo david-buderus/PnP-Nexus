@@ -1,5 +1,9 @@
 package de.pnp.manager.model;
 
+import de.pnp.manager.model.item.IItem;
+
+import java.util.Collection;
+
 public interface ICurrency {
 
     ICurrency add(ICurrency other);
@@ -23,6 +27,11 @@ public interface ICurrency {
      * A human readable String of the value that this object represents
      */
     String getCoinString();
+
+    /**
+     * The coin value as copper, silver and gold items
+     */
+    Collection<IItem> toItems();
 
     /**
      * If this currency object represents a tradeable value

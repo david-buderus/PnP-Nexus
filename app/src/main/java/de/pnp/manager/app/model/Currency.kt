@@ -1,6 +1,7 @@
 package de.pnp.manager.app.model
 
 import de.pnp.manager.model.ICurrency
+import de.pnp.manager.model.item.IItem
 
 class Currency() : ICurrency {
 
@@ -51,6 +52,10 @@ class Currency() : ICurrency {
     }
 
     override fun getCoinString(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun toItems(): MutableCollection<IItem> {
         TODO("Not yet implemented")
     }
 
