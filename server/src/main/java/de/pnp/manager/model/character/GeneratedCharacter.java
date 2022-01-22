@@ -52,7 +52,7 @@ public class GeneratedCharacter extends PnPCharacter {
         this.setName(profession + " - " + specialisation);
 
         for (IPrimaryAttribute p : PrimaryAttribute.getValuesWithoutDummy()) {
-            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.skillPoints.min"));
+            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.primaryAttributes.min"));
         }
         this.generateStats();
         this.calculateSecondaryAttributes();
@@ -65,7 +65,9 @@ public class GeneratedCharacter extends PnPCharacter {
             if (!usesExclusivelySpecificPrimaryWeapons()) {
                 weaponPool.addAll(Database.weaponList);
             }
-            this.getEquippedWeapons().add((Weapon) randomWeapon(getPrimaryWeaponTypes(), weaponPool).getWithUpgrade());
+            Weapon weapon = (Weapon) randomWeapon(getPrimaryWeaponTypes(), weaponPool).getWithUpgrade();
+            this.getEquippedWeapons().add(weapon);
+            this.getWeapons().add(weapon);
         }
 
         if (usesSecondWeapon()) {
@@ -75,7 +77,9 @@ public class GeneratedCharacter extends PnPCharacter {
             }
             Collection<String> secondTypes = usesShield ? Database.shieldTypes : getSecondaryWeaponTypes();
             if (secondTypes.size() > 0) {
-                this.getEquippedWeapons().add((Weapon) randomWeapon(secondTypes, weaponPool).getWithUpgrade());
+                Weapon weapon = (Weapon) randomWeapon(secondTypes, weaponPool).getWithUpgrade();
+                this.getEquippedWeapons().add(weapon);
+                this.getWeapons().add(weapon);
             }
         }
 
@@ -136,8 +140,8 @@ public class GeneratedCharacter extends PnPCharacter {
 
     private void generateStats() {
         Configuration config = Utility.getConfig();
-        int remainingPoints = config.getInt("character.skillPoints.max")
-                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.skillPoints.min");
+        int remainingPoints = config.getInt("character.primaryAttributes.max")
+                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.primaryAttributes.min");
 
         // Skill first into the attributes the main talents need
         for (IPrimaryAttribute attribute : getMainTalents().stream()
@@ -541,23 +545,13 @@ public class GeneratedCharacter extends PnPCharacter {
             for (IEquipment equipment : getWeapons()) {
                 result.add(equipment, 1,1);
             }
-            for (IEquipment equipment : getEquippedWeapons()) {
-                result.add(equipment, 1,1);
-            }
-
         }
         if (dropsArmor()) {
-            for (IEquipment equipment : getArmor()) {
-                result.add(equipment, 1,1);
-            }
             for (IEquipment equipment : getEquippedArmor().values()) {
                 result.add(equipment, 1,1);
             }
         }
         if (dropsJewellery()) {
-            for (IEquipment equipment : getJewellery()) {
-                result.add(equipment, 1,1);
-            }
             for (IEquipment equipment : getEquippedJewellery()) {
                 result.add(equipment, 1,1);
             }

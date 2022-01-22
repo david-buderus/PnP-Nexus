@@ -11,6 +11,9 @@ import de.pnp.manager.network.client.IClient;
 import de.pnp.manager.network.eventhandler.*;
 import de.pnp.manager.network.eventhandler.currency.*;
 import de.pnp.manager.network.eventhandler.inventory.*;
+import de.pnp.manager.network.eventhandler.equipment.ChangeEquippedWeaponsHandler;
+import de.pnp.manager.network.eventhandler.equipment.EquipHandler;
+import de.pnp.manager.network.eventhandler.equipment.UnequipHandler;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
@@ -321,6 +324,11 @@ public class ClientHandler extends Thread implements Client {
         stateMachine.registerTransition(States.IN_CHARACTER, DELETE_ITEM_REQUEST, new DeleteItemHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, MOVE_ITEM_REQUEST, new MoveItemHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, FABRICATE_ITEM_REQUEST, new FabricateItemHandler(this, calendar, manager));
+
+        stateMachine.registerTransition(States.IN_CHARACTER, EQUIP_REQUEST, new EquipHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, UNEQUIP_REQUEST, new UnequipHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, CHANGE_EQUIPPED_WEAPONS, new ChangeEquippedWeaponsHandler(this, calendar, manager));
+
         stateMachine.registerTransition(States.IN_CHARACTER, CREATE_CURRENCY_REQUEST, new CreateCurrencyHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, DELETE_CURRENCY_REQUEST, new DeleteCurrencyHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, MOVE_CURRENCY_REQUEST, new MoveCurrencyHandler(this, calendar, manager));

@@ -26,9 +26,7 @@ open class PnPCharacter() : IPnPCharacter {
     private var secondaryAttributes : MutableMap<ISecondaryAttribute, Int> = HashMap()
     private var weapons : MutableCollection<IWeapon> = ArrayList()
     private var equippedWeapons : MutableCollection<IWeapon> = ArrayList()
-    private var jewellery : MutableCollection<IJewellery> = ArrayList()
     private var equippedJewellery : MutableCollection<IJewellery> = ArrayList()
-    private var armor : MutableCollection<IArmor> = ArrayList()
     private var equippedArmor : MutableMap<IArmorPosition, IArmor> = HashMap()
     private var spells : MutableCollection<ISpell> = ArrayList()
     private var inventory : IInventory? = null
@@ -172,28 +170,12 @@ open class PnPCharacter() : IPnPCharacter {
         this.equippedWeapons = equippedWeapons
     }
 
-    override fun getJewellery(): MutableCollection<IJewellery> {
-        return jewellery
-    }
-
-    fun setJewellery(jewellery:  MutableCollection<IJewellery>) {
-        this.jewellery = jewellery
-    }
-
     override fun getEquippedJewellery(): MutableCollection<IJewellery> {
         return equippedJewellery
     }
 
     fun setEquippedJewellery(equippedJewellery:  MutableCollection<IJewellery>) {
         this.equippedJewellery = equippedJewellery
-    }
-
-    override fun getArmor(): MutableCollection<IArmor> {
-        return armor
-    }
-
-    fun setArmor(armor: MutableCollection<IArmor>) {
-        this.armor = armor
     }
 
     override fun getEquippedArmor(): MutableMap<IArmorPosition, IArmor> {
