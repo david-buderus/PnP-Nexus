@@ -3,10 +3,12 @@ package de.pnp.manager.model;
 import de.pnp.manager.main.CopyService;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.WorkbookService;
+import de.pnp.manager.manager.interfaces.ICharacterHandler;
+import de.pnp.manager.model.character.IPnPCharacter;
 import de.pnp.manager.model.character.PnPCharacterFactory;
+import de.pnp.manager.model.interfaces.IBattle;
 import de.pnp.manager.model.manager.BattleHandler;
 import de.pnp.manager.model.manager.CharacterHandler;
-import de.pnp.manager.model.manager.PnPCharacterProducer;
 import de.pnp.manager.model.character.GeneratedCharacter;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.character.generation.specs.*;
@@ -18,23 +20,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class Battle {
+public class Battle implements IBattle {
 
     private final String battleID;
     private final String sessionID;
-    private final CharacterHandler characterHandler;
+    private final ICharacterHandler<PnPCharacter> characterHandler;
     private final StringProperty name;
     private final IntegerProperty round;
     private final ListProperty<PnPCharacter> players;
     private final ListProperty<PnPCharacter> enemies;
-    private final HashMap<PnPCharacter, Integer> damageStatistic;
-    private final HashMap<PnPCharacter, Integer> healStatistic;
+    private final HashMap<IPnPCharacter, Integer> damageStatistic;
+    private final HashMap<IPnPCharacter, Integer> healStatistic;
 
     /**
      * Don't create a battle this way.
      * Use {@link BattleHandler#createBattle(String)}.
      */
-    public Battle(String battleID, String sessionID, CharacterHandler characterHandler) {
+    public Battle(String battleID, String sessionID, ICharacterHandler<PnPCharacter> characterHandler) {
         this.battleID = battleID;
         this.sessionID = sessionID;
         this.characterHandler = characterHandler;
@@ -94,14 +96,16 @@ public class Battle {
         return allPlayers || allEnemies;
     }
 
-    public void addToDamageStatistic(PnPCharacter character, int damage) {
+    @Override
+    public void addToDamageStatistic(IPnPCharacter character, int damage) {
         if (!damageStatistic.containsKey(character)) {
             damageStatistic.put(character, 0);
         }
         damageStatistic.put(character, damageStatistic.get(character) + damage);
     }
 
-    public void addToHealStatistic(PnPCharacter character, int heal) {
+    @Override
+    public void addToHealStatistic(IPnPCharacter character, int heal) {
         if (!healStatistic.containsKey(character)) {
             healStatistic.put(character, 0);
         }
@@ -129,7 +133,7 @@ public class Battle {
     }
 
     public void createPlayer() {
-        players.add(characterHandler.createOneTimeCharacter(this, PnPCharacterProducer.DEFAULT));
+        players.add(characterHandler.createOneTimeCharacter(this, PnPCharacterFactory.DEFAULT));
     }
 
     public void createPlayer(PnPCharacter character) {
@@ -137,7 +141,7 @@ public class Battle {
     }
 
     public void createEnemy() {
-        enemies.add(characterHandler.createOneTimeCharacter(this, PnPCharacterProducer.DEFAULT));
+        enemies.add(characterHandler.createOneTimeCharacter(this, PnPCharacterFactory.DEFAULT));
     }
 
     public void createEnemy(PnPCharacter character) {

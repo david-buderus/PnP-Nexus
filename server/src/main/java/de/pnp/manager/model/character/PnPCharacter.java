@@ -5,11 +5,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
-import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.character.part.SecondaryAttributeModifier;
 import de.pnp.manager.model.character.state.*;
 import de.pnp.manager.model.character.state.interfaces.IMemberStateImpl;
+import de.pnp.manager.model.interfaces.IBattle;
 import de.pnp.manager.model.interfaces.ILootable;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.loot.ILootTable;
@@ -33,7 +33,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
 
     protected StringProperty name;
     protected IntegerProperty level;
-    protected Battle battle;
+    protected IBattle battle;
     protected final String characterID;
 
     protected IntegerProperty health;
@@ -61,14 +61,14 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     protected IntegerProperty turns;
     protected StringProperty notes;
 
-    protected PnPCharacter(String characterID, Battle battle) {
+    protected PnPCharacter(String characterID, IBattle battle) {
         this(characterID, battle, new LootTable());
     }
 
     /**
      * Initializes everything except the modifier bindings and the properties (except name and level)
      */
-    protected PnPCharacter(String characterID, Battle battle, ILootTable lootTable) {
+    protected PnPCharacter(String characterID, IBattle battle, ILootTable lootTable) {
         this.characterID = characterID;
         this.name = new SimpleStringProperty(LanguageUtility.getMessage("battleMember.defaultName"));
         this.level = new SimpleIntegerProperty(1);
@@ -331,7 +331,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         return defense;
     }
 
-    public PnPCharacter cloneCharacter(String characterID, Battle battle) {
+    public PnPCharacter cloneCharacter(String characterID, IBattle battle) {
         PnPCharacter character = new PnPCharacter(characterID, battle, lootTable);
 
         character.setName(getName());

@@ -1,44 +1,21 @@
 package de.pnp.manager.network.interfaces;
 
-import de.pnp.manager.network.client.IClient;
-import de.pnp.manager.network.message.BaseMessage;
+import de.pnp.manager.network.session.ISession;
 import de.pnp.manager.network.session.Session;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 
-import java.util.Collection;
-import java.util.function.Consumer;
-
-public interface Client extends IClient {
-
-    void sendMessage(BaseMessage message);
-
-    /**
-     * This message can change the state of the client
-     */
-    void sendActiveMessage(BaseMessage message);
-
-    void setOnDisconnect(Consumer<Client> onDisconnect);
+public interface Client extends INetworkClient {
 
     default Session getCurrentSession() {
         return currentSessionProperty().get();
     }
 
-    default void setCurrentSession(Session session) {
-        currentSessionProperty().set(session);
+    default void setCurrentSession(ISession session) {
+        currentSessionProperty().set((Session) session);
     }
 
     ObjectProperty<Session> currentSessionProperty();
 
     StringProperty clientNameProperty();
-
-    Collection<String> getControlledCharacters();
-
-    Collection<String> getAccessibleInventories();
-
-    boolean hasAccessToInventory(String id);
-
-    default String getSessionID() {
-        return getCurrentSession() != null ? getCurrentSession().getSessionID() : null;
-    }
 }

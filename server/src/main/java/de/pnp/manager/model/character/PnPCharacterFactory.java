@@ -1,11 +1,11 @@
 package de.pnp.manager.model.character;
 
 import de.pnp.manager.main.*;
-import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.Currency;
+import de.pnp.manager.model.interfaces.IBattle;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.loot.LootTable;
-import de.pnp.manager.model.manager.PnPCharacterProducer;
+import de.pnp.manager.manager.interfaces.PnPCharacterProducer;
 import de.pnp.manager.model.character.data.ArmorPosition;
 import de.pnp.manager.model.character.data.PrimaryAttribute;
 import de.pnp.manager.model.character.data.SecondaryAttribute;
@@ -21,11 +21,13 @@ import java.util.stream.Stream;
 
 public class PnPCharacterFactory {
 
-    public static PnPCharacter createDefaultCharacter(String characterID, Battle battle) {
+    public static final PnPCharacterProducer<PnPCharacter> DEFAULT = PnPCharacterFactory::createDefaultCharacter;
+
+    public static PnPCharacter createDefaultCharacter(String characterID, IBattle battle) {
         return createDefaultCharacter(characterID, battle, ((c, b) -> new PnPCharacter(c, b, new LootTable())));
     }
 
-    public static <C extends PnPCharacter> C createDefaultCharacter(String characterID, Battle battle, PnPCharacterProducer<C> producer) {
+    public static <C extends PnPCharacter> C createDefaultCharacter(String characterID, IBattle battle, PnPCharacterProducer<C> producer) {
         C character = producer.create(characterID, battle);
 
         character.createModifierBindings();
@@ -38,11 +40,11 @@ public class PnPCharacterFactory {
         return character;
     }
 
-    public static PnPCharacter createCharacter(String characterID, Battle battle, Workbook workbook) {
+    public static PnPCharacter createCharacter(String characterID, IBattle battle, Workbook workbook) {
         return createCharacter(characterID, battle, workbook, PnPCharacter::new);
     }
 
-    public static PlayerCharacter createPlayer(String characterID, Battle battle, Workbook workbook) {
+    public static PlayerCharacter createPlayer(String characterID, IBattle battle, Workbook workbook) {
         CharacterSheetParameterMap parameterMap = CharacterSheetParser.parseCharacterSheet(workbook);
         PlayerCharacter character = createCharacter(characterID, battle, parameterMap, PlayerCharacter::new);
 
@@ -83,7 +85,7 @@ public class PnPCharacterFactory {
         return character;
     }
 
-    private static <C extends PnPCharacter> C createCharacter(String characterID, Battle battle, Workbook workbook, PnPCharacterProducer<C> producer) {
+    private static <C extends PnPCharacter> C createCharacter(String characterID, IBattle battle, Workbook workbook, PnPCharacterProducer<C> producer) {
         C character = createCharacter(characterID, battle, CharacterSheetParser.parseCharacterSheet(workbook), producer);
 
         String lootName = Utility.getConfig().getString("character.sheet.loot");
@@ -111,7 +113,7 @@ public class PnPCharacterFactory {
         return character;
     }
 
-    private static <C extends PnPCharacter> C createCharacter(String characterID, Battle battle, CharacterSheetParameterMap parameterMap, PnPCharacterProducer<C> producer) {
+    private static <C extends PnPCharacter> C createCharacter(String characterID, IBattle battle, CharacterSheetParameterMap parameterMap, PnPCharacterProducer<C> producer) {
         C character = producer.create(characterID, battle);
         character.name = new SimpleStringProperty(parameterMap.getValueAsStringOrElse("character.name", LanguageUtility.getMessage("battleMember.defaultName")));
 

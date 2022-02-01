@@ -1,6 +1,7 @@
 package de.pnp.manager.impl;
 
 import de.pnp.manager.network.interfaces.Client;
+import de.pnp.manager.network.interfaces.INetworkClient;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.session.Session;
 import javafx.beans.property.ObjectProperty;
@@ -25,7 +26,7 @@ public class ClientImpl implements Client {
     }
 
     @Override
-    public void setOnDisconnect(Consumer<Client> onDisconnect) {
+    public void setOnDisconnect(Consumer<INetworkClient> onDisconnect) {
 
     }
 

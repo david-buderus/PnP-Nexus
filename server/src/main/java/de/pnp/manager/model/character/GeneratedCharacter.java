@@ -6,6 +6,7 @@ import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
 import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.Rarity;
+import de.pnp.manager.model.interfaces.IBattle;
 import de.pnp.manager.model.item.*;
 import de.pnp.manager.model.character.data.ArmorPosition;
 import de.pnp.manager.model.character.data.IPrimaryAttribute;
@@ -37,9 +38,9 @@ public class GeneratedCharacter extends PnPCharacter {
 
     protected boolean usesShield;
 
-    public GeneratedCharacter(String characterID, Battle battle, int level,
-                                 Characterisation characterisation, Race race, Profession profession,
-                                 FightingStyle fightingStyle, Specialisation specialisation) {
+    public GeneratedCharacter(String characterID, IBattle battle, int level,
+                              Characterisation characterisation, Race race, Profession profession,
+                              FightingStyle fightingStyle, Specialisation specialisation) {
         super(characterID, battle);
         this.characterisation = characterisation;
         this.race = race;

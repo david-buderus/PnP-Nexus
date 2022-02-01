@@ -1,5 +1,7 @@
 package de.pnp.manager.network.session;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SessionInfo {
 
     protected String sessionID;
@@ -13,10 +15,14 @@ public class SessionInfo {
     protected String host;
     protected String info;
 
-    public SessionInfo() {
-    }
-
-    public SessionInfo(String sessionID, String sessionName, int actualClients, int maxClients, boolean passwordProtected, String host, String info) {
+    public SessionInfo(
+            @JsonProperty("sessionID") String sessionID,
+            @JsonProperty("sessionName") String sessionName,
+            @JsonProperty("actualClients") int actualClients,
+            @JsonProperty("maxClients") int maxClients,
+            @JsonProperty("passwordProtected") boolean passwordProtected,
+            @JsonProperty("host") String host,
+            @JsonProperty("info") String info) {
         this.sessionID = sessionID;
         this.sessionName = sessionName;
         this.actualClients = actualClients;
@@ -30,55 +36,27 @@ public class SessionInfo {
         return sessionID;
     }
 
-    public void setSessionID(String sessionID) {
-        this.sessionID = sessionID;
-    }
-
     public String getSessionName() {
         return sessionName;
-    }
-
-    public void setSessionName(String sessionName) {
-        this.sessionName = sessionName;
     }
 
     public int getActualClients() {
         return actualClients;
     }
 
-    public void setActualClients(int actualClients) {
-        this.actualClients = actualClients;
-    }
-
     public int getMaxClients() {
         return maxClients;
-    }
-
-    public void setMaxClients(int maxClients) {
-        this.maxClients = maxClients;
     }
 
     public boolean isPasswordProtected() {
         return passwordProtected;
     }
 
-    public void setPasswordProtected(boolean passwordProtected) {
-        this.passwordProtected = passwordProtected;
-    }
-
     public String getHost() {
         return host;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
     public String getInfo() {
         return info;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
     }
 }

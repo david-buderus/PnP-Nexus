@@ -64,7 +64,7 @@ public class ConnectionTest {
         assertEquals(message.getId(), 2000);
         assertTrue(message.getData().stream().findFirst().isPresent());
         assertEquals(message.getData().stream().findFirst().get().get("sessionID"), "0");
-        assertEquals(message.getData().stream().findFirst().get().get("sessionName"), "PnP");
+        assertEquals(message.getData().stream().findFirst().get().get("sessionName"), "Test");
     }
 
     @AfterAll

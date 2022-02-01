@@ -1,39 +1,26 @@
 package de.pnp.manager.network.interfaces;
 
-import de.pnp.manager.network.client.IClient;
-import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.session.ISession;
+import de.pnp.manager.network.session.Session;
 import javafx.beans.property.ListProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
-public interface NetworkHandler {
+public interface NetworkHandler extends INetworkHandler {
 
-    void broadcast(BaseMessage message);
-
-    default void broadcast(BaseMessage message, ISession session) {
-        sendTo(message, session.getParticipatingClients().stream().map(IClient::getClientID).toArray(String[]::new));
+    default Collection<? extends ISession> getActiveSessions() {
+        return activeSessionProperty().get() != null ?
+                Collections.singleton(activeSessionProperty().get()) : Collections.emptyList();
     }
 
-    void broadcast(BaseMessage message, Collection<Client> clients);
-
-    /**
-     * This message can change the state of each client
-     */
-    void activeBroadcast(BaseMessage message, Collection<Client> clients);
-
-    void sendTo(BaseMessage message, String... clientIDs);
-
-    Collection<? extends ISession> getActiveSessions();
+    ReadOnlyObjectProperty<Session> activeSessionProperty();
 
     ListProperty<Client> clientsProperty();
 
-    default Collection<Client> getClientsWithInventoryAccess(String id) {
-        return clientsProperty().stream().filter(c -> c.hasAccessToInventory(id)).collect(Collectors.toList());
-    }
-
-    default Collection<Client> getClientsWithCharacterControl(String id) {
-        return clientsProperty().stream().filter(c -> c.getControlledCharacters().contains(id)).collect(Collectors.toList());
+    @Override
+    default Collection<? extends INetworkClient> getClients() {
+        return clientsProperty().get();
     }
 }

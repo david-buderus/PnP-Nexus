@@ -1,7 +1,10 @@
 package de.pnp.manager.model.manager;
 
-import de.pnp.manager.model.Battle;
+import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.manager.interfaces.ICharacterHandler;
+import de.pnp.manager.manager.interfaces.PnPCharacterProducer;
 import de.pnp.manager.model.character.PnPCharacter;
+import de.pnp.manager.model.interfaces.IBattle;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.message.character.RevokeCharactersMessage;
@@ -13,15 +16,14 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import org.jetbrains.annotations.NotNull;
 
-import java.rmi.server.UID;
 import java.util.*;
 
-public class CharacterHandler {
+public class CharacterHandler implements ICharacterHandler<PnPCharacter> {
 
     private static short ID_COUNTER = 0;
 
     protected static synchronized String getNextCharacterID(){
-        return "P-" + new UID(++ID_COUNTER);
+        return String.format(LanguageUtility.getCurrentLanguage().getLocale(), "P-%05d", ++ID_COUNTER);
     }
 
     // maps sessionId to character
@@ -33,35 +35,20 @@ public class CharacterHandler {
         this.manager = manager;
     }
 
-    /**
-     * Creates a character which can be moved between multiple
-     * battles. This character will be persisted between session
-     * restarts.
-     *
-     * @param sessionID the id of the session
-     * @param battle the first battle (can be null)
-     * @param producer the function to create the character
-     * @return the resulting character
-     */
-    public <C extends PnPCharacter> C createCharacter(String sessionID, Battle battle, PnPCharacterProducer<C> producer) {
+    @Override
+    public <C extends PnPCharacter> C createCharacter(String sessionID, IBattle battle, PnPCharacterProducer<C> producer) {
         C character = producer.create(getNextCharacterID(), battle);
         this.sessionCharacterMap.computeIfAbsent(sessionID, k -> createObservableList()).add(character);
 
         return character;
     }
 
-    /**
-     * Creates a character that will be used in one
-     * battle. This character won't get persisted.
-     *
-     * @param battle the battle of the user
-     * @param producer the function to create the character
-     * @return the resulting one time use character
-     */
-    public <C extends PnPCharacter> C createOneTimeCharacter(@NotNull Battle battle, PnPCharacterProducer<C> producer) {
+    @Override
+    public <C extends PnPCharacter> C createOneTimeCharacter(@NotNull IBattle battle, PnPCharacterProducer<C> producer) {
         return producer.create(getNextCharacterID(), battle);
     }
 
+    @Override
     public void deleteCharacter(String sessionID, String characterID) {
         Collection<PnPCharacter> characters = this.sessionCharacterMap.get(sessionID);
 
@@ -74,18 +61,16 @@ public class CharacterHandler {
         }
     }
 
+    @Override
     public void deleteCharacter(String characterID) {
         for (List<PnPCharacter> characters : this.sessionCharacterMap.values()) {
             characters.removeIf(battle -> battle.getCharacterID().equals(characterID));
         }
     }
 
+    @Override
     public ObservableList<PnPCharacter> getCharacters(String sessionID) {
         return sessionCharacterMap.computeIfAbsent(sessionID, id -> createObservableList());
-    }
-
-    public PnPCharacter getCharacter(String sessionID, String characterID) {
-        return getCharacters(sessionID).stream().filter(c -> c.getCharacterID().equals(characterID)).findFirst().orElse(null);
     }
 
     private ObservableList<PnPCharacter> createObservableList() {

@@ -1,9 +1,9 @@
 package de.pnp.manager.model.character;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.ICurrency;
+import de.pnp.manager.model.interfaces.IBattle;
 import de.pnp.manager.model.loot.ILootTable;
 import de.pnp.manager.model.loot.LootTable;
 import javafx.beans.property.*;
@@ -19,11 +19,11 @@ public class PlayerCharacter extends PnPCharacter implements IPlayerCharacter {
     protected StringProperty history;
     protected StringProperty gender;
 
-    public PlayerCharacter(String characterID, Battle battle) {
+    public PlayerCharacter(String characterID, IBattle battle) {
         this(characterID, battle, new LootTable());
     }
 
-    public PlayerCharacter(String characterID, Battle battle, ILootTable lootTable) {
+    public PlayerCharacter(String characterID, IBattle battle, ILootTable lootTable) {
         super(characterID, battle, lootTable);
         this.race = new SimpleStringProperty("");
         this.age = new SimpleStringProperty("");

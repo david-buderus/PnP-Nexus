@@ -1,12 +1,9 @@
 package de.pnp.manager.network.eventhandler.inventory;
 
 import de.pnp.manager.model.other.IContainer;
-import de.pnp.manager.network.ClientHandler;
 import de.pnp.manager.network.interfaces.Client;
 import de.pnp.manager.network.message.BaseMessage;
-import de.pnp.manager.network.message.character.AssignCharactersMessage;
 import de.pnp.manager.network.message.inventory.AssignInventoryMessage;
-import de.pnp.manager.network.state.IEventHandler;
 import de.pnp.manager.network.state.INonConditionalEventHandler;
 
 import java.util.stream.Collectors;

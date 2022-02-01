@@ -44,6 +44,14 @@ public abstract class LanguageUtility {
         }
     }
 
+    public static Language getCurrentLanguage() {
+        return language.get();
+    }
+
+    public static ReadOnlyObjectProperty<Language> getCurrentLanguageProperty() {
+        return language;
+    }
+
     private static void reloadLanguage(Language language) {
         try {
             messages.set(ResourceBundle.getBundle("language/Messages", language.getLocale()));

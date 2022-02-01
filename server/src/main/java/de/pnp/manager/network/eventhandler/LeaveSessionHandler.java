@@ -1,6 +1,7 @@
 package de.pnp.manager.network.eventhandler;
 
 import de.pnp.manager.network.interfaces.Client;
+import de.pnp.manager.network.interfaces.INetworkHandler;
 import de.pnp.manager.network.interfaces.NetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.session.UpdateSessionMessage;
@@ -15,10 +16,10 @@ import static javafx.application.Platform.runLater;
 public class LeaveSessionHandler implements INonConditionalEventHandler<BaseMessage> {
 
     protected Client client;
-    protected NetworkHandler handler;
+    protected INetworkHandler handler;
     protected Calendar calendar;
 
-    public LeaveSessionHandler(Client client, NetworkHandler handler, Calendar calendar) {
+    public LeaveSessionHandler(Client client, INetworkHandler handler, Calendar calendar) {
         this.client = client;
         this.handler = handler;
         this.calendar = calendar;

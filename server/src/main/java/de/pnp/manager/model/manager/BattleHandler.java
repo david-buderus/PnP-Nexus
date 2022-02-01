@@ -1,21 +1,21 @@
 package de.pnp.manager.model.manager;
 
+import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.manager.interfaces.IBattleHandler;
 import de.pnp.manager.model.Battle;
 import de.pnp.manager.network.session.ISession;
-import org.apache.commons.codec.digest.DigestUtils;
 
-import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BattleHandler {
+public class BattleHandler implements IBattleHandler<Battle> {
 
     private static short ID_COUNTER = 0;
 
     protected static synchronized String getNextBattleID(){
-        return "B-" + new UID(++ID_COUNTER);
+        return String.format(LanguageUtility.getCurrentLanguage().getLocale(), "B-%05d", ++ID_COUNTER);
     }
 
     // maps sessionId to battles

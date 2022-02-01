@@ -35,7 +35,7 @@ public class ManagerView extends View {
         );
         root.getTabs().add(networkTab);
 
-        Tab battleTab = new BattleOverview(this, manager.getBattleHandler());
+        Tab battleTab = new BattleOverview(this, manager.getBattleHandler(), manager.getNetworkHandler());
         root.getTabs().add(battleTab);
 
         Tab itemTab = new SQLView(this);

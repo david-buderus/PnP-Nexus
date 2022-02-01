@@ -27,6 +27,7 @@ version = platform + '-' + versionNumber
 
 dependencies {
     implementation project(':shared')
+    implementation project(':server_core')
     implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
     implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
@@ -100,4 +101,12 @@ test {
 }
 jacocoTestReport {
     dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "de/pnp/manager/ui/**/*"
+            ])
+        }))
+    }
 }

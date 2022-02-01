@@ -1,20 +1,21 @@
 package de.pnp.manager.network;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.main.Database;
+import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.model.character.PnPCharacter;
 import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.client.IClient;
-import de.pnp.manager.network.eventhandler.*;
-import de.pnp.manager.network.eventhandler.inventory.*;
+import de.pnp.manager.network.eventhandler.AssignCharacterHandler;
+import de.pnp.manager.network.eventhandler.LeaveSessionHandler;
+import de.pnp.manager.network.eventhandler.RevokeCharacterHandler;
 import de.pnp.manager.network.eventhandler.equipment.ChangeEquippedWeaponsHandler;
 import de.pnp.manager.network.eventhandler.equipment.EquipHandler;
 import de.pnp.manager.network.eventhandler.equipment.UnequipHandler;
+import de.pnp.manager.network.eventhandler.inventory.*;
 import de.pnp.manager.network.interfaces.Client;
-import de.pnp.manager.network.interfaces.NetworkHandler;
+import de.pnp.manager.network.interfaces.INetworkHandler;
 import de.pnp.manager.network.message.BaseMessage;
 import de.pnp.manager.network.message.character.ControlledCharacterResponseMessage;
 import de.pnp.manager.network.message.character.update.talent.UpdateTalentsData;
@@ -23,7 +24,7 @@ import de.pnp.manager.network.message.database.DatabaseResponseMessage;
 import de.pnp.manager.network.message.error.DeniedMessage;
 import de.pnp.manager.network.message.error.NotFoundMessage;
 import de.pnp.manager.network.message.error.WrongStateMessage;
-import de.pnp.manager.network.message.inventory.*;
+import de.pnp.manager.network.message.inventory.AccessibleContainerResponseMessage;
 import de.pnp.manager.network.message.login.LoginRequestMessage;
 import de.pnp.manager.network.message.login.LoginResponseMessage;
 import de.pnp.manager.network.message.session.JoinSessionRequestMessage;
@@ -41,12 +42,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.io.*;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import java.rmi.server.UID;
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.pnp.manager.main.LanguageUtility.getMessage;
@@ -54,91 +52,22 @@ import static de.pnp.manager.network.message.MessageIDs.*;
 import static javafx.application.Platform.runLater;
 
 @JsonSerialize(as = IClient.class)
-public class ClientHandler extends Thread implements Client {
+public class ClientHandler extends AbstractClientHandler<Manager> implements Client {
 
     private static short ID_COUNTER = 0;
 
     protected static synchronized String getNextClientID() {
-        return "C-" + new UID(++ID_COUNTER);
+        return String.format(LanguageUtility.getCurrentLanguage().getLocale(), "C-%05d", ++ID_COUNTER);
     }
 
-    protected Socket clientSocket;
-    protected PrintWriter out;
-    protected BufferedReader in;
-    protected ObjectMapper mapper;
-    protected Calendar calendar;
-    protected StateMachine<BaseMessage> stateMachine;
-
-    protected String clientId;
     protected StringProperty clientName;
     protected ObjectProperty<Session> currentSession;
-    protected Collection<String> controlledCharacters;
-    protected Collection<String> accessibleInventories;
-    protected final Manager manager;
-
-    protected Consumer<Client> onDisconnect;
 
     public ClientHandler(Socket socket, Manager manager) {
-        this.clientSocket = socket;
-        this.mapper = new ObjectMapper();
+        super(manager, socket, getNextClientID());
         this.mapper.registerModule(new ServerModule());
-        this.calendar = Calendar.getInstance();
-        this.clientId = getNextClientID();
         this.clientName = new SimpleStringProperty(clientId);
         this.currentSession = new SimpleObjectProperty<>(null);
-        this.manager = manager;
-        this.stateMachine = createStateMachine();
-        this.controlledCharacters = new ArrayList<>();
-        this.accessibleInventories = new ArrayList<>();
-    }
-
-    public void run() {
-        try {
-            out = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream(), StandardCharsets.UTF_8), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), StandardCharsets.UTF_8));
-
-            String input;
-            while ((input = in.readLine()) != null) {
-                handleMessage(mapper.readValue(input, BaseMessage.class));
-            }
-
-            in.close();
-            out.close();
-            clientSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        this.onDisconnect.accept(this);
-    }
-
-    protected void handleMessage(BaseMessage message) {
-        stateMachine.fire(message);
-    }
-
-    @Override
-    public void sendMessage(BaseMessage message) {
-        try {
-            out.println(mapper.writeValueAsString(message));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void sendActiveMessage(BaseMessage message) {
-        if (stateMachine.fire(message)) {
-            sendMessage(message);
-        }
-    }
-
-    @Override
-    public void setOnDisconnect(Consumer<Client> onDisconnect) {
-        this.onDisconnect = onDisconnect;
-    }
-
-    @Override
-    public String getClientID() {
-        return clientId;
     }
 
     @Override
@@ -157,21 +86,7 @@ public class ClientHandler extends Thread implements Client {
     }
 
     @Override
-    public Collection<String> getControlledCharacters() {
-        return controlledCharacters;
-    }
-
-    @Override
-    public Collection<String> getAccessibleInventories() {
-        return accessibleInventories;
-    }
-
-    @Override
-    public boolean hasAccessToInventory(String id) {
-        return controlledCharacters.contains(id) || accessibleInventories.contains(id);
-    }
-
-    private StateMachine<BaseMessage> createStateMachine() {
+    protected StateMachine<BaseMessage> createStateMachine() {
         BaseMessageStateMachine stateMachine = new BaseMessageStateMachine(States.STATES, States.START);
         stateMachine.setOnNoTransition(event -> sendMessage(new WrongStateMessage(getMessage("message.error.wrongState"), calendar.getTime())));
 
@@ -202,7 +117,7 @@ public class ClientHandler extends Thread implements Client {
         stateMachine.registerTransition(States.LOGGED_IN, States.IN_SESSION, JOIN_SESSION_REQUEST, baseMessage -> {
             JoinSessionRequestMessage message = (JoinSessionRequestMessage) baseMessage;
 
-            NetworkHandler handler = manager.getNetworkHandler();
+            INetworkHandler handler = manager.getNetworkHandler();
             Optional<? extends ISession> optSession = handler.getActiveSessions().stream()
                     .filter(s -> s.getSessionID().equals(message.getData().getSessionId())).findFirst();
 
@@ -236,7 +151,8 @@ public class ClientHandler extends Thread implements Client {
                 sendMessage(
                         new ControlledCharacterResponseMessage(
                                 manager.getCharacterHandler().getCharacters(getCurrentSession().getSessionID())
-                                        .filtered(c -> controlledCharacters.contains(c.getCharacterID())),
+                                        .stream().filter(c -> controlledCharacters.contains(c.getCharacterID()))
+                                        .collect(Collectors.toList()),
                                 calendar.getTime()
                         )
                 )
@@ -263,7 +179,8 @@ public class ClientHandler extends Thread implements Client {
                 sendMessage(
                         new ControlledCharacterResponseMessage(
                                 manager.getCharacterHandler().getCharacters(getCurrentSession().getSessionID())
-                                        .filtered(c -> controlledCharacters.contains(c.getCharacterID())),
+                                        .stream().filter(c -> controlledCharacters.contains(c.getCharacterID()))
+                                        .collect(Collectors.toList()),
                                 calendar.getTime()
                         )
                 )
