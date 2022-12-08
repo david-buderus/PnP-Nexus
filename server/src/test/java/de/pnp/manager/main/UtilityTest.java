@@ -38,10 +38,23 @@ public class UtilityTest {
 
     @Test
     public void asRomanNumberTest() {
-        assertEquals("V", Utility.asRomanNumber(5));
         assertEquals("DCCLXXXIX", Utility.asRomanNumber(789));
         assertEquals("", Utility.asRomanNumber(0));
         assertEquals("", Utility.asRomanNumber(-50));
+        assertEquals("I", Utility.asRomanNumber(1));
+        assertEquals("IV", Utility.asRomanNumber(4));
+        assertEquals("V", Utility.asRomanNumber(5));
+        assertEquals("IX", Utility.asRomanNumber(9));
+        assertEquals("X", Utility.asRomanNumber(10));
+        assertEquals("XL", Utility.asRomanNumber(40));
+        assertEquals("L", Utility.asRomanNumber(50));
+        assertEquals("XC", Utility.asRomanNumber(90));
+        assertEquals("C", Utility.asRomanNumber(100));
+        assertEquals("CD", Utility.asRomanNumber(400));
+        assertEquals("D", Utility.asRomanNumber(500));
+        assertEquals("CM", Utility.asRomanNumber(900));
+        assertEquals("M", Utility.asRomanNumber(1000));
+        assertEquals("MMXIX", Utility.asRomanNumber(2019));
     }
 
     @Test

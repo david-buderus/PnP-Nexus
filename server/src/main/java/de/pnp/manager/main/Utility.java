@@ -26,6 +26,8 @@ public abstract class Utility {
     private static final Random rand = new Random();
     private static Configuration config = null;
 
+    private static final String[] romanNumerals = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+    private static final int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
 
     static {
         Parameters params = new Parameters();
@@ -91,48 +93,16 @@ public abstract class Utility {
      * @return a string that represents the matching roman number
      */
     public static String asRomanNumber(int x) {
-        if (x < 0) return "";
+        StringBuilder roman = new StringBuilder();
 
-        String in = String.valueOf(x);
-        StringBuilder out = new StringBuilder();
-
-        for (int i = 0; i < in.length(); i++) {
-            String[] symbols = getSymbols((int) Math.pow(10, i));
-            int digit = Integer.parseInt(String.valueOf(in.charAt(in.length() - 1 - i)));
-
-            if (digit == 4) {
-                out.insert(0, symbols[0] + symbols[1]);
-                continue;
-            }
-            if (digit == 9) {
-                out.insert(0, symbols[0] + symbols[2]);
-                continue;
-            }
-            if (digit > 4) {
-                for (int j = 5; j < digit; j++) {
-                    out.insert(0, symbols[0]);
-                }
-                out.insert(0, symbols[1]);
-                continue;
-            }
-            for (int j = 0; j < digit; j++) {
-                out.insert(0, symbols[0]);
+        for (int i = 0; i < romanNumerals.length; i++) {
+            while (x >= values[i]) {
+                roman.append(romanNumerals[i]);
+                x -= values[i];
             }
         }
-        return out.toString();
-    }
 
-    private static String[] getSymbols(int pot) {
-        switch (pot) {
-            case 1:
-                return new String[]{"I", "V", "X"};
-            case 10:
-                return new String[]{"X", "L", "C"};
-            case 100:
-                return new String[]{"C", "D", "M"};
-            default:
-                return new String[]{"", "", ""};
-        }
+        return roman.toString();
     }
 
     public static ICurrency sellLoot(Collection<ILoot> loot) {
