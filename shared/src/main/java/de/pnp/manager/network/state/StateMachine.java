@@ -1,5 +1,7 @@
 package de.pnp.manager.network.state;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -11,18 +13,20 @@ public class StateMachine<Event> {
     protected State currentState;
     protected Map<State, Collection<Transition<Event>>> transitions;
     protected INonConditionalEventHandler<Event> onNoTransition;
+    protected ObjectMapper mapper;
 
     public StateMachine(Set<State> states, State start) {
         this.states = states;
         this.currentState = start;
         this.transitions = new HashMap<>();
         this.onNoTransition = null;
+        this.mapper = new ObjectMapper();
     }
 
     /**
      * Returns true if a transition was used
      */
-    public boolean fire(Event event) {
+    public synchronized boolean fire(Event event) {
 
         for (Transition<Event> transition : transitions.getOrDefault(currentState, Collections.emptyList())) {
             if (
@@ -62,6 +66,14 @@ public class StateMachine<Event> {
         this.onNoTransition = onNoTransition;
     }
 
+    @Override
+    public String toString() {
+        return
+                "State:\t\t" + currentState.name + "\n" +
+                "States:\t\t" + states + "\n" +
+                "Transitions:\t" + transitions;
+    }
+
     private static class Transition<T> {
         final State from;
         final State to;
@@ -73,6 +85,11 @@ public class StateMachine<Event> {
             this.to = to;
             this.eventCheck = eventCheck;
             this.eventHandler = eventHandler;
+        }
+
+        @Override
+        public String toString() {
+            return "Transition ("  + from + " -> " + to + ")";
         }
     }
 }

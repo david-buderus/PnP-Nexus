@@ -8,8 +8,13 @@ import java.util.Collection;
 
 public class Inventory extends ItemList implements IInventory {
 
-    public static final Inventory EMPTY_INVENTORY = new Inventory(0, 0);
-    public static final Inventory UNLIMITED_INVENTORY = new Inventory(Double.MAX_VALUE, Integer.MAX_VALUE);
+    public static Inventory createEmptyInventory()  {
+        return new Inventory(0, 0);
+    }
+
+    public static Inventory createUnlimitedInventory()  {
+        return new Inventory(Double.MAX_VALUE, Integer.MAX_VALUE);
+    }
 
     protected double maxSize;
     protected int numberOfSlots;
@@ -34,27 +39,17 @@ public class Inventory extends ItemList implements IInventory {
 
     @Override
     public boolean add(IItem item) {
-        if (getCurrentSize() + item.getAmount() <= getMaxSize()) {
-            if (contains(item)) {
-                return super.add(item);
-            } else {
-                if (getNumberOfOccupiedSlots() < getNumberOfSlots()) {
-                    return super.add(item);
-                }
-            }
-
+        if (hasSpaceFor(item)) {
+            return super.add(item);
         }
+
         return false;
     }
 
     @Override
     public boolean addAll(@NotNull Collection<? extends IItem> collection) {
-        if (collection.stream().mapToDouble(IItem::getAmount).sum() + getCurrentSize() <= getMaxSize()) {
-            long notContainedItemStacks = collection.stream().filter(i -> !contains(i)).count();
-
-            if (getNumberOfOccupiedSlots() + notContainedItemStacks <= getNumberOfSlots()) {
-                return super.addAll(collection);
-            }
+        if (hasSpaceFor(collection)) {
+            return super.addAll(collection);
         }
 
         return false;

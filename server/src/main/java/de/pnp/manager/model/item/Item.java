@@ -17,6 +17,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class Item implements IItem {
 
+    public static final Item EMPTY_ITEM = new Item();
+
     protected String name;
     protected String type;
     protected String subtype;
@@ -37,7 +39,7 @@ public class Item implements IItem {
         this.subtype = "";
         this.requirement = "";
         this.effect = "";
-        this.rarity = Rarity.common;
+        this.rarity = Rarity.COMMON;
         this.currency = new Currency(0);
         this.tier = 1;
         this.amount = new SimpleFloatProperty(1);

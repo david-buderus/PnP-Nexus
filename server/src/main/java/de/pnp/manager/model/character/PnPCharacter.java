@@ -6,14 +6,14 @@ import de.pnp.manager.main.Database;
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
 import de.pnp.manager.model.Battle;
-import de.pnp.manager.model.interfaces.ILootable;
-import de.pnp.manager.model.item.*;
-import de.pnp.manager.model.loot.ILootTable;
-import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.character.data.*;
 import de.pnp.manager.model.character.part.SecondaryAttributeModifier;
 import de.pnp.manager.model.character.state.*;
 import de.pnp.manager.model.character.state.interfaces.IMemberStateImpl;
+import de.pnp.manager.model.interfaces.ILootable;
+import de.pnp.manager.model.item.*;
+import de.pnp.manager.model.loot.ILootTable;
+import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.other.ISpell;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Talent;
@@ -42,9 +42,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     protected ListProperty<IMemberState> memberStates;
     protected ListProperty<IWeapon> weapons;
     protected ListProperty<IWeapon> equippedWeapons;
-    protected ListProperty<IJewellery> jewellery;
     protected ListProperty<IJewellery> equippedJewellery;
-    protected ListProperty<IArmor> armor;
     protected MapProperty<IArmorPosition, IArmor> equippedArmor;
     protected ListProperty<ISpell> spells;
     protected MapProperty<ITalent, IntegerProperty> talents;
@@ -85,7 +83,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
             this.secondaryAttributes.put(attribute, 0);
         }
         this.lootTable = lootTable;
-        this.inventory = Inventory.UNLIMITED_INVENTORY;
+        this.inventory = Inventory.createUnlimitedInventory();
         this.battle = battle;
         this.startValue = new SimpleIntegerProperty(Utility.getConfig().getInt("character.initiative.start"));
         this.counter = new SimpleIntegerProperty(startValue.get());
@@ -93,9 +91,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         this.memberStates = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.weapons = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.equippedWeapons = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.jewellery = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.equippedJewellery = new SimpleListProperty<>(FXCollections.observableArrayList());
-        this.armor = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.equippedArmor = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
         this.spells = new SimpleListProperty<>(FXCollections.observableArrayList());
         this.talents = new SimpleMapProperty<>(FXCollections.observableMap(new HashMap<>()));
@@ -118,8 +114,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
                 if (getEquippedArmor().get(position).equals(armor)) {
                     getEquippedArmor().put(position, null);
                 }
-
-                getArmor().remove(armor);
             }
         };
 
@@ -161,12 +155,12 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
                 try {
                     if (list.size() == 1) {
                         double init = Math.ceil(list.get(0).getInitiative());
-                        this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier((int) init);
+                        this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier((int) init);
                     }
                     if (list.size() == 2) {
                         double init1 = list.get(0).getInitiative();
                         double init2 = list.get(1).getInitiative();
-                        this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(
+                        this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier(
                                 (int) Math.min(Math.min(Math.floor(init1), Math.floor(init2)), Math.floor(init1 + init2))
                         );
                     }
@@ -177,21 +171,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         });
 
         //Prepare armor
-        this.armor.addListener((ListChangeListener<? super IArmor>) ob -> {
-            while (ob.next()) {
-                for (IArmor armor : ob.getRemoved()) {
-                    if (armor instanceof Armor) {
-                        ((Armor) armor).removeOnBreakListener(armorListener);
-                    }
-                }
-
-                for (IArmor armor : ob.getAddedSubList()) {
-                    if (armor instanceof Armor) {
-                        ((Armor) armor).addOnBreakListener(armorListener);
-                    }
-                }
-            }
-        });
         this.equippedArmor.addListener((MapChangeListener<IArmorPosition, IArmor>) change -> {
             if (change.wasRemoved()) {
                 IArmor prevArmor = change.getValueRemoved();
@@ -293,19 +272,19 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         double reduction = 1 - penetration;
 
         switch (type) {
-            case direct:
+            case DIRECT:
                 return 0;
-            case head:
-                armorDefense += getProtection(ArmorPosition.head);
+            case HEAD:
+                armorDefense += getProtection(ArmorPosition.HEAD);
                 break;
-            case upperBody:
-                armorDefense += getProtection(ArmorPosition.upperBody);
+            case UPPER_BODY:
+                armorDefense += getProtection(ArmorPosition.UPPER_BODY);
                 break;
-            case arm:
-                armorDefense += getProtection(ArmorPosition.arm);
+            case ARM:
+                armorDefense += getProtection(ArmorPosition.ARM);
                 break;
-            case legs:
-                armorDefense += getProtection(ArmorPosition.legs);
+            case LEGS:
+                armorDefense += getProtection(ArmorPosition.LEGS);
                 break;
         }
         if (withShield) {
@@ -387,18 +366,13 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         for (IWeapon weapon : getWeapons()) {
             character.weapons.add(weapon.copy());
         }
-        character.equippedArmor.put(ArmorPosition.head, getEquippedArmor().get(ArmorPosition.head));
-        character.equippedArmor.put(ArmorPosition.upperBody, getEquippedArmor().get(ArmorPosition.upperBody));
-        character.equippedArmor.put(ArmorPosition.arm, getEquippedArmor().get(ArmorPosition.arm));
-        character.equippedArmor.put(ArmorPosition.legs, getEquippedArmor().get(ArmorPosition.legs));
-        for (IArmor armor : getArmor()) {
-            character.armor.add(armor.copy());
-        }
+        character.equippedArmor.put(ArmorPosition.HEAD, getEquippedArmor().get(ArmorPosition.HEAD));
+        character.equippedArmor.put(ArmorPosition.UPPER_BODY, getEquippedArmor().get(ArmorPosition.UPPER_BODY));
+        character.equippedArmor.put(ArmorPosition.ARM, getEquippedArmor().get(ArmorPosition.ARM));
+        character.equippedArmor.put(ArmorPosition.LEGS, getEquippedArmor().get(ArmorPosition.LEGS));
+
         for (IJewellery jewellery : getEquippedJewellery()) {
             character.equippedJewellery.add(jewellery.copy());
-        }
-        for (IJewellery jewellery : getJewellery()) {
-            character.jewellery.add(jewellery.copy());
         }
 
         //Load Talents and spells
@@ -451,13 +425,7 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
         for (IEquipment equipment : getEquippedWeapons()) {
             result.add(equipment, 1,1);
         }
-        for (IEquipment equipment : getArmor()) {
-            result.add(equipment, 1,1);
-        }
         for (IEquipment equipment : getEquippedArmor().values()) {
-            result.add(equipment, 1,1);
-        }
-        for (IEquipment equipment : getJewellery()) {
             result.add(equipment, 1,1);
         }
         for (IEquipment equipment : getEquippedJewellery()) {
@@ -522,23 +490,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     @Override
     @JsonIgnore
     public int getMaxHealth() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).getResult();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).getResult();
     }
 
     public IntegerBinding maxHealthProperty() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).resultProperty();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).resultProperty();
     }
 
     public int getMaxHealthModifier() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).getModifier();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).getModifier();
     }
 
     public IntegerProperty maxHealthModifierProperty() {
-        return secondaryAttributeModifiers.get(SecondaryAttribute.health).modifierProperty();
+        return secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).modifierProperty();
     }
 
     public void setMaxHealthModifier(int maxHealthModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.health).setModifier(maxHealthModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.HEALTH).setModifier(maxHealthModifier);
     }
 
     @Override
@@ -565,23 +533,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     @Override
     @JsonIgnore
     public int getMaxMana() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).getResult();
     }
 
     public IntegerBinding maxManaProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).resultProperty();
     }
 
     public int getMaxManaModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).getModifier();
     }
 
     public IntegerProperty maxManaModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).modifierProperty();
     }
 
     public void setMaxManaModifier(int maxManaModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.mana).setModifier(maxManaModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.MANA).setModifier(maxManaModifier);
     }
 
     @Override
@@ -599,23 +567,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
 
     @Override
     public int getMaxMentalHealth() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).getResult();
     }
 
     public IntegerBinding maxMentalHealthProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).resultProperty();
     }
 
     public int getMaxMentalHealthModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).getModifier();
     }
 
     public IntegerProperty maxMentalHealthModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).modifierProperty();
     }
 
     public void setMaxMentalHealthModifier(int maxMentalHealthModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.mentalHealth).setModifier(maxMentalHealthModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.MENTAL_HEALTH).setModifier(maxMentalHealthModifier);
     }
 
     /**
@@ -623,23 +591,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
      * Includes weapons except memberstates
      */
     public int getStaticInitiative() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).getResult();
     }
 
     public IntegerBinding staticInitiativeProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).resultProperty();
     }
 
     public int getStaticInitiativeModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).getModifier();
     }
 
     public IntegerProperty staticInitiativeModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).modifierProperty();
     }
 
     public void setStaticInitiativeModifier(int staticInitiativeModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.initiative).setModifier(staticInitiativeModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.INITIATIVE).setModifier(staticInitiativeModifier);
     }
 
     /**
@@ -648,23 +616,23 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
      * Includes all modifier except memberstates
      */
     public int getStaticBaseDefense() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getResult();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).getResult();
     }
 
     public IntegerBinding staticBaseDefenseProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).resultProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).resultProperty();
     }
 
     public int getStaticBaseDefenseModifier() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).getModifier();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).getModifier();
     }
 
     public IntegerProperty staticBaseDefenseModifierProperty() {
-        return this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).modifierProperty();
+        return this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).modifierProperty();
     }
 
     public void setStaticBaseDefenseModifier(int staticBaseDefenseModifier) {
-        this.secondaryAttributeModifiers.get(SecondaryAttribute.defense).setModifier(staticBaseDefenseModifier);
+        this.secondaryAttributeModifiers.get(SecondaryAttribute.DEFENSE).setModifier(staticBaseDefenseModifier);
     }
 
     @Override
@@ -726,19 +694,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     }
 
     @Override
-    public ObservableList<IJewellery> getJewellery() {
-        return jewellery.get();
-    }
-
-    public ListProperty<IJewellery> jewelleryProperty() {
-        return jewellery;
-    }
-
-    public void setJewellery(ObservableList<IJewellery> jewellery) {
-        this.jewellery.set(jewellery);
-    }
-
-    @Override
     public ObservableList<IJewellery> getEquippedJewellery() {
         return equippedJewellery.get();
     }
@@ -749,19 +704,6 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
 
     public void setEquippedJewellery(ObservableList<IJewellery> equippedJewellery) {
         this.equippedJewellery.set(equippedJewellery);
-    }
-
-    @Override
-    public ObservableList<IArmor> getArmor() {
-        return armor.get();
-    }
-
-    public ListProperty<IArmor> armorProperty() {
-        return armor;
-    }
-
-    public void setArmor(ObservableList<IArmor> armor) {
-        this.armor.set(armor);
     }
 
     @Override
@@ -780,17 +722,17 @@ public class PnPCharacter implements IPnPCharacter, ILootable {
     public ObservableList<IArmor> getEquippedArmorAsList() {
         ObservableList<IArmor> list = FXCollections.observableList(new ArrayList<>());
 
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.head, new Armor()));
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.upperBody, new Armor()));
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.arm, new Armor()));
-        list.add(getEquippedArmor().getOrDefault(ArmorPosition.legs, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.HEAD, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.UPPER_BODY, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.ARM, new Armor()));
+        list.add(getEquippedArmor().getOrDefault(ArmorPosition.LEGS, new Armor()));
 
         list.addListener((ListChangeListener<IArmor>) c -> {
             list.clear();
-            list.add(getEquippedArmor().get(ArmorPosition.head));
-            list.add(getEquippedArmor().get(ArmorPosition.upperBody));
-            list.add(getEquippedArmor().get(ArmorPosition.arm));
-            list.add(getEquippedArmor().get(ArmorPosition.legs));
+            list.add(getEquippedArmor().get(ArmorPosition.HEAD));
+            list.add(getEquippedArmor().get(ArmorPosition.UPPER_BODY));
+            list.add(getEquippedArmor().get(ArmorPosition.ARM));
+            list.add(getEquippedArmor().get(ArmorPosition.LEGS));
         });
 
         return list;

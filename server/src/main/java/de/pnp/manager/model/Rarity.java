@@ -1,44 +1,51 @@
 package de.pnp.manager.model;
 
-import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
-import de.pnp.manager.model.interfaces.WithToStringProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
+import de.pnp.manager.model.interfaces.WithUnlocalizedName;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public enum Rarity implements IRarity, WithToStringProperty {
-    unknown, common, rare, epic, legendary, godlike;
+public enum Rarity implements IRarity, WithUnlocalizedName {
+    UNKNOWN("unknown"), COMMON("common"), RARE("rare"),
+    EPIC("epic"), LEGENDARY("legendary"), GODLIKE("godlike");
 
     private static final Random rand = new Random();
 
+    private final String keyName;
+
+    Rarity(String keyName) {
+        this.keyName = keyName;
+    }
+
     @Override
-    public ReadOnlyStringProperty toStringProperty() {
-        return LanguageUtility.getMessageProperty("rarity." + super.toString());
+    public String getUnlocalizedName() {
+        return "rarity." + keyName;
     }
 
     @Override
     public Rarity getLowerRarity() {
         switch (this) {
-            case rare:
-                return common;
-            case epic:
-                return rare;
-            case legendary:
-                return epic;
-            case godlike:
-                return legendary;
+            case UNKNOWN:
+                return UNKNOWN;
+            case RARE:
+                return COMMON;
+            case EPIC:
+                return RARE;
+            case LEGENDARY:
+                return EPIC;
+            case GODLIKE:
+                return LEGENDARY;
         }
-        return common;
+        return COMMON;
     }
 
     public int getWeight() {
-        if (this == unknown) {
+        if (this == UNKNOWN) {
             return 0;
         }
-        return Utility.getConfig().getInt("rarity.weight." + super.toString());
+        return Utility.getConfig().getInt("rarity.weight." + keyName);
     }
 
     @Override
@@ -64,7 +71,7 @@ public enum Rarity implements IRarity, WithToStringProperty {
             weight -= rarity.getWeight();
         }
 
-        return common;
+        return COMMON;
     }
 
     public static Rarity getRarity(String name) {

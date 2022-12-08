@@ -20,7 +20,7 @@ public interface IItemList extends Collection<IItem> {
     boolean removeAll(@NotNull Collection<?> collection);
 
     default boolean containsAmount(IItem item) {
-        return this.get(this.indexOf(item)).getAmount() >= item.getAmount();
+        return this.contains(item) && this.get(this.indexOf(item)).getAmount() >= item.getAmount();
     }
 
     IItem get(int position);
@@ -37,6 +37,13 @@ public interface IItemList extends Collection<IItem> {
         return true;
     }
 
+    /**
+     * Returns how many items of the given item are needed
+     * so that the IItemList has the amount of the given item.
+     *
+     * @param item of which the difference is asked for
+     * @return the amount of items needed to add the list, to have the right amount
+     */
     default float difference(IItem item) {
         if (this.contains(item)) {
             float existing = this.get(this.indexOf(item)).getAmount();
@@ -48,5 +55,12 @@ public interface IItemList extends Collection<IItem> {
         return item.getAmount();
     }
 
-    Collection<? extends IItem> difference(Collection<? extends IItem> collection);
+    /**
+     * Returns how many items of the given items are needed
+     * so that the IItemList has the amount of the given items.
+     *
+     * @param collection of which the difference is asked for
+     * @return the items needed to add the list, to have the right amount
+     */
+    IItemList difference(Collection<? extends IItem> collection);
 }

@@ -18,7 +18,6 @@ import de.pnp.manager.model.loot.LootTable;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.model.other.Spell;
 import de.pnp.manager.model.other.Talent;
-import javafx.beans.property.IntegerProperty;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.*;
@@ -53,7 +52,7 @@ public class GeneratedCharacter extends PnPCharacter {
         this.setName(profession + " - " + specialisation);
 
         for (IPrimaryAttribute p : PrimaryAttribute.getValuesWithoutDummy()) {
-            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.skillPoints.min"));
+            this.primaryAttributes.put(p, Utility.getConfig().getInt("character.primaryAttributes.min"));
         }
         this.generateStats();
         this.calculateSecondaryAttributes();
@@ -66,7 +65,9 @@ public class GeneratedCharacter extends PnPCharacter {
             if (!usesExclusivelySpecificPrimaryWeapons()) {
                 weaponPool.addAll(Database.weaponList);
             }
-            this.getEquippedWeapons().add((Weapon) randomWeapon(getPrimaryWeaponTypes(), weaponPool).getWithUpgrade());
+            Weapon weapon = (Weapon) randomWeapon(getPrimaryWeaponTypes(), weaponPool).getWithUpgrade();
+            this.getEquippedWeapons().add(weapon);
+            this.getWeapons().add(weapon);
         }
 
         if (usesSecondWeapon()) {
@@ -76,7 +77,9 @@ public class GeneratedCharacter extends PnPCharacter {
             }
             Collection<String> secondTypes = usesShield ? Database.shieldTypes : getSecondaryWeaponTypes();
             if (secondTypes.size() > 0) {
-                this.getEquippedWeapons().add((Weapon) randomWeapon(secondTypes, weaponPool).getWithUpgrade());
+                Weapon weapon = (Weapon) randomWeapon(secondTypes, weaponPool).getWithUpgrade();
+                this.getEquippedWeapons().add(weapon);
+                this.getWeapons().add(weapon);
             }
         }
 
@@ -137,8 +140,8 @@ public class GeneratedCharacter extends PnPCharacter {
 
     private void generateStats() {
         Configuration config = Utility.getConfig();
-        int remainingPoints = config.getInt("character.skillPoints.max")
-                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.skillPoints.min");
+        int remainingPoints = config.getInt("character.primaryAttributes.max")
+                - PrimaryAttribute.getValuesWithoutDummy().length * config.getInt("character.primaryAttributes.min");
 
         // Skill first into the attributes the main talents need
         for (IPrimaryAttribute attribute : getMainTalents().stream()
@@ -195,14 +198,14 @@ public class GeneratedCharacter extends PnPCharacter {
     }
 
     private void calculateSecondaryAttributes() {
-        this.secondaryAttributes.put(SecondaryAttribute.meleeDamage, calculateSecondaryAttribute("character.secondaryAttribute.damageMelee"));
-        this.secondaryAttributes.put(SecondaryAttribute.rangeDamage, calculateSecondaryAttribute("character.secondaryAttribute.damageRange"));
-        this.secondaryAttributes.put(SecondaryAttribute.magicPower, calculateSecondaryAttribute("character.secondaryAttribute.magicPower"));
-        this.secondaryAttributes.put(SecondaryAttribute.defense, calculateSecondaryAttribute("character.secondaryAttribute.baseDefense"));
-        this.secondaryAttributes.put(SecondaryAttribute.initiative, calculateSecondaryAttribute("character.secondaryAttribute.initiative"));
-        this.secondaryAttributes.put(SecondaryAttribute.health, calculateSecondaryAttribute("character.secondaryAttribute.maxLife"));
-        this.secondaryAttributes.put(SecondaryAttribute.mana, calculateSecondaryAttribute("character.secondaryAttribute.mentalHealth"));
-        this.secondaryAttributes.put(SecondaryAttribute.mentalHealth, calculateSecondaryAttribute("character.secondaryAttribute.maxMana"));
+        this.secondaryAttributes.put(SecondaryAttribute.MELEE_DAMAGE, calculateSecondaryAttribute("character.secondaryAttribute.damageMelee"));
+        this.secondaryAttributes.put(SecondaryAttribute.RANGE_DAMAGE, calculateSecondaryAttribute("character.secondaryAttribute.damageRange"));
+        this.secondaryAttributes.put(SecondaryAttribute.MAGIC_POWER, calculateSecondaryAttribute("character.secondaryAttribute.magicPower"));
+        this.secondaryAttributes.put(SecondaryAttribute.DEFENSE, calculateSecondaryAttribute("character.secondaryAttribute.baseDefense"));
+        this.secondaryAttributes.put(SecondaryAttribute.INITIATIVE, calculateSecondaryAttribute("character.secondaryAttribute.initiative"));
+        this.secondaryAttributes.put(SecondaryAttribute.HEALTH, calculateSecondaryAttribute("character.secondaryAttribute.maxLife"));
+        this.secondaryAttributes.put(SecondaryAttribute.MANA, calculateSecondaryAttribute("character.secondaryAttribute.mentalHealth"));
+        this.secondaryAttributes.put(SecondaryAttribute.MENTAL_HEALTH, calculateSecondaryAttribute("character.secondaryAttribute.maxMana"));
     }
 
     private int calculateSecondaryAttribute(String key) {
@@ -214,14 +217,14 @@ public class GeneratedCharacter extends PnPCharacter {
             factors[i] = loadedFactors[i];
         }
 
-        float result = getPrimaryAttributes().get(PrimaryAttribute.strength) * factors[0] +
-                getPrimaryAttributes().get(PrimaryAttribute.endurance) * factors[1] +
-                getPrimaryAttributes().get(PrimaryAttribute.dexterity) * factors[2] +
-                getPrimaryAttributes().get(PrimaryAttribute.intelligence) * factors[3] +
-                getPrimaryAttributes().get(PrimaryAttribute.charisma) * factors[4] +
-                getPrimaryAttributes().get(PrimaryAttribute.resilience) * factors[5] +
-                getPrimaryAttributes().get(PrimaryAttribute.agility) * factors[6] +
-                getPrimaryAttributes().get(PrimaryAttribute.precision) * factors[7] +
+        float result = getPrimaryAttributes().get(PrimaryAttribute.STRENGTH) * factors[0] +
+                getPrimaryAttributes().get(PrimaryAttribute.ENDURANCE) * factors[1] +
+                getPrimaryAttributes().get(PrimaryAttribute.DEXTERITY) * factors[2] +
+                getPrimaryAttributes().get(PrimaryAttribute.INTELLIGENCE) * factors[3] +
+                getPrimaryAttributes().get(PrimaryAttribute.CHARISMA) * factors[4] +
+                getPrimaryAttributes().get(PrimaryAttribute.RESILIENCE) * factors[5] +
+                getPrimaryAttributes().get(PrimaryAttribute.AGILITY) * factors[6] +
+                getPrimaryAttributes().get(PrimaryAttribute.PRECISION) * factors[7] +
                 baseValue;
 
         return Math.round(result);
@@ -243,17 +246,17 @@ public class GeneratedCharacter extends PnPCharacter {
                 }
 
                 switch (attribute) {
-                    case meleeDamage:
-                    case rangeDamage:
-                    case magicPower:
-                    case defense:
+                    case MELEE_DAMAGE:
+                    case RANGE_DAMAGE:
+                    case MAGIC_POWER:
+                    case DEFENSE:
                         if (skillPoints > 4) {
                             getSecondaryAttributes().put(attribute, getSecondaryAttributes().get(attribute) + 1);
                             skillPoints -= 5;
                         }
                         break;
-                    case health:
-                    case mana:
+                    case HEALTH:
+                    case MANA:
                         getSecondaryAttributes().put(attribute, getSecondaryAttributes().get(attribute) + 1);
                         skillPoints -= 1;
                         break;
@@ -386,12 +389,12 @@ public class GeneratedCharacter extends PnPCharacter {
 
                 rarity = rarity.getLowerRarity();
 
-            } while (weapons.size() == 0 && rarity != Rarity.common);
+            } while (weapons.size() == 0 && rarity != Rarity.COMMON);
 
             if (weapons.size() == 0) {
                 weapons = weaponPool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity() == Rarity.common)
+                        .filter(x -> x.getRarity() == Rarity.COMMON)
                         .filter(this::checkRequirements)
                         .filter(x -> types.stream().anyMatch(y -> x.getSubtype().equals(y)))
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -441,36 +444,36 @@ public class GeneratedCharacter extends PnPCharacter {
             int x = Utility.consumeNumber(requirementsList);
             String attribute = Utility.consumeString(requirementsList);
 
-            if (attribute.equalsIgnoreCase(PrimaryAttribute.strength.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.strength)) {
+            if (attribute.equalsIgnoreCase(PrimaryAttribute.STRENGTH.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.STRENGTH)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.endurance.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.endurance)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.ENDURANCE.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.ENDURANCE)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.dexterity.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.dexterity)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.DEXTERITY.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.DEXTERITY)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.intelligence.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.intelligence)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.INTELLIGENCE.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.INTELLIGENCE)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.charisma.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.charisma)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.CHARISMA.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.CHARISMA)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.resilience.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.resilience)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.RESILIENCE.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.RESILIENCE)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.agility.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.agility)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.AGILITY.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.AGILITY)) {
                     return false;
                 }
-            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.precision.toShortString())) {
-                if (x > getPrimaryAttributes().get(PrimaryAttribute.precision)) {
+            } else if (attribute.equalsIgnoreCase(PrimaryAttribute.PRECISION.toShortString())) {
+                if (x > getPrimaryAttributes().get(PrimaryAttribute.PRECISION)) {
                     return false;
                 }
             }
@@ -511,12 +514,12 @@ public class GeneratedCharacter extends PnPCharacter {
 
                 rarity = rarity.getLowerRarity();
 
-            } while (equipment.size() == 0 && rarity != Rarity.common);
+            } while (equipment.size() == 0 && rarity != Rarity.COMMON);
 
             if (equipment.size() == 0) {
                 equipment = pool.stream()
                         .filter(x -> x.getTier() == k)
-                        .filter(x -> x.getRarity() == Rarity.common)
+                        .filter(x -> x.getRarity() == Rarity.COMMON)
                         .filter(x -> x.getSubtype().equals(typ))
                         .filter(this::checkRequirements)
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -542,23 +545,13 @@ public class GeneratedCharacter extends PnPCharacter {
             for (IEquipment equipment : getWeapons()) {
                 result.add(equipment, 1,1);
             }
-            for (IEquipment equipment : getEquippedWeapons()) {
-                result.add(equipment, 1,1);
-            }
-
         }
         if (dropsArmor()) {
-            for (IEquipment equipment : getArmor()) {
-                result.add(equipment, 1,1);
-            }
             for (IEquipment equipment : getEquippedArmor().values()) {
                 result.add(equipment, 1,1);
             }
         }
         if (dropsJewellery()) {
-            for (IEquipment equipment : getJewellery()) {
-                result.add(equipment, 1,1);
-            }
             for (IEquipment equipment : getEquippedJewellery()) {
                 result.add(equipment, 1,1);
             }

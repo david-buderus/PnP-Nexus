@@ -30,6 +30,7 @@ public class LeaveSessionHandler implements INonConditionalEventHandler<BaseMess
         session.removeClient(client);
         runLater(() -> client.setCurrentSession(null));
         client.getControlledCharacters().clear();
+        client.getAccessibleInventories().clear();
         client.sendMessage(new OkMessage());
         handler.broadcast(new UpdateSessionMessage(session, calendar.getTime()), session);
     }

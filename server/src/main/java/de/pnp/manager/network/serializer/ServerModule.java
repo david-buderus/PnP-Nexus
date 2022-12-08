@@ -34,8 +34,6 @@ public class ServerModule extends BaseModule {
         this.addAbstractTypeMapping(ILootFactory.class, LootFactory.class);
         this.addAbstractTypeMapping(IDungeonLootFactory.class, DungeonLootFactory.class);
         this.addAbstractTypeMapping(IInventory.class, Inventory.class);
-        this.addAbstractTypeMapping(IPnPCharacter.class, PnPCharacter.class);
-        this.addAbstractTypeMapping(IPlayerCharacter.class, PlayerCharacter.class);
 
         // Inheritance
         this.addDeserializer(IItem.class, new IItemDeserializer(Item.class, Plant.class, Armor.class, Weapon.class, Jewellery.class));

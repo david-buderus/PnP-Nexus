@@ -200,7 +200,7 @@ public class AllMemberStateView extends View {
         typeComboBox.setItems(FXCollections.observableArrayList(AttackTypes.values()));
         typeComboBox.setCellFactory(list -> new UpdatingListCell<>());
         typeComboBox.setButtonCell(new UpdatingListCell<>());
-        typeComboBox.getSelectionModel().select(AttackTypes.direct);
+        typeComboBox.getSelectionModel().select(AttackTypes.DIRECT);
         HBox typeBox = labelRegion("state.info.target", typeComboBox);
 
         effectComboBox.getSelectionModel().selectedItemProperty().addListener((ob, o, factory) -> {
@@ -232,8 +232,8 @@ public class AllMemberStateView extends View {
                 for (PnPCharacterPane pane : selected) {
                     pane.getCharacter().addState(
                             effectComboBox.getValue().create(name.getName(), Integer.parseInt(durationField.getText()),
-                                    activeComboBox.getValue() == Rounds.activeRounds, Float.parseFloat(powerField.getText()),
-                                    randomComboBox.getValue() == Dice.with, typeComboBox.getValue(), source));
+                                    activeComboBox.getValue() == Rounds.ACTIVE_ROUNDS, Float.parseFloat(powerField.getText()),
+                                    randomComboBox.getValue() == Dice.WITH, typeComboBox.getValue(), source));
                 }
                 info.getChildren().add(createButton);
             });

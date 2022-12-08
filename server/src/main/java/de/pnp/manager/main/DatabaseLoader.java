@@ -830,19 +830,19 @@ public abstract class DatabaseLoader {
                 generation.setAbleToUsesPrimaryHand(set.getBoolean(getLocalized("column.ableToUsePrimaryHand")));
                 generation.setAbleToUsesSecondaryHand(set.getBoolean(getLocalized("column.ableToUseSecondaryHand")));
                 generation.setAbleToUseShield(set.getBoolean(getLocalized("column.ableToUseShield")));
-                generation.setAbleToUseArmor(ArmorPosition.head, set.getBoolean(getLocalized("column.ableToUseHelmet")));
-                generation.setAbleToUseArmor(ArmorPosition.upperBody, set.getBoolean(getLocalized("column.ableToUseHarness")));
-                generation.setAbleToUseArmor(ArmorPosition.arm, set.getBoolean(getLocalized("column.ableToUseBracers")));
-                generation.setAbleToUseArmor(ArmorPosition.legs, set.getBoolean(getLocalized("column.ableToUseLegArmor")));
+                generation.setAbleToUseArmor(ArmorPosition.HEAD, set.getBoolean(getLocalized("column.ableToUseHelmet")));
+                generation.setAbleToUseArmor(ArmorPosition.UPPER_BODY, set.getBoolean(getLocalized("column.ableToUseHarness")));
+                generation.setAbleToUseArmor(ArmorPosition.ARM, set.getBoolean(getLocalized("column.ableToUseBracers")));
+                generation.setAbleToUseArmor(ArmorPosition.LEGS, set.getBoolean(getLocalized("column.ableToUseLegArmor")));
                 generation.setAbleToUseJewellery(set.getBoolean(getLocalized("column.ableToUseJewellery")));
                 generation.setUsesAlwaysShield(set.getBoolean(getLocalized("column.usesAlwaysShield")));
                 generation.setAbleToUseSpells(set.getBoolean(getLocalized("column.ableToUseSpells")));
                 generation.setUsesExclusivelySpecificPrimaryWeapons(set.getBoolean(getLocalized("column.exclusivePrimaryHand")));
                 generation.setUsesExclusivelySpecificSecondaryWeapons(set.getBoolean(getLocalized("column.exclusiveSecondaryHand")));
-                generation.setUsesExclusivelySpecificArmor(ArmorPosition.head, set.getBoolean(getLocalized("column.exclusiveHelmet")));
-                generation.setUsesExclusivelySpecificArmor(ArmorPosition.upperBody, set.getBoolean(getLocalized("column.exclusiveHarness")));
-                generation.setUsesExclusivelySpecificArmor(ArmorPosition.arm, set.getBoolean(getLocalized("column.exclusiveBracers")));
-                generation.setUsesExclusivelySpecificArmor(ArmorPosition.legs, set.getBoolean(getLocalized("column.exclusiveLegArmor")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.HEAD, set.getBoolean(getLocalized("column.exclusiveHelmet")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.UPPER_BODY, set.getBoolean(getLocalized("column.exclusiveHarness")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.ARM, set.getBoolean(getLocalized("column.exclusiveBracers")));
+                generation.setUsesExclusivelySpecificArmor(ArmorPosition.LEGS, set.getBoolean(getLocalized("column.exclusiveLegArmor")));
                 generation.setUsesExclusivelySpecificJewellery(set.getBoolean(getLocalized("column.exclusiveJewellery")));
 
                 list.add(generation);

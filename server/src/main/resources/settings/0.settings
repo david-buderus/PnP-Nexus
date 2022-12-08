@@ -1,0 +1,14 @@
+settings.general.title
+
+#settings.rarity.weight, settings.rarity.weight.tooltip
+rarity.common, rarity.weight.common, INTEGER
+rarity.rare, rarity.weight.rare, INTEGER
+rarity.epic, rarity.weight.epic, INTEGER
+rarity.legendary, rarity.weight.legendary, INTEGER
+rarity.godlike, rarity.weight.godlike, INTEGER
+settings.tier.weight, tier.weight, INTEGER_LIST
+
+#settings.coin.title
+settings.coin.silver.toCopper, coin.silver.toCopper, INTEGER
+settings.coin.gold.toSilver, coin.gold.toSilver, INTEGER
+settings.loot.sell.modifier, loot.sell.modifier, PERCENT

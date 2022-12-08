@@ -8,11 +8,12 @@ import de.pnp.manager.model.character.PnPCharacterFactory;
 import de.pnp.manager.model.character.data.ArmorPosition;
 import de.pnp.manager.model.character.data.PrimaryAttribute;
 import de.pnp.manager.model.character.data.SecondaryAttribute;
-import de.pnp.manager.testHelper.TestWithDatabaseAccess;
+import de.pnp.manager.testHelper.DatabaseAccessExtension;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +22,8 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
+@ExtendWith(DatabaseAccessExtension.class)
+public class PlayerCharacterParsingTest {
 
     protected static PlayerCharacter character;
     protected static String wbPath = "src/test/resources/workbooks/Charakterbogen.xlsx";
@@ -41,31 +43,31 @@ public class PlayerCharacterParsingTest extends TestWithDatabaseAccess {
         assertEquals("MyGender", character.getGender());
         assertEquals("MyRace", character.getRace());
 
-        assertEquals(1, (int) character.getPrimaryAttributes().get(PrimaryAttribute.strength));
-        assertEquals(2, (int) character.getPrimaryAttributes().get(PrimaryAttribute.endurance));
-        assertEquals(3, (int) character.getPrimaryAttributes().get(PrimaryAttribute.dexterity));
-        assertEquals(4, (int) character.getPrimaryAttributes().get(PrimaryAttribute.intelligence));
-        assertEquals(5, (int) character.getPrimaryAttributes().get(PrimaryAttribute.charisma));
-        assertEquals(6, (int) character.getPrimaryAttributes().get(PrimaryAttribute.resilience));
-        assertEquals(7, (int) character.getPrimaryAttributes().get(PrimaryAttribute.agility));
-        assertEquals(8, (int) character.getPrimaryAttributes().get(PrimaryAttribute.precision));
+        assertEquals(1, (int) character.getPrimaryAttributes().get(PrimaryAttribute.STRENGTH));
+        assertEquals(2, (int) character.getPrimaryAttributes().get(PrimaryAttribute.ENDURANCE));
+        assertEquals(3, (int) character.getPrimaryAttributes().get(PrimaryAttribute.DEXTERITY));
+        assertEquals(4, (int) character.getPrimaryAttributes().get(PrimaryAttribute.INTELLIGENCE));
+        assertEquals(5, (int) character.getPrimaryAttributes().get(PrimaryAttribute.CHARISMA));
+        assertEquals(6, (int) character.getPrimaryAttributes().get(PrimaryAttribute.RESILIENCE));
+        assertEquals(7, (int) character.getPrimaryAttributes().get(PrimaryAttribute.AGILITY));
+        assertEquals(8, (int) character.getPrimaryAttributes().get(PrimaryAttribute.PRECISION));
 
-        assertEquals(9, (int) character.getSecondaryAttributes().get(SecondaryAttribute.meleeDamage));
-        assertEquals(10, (int) character.getSecondaryAttributes().get(SecondaryAttribute.rangeDamage));
-        assertEquals(11, (int) character.getSecondaryAttributes().get(SecondaryAttribute.magicPower));
-        assertEquals(12, (int) character.getSecondaryAttributes().get(SecondaryAttribute.defense));
-        assertEquals(13, (int) character.getSecondaryAttributes().get(SecondaryAttribute.initiative));
+        assertEquals(9, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MELEE_DAMAGE));
+        assertEquals(10, (int) character.getSecondaryAttributes().get(SecondaryAttribute.RANGE_DAMAGE));
+        assertEquals(11, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MAGIC_POWER));
+        assertEquals(12, (int) character.getSecondaryAttributes().get(SecondaryAttribute.DEFENSE));
+        assertEquals(13, (int) character.getSecondaryAttributes().get(SecondaryAttribute.INITIATIVE));
         assertEquals(11, character.getStaticInitiative());
-        assertEquals(14, (int) character.getSecondaryAttributes().get(SecondaryAttribute.health));
+        assertEquals(14, (int) character.getSecondaryAttributes().get(SecondaryAttribute.HEALTH));
         assertEquals(14, character.getMaxHealth());
-        assertEquals(15, (int) character.getSecondaryAttributes().get(SecondaryAttribute.mentalHealth));
-        assertEquals(16, (int) character.getSecondaryAttributes().get(SecondaryAttribute.mana));
+        assertEquals(15, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MENTAL_HEALTH));
+        assertEquals(16, (int) character.getSecondaryAttributes().get(SecondaryAttribute.MANA));
         assertEquals(16, character.getMaxMana());
 
-        assertEquals(5, character.getProtection(ArmorPosition.arm));
-        assertEquals(6, character.getProtection(ArmorPosition.legs));
-        assertEquals(7, character.getProtection(ArmorPosition.upperBody));
-        assertEquals(6, character.getProtection(ArmorPosition.legs));
+        assertEquals(5, character.getProtection(ArmorPosition.ARM));
+        assertEquals(6, character.getProtection(ArmorPosition.LEGS));
+        assertEquals(7, character.getProtection(ArmorPosition.UPPER_BODY));
+        assertEquals(6, character.getProtection(ArmorPosition.LEGS));
 
         assertEquals(16, character.getShieldProtection());
     }

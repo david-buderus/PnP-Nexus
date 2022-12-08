@@ -29,9 +29,18 @@ public abstract class MessageIDs {
     public static final int DATABASE_RESPONSE = 3001;
 
     //In Character
-    public static final int DISMISS_CHARACTERS = 4301;
+    public static final int REVOKE_CHARACTERS = 4301;
     public static final int UPDATE_TALENTS_NOTIFICATION = 4002;
+    public static final int UPDATE_INVENTORY_NOTIFICATION = 4003;
     public static final int UPDATE_TALENTS_REQUEST = 4302;
+    public static final int MOVE_ITEM_REQUEST = 4303;
+    public static final int CREATE_ITEM_REQUEST = 4304;
+    public static final int DELETE_ITEM_REQUEST = 4305;
+    public static final int FABRICATE_ITEM_REQUEST = 4206;
+    public static final int EQUIP_REQUEST = 4307;
+    public static final int UNEQUIP_REQUEST = 4308;
+    public static final int CHANGE_EQUIPPED_WEAPONS = 4009;
+    public static final int UPDATE_EQUIPMENT_NOTIFICATION = 4010;
 
     //Universal
     public static final int OK = 8000;
@@ -39,9 +48,15 @@ public abstract class MessageIDs {
     public static final int ASSIGN_CHARACTERS = 8001;
     public static final int CONTROLLED_CHARACTER_REQUEST = 8203;
     public static final int CONTROLLED_CHARACTER_RESPONSE = 8003;
+    public static final int ASSIGN_INVENTORIES = 8004;
+    public static final int REVOKE_INVENTORIES = 8005;
+    public static final int ACCESSIBLE_CONTAINER_REQUEST = 8206;
+    public static final int ACCESSIBLE_CONTAINER_RESPONSE = 8006;
 
     //Error
     public static final int ERROR = 9000;
     public static final int WRONG_STATE = 9001;
     public static final int DENIED = 9002;
+    public static final int NOT_FOUND = 9003;
+    public static final int NOT_POSSIBLE = 9004;
 }

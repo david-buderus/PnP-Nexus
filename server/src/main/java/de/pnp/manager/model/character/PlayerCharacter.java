@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import de.pnp.manager.model.Battle;
 import de.pnp.manager.model.Currency;
 import de.pnp.manager.model.ICurrency;
-import de.pnp.manager.model.interfaces.ILootable;
-import de.pnp.manager.model.loot.ILoot;
 import de.pnp.manager.model.loot.ILootTable;
 import de.pnp.manager.model.loot.LootTable;
 import javafx.beans.property.*;

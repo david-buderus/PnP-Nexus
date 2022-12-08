@@ -26,9 +26,7 @@ open class PnPCharacter() : IPnPCharacter {
     private var secondaryAttributes : MutableMap<ISecondaryAttribute, Int> = HashMap()
     private var weapons : MutableCollection<IWeapon> = ArrayList()
     private var equippedWeapons : MutableCollection<IWeapon> = ArrayList()
-    private var jewellery : MutableCollection<IJewellery> = ArrayList()
     private var equippedJewellery : MutableCollection<IJewellery> = ArrayList()
-    private var armor : MutableCollection<IArmor> = ArrayList()
     private var equippedArmor : MutableMap<IArmorPosition, IArmor> = HashMap()
     private var spells : MutableCollection<ISpell> = ArrayList()
     private var inventory : IInventory? = null
@@ -87,25 +85,25 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getMaxHealth(): Int {
-        return secondaryAttributes[SecondaryAttribute.health]?:0
+        return secondaryAttributes[SecondaryAttribute.HEALTH]?:0
     }
 
     fun setMaxHealth(maxHealth: Int) {
-        secondaryAttributes[SecondaryAttribute.health] = maxHealth
+        secondaryAttributes[SecondaryAttribute.HEALTH] = maxHealth
     }
     override fun getMana(): Int {
         return mana
     }
 
     override fun getMaxMana(): Int {
-        return secondaryAttributes[SecondaryAttribute.mana]?:0
+        return secondaryAttributes[SecondaryAttribute.MANA]?:0
     }
 
     fun setMaxMana(maxMana: Int) {
         println("setting maxMana")
-        println(" " + secondaryAttributes + " " + secondaryAttributes[SecondaryAttribute.mana] + " " + maxMana)
+        println(" " + secondaryAttributes + " " + secondaryAttributes[SecondaryAttribute.MANA] + " " + maxMana)
         println(maxMana.javaClass)
-        secondaryAttributes.put(SecondaryAttribute.mana, maxMana)
+        secondaryAttributes.put(SecondaryAttribute.MANA, maxMana)
     }
 
     override fun getMentalHealth(): Int {
@@ -113,11 +111,11 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getMaxMentalHealth(): Int {
-        return secondaryAttributes[SecondaryAttribute.mentalHealth]?: 0
+        return secondaryAttributes[SecondaryAttribute.MENTAL_HEALTH]?: 0
     }
 
     fun setMaxMentalHealth(maxMentalHealth : Int) {
-        this.secondaryAttributes[SecondaryAttribute.mentalHealth] = maxMentalHealth
+        this.secondaryAttributes[SecondaryAttribute.MENTAL_HEALTH] = maxMentalHealth
     }
 
     override fun getInitiative(): Int {
@@ -172,28 +170,12 @@ open class PnPCharacter() : IPnPCharacter {
         this.equippedWeapons = equippedWeapons
     }
 
-    override fun getJewellery(): MutableCollection<IJewellery> {
-        return jewellery
-    }
-
-    fun setJewellery(jewellery:  MutableCollection<IJewellery>) {
-        this.jewellery = jewellery
-    }
-
     override fun getEquippedJewellery(): MutableCollection<IJewellery> {
         return equippedJewellery
     }
 
     fun setEquippedJewellery(equippedJewellery:  MutableCollection<IJewellery>) {
         this.equippedJewellery = equippedJewellery
-    }
-
-    override fun getArmor(): MutableCollection<IArmor> {
-        return armor
-    }
-
-    fun setArmor(armor: MutableCollection<IArmor>) {
-        this.armor = armor
     }
 
     override fun getEquippedArmor(): MutableMap<IArmorPosition, IArmor> {
@@ -221,7 +203,7 @@ open class PnPCharacter() : IPnPCharacter {
     }
 
     override fun getInventory(): IInventory {
-        return inventory?:Inventory.EMPTY_INVENTORY
+        return inventory?:Inventory.createEmptyInventory()
     }
 
     fun setInventory(inventory: IInventory) {
