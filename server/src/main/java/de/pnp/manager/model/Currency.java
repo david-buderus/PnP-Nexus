@@ -2,11 +2,16 @@ package de.pnp.manager.model;
 
 import de.pnp.manager.main.LanguageUtility;
 import de.pnp.manager.main.Utility;
+import de.pnp.manager.model.item.IItem;
+import de.pnp.manager.model.item.Item;
 import org.apache.commons.configuration2.Configuration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import static de.pnp.manager.main.LanguageUtility.getMessage;
 import static de.pnp.manager.main.Utility.consumeNumber;
 import static de.pnp.manager.main.Utility.consumeString;
 
@@ -175,6 +180,42 @@ public class Currency implements ICurrency {
         }
 
         return result.toString().trim();
+    }
+
+    @Override
+    public Collection<IItem> toItems() {
+        int silverToCopper = Utility.getConfig().getInt("coin.silver.toCopper");
+        int goldToSilver = Utility.getConfig().getInt("coin.gold.toSilver");
+
+        int cost = getCoinValue();
+        int copper = cost % silverToCopper;
+        cost /= silverToCopper;
+        int silver = cost % goldToSilver;
+        cost /= goldToSilver;
+        int gold = cost;
+
+        Collection<IItem> items = new ArrayList<>();
+
+        if (copper > 0) {
+            Item copperItem = new Item(getMessage("coin.copper"));
+            copperItem.setAmount(copper);
+            copperItem.setCurrency(new Currency(1));
+            items.add(copperItem);
+        }
+        if (silver > 0) {
+            Item silverItem = new Item(getMessage("coin.silver"));
+            silverItem.setAmount(silver);
+            silverItem.setCurrency(new Currency(silverToCopper));
+            items.add(silverItem);
+        }
+        if (gold > 0) {
+            Item goldItem = new Item(getMessage("coin.gold"));
+            goldItem.setAmount(gold);
+            goldItem.setCurrency(new Currency(silverToCopper * goldToSilver));
+            items.add(goldItem);
+        }
+
+        return items;
     }
 
     /**

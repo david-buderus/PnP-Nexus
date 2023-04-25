@@ -41,6 +41,12 @@ public abstract class MessageIDs {
     public static final int UNEQUIP_REQUEST = 4308;
     public static final int CHANGE_EQUIPPED_WEAPONS = 4009;
     public static final int UPDATE_EQUIPMENT_NOTIFICATION = 4010;
+    public static final int CREATE_CURRENCY_REQUEST = 4311;
+    public static final int DELETE_CURRENCY_REQUEST = 4312;
+    public static final int MOVE_CURRENCY_REQUEST = 4313;
+    public static final int MOVE_CURRENCY_TO_INVENTORY_REQUEST = 4314;
+    public static final int MOVE_CURRENCY_FROM_INVENTORY_REQUEST = 4315;
+    public static final int UPDATE_CURRENCY_NOTIFICATION = 4016;
 
     //Universal
     public static final int OK = 8000;

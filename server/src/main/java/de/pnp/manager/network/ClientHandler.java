@@ -9,6 +9,7 @@ import de.pnp.manager.model.manager.Manager;
 import de.pnp.manager.model.other.ITalent;
 import de.pnp.manager.network.client.IClient;
 import de.pnp.manager.network.eventhandler.*;
+import de.pnp.manager.network.eventhandler.currency.*;
 import de.pnp.manager.network.eventhandler.inventory.*;
 import de.pnp.manager.network.eventhandler.equipment.ChangeEquippedWeaponsHandler;
 import de.pnp.manager.network.eventhandler.equipment.EquipHandler;
@@ -323,9 +324,16 @@ public class ClientHandler extends Thread implements Client {
         stateMachine.registerTransition(States.IN_CHARACTER, DELETE_ITEM_REQUEST, new DeleteItemHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, MOVE_ITEM_REQUEST, new MoveItemHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, FABRICATE_ITEM_REQUEST, new FabricateItemHandler(this, calendar, manager));
+
         stateMachine.registerTransition(States.IN_CHARACTER, EQUIP_REQUEST, new EquipHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, UNEQUIP_REQUEST, new UnequipHandler(this, calendar, manager));
         stateMachine.registerTransition(States.IN_CHARACTER, CHANGE_EQUIPPED_WEAPONS, new ChangeEquippedWeaponsHandler(this, calendar, manager));
+
+        stateMachine.registerTransition(States.IN_CHARACTER, CREATE_CURRENCY_REQUEST, new CreateCurrencyHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, DELETE_CURRENCY_REQUEST, new DeleteCurrencyHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, MOVE_CURRENCY_REQUEST, new MoveCurrencyHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, MOVE_CURRENCY_TO_INVENTORY_REQUEST, new MoveCurrencyToInventoryHandler(this, calendar, manager));
+        stateMachine.registerTransition(States.IN_CHARACTER, MOVE_CURRENCY_FROM_INVENTORY_REQUEST, new MoveCurrencyFromInventoryHandler(this, calendar, manager));
 
         return stateMachine;
     }
