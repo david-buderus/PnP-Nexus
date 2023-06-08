@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id("cz.habarta.typescript-generator") version "3.2.1263"
 }
 
 version = "v2.0.0-alpha"
@@ -47,4 +48,17 @@ jar {
 
 test {
     useJUnitPlatform()
+}
+
+generateTypeScript {
+    jsonLibrary = 'jackson2'
+    classesWithAnnotations = ['de.pnp.manager.annotations.ExportToTypescript']
+    outputKind = 'module'
+    mapEnum = 'asEnum'
+    mapPackagesToNamespaces = true
+    outputFile = "../webapp/src/components/server.d.ts"
+}
+
+configurations {
+
 }

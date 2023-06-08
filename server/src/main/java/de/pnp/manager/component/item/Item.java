@@ -1,7 +1,9 @@
 package de.pnp.manager.component.item;
 
+import de.pnp.manager.annotations.ExportToTypescript;
 import de.pnp.manager.component.item.interfaces.IItem;
 
+@ExportToTypescript
 public class Item implements IItem {
 
   protected final String name;
@@ -14,7 +16,6 @@ public class Item implements IItem {
   protected final int tier;
   protected final String description;
   protected final String note;
-
 
   public Item(String name, String type, String subtype, String requirement, String effect,
       ERarity rarity, int vendorPrice, int tier, String description, String note) {
