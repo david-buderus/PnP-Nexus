@@ -1,0 +1,50 @@
+plugins {
+    id 'java'
+}
+
+version = "v2.0.0-alpha"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.21.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.register('createProperties') {
+    doLast {
+        new File("$buildDir/resources/main/Version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = version
+            p.store w, null
+        }
+    }
+}
+
+classes {
+    dependsOn createProperties
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'de.pnp.manager.main.StartApplication'
+    }
+
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
