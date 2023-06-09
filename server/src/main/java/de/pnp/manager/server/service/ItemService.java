@@ -18,7 +18,7 @@ public class ItemService {
 
   @GetMapping("item/{name}")
   public Item item(@PathVariable String universe, @PathVariable String name) {
-    return itemRepository.get(universe, name);
+    return itemRepository.get(universe, name).orElse(null);
   }
 
   @GetMapping("itemstack/{name}")
