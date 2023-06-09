@@ -11,16 +11,16 @@ public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> impleme
   }
 
   public int getDamage() {
-    return Math.round(getEquipableItem().getDamage() * getRelativeDurability());
+    return Math.round(getItem().getDamage() * getRelativeDurability());
   }
 
   @Override
   public int getHit() {
-    return getEquipableItem().getHit();
+    return getItem().getHit();
   }
 
   @Override
   public float getInitiative() {
-    return getEquipableItem().getInitiative();
+    return getItem().getInitiative();
   }
 }

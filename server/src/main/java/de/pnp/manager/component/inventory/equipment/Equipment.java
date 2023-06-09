@@ -2,10 +2,9 @@ package de.pnp.manager.component.inventory.equipment;
 
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IEquipment;
-import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 
-public class Equipment<E extends IEquipableItem> extends ItemStack implements IEquipment {
+public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements IEquipment {
   // Todo Verzauberungen etc
 
   public Equipment(E item) {
@@ -25,10 +24,5 @@ public class Equipment<E extends IEquipableItem> extends ItemStack implements IE
   @Override
   public void setAmount(float amount) {
     throw new UnsupportedOperationException();
-  }
-
-  @SuppressWarnings("unchecked")
-  public E getEquipableItem() {
-    return (E) getItem();
   }
 }

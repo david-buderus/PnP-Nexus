@@ -1,14 +1,13 @@
 package de.pnp.manager.component.inventory;
 
-import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IItem;
 
-public class ItemStack {
+public class ItemStack<I extends IItem> {
 
   private float amount;
-  private final IItem item;
+  private final I item;
 
-  public ItemStack(float amount, IItem item) {
+  public ItemStack(float amount, I item) {
     this.amount = amount;
     this.item = item;
   }
@@ -29,7 +28,7 @@ public class ItemStack {
     return amount;
   }
 
-  public IItem getItem() {
+  public I getItem() {
     return item;
   }
 }

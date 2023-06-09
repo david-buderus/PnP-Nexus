@@ -22,11 +22,11 @@ public class DamageableEquipment<I extends IDamageableItem & IEquipableItem> ext
 
   @Override
   public void repair() {
-    durability = getEquipableItem().getMaxDurability();
+    durability = getItem().getMaxDurability();
   }
 
   @Override
   public float getRelativeDurability() {
-    return durability / (float) getEquipableItem().getMaxDurability();
+    return durability / (float) getItem().getMaxDurability();
   }
 }

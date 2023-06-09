@@ -12,7 +12,7 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
   }
 
   public int getDefense() {
-    return Math.round(getEquipableItem().getArmor() * getRelativeDurability());
+    return Math.round(getItem().getArmor() * getRelativeDurability());
   }
 
   @Override
@@ -23,7 +23,7 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
 
   @Override
   public float getInitiative() {
-    if (getEquipableItem() instanceof IHandheldItem handHoldItem) {
+    if (getItem() instanceof IHandheldItem handHoldItem) {
       return handHoldItem.getInitiative();
     }
     throw new AssertionError(
