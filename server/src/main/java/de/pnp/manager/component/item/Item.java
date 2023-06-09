@@ -2,10 +2,12 @@ package de.pnp.manager.component.item;
 
 import de.pnp.manager.annotations.ExportToTypescript;
 import de.pnp.manager.component.item.interfaces.IItem;
+import org.springframework.data.annotation.Id;
 
 @ExportToTypescript
 public class Item implements IItem {
 
+  @Id
   protected final String name;
   protected final String type;
   protected final String subtype;
