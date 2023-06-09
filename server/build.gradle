@@ -1,8 +1,11 @@
 plugins {
     id 'java'
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
     id("cz.habarta.typescript-generator") version "3.2.1263"
 }
 
+group = 'de.pnp.manager'
 version = "v2.0.0-alpha"
 
 repositories {
@@ -11,8 +14,12 @@ repositories {
 
 dependencies {
     implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
+    implementation group: 'com.google.guava', name: 'guava', version: '32.0.0-jre'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
 
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.21.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
@@ -22,23 +29,9 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-tasks.register('createProperties') {
-    doLast {
-        new File("$buildDir/resources/main/Version.properties").withWriter { w ->
-            Properties p = new Properties()
-            p['version'] = version
-            p.store w, null
-        }
-    }
-}
-
-classes {
-    dependsOn createProperties
-}
-
 jar {
     manifest {
-        attributes 'Main-Class': 'de.pnp.manager.main.StartApplication'
+        attributes 'Main-Class': 'de.pnp.manager.server.ServerApplication'
     }
 
     from {
