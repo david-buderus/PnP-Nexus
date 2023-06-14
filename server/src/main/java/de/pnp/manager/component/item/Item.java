@@ -2,6 +2,7 @@ package de.pnp.manager.component.item;
 
 import de.pnp.manager.annotations.ExportToTypescript;
 import de.pnp.manager.component.item.interfaces.IItem;
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
 @ExportToTypescript
@@ -81,5 +82,29 @@ public class Item implements IItem {
   @Override
   public String getNote() {
     return note;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || o.getClass() != getClass()) {
+      return false;
+    }
+    Item item = (Item) o;
+
+    return getVendorPrice() == item.getVendorPrice() && getTier() == item.getTier()
+        && getName().equals(item.getName()) && getType().equals(item.getType())
+        && getSubtype().equals(item.getSubtype()) && Objects.equals(getRequirement(),
+        item.getRequirement()) && Objects.equals(getEffect(), item.getEffect())
+        && getRarity() == item.getRarity() && Objects.equals(getDescription(),
+        item.getDescription()) && Objects.equals(getNote(), item.getNote());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getName(), getType(), getSubtype(), getRequirement(), getEffect(),
+        getRarity(), getVendorPrice(), getTier(), getDescription(), getNote());
   }
 }

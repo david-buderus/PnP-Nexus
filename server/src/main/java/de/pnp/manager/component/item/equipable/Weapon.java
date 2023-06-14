@@ -3,6 +3,7 @@ package de.pnp.manager.component.item.equipable;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.interfaces.IOffensiveItem;
+import java.util.Objects;
 
 public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
 
@@ -30,5 +31,25 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
   @Override
   public int getMaxDurability() {
     return getDamage();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    Weapon that = (Weapon) o;
+    return getDamage() == that.getDamage() && Objects.equals(getDice(), that.getDice());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getDamage(), getDice());
   }
 }

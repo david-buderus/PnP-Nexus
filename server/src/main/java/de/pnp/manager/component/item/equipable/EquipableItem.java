@@ -4,6 +4,7 @@ import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
+import java.util.Objects;
 
 public abstract class EquipableItem extends Item implements IEquipableItem {
 
@@ -24,5 +25,26 @@ public abstract class EquipableItem extends Item implements IEquipableItem {
 
   public int getUpgradeSlots() {
     return upgradeSlots;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    EquipableItem that = (EquipableItem) o;
+    return getUpgradeSlots() == that.getUpgradeSlots() && Objects.equals(getMaterial(),
+        that.getMaterial());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getMaterial(), getUpgradeSlots());
   }
 }

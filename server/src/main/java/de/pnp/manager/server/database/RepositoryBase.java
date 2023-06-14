@@ -1,9 +1,11 @@
 package de.pnp.manager.server.database;
 
+import com.google.common.base.Preconditions;
 import com.mongodb.client.result.DeleteResult;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -51,6 +53,9 @@ public abstract class RepositoryBase<E> {
   }
 
   protected MongoTemplate getTemplate(String database) {
+    Preconditions.checkArgument(
+        StreamSupport.stream(config.mongo().listDatabaseNames().spliterator(), false)
+            .anyMatch(database::equals), "The database %s does not exist.", database);
     return config.mongoTemplate(database);
   }
 }

@@ -3,6 +3,7 @@ package de.pnp.manager.component.item.equipable;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
+import java.util.Objects;
 
 public class Armor extends EquipableItem implements IDefensiveItem {
 
@@ -31,4 +32,24 @@ public class Armor extends EquipableItem implements IDefensiveItem {
     return getArmor();
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    Armor that = (Armor) o;
+    return getArmor() == that.getArmor()
+        && Double.compare(that.getWeight(), getWeight()) == 0;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getArmor(), getWeight());
+  }
 }

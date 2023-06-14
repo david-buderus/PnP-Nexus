@@ -3,6 +3,7 @@ package de.pnp.manager.component.item.equipable;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.interfaces.IHandheldItem;
+import java.util.Objects;
 
 public abstract class HandheldEquipableItem extends EquipableItem implements IHandheldItem {
 
@@ -25,5 +26,26 @@ public abstract class HandheldEquipableItem extends EquipableItem implements IHa
 
   public int getHit() {
     return hit;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    HandheldEquipableItem that = (HandheldEquipableItem) o;
+    return Float.compare(that.getInitiative(), getInitiative()) == 0
+        && getHit() == that.getHit();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), getInitiative(), getHit());
   }
 }
