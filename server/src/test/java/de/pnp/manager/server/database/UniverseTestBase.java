@@ -1,7 +1,6 @@
 package de.pnp.manager.server.database;
 
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
+import de.pnp.manager.component.Universe;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,15 +24,12 @@ public abstract class UniverseTestBase {
   }
 
   @BeforeEach
-  void setup(@Autowired MongoClient client) {
-    MongoDatabase database = client.getDatabase(universe);
-    database.drop();
-    database.createCollection("meta-information");
+  void setup(@Autowired UniverseRepository repository) {
+    repository.insert(new Universe(universe, universe));
   }
 
   @AfterEach
-  void tearDown(@Autowired MongoClient client) {
-    MongoDatabase database = client.getDatabase(universe);
-    database.drop();
+  void tearDown(@Autowired UniverseRepository repository) {
+    repository.remove(universe);
   }
 }

@@ -4,10 +4,10 @@ import com.google.common.base.Preconditions;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.server.exception.AlreadyPersistedException;
+import de.pnp.manager.server.exception.UniverseNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,6 +21,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
 
   @Autowired
   private MongoConfig config;
+
+  @Autowired
+  private UniverseRepository universeRepository;
 
   protected String collectionName;
   protected Class<E> clazz;
@@ -114,10 +117,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
    * Returns the {@link MongoTemplate} to manipulate the database of the given universe.
    */
   protected MongoTemplate getTemplate(String universe) {
-    // TODO Replace this with an actual check against universes
-    Preconditions.checkArgument(
-        StreamSupport.stream(config.mongo().listDatabaseNames().spliterator(), false)
-            .anyMatch(universe::equals), "The universe %s does not exist.", universe);
+    if (!universeRepository.exists(universe)) {
+      throw new UniverseNotFoundException(universe);
+    }
     return config.mongoTemplate(universe);
   }
 }
