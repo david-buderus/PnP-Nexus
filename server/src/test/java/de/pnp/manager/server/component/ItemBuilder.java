@@ -49,12 +49,12 @@ public class ItemBuilder {
   }
 
   public Item buildItem() {
-      return new Item(name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
-          description, note);
+    return new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        description, note);
   }
 
   public Armor buildArmor() {
-    return new Armor(name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+    return new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
         description, note, material, upgradeSlots, armor, weight);
   }
 }

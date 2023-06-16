@@ -2,9 +2,11 @@ package de.pnp.manager.component;
 
 import de.pnp.manager.component.item.Item;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Objects;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
-public class Fabrication {
+public class Fabrication extends DatabaseObject {
 
   private final String profession;
   private final String requirement;
@@ -13,14 +15,15 @@ public class Fabrication {
   private final FabricationItem sideProduct;
   private final Collection<FabricationItem> materials;
 
-  public Fabrication(String profession, String requirement, String otherCircumstances,
+  public Fabrication(ObjectId id, String profession, String requirement, String otherCircumstances,
       FabricationItem product, FabricationItem sideProduct, Collection<FabricationItem> materials) {
+    super(id);
     this.profession = profession;
     this.requirement = requirement;
     this.otherCircumstances = otherCircumstances;
-    this.product = product;
+    this.product = Objects.requireNonNull(product);
     this.sideProduct = sideProduct;
-    this.materials = Collections.unmodifiableCollection(materials);
+    this.materials = materials;
   }
 
 
@@ -48,7 +51,29 @@ public class Fabrication {
     return materials;
   }
 
-  public record FabricationItem(float amount, Item item) {
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Fabrication that = (Fabrication) o;
+    return Objects.equals(getProfession(), that.getProfession())
+        && Objects.equals(getRequirement(), that.getRequirement())
+        && Objects.equals(getOtherCircumstances(), that.getOtherCircumstances())
+        && getProduct().equals(that.getProduct()) && Objects.equals(getSideProduct(),
+        that.getSideProduct()) && Objects.equals(getMaterials(), that.getMaterials());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getProfession(), getRequirement(), getOtherCircumstances(), getProduct(),
+        getSideProduct(), getMaterials());
+  }
+
+  public record FabricationItem(float amount, @DBRef Item item) {
 
   }
 }

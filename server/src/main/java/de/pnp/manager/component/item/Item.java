@@ -1,14 +1,19 @@
 package de.pnp.manager.component.item;
 
 import de.pnp.manager.annotations.ExportToTypescript;
+import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.item.interfaces.IItem;
+import de.pnp.manager.server.database.ItemRepository;
 import java.util.Objects;
-import org.springframework.data.annotation.Id;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @ExportToTypescript
-public class Item implements IItem {
+@Document(ItemRepository.REPOSITORY_NAME)
+public class Item extends DatabaseObject implements IItem {
 
-  @Id
+  @Indexed(unique = true)
   protected final String name;
   protected final String type;
   protected final String subtype;
@@ -20,8 +25,10 @@ public class Item implements IItem {
   protected final String description;
   protected final String note;
 
-  public Item(String name, String type, String subtype, String requirement, String effect,
+  public Item(ObjectId id, String name, String type, String subtype, String requirement,
+      String effect,
       ERarity rarity, int vendorPrice, int tier, String description, String note) {
+    super(id);
     this.name = name;
     this.type = type;
     this.subtype = subtype;

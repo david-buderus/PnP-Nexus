@@ -14,15 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ItemRepositoryTest extends UniverseTestBase {
 
   @Autowired
-  private  ItemRepository itemRepository;
+  private ItemRepository itemRepository;
 
   @Test
   void testInsertItem() {
     Item item = someItem().buildItem();
-    itemRepository.insert(universe, item);
+    Item persistedItem = itemRepository.insert(universe, item);
 
+    assertThat(persistedItem).isEqualTo(item);
     assertThat(itemRepository.getAll(universe)).contains(item);
     assertThat(itemRepository.get(universe, item.getName())).contains(item);
+    assertThat(itemRepository.get(universe, persistedItem.getId())).contains(item);
   }
 
   @Test
