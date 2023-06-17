@@ -30,9 +30,10 @@ public class ItemRepositoryTest extends UniverseTestBase {
   @Test
   void testInsertArmor() {
     Armor armor = someItem().buildArmor();
-    itemRepository.insert(universe, armor);
+    Item persistedArmor = itemRepository.insert(universe, armor);
 
     assertThat(itemRepository.getAll(universe)).contains(armor);
     assertThat(itemRepository.get(universe, armor.getName())).contains(armor);
+    assertThat(itemRepository.get(universe, persistedArmor.getId())).contains(armor);
   }
 }

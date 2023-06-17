@@ -5,7 +5,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.Fabrication;
 import de.pnp.manager.component.Fabrication.FabricationItem;
+import de.pnp.manager.component.Fabrication.FabricationMaterial;
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.Material;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,9 @@ class FabricationRepositoryTest extends UniverseTestBase {
 
   @Autowired
   private ItemRepository itemRepository;
+
+  @Autowired
+  private MaterialRepository materialRepository;
 
   @Autowired
   private FabricationRepository fabricationRepository;
@@ -52,5 +58,20 @@ class FabricationRepositoryTest extends UniverseTestBase {
         .findFirst();
     assertThat(optFabrication).isNotEmpty();
     assertThat(optFabrication.get().getProduct().item()).isEqualTo(resultNew);
+  }
+
+
+  @Test
+  void testFabricationMaterial() {
+    Item result = itemRepository.insert(universe, someItem().withName("Result").buildItem());
+    Material material = materialRepository.insert(universe,
+        new Material(null, "Material", Collections.emptyList()));
+
+    Fabrication fabrication = new Fabrication(null, "", "", "",
+        new FabricationItem(1, result),
+        null, List.of(new FabricationMaterial(7, material)));
+
+    fabricationRepository.insert(universe, fabrication);
+    assertThat(fabricationRepository.getAll(universe)).contains(fabrication);
   }
 }

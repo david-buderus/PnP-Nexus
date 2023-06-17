@@ -1,6 +1,7 @@
 package de.pnp.manager.component;
 
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.Material;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -13,10 +14,11 @@ public class Fabrication extends DatabaseObject {
   private final String otherCircumstances;
   private final FabricationItem product;
   private final FabricationItem sideProduct;
-  private final Collection<FabricationItem> materials;
+  private final Collection<IFabricationEntry> materials;
 
   public Fabrication(ObjectId id, String profession, String requirement, String otherCircumstances,
-      FabricationItem product, FabricationItem sideProduct, Collection<FabricationItem> materials) {
+      FabricationItem product, FabricationItem sideProduct,
+      Collection<IFabricationEntry> materials) {
     super(id);
     this.profession = profession;
     this.requirement = requirement;
@@ -47,7 +49,7 @@ public class Fabrication extends DatabaseObject {
     return sideProduct;
   }
 
-  public Collection<FabricationItem> getMaterials() {
+  public Collection<IFabricationEntry> getMaterials() {
     return materials;
   }
 
@@ -73,7 +75,17 @@ public class Fabrication extends DatabaseObject {
         getSideProduct(), getMaterials());
   }
 
-  public record FabricationItem(float amount, @DBRef Item item) {
+  public interface IFabricationEntry {
+
+    float amount();
+  }
+
+  public record FabricationItem(float amount, @DBRef Item item) implements IFabricationEntry {
+
+  }
+
+  public record FabricationMaterial(float amount, @DBRef Material material) implements
+      IFabricationEntry {
 
   }
 }

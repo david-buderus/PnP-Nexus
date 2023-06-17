@@ -37,7 +37,7 @@ public class ItemBuilder {
     tier = 1;
     description = "description";
     note = "note";
-    material = new Material();
+    material = null;
     upgradeSlots = 0;
     armor = 1;
     weight = 0;
@@ -45,6 +45,11 @@ public class ItemBuilder {
 
   public ItemBuilder withName(String name) {
     this.name = name;
+    return this;
+  }
+
+  public ItemBuilder withMaterial(Material material) {
+    this.material = material;
     return this;
   }
 

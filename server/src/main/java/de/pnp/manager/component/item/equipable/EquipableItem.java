@@ -6,9 +6,11 @@ import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 import java.util.Objects;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 public abstract class EquipableItem extends Item implements IEquipableItem {
 
+  @DBRef
   protected final Material material;
   protected final int upgradeSlots;
 

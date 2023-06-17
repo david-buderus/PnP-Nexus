@@ -41,6 +41,13 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
   }
 
   /**
+   * Returns the object which matches the {@link Query}.
+   */
+  public Optional<E> get(String universe, Query query) {
+    return Optional.ofNullable(getTemplate(universe).findOne(query, clazz, collectionName));
+  }
+
+  /**
    * Returns all  objects in this repository.
    */
   public Collection<E> getAll(String universe) {

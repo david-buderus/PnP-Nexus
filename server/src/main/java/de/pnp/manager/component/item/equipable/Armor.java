@@ -15,7 +15,7 @@ public class Armor extends EquipableItem implements IDefensiveItem {
       String effect,
       ERarity rarity, int vendorPrice, int tier, String description,
       String note, Material material, int upgradeSlots, int armor, double weight) {
-    super(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
+    super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
         note,
         material, upgradeSlots);
     this.armor = armor;
