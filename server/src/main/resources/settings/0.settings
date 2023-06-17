@@ -7,6 +7,7 @@ rarity.epic, rarity.weight.epic, INTEGER
 rarity.legendary, rarity.weight.legendary, INTEGER
 rarity.godlike, rarity.weight.godlike, INTEGER
 settings.tier.weight, tier.weight, INTEGER_LIST
+equipment.chance.upgraded, equipment.chance.upgraded, PERCENT
 
 #settings.coin.title
 settings.coin.silver.toCopper, coin.silver.toCopper, INTEGER
