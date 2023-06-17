@@ -108,6 +108,9 @@ public class CraftingRecipe extends DatabaseObject {
    */
   public sealed interface ICraftingEntry {
 
+    /**
+     * The amount needed for this {@link ICraftingEntry}
+     */
     float amount();
   }
 
