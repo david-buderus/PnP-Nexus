@@ -25,7 +25,14 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
   @Autowired
   private UniverseRepository universeRepository;
 
+  /**
+   * The name of the collection.
+   */
   protected String collectionName;
+
+  /**
+   * The class used in this repository.
+   */
   protected Class<E> clazz;
 
   public RepositoryBase(Class<E> clazz, String collectionName) {
@@ -38,6 +45,13 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
    */
   public Optional<E> get(String universe, ObjectId id) {
     return Optional.ofNullable(getTemplate(universe).findById(id, clazz, collectionName));
+  }
+
+  /**
+   * Returns the object which matches the {@link Query}.
+   */
+  public Optional<E> get(String universe, Query query) {
+    return Optional.ofNullable(getTemplate(universe).findOne(query, clazz, collectionName));
   }
 
   /**

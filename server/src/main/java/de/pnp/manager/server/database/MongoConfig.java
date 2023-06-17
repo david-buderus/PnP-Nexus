@@ -11,11 +11,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
+/**
+ * Configuration for MongoDB.
+ */
 @Configuration
 public class MongoConfig {
 
   private final Map<String, MongoTemplate> templateCache = new HashMap<>();
 
+  /**
+   * Returns a client to manipulate the backend database.
+   */
   @Bean
   public MongoClient mongo() {
     ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
@@ -29,6 +35,9 @@ public class MongoConfig {
     return MongoClients.create(mongoClientSettings);
   }
 
+  /**
+   * Returns a client to manipulate the collections of a specific database.
+   */
   public MongoTemplate mongoTemplate(String database) {
     if (!templateCache.containsKey(database)) {
       templateCache.put(database, new MongoTemplate(mongo(), database));

@@ -6,9 +6,19 @@ import de.pnp.manager.component.item.interfaces.IHandheldItem;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
+/**
+ * A concrete item that can be equipped in the hand.
+ */
 public abstract class HandheldEquipableItem extends EquipableItem implements IHandheldItem {
 
+  /**
+   * The initiative modifier of this item.
+   */
   protected final float initiative;
+
+  /**
+   * The hit modifier of this item.
+   */
   protected final int hit;
 
   public HandheldEquipableItem(ObjectId id, String name, String type, String subtype,

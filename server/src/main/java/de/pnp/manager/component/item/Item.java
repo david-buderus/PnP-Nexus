@@ -9,20 +9,68 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * A concrete item in the universe.
+ */
 @ExportToTypescript
 @Document(ItemRepository.REPOSITORY_NAME)
 public class Item extends DatabaseObject implements IItem {
 
+  /**
+   * The human-readable name of this material.
+   * <p>
+   * This entry is always unique.
+   */
   @Indexed(unique = true)
   protected final String name;
+
+  /**
+   * The type of this item.
+   * <p>
+   * An example would be material.
+   */
   protected final String type;
+
+  /**
+   * The subtype of this item.
+   * <p>
+   * An example would be metal.
+   */
   protected final String subtype;
+
+  /**
+   * The requirement needed to use this item.
+   */
   protected final String requirement;
+
+  /**
+   * The effect of this item.
+   */
   protected final String effect;
+
+  /**
+   * The rarity of this item.
+   */
   protected final ERarity rarity;
+
+  /**
+   * The average price of this item.
+   */
   protected final int vendorPrice;
+
+  /**
+   * The tier of this item. A higher tier indicates a better item.
+   */
   protected final int tier;
+
+  /**
+   * A description of this item.
+   */
   protected final String description;
+
+  /**
+   * Any kind of additional information.
+   */
   protected final String note;
 
   public Item(ObjectId id, String name, String type, String subtype, String requirement,

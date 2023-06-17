@@ -6,9 +6,19 @@ import de.pnp.manager.component.item.interfaces.IOffensiveItem;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
+/**
+ * A concrete weapon in the universe.
+ */
 public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
 
+  /**
+   * The damage modifier of this weapon.
+   */
   protected final int damage;
+
+  /**
+   * The dice to determine the damage.
+   */
   protected final String dice;
 
   public Weapon(ObjectId id, String name, String type, String subtype, String requirement,

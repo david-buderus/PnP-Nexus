@@ -1,16 +1,47 @@
 package de.pnp.manager.component.item;
 
+import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.server.database.MaterialRepository;
+import java.util.Collection;
 import java.util.Objects;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-/*
- * TODO Auto generate matching items
- *  - Ingot
- *  - Ore
- *  - Nugget
+/**
+ * A material in the universe.
  */
-public class Material {
+@Document(MaterialRepository.REPOSITORY_NAME)
+public class Material extends DatabaseObject {
 
-  protected String name;
+  /**
+   * The human-readable name of this material.
+   */
+  @Indexed(unique = true)
+  protected final String name;
+
+  /**
+   * Items which represent this material.
+   * <p>
+   * An example would be: The material iron get represented by the item iron ingot.
+   */
+  @DBRef
+  protected final Collection<Item> items;
+
+  public Material(ObjectId id, String name, Collection<Item> items) {
+    super(id);
+    this.name = name;
+    this.items = items;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Collection<Item> getItems() {
+    return items;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -21,11 +52,11 @@ public class Material {
       return false;
     }
     Material material = (Material) o;
-    return Objects.equals(name, material.name);
+    return name.equals(material.name) && items.equals(material.items);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name);
+    return Objects.hash(name, items);
   }
 }
