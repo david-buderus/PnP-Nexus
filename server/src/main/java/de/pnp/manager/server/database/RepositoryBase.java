@@ -25,7 +25,14 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
   @Autowired
   private UniverseRepository universeRepository;
 
+  /**
+   * The name of the collection.
+   */
   protected String collectionName;
+
+  /**
+   * The class used in this repository.
+   */
   protected Class<E> clazz;
 
   public RepositoryBase(Class<E> clazz, String collectionName) {

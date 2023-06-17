@@ -5,8 +5,14 @@ import de.pnp.manager.component.item.ERarity;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
+/**
+ * A piece of jewellery in the universe.
+ */
 public class Jewellery extends EquipableItem {
 
+  /**
+   * The gem used in this jewellery.
+   */
   private final String gem;
 
   public Jewellery(ObjectId id, String name, String type, String subtype, String requirement,

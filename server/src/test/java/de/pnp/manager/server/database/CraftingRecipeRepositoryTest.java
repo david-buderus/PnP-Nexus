@@ -3,9 +3,9 @@ package de.pnp.manager.server.database;
 import static de.pnp.manager.server.component.ItemBuilder.someItem;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.pnp.manager.component.Fabrication;
-import de.pnp.manager.component.Fabrication.FabricationItem;
-import de.pnp.manager.component.Fabrication.FabricationMaterial;
+import de.pnp.manager.component.CraftingRecipe;
+import de.pnp.manager.component.CraftingRecipe.CraftingItem;
+import de.pnp.manager.component.CraftingRecipe.CraftingMaterial;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class FabricationRepositoryTest extends UniverseTestBase {
+class CraftingRecipeRepositoryTest extends UniverseTestBase {
 
   @Autowired
   private ItemRepository itemRepository;
@@ -23,38 +23,38 @@ class FabricationRepositoryTest extends UniverseTestBase {
   private MaterialRepository materialRepository;
 
   @Autowired
-  private FabricationRepository fabricationRepository;
+  private CraftingRecipeRepository craftingRecipeRepository;
 
   @Test
-  void testInsertFabrication() {
+  void testInsertCraftingRecipe() {
     Item result = itemRepository.insert(universe, someItem().withName("Result").buildItem());
     Item itemA = itemRepository.insert(universe, someItem().withName("A").buildItem());
     Item itemB = itemRepository.insert(universe, someItem().withName("B").buildItem());
 
-    Fabrication fabrication = new Fabrication(null, "", "", "",
-        new FabricationItem(1, result),
-        null, List.of(new FabricationItem(7, itemA),
-        new FabricationItem(4, itemB)));
+    CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
+        new CraftingItem(1, result),
+        null, List.of(new CraftingItem(7, itemA),
+        new CraftingItem(4, itemB)));
 
-    fabricationRepository.insert(universe, fabrication);
-    assertThat(fabricationRepository.getAll(universe)).contains(fabrication);
+    craftingRecipeRepository.insert(universe, craftingRecipe);
+    assertThat(craftingRecipeRepository.getAll(universe)).contains(craftingRecipe);
   }
 
   @Test
-  void testChangeFabricationResult() {
+  void testChangeCraftingRecipeResult() {
     Item resultOld = itemRepository.insert(universe, someItem().withName("Result old").buildItem());
     Item itemA = itemRepository.insert(universe, someItem().withName("A").buildItem());
 
-    Fabrication fabrication = new Fabrication(null, "", "", "",
-        new FabricationItem(1, resultOld), null, List.of(new FabricationItem(2, itemA)));
+    CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
+        new CraftingItem(1, resultOld), null, List.of(new CraftingItem(2, itemA)));
 
-    fabricationRepository.insert(universe, fabrication);
-    assertThat(fabricationRepository.getAll(universe)).contains(fabrication);
+    craftingRecipeRepository.insert(universe, craftingRecipe);
+    assertThat(craftingRecipeRepository.getAll(universe)).contains(craftingRecipe);
 
     Item resultNew = someItem().withName("Result new").buildItem();
     itemRepository.update(universe, resultOld.getId(), resultNew);
 
-    Optional<Fabrication> optFabrication = fabricationRepository.getAll(universe).stream()
+    Optional<CraftingRecipe> optFabrication = craftingRecipeRepository.getAll(universe).stream()
         .findFirst();
     assertThat(optFabrication).isNotEmpty();
     assertThat(optFabrication.get().getProduct().item()).isEqualTo(resultNew);
@@ -62,16 +62,16 @@ class FabricationRepositoryTest extends UniverseTestBase {
 
 
   @Test
-  void testFabricationMaterial() {
+  void testCraftingRecipeMaterial() {
     Item result = itemRepository.insert(universe, someItem().withName("Result").buildItem());
     Material material = materialRepository.insert(universe,
         new Material(null, "Material", Collections.emptyList()));
 
-    Fabrication fabrication = new Fabrication(null, "", "", "",
-        new FabricationItem(1, result),
-        null, List.of(new FabricationMaterial(7, material)));
+    CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
+        new CraftingItem(1, result),
+        null, List.of(new CraftingMaterial(7, material)));
 
-    fabricationRepository.insert(universe, fabrication);
-    assertThat(fabricationRepository.getAll(universe)).contains(fabrication);
+    craftingRecipeRepository.insert(universe, craftingRecipe);
+    assertThat(craftingRecipeRepository.getAll(universe)).contains(craftingRecipe);
   }
 }

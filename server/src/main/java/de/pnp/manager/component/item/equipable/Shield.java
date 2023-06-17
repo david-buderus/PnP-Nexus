@@ -6,10 +6,20 @@ import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
+/**
+ * A concrete shield in the universe.
+ */
 public class Shield extends HandheldEquipableItem implements IDefensiveItem {
 
-  protected final double weight;
+  /**
+   * The defense value of this armor.
+   */
   protected final int armor;
+
+  /**
+   * The weight of this armor.
+   */
+  protected final double weight;
 
   public Shield(ObjectId id, String name, String type, String subtype, String requirement,
       String effect,

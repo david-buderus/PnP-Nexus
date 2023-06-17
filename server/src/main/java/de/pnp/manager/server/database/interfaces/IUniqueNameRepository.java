@@ -10,10 +10,15 @@ import org.springframework.data.mongodb.core.query.Query;
 public interface IUniqueNameRepository<E> {
 
   /**
+   * The attribute used as unique name.
+   */
+  String NAME_ATTRIBUTE = "name";
+
+  /**
    * Returns the object with the given name.
    */
   default Optional<E> get(String universe, String name) {
-    return get(universe, Query.query(Criteria.where("name").is(name)));
+    return get(universe, Query.query(Criteria.where(NAME_ATTRIBUTE).is(name)));
   }
 
   /**

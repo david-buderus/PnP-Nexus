@@ -7,18 +7,44 @@ import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-public class Fabrication extends DatabaseObject {
+/**
+ * A crafting recipe in the universe.
+ */
+public class CraftingRecipe extends DatabaseObject {
 
+  /**
+   * The profession needed to use this {@link CraftingRecipe}.
+   */
   private final String profession;
-  private final String requirement;
-  private final String otherCircumstances;
-  private final FabricationItem product;
-  private final FabricationItem sideProduct;
-  private final Collection<IFabricationEntry> materials;
 
-  public Fabrication(ObjectId id, String profession, String requirement, String otherCircumstances,
-      FabricationItem product, FabricationItem sideProduct,
-      Collection<IFabricationEntry> materials) {
+  /**
+   * Additional requirements needed to use this {@link CraftingRecipe}.
+   */
+  private final String requirement;
+
+  /**
+   * Other circumstances needed to use this {@link CraftingRecipe}.
+   */
+  private final String otherCircumstances;
+
+  /**
+   * The product of this {@link CraftingRecipe}
+   */
+  private final CraftingItem product;
+
+  /**
+   * The side-product of this {@link CraftingRecipe}
+   */
+  private final CraftingItem sideProduct;
+
+  /**
+   * The materials needed to use this {@link CraftingRecipe}
+   */
+  private final Collection<ICraftingEntry> materials;
+
+  public CraftingRecipe(ObjectId id, String profession, String requirement,
+      String otherCircumstances, CraftingItem product, CraftingItem sideProduct,
+      Collection<ICraftingEntry> materials) {
     super(id);
     this.profession = profession;
     this.requirement = requirement;
@@ -41,15 +67,15 @@ public class Fabrication extends DatabaseObject {
     return otherCircumstances;
   }
 
-  public FabricationItem getProduct() {
+  public CraftingItem getProduct() {
     return product;
   }
 
-  public FabricationItem getSideProduct() {
+  public CraftingItem getSideProduct() {
     return sideProduct;
   }
 
-  public Collection<IFabricationEntry> getMaterials() {
+  public Collection<ICraftingEntry> getMaterials() {
     return materials;
   }
 
@@ -61,7 +87,8 @@ public class Fabrication extends DatabaseObject {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Fabrication that = (Fabrication) o;
+
+    CraftingRecipe that = (CraftingRecipe) o;
     return Objects.equals(getProfession(), that.getProfession())
         && Objects.equals(getRequirement(), that.getRequirement())
         && Objects.equals(getOtherCircumstances(), that.getOtherCircumstances())
@@ -75,17 +102,27 @@ public class Fabrication extends DatabaseObject {
         getSideProduct(), getMaterials());
   }
 
-  public interface IFabricationEntry {
+  /**
+   * An entry in the {@link CraftingRecipe#getMaterials() material list} of a
+   * {@link CraftingRecipe}.
+   */
+  public sealed interface ICraftingEntry {
 
     float amount();
   }
 
-  public record FabricationItem(float amount, @DBRef Item item) implements IFabricationEntry {
+  /**
+   * A {@link ICraftingEntry} which uses a specific {@link Item}.
+   */
+  public record CraftingItem(float amount, @DBRef Item item) implements ICraftingEntry {
 
   }
 
-  public record FabricationMaterial(float amount, @DBRef Material material) implements
-      IFabricationEntry {
+  /**
+   * A {@link ICraftingEntry} which uses a {@link Material}.
+   */
+  public record CraftingMaterial(float amount, @DBRef Material material) implements
+      ICraftingEntry {
 
   }
 }

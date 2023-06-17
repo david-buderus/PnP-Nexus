@@ -6,9 +6,19 @@ import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
+/**
+ * Armor in the universe.
+ */
 public class Armor extends EquipableItem implements IDefensiveItem {
 
+  /**
+   * The defense value of this armor.
+   */
   protected final int armor;
+
+  /**
+   * The weight of this armor.
+   */
   protected final double weight;
 
   public Armor(ObjectId id, String name, String type, String subtype, String requirement,

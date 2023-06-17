@@ -15,6 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(MaterialRepository.REPOSITORY_NAME)
 public class Material extends DatabaseObject {
 
+  /**
+   * The human-readable name of this material.
+   */
   @Indexed(unique = true)
   protected final String name;
 

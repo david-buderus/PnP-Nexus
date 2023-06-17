@@ -4,7 +4,11 @@ import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.EquipableItem;
 
+/**
+ * Helper class to create {@link Item items}.
+ */
 public class ItemBuilder {
 
   protected String name;
@@ -43,21 +47,33 @@ public class ItemBuilder {
     weight = 0;
   }
 
+  /**
+   * @see Item#getName()
+   */
   public ItemBuilder withName(String name) {
     this.name = name;
     return this;
   }
 
+  /**
+   * @see EquipableItem#getMaterial()
+   */
   public ItemBuilder withMaterial(Material material) {
     this.material = material;
     return this;
   }
 
+  /**
+   * Creates an item matching this builder.
+   */
   public Item buildItem() {
     return new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
         description, note);
   }
 
+  /**
+   * Creates armor matching this builder.
+   */
   public Armor buildArmor() {
     return new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
         description, note, material, upgradeSlots, armor, weight);
