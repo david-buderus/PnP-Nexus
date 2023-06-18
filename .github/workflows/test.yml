@@ -3,6 +3,47 @@ name: Test Pipeline
 on: [ push, pull_request ]
 
 jobs:
+  soundness-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Regenerate OpenApi documentation
+        run: ./gradlew generateOpenApiDocs
+
+      - name: Verify that OpenApi documentation in git is up-to-date
+        uses: tj-actions/verify-changed-files@v15
+        id: verify-open-api-documentation
+        with:
+          files: |
+            docs/swagger.json
+
+      - name: Alert that OpenApi documentation changed
+        if: steps.verify-open-api-documentation.outputs.files_changed == 'true'
+        run: |
+          echo "Changed files: ${{ steps.verify-open-api-documentation.outputs.changed_files }}"
+          exit 1
+
+      - name: Regenerate webapp API client
+        run: ./gradlew openApiGenerate
+
+      - name: Verify that webapp API client in git is up-to-date
+        uses: tj-actions/verify-changed-files@v15
+        id: verify-webapp-api-client
+        with:
+          files: |
+            webapp/src/api/*
+
+      - name: Alert that webapp API client changed
+        if: steps.verify-webapp-api-client.outputs.files_changed == 'true'
+        run: |
+          echo "Changed files: ${{ steps.verify-webapp-api-client.outputs.changed_files }}"
+          exit 1
+  
   test:
     runs-on: ubuntu-latest
 

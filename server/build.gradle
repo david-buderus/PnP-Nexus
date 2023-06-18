@@ -2,7 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
-    id("cz.habarta.typescript-generator") version "3.2.1263"
+    id "org.springdoc.openapi-gradle-plugin" version "1.6.0"
+    id "org.openapi.generator" version "6.6.0"
 }
 
 group = 'de.pnp.manager'
@@ -17,10 +18,12 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '32.0.0-jre'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:3.1.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.21.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
@@ -44,15 +47,18 @@ test {
     useJUnitPlatform()
 }
 
-generateTypeScript {
-    jsonLibrary = 'jackson2'
-    classesWithAnnotations = ['de.pnp.manager.annotations.ExportToTypescript']
-    outputKind = 'module'
-    mapEnum = 'asEnum'
-    mapPackagesToNamespaces = true
-    outputFile = "../webapp/src/components/server.d.ts"
+openApi {
+    apiDocsUrl.set("http://localhost:8080/v3/api-docs")
+    outputDir.set(file("$rootDir/docs"))
+    outputFileName.set("swagger.json")
+    waitTimeInSeconds.set(10)
+    customBootRun {
+        args.set(["--spring.profiles.active=special"])
+    }
 }
 
-configurations {
-
+openApiGenerate {
+    generatorName.set("typescript-axios")
+    inputSpec.set("$rootDir/docs/swagger.json")
+    outputDir.set("$rootDir/webapp/src/api")
 }

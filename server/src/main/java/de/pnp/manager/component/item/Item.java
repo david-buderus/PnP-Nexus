@@ -1,7 +1,11 @@
 package de.pnp.manager.component.item;
 
-import de.pnp.manager.annotations.ExportToTypescript;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.Jewellery;
+import de.pnp.manager.component.item.equipable.Shield;
+import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.ItemRepository;
 import java.util.Objects;
@@ -12,7 +16,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 /**
  * A concrete item in the universe.
  */
-@ExportToTypescript
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = Weapon.class),
+    @JsonSubTypes.Type(value = Shield.class),
+    @JsonSubTypes.Type(value = Armor.class),
+    @JsonSubTypes.Type(value = Jewellery.class),
+})
 @Document(ItemRepository.REPOSITORY_NAME)
 public class Item extends DatabaseObject implements IItem {
 

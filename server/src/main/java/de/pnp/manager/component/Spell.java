@@ -1,11 +1,9 @@
 package de.pnp.manager.component;
 
-import de.pnp.manager.annotations.ExportToTypescript;
 import de.pnp.manager.component.character.Talent;
 import java.util.Collections;
 import java.util.List;
 
-@ExportToTypescript
 public class Spell {
 
   private final String name;
