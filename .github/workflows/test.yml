@@ -41,6 +41,7 @@ jobs:
         with:
           files: |
             webapp/src/api/*
+            !webapp/src/api/.openapi-generator/*
 
       - name: Alert that webapp API client changed
         if: steps.verify-webapp-api-client.outputs.files_changed == 'true'
