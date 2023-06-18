@@ -5,35 +5,42 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.equipable.Armor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Tests for {@link ItemRepository}.
  */
-public class ItemRepositoryTest extends UniverseTestBase {
+public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository> {
 
-  @Autowired
-  private ItemRepository itemRepository;
-
-  @Test
-  void testInsertItem() {
-    Item item = someItem().buildItem();
-    Item persistedItem = itemRepository.insert(universe, item);
-
-    assertThat(persistedItem).isEqualTo(item);
-    assertThat(itemRepository.getAll(universe)).contains(item);
-    assertThat(itemRepository.get(universe, item.getName())).contains(item);
-    assertThat(itemRepository.get(universe, persistedItem.getId())).contains(item);
+  public ItemRepositoryTest(@Autowired ItemRepository repository) {
+    super(repository);
   }
+
 
   @Test
   void testInsertArmor() {
     Armor armor = someItem().buildArmor();
-    Item persistedArmor = itemRepository.insert(universe, armor);
+    Item persistedArmor = repository.insert(universe, armor);
 
-    assertThat(itemRepository.getAll(universe)).contains(armor);
-    assertThat(itemRepository.get(universe, armor.getName())).contains(armor);
-    assertThat(itemRepository.get(universe, persistedArmor.getId())).contains(armor);
+    assertThat(repository.getAll(universe)).contains(armor);
+    assertThat(repository.get(universe, armor.getName())).contains(armor);
+    assertThat(repository.get(universe, persistedArmor.getId())).contains(armor);
+  }
+
+  @Override
+  protected Item createObject() {
+    return someItem().withName("Test").buildItem();
+  }
+
+  @Override
+  protected Item createSlightlyChangeObject() {
+    return someItem().withName("Test Differently").buildItem();
+  }
+
+  @Override
+  protected String getName(Item object) {
+    return object.getName();
   }
 }

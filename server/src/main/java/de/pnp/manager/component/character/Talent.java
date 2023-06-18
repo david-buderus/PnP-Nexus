@@ -1,23 +1,47 @@
 package de.pnp.manager.component.character;
 
+import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.attributes.EPrimaryAttribute;
+import de.pnp.manager.server.database.TalentRepository;
 import java.util.List;
+import java.util.Objects;
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class Talent {
+@Document(TalentRepository.REPOSITORY_NAME)
+public class Talent extends DatabaseObject {
 
+  /**
+   * The human-readable name of this material.
+   */
   private final String name;
 
+  /**
+   * The group of this category.
+   * <p>
+   * Examples: magic, social, fighting, ...
+   */
   private final String group;
 
+  /**
+   * The first {@link EPrimaryAttribute} for a talent check.
+   */
   private final EPrimaryAttribute firstAttribute;
 
+  /**
+   * The second {@link EPrimaryAttribute} for a talent check.
+   */
   private final EPrimaryAttribute secondAttribute;
 
+  /**
+   * The third {@link EPrimaryAttribute} for a talent check.
+   */
   private final EPrimaryAttribute thirdAttribute;
 
 
-  public Talent(String name, String group, EPrimaryAttribute firstAttribute,
+  public Talent(ObjectId id, String name, String group, EPrimaryAttribute firstAttribute,
       EPrimaryAttribute secondAttribute, EPrimaryAttribute thirdAttribute) {
+    super(id);
     this.name = name;
     this.group = group;
     this.firstAttribute = firstAttribute;
@@ -45,7 +69,31 @@ public class Talent {
     return thirdAttribute;
   }
 
+  /**
+   * The {@link EPrimaryAttribute primary attributes} for a talent check in correct order.
+   */
   public List<EPrimaryAttribute> getAttributes() {
     return List.of(getFirstAttribute(), getSecondAttribute(), getThirdAttribute());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Talent talent = (Talent) o;
+    return getName().equals(talent.getName()) && Objects.equals(getGroup(),
+        talent.getGroup()) && getFirstAttribute() == talent.getFirstAttribute()
+        && getSecondAttribute() == talent.getSecondAttribute()
+        && getThirdAttribute() == talent.getThirdAttribute();
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getName(), getGroup(), getFirstAttribute(), getSecondAttribute(),
+        getThirdAttribute());
   }
 }

@@ -15,40 +15,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Tests for {@link MaterialRepository}
  */
-public class MaterialRepositoryTest extends UniverseTestBase {
-
-  @Autowired
-  private MaterialRepository materialRepository;
+public class MaterialRepositoryTest extends RepositoryTestBase<Material, MaterialRepository> {
 
   @Autowired
   private ItemRepository itemRepository;
 
-  @Test
-  void testInsertMaterial() {
-    Item ironIngot = itemRepository.insert(universe, someItem().withName("Iron ingot").buildItem());
-
-    Material material = new Material(null, "Iron", List.of(ironIngot));
-    Material persistedMaterial = materialRepository.insert(universe, material);
-
-    assertThat(material).isEqualTo(persistedMaterial);
-    assertThat(materialRepository.getAll(universe)).contains(material);
-    assertThat(materialRepository.get(universe, material.getName())).contains(material);
-    assertThat(materialRepository.get(universe, persistedMaterial.getId())).contains(material);
+  public MaterialRepositoryTest(@Autowired MaterialRepository repository) {
+    super(repository);
   }
-
-
+  
   @Test
   void testItemLink() {
     Item itemWithSpellingMistake = itemRepository.insert(universe,
         someItem().withName("Iron ingt").buildItem());
 
     Material material = new Material(null, "Iron", List.of(itemWithSpellingMistake));
-    materialRepository.insert(universe, material);
+    repository.insert(universe, material);
 
     Item item = someItem().withName("Iron ingot").buildItem();
     itemRepository.update(universe, itemWithSpellingMistake.getId(), item);
 
-    Optional<Material> optMaterial = materialRepository.get(universe, material.getName());
+    Optional<Material> optMaterial = repository.get(universe, material.getName());
     assertThat(optMaterial).isNotEmpty();
     assertThat(optMaterial.get().getItems()).hasSize(1);
     assertThat(optMaterial.get().getItems().stream().findFirst()).contains(item);
@@ -56,18 +43,36 @@ public class MaterialRepositoryTest extends UniverseTestBase {
 
   @Test
   void testMaterialLink() {
-    Material material = materialRepository.insert(universe,
+    Material material = repository.insert(universe,
         new Material(null, "Material A", Collections.emptyList()));
 
     Item armor = itemRepository.insert(universe,
         someItem().withName("Test").withMaterial(material).buildArmor());
 
-    materialRepository.update(universe, material.getId(),
+    repository.update(universe, material.getId(),
         new Material(null, "Material B", Collections.emptyList()));
 
     Optional<Item> optionalArmor = itemRepository.get(universe, armor.getId());
     assertThat(optionalArmor).isNotEmpty();
     assertThat(optionalArmor.get()).isInstanceOf(Armor.class);
     assertThat(((Armor) optionalArmor.get()).getMaterial().getName()).isEqualTo("Material B");
+  }
+
+  @Override
+  protected Material createObject() {
+    Item ironIngot = itemRepository.insert(universe, someItem().withName("Iron ingot").buildItem());
+    return new Material(null, "Iron", List.of(ironIngot));
+  }
+
+  @Override
+  protected Material createSlightlyChangeObject() {
+    Item ironNugget = itemRepository.insert(universe,
+        someItem().withName("Iron nugget").buildItem());
+    return new Material(null, "Iron", List.of(ironNugget));
+  }
+
+  @Override
+  protected String getName(Material object) {
+    return object.getName();
   }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndReplaceOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -89,8 +90,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
   }
 
   /**
-   * Updates the object in the database and returns the <b>old</b> object stored under the given
-   * id.
+   * Updates the object in the database and returns the new object stored under the given id.
    * <p>
    * The object has to have an id.
    */
@@ -105,7 +105,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     Preconditions.checkNotNull(id);
     return getTemplate(universe).findAndReplace(
         Query.query(Criteria.where("_id").is(id)),
-        object, collectionName);
+        object, FindAndReplaceOptions.options().returnNew(), collectionName);
   }
 
   /**
