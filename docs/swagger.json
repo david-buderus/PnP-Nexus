@@ -1,0 +1,407 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/{universe}/itemstack/{name}": {
+      "get": {
+        "tags": [
+          "item-service"
+        ],
+        "operationId": "itemStack",
+        "parameters": [
+          {
+            "name": "universe",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemStackItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{universe}/item/{name}": {
+      "get": {
+        "tags": [
+          "item-service"
+        ],
+        "summary": "Get an item",
+        "operationId": "getItem",
+        "parameters": [
+          {
+            "name": "universe",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Item"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Armor"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Jewellery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Shield"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Weapon"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{universe}/a/{name}": {
+      "get": {
+        "tags": [
+          "item-service"
+        ],
+        "summary": "Get an item",
+        "operationId": "getItem_1",
+        "parameters": [
+          {
+            "name": "universe",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Item"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Armor"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Jewellery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Shield"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Weapon"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Armor": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "armor": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "weight": {
+                "type": "number",
+                "format": "double"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "subtype": {
+            "type": "string"
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "COMMON",
+              "RARE",
+              "EPIC",
+              "LEGENDARY",
+              "GODLIKE"
+            ]
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      },
+      "ItemStackItem": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "float"
+          },
+          "item": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Item"
+              },
+              {
+                "$ref": "#/components/schemas/Armor"
+              },
+              {
+                "$ref": "#/components/schemas/Jewellery"
+              },
+              {
+                "$ref": "#/components/schemas/Shield"
+              },
+              {
+                "$ref": "#/components/schemas/Weapon"
+              }
+            ]
+          }
+        }
+      },
+      "Jewellery": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "gem": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "Material": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            }
+          }
+        }
+      },
+      "ObjectId": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Shield": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "armor": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "weight": {
+                "type": "number",
+                "format": "double"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "Weapon": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Item"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "damage": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "dice": {
+                "type": "string"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
