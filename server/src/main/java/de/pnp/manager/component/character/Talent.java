@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Talent extends DatabaseObject {
 
   /**
-   * The human-readable name of this material.
+   * The human-readable name of this talent.
    */
   private final String name;
 
