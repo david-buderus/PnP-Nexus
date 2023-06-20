@@ -1,7 +1,7 @@
 package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Material;
-import de.pnp.manager.server.database.interfaces.IUniqueNameRepository;
+import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MaterialRepository extends RepositoryBase<Material> implements
-    IUniqueNameRepository<Material> {
+    IUniquelyNamedRepository<Material> {
 
   /**
    * Name of the repository

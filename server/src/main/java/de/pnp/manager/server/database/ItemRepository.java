@@ -1,14 +1,14 @@
 package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.server.database.interfaces.IUniqueNameRepository;
+import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import org.springframework.stereotype.Component;
 
 /**
  * Repository for {@link Item items}
  */
 @Component
-public class ItemRepository extends RepositoryBase<Item> implements IUniqueNameRepository<Item> {
+public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNamedRepository<Item> {
 
   /**
    * Name of the repository

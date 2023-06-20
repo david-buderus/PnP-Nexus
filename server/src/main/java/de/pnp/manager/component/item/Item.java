@@ -2,6 +2,7 @@ package de.pnp.manager.component.item;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
@@ -23,7 +24,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
     @JsonSubTypes.Type(value = Jewellery.class),
 })
 @Document(ItemRepository.REPOSITORY_NAME)
-public class Item extends DatabaseObject implements IItem {
+public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObject {
 
   /**
    * The human-readable name of this material.
