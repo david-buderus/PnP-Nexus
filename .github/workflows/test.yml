@@ -7,18 +7,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: 'corretto'
           java-version: 17
-          cache: gradle
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Regenerate OpenApi documentation
-        run: ./gradlew generateOpenApiDocs
+      - name: Setup Gradle and run 'generateOpenApiDocs' task
+        uses: gradle/gradle-build-action@v2
+        with: 
+          arguments: generateOpenApiDocs
 
       - name: Verify that OpenApi documentation in git is up-to-date
         uses: tj-actions/verify-changed-files@v15
@@ -34,7 +33,9 @@ jobs:
           exit 1
 
       - name: Regenerate webapp API client
-        run: ./gradlew openApiGenerate
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: openApiGenerate
 
       - name: Verify that webapp API client in git is up-to-date
         uses: tj-actions/verify-changed-files@v15
@@ -54,12 +55,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 17
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: 'corretto'
           java-version: 17
-          cache: gradle
 
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0
@@ -68,11 +69,10 @@ jobs:
           mongodb-username: admin
           mongodb-password: admin
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Test with Gradle
-        run: ./gradlew test
+      - name: Setup and execute Gradle 'test' task
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test
 
       - uses: actions/upload-artifact@v2
         if: always()
