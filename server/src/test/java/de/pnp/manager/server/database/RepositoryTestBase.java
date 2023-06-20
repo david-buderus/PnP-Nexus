@@ -70,8 +70,8 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     assertThat(repository.get(universe, persistedChange.getId())).contains(change);
 
     if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
-      IUniquelyNamedDataObject namedObject = (IUniquelyNamedDataObject) object;
-      Optional<?> optional = uniqueNameRepository.get(universe, namedObject.getName());
+      IUniquelyNamedDataObject namedChange = (IUniquelyNamedDataObject) persistedChange;
+      Optional<?> optional = uniqueNameRepository.get(universe, namedChange.getName());
       assertThat(optional).isNotEmpty();
       assertThat(optional.get()).isEqualTo(change);
     }
