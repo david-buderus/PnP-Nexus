@@ -1,6 +1,7 @@
 package de.pnp.manager.component.item;
 
 import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.server.database.MaterialRepository;
 import java.util.Collection;
 import java.util.Objects;
@@ -13,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * A material in the universe.
  */
 @Document(MaterialRepository.REPOSITORY_NAME)
-public class Material extends DatabaseObject {
+public class Material extends DatabaseObject implements IUniquelyNamedDataObject {
 
   /**
    * The human-readable name of this material.

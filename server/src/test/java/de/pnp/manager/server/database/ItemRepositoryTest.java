@@ -38,9 +38,4 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
   protected Item createSlightlyChangeObject() {
     return someItem().withName("Test Differently").buildItem();
   }
-
-  @Override
-  protected String getName(Item object) {
-    return object.getName();
-  }
 }

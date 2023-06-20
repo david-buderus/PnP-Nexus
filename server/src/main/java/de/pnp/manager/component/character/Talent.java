@@ -8,6 +8,9 @@ import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+/**
+ * A talent of a {@link Character}.
+ */
 @Document(TalentRepository.REPOSITORY_NAME)
 public class Talent extends DatabaseObject {
 
@@ -42,7 +45,7 @@ public class Talent extends DatabaseObject {
   public Talent(ObjectId id, String name, String group, EPrimaryAttribute firstAttribute,
       EPrimaryAttribute secondAttribute, EPrimaryAttribute thirdAttribute) {
     super(id);
-    this.name = name;
+    this.name = Objects.requireNonNull(name);
     this.group = group;
     this.firstAttribute = firstAttribute;
     this.secondAttribute = secondAttribute;

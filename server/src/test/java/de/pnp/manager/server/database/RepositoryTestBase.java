@@ -1,10 +1,10 @@
 package de.pnp.manager.server.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.server.database.interfaces.IUniqueNameRepository;
+import de.pnp.manager.component.IUniquelyNamedDataObject;
+import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +16,9 @@ import org.junit.jupiter.api.Test;
 public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends RepositoryBase<E>> extends
     UniverseTestBase {
 
+  /**
+   * The main repository for the test.
+   */
   protected Repo repository;
 
   public RepositoryTestBase(Repo repository) {
@@ -31,8 +34,9 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     assertThat(repository.getAll(universe)).contains(object);
     assertThat(repository.get(universe, persistedObject.getId())).contains(object);
 
-    if (repository instanceof IUniqueNameRepository<?> uniqueNameRepository) {
-      Optional<?> optional = uniqueNameRepository.get(universe, getName(object));
+    if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
+      IUniquelyNamedDataObject namedObject = (IUniquelyNamedDataObject) object;
+      Optional<?> optional = uniqueNameRepository.get(universe, namedObject.getName());
       assertThat(optional).isNotEmpty();
       assertThat(optional.get()).isEqualTo(object);
     }
@@ -47,8 +51,9 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     assertThat(repository.getAll(universe)).isEmpty();
     assertThat(repository.get(universe, object.getId())).isEmpty();
 
-    if (repository instanceof IUniqueNameRepository<?> uniqueNameRepository) {
-      assertThat(uniqueNameRepository.get(universe, getName(object))).isEmpty();
+    if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
+      IUniquelyNamedDataObject namedObject = (IUniquelyNamedDataObject) object;
+      assertThat(uniqueNameRepository.get(universe, namedObject.getName())).isEmpty();
     }
   }
 
@@ -64,8 +69,9 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     assertThat(repository.getAll(universe)).contains(change);
     assertThat(repository.get(universe, persistedChange.getId())).contains(change);
 
-    if (repository instanceof IUniqueNameRepository<?> uniqueNameRepository) {
-      Optional<?> optional = uniqueNameRepository.get(universe, getName(change));
+    if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
+      IUniquelyNamedDataObject namedObject = (IUniquelyNamedDataObject) object;
+      Optional<?> optional = uniqueNameRepository.get(universe, namedObject.getName());
       assertThat(optional).isNotEmpty();
       assertThat(optional.get()).isEqualTo(change);
     }
@@ -84,12 +90,4 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
    * that were persisted in other repositories in the other method.
    */
   protected abstract E createSlightlyChangeObject();
-
-  /**
-   * A method to get the name of an {@link DatabaseObject} if the repository is a
-   * {@link IUniqueNameRepository}.
-   */
-  protected String getName(E object) {
-    return fail("Tests for IUniqueNameRepository need to overwrite this method.");
-  }
 }

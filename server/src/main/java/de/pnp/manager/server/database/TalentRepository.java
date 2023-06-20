@@ -3,6 +3,9 @@ package de.pnp.manager.server.database;
 import de.pnp.manager.component.character.Talent;
 import org.springframework.stereotype.Component;
 
+/**
+ * Repository for {@link Talent talents}.
+ */
 @Component
 public class TalentRepository extends RepositoryBase<Talent> {
 

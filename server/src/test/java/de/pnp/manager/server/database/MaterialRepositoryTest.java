@@ -23,7 +23,7 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
   public MaterialRepositoryTest(@Autowired MaterialRepository repository) {
     super(repository);
   }
-  
+
   @Test
   void testItemLink() {
     Item itemWithSpellingMistake = itemRepository.insert(universe,
@@ -69,10 +69,5 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
     Item ironNugget = itemRepository.insert(universe,
         someItem().withName("Iron nugget").buildItem());
     return new Material(null, "Iron", List.of(ironNugget));
-  }
-
-  @Override
-  protected String getName(Material object) {
-    return object.getName();
   }
 }
