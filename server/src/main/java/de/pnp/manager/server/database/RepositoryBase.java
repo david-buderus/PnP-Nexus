@@ -56,10 +56,17 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
   }
 
   /**
-   * Returns all  objects in this repository.
+   * Returns all objects in this repository.
    */
   public Collection<E> getAll(String universe) {
     return getTemplate(universe).findAll(clazz, collectionName);
+  }
+
+  /**
+   * Returns all objects in this repository which match the {@link Query}.
+   */
+  public Collection<E> getAll(String universe, Query query) {
+    return getTemplate(universe).find(query, clazz, collectionName);
   }
 
   /**
