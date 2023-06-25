@@ -16,7 +16,7 @@ jobs:
 
       - name: Setup Gradle and run 'generateOpenApiDocs' task
         uses: gradle/gradle-build-action@v2
-        with: 
+        with:
           arguments: generateOpenApiDocs
 
       - name: Verify that OpenApi documentation in git is up-to-date
@@ -73,6 +73,18 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test
+
+      - name: Upload to Teamscale
+        uses: 'cqse/teamscale-upload-action@v2.8.0'
+        with:
+          server: 'https://pnp-nexus.de/teamscale/'
+          project: 'pnp-nexus'
+          user: 'build'
+          accesskey: ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }}
+          partition: 'Github Action > JaCoCo'
+          format: 'JACOCO'
+          message: 'Uploading coverage of the server.'
+          files: 'server/build/reports/jacoco/test/jacocoTestReport.xml'
 
       - uses: actions/upload-artifact@v2
         if: always()
