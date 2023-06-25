@@ -75,7 +75,7 @@ jobs:
           arguments: test
 
       - name: Upload to Teamscale
-        uses: 'cqse/teamscale-upload-action@v2.6.0'
+        uses: 'cqse/teamscale-upload-action@v2.8.0'
         with:
           server: 'https://pnp-nexus.de/teamscale/'
           project: 'pnp-nexus'
