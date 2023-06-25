@@ -1,12 +1,12 @@
 package de.pnp.manager.component.item;
 
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.component.IUniquelyNamedDataObject;
-import de.pnp.manager.server.database.TypeTranslationRepository;
+import de.pnp.manager.server.database.ItemTypeTranslationRepository;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -14,33 +14,34 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * {@link Item#getSubtype() subtype} is a more specific variant of another type or subtype. It can
  * be the more specific variant of multiple other types.
  */
-@Document(TypeTranslationRepository.REPOSITORY_NAME)
-public class TypeTranslation extends DatabaseObject implements IUniquelyNamedDataObject {
+@Document(ItemTypeTranslationRepository.REPOSITORY_NAME)
+public class ItemTypeTranslation extends DatabaseObject {
 
   /**
    * The type of this translation.
    */
   @Indexed(unique = true)
-  private final String name;
+  @DBRef
+  private final ItemType type;
 
   /**
    * The broader variants of this type.
    */
-  private final Collection<String> broaderVariants;
+  @DBRef
+  private final Collection<ItemType> broaderVariants;
 
-  public TypeTranslation(ObjectId id, String name,
-      Collection<String> broaderVariants) {
+  public ItemTypeTranslation(ObjectId id, ItemType type,
+      Collection<ItemType> broaderVariants) {
     super(id);
-    this.name = name;
+    this.type = type;
     this.broaderVariants = broaderVariants;
   }
 
-  @Override
-  public String getName() {
-    return name;
+  public ItemType getType() {
+    return type;
   }
 
-  public Collection<String> getBroaderVariants() {
+  public Collection<ItemType> getBroaderVariants() {
     return broaderVariants;
   }
 
@@ -52,13 +53,13 @@ public class TypeTranslation extends DatabaseObject implements IUniquelyNamedDat
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TypeTranslation that = (TypeTranslation) o;
-    return Objects.equals(getName(), that.getName()) && Objects.equals(
+    ItemTypeTranslation that = (ItemTypeTranslation) o;
+    return Objects.equals(getType(), that.getType()) && Objects.equals(
         getBroaderVariants(), that.getBroaderVariants());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getName(), getBroaderVariants());
+    return Objects.hash(getType(), getBroaderVariants());
   }
 }
