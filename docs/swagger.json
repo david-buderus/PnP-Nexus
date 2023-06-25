@@ -204,10 +204,10 @@
             "type": "string"
           },
           "type": {
-            "type": "string"
+            "$ref": "#/components/schemas/ItemType"
           },
           "subtype": {
-            "type": "string"
+            "$ref": "#/components/schemas/ItemType"
           },
           "requirement": {
             "type": "string"
@@ -266,6 +266,28 @@
               {
                 "$ref": "#/components/schemas/Weapon"
               }
+            ]
+          }
+        }
+      },
+      "ItemType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "typeRestriction": {
+            "type": "string",
+            "enum": [
+              "ITEM",
+              "EQUIPMENT",
+              "JEWELLERY",
+              "WEAPON",
+              "ARMOR",
+              "SHIELD"
             ]
           }
         }
