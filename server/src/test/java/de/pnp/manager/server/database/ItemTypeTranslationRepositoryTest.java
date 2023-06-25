@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Tests for {@link TypeTranslationRepository}.
  */
-public class TypeTranslationRepositoryTest extends
+public class ItemTypeTranslationRepositoryTest extends
     RepositoryTestBase<TypeTranslation, TypeTranslationRepository> {
 
-  public TypeTranslationRepositoryTest(@Autowired TypeTranslationRepository repository) {
+  public ItemTypeTranslationRepositoryTest(@Autowired TypeTranslationRepository repository) {
     super(repository);
   }
 

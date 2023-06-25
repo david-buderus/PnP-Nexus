@@ -4,9 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
+import de.pnp.manager.server.component.ItemBuilder;
+import de.pnp.manager.server.component.ItemBuilder.ItemBuilderFactory;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A base class for {@link RepositoryBase repository} tests.
@@ -15,6 +21,12 @@ import org.junit.jupiter.api.Test;
  */
 public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends RepositoryBase<E>> extends
     UniverseTestBase {
+
+  /**
+   * A factory to create {@link ItemBuilder}.
+   */
+  @Autowired
+  protected ItemBuilderFactory itemBuilder;
 
   /**
    * The main repository for the test.
@@ -75,6 +87,64 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
       assertThat(optional).isNotEmpty();
       assertThat(optional.get()).isEqualTo(change);
     }
+  }
+
+  /**
+   * A helper method to tests links between to repositories.
+   * <p>
+   * The originalLink needs to be persisted.
+   */
+  @SuppressWarnings("unchecked")
+  protected <A extends E, Link extends DatabaseObject> void testRepositoryLink(
+      Function<A, Link> linkGetter,
+      RepositoryBase<Link> linkRepository, A object, Link originalLink,
+      Link changedLink) {
+    assertThat(linkRepository.get(universe, originalLink.getId())).as(
+        "The original link has to be already persisted.").isNotEmpty();
+
+    E persistedObject = repository.insert(universe, object);
+    assertThat(repository.get(universe, persistedObject.getId())).contains(object);
+
+    linkRepository.update(universe, originalLink.getId(), changedLink);
+    assertThat(linkRepository.get(universe, originalLink.getId())).contains(changedLink);
+
+    Optional<E> optional = repository.get(universe, persistedObject.getId());
+    assertThat(optional).isNotEmpty();
+    assertThat(linkGetter.apply((A) optional.get())).isEqualTo(changedLink);
+  }
+
+  /**
+   * A helper method to tests links between to repositories.
+   * <p>
+   * The originalLinks need to be persisted.
+   */
+  @SuppressWarnings("unchecked")
+  protected <A extends E, Link extends DatabaseObject> void testRepositoryCollectionLink(
+      Function<A, Collection<Link>> linkGetter,
+      RepositoryBase<Link> linkRepository, A object, Collection<Link> originalLinks,
+      Map<Link, Link> changedLinks) {
+    assertThat(linkRepository.getAll(universe)).as(
+        "The original links have to be already persisted.").containsAll(originalLinks);
+
+    E persistedObject = repository.insert(universe, object);
+    assertThat(repository.get(universe, persistedObject.getId())).contains(object);
+
+    for (Link originalLink : originalLinks) {
+      Link changedLink = changedLinks.get(originalLink);
+
+      if (changedLink != null) {
+        linkRepository.update(universe, originalLink.getId(), changedLink);
+        assertThat(linkRepository.get(universe, originalLink.getId())).contains(changedLink);
+      } else {
+        linkRepository.remove(universe, originalLink.getId());
+        assertThat(linkRepository.get(universe, originalLink.getId())).isEmpty();
+      }
+    }
+
+    Optional<E> optional = repository.get(universe, persistedObject.getId());
+    assertThat(optional).isNotEmpty();
+    assertThat(linkGetter.apply((A) optional.get())).containsExactlyInAnyOrderElementsOf(
+        changedLinks.values());
   }
 
   /**
