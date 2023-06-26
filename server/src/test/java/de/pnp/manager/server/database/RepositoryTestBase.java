@@ -114,7 +114,7 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
   }
 
   /**
-   * A helper method to tests links between to repositories.
+   * A helper method to test links between two repositories.
    * <p>
    * The originalLinks need to be persisted.
    */

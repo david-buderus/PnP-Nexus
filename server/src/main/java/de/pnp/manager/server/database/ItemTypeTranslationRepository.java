@@ -58,7 +58,7 @@ public class ItemTypeTranslationRepository extends RepositoryBase<ItemTypeTransl
     variants.addAll(typeTranslation.getBroaderVariants());
 
     if (variants.size() == typeTranslation.getBroaderVariants().size()) {
-      // No new types where added
+      // No new types were added
       return typeTranslation;
     }
 
@@ -68,7 +68,7 @@ public class ItemTypeTranslationRepository extends RepositoryBase<ItemTypeTransl
   }
 
   /**
-   * Returns all broader variants of the given name.
+   * Returns all broader variants of the given type.
    */
   public Collection<ItemType> getAllVariants(String universe, ItemType type) {
     Set<ItemType> result = new HashSet<>();
