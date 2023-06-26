@@ -40,9 +40,11 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
     assertThat(spell.getTalents()).containsExactly(changedEarthMagic);
   }
 
+  private Talent fireMagic;
+
   @Override
   protected Spell createObject() {
-    Talent fireMagic = talentRepository.insert(universe,
+    fireMagic = talentRepository.insert(universe,
         new Talent(null, "Fire Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
             EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
 
@@ -52,9 +54,6 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
   @Override
   protected Spell createSlightlyChangeObject() {
-    Talent fireMagic = talentRepository.getByName(universe, "Fire Magic").stream().findFirst()
-        .orElseThrow();
-
     return new Spell(null, "Big Fireball", "Throw a fireball", "30 Mana", "1",
         List.of(fireMagic), 3);
   }
