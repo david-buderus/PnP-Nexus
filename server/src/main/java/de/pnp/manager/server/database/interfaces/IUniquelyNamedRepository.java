@@ -36,7 +36,7 @@ public interface IUniquelyNamedRepository<E extends IUniquelyNamedDataObject> {
   }
 
   /**
-   * Returns all objects in this repository with the given ids.
+   * Returns all objects in this repository which match the given query.
    */
   Collection<E> getAll(String universe, Query query);
 }

@@ -105,7 +105,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
       throw new AlreadyPersistedException(
           collection.stream().filter(DatabaseObject::isPersisted).toList());
     }
-    collection.forEach(object1 -> onBeforePersistent(universe, object1));
+    collection.forEach(object -> onBeforePersistent(universe, object));
     Collection<E> persistedObjects = getTemplate(universe).insert(collection, collectionName);
     persistedObjects.forEach(object -> onAfterPersistent(universe, object));
     return persistedObjects;
