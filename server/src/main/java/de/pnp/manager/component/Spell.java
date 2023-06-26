@@ -30,17 +30,17 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
   private final String effect;
 
   /**
-   * The cost to activate this spell.
+   * The cost to cast this spell.
    */
   private final String cost;
 
   /**
-   * The time needed to activate this spell.
+   * The time needed to cast this spell.
    */
   private final String castTime;
 
   /**
-   * The talents needed to activate this spell.
+   * The talents needed to cast this spell.
    */
   @DBRef
   private final List<Talent> talents;
