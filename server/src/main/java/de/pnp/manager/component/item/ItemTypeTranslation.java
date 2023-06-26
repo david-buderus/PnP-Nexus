@@ -2,8 +2,8 @@ package de.pnp.manager.component.item;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.server.database.ItemTypeTranslationRepository;
-import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -28,10 +28,10 @@ public class ItemTypeTranslation extends DatabaseObject {
    * The broader variants of this type.
    */
   @DBRef
-  private final Collection<ItemType> broaderVariants;
+  private final Set<ItemType> broaderVariants;
 
   public ItemTypeTranslation(ObjectId id, ItemType type,
-      Collection<ItemType> broaderVariants) {
+      Set<ItemType> broaderVariants) {
     super(id);
     this.type = type;
     this.broaderVariants = broaderVariants;
@@ -41,7 +41,7 @@ public class ItemTypeTranslation extends DatabaseObject {
     return type;
   }
 
-  public Collection<ItemType> getBroaderVariants() {
+  public Set<ItemType> getBroaderVariants() {
     return broaderVariants;
   }
 

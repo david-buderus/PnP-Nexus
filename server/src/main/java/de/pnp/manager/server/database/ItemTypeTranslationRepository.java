@@ -2,7 +2,6 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemTypeTranslation;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -36,10 +35,18 @@ public class ItemTypeTranslationRepository extends RepositoryBase<ItemTypeTransl
   }
 
   /**
-   * Adds the given variants as a broader type to the given name.
+   * Adds the given variant as a broader type to the given type.
    */
   public ItemTypeTranslation addTypeTranslation(String universe, ItemType type,
-      Collection<ItemType> broaderVariants) {
+      ItemType broaderVariant) {
+    return addTypeTranslation(universe, type, Set.of(broaderVariant));
+  }
+
+  /**
+   * Adds the given variants as a broader type to the given type.
+   */
+  public ItemTypeTranslation addTypeTranslation(String universe, ItemType type,
+      Set<ItemType> broaderVariants) {
     Optional<ItemTypeTranslation> optTranslation = get(universe, type);
 
     if (optTranslation.isEmpty()) {
@@ -47,8 +54,13 @@ public class ItemTypeTranslationRepository extends RepositoryBase<ItemTypeTransl
     }
 
     ItemTypeTranslation typeTranslation = optTranslation.get();
-    ArrayList<ItemType> variants = new ArrayList<>(broaderVariants);
+    Set<ItemType> variants = new HashSet<>(broaderVariants);
     variants.addAll(typeTranslation.getBroaderVariants());
+
+    if (variants.size() == typeTranslation.getBroaderVariants().size()) {
+      // No new types where added
+      return typeTranslation;
+    }
 
     return update(universe, typeTranslation.getId(),
         new ItemTypeTranslation(typeTranslation.getId(), typeTranslation.getType(),

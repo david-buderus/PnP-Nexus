@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.TypeRestriction;
 import de.pnp.manager.component.item.ItemTypeTranslation;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +29,13 @@ public class ItemTypeTranslationRepositoryTest extends
   void testAddTypeTranslation() {
     ItemType type = asType("One-handed Sword");
     ItemTypeTranslation typeTranslation = repository.addTypeTranslation(universe, type,
-        List.of(asType("Weapon"), asType("One-handed weapon")));
+        Set.of(asType("Weapon"), asType("One-handed weapon")));
 
     assertThat(typeTranslation.getType()).isEqualTo(type);
     assertThat(typeTranslation.getBroaderVariants()).containsExactlyInAnyOrder(asType("Weapon"),
         asType("One-handed weapon"));
 
-    typeTranslation = repository.addTypeTranslation(universe, type, List.of(asType("Blade")));
+    typeTranslation = repository.addTypeTranslation(universe, type, asType("Blade"));
 
     assertThat(typeTranslation.getType()).isEqualTo(type);
     assertThat(typeTranslation.getBroaderVariants()).containsExactlyInAnyOrder(asType("Weapon"),
@@ -45,11 +45,11 @@ public class ItemTypeTranslationRepositoryTest extends
   @Test
   void testTransitiveGet() {
     repository.addTypeTranslation(universe, asType("One-handed sword"),
-        List.of(asType("Sword"), asType("One-handed weapon")));
+        Set.of(asType("Sword"), asType("One-handed weapon")));
     repository.addTypeTranslation(universe, asType("Sword"),
-        List.of(asType("Weapon"), asType("Blade")));
+        Set.of(asType("Weapon"), asType("Blade")));
     repository.addTypeTranslation(universe, asType("One-handed weapon"),
-        List.of(asType("Weapon")));
+        Set.of(asType("Weapon")));
 
     assertThat(
         repository.getAllVariants(universe, asType("One-handed sword"))).containsExactlyInAnyOrder(
@@ -60,8 +60,8 @@ public class ItemTypeTranslationRepositoryTest extends
   @Test
   @Timeout(1)
   void testLoopSafety() {
-    repository.addTypeTranslation(universe, asType("A"), List.of(asType("B")));
-    repository.addTypeTranslation(universe, asType("B"), List.of(asType("A")));
+    repository.addTypeTranslation(universe, asType("A"), Set.of(asType("B")));
+    repository.addTypeTranslation(universe, asType("B"), Set.of(asType("A")));
 
     assertThat(repository.getAllVariants(universe, asType("A"))).containsExactlyInAnyOrder(
         asType("A"), asType("B"));
@@ -72,7 +72,7 @@ public class ItemTypeTranslationRepositoryTest extends
     ItemType typeA = typeRepository.insert(universe,
         new ItemType(null, "Type A", TypeRestriction.ITEM));
     ItemType typeB = new ItemType(null, "Type B", TypeRestriction.WEAPON);
-    ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, typeA, List.of());
+    ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, typeA, Set.of());
 
     testRepositoryLink(ItemTypeTranslation::getType, typeRepository, typeTranslation, typeA, typeB);
   }
@@ -83,21 +83,21 @@ public class ItemTypeTranslationRepositoryTest extends
         new ItemType(null, "Type A", TypeRestriction.ITEM));
     ItemType typeB = new ItemType(null, "Type B", TypeRestriction.WEAPON);
     ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, asType("test"),
-        List.of(typeA));
+        Set.of(typeA));
 
     testRepositoryCollectionLink(ItemTypeTranslation::getBroaderVariants, typeRepository,
-        typeTranslation, List.of(typeA), Map.of(typeA, typeB));
+        typeTranslation, Set.of(typeA), Map.of(typeA, typeB));
   }
 
   @Override
   protected ItemTypeTranslation createObject() {
-    return new ItemTypeTranslation(null, asType("Sword"), List.of(asType("Weapon")));
+    return new ItemTypeTranslation(null, asType("Sword"), Set.of(asType("Weapon")));
   }
 
   @Override
   protected ItemTypeTranslation createSlightlyChangeObject() {
     return new ItemTypeTranslation(null, asType("Sword"),
-        List.of(asType("Blade"), asType("Weapon")));
+        Set.of(asType("Blade"), asType("Weapon")));
   }
 
   /**

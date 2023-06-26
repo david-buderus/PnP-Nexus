@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 class ItemTypeRepositoryTest extends RepositoryTestBase<ItemType, ItemTypeRepository> {
 
-
   public ItemTypeRepositoryTest(@Autowired ItemTypeRepository repository) {
     super(repository);
   }

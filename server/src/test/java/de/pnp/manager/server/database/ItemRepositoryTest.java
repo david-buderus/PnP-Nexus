@@ -23,6 +23,9 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
   @Autowired
   private MaterialRepository materialRepository;
 
+  @Autowired
+  private ItemTypeTranslationRepository typeTranslationRepository;
+
   public ItemRepositoryTest(@Autowired ItemRepository repository) {
     super(repository);
   }
@@ -66,6 +69,22 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
         .buildWeapon();
 
     testRepositoryLink(Weapon::getMaterial, materialRepository, weapon, materialA, materialB);
+  }
+
+
+  @Test
+  void testAutomaticTypeTranslations() {
+    ItemType type = typeRepository.insert(universe,
+        new ItemType(null, "Type", TypeRestriction.ITEM));
+    ItemType subtype = typeRepository.insert(universe,
+        new ItemType(null, "Subtype", TypeRestriction.ITEM));
+    Item item = repository.insert(universe,
+        itemBuilder.someItem(universe).withType(type).withSubtype(subtype).buildItem());
+    assertThat(item).isNotNull();
+
+    assertThat(
+        typeTranslationRepository.getAllVariants(universe, subtype)).containsExactlyInAnyOrder(type,
+        subtype);
   }
 
   @Override
