@@ -1,5 +1,7 @@
 package de.pnp.manager.server.database;
 
+import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
+
 import com.google.common.base.Preconditions;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.DatabaseObject;
@@ -56,10 +58,24 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
   }
 
   /**
-   * Returns all  objects in this repository.
+   * Returns all objects in this repository.
    */
   public Collection<E> getAll(String universe) {
     return getTemplate(universe).findAll(clazz, collectionName);
+  }
+
+  /**
+   * Returns all objects in this repository with the given ids.
+   */
+  public Collection<E> getAll(String universe, Collection<ObjectId> ids) {
+    return getAll(universe, Query.query(Criteria.where(ID_FIELD_NAME).in(ids)));
+  }
+
+  /**
+   * Returns all objects in this repository which match the given query.
+   */
+  public Collection<E> getAll(String universe, Query query) {
+    return getTemplate(universe).find(query, clazz, collectionName);
   }
 
   /**

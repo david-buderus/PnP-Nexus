@@ -2,6 +2,7 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -43,5 +44,10 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
     Item ironNugget = itemRepository.insert(universe,
         itemBuilder.someItem(universe).withName("Iron nugget").buildItem());
     return new Material(null, "Iron", List.of(ironNugget));
+  }
+
+  @Override
+  protected Collection<Material> createMultipleObjects() {
+    return List.of(new Material(null, "Iron", List.of()), new Material(null, "Copper", List.of()));
   }
 }

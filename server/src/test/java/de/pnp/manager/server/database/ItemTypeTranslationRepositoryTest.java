@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.TypeRestriction;
 import de.pnp.manager.component.item.ItemTypeTranslation;
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
@@ -98,6 +100,13 @@ public class ItemTypeTranslationRepositoryTest extends
   protected ItemTypeTranslation createSlightlyChangeObject() {
     return new ItemTypeTranslation(null, asType("Sword"),
         Set.of(asType("Blade"), asType("Weapon")));
+  }
+
+  @Override
+  protected Collection<ItemTypeTranslation> createMultipleObjects() {
+    return List.of(new ItemTypeTranslation(null, asType("Sword"),
+        Set.of(asType("Blade"), asType("Weapon"))), new ItemTypeTranslation(null, asType("Blade"),
+        Set.of(asType("Weapon"))));
   }
 
   /**

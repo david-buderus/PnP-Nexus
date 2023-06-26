@@ -8,7 +8,9 @@ import de.pnp.manager.component.item.ItemType.TypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.Weapon;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -95,5 +97,12 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
   @Override
   protected Item createSlightlyChangeObject() {
     return itemBuilder.someItem(universe).withName("Test Differently").buildItem();
+  }
+
+  @Override
+  protected Collection<Item> createMultipleObjects() {
+    return List.of(itemBuilder.someItem(universe).withName("A").buildItem(),
+        itemBuilder.someItem(universe).withName("B").buildItem(),
+        itemBuilder.someItem(universe).withName("C").buildItem());
   }
 }
