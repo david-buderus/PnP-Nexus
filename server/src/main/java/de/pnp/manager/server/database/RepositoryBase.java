@@ -72,7 +72,10 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     if (object.isPersisted()) {
       throw new AlreadyPersistedException(object);
     }
-    return getTemplate(universe).insert(object, collectionName);
+    onPrePersistent(universe, object);
+    E persistedObject = getTemplate(universe).insert(object, collectionName);
+    onPostPersistent(universe, persistedObject);
+    return persistedObject;
   }
 
   /**
@@ -86,7 +89,10 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
       throw new AlreadyPersistedException(
           collection.stream().filter(DatabaseObject::isPersisted).toList());
     }
-    return getTemplate(universe).insert(collection, collectionName);
+    collection.forEach(object1 -> onPrePersistent(universe, object1));
+    Collection<E> persistedObjects = getTemplate(universe).insert(collection, collectionName);
+    persistedObjects.forEach(object -> onPostPersistent(universe, object));
+    return persistedObjects;
   }
 
   /**
@@ -103,9 +109,12 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
    */
   public E update(String universe, ObjectId id, E object) {
     Preconditions.checkNotNull(id);
-    return getTemplate(universe).findAndReplace(
+    onPrePersistent(universe, object);
+    E persistedObject = getTemplate(universe).findAndReplace(
         Query.query(Criteria.where("_id").is(id)),
         object, FindAndReplaceOptions.options().returnNew(), collectionName);
+    onPostPersistent(universe, object);
+    return persistedObject;
   }
 
   /**
@@ -135,5 +144,23 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
       throw new UniverseNotFoundException(universe);
     }
     return config.mongoTemplate(universe);
+  }
+
+  /**
+   * Possibility to add validations or something similar before the repository tries to persist the
+   * object.
+   */
+  protected void onPrePersistent(String universe, E object) {
+    // no op
+  }
+
+  /**
+   * Possibility to add hooks or something similar after the repository has successfully persisted
+   * the object.
+   * <p>
+   * This means the object will always have an {@link DatabaseObject#getId() id}.
+   */
+  protected void onPostPersistent(String universe, E object) {
+    // no op
   }
 }

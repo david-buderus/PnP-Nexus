@@ -2,7 +2,6 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,18 +24,8 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
   }
 
   @Override
-  public Item insert(String universe, Item item) {
-    Item persistedItem = super.insert(universe, item);
-    typeTranslationRepository.addTypeTranslation(universe, persistedItem.getSubtype(),
-        persistedItem.getType());
-    return persistedItem;
-  }
-
-  @Override
-  public Item update(String universe, ObjectId id, Item item) {
-    Item persistedItem = super.update(universe, id, item);
-    typeTranslationRepository.addTypeTranslation(universe, persistedItem.getSubtype(),
-        persistedItem.getType());
-    return persistedItem;
+  protected void onPostPersistent(String universe, Item item) {
+    typeTranslationRepository.addTypeTranslation(universe, item.getSubtype(),
+        item.getType());
   }
 }
