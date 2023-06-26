@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
-import de.pnp.manager.server.component.ItemBuilder;
-import de.pnp.manager.server.component.ItemBuilder.ItemBuilderFactory;
+import de.pnp.manager.server.component.TestItemBuilder;
+import de.pnp.manager.server.component.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import java.util.Collection;
 import java.util.List;
@@ -25,10 +25,10 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     UniverseTestBase {
 
   /**
-   * A factory to create {@link ItemBuilder}.
+   * A factory to create {@link TestItemBuilder}.
    */
   @Autowired
-  protected ItemBuilderFactory itemBuilder;
+  protected TestItemBuilderFactory itemBuilder;
 
   /**
    * The main repository for the test.

@@ -24,7 +24,7 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
   }
 
   @Override
-  protected void onPostPersistent(String universe, Item item) {
+  protected void onAfterPersistent(String universe, Item item) {
     typeTranslationRepository.addTypeTranslation(universe, item.getSubtype(),
         item.getType());
   }

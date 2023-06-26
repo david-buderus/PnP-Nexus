@@ -53,17 +53,17 @@ public class ItemTypeTranslationRepository extends RepositoryBase<ItemTypeTransl
       return insert(universe, new ItemTypeTranslation(null, type, broaderVariants));
     }
 
-    ItemTypeTranslation typeTranslation = optTranslation.get();
+    ItemTypeTranslation existingTypeTranslation = optTranslation.get();
     Set<ItemType> variants = new HashSet<>(broaderVariants);
-    variants.addAll(typeTranslation.getBroaderVariants());
+    variants.addAll(existingTypeTranslation.getBroaderVariants());
 
-    if (variants.size() == typeTranslation.getBroaderVariants().size()) {
+    if (variants.size() == existingTypeTranslation.getBroaderVariants().size()) {
       // No new types were added
-      return typeTranslation;
+      return existingTypeTranslation;
     }
 
-    return update(universe, typeTranslation.getId(),
-        new ItemTypeTranslation(typeTranslation.getId(), typeTranslation.getType(),
+    return update(universe, existingTypeTranslation.getId(),
+        new ItemTypeTranslation(existingTypeTranslation.getId(), existingTypeTranslation.getType(),
             variants));
   }
 

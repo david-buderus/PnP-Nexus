@@ -15,13 +15,13 @@ import org.springframework.stereotype.Component;
 /**
  * Helper class to create {@link Item items}.
  */
-public class ItemBuilder {
+public class TestItemBuilder {
 
   /**
-   * Component wrapper for the {@link ItemBuilder}.
+   * Component wrapper for the {@link TestItemBuilder}.
    */
   @Component
-  public static class ItemBuilderFactory {
+  public static class TestItemBuilderFactory {
 
     @Autowired
     private ItemTypeRepository typeRepository;
@@ -29,10 +29,9 @@ public class ItemBuilder {
     /**
      * Builder with default values.
      */
-    public ItemBuilder someItem(String universe) {
-      return new ItemBuilder(universe, typeRepository);
+    public TestItemBuilder createItemBuilder(String universe) {
+      return new TestItemBuilder(universe, typeRepository);
     }
-
   }
 
   private final String universe;
@@ -57,7 +56,7 @@ public class ItemBuilder {
   private int damage;
   private String dice;
 
-  private ItemBuilder(String universe, ItemTypeRepository typeRepository) {
+  private TestItemBuilder(String universe, ItemTypeRepository typeRepository) {
     this.universe = universe;
     this.typeRepository = typeRepository;
     name = "name";
@@ -83,7 +82,7 @@ public class ItemBuilder {
   /**
    * @see Item#getName()
    */
-  public ItemBuilder withName(String name) {
+  public TestItemBuilder withName(String name) {
     this.name = name;
     return this;
   }
@@ -91,7 +90,7 @@ public class ItemBuilder {
   /**
    * @see Item#getType()
    */
-  public ItemBuilder withType(String type) {
+  public TestItemBuilder withType(String type) {
     this.type = getType(type);
     return this;
   }
@@ -99,7 +98,7 @@ public class ItemBuilder {
   /**
    * @see Item#getType()
    */
-  public ItemBuilder withType(ItemType type) {
+  public TestItemBuilder withType(ItemType type) {
     this.type = type;
     return this;
   }
@@ -107,7 +106,7 @@ public class ItemBuilder {
   /**
    * @see Item#getSubtype()
    */
-  public ItemBuilder withSubtype(String subtype) {
+  public TestItemBuilder withSubtype(String subtype) {
     this.subtype = getType(subtype);
     return this;
   }
@@ -115,7 +114,7 @@ public class ItemBuilder {
   /**
    * @see Item#getSubtype()
    */
-  public ItemBuilder withSubtype(ItemType subtype) {
+  public TestItemBuilder withSubtype(ItemType subtype) {
     this.subtype = subtype;
     return this;
   }
@@ -123,7 +122,7 @@ public class ItemBuilder {
   /**
    * @see EquipableItem#getMaterial()
    */
-  public ItemBuilder withMaterial(Material material) {
+  public TestItemBuilder withMaterial(Material material) {
     this.material = material;
     return this;
   }

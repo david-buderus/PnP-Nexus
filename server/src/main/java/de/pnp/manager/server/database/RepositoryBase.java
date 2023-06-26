@@ -88,9 +88,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     if (object.isPersisted()) {
       throw new AlreadyPersistedException(object);
     }
-    onPrePersistent(universe, object);
+    onBeforePersistent(universe, object);
     E persistedObject = getTemplate(universe).insert(object, collectionName);
-    onPostPersistent(universe, persistedObject);
+    onAfterPersistent(universe, persistedObject);
     return persistedObject;
   }
 
@@ -105,9 +105,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
       throw new AlreadyPersistedException(
           collection.stream().filter(DatabaseObject::isPersisted).toList());
     }
-    collection.forEach(object1 -> onPrePersistent(universe, object1));
+    collection.forEach(object1 -> onBeforePersistent(universe, object1));
     Collection<E> persistedObjects = getTemplate(universe).insert(collection, collectionName);
-    persistedObjects.forEach(object -> onPostPersistent(universe, object));
+    persistedObjects.forEach(object -> onAfterPersistent(universe, object));
     return persistedObjects;
   }
 
@@ -125,11 +125,11 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
    */
   public E update(String universe, ObjectId id, E object) {
     Preconditions.checkNotNull(id);
-    onPrePersistent(universe, object);
+    onBeforePersistent(universe, object);
     E persistedObject = getTemplate(universe).findAndReplace(
         Query.query(Criteria.where("_id").is(id)),
         object, FindAndReplaceOptions.options().returnNew(), collectionName);
-    onPostPersistent(universe, object);
+    onAfterPersistent(universe, object);
     return persistedObject;
   }
 
@@ -166,7 +166,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
    * Possibility to add validations or something similar before the repository tries to persist the
    * object.
    */
-  protected void onPrePersistent(String universe, E object) {
+  protected void onBeforePersistent(String universe, E object) {
     // no op
   }
 
@@ -176,7 +176,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
    * <p>
    * This means the object will always have an {@link DatabaseObject#getId() id}.
    */
-  protected void onPostPersistent(String universe, E object) {
+  protected void onAfterPersistent(String universe, E object) {
     // no op
   }
 }

@@ -34,7 +34,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
   @Test
   void testInsertArmor() {
-    Armor armor = itemBuilder.someItem(universe).buildArmor();
+    Armor armor = itemBuilder.createItemBuilder(universe).buildArmor();
     Item persistedArmor = repository.insert(universe, armor);
 
     assertThat(repository.getAll(universe)).contains(armor);
@@ -47,7 +47,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     ItemType typeA = typeRepository.insert(universe,
         new ItemType(null, "Type A", TypeRestriction.ITEM));
     ItemType typeB = new ItemType(null, "Type B", TypeRestriction.ITEM);
-    Item item = itemBuilder.someItem(universe).withType(typeA).buildItem();
+    Item item = itemBuilder.createItemBuilder(universe).withType(typeA).buildItem();
 
     testRepositoryLink(Item::getType, typeRepository, item, typeA, typeB);
   }
@@ -57,7 +57,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     ItemType typeA = typeRepository.insert(universe,
         new ItemType(null, "Type A", TypeRestriction.ITEM));
     ItemType typeB = new ItemType(null, "Type B", TypeRestriction.ITEM);
-    Item item = itemBuilder.someItem(universe).withSubtype(typeA).buildItem();
+    Item item = itemBuilder.createItemBuilder(universe).withSubtype(typeA).buildItem();
 
     testRepositoryLink(Item::getSubtype, typeRepository, item, typeA, typeB);
   }
@@ -67,7 +67,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     Material materialA = materialRepository.insert(universe,
         new Material(null, "Material A", Collections.emptyList()));
     Material materialB = new Material(null, "Material B", Collections.emptyList());
-    Weapon weapon = itemBuilder.someItem(universe).withName("Test").withMaterial(materialA)
+    Weapon weapon = itemBuilder.createItemBuilder(universe).withName("Test").withMaterial(materialA)
         .buildWeapon();
 
     testRepositoryLink(Weapon::getMaterial, materialRepository, weapon, materialA, materialB);
@@ -81,7 +81,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     ItemType subtype = typeRepository.insert(universe,
         new ItemType(null, "Subtype", TypeRestriction.ITEM));
     Item item = repository.insert(universe,
-        itemBuilder.someItem(universe).withType(type).withSubtype(subtype).buildItem());
+        itemBuilder.createItemBuilder(universe).withType(type).withSubtype(subtype).buildItem());
     assertThat(item).isNotNull();
 
     assertThat(
@@ -91,18 +91,18 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
   @Override
   protected Item createObject() {
-    return itemBuilder.someItem(universe).withName("Test").buildItem();
+    return itemBuilder.createItemBuilder(universe).withName("Test").buildItem();
   }
 
   @Override
   protected Item createSlightlyChangeObject() {
-    return itemBuilder.someItem(universe).withName("Test Differently").buildItem();
+    return itemBuilder.createItemBuilder(universe).withName("Test Differently").buildItem();
   }
 
   @Override
   protected Collection<Item> createMultipleObjects() {
-    return List.of(itemBuilder.someItem(universe).withName("A").buildItem(),
-        itemBuilder.someItem(universe).withName("B").buildItem(),
-        itemBuilder.someItem(universe).withName("C").buildItem());
+    return List.of(itemBuilder.createItemBuilder(universe).withName("A").buildItem(),
+        itemBuilder.createItemBuilder(universe).withName("B").buildItem(),
+        itemBuilder.createItemBuilder(universe).withName("C").buildItem());
   }
 }
