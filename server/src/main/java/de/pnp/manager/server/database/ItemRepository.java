@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Repository for {@link Item items}
+ * Repository for {@link Item items}.
  */
 @Component
 public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNamedRepository<Item> {
