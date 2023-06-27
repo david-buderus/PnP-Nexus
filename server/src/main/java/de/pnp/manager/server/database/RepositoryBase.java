@@ -1,5 +1,7 @@
 package de.pnp.manager.server.database;
 
+import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
+
 import com.google.common.base.Preconditions;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.DatabaseObject;
@@ -63,6 +65,13 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
   }
 
   /**
+   * Returns all objects in this repository with the given ids.
+   */
+  public Collection<E> getAll(String universe, Collection<ObjectId> ids) {
+    return getAll(universe, Query.query(Criteria.where(ID_FIELD_NAME).in(ids)));
+  }
+
+  /**
    * Returns all objects in this repository which match the {@link Query}.
    */
   public Collection<E> getAll(String universe, Query query) {
@@ -79,7 +88,10 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     if (object.isPersisted()) {
       throw new AlreadyPersistedException(object);
     }
-    return getTemplate(universe).insert(object, collectionName);
+    onBeforePersistent(universe, object);
+    E persistedObject = getTemplate(universe).insert(object, collectionName);
+    onAfterPersistent(universe, persistedObject);
+    return persistedObject;
   }
 
   /**
@@ -93,7 +105,10 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
       throw new AlreadyPersistedException(
           collection.stream().filter(DatabaseObject::isPersisted).toList());
     }
-    return getTemplate(universe).insert(collection, collectionName);
+    collection.forEach(object -> onBeforePersistent(universe, object));
+    Collection<E> persistedObjects = getTemplate(universe).insert(collection, collectionName);
+    persistedObjects.forEach(object -> onAfterPersistent(universe, object));
+    return persistedObjects;
   }
 
   /**
@@ -110,9 +125,12 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
    */
   public E update(String universe, ObjectId id, E object) {
     Preconditions.checkNotNull(id);
-    return getTemplate(universe).findAndReplace(
+    onBeforePersistent(universe, object);
+    E persistedObject = getTemplate(universe).findAndReplace(
         Query.query(Criteria.where("_id").is(id)),
         object, FindAndReplaceOptions.options().returnNew(), collectionName);
+    onAfterPersistent(universe, object);
+    return persistedObject;
   }
 
   /**
@@ -142,5 +160,23 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
       throw new UniverseNotFoundException(universe);
     }
     return config.mongoTemplate(universe);
+  }
+
+  /**
+   * Possibility to add validations or something similar before the repository tries to persist the
+   * object.
+   */
+  protected void onBeforePersistent(String universe, E object) {
+    // no op
+  }
+
+  /**
+   * Possibility to add hooks or something similar after the repository has successfully persisted
+   * the object.
+   * <p>
+   * This means the object will always have an {@link DatabaseObject#getId() id}.
+   */
+  protected void onAfterPersistent(String universe, E object) {
+    // no op
   }
 }

@@ -43,16 +43,16 @@ export interface Armor {
     'name'?: string;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Armor
      */
-    'type'?: string;
+    'type'?: ItemType;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Armor
      */
-    'subtype'?: string;
+    'subtype'?: ItemType;
     /**
      * 
      * @type {string}
@@ -201,16 +201,16 @@ export interface Item {
     'name'?: string;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Item
      */
-    'type'?: string;
+    'type'?: ItemType;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Item
      */
-    'subtype'?: string;
+    'subtype'?: ItemType;
     /**
      * 
      * @type {string}
@@ -288,6 +288,43 @@ export interface ItemStackItem {
 /**
  * 
  * @export
+ * @interface ItemType
+ */
+export interface ItemType {
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof ItemType
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemType
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemType
+     */
+    'typeRestriction'?: ItemTypeTypeRestrictionEnum;
+}
+
+export const ItemTypeTypeRestrictionEnum = {
+    Item: 'ITEM',
+    Equipment: 'EQUIPMENT',
+    Jewellery: 'JEWELLERY',
+    Weapon: 'WEAPON',
+    Armor: 'ARMOR',
+    Shield: 'SHIELD'
+} as const;
+
+export type ItemTypeTypeRestrictionEnum = typeof ItemTypeTypeRestrictionEnum[keyof typeof ItemTypeTypeRestrictionEnum];
+
+/**
+ * 
+ * @export
  * @interface Jewellery
  */
 export interface Jewellery {
@@ -305,16 +342,16 @@ export interface Jewellery {
     'name'?: string;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Jewellery
      */
-    'type'?: string;
+    'type'?: ItemType;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Jewellery
      */
-    'subtype'?: string;
+    'subtype'?: ItemType;
     /**
      * 
      * @type {string}
@@ -477,16 +514,16 @@ export interface Shield {
     'name'?: string;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Shield
      */
-    'type'?: string;
+    'type'?: ItemType;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Shield
      */
-    'subtype'?: string;
+    'subtype'?: ItemType;
     /**
      * 
      * @type {string}
@@ -653,16 +690,16 @@ export interface Weapon {
     'name'?: string;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Weapon
      */
-    'type'?: string;
+    'type'?: ItemType;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Weapon
      */
-    'subtype'?: string;
+    'subtype'?: ItemType;
     /**
      * 
      * @type {string}

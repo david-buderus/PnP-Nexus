@@ -12,6 +12,7 @@ import de.pnp.manager.server.database.ItemRepository;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -39,14 +40,16 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
    * <p>
    * An example would be material.
    */
-  protected final String type;
+  @DBRef
+  protected final ItemType type;
 
   /**
    * The subtype of this item.
    * <p>
    * An example would be metal.
    */
-  protected final String subtype;
+  @DBRef
+  protected final ItemType subtype;
 
   /**
    * The requirement needed to use this item.
@@ -83,7 +86,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
    */
   protected final String note;
 
-  public Item(ObjectId id, String name, String type, String subtype, String requirement,
+  public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
       String effect,
       ERarity rarity, int vendorPrice, int tier, String description, String note) {
     super(id);
@@ -105,12 +108,12 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
   }
 
   @Override
-  public String getType() {
+  public ItemType getType() {
     return type;
   }
 
   @Override
-  public String getSubtype() {
+  public ItemType getSubtype() {
     return subtype;
   }
 
@@ -171,5 +174,21 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
   public int hashCode() {
     return Objects.hash(getName(), getType(), getSubtype(), getRequirement(), getEffect(),
         getRarity(), getVendorPrice(), getTier(), getDescription(), getNote());
+  }
+
+  @Override
+  public String toString() {
+    return "Item{" +
+        "name='" + name + '\'' +
+        ", type=" + type +
+        ", subtype=" + subtype +
+        ", requirement='" + requirement + '\'' +
+        ", effect='" + effect + '\'' +
+        ", rarity=" + rarity +
+        ", vendorPrice=" + vendorPrice +
+        ", tier=" + tier +
+        ", description='" + description + '\'' +
+        ", note='" + note + '\'' +
+        '}';
   }
 }

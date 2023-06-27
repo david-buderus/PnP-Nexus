@@ -1,6 +1,7 @@
 package de.pnp.manager.component.item.interfaces;
 
 import de.pnp.manager.component.item.ERarity;
+import de.pnp.manager.component.item.ItemType;
 
 /**
  * An item in the universe.
@@ -9,9 +10,9 @@ public interface IItem {
 
   String getName();
 
-  String getType();
+  ItemType getType();
 
-  String getSubtype();
+  ItemType getSubtype();
 
   String getRequirement();
 
