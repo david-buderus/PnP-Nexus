@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * A controller to create backups of complete universes.
+ * A controller to create backups of a complete PnP-Nexus instance.
  */
 @Component
 public class BackupExportController {
@@ -28,7 +28,7 @@ public class BackupExportController {
   /**
    * The key to access the content of a repository document.
    * <p>
-   * THe value behind this key is a list of all documents of a repository.
+   * The value behind this key is a list of all documents of a repository.
    */
   public static final String REPOSITORY_CONTENT = "content";
 

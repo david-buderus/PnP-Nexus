@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 
 /**
- * A controller to import backups of complete universes.
+ * A controller to import backups of a whole PnP-Nexus instance.
  */
 @Component
 public class BackupImportController {
@@ -80,7 +80,7 @@ public class BackupImportController {
       String universeName = universeDocument.getString(ID_FIELD_NAME);
 
       if (universeRepository.exists(universeName)) {
-        throw new IllegalArgumentException("Universe " + universeName + " does already exists.");
+        throw new IllegalArgumentException("Universe " + universeName + " does already exist.");
       }
 
       mongoConfig.mongoTemplate(UniverseRepository.DATABASE_NAME)
@@ -110,7 +110,7 @@ public class BackupImportController {
   }
 
   /**
-   * Writes the zip in the given {@link InputStream} into the given {@link File directory}.
+   * Unzips the archive given by the {@link InputStream} into the given {@link File directory}.
    */
   private static void writeZipToDir(InputStream inputStream, File destDir) throws IOException {
     try (ZipInputStream zis = new ZipInputStream(inputStream)) {
