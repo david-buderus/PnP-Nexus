@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.Universe;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,13 @@ public class UniverseRepository {
             REPOSITORY_NAME));
   }
 
+  /**
+   * Returns all universes.
+   */
+  public Collection<Universe> getAll() {
+    return mongoTemplate.findAll(Universe.class, REPOSITORY_NAME);
+  }
+
   public boolean exists(String name) {
     return mongoTemplate.exists(Query.query(Criteria.where("name").is(name)), Universe.class);
   }
@@ -54,9 +62,9 @@ public class UniverseRepository {
 
   public boolean remove(String universe) {
     Preconditions.checkNotNull(universe);
-    DeleteResult result = mongoTemplate.remove(Query.query(Criteria.where("name").is(universe)),
+    DeleteResult result = mongoTemplate.remove(Query.query(Criteria.where("_id").is(universe)),
         REPOSITORY_NAME);
-    if (!result.wasAcknowledged()) {
+    if (!result.wasAcknowledged() && result.getDeletedCount() == 1) {
       return false;
     }
     mongoClient.getDatabase(universe).drop();
