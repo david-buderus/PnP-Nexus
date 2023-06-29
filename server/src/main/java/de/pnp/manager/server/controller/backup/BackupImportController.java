@@ -48,13 +48,13 @@ public class BackupImportController {
   /**
    * Imports the backup in the given {@link InputStream}.
    */
-  public void importUniverses(InputStream inputStream) throws IOException {
+  public void importBackup(InputStream inputStream) throws IOException {
     File tmpDir = null;
     try {
       tmpDir = Files.createTempDirectory("pnp-nexus-backup").toFile();
 
       writeZipToDir(inputStream, tmpDir);
-      importUniverses(tmpDir);
+      importBackup(tmpDir);
     } finally {
       if (tmpDir != null) {
         FileSystemUtils.deleteRecursively(tmpDir);
@@ -62,7 +62,7 @@ public class BackupImportController {
     }
   }
 
-  private void importUniverses(File tmpDir) throws IOException {
+  private void importBackup(File tmpDir) throws IOException {
     DecoderContext decoderContext = DecoderContext.builder().build();
 
     Document metadata = decode(new File(tmpDir, BackupExportController.METADATA_FILE),
@@ -142,9 +142,10 @@ public class BackupImportController {
   private static void writeFile(ZipInputStream zis, byte[] buffer, File newFile)
       throws IOException {
     try (FileOutputStream fos = new FileOutputStream(newFile)) {
-      int len;
-      while ((len = zis.read(buffer)) > 0) {
+      int len = zis.read(buffer);
+      while (len > 0) {
         fos.write(buffer, 0, len);
+        len = zis.read(buffer);
       }
     }
   }

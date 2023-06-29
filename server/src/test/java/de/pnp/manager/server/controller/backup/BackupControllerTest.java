@@ -93,7 +93,7 @@ public class BackupControllerTest {
     assertThat(universeRepository.exists(universeName)).isFalse();
 
     try (FileInputStream inputStream = new FileInputStream(backupZip)) {
-      importController.importUniverses(inputStream);
+      importController.importBackup(inputStream);
     }
 
     assertThat(materialRepository.getAll(universeName)).containsExactly(material);
