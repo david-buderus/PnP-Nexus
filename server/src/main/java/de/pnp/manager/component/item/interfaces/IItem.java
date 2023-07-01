@@ -60,12 +60,12 @@ public interface IItem {
     String getNote();
 
     /**
-     * The maximal amount of this item that can be in one {@link ItemStack}.
+     * The maximum amount of this item that can be contained in one {@link ItemStack}.
      */
     int getMaximalStackSize();
 
     /**
-     * The minimal amount of this item that has to be in one {@link ItemStack}.
+     * The minimum amount of this item that has to be contained in one {@link ItemStack}.
      */
     int getMinimalStackSize();
 }

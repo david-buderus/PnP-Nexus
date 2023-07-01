@@ -5,7 +5,7 @@ import de.pnp.manager.component.item.interfaces.IDamageableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 
 /**
- * Represents an {@link IDamageableItem} that can be hold and used.
+ * Represents an {@link IDamageableItem} that can be held and used.
  */
 public abstract class DamageableEquipment<I extends IDamageableItem & IEquipableItem> extends
     Equipment<I> implements IDamageableEquipment {

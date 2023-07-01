@@ -6,7 +6,7 @@ import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IOffensiveItem;
 
 /**
- * Represents an {@link IOffensiveItem} that can be hold and used.
+ * Represents an {@link IOffensiveItem} that can be held and used.
  */
 public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> implements
     IHandheldEquipment {

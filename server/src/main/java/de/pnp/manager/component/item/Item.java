@@ -88,12 +88,12 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     protected final String note;
 
     /**
-     * The maximal amount of this item that can be in one {@link ItemStack}.
+     * The maximum amount of this item that can be contained in one {@link ItemStack}.
      */
     protected final int maximalStackSize;
 
     /**
-     * The minimal amount of this item that has to be in one {@link ItemStack}.
+     * The minimum amount of this item that has to be contained in one {@link ItemStack}.
      */
     protected final int minimalStackSize;
 

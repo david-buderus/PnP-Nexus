@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Represents an {@link EquipableItem} that can be hold and used.
+ * Represents an {@link EquipableItem} that can be held and used.
  */
 public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements IEquipment {
 

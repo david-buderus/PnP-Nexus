@@ -8,7 +8,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
- * A recipe to create an {@link Upgrade}.
+ * A recipe to perform an {@link Upgrade}.
  */
 public class UpgradeRecipe extends DatabaseObject {
 

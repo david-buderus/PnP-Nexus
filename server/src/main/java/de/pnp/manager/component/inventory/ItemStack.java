@@ -9,7 +9,7 @@ import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IItem;
 
 /**
- * Represents an {@link Item} that can be hold and used.
+ * Represents an {@link Item} that can be held and used.
  */
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Equipment.class),
@@ -38,8 +38,8 @@ public class ItemStack<I extends IItem> {
     /**
      * Adds the given amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is clamped by {@link Item#getMinimalStackSize()} ()} and
-     * {@link Item#getMaximalStackSize()}.
+     * The resulting amount is limited by {@link Item#getMinimalStackSize()} ()} and
+     * {@link Item#getMaximalStackSize()} respectively.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
@@ -50,8 +50,8 @@ public class ItemStack<I extends IItem> {
     /**
      * Subtracts the given amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is clamped by {@link Item#getMinimalStackSize()} ()} and
-     * {@link Item#getMaximalStackSize()}.
+     * The resulting amount is limited by {@link Item#getMinimalStackSize()} ()} and
+     * {@link Item#getMaximalStackSize()} respectively.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
@@ -62,8 +62,8 @@ public class ItemStack<I extends IItem> {
     /**
      * Sets the amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is clamped by {@link Item#getMinimalStackSize()} ()} and
-     * {@link Item#getMaximalStackSize()}.
+     * The resulting amount is limited by {@link Item#getMinimalStackSize()} ()} and
+     * {@link Item#getMaximalStackSize()} respectively.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */

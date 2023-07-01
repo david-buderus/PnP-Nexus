@@ -1,7 +1,7 @@
 package de.pnp.manager.component.inventory.equipment.interfaces;
 
 /**
- * Represents {@link IEquipment} that can be hold in hand.
+ * Represents {@link IEquipment} that can be held in hand.
  */
 public interface IHandheldEquipment extends IDamageableEquipment {
 

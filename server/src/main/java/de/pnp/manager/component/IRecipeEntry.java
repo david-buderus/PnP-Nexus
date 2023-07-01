@@ -9,7 +9,7 @@ import de.pnp.manager.component.upgrade.UpgradeRecipe;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
- * An entry in the material list of a {@link CraftingRecipe} or an {@link UpgradeRecipe}.
+ * The product or an entry in the material list of a {@link CraftingRecipe} or an {@link UpgradeRecipe}.
  */
 @JsonSubTypes({
     @JsonSubTypes.Type(value = ItemRecipeEntry.class),
@@ -18,7 +18,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 public sealed interface IRecipeEntry {
 
     /**
-     * The amount needed for this {@link IRecipeEntry}
+     * The amount needed for this {@link IRecipeEntry}.
      */
     float amount();
 
