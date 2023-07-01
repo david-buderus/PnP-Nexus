@@ -97,8 +97,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      */
     protected final int minimalStackSize;
 
-    public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
-        String effect,
+    public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
         ERarity rarity, int vendorPrice, int tier, String description, String note, int maximalStackSize,
         int minimalStackSize) {
         super(id);

@@ -22,14 +22,11 @@ public class Shield extends HandheldEquipableItem implements IDefensiveItem {
      */
     protected final double weight;
 
-    public Shield(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description,
-        String note, Material material, int upgradeSlots, float initiative,
-        int hit, double weight, int armor) {
-        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note,
-            material, upgradeSlots, initiative, hit);
+    public Shield(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
+        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+        float initiative, int hit, double weight, int armor, int maximalStackSize, int minimalStackSize) {
+        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
+            upgradeSlots, initiative, hit, maximalStackSize, minimalStackSize);
         this.weight = weight;
         this.armor = armor;
     }

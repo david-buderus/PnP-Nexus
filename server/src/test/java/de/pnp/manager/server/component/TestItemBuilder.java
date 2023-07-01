@@ -140,7 +140,7 @@ public class TestItemBuilder {
      */
     public Armor buildArmor() {
         return new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
-            description, note, material, upgradeSlots, armor, weight);
+            description, note, material, upgradeSlots, armor, weight, 1, 1);
     }
 
     /**
@@ -148,7 +148,7 @@ public class TestItemBuilder {
      */
     public Weapon buildWeapon() {
         return new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
-            description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice);
+            description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
     }
 
     private ItemType getType(String typeName) {

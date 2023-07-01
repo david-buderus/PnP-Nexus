@@ -225,13 +225,13 @@
                   "$ref": "#/components/schemas/Upgrade"
                 }
               },
-              "initiative": {
-                "type": "number",
-                "format": "float"
-              },
               "defense": {
                 "type": "integer",
                 "format": "int32"
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
               },
               "hit": {
                 "type": "integer",
@@ -298,11 +298,11 @@
           "subtype": {
             "$ref": "#/components/schemas/ItemType"
           },
-          "minimalStackSize": {
+          "maximalStackSize": {
             "type": "integer",
             "format": "int32"
           },
-          "maximalStackSize": {
+          "minimalStackSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -311,6 +311,10 @@
           },
           "requirement": {
             "type": "string"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
           },
           "tier": {
             "type": "integer",
@@ -329,10 +333,6 @@
               "LEGENDARY",
               "GODLIKE"
             ]
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
@@ -355,11 +355,11 @@
           "subtype": {
             "$ref": "#/components/schemas/ItemType"
           },
-          "minimalStackSize": {
+          "maximalStackSize": {
             "type": "integer",
             "format": "int32"
           },
-          "maximalStackSize": {
+          "minimalStackSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -368,6 +368,10 @@
           },
           "requirement": {
             "type": "string"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
           },
           "tier": {
             "type": "integer",
@@ -386,10 +390,6 @@
               "LEGENDARY",
               "GODLIKE"
             ]
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
@@ -431,11 +431,11 @@
           "subtype": {
             "$ref": "#/components/schemas/ItemType"
           },
-          "minimalStackSize": {
+          "maximalStackSize": {
             "type": "integer",
             "format": "int32"
           },
-          "maximalStackSize": {
+          "minimalStackSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -444,6 +444,10 @@
           },
           "requirement": {
             "type": "string"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
           },
           "tier": {
             "type": "integer",
@@ -462,10 +466,6 @@
               "LEGENDARY",
               "GODLIKE"
             ]
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },
@@ -598,9 +598,6 @@
               "upgradeSlots": {
                 "type": "integer",
                 "format": "int32"
-              },
-              "gem": {
-                "type": "string"
               }
             }
           }

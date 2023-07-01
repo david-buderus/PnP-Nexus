@@ -22,13 +22,11 @@ public class Armor extends EquipableItem implements IDefensiveItem {
      */
     protected final double weight;
 
-    public Armor(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description,
-        String note, Material material, int upgradeSlots, int armor, double weight) {
-        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note,
-            material, upgradeSlots);
+    public Armor(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
+        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+        int armor, double weight, int maximalStackSize, int minimalStackSize) {
+        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
+            upgradeSlots, maximalStackSize, minimalStackSize);
         this.armor = armor;
         this.weight = weight;
     }

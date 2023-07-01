@@ -216,13 +216,13 @@ export interface DefensiveEquipment {
      * @type {number}
      * @memberof DefensiveEquipment
      */
-    'initiative'?: number;
+    'defense'?: number;
     /**
      * 
      * @type {number}
      * @memberof DefensiveEquipment
      */
-    'defense'?: number;
+    'initiative'?: number;
     /**
      * 
      * @type {number}
@@ -259,13 +259,13 @@ export interface DefensiveEquipmentAllOf {
      * @type {number}
      * @memberof DefensiveEquipmentAllOf
      */
-    'initiative'?: number;
+    'defense'?: number;
     /**
      * 
      * @type {number}
      * @memberof DefensiveEquipmentAllOf
      */
-    'defense'?: number;
+    'initiative'?: number;
     /**
      * 
      * @type {number}
@@ -388,13 +388,13 @@ export interface IDefensiveItem {
      * @type {number}
      * @memberof IDefensiveItem
      */
-    'minimalStackSize'?: number;
+    'maximalStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof IDefensiveItem
      */
-    'maximalStackSize'?: number;
+    'minimalStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -407,6 +407,12 @@ export interface IDefensiveItem {
      * @memberof IDefensiveItem
      */
     'requirement'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'vendorPrice'?: number;
     /**
      * 
      * @type {number}
@@ -425,12 +431,6 @@ export interface IDefensiveItem {
      * @memberof IDefensiveItem
      */
     'rarity'?: IDefensiveItemRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'vendorPrice'?: number;
 }
 
 export const IDefensiveItemRarityEnum = {
@@ -485,13 +485,13 @@ export interface IEquipableItem {
      * @type {number}
      * @memberof IEquipableItem
      */
-    'minimalStackSize'?: number;
+    'maximalStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof IEquipableItem
      */
-    'maximalStackSize'?: number;
+    'minimalStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -504,6 +504,12 @@ export interface IEquipableItem {
      * @memberof IEquipableItem
      */
     'requirement'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'vendorPrice'?: number;
     /**
      * 
      * @type {number}
@@ -522,12 +528,6 @@ export interface IEquipableItem {
      * @memberof IEquipableItem
      */
     'rarity'?: IEquipableItemRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof IEquipableItem
-     */
-    'vendorPrice'?: number;
 }
 
 export const IEquipableItemRarityEnum = {
@@ -612,13 +612,13 @@ export interface IOffensiveItem {
      * @type {number}
      * @memberof IOffensiveItem
      */
-    'minimalStackSize'?: number;
+    'maximalStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof IOffensiveItem
      */
-    'maximalStackSize'?: number;
+    'minimalStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -631,6 +631,12 @@ export interface IOffensiveItem {
      * @memberof IOffensiveItem
      */
     'requirement'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'vendorPrice'?: number;
     /**
      * 
      * @type {number}
@@ -649,12 +655,6 @@ export interface IOffensiveItem {
      * @memberof IOffensiveItem
      */
     'rarity'?: IOffensiveItemRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'vendorPrice'?: number;
 }
 
 export const IOffensiveItemRarityEnum = {
@@ -936,12 +936,6 @@ export interface Jewellery {
      * @memberof Jewellery
      */
     'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'gem'?: string;
 }
 
 export const JewelleryRarityEnum = {
@@ -973,12 +967,6 @@ export interface JewelleryAllOf {
      * @memberof JewelleryAllOf
      */
     'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof JewelleryAllOf
-     */
-    'gem'?: string;
 }
 /**
  * 

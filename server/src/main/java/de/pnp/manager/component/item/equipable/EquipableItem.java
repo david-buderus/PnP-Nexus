@@ -25,13 +25,11 @@ public abstract class EquipableItem extends Item implements IEquipableItem {
      */
     protected final int upgradeSlots;
 
-    public EquipableItem(ObjectId id, String name, ItemType type, ItemType subtype,
-        String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description,
-        String note, Material material, int upgradeSlots) {
+    public EquipableItem(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
+        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material,
+        int upgradeSlots, int maximalStackSize, int minimalStackSize) {
         super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note, 1, 1);
+            note, maximalStackSize, minimalStackSize);
         this.material = material;
         this.upgradeSlots = upgradeSlots;
     }

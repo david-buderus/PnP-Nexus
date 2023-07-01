@@ -22,14 +22,11 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
      */
     protected final String dice;
 
-    public Weapon(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description, String note,
-        Material material,
-        int upgradeSlots, float initiative, int hit, int damage, String dice) {
-        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note,
-            material, upgradeSlots, initiative, hit);
+    public Weapon(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
+        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+        float initiative, int hit, int damage, String dice, int maximalStackSize, int minimalStackSize) {
+        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
+            upgradeSlots, initiative, hit, maximalStackSize, minimalStackSize);
         this.damage = damage;
         this.dice = dice;
     }
