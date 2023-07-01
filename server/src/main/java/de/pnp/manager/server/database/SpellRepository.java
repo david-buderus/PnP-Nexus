@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SpellRepository extends RepositoryBase<Spell> {
 
-  /**
-   * Name of the repository
-   */
-  public static final String REPOSITORY_NAME = "spells";
+    /**
+     * Name of the repository
+     */
+    public static final String REPOSITORY_NAME = "spells";
 
-  public SpellRepository() {
-    super(Spell.class, REPOSITORY_NAME);
-  }
+    public SpellRepository() {
+        super(Spell.class, REPOSITORY_NAME);
+    }
 }

@@ -5,7 +5,7 @@ package de.pnp.manager.component.item.interfaces;
  */
 public interface IOffensiveItem extends IDamageableItem, IHandheldItem {
 
-  String getDice();
+    String getDice();
 
-  int getDamage();
+    int getDamage();
 }

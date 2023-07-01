@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class MaterialRepository extends RepositoryBase<Material> implements
     IUniquelyNamedRepository<Material> {
 
-  /**
-   * Name of the repository
-   */
-  public static final String REPOSITORY_NAME = "materials";
+    /**
+     * Name of the repository
+     */
+    public static final String REPOSITORY_NAME = "materials";
 
-  public MaterialRepository() {
-    super(Material.class, REPOSITORY_NAME);
-  }
+    public MaterialRepository() {
+        super(Material.class, REPOSITORY_NAME);
+    }
 }

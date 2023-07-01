@@ -7,31 +7,31 @@ import org.springframework.data.annotation.Id;
  */
 public class Universe {
 
-  /**
-   * The unique name of this universe.
-   * <p>
-   * This will never change.
-   */
-  @Id
-  private final String name;
+    /**
+     * The unique name of this universe.
+     * <p>
+     * This will never change.
+     */
+    @Id
+    private final String name;
 
-  /**
-   * The human-readable name of this universe.
-   */
-  private final String displayName;
+    /**
+     * The human-readable name of this universe.
+     */
+    private final String displayName;
 
-  private StatComputationRules statComputationRules;
+    private StatComputationRules statComputationRules;
 
-  public Universe(String name, String displayName) {
-    this.name = name;
-    this.displayName = displayName;
-  }
+    public Universe(String name, String displayName) {
+        this.name = name;
+        this.displayName = displayName;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getDisplayName() {
-    return displayName;
-  }
+    public String getDisplayName() {
+        return displayName;
+    }
 }

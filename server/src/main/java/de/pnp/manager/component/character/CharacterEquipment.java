@@ -8,13 +8,13 @@ import java.util.Set;
 
 public class CharacterEquipment {
 
-  IHandheldEquipment primary;
-  IHandheldEquipment secondary;
+    IHandheldEquipment primary;
+    IHandheldEquipment secondary;
 
-  DefensiveEquipment helmet;
-  DefensiveEquipment bodyArmor;
-  DefensiveEquipment legs;
-  DefensiveEquipment boots;
+    DefensiveEquipment helmet;
+    DefensiveEquipment bodyArmor;
+    DefensiveEquipment legs;
+    DefensiveEquipment boots;
 
-  Set<Equipment<Jewellery>> jewellerySet;
+    Set<Equipment<Jewellery>> jewellerySet;
 }

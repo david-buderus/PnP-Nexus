@@ -10,17 +10,17 @@ import java.util.Collections;
  */
 public class AlreadyPersistedException extends RuntimeException {
 
-  private final Collection<? extends DatabaseObject> alreadyPersistedObjects;
+    private final Collection<? extends DatabaseObject> alreadyPersistedObjects;
 
-  public AlreadyPersistedException(DatabaseObject object) {
-    this(Collections.singleton(object));
-  }
+    public AlreadyPersistedException(DatabaseObject object) {
+        this(Collections.singleton(object));
+    }
 
-  public AlreadyPersistedException(Collection<? extends DatabaseObject> alreadyPersistedObjects) {
-    this.alreadyPersistedObjects = alreadyPersistedObjects;
-  }
+    public AlreadyPersistedException(Collection<? extends DatabaseObject> alreadyPersistedObjects) {
+        this.alreadyPersistedObjects = alreadyPersistedObjects;
+    }
 
-  public Collection<? extends DatabaseObject> getAlreadyPersistedItems() {
-    return alreadyPersistedObjects;
-  }
+    public Collection<? extends DatabaseObject> getAlreadyPersistedItems() {
+        return alreadyPersistedObjects;
+    }
 }

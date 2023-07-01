@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class CharacterDescription {
 
-  private String description;
+    private String description;
 
-  private Set<CharacterTrait> traits;
+    private Set<CharacterTrait> traits;
 }

@@ -5,7 +5,7 @@ import java.util.Set;
 
 public class Nation {
 
-  private String name;
-  private Set<Race> races;
-  private Set<CharacterTrait> traits;
+    private String name;
+    private Set<Race> races;
+    private Set<CharacterTrait> traits;
 }
