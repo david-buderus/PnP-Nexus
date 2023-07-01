@@ -176,11 +176,487 @@ export interface ArmorAllOf {
     'maxDurability'?: number;
 }
 /**
+ * 
+ * @export
+ * @interface DefensiveEquipment
+ */
+export interface DefensiveEquipment {
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {IDefensiveItem}
+     * @memberof DefensiveEquipment
+     */
+    'item'?: IDefensiveItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'minAmount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'maxAmount'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof DefensiveEquipment
+     */
+    'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'defense'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'relativeDurability'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface DefensiveEquipmentAllOf
+ */
+export interface DefensiveEquipmentAllOf {
+    /**
+     * 
+     * @type {IDefensiveItem}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'item'?: IDefensiveItem;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'defense'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'relativeDurability'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface Equipment
+ */
+export interface Equipment {
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {IEquipableItem}
+     * @memberof Equipment
+     */
+    'item'?: IEquipableItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'minAmount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'maxAmount'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof Equipment
+     */
+    'upgrades'?: Array<Upgrade>;
+}
+/**
+ * 
+ * @export
+ * @interface EquipmentAllOf
+ */
+export interface EquipmentAllOf {
+    /**
+     * 
+     * @type {IEquipableItem}
+     * @memberof EquipmentAllOf
+     */
+    'item'?: IEquipableItem;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof EquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
+}
+/**
  * @type GetItem200Response
  * @export
  */
 export type GetItem200Response = Armor | Item | Jewellery | Shield | Weapon;
 
+/**
+ * 
+ * @export
+ * @interface IDefensiveItem
+ */
+export interface IDefensiveItem {
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'weight'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'armor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IDefensiveItem
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IDefensiveItem
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'rarity'?: IDefensiveItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'effect'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'vendorPrice'?: number;
+}
+
+export const IDefensiveItemRarityEnum = {
+    Unknown: 'UNKNOWN',
+    Common: 'COMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type IDefensiveItemRarityEnum = typeof IDefensiveItemRarityEnum[keyof typeof IDefensiveItemRarityEnum];
+
+/**
+ * 
+ * @export
+ * @interface IEquipableItem
+ */
+export interface IEquipableItem {
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IEquipableItem
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IEquipableItem
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'rarity'?: IEquipableItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'effect'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'vendorPrice'?: number;
+}
+
+export const IEquipableItemRarityEnum = {
+    Unknown: 'UNKNOWN',
+    Common: 'COMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type IEquipableItemRarityEnum = typeof IEquipableItemRarityEnum[keyof typeof IEquipableItemRarityEnum];
+
+/**
+ * 
+ * @export
+ * @interface IOffensiveItem
+ */
+export interface IOffensiveItem {
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'damage'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'dice'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IOffensiveItem
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IOffensiveItem
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'rarity'?: IOffensiveItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'effect'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'vendorPrice'?: number;
+}
+
+export const IOffensiveItemRarityEnum = {
+    Unknown: 'UNKNOWN',
+    Common: 'COMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type IOffensiveItemRarityEnum = typeof IOffensiveItemRarityEnum[keyof typeof IOffensiveItemRarityEnum];
+
+/**
+ * 
+ * @export
+ * @interface IUpgradeEffect
+ */
+export interface IUpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof IUpgradeEffect
+     */
+    'description'?: string;
+}
 /**
  * 
  * @export
@@ -267,6 +743,12 @@ export const ItemRarityEnum = {
 export type ItemRarityEnum = typeof ItemRarityEnum[keyof typeof ItemRarityEnum];
 
 /**
+ * @type ItemStack200Response
+ * @export
+ */
+export type ItemStack200Response = DefensiveEquipment | Equipment | ItemStackItem | WeaponEquipment;
+
+/**
  * 
  * @export
  * @interface ItemStackItem
@@ -284,6 +766,18 @@ export interface ItemStackItem {
      * @memberof ItemStackItem
      */
     'item'?: GetItem200Response;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackItem
+     */
+    'minAmount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackItem
+     */
+    'maxAmount'?: number;
 }
 /**
  * 
@@ -673,6 +1167,49 @@ export interface ShieldAllOf {
 /**
  * 
  * @export
+ * @interface Upgrade
+ */
+export interface Upgrade {
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Upgrade
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {string}
+     * @memberof Upgrade
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Upgrade
+     */
+    'target'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Upgrade
+     */
+    'slots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Upgrade
+     */
+    'vendorPrice'?: number;
+    /**
+     * 
+     * @type {Array<IUpgradeEffect>}
+     * @memberof Upgrade
+     */
+    'effects'?: Array<IUpgradeEffect>;
+}
+/**
+ * 
+ * @export
  * @interface Weapon
  */
 export interface Weapon {
@@ -846,6 +1383,110 @@ export interface WeaponAllOf {
      */
     'maxDurability'?: number;
 }
+/**
+ * 
+ * @export
+ * @interface WeaponEquipment
+ */
+export interface WeaponEquipment {
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {IOffensiveItem}
+     * @memberof WeaponEquipment
+     */
+    'item'?: IOffensiveItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'minAmount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'maxAmount'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof WeaponEquipment
+     */
+    'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'damage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'relativeDurability'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface WeaponEquipmentAllOf
+ */
+export interface WeaponEquipmentAllOf {
+    /**
+     * 
+     * @type {IOffensiveItem}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'item'?: IOffensiveItem;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'damage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'relativeDurability'?: number;
+}
 
 /**
  * ItemServiceApi - axios parameter creator
@@ -1007,7 +1648,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemStack(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemStackItem>> {
+        async itemStack(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemStack200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.itemStack(universe, name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1050,7 +1691,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemStack(universe: string, name: string, options?: any): AxiosPromise<ItemStackItem> {
+        itemStack(universe: string, name: string, options?: any): AxiosPromise<ItemStack200Response> {
             return localVarFp.itemStack(universe, name, options).then((request) => request(axios, basePath));
         },
     };

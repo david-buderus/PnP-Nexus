@@ -41,7 +41,20 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/ItemStackItem"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ItemStackItem"
+                    },
+                    {
+                      "$ref": "#/components/schemas/DefensiveEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Equipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/WeaponEquipment"
+                    }
+                  ]
                 }
               }
             }
@@ -194,6 +207,252 @@
           }
         ]
       },
+      "DefensiveEquipment": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ItemStackItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "item": {
+                "$ref": "#/components/schemas/IDefensiveItem"
+              },
+              "upgrades": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
+              "defense": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "relativeDurability": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          }
+        ]
+      },
+      "Equipment": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ItemStackItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "item": {
+                "$ref": "#/components/schemas/IEquipableItem"
+              },
+              "upgrades": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "IDefensiveItem": {
+        "type": "object",
+        "properties": {
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "armor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxDurability": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "note": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "COMMON",
+              "RARE",
+              "EPIC",
+              "LEGENDARY",
+              "GODLIKE"
+            ]
+          },
+          "effect": {
+            "type": "string"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "IEquipableItem": {
+        "type": "object",
+        "properties": {
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "note": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "COMMON",
+              "RARE",
+              "EPIC",
+              "LEGENDARY",
+              "GODLIKE"
+            ]
+          },
+          "effect": {
+            "type": "string"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "IOffensiveItem": {
+        "type": "object",
+        "properties": {
+          "damage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dice": {
+            "type": "string"
+          },
+          "maxDurability": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "initiative": {
+            "type": "number",
+            "format": "float"
+          },
+          "hit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "note": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "COMMON",
+              "RARE",
+              "EPIC",
+              "LEGENDARY",
+              "GODLIKE"
+            ]
+          },
+          "effect": {
+            "type": "string"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "IUpgradeEffect": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          }
+        }
+      },
       "Item": {
         "type": "object",
         "properties": {
@@ -267,6 +526,14 @@
                 "$ref": "#/components/schemas/Weapon"
               }
             ]
+          },
+          "minAmount": {
+            "type": "number",
+            "format": "float"
+          },
+          "maxAmount": {
+            "type": "number",
+            "format": "float"
           }
         }
       },
@@ -385,6 +652,34 @@
           }
         ]
       },
+      "Upgrade": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "target": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "slots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "effects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IUpgradeEffect"
+            }
+          }
+        }
+      },
       "Weapon": {
         "type": "object",
         "allOf": [
@@ -419,6 +714,44 @@
               "maxDurability": {
                 "type": "integer",
                 "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "WeaponEquipment": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ItemStackItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "item": {
+                "$ref": "#/components/schemas/IOffensiveItem"
+              },
+              "upgrades": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "damage": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "relativeDurability": {
+                "type": "number",
+                "format": "float"
               }
             }
           }
