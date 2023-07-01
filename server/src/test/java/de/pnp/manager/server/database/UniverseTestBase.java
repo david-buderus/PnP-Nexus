@@ -13,23 +13,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public abstract class UniverseTestBase {
 
-  /**
-   * Database name that should be used for testing
-   */
-  protected final String universe;
+    /**
+     * Database name that should be used for testing
+     */
+    protected final String universeName;
 
 
-  protected UniverseTestBase() {
-    universe = UUID.randomUUID().toString();
-  }
+    protected UniverseTestBase() {
+        universeName = UUID.randomUUID().toString();
+    }
 
-  @BeforeEach
-  void setup(@Autowired UniverseRepository repository) {
-    repository.insert(new Universe(universe, universe));
-  }
+    @BeforeEach
+    void setup(@Autowired UniverseRepository repository) {
+        repository.insert(new Universe(universeName, universeName));
+    }
 
-  @AfterEach
-  void tearDown(@Autowired UniverseRepository repository) {
-    repository.remove(universe);
-  }
+    @AfterEach
+    void tearDown(@Autowired UniverseRepository repository) {
+        repository.remove(universeName);
+    }
 }
