@@ -11,24 +11,21 @@
     }
   ],
   "paths": {
-    "/{universe}/itemstack/{name}": {
+    "/{universe}/a/{name}": {
       "get": {
-        "tags": [
-          "item-service"
-        ],
-        "operationId": "itemStack",
+        "operationId": "getItem_1",
         "parameters": [
           {
-            "name": "universe",
             "in": "path",
+            "name": "universe",
             "required": true,
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "name",
             "in": "path",
+            "name": "name",
             "required": true,
             "schema": {
               "type": "string"
@@ -37,7 +34,116 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Item"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Armor"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Jewellery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Shield"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Weapon"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an item",
+        "tags": [
+          "item-service"
+        ]
+      }
+    },
+    "/{universe}/item/{name}": {
+      "get": {
+        "operationId": "getItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Item"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Armor"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Jewellery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Shield"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Weapon"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an item",
+        "tags": [
+          "item-service"
+        ]
+      }
+    },
+    "/{universe}/itemstack/{name}": {
+      "get": {
+        "operationId": "itemStack",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "content": {
               "*/*": {
                 "schema": {
@@ -57,119 +163,13 @@
                   ]
                 }
               }
-            }
+            },
+            "description": "OK"
           }
-        }
-      }
-    },
-    "/{universe}/item/{name}": {
-      "get": {
+        },
         "tags": [
           "item-service"
-        ],
-        "summary": "Get an item",
-        "operationId": "getItem",
-        "parameters": [
-          {
-            "name": "universe",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/Item"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Armor"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Jewellery"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Shield"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Weapon"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/{universe}/a/{name}": {
-      "get": {
-        "tags": [
-          "item-service"
-        ],
-        "summary": "Get an item",
-        "operationId": "getItem_1",
-        "parameters": [
-          {
-            "name": "universe",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/Item"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Armor"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Jewellery"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Shield"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Weapon"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     }
   },
@@ -184,24 +184,24 @@
           {
             "type": "object",
             "properties": {
-              "material": {
-                "$ref": "#/components/schemas/Material"
-              },
-              "upgradeSlots": {
+              "armor": {
                 "type": "integer",
                 "format": "int32"
               },
-              "armor": {
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
                 "type": "integer",
                 "format": "int32"
               },
               "weight": {
                 "type": "number",
                 "format": "double"
-              },
-              "maxDurability": {
-                "type": "integer",
-                "format": "int32"
               }
             }
           }
@@ -216,16 +216,11 @@
           {
             "type": "object",
             "properties": {
-              "item": {
-                "$ref": "#/components/schemas/IDefensiveItem"
-              },
-              "upgrades": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
-              },
               "defense": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hit": {
                 "type": "integer",
                 "format": "int32"
               },
@@ -233,13 +228,18 @@
                 "type": "number",
                 "format": "float"
               },
-              "hit": {
-                "type": "integer",
-                "format": "int32"
+              "item": {
+                "$ref": "#/components/schemas/IDefensiveItem"
               },
               "relativeDurability": {
                 "type": "number",
                 "format": "float"
+              },
+              "upgrades": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
               }
             }
           }
@@ -270,33 +270,19 @@
       "IDefensiveItem": {
         "type": "object",
         "properties": {
-          "weight": {
-            "type": "number",
-            "format": "double"
-          },
           "armor": {
             "type": "integer",
             "format": "int32"
           },
-          "maxDurability": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upgradeSlots": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
-          },
           "description": {
             "type": "string"
           },
-          "subtype": {
-            "$ref": "#/components/schemas/ItemType"
+          "effect": {
+            "type": "string"
+          },
+          "maxDurability": {
+            "type": "integer",
+            "format": "int32"
           },
           "maximalStackSize": {
             "type": "integer",
@@ -306,21 +292,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "name": {
+            "type": "string"
+          },
           "note": {
-            "type": "string"
-          },
-          "requirement": {
-            "type": "string"
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tier": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "effect": {
             "type": "string"
           },
           "rarity": {
@@ -333,27 +308,42 @@
               "LEGENDARY",
               "GODLIKE"
             ]
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
           }
         }
       },
       "IEquipableItem": {
         "type": "object",
         "properties": {
-          "upgradeSlots": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
-          },
           "description": {
             "type": "string"
           },
-          "subtype": {
-            "$ref": "#/components/schemas/ItemType"
+          "effect": {
+            "type": "string"
           },
           "maximalStackSize": {
             "type": "integer",
@@ -363,21 +353,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "name": {
+            "type": "string"
+          },
           "note": {
-            "type": "string"
-          },
-          "requirement": {
-            "type": "string"
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tier": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "effect": {
             "type": "string"
           },
           "rarity": {
@@ -390,6 +369,27 @@
               "LEGENDARY",
               "GODLIKE"
             ]
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -400,10 +400,16 @@
             "type": "integer",
             "format": "int32"
           },
+          "description": {
+            "type": "string"
+          },
           "dice": {
             "type": "string"
           },
-          "maxDurability": {
+          "effect": {
+            "type": "string"
+          },
+          "hit": {
             "type": "integer",
             "format": "int32"
           },
@@ -411,25 +417,9 @@
             "type": "number",
             "format": "float"
           },
-          "hit": {
+          "maxDurability": {
             "type": "integer",
             "format": "int32"
-          },
-          "upgradeSlots": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
-          },
-          "description": {
-            "type": "string"
-          },
-          "subtype": {
-            "$ref": "#/components/schemas/ItemType"
           },
           "maximalStackSize": {
             "type": "integer",
@@ -439,21 +429,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "name": {
+            "type": "string"
+          },
           "note": {
-            "type": "string"
-          },
-          "requirement": {
-            "type": "string"
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tier": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "effect": {
             "type": "string"
           },
           "rarity": {
@@ -466,6 +445,27 @@
               "LEGENDARY",
               "GODLIKE"
             ]
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -480,22 +480,27 @@
       "Item": {
         "type": "object",
         "properties": {
+          "description": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          },
           "id": {
             "$ref": "#/components/schemas/ObjectId"
+          },
+          "maximalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimalStackSize": {
+            "type": "integer",
+            "format": "int32"
           },
           "name": {
             "type": "string"
           },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
-          },
-          "subtype": {
-            "$ref": "#/components/schemas/ItemType"
-          },
-          "requirement": {
-            "type": "string"
-          },
-          "effect": {
+          "note": {
             "type": "string"
           },
           "rarity": {
@@ -509,25 +514,20 @@
               "GODLIKE"
             ]
           },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
+          "requirement": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
           },
           "tier": {
             "type": "integer",
             "format": "int32"
           },
-          "description": {
-            "type": "string"
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
           },
-          "note": {
-            "type": "string"
-          },
-          "maximalStackSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "minimalStackSize": {
+          "vendorPrice": {
             "type": "integer",
             "format": "int32"
           }
@@ -609,27 +609,27 @@
           "id": {
             "$ref": "#/components/schemas/ObjectId"
           },
-          "name": {
-            "type": "string"
-          },
           "items": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Item"
             }
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
       "ObjectId": {
         "type": "object",
         "properties": {
-          "timestamp": {
-            "type": "integer",
-            "format": "int32"
-          },
           "date": {
             "type": "string",
             "format": "date-time"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -642,10 +642,11 @@
           {
             "type": "object",
             "properties": {
-              "material": {
-                "$ref": "#/components/schemas/Material"
+              "armor": {
+                "type": "integer",
+                "format": "int32"
               },
-              "upgradeSlots": {
+              "hit": {
                 "type": "integer",
                 "format": "int32"
               },
@@ -653,21 +654,20 @@
                 "type": "number",
                 "format": "float"
               },
-              "hit": {
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              },
+              "maxDurability": {
                 "type": "integer",
                 "format": "int32"
               },
-              "armor": {
+              "upgradeSlots": {
                 "type": "integer",
                 "format": "int32"
               },
               "weight": {
                 "type": "number",
                 "format": "double"
-              },
-              "maxDurability": {
-                "type": "integer",
-                "format": "int32"
               }
             }
           }
@@ -676,28 +676,28 @@
       "Upgrade": {
         "type": "object",
         "properties": {
+          "effects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IUpgradeEffect"
+            }
+          },
           "id": {
             "$ref": "#/components/schemas/ObjectId"
           },
           "name": {
             "type": "string"
           },
-          "target": {
-            "$ref": "#/components/schemas/ItemType"
-          },
           "slots": {
             "type": "integer",
             "format": "int32"
           },
+          "target": {
+            "$ref": "#/components/schemas/ItemType"
+          },
           "vendorPrice": {
             "type": "integer",
             "format": "int32"
-          },
-          "effects": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/IUpgradeEffect"
-            }
           }
         }
       },
@@ -710,21 +710,6 @@
           {
             "type": "object",
             "properties": {
-              "material": {
-                "$ref": "#/components/schemas/Material"
-              },
-              "upgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "initiative": {
-                "type": "number",
-                "format": "float"
-              },
-              "hit": {
-                "type": "integer",
-                "format": "int32"
-              },
               "damage": {
                 "type": "integer",
                 "format": "int32"
@@ -732,7 +717,22 @@
               "dice": {
                 "type": "string"
               },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              },
               "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
                 "type": "integer",
                 "format": "int32"
               }
@@ -749,30 +749,30 @@
           {
             "type": "object",
             "properties": {
+              "damage": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
               "item": {
                 "$ref": "#/components/schemas/IOffensiveItem"
+              },
+              "relativeDurability": {
+                "type": "number",
+                "format": "float"
               },
               "upgrades": {
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/Upgrade"
                 }
-              },
-              "initiative": {
-                "type": "number",
-                "format": "float"
-              },
-              "hit": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "damage": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "relativeDurability": {
-                "type": "number",
-                "format": "float"
               }
             }
           }

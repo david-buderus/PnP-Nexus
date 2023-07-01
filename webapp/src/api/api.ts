@@ -31,60 +31,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 export interface Armor {
     /**
      * 
-     * @type {ObjectId}
-     * @memberof Armor
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Armor
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Armor
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'rarity'?: ArmorRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
-    'tier'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof Armor
      */
@@ -94,7 +40,13 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
-    'note'?: string;
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Armor
+     */
+    'id'?: ObjectId;
     /**
      * 
      * @type {number}
@@ -109,10 +61,70 @@ export interface Armor {
     'minimalStackSize'?: number;
     /**
      * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'rarity'?: ArmorRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Armor
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Armor
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'vendorPrice'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'armor'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof Armor
      */
     'material'?: Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'maxDurability'?: number;
     /**
      * 
      * @type {number}
@@ -124,19 +136,7 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
-    'maxDurability'?: number;
 }
 
 export const ArmorRarityEnum = {
@@ -158,10 +158,22 @@ export type ArmorRarityEnum = typeof ArmorRarityEnum[keyof typeof ArmorRarityEnu
 export interface ArmorAllOf {
     /**
      * 
+     * @type {number}
+     * @memberof ArmorAllOf
+     */
+    'armor'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof ArmorAllOf
      */
     'material'?: Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof ArmorAllOf
+     */
+    'maxDurability'?: number;
     /**
      * 
      * @type {number}
@@ -173,19 +185,7 @@ export interface ArmorAllOf {
      * @type {number}
      * @memberof ArmorAllOf
      */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ArmorAllOf
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ArmorAllOf
-     */
-    'maxDurability'?: number;
 }
 /**
  * 
@@ -207,22 +207,10 @@ export interface DefensiveEquipment {
     'item'?: IDefensiveItem;
     /**
      * 
-     * @type {Array<Upgrade>}
-     * @memberof DefensiveEquipment
-     */
-    'upgrades'?: Array<Upgrade>;
-    /**
-     * 
      * @type {number}
      * @memberof DefensiveEquipment
      */
     'defense'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'initiative'?: number;
     /**
      * 
      * @type {number}
@@ -234,7 +222,19 @@ export interface DefensiveEquipment {
      * @type {number}
      * @memberof DefensiveEquipment
      */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof DefensiveEquipment
+     */
+    'upgrades'?: Array<Upgrade>;
 }
 /**
  * 
@@ -244,28 +244,10 @@ export interface DefensiveEquipment {
 export interface DefensiveEquipmentAllOf {
     /**
      * 
-     * @type {IDefensiveItem}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'item'?: IDefensiveItem;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'upgrades'?: Array<Upgrade>;
-    /**
-     * 
      * @type {number}
      * @memberof DefensiveEquipmentAllOf
      */
     'defense'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'initiative'?: number;
     /**
      * 
      * @type {number}
@@ -277,7 +259,25 @@ export interface DefensiveEquipmentAllOf {
      * @type {number}
      * @memberof DefensiveEquipmentAllOf
      */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {IDefensiveItem}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'item'?: IDefensiveItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
 }
 /**
  * 
@@ -324,10 +324,10 @@ export interface EquipmentAllOf {
     'upgrades'?: Array<Upgrade>;
 }
 /**
- * @type GetItem200Response
+ * @type GetItem1200Response
  * @export
  */
-export type GetItem200Response = Armor | Item | Jewellery | Shield | Weapon;
+export type GetItem1200Response = Armor | Item | Jewellery | Shield | Weapon;
 
 /**
  * 
@@ -340,37 +340,7 @@ export interface IDefensiveItem {
      * @type {number}
      * @memberof IDefensiveItem
      */
-    'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
     'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IDefensiveItem
-     */
-    'type'?: ItemType;
     /**
      * 
      * @type {string}
@@ -379,10 +349,16 @@ export interface IDefensiveItem {
     'description'?: string;
     /**
      * 
-     * @type {ItemType}
+     * @type {string}
      * @memberof IDefensiveItem
      */
-    'subtype'?: ItemType;
+    'effect'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'maxDurability'?: number;
     /**
      * 
      * @type {number}
@@ -400,13 +376,49 @@ export interface IDefensiveItem {
      * @type {string}
      * @memberof IDefensiveItem
      */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
     'note'?: string;
     /**
      * 
      * @type {string}
      * @memberof IDefensiveItem
      */
+    'rarity'?: IDefensiveItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
     'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IDefensiveItem
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IDefensiveItem
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'upgradeSlots'?: number;
     /**
      * 
      * @type {number}
@@ -418,19 +430,7 @@ export interface IDefensiveItem {
      * @type {number}
      * @memberof IDefensiveItem
      */
-    'tier'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'rarity'?: IDefensiveItemRarityEnum;
+    'weight'?: number;
 }
 
 export const IDefensiveItemRarityEnum = {
@@ -452,34 +452,16 @@ export type IDefensiveItemRarityEnum = typeof IDefensiveItemRarityEnum[keyof typ
 export interface IEquipableItem {
     /**
      * 
-     * @type {number}
-     * @memberof IEquipableItem
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IEquipableItem
-     */
-    'type'?: ItemType;
-    /**
-     * 
      * @type {string}
      * @memberof IEquipableItem
      */
     'description'?: string;
     /**
      * 
-     * @type {ItemType}
+     * @type {string}
      * @memberof IEquipableItem
      */
-    'subtype'?: ItemType;
+    'effect'?: string;
     /**
      * 
      * @type {number}
@@ -497,7 +479,19 @@ export interface IEquipableItem {
      * @type {string}
      * @memberof IEquipableItem
      */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
     'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'rarity'?: IEquipableItemRarityEnum;
     /**
      * 
      * @type {string}
@@ -506,10 +500,10 @@ export interface IEquipableItem {
     'requirement'?: string;
     /**
      * 
-     * @type {number}
+     * @type {ItemType}
      * @memberof IEquipableItem
      */
-    'vendorPrice'?: number;
+    'subtype'?: ItemType;
     /**
      * 
      * @type {number}
@@ -518,16 +512,22 @@ export interface IEquipableItem {
     'tier'?: number;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof IEquipableItem
      */
-    'effect'?: string;
+    'type'?: ItemType;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof IEquipableItem
      */
-    'rarity'?: IEquipableItemRarityEnum;
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'vendorPrice'?: number;
 }
 
 export const IEquipableItemRarityEnum = {
@@ -558,19 +558,19 @@ export interface IOffensiveItem {
      * @type {string}
      * @memberof IOffensiveItem
      */
+    'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
     'dice'?: string;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof IOffensiveItem
      */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'initiative'?: number;
+    'effect'?: string;
     /**
      * 
      * @type {number}
@@ -582,31 +582,13 @@ export interface IOffensiveItem {
      * @type {number}
      * @memberof IOffensiveItem
      */
-    'upgradeSlots'?: number;
+    'initiative'?: number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof IOffensiveItem
      */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IOffensiveItem
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IOffensiveItem
-     */
-    'subtype'?: ItemType;
+    'maxDurability'?: number;
     /**
      * 
      * @type {number}
@@ -624,7 +606,19 @@ export interface IOffensiveItem {
      * @type {string}
      * @memberof IOffensiveItem
      */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
     'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'rarity'?: IOffensiveItemRarityEnum;
     /**
      * 
      * @type {string}
@@ -633,10 +627,10 @@ export interface IOffensiveItem {
     'requirement'?: string;
     /**
      * 
-     * @type {number}
+     * @type {ItemType}
      * @memberof IOffensiveItem
      */
-    'vendorPrice'?: number;
+    'subtype'?: ItemType;
     /**
      * 
      * @type {number}
@@ -645,16 +639,22 @@ export interface IOffensiveItem {
     'tier'?: number;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof IOffensiveItem
      */
-    'effect'?: string;
+    'type'?: ItemType;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof IOffensiveItem
      */
-    'rarity'?: IOffensiveItemRarityEnum;
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'vendorPrice'?: number;
 }
 
 export const IOffensiveItemRarityEnum = {
@@ -689,60 +689,6 @@ export interface IUpgradeEffect {
 export interface Item {
     /**
      * 
-     * @type {ObjectId}
-     * @memberof Item
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Item
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Item
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'rarity'?: ItemRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Item
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Item
-     */
-    'tier'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof Item
      */
@@ -752,7 +698,13 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'note'?: string;
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Item
+     */
+    'id'?: ObjectId;
     /**
      * 
      * @type {number}
@@ -765,6 +717,54 @@ export interface Item {
      * @memberof Item
      */
     'minimalStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'rarity'?: ItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Item
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Item
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'vendorPrice'?: number;
 }
 
 export const ItemRarityEnum = {
@@ -798,10 +798,10 @@ export interface ItemStackItem {
     'amount'?: number;
     /**
      * 
-     * @type {GetItem200Response}
+     * @type {GetItem1200Response}
      * @memberof ItemStackItem
      */
-    'item'?: GetItem200Response;
+    'item'?: GetItem1200Response;
 }
 /**
  * 
@@ -848,60 +848,6 @@ export type ItemTypeTypeRestrictionEnum = typeof ItemTypeTypeRestrictionEnum[key
 export interface Jewellery {
     /**
      * 
-     * @type {ObjectId}
-     * @memberof Jewellery
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Jewellery
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Jewellery
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'rarity'?: JewelleryRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Jewellery
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Jewellery
-     */
-    'tier'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof Jewellery
      */
@@ -911,7 +857,13 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'note'?: string;
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Jewellery
+     */
+    'id'?: ObjectId;
     /**
      * 
      * @type {number}
@@ -924,6 +876,54 @@ export interface Jewellery {
      * @memberof Jewellery
      */
     'minimalStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'rarity'?: JewelleryRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Jewellery
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Jewellery
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'vendorPrice'?: number;
     /**
      * 
      * @type {Material}
@@ -982,16 +982,16 @@ export interface Material {
     'id'?: ObjectId;
     /**
      * 
-     * @type {string}
-     * @memberof Material
-     */
-    'name'?: string;
-    /**
-     * 
      * @type {Array<Item>}
      * @memberof Material
      */
     'items'?: Array<Item>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Material
+     */
+    'name'?: string;
 }
 /**
  * 
@@ -1001,16 +1001,16 @@ export interface Material {
 export interface ObjectId {
     /**
      * 
-     * @type {number}
-     * @memberof ObjectId
-     */
-    'timestamp'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof ObjectId
      */
     'date'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ObjectId
+     */
+    'timestamp'?: number;
 }
 /**
  * 
@@ -1018,60 +1018,6 @@ export interface ObjectId {
  * @interface Shield
  */
 export interface Shield {
-    /**
-     * 
-     * @type {ObjectId}
-     * @memberof Shield
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Shield
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Shield
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'rarity'?: ShieldRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'tier'?: number;
     /**
      * 
      * @type {string}
@@ -1083,7 +1029,13 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
-    'note'?: string;
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Shield
+     */
+    'id'?: ObjectId;
     /**
      * 
      * @type {number}
@@ -1098,28 +1050,52 @@ export interface Shield {
     'minimalStackSize'?: number;
     /**
      * 
-     * @type {Material}
+     * @type {string}
      * @memberof Shield
      */
-    'material'?: Material;
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'rarity'?: ShieldRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Shield
+     */
+    'subtype'?: ItemType;
     /**
      * 
      * @type {number}
      * @memberof Shield
      */
-    'upgradeSlots'?: number;
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Shield
+     */
+    'type'?: ItemType;
     /**
      * 
      * @type {number}
      * @memberof Shield
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'hit'?: number;
+    'vendorPrice'?: number;
     /**
      * 
      * @type {number}
@@ -1131,13 +1107,37 @@ export interface Shield {
      * @type {number}
      * @memberof Shield
      */
-    'weight'?: number;
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Shield
+     */
+    'material'?: Material;
     /**
      * 
      * @type {number}
      * @memberof Shield
      */
     'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'weight'?: number;
 }
 
 export const ShieldRarityEnum = {
@@ -1159,22 +1159,10 @@ export type ShieldRarityEnum = typeof ShieldRarityEnum[keyof typeof ShieldRarity
 export interface ShieldAllOf {
     /**
      * 
-     * @type {Material}
-     * @memberof ShieldAllOf
-     */
-    'material'?: Material;
-    /**
-     * 
      * @type {number}
      * @memberof ShieldAllOf
      */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
-    'initiative'?: number;
+    'armor'?: number;
     /**
      * 
      * @type {number}
@@ -1186,19 +1174,31 @@ export interface ShieldAllOf {
      * @type {number}
      * @memberof ShieldAllOf
      */
-    'armor'?: number;
+    'initiative'?: number;
     /**
      * 
-     * @type {number}
+     * @type {Material}
      * @memberof ShieldAllOf
      */
-    'weight'?: number;
+    'material'?: Material;
     /**
      * 
      * @type {number}
      * @memberof ShieldAllOf
      */
     'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'weight'?: number;
 }
 /**
  * 
@@ -1206,6 +1206,12 @@ export interface ShieldAllOf {
  * @interface Upgrade
  */
 export interface Upgrade {
+    /**
+     * 
+     * @type {Array<IUpgradeEffect>}
+     * @memberof Upgrade
+     */
+    'effects'?: Array<IUpgradeEffect>;
     /**
      * 
      * @type {ObjectId}
@@ -1218,6 +1224,12 @@ export interface Upgrade {
      * @memberof Upgrade
      */
     'name'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Upgrade
+     */
+    'slots'?: number;
     /**
      * 
      * @type {ItemType}
@@ -1229,19 +1241,7 @@ export interface Upgrade {
      * @type {number}
      * @memberof Upgrade
      */
-    'slots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Upgrade
-     */
     'vendorPrice'?: number;
-    /**
-     * 
-     * @type {Array<IUpgradeEffect>}
-     * @memberof Upgrade
-     */
-    'effects'?: Array<IUpgradeEffect>;
 }
 /**
  * 
@@ -1249,60 +1249,6 @@ export interface Upgrade {
  * @interface Weapon
  */
 export interface Weapon {
-    /**
-     * 
-     * @type {ObjectId}
-     * @memberof Weapon
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Weapon
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Weapon
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'rarity'?: WeaponRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'tier'?: number;
     /**
      * 
      * @type {string}
@@ -1314,7 +1260,13 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'note'?: string;
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Weapon
+     */
+    'id'?: ObjectId;
     /**
      * 
      * @type {number}
@@ -1329,28 +1281,52 @@ export interface Weapon {
     'minimalStackSize'?: number;
     /**
      * 
-     * @type {Material}
+     * @type {string}
      * @memberof Weapon
      */
-    'material'?: Material;
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Weapon
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Weapon
+     */
+    'rarity'?: WeaponRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Weapon
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Weapon
+     */
+    'subtype'?: ItemType;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'upgradeSlots'?: number;
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Weapon
+     */
+    'type'?: ItemType;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'hit'?: number;
+    'vendorPrice'?: number;
     /**
      * 
      * @type {number}
@@ -1368,7 +1344,31 @@ export interface Weapon {
      * @type {number}
      * @memberof Weapon
      */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Weapon
+     */
+    'material'?: Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
     'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'upgradeSlots'?: number;
 }
 
 export const WeaponRarityEnum = {
@@ -1390,30 +1390,6 @@ export type WeaponRarityEnum = typeof WeaponRarityEnum[keyof typeof WeaponRarity
 export interface WeaponAllOf {
     /**
      * 
-     * @type {Material}
-     * @memberof WeaponAllOf
-     */
-    'material'?: Material;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'hit'?: number;
-    /**
-     * 
      * @type {number}
      * @memberof WeaponAllOf
      */
@@ -1429,7 +1405,31 @@ export interface WeaponAllOf {
      * @type {number}
      * @memberof WeaponAllOf
      */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof WeaponAllOf
+     */
+    'material'?: Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponAllOf
+     */
     'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponAllOf
+     */
+    'upgradeSlots'?: number;
 }
 /**
  * 
@@ -1451,16 +1451,10 @@ export interface WeaponEquipment {
     'item'?: IOffensiveItem;
     /**
      * 
-     * @type {Array<Upgrade>}
-     * @memberof WeaponEquipment
-     */
-    'upgrades'?: Array<Upgrade>;
-    /**
-     * 
      * @type {number}
      * @memberof WeaponEquipment
      */
-    'initiative'?: number;
+    'damage'?: number;
     /**
      * 
      * @type {number}
@@ -1472,13 +1466,19 @@ export interface WeaponEquipment {
      * @type {number}
      * @memberof WeaponEquipment
      */
-    'damage'?: number;
+    'initiative'?: number;
     /**
      * 
      * @type {number}
      * @memberof WeaponEquipment
      */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof WeaponEquipment
+     */
+    'upgrades'?: Array<Upgrade>;
 }
 /**
  * 
@@ -1488,22 +1488,10 @@ export interface WeaponEquipment {
 export interface WeaponEquipmentAllOf {
     /**
      * 
-     * @type {IOffensiveItem}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'item'?: IOffensiveItem;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'upgrades'?: Array<Upgrade>;
-    /**
-     * 
      * @type {number}
      * @memberof WeaponEquipmentAllOf
      */
-    'initiative'?: number;
+    'damage'?: number;
     /**
      * 
      * @type {number}
@@ -1515,13 +1503,25 @@ export interface WeaponEquipmentAllOf {
      * @type {number}
      * @memberof WeaponEquipmentAllOf
      */
-    'damage'?: number;
+    'initiative'?: number;
+    /**
+     * 
+     * @type {IOffensiveItem}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'item'?: IOffensiveItem;
     /**
      * 
      * @type {number}
      * @memberof WeaponEquipmentAllOf
      */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
 }
 
 /**
@@ -1661,7 +1661,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getItem(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem200Response>> {
+        async getItem(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem1200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getItem(universe, name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1673,7 +1673,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getItem1(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem200Response>> {
+        async getItem1(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem1200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getItem1(universe, name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1706,7 +1706,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem(universe: string, name: string, options?: any): AxiosPromise<GetItem200Response> {
+        getItem(universe: string, name: string, options?: any): AxiosPromise<GetItem1200Response> {
             return localVarFp.getItem(universe, name, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1717,7 +1717,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem1(universe: string, name: string, options?: any): AxiosPromise<GetItem200Response> {
+        getItem1(universe: string, name: string, options?: any): AxiosPromise<GetItem1200Response> {
             return localVarFp.getItem1(universe, name, options).then((request) => request(axios, basePath));
         },
         /**
