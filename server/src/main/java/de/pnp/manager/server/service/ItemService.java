@@ -14,23 +14,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("{universe}")
 public class ItemService {
 
-  @Autowired
-  private ItemRepository itemRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
-  @GetMapping("item/{name}")
-  @Operation(summary = "Get an item", operationId = "getItem")
-  public Item item(@PathVariable String universe, @PathVariable String name) {
-    return itemRepository.get(universe, name).orElse(null);
-  }
+    @GetMapping("item/{name}")
+    @Operation(summary = "Get an item", operationId = "getItem")
+    public Item item(@PathVariable String universe, @PathVariable String name) {
+        return itemRepository.get(universe, name).orElse(null);
+    }
 
-  @GetMapping("a/{name}")
-  @Operation(summary = "Get an item", operationId = "getItem")
-  public Item a(@PathVariable String universe, @PathVariable String name) {
-    return itemRepository.get(universe, name).orElse(null);
-  }
+    @GetMapping("a/{name}")
+    @Operation(summary = "Get an item", operationId = "getItem")
+    public Item a(@PathVariable String universe, @PathVariable String name) {
+        return itemRepository.get(universe, name).orElse(null);
+    }
 
-  @GetMapping("itemstack/{name}")
-  public ItemStack<Item> itemStack(@PathVariable String universe, @PathVariable String name) {
-    return new ItemStack<>(10, item(universe, name));
-  }
+    @GetMapping("itemstack/{name}")
+    public ItemStack<Item> itemStack(@PathVariable String universe, @PathVariable String name) {
+        return new ItemStack<>(10, item(universe, name));
+    }
 }

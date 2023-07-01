@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class TalentRepository extends RepositoryBase<Talent> {
 
-  /**
-   * Name of the repository
-   */
-  public static final String REPOSITORY_NAME = "talent";
+    /**
+     * Name of the repository
+     */
+    public static final String REPOSITORY_NAME = "talent";
 
-  public TalentRepository() {
-    super(Talent.class, REPOSITORY_NAME);
-  }
+    public TalentRepository() {
+        super(Talent.class, REPOSITORY_NAME);
+    }
 
-  /**
-   * Returns all {@link Talent talents} with the given name.
-   */
-  public Collection<Talent> getByName(String universe, String name) {
-    return getAll(universe, Query.query(Criteria.where("name").is(name)));
-  }
+    /**
+     * Returns all {@link Talent talents} with the given name.
+     */
+    public Collection<Talent> getByName(String universe, String name) {
+        return getAll(universe, Query.query(Criteria.where("name").is(name)));
+    }
 }

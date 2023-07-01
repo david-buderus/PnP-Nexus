@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 public class ItemTypeRepository extends RepositoryBase<ItemType> implements
     IUniquelyNamedRepository<ItemType> {
 
-  /**
-   * Name of the repository
-   */
-  public static final String REPOSITORY_NAME = "types";
+    /**
+     * Name of the repository
+     */
+    public static final String REPOSITORY_NAME = "types";
 
-  public ItemTypeRepository() {
-    super(ItemType.class, REPOSITORY_NAME);
-  }
+    public ItemTypeRepository() {
+        super(ItemType.class, REPOSITORY_NAME);
+    }
 }

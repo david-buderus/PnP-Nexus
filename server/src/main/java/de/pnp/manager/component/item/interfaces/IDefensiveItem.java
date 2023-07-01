@@ -5,7 +5,7 @@ package de.pnp.manager.component.item.interfaces;
  */
 public interface IDefensiveItem extends IDamageableItem, IEquipableItem {
 
-  double getWeight();
+    double getWeight();
 
-  int getArmor();
+    int getArmor();
 }

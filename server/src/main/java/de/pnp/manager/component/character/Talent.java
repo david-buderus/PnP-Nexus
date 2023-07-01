@@ -14,89 +14,89 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(TalentRepository.REPOSITORY_NAME)
 public class Talent extends DatabaseObject {
 
-  /**
-   * The human-readable name of this talent.
-   */
-  private final String name;
+    /**
+     * The human-readable name of this talent.
+     */
+    private final String name;
 
-  /**
-   * The group of this category.
-   * <p>
-   * Examples: magic, social, fighting, ...
-   */
-  private final String group;
+    /**
+     * The group of this category.
+     * <p>
+     * Examples: magic, social, fighting, ...
+     */
+    private final String group;
 
-  /**
-   * The first {@link EPrimaryAttribute} for a talent check.
-   */
-  private final EPrimaryAttribute firstAttribute;
+    /**
+     * The first {@link EPrimaryAttribute} for a talent check.
+     */
+    private final EPrimaryAttribute firstAttribute;
 
-  /**
-   * The second {@link EPrimaryAttribute} for a talent check.
-   */
-  private final EPrimaryAttribute secondAttribute;
+    /**
+     * The second {@link EPrimaryAttribute} for a talent check.
+     */
+    private final EPrimaryAttribute secondAttribute;
 
-  /**
-   * The third {@link EPrimaryAttribute} for a talent check.
-   */
-  private final EPrimaryAttribute thirdAttribute;
+    /**
+     * The third {@link EPrimaryAttribute} for a talent check.
+     */
+    private final EPrimaryAttribute thirdAttribute;
 
 
-  public Talent(ObjectId id, String name, String group, EPrimaryAttribute firstAttribute,
-      EPrimaryAttribute secondAttribute, EPrimaryAttribute thirdAttribute) {
-    super(id);
-    this.name = Objects.requireNonNull(name);
-    this.group = group;
-    this.firstAttribute = firstAttribute;
-    this.secondAttribute = secondAttribute;
-    this.thirdAttribute = thirdAttribute;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getGroup() {
-    return group;
-  }
-
-  public EPrimaryAttribute getFirstAttribute() {
-    return firstAttribute;
-  }
-
-  public EPrimaryAttribute getSecondAttribute() {
-    return secondAttribute;
-  }
-
-  public EPrimaryAttribute getThirdAttribute() {
-    return thirdAttribute;
-  }
-
-  /**
-   * The {@link EPrimaryAttribute primary attributes} for a talent check in correct order.
-   */
-  public List<EPrimaryAttribute> getAttributes() {
-    return List.of(getFirstAttribute(), getSecondAttribute(), getThirdAttribute());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public Talent(ObjectId id, String name, String group, EPrimaryAttribute firstAttribute,
+        EPrimaryAttribute secondAttribute, EPrimaryAttribute thirdAttribute) {
+        super(id);
+        this.name = Objects.requireNonNull(name);
+        this.group = group;
+        this.firstAttribute = firstAttribute;
+        this.secondAttribute = secondAttribute;
+        this.thirdAttribute = thirdAttribute;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Talent talent = (Talent) o;
-    return getName().equals(talent.getName()) && Objects.equals(getGroup(),
-        talent.getGroup()) && getFirstAttribute() == talent.getFirstAttribute()
-        && getSecondAttribute() == talent.getSecondAttribute()
-        && getThirdAttribute() == talent.getThirdAttribute();
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(getName(), getGroup(), getFirstAttribute(), getSecondAttribute(),
-        getThirdAttribute());
-  }
+    public String getName() {
+        return name;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public EPrimaryAttribute getFirstAttribute() {
+        return firstAttribute;
+    }
+
+    public EPrimaryAttribute getSecondAttribute() {
+        return secondAttribute;
+    }
+
+    public EPrimaryAttribute getThirdAttribute() {
+        return thirdAttribute;
+    }
+
+    /**
+     * The {@link EPrimaryAttribute primary attributes} for a talent check in correct order.
+     */
+    public List<EPrimaryAttribute> getAttributes() {
+        return List.of(getFirstAttribute(), getSecondAttribute(), getThirdAttribute());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Talent talent = (Talent) o;
+        return getName().equals(talent.getName()) && Objects.equals(getGroup(),
+            talent.getGroup()) && getFirstAttribute() == talent.getFirstAttribute()
+            && getSecondAttribute() == talent.getSecondAttribute()
+            && getThirdAttribute() == talent.getThirdAttribute();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getGroup(), getFirstAttribute(), getSecondAttribute(),
+            getThirdAttribute());
+    }
 }

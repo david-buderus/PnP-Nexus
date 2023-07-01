@@ -33,72 +33,72 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class BackupControllerTest {
 
-  @Autowired
-  private TestItemBuilderFactory itemBuilder;
+    @Autowired
+    private TestItemBuilderFactory itemBuilder;
 
-  @Autowired
-  private UniverseRepository universeRepository;
+    @Autowired
+    private UniverseRepository universeRepository;
 
-  @Autowired
-  private ItemRepository itemRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
-  @Autowired
-  private MaterialRepository materialRepository;
+    @Autowired
+    private MaterialRepository materialRepository;
 
-  @Autowired
-  private SpellRepository spellRepository;
+    @Autowired
+    private SpellRepository spellRepository;
 
-  @Autowired
-  private TalentRepository talentRepository;
+    @Autowired
+    private TalentRepository talentRepository;
 
-  @Autowired
-  private BackupExportController exportController;
+    @Autowired
+    private BackupExportController exportController;
 
-  @Autowired
-  private BackupImportController importController;
+    @Autowired
+    private BackupImportController importController;
 
-  @AfterEach
-  void tearDown() {
-    for (Universe universe : universeRepository.getAll()) {
-      universeRepository.remove(universe.getName());
-    }
-  }
-
-  @Test
-  void testExportAndImport(@TempDir Path tempDir) throws IOException {
-    Universe universe = new Universe("test", "Test-Universe");
-    String universeName = universe.getName();
-    assertThat(universeRepository.insert(universe)).isNotNull();
-
-    Material material = materialRepository.insert(universeName,
-        new Material(null, "Iron", List.of()));
-    Collection<Item> items = itemRepository.insertAll(universeName, List.of(
-        itemBuilder.createItemBuilder(universeName).withName("Item").buildItem(),
-        itemBuilder.createItemBuilder(universeName).withName("Weapon").withMaterial(material)
-            .buildArmor()
-    ));
-    Talent talent = talentRepository.insert(universeName,
-        new Talent(null, "Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
-            EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
-    Collection<Spell> spells = spellRepository.insertAll(universeName,
-        List.of(new Spell(null, "Spell", "", "", "", List.of(talent), 2)));
-
-    File backupZip = tempDir.resolve("backup.zip").toFile();
-
-    try (FileOutputStream outputStream = new FileOutputStream(backupZip)) {
-      exportController.exportUniverses(outputStream);
+    @AfterEach
+    void tearDown() {
+        for (Universe universe : universeRepository.getAll()) {
+            universeRepository.remove(universe.getName());
+        }
     }
 
-    assertThat(universeRepository.remove(universeName)).isTrue();
-    assertThat(universeRepository.exists(universeName)).isFalse();
+    @Test
+    void testExportAndImport(@TempDir Path tempDir) throws IOException {
+        Universe universe = new Universe("test", "Test-Universe");
+        String universeName = universe.getName();
+        assertThat(universeRepository.insert(universe)).isNotNull();
 
-    try (FileInputStream inputStream = new FileInputStream(backupZip)) {
-      importController.importBackup(inputStream);
+        Material material = materialRepository.insert(universeName,
+            new Material(null, "Iron", List.of()));
+        Collection<Item> items = itemRepository.insertAll(universeName, List.of(
+            itemBuilder.createItemBuilder(universeName).withName("Item").buildItem(),
+            itemBuilder.createItemBuilder(universeName).withName("Weapon").withMaterial(material)
+                .buildArmor()
+        ));
+        Talent talent = talentRepository.insert(universeName,
+            new Talent(null, "Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
+                EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
+        Collection<Spell> spells = spellRepository.insertAll(universeName,
+            List.of(new Spell(null, "Spell", "", "", "", List.of(talent), 2)));
+
+        File backupZip = tempDir.resolve("backup.zip").toFile();
+
+        try (FileOutputStream outputStream = new FileOutputStream(backupZip)) {
+            exportController.exportUniverses(outputStream);
+        }
+
+        assertThat(universeRepository.remove(universeName)).isTrue();
+        assertThat(universeRepository.exists(universeName)).isFalse();
+
+        try (FileInputStream inputStream = new FileInputStream(backupZip)) {
+            importController.importBackup(inputStream);
+        }
+
+        assertThat(materialRepository.getAll(universeName)).containsExactly(material);
+        assertThat(itemRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(items);
+        assertThat(talentRepository.getAll(universeName)).containsExactly(talent);
+        assertThat(spellRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(spells);
     }
-
-    assertThat(materialRepository.getAll(universeName)).containsExactly(material);
-    assertThat(itemRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(items);
-    assertThat(talentRepository.getAll(universeName)).containsExactly(talent);
-    assertThat(spellRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(spells);
-  }
 }

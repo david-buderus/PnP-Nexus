@@ -9,25 +9,25 @@ import org.springframework.data.annotation.Id;
  */
 public abstract class DatabaseObject {
 
-  /**
-   * The unique id of this object.
-   */
-  @Id
-  private final ObjectId id;
+    /**
+     * The unique id of this object.
+     */
+    @Id
+    private final ObjectId id;
 
-  protected DatabaseObject(ObjectId id) {
-    this.id = id;
-  }
+    protected DatabaseObject(ObjectId id) {
+        this.id = id;
+    }
 
-  public ObjectId getId() {
-    return id;
-  }
+    public ObjectId getId() {
+        return id;
+    }
 
-  /**
-   * Checks whether this object is already persisted in a database.
-   */
-  @JsonIgnore
-  public boolean isPersisted() {
-    return id != null;
-  }
+    /**
+     * Checks whether this object is already persisted in a database.
+     */
+    @JsonIgnore
+    public boolean isPersisted() {
+        return id != null;
+    }
 }

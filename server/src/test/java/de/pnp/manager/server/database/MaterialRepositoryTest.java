@@ -13,41 +13,41 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MaterialRepositoryTest extends RepositoryTestBase<Material, MaterialRepository> {
 
-  @Autowired
-  private ItemRepository itemRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
-  public MaterialRepositoryTest(@Autowired MaterialRepository repository) {
-    super(repository);
-  }
+    public MaterialRepositoryTest(@Autowired MaterialRepository repository) {
+        super(repository);
+    }
 
-  @Test
-  void testItemLink() {
-    Item itemWithSpellingMistake = itemRepository.insert(universe,
-        itemBuilder.createItemBuilder(universe).withName("Iron ingt").buildItem());
-    Item item = itemBuilder.createItemBuilder(universe).withName("Iron ingot").buildItem();
-    Material material = new Material(null, "Iron", List.of(itemWithSpellingMistake));
+    @Test
+    void testItemLink() {
+        Item itemWithSpellingMistake = itemRepository.insert(universe,
+            itemBuilder.createItemBuilder(universe).withName("Iron ingt").buildItem());
+        Item item = itemBuilder.createItemBuilder(universe).withName("Iron ingot").buildItem();
+        Material material = new Material(null, "Iron", List.of(itemWithSpellingMistake));
 
-    testRepositoryCollectionLink(Material::getItems, itemRepository, material,
-        List.of(itemWithSpellingMistake),
-        Map.of(itemWithSpellingMistake, item));
-  }
+        testRepositoryCollectionLink(Material::getItems, itemRepository, material,
+            List.of(itemWithSpellingMistake),
+            Map.of(itemWithSpellingMistake, item));
+    }
 
-  @Override
-  protected Material createObject() {
-    Item ironIngot = itemRepository.insert(universe,
-        itemBuilder.createItemBuilder(universe).withName("Iron ingot").buildItem());
-    return new Material(null, "Iron", List.of(ironIngot));
-  }
+    @Override
+    protected Material createObject() {
+        Item ironIngot = itemRepository.insert(universe,
+            itemBuilder.createItemBuilder(universe).withName("Iron ingot").buildItem());
+        return new Material(null, "Iron", List.of(ironIngot));
+    }
 
-  @Override
-  protected Material createSlightlyChangeObject() {
-    Item ironNugget = itemRepository.insert(universe,
-        itemBuilder.createItemBuilder(universe).withName("Iron nugget").buildItem());
-    return new Material(null, "Iron", List.of(ironNugget));
-  }
+    @Override
+    protected Material createSlightlyChangeObject() {
+        Item ironNugget = itemRepository.insert(universe,
+            itemBuilder.createItemBuilder(universe).withName("Iron nugget").buildItem());
+        return new Material(null, "Iron", List.of(ironNugget));
+    }
 
-  @Override
-  protected Collection<Material> createMultipleObjects() {
-    return List.of(new Material(null, "Iron", List.of()), new Material(null, "Copper", List.of()));
-  }
+    @Override
+    protected Collection<Material> createMultipleObjects() {
+        return List.of(new Material(null, "Iron", List.of()), new Material(null, "Copper", List.of()));
+    }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Inventory {
 
-  private int maxSize;
+    private int maxSize;
 
-  private List<ItemStack> items;
+    private List<ItemStack> items;
 }

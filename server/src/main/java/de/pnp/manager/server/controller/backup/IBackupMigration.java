@@ -9,17 +9,17 @@ import org.bson.Document;
  */
 public interface IBackupMigration {
 
-  /**
-   * The input is a document that describes a {@link Universe}.
-   */
-  default void migrateUniverse(Document universeDocument) {
-    // no op
-  }
+    /**
+     * The input is a document that describes a {@link Universe}.
+     */
+    default void migrateUniverse(Document universeDocument) {
+        // no op
+    }
 
-  /**
-   * The input is a document that describes a {@link RepositoryBase}.
-   */
-  default void migrateRepository(Document repositoryDocument) {
-    // no op
-  }
+    /**
+     * The input is a document that describes a {@link RepositoryBase}.
+     */
+    default void migrateRepository(Document repositoryDocument) {
+        // no op
+    }
 }

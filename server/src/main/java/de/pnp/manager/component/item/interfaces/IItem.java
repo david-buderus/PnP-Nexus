@@ -8,24 +8,24 @@ import de.pnp.manager.component.item.ItemType;
  */
 public interface IItem {
 
-  String getName();
+    String getName();
 
-  ItemType getType();
+    ItemType getType();
 
-  ItemType getSubtype();
+    ItemType getSubtype();
 
-  String getRequirement();
+    String getRequirement();
 
-  String getEffect();
+    String getEffect();
 
-  ERarity getRarity();
+    ERarity getRarity();
 
-  int getVendorPrice();
+    int getVendorPrice();
 
-  int getTier();
+    int getTier();
 
-  String getDescription();
+    String getDescription();
 
-  String getNote();
+    String getNote();
 }
 

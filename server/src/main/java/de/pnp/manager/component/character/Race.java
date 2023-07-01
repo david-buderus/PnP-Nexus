@@ -5,6 +5,6 @@ import java.util.Set;
 
 public class Race {
 
-  private String name;
-  private Set<CharacterTrait> traits;
+    private String name;
+    private Set<CharacterTrait> traits;
 }

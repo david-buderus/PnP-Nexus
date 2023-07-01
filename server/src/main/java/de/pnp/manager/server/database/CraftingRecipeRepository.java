@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class CraftingRecipeRepository extends RepositoryBase<CraftingRecipe> {
 
-  /**
-   * Name of the repository
-   */
-  public static final String REPOSITORY_NAME = "fabrication";
+    /**
+     * Name of the repository
+     */
+    public static final String REPOSITORY_NAME = "fabrication";
 
-  public CraftingRecipeRepository() {
-    super(CraftingRecipe.class, REPOSITORY_NAME);
-  }
+    public CraftingRecipeRepository() {
+        super(CraftingRecipe.class, REPOSITORY_NAME);
+    }
 }

@@ -11,23 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 class ItemTypeRepositoryTest extends RepositoryTestBase<ItemType, ItemTypeRepository> {
 
-  public ItemTypeRepositoryTest(@Autowired ItemTypeRepository repository) {
-    super(repository);
-  }
+    public ItemTypeRepositoryTest(@Autowired ItemTypeRepository repository) {
+        super(repository);
+    }
 
-  @Override
-  protected ItemType createObject() {
-    return new ItemType(null, "Weapon", TypeRestriction.ITEM);
-  }
+    @Override
+    protected ItemType createObject() {
+        return new ItemType(null, "Weapon", TypeRestriction.ITEM);
+    }
 
-  @Override
-  protected ItemType createSlightlyChangeObject() {
-    return new ItemType(null, "Weapon", TypeRestriction.WEAPON);
-  }
+    @Override
+    protected ItemType createSlightlyChangeObject() {
+        return new ItemType(null, "Weapon", TypeRestriction.WEAPON);
+    }
 
-  @Override
-  protected Collection<ItemType> createMultipleObjects() {
-    return List.of(new ItemType(null, "Armor", TypeRestriction.ARMOR),
-        new ItemType(null, "Shield", TypeRestriction.SHIELD));
-  }
+    @Override
+    protected Collection<ItemType> createMultipleObjects() {
+        return List.of(new ItemType(null, "Armor", TypeRestriction.ARMOR),
+            new ItemType(null, "Shield", TypeRestriction.SHIELD));
+    }
 }
