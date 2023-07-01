@@ -3,8 +3,8 @@ package de.pnp.manager.server.database;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.CraftingRecipe;
-import de.pnp.manager.component.IRecipeEntry.CraftingRecipeEntry;
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.server.database.item.ItemRepository;
@@ -53,7 +53,7 @@ class CraftingRecipeRepositoryTest extends
 
         CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
             new ItemRecipeEntry(1, result),
-            null, List.of(new CraftingRecipeEntry(7, material)));
+            null, List.of(new MaterialRecipeEntry(7, material)));
 
         repository.insert(universeName, craftingRecipe);
         assertThat(repository.getAll(universeName)).contains(craftingRecipe);

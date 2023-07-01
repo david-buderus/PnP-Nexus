@@ -1,5 +1,8 @@
 package de.pnp.manager.component;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
@@ -8,6 +11,10 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 /**
  * An entry in the material list of a {@link CraftingRecipe} or an {@link UpgradeRecipe}.
  */
+@JsonSubTypes({
+    @JsonSubTypes.Type(value = ItemRecipeEntry.class),
+    @JsonSubTypes.Type(value = MaterialRecipeEntry.class)
+})
 public sealed interface IRecipeEntry {
 
     /**
@@ -17,16 +24,16 @@ public sealed interface IRecipeEntry {
 
 
     /**
-     * A {@link IRecipeEntry} which uses a specific {@link Item}.
+     * An {@link IRecipeEntry} which uses a specific {@link Item}.
      */
     record ItemRecipeEntry(float amount, @DBRef Item item) implements IRecipeEntry {
 
     }
 
     /**
-     * A {@link IRecipeEntry} which uses a {@link Material}.
+     * An {@link IRecipeEntry} which uses a {@link Material}.
      */
-    record CraftingRecipeEntry(float amount, @DBRef Material material) implements
+    record MaterialRecipeEntry(float amount, @DBRef Material material) implements
         IRecipeEntry {
 
     }
