@@ -97,6 +97,18 @@ export interface Armor {
     'note'?: string;
     /**
      * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'minimalStackSize'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof Armor
      */
@@ -195,18 +207,6 @@ export interface DefensiveEquipment {
     'item'?: IDefensiveItem;
     /**
      * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'minAmount'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'maxAmount'?: number;
-    /**
-     * 
      * @type {Array<Upgrade>}
      * @memberof DefensiveEquipment
      */
@@ -299,18 +299,6 @@ export interface Equipment {
     'item'?: IEquipableItem;
     /**
      * 
-     * @type {number}
-     * @memberof Equipment
-     */
-    'minAmount'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Equipment
-     */
-    'maxAmount'?: number;
-    /**
-     * 
      * @type {Array<Upgrade>}
      * @memberof Equipment
      */
@@ -388,12 +376,6 @@ export interface IDefensiveItem {
      * @type {string}
      * @memberof IDefensiveItem
      */
-    'note'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
     'description'?: string;
     /**
      * 
@@ -401,6 +383,24 @@ export interface IDefensiveItem {
      * @memberof IDefensiveItem
      */
     'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'minimalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'note'?: string;
     /**
      * 
      * @type {string}
@@ -418,13 +418,13 @@ export interface IDefensiveItem {
      * @type {string}
      * @memberof IDefensiveItem
      */
-    'rarity'?: IDefensiveItemRarityEnum;
+    'effect'?: string;
     /**
      * 
      * @type {string}
      * @memberof IDefensiveItem
      */
-    'effect'?: string;
+    'rarity'?: IDefensiveItemRarityEnum;
     /**
      * 
      * @type {number}
@@ -473,12 +473,6 @@ export interface IEquipableItem {
      * @type {string}
      * @memberof IEquipableItem
      */
-    'note'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
     'description'?: string;
     /**
      * 
@@ -486,6 +480,24 @@ export interface IEquipableItem {
      * @memberof IEquipableItem
      */
     'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'minimalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'note'?: string;
     /**
      * 
      * @type {string}
@@ -503,13 +515,13 @@ export interface IEquipableItem {
      * @type {string}
      * @memberof IEquipableItem
      */
-    'rarity'?: IEquipableItemRarityEnum;
+    'effect'?: string;
     /**
      * 
      * @type {string}
      * @memberof IEquipableItem
      */
-    'effect'?: string;
+    'rarity'?: IEquipableItemRarityEnum;
     /**
      * 
      * @type {number}
@@ -588,12 +600,6 @@ export interface IOffensiveItem {
      * @type {string}
      * @memberof IOffensiveItem
      */
-    'note'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
     'description'?: string;
     /**
      * 
@@ -601,6 +607,24 @@ export interface IOffensiveItem {
      * @memberof IOffensiveItem
      */
     'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'minimalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'note'?: string;
     /**
      * 
      * @type {string}
@@ -618,13 +642,13 @@ export interface IOffensiveItem {
      * @type {string}
      * @memberof IOffensiveItem
      */
-    'rarity'?: IOffensiveItemRarityEnum;
+    'effect'?: string;
     /**
      * 
      * @type {string}
      * @memberof IOffensiveItem
      */
-    'effect'?: string;
+    'rarity'?: IOffensiveItemRarityEnum;
     /**
      * 
      * @type {number}
@@ -729,6 +753,18 @@ export interface Item {
      * @memberof Item
      */
     'note'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'minimalStackSize'?: number;
 }
 
 export const ItemRarityEnum = {
@@ -766,18 +802,6 @@ export interface ItemStackItem {
      * @memberof ItemStackItem
      */
     'item'?: GetItem200Response;
-    /**
-     * 
-     * @type {number}
-     * @memberof ItemStackItem
-     */
-    'minAmount'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ItemStackItem
-     */
-    'maxAmount'?: number;
 }
 /**
  * 
@@ -888,6 +912,18 @@ export interface Jewellery {
      * @memberof Jewellery
      */
     'note'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'minimalStackSize'?: number;
     /**
      * 
      * @type {Material}
@@ -1060,6 +1096,18 @@ export interface Shield {
      * @memberof Shield
      */
     'note'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'minimalStackSize'?: number;
     /**
      * 
      * @type {Material}
@@ -1281,6 +1329,18 @@ export interface Weapon {
     'note'?: string;
     /**
      * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'maximalStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'minimalStackSize'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof Weapon
      */
@@ -1401,18 +1461,6 @@ export interface WeaponEquipment {
      * @memberof WeaponEquipment
      */
     'item'?: IOffensiveItem;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'minAmount'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'maxAmount'?: number;
     /**
      * 
      * @type {Array<Upgrade>}

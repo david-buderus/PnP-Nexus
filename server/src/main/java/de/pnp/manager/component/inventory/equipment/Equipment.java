@@ -23,16 +23,6 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
         upgrades = new ArrayList<>();
     }
 
-    @Override
-    public float getMaxAmount() {
-        return 1;
-    }
-
-    @Override
-    public float getMinAmount() {
-        return 1;
-    }
-
     public Collection<Upgrade> getUpgrades() {
         return upgrades;
     }

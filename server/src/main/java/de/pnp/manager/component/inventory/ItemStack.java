@@ -1,6 +1,7 @@
 package de.pnp.manager.component.inventory;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.google.common.base.Preconditions;
 import de.pnp.manager.component.inventory.equipment.DefensiveEquipment;
 import de.pnp.manager.component.inventory.equipment.Equipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
@@ -28,6 +29,8 @@ public class ItemStack<I extends IItem> {
     private final I item;
 
     public ItemStack(float amount, I item) {
+        Preconditions.checkArgument(amount >= item.getMinimalStackSize() && amount <= item.getMaximalStackSize(),
+            "The amount does not match the item.");
         this.amount = amount;
         this.item = item;
     }
@@ -35,7 +38,8 @@ public class ItemStack<I extends IItem> {
     /**
      * Adds the given amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is clamped by {@link #getMinAmount()} and {@link #getMaxAmount()}.
+     * The resulting amount is clamped by {@link Item#getMinimalStackSize()} ()} and
+     * {@link Item#getMaximalStackSize()}.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
@@ -46,7 +50,8 @@ public class ItemStack<I extends IItem> {
     /**
      * Subtracts the given amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is clamped by {@link #getMinAmount()} and {@link #getMaxAmount()}.
+     * The resulting amount is clamped by {@link Item#getMinimalStackSize()} ()} and
+     * {@link Item#getMaximalStackSize()}.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
@@ -57,12 +62,14 @@ public class ItemStack<I extends IItem> {
     /**
      * Sets the amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is clamped by {@link #getMinAmount()} and {@link #getMaxAmount()}.
+     * The resulting amount is clamped by {@link Item#getMinimalStackSize()} ()} and
+     * {@link Item#getMaximalStackSize()}.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
     public float setAmount(float amount) {
-        float newAmount = Math.max(Math.min(getAmount() + amount, getMaxAmount()), getMinAmount());
+        float newAmount = Math.max(Math.min(getAmount() + amount, item.getMaximalStackSize()),
+            item.getMinimalStackSize());
         float change = newAmount - getAmount();
         this.amount = newAmount;
         return change;
@@ -74,19 +81,5 @@ public class ItemStack<I extends IItem> {
 
     public I getItem() {
         return item;
-    }
-
-    /**
-     * Returns the maximal amount the {@link ItemStack} can hold.
-     */
-    public float getMaxAmount() {
-        return 100;
-    }
-
-    /**
-     * Returns the minimum amount the {@link ItemStack} needs to hold.
-     */
-    public float getMinAmount() {
-        return 0;
     }
 }

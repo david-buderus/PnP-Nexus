@@ -292,14 +292,22 @@
           "type": {
             "$ref": "#/components/schemas/ItemType"
           },
-          "note": {
-            "type": "string"
-          },
           "description": {
             "type": "string"
           },
           "subtype": {
             "$ref": "#/components/schemas/ItemType"
+          },
+          "minimalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string"
           },
           "requirement": {
             "type": "string"
@@ -307,6 +315,9 @@
           "tier": {
             "type": "integer",
             "format": "int32"
+          },
+          "effect": {
+            "type": "string"
           },
           "rarity": {
             "type": "string",
@@ -318,9 +329,6 @@
               "LEGENDARY",
               "GODLIKE"
             ]
-          },
-          "effect": {
-            "type": "string"
           },
           "vendorPrice": {
             "type": "integer",
@@ -341,14 +349,22 @@
           "type": {
             "$ref": "#/components/schemas/ItemType"
           },
-          "note": {
-            "type": "string"
-          },
           "description": {
             "type": "string"
           },
           "subtype": {
             "$ref": "#/components/schemas/ItemType"
+          },
+          "minimalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string"
           },
           "requirement": {
             "type": "string"
@@ -356,6 +372,9 @@
           "tier": {
             "type": "integer",
             "format": "int32"
+          },
+          "effect": {
+            "type": "string"
           },
           "rarity": {
             "type": "string",
@@ -367,9 +386,6 @@
               "LEGENDARY",
               "GODLIKE"
             ]
-          },
-          "effect": {
-            "type": "string"
           },
           "vendorPrice": {
             "type": "integer",
@@ -409,14 +425,22 @@
           "type": {
             "$ref": "#/components/schemas/ItemType"
           },
-          "note": {
-            "type": "string"
-          },
           "description": {
             "type": "string"
           },
           "subtype": {
             "$ref": "#/components/schemas/ItemType"
+          },
+          "minimalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "note": {
+            "type": "string"
           },
           "requirement": {
             "type": "string"
@@ -424,6 +448,9 @@
           "tier": {
             "type": "integer",
             "format": "int32"
+          },
+          "effect": {
+            "type": "string"
           },
           "rarity": {
             "type": "string",
@@ -435,9 +462,6 @@
               "LEGENDARY",
               "GODLIKE"
             ]
-          },
-          "effect": {
-            "type": "string"
           },
           "vendorPrice": {
             "type": "integer",
@@ -498,6 +522,14 @@
           },
           "note": {
             "type": "string"
+          },
+          "maximalStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimalStackSize": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -526,14 +558,6 @@
                 "$ref": "#/components/schemas/Weapon"
               }
             ]
-          },
-          "minAmount": {
-            "type": "number",
-            "format": "float"
-          },
-          "maxAmount": {
-            "type": "number",
-            "format": "float"
           }
         }
       },

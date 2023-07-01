@@ -132,7 +132,7 @@ public class TestItemBuilder {
      */
     public Item buildItem() {
         return new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
-            description, note);
+            description, note, 0, 100);
     }
 
     /**

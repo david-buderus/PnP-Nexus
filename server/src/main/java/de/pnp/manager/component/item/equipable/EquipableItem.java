@@ -31,7 +31,7 @@ public abstract class EquipableItem extends Item implements IEquipableItem {
         ERarity rarity, int vendorPrice, int tier, String description,
         String note, Material material, int upgradeSlots) {
         super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note);
+            note, 1, 1);
         this.material = material;
         this.upgradeSlots = upgradeSlots;
     }
