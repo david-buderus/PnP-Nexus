@@ -1,6 +1,7 @@
 package de.pnp.manager.component.item;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.google.common.base.Preconditions;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.inventory.ItemStack;
@@ -90,17 +91,23 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The maximum amount of this item that can be contained in one {@link ItemStack}.
      */
-    protected final int maximalStackSize;
+    protected final int maximumStackSize;
 
     /**
      * The minimum amount of this item that has to be contained in one {@link ItemStack}.
+     * <p>
+     * A {@code minimumStackSize} of {@code 0} is interpreted as minimal stackSize {@code > 0}.
      */
-    protected final int minimalStackSize;
+    protected final int minimumStackSize;
 
     public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
-        ERarity rarity, int vendorPrice, int tier, String description, String note, int maximalStackSize,
-        int minimalStackSize) {
+        ERarity rarity, int vendorPrice, int tier, String description, String note, int maximumStackSize,
+        int minimumStackSize) {
         super(id);
+        Preconditions.checkArgument(maximumStackSize >= minimumStackSize,
+            "The maximumStackSize needs to be greater or equal to the minimumStackSize.");
+        Preconditions.checkArgument(maximumStackSize > 0, "The maximumStackSize needs to be greater then 0.");
+        Preconditions.checkArgument(minimumStackSize >= 0, "The minimumStackSize needs to be greater or equal to 0.");
         this.name = name;
         this.type = type;
         this.subtype = subtype;
@@ -111,8 +118,8 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         this.tier = tier;
         this.description = description;
         this.note = note;
-        this.maximalStackSize = maximalStackSize;
-        this.minimalStackSize = minimalStackSize;
+        this.maximumStackSize = maximumStackSize;
+        this.minimumStackSize = minimumStackSize;
     }
 
     @Override
@@ -165,12 +172,14 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         return note;
     }
 
-    public int getMaximalStackSize() {
-        return maximalStackSize;
+    @Override
+    public int getMaximumStackSize() {
+        return maximumStackSize;
     }
 
-    public int getMinimalStackSize() {
-        return minimalStackSize;
+    @Override
+    public int getMinimumStackSize() {
+        return minimumStackSize;
     }
 
     @Override
@@ -183,8 +192,8 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         }
         Item item = (Item) o;
         return getVendorPrice() == item.getVendorPrice() && getTier() == item.getTier()
-            && getMaximalStackSize() == item.getMaximalStackSize()
-            && getMinimalStackSize() == item.getMinimalStackSize()
+            && getMaximumStackSize() == item.getMaximumStackSize()
+            && getMinimumStackSize() == item.getMinimumStackSize()
             && Objects.equals(getName(), item.getName()) && Objects.equals(getType(), item.getType())
             && Objects.equals(getSubtype(), item.getSubtype()) && Objects.equals(getRequirement(),
             item.getRequirement()) && Objects.equals(getEffect(), item.getEffect())
@@ -195,7 +204,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getType(), getSubtype(), getRequirement(), getEffect(), getRarity(),
-            getVendorPrice(), getTier(), getDescription(), getNote(), getMaximalStackSize(), getMinimalStackSize());
+            getVendorPrice(), getTier(), getDescription(), getNote(), getMaximumStackSize(), getMinimumStackSize());
     }
 
     @Override
@@ -211,8 +220,8 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
             ", tier=" + tier +
             ", description='" + description + '\'' +
             ", note='" + note + '\'' +
-            ", maximalStackSize=" + maximalStackSize +
-            ", minimalStackSize=" + minimalStackSize +
+            ", maximalStackSize=" + maximumStackSize +
+            ", minimalStackSize=" + minimumStackSize +
             '}';
     }
 }

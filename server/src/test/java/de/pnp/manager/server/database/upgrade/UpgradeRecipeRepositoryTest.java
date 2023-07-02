@@ -32,9 +32,9 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     void testUpgradeLink() {
         ItemType type = typeRepository.insert(universeName, new ItemType(null, "Type", TypeRestriction.ITEM));
         Upgrade upgradeA = upgradeRepository.insert(universeName, new Upgrade(null, "Shine A", type, 1, 10,
-            List.of(new SimpleUpgradeEffect("The weapon emits light"))));
+            List.of(SimpleUpgradeEffect.create("The weapon emits light"))));
         Upgrade upgradeB = new Upgrade(null, "Shine B", type, 1, 10,
-            List.of(new SimpleUpgradeEffect("The weapon emits a lot of light")));
+            List.of(SimpleUpgradeEffect.create("The weapon emits a lot of light")));
         UpgradeRecipe recipe = new UpgradeRecipe(null, upgradeA, List.of(), "", "", List.of());
 
         testRepositoryLink(UpgradeRecipe::getUpgrade, upgradeRepository, recipe, upgradeA, upgradeB);
@@ -45,12 +45,12 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
         ItemType type = typeRepository.insert(universeName, new ItemType(null, "Type", TypeRestriction.ITEM));
         Upgrade result = upgradeRepository.insert(universeName, new Upgrade(null, "Result", type, 1, 10, List.of()));
         Upgrade upgradeA = upgradeRepository.insert(universeName, new Upgrade(null, "Shine A", type, 1, 10,
-            List.of(new SimpleUpgradeEffect("The weapon emits light"))));
+            List.of(SimpleUpgradeEffect.create("The weapon emits light"))));
         Upgrade upgradeB = new Upgrade(null, "Shine B", type, 1, 10,
-            List.of(new SimpleUpgradeEffect("The weapon emits a lot of light")));
+            List.of(SimpleUpgradeEffect.create("The weapon emits a lot of light")));
         UpgradeRecipe recipe = new UpgradeRecipe(null, result, List.of(upgradeA), "", "", List.of());
 
-        testRepositoryCollectionLink(UpgradeRecipe::getNecessaryUpgrades, upgradeRepository, recipe, List.of(upgradeA),
+        testRepositoryCollectionLink(UpgradeRecipe::getRequiredUpgrades, upgradeRepository, recipe, List.of(upgradeA),
             Map.of(upgradeA, upgradeB));
     }
 

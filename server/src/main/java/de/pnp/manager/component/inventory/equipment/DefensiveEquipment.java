@@ -4,6 +4,7 @@ import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipmen
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.item.interfaces.IHandheldItem;
+import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
 
 /**
  * Represents an {@link IDefensiveItem} that can be held and used.
@@ -11,22 +12,34 @@ import de.pnp.manager.component.item.interfaces.IHandheldItem;
 public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> implements
     IHandheldEquipment {
 
-    public DefensiveEquipment(IDefensiveItem item, int durability) {
-        super(item, durability);
+    public DefensiveEquipment(float amount, IDefensiveItem item, int durability) {
+        super(amount, item, durability);
     }
 
     /**
-     * Returns the {@link IDefensiveItem#getArmor()} defense} of the underlying {@link Item} with regard to the
-     * {@link #getRelativeDurability() durability}.
+     * Returns the {@link IDefensiveItem#getArmor() defense} of the underlying {@link Item} with regard to the
+     * {@link #getRelativeDurability() durability} and {@link #getUpgrades() upgrades}.
      */
     public int getDefense() {
-        return Math.round(getItem().getArmor() * getRelativeDurability());
+        return Math.round(
+            applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability());
+    }
+
+    /**
+     * Returns the {@link IDefensiveItem#getWeight() weight} of the underlying {@link Item} with regard to the
+     * {@link #getUpgrades() upgrades}.
+     */
+    public int getWeight() {
+        return Math.round(
+            applyUpgradeEffects(EUpgradeManipulator.WEIGHT, getItem().getWeight()) * getRelativeDurability());
     }
 
     @Override
     public int getHit() {
-        throw new AssertionError(
-            "A IHandholdItem which is an DefensiveEquipment is always a shield and thus does not have hit.");
+        if (getItem() instanceof IHandheldItem handHoldItem) {
+            return applyUpgradeEffects(EUpgradeManipulator.HIT, handHoldItem.getHit());
+        }
+        throw new AssertionError("Only HandholdItems have hit.");
     }
 
     @Override
@@ -34,7 +47,6 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
         if (getItem() instanceof IHandheldItem handHoldItem) {
             return handHoldItem.getInitiative();
         }
-        throw new AssertionError(
-            "Only HandholdItems have initiative.");
+        throw new AssertionError("Only HandholdItems have initiative.");
     }
 }

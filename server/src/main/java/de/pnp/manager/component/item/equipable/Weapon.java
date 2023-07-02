@@ -24,9 +24,9 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
 
     public Weapon(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
         ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
-        float initiative, int hit, int damage, String dice, int maximalStackSize, int minimalStackSize) {
+        float initiative, int hit, int damage, String dice, int maximumStackSize, int minimumStackSize) {
         super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
-            upgradeSlots, initiative, hit, maximalStackSize, minimalStackSize);
+            upgradeSlots, initiative, hit, maximumStackSize, minimumStackSize);
         this.damage = damage;
         this.dice = dice;
     }

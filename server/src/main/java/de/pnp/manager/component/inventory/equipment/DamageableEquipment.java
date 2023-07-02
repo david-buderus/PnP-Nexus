@@ -10,10 +10,13 @@ import de.pnp.manager.component.item.interfaces.IEquipableItem;
 public abstract class DamageableEquipment<I extends IDamageableItem & IEquipableItem> extends
     Equipment<I> implements IDamageableEquipment {
 
+    /**
+     * The current durability of this {@link Equipment}.
+     */
     protected int durability;
 
-    public DamageableEquipment(I item, int durability) {
-        super(item);
+    public DamageableEquipment(float amount, I item, int durability) {
+        super(amount, item);
         this.durability = durability;
     }
 

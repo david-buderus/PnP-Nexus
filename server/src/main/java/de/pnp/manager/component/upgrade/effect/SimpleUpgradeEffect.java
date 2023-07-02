@@ -1,37 +1,20 @@
 package de.pnp.manager.component.upgrade.effect;
 
-import java.util.Objects;
-
 /**
- * An {@link IUpgradeEffect} which is only represented by its description.
+ * A simple {@link UpgradeEffect} which only has a description.
  */
-public class SimpleUpgradeEffect implements IUpgradeEffect {
+public class SimpleUpgradeEffect extends UpgradeEffect {
 
-    private final String description;
+    public static SimpleUpgradeEffect create(String description) {
+        return new SimpleUpgradeEffect(description, EUpgradeManipulator.NONE);
+    }
 
-    public SimpleUpgradeEffect(String description) {
-        this.description = description;
+    private SimpleUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
+        super(description, upgradeManipulator);
     }
 
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SimpleUpgradeEffect that = (SimpleUpgradeEffect) o;
-        return Objects.equals(getDescription(), that.getDescription());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getDescription());
+    protected float apply(float value) {
+        return value;
     }
 }

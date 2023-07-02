@@ -62,11 +62,13 @@ public interface IItem {
     /**
      * The maximum amount of this item that can be contained in one {@link ItemStack}.
      */
-    int getMaximalStackSize();
+    int getMaximumStackSize();
 
     /**
      * The minimum amount of this item that has to be contained in one {@link ItemStack}.
+     * <p>
+     * A {@code minimumStackSize} of {@code 0} is interpreted as minimal stackSize {@code > 0}.
      */
-    int getMinimalStackSize();
+    int getMinimumStackSize();
 }
 

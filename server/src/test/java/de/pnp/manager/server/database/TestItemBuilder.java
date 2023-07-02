@@ -1,5 +1,6 @@
-package de.pnp.manager.server.component;
+package de.pnp.manager.server.database;
 
+import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
@@ -7,6 +8,7 @@ import de.pnp.manager.component.item.ItemType.TypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.EquipableItem;
+import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,13 @@ public class TestItemBuilder {
         }
     }
 
+    /**
+     * Returns a builder without a link to a {@link Universe} or database.
+     */
+    public static TestItemBuilder createItemBuilder() {
+        return new TestItemBuilder(null, null);
+    }
+
     private final String universe;
     private final ItemTypeRepository typeRepository;
 
@@ -50,11 +59,13 @@ public class TestItemBuilder {
     private Material material;
     private int upgradeSlots;
     private int armor;
-    private double weight;
+    private float weight;
     private float initiativeModifier;
     private int hit;
     private int damage;
     private String dice;
+    private int maximumStackSize;
+    private int minimumStackSize;
 
     private TestItemBuilder(String universe, ItemTypeRepository typeRepository) {
         this.universe = universe;
@@ -77,6 +88,8 @@ public class TestItemBuilder {
         hit = 0;
         damage = 0;
         dice = "D6";
+        maximumStackSize = 100;
+        minimumStackSize = 0;
     }
 
     /**
@@ -128,11 +141,35 @@ public class TestItemBuilder {
     }
 
     /**
+     * @see Item#getMaximumStackSize()
+     */
+    public TestItemBuilder withMaximumStackSize(int maximumStackSize) {
+        this.maximumStackSize = maximumStackSize;
+        return this;
+    }
+
+    /**
+     * @see Item#getMinimumStackSize()
+     */
+    public TestItemBuilder withMinimumStackSize(int minimumStackSize) {
+        this.minimumStackSize = minimumStackSize;
+        return this;
+    }
+
+    /**
+     * @see EquipableItem#getUpgradeSlots()
+     */
+    public TestItemBuilder withUpgradeSlots(int upgradeSlots) {
+        this.upgradeSlots = upgradeSlots;
+        return this;
+    }
+
+    /**
      * Creates an item matching this builder.
      */
     public Item buildItem() {
         return new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
-            description, note, 0, 100);
+            description, note, maximumStackSize, minimumStackSize);
     }
 
     /**
@@ -151,7 +188,18 @@ public class TestItemBuilder {
             description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
     }
 
+    /**
+     * Creates jewellery matching this builder.
+     */
+    public Jewellery buildJewellery() {
+        return new Jewellery(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+            description, note, material, upgradeSlots, 1, 1);
+    }
+
     private ItemType getType(String typeName) {
+        if (typeRepository == null) {
+            return new ItemType(null, typeName, TypeRestriction.ITEM);
+        }
         return typeRepository.get(universe, typeName).orElse(
             typeRepository.insert(universe, new ItemType(null, typeName, TypeRestriction.ITEM)));
     }

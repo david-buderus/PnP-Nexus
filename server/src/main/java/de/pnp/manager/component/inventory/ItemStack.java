@@ -2,6 +2,7 @@ package de.pnp.manager.component.inventory;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.google.common.base.Preconditions;
+import com.google.common.primitives.Floats;
 import de.pnp.manager.component.inventory.equipment.DefensiveEquipment;
 import de.pnp.manager.component.inventory.equipment.Equipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
@@ -29,8 +30,8 @@ public class ItemStack<I extends IItem> {
     private final I item;
 
     public ItemStack(float amount, I item) {
-        Preconditions.checkArgument(amount >= item.getMinimalStackSize() && amount <= item.getMaximalStackSize(),
-            "The amount does not match the item.");
+        Preconditions.checkArgument(amount >= item.getMinimumStackSize() && amount <= item.getMaximumStackSize(),
+            "The stackSize %s is forbidden for the item %s.", amount, item.getName());
         this.amount = amount;
         this.item = item;
     }
@@ -38,8 +39,8 @@ public class ItemStack<I extends IItem> {
     /**
      * Adds the given amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is limited by {@link Item#getMinimalStackSize()} ()} and
-     * {@link Item#getMaximalStackSize()} respectively.
+     * The resulting amount is limited by {@link Item#getMinimumStackSize()} ()} and {@link Item#getMaximumStackSize()}
+     * respectively.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
@@ -50,8 +51,8 @@ public class ItemStack<I extends IItem> {
     /**
      * Subtracts the given amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is limited by {@link Item#getMinimalStackSize()} ()} and
-     * {@link Item#getMaximalStackSize()} respectively.
+     * The resulting amount is limited by {@link Item#getMinimumStackSize()} ()} and {@link Item#getMaximumStackSize()}
+     * respectively.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
@@ -62,14 +63,14 @@ public class ItemStack<I extends IItem> {
     /**
      * Sets the amount of this {@link ItemStack}.
      * <p>
-     * The resulting amount is limited by {@link Item#getMinimalStackSize()} ()} and
-     * {@link Item#getMaximalStackSize()} respectively.
+     * The resulting amount is limited by {@link Item#getMinimumStackSize()} ()} and {@link Item#getMaximumStackSize()}
+     * respectively.
      *
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
     public float setAmount(float amount) {
-        float newAmount = Math.max(Math.min(getAmount() + amount, item.getMaximalStackSize()),
-            item.getMinimalStackSize());
+        float newAmount = Floats.constrainToRange(amount, item.getMinimumStackSize(),
+            item.getMaximumStackSize());
         float change = newAmount - getAmount();
         this.amount = newAmount;
         return change;

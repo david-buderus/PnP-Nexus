@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
-import de.pnp.manager.server.component.TestItemBuilder;
-import de.pnp.manager.server.component.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.server.database.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import java.util.Collection;
 import java.util.List;

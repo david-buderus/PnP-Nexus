@@ -22,7 +22,7 @@ public class UpgradeRecipe extends DatabaseObject {
      * The {@link Upgrade upgrads} which already need to be present on the item to use this {@link UpgradeRecipe}.
      */
     @DBRef
-    private final Collection<Upgrade> necessaryUpgrades;
+    private final Collection<Upgrade> requiredUpgrades;
 
     /**
      * Additional requirements needed to use this {@link UpgradeRecipe}.
@@ -39,11 +39,11 @@ public class UpgradeRecipe extends DatabaseObject {
      */
     private final Collection<IRecipeEntry> materials;
 
-    public UpgradeRecipe(ObjectId id, Upgrade upgrade, Collection<Upgrade> necessaryUpgrades, String requirement,
+    public UpgradeRecipe(ObjectId id, Upgrade upgrade, Collection<Upgrade> requiredUpgrades, String requirement,
         String otherCircumstances, Collection<IRecipeEntry> materials) {
         super(id);
         this.upgrade = upgrade;
-        this.necessaryUpgrades = necessaryUpgrades;
+        this.requiredUpgrades = requiredUpgrades;
         this.requirement = requirement;
         this.otherCircumstances = otherCircumstances;
         this.materials = materials;
@@ -53,8 +53,8 @@ public class UpgradeRecipe extends DatabaseObject {
         return upgrade;
     }
 
-    public Collection<Upgrade> getNecessaryUpgrades() {
-        return necessaryUpgrades;
+    public Collection<Upgrade> getRequiredUpgrades() {
+        return requiredUpgrades;
     }
 
     public String getRequirement() {
@@ -78,15 +78,15 @@ public class UpgradeRecipe extends DatabaseObject {
             return false;
         }
         UpgradeRecipe that = (UpgradeRecipe) o;
-        return Objects.equals(getUpgrade(), that.getUpgrade()) && Objects.equals(getNecessaryUpgrades(),
-            that.getNecessaryUpgrades()) && Objects.equals(getRequirement(), that.getRequirement())
+        return Objects.equals(getUpgrade(), that.getUpgrade()) && Objects.equals(getRequiredUpgrades(),
+            that.getRequiredUpgrades()) && Objects.equals(getRequirement(), that.getRequirement())
             && Objects.equals(getOtherCircumstances(), that.getOtherCircumstances()) && Objects.equals(
             getMaterials(), that.getMaterials());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUpgrade(), getNecessaryUpgrades(), getRequirement(), getOtherCircumstances(),
+        return Objects.hash(getUpgrade(), getRequiredUpgrades(), getRequirement(), getOtherCircumstances(),
             getMaterials());
     }
 }

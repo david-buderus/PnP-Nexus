@@ -3,7 +3,7 @@ package de.pnp.manager.component.upgrade;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.equipable.EquipableItem;
-import de.pnp.manager.component.upgrade.effect.IUpgradeEffect;
+import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -37,12 +37,12 @@ public class Upgrade extends DatabaseObject {
     protected final int vendorPrice;
 
     /**
-     * The {@link IUpgradeEffect effects} oft this upgrade.
+     * The {@link UpgradeEffect effects} oft this upgrade.
      */
-    private final Collection<IUpgradeEffect> effects;
+    private final Collection<UpgradeEffect> effects;
 
     public Upgrade(ObjectId id, String name, ItemType target, int slots, int vendorPrice,
-        Collection<IUpgradeEffect> effects) {
+        Collection<UpgradeEffect> effects) {
         super(id);
         this.name = name;
         this.target = target;
@@ -67,7 +67,7 @@ public class Upgrade extends DatabaseObject {
         return vendorPrice;
     }
 
-    public Collection<IUpgradeEffect> getEffects() {
+    public Collection<UpgradeEffect> getEffects() {
         return effects;
     }
 

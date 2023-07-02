@@ -20,20 +20,20 @@ public sealed interface IRecipeEntry {
     /**
      * The amount needed for this {@link IRecipeEntry}.
      */
-    float amount();
+    float amountOfRequiredUnits();
 
 
     /**
      * An {@link IRecipeEntry} which uses a specific {@link Item}.
      */
-    record ItemRecipeEntry(float amount, @DBRef Item item) implements IRecipeEntry {
+    record ItemRecipeEntry(float amountOfRequiredUnits, @DBRef Item item) implements IRecipeEntry {
 
     }
 
     /**
      * An {@link IRecipeEntry} which uses a {@link Material}.
      */
-    record MaterialRecipeEntry(float amount, @DBRef Material material) implements
+    record MaterialRecipeEntry(float amountOfRequiredUnits, @DBRef Material material) implements
         IRecipeEntry {
 
     }

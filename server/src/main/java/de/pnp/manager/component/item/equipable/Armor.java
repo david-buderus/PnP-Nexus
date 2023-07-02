@@ -20,13 +20,13 @@ public class Armor extends EquipableItem implements IDefensiveItem {
     /**
      * The weight of this armor.
      */
-    protected final double weight;
+    protected final float weight;
 
     public Armor(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
         ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
-        int armor, double weight, int maximalStackSize, int minimalStackSize) {
+        int armor, float weight, int maximumStackSize, int minimumStackSize) {
         super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
-            upgradeSlots, maximalStackSize, minimalStackSize);
+            upgradeSlots, maximumStackSize, minimumStackSize);
         this.armor = armor;
         this.weight = weight;
     }
@@ -35,7 +35,7 @@ public class Armor extends EquipableItem implements IDefensiveItem {
         return armor;
     }
 
-    public double getWeight() {
+    public float getWeight() {
         return weight;
     }
 
