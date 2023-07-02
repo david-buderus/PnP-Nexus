@@ -37,10 +37,16 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
         return applyUpgradeEffects(EUpgradeManipulator.SLOTS, getItem().getUpgradeSlots());
     }
 
+    /**
+     * Returns the amount of {@link EquipableItem#getUpgradeSlots() upgrade slots} which are not in use.
+     */
     public int getRemainingUpgradeSlots() {
         return getUpgradeSlots() - getUpgrades().stream().mapToInt(Upgrade::getSlots).sum();
     }
 
+    /**
+     * @see #upgrades
+     */
     public Collection<Upgrade> getUpgrades() {
         return Collections.unmodifiableCollection(upgrades);
     }
