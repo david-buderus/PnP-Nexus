@@ -31,7 +31,7 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
     }
 
     /**
-     * Returns {@link EquipableItem#getUpgradeSlots()} in regard to the {@link #upgrades}.
+     * Returns {@link EquipableItem#getUpgradeSlots()} with regards to the {@link #upgrades}.
      */
     public int getUpgradeSlots() {
         return applyUpgradeEffects(EUpgradeManipulator.SLOTS, getItem().getUpgradeSlots());
@@ -57,7 +57,7 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
     public void setUpgrades(Collection<Upgrade> upgrades) {
         int requiredSlots = upgrades.stream().mapToInt(Upgrade::getSlots).sum();
         Preconditions.checkArgument(requiredSlots <= getUpgradeSlots(),
-            "The needed %s slots of the upgrades exceeds the capacity of the item %s.",
+            "The required '%s' slots of the upgrades exceed the capacity of the item '%s'.",
             requiredSlots, getItem().getName());
         this.upgrades = upgrades;
     }
@@ -67,7 +67,7 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
      */
     public void addUpgrade(Upgrade upgrade) {
         Preconditions.checkArgument(upgrade.getSlots() <= getRemainingUpgradeSlots(),
-            "The needed %s slots of the upgrades exceeds the capacity of the item %s.",
+            "The required '%s' slots of the upgrades exceed the capacity of the item '%s'.",
             upgrade.getSlots() + getUpgradeSlots(), getItem().getName());
         upgrades.add(upgrade);
     }

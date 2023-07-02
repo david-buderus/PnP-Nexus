@@ -30,7 +30,7 @@ public abstract class UpgradeEffect {
     }
 
     /**
-     * Applies the effect of this {@link UpgradeEffect} if the given {@link EUpgradeManipulator} matches the own one.
+     * Applies the effect of this {@link UpgradeEffect}, if the given {@link EUpgradeManipulator} is compatible with this upgrade.
      */
     public float apply(EUpgradeManipulator manipulator, float value) {
         if (manipulator == upgradeManipulator) {

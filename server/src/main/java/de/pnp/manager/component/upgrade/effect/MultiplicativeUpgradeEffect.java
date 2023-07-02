@@ -3,20 +3,20 @@ package de.pnp.manager.component.upgrade.effect;
 import java.util.Objects;
 
 /**
- * An {@link UpgradeEffect} which multiplies an attribute.
+ * An {@link UpgradeEffect} which multiplies an attribute by its factor.
  */
 public class MultiplicativeUpgradeEffect extends UpgradeEffect {
 
-    private final float value;
+    private final float factor;
 
-    public MultiplicativeUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator, float value) {
+    public MultiplicativeUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator, float factor) {
         super(description, upgradeManipulator);
-        this.value = value;
+        this.factor = factor;
     }
 
     @Override
     protected float apply(float value) {
-        return value * this.value;
+        return value * this.factor;
     }
 
     @Override
@@ -31,11 +31,11 @@ public class MultiplicativeUpgradeEffect extends UpgradeEffect {
             return false;
         }
         MultiplicativeUpgradeEffect that = (MultiplicativeUpgradeEffect) o;
-        return Float.compare(that.value, value) == 0;
+        return Float.compare(that.factor, factor) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), value);
+        return Objects.hash(super.hashCode(), factor);
     }
 }

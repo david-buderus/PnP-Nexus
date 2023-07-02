@@ -31,7 +31,7 @@ public class ItemStack<I extends IItem> {
 
     public ItemStack(float amount, I item) {
         Preconditions.checkArgument(amount >= item.getMinimumStackSize() && amount <= item.getMaximumStackSize(),
-            "The stackSize %s is forbidden for the item %s.", amount, item.getName());
+            "The stackSize '%s' is forbidden for the item '%s.'", amount, item.getName());
         this.amount = amount;
         this.item = item;
     }

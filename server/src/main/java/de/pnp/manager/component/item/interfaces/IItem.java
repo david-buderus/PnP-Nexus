@@ -67,7 +67,7 @@ public interface IItem {
     /**
      * The minimum amount of this item that has to be contained in one {@link ItemStack}.
      * <p>
-     * A {@code minimumStackSize} of {@code 0} is interpreted as minimal stackSize {@code > 0}.
+     * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
      */
     int getMinimumStackSize();
 }

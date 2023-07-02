@@ -96,7 +96,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The minimum amount of this item that has to be contained in one {@link ItemStack}.
      * <p>
-     * A {@code minimumStackSize} of {@code 0} is interpreted as minimal stackSize {@code > 0}.
+     * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
      */
     protected final int minimumStackSize;
 
@@ -105,9 +105,9 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         int minimumStackSize) {
         super(id);
         Preconditions.checkArgument(maximumStackSize >= minimumStackSize,
-            "The maximumStackSize needs to be greater or equal to the minimumStackSize.");
-        Preconditions.checkArgument(maximumStackSize > 0, "The maximumStackSize needs to be greater then 0.");
-        Preconditions.checkArgument(minimumStackSize >= 0, "The minimumStackSize needs to be greater or equal to 0.");
+            "The maximumStackSize must be greater or equal to the minimumStackSize.");
+        Preconditions.checkArgument(maximumStackSize > 0, "The maximumStackSize must be greater then 0.");
+        Preconditions.checkArgument(minimumStackSize >= 0, "The minimumStackSize must be greater or equal to 0.");
         this.name = name;
         this.type = type;
         this.subtype = subtype;
