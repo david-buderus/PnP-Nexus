@@ -30,22 +30,16 @@ public class UpgradeRecipe extends DatabaseObject {
     private final String requirement;
 
     /**
-     * Other circumstances needed to use this {@link UpgradeRecipe}.
-     */
-    private final String otherCircumstances;
-
-    /**
      * The materials needed to use this {@link UpgradeRecipe}
      */
     private final Collection<IRecipeEntry> materials;
 
     public UpgradeRecipe(ObjectId id, Upgrade upgrade, Collection<Upgrade> requiredUpgrades, String requirement,
-        String otherCircumstances, Collection<IRecipeEntry> materials) {
+        Collection<IRecipeEntry> materials) {
         super(id);
         this.upgrade = upgrade;
         this.requiredUpgrades = requiredUpgrades;
         this.requirement = requirement;
-        this.otherCircumstances = otherCircumstances;
         this.materials = materials;
     }
 
@@ -59,10 +53,6 @@ public class UpgradeRecipe extends DatabaseObject {
 
     public String getRequirement() {
         return requirement;
-    }
-
-    public String getOtherCircumstances() {
-        return otherCircumstances;
     }
 
     public Collection<IRecipeEntry> getMaterials() {
@@ -80,13 +70,11 @@ public class UpgradeRecipe extends DatabaseObject {
         UpgradeRecipe that = (UpgradeRecipe) o;
         return Objects.equals(getUpgrade(), that.getUpgrade()) && Objects.equals(getRequiredUpgrades(),
             that.getRequiredUpgrades()) && Objects.equals(getRequirement(), that.getRequirement())
-            && Objects.equals(getOtherCircumstances(), that.getOtherCircumstances()) && Objects.equals(
-            getMaterials(), that.getMaterials());
+            && Objects.equals(getMaterials(), that.getMaterials());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUpgrade(), getRequiredUpgrades(), getRequirement(), getOtherCircumstances(),
-            getMaterials());
+        return Objects.hash(getUpgrade(), getRequiredUpgrades(), getRequirement(), getMaterials());
     }
 }

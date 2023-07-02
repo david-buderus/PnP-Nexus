@@ -12,15 +12,15 @@ import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
 public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> implements
     IHandheldEquipment {
 
-    public DefensiveEquipment(float amount, IDefensiveItem item, int durability) {
-        super(amount, item, durability);
+    public DefensiveEquipment(float stackSize, IDefensiveItem item, int durability) {
+        super(stackSize, item, durability);
     }
 
     /**
      * Returns the {@link IDefensiveItem#getArmor() defense} of the underlying {@link Item} with regard to the
      * {@link #getRelativeDurability() durability} and {@link #getUpgrades() upgrades}.
      */
-    public int getDefense() {
+    public int getArmor() {
         return Math.round(
             applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability());
     }

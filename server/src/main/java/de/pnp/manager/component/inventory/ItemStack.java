@@ -22,17 +22,17 @@ public class ItemStack<I extends IItem> {
     /**
      * The amount of the {@link #item} this {@link ItemStack} holds.
      */
-    private float amount;
+    private float stackSize;
 
     /**
      * The {@link Item} this {@link ItemStack} represents.
      */
     private final I item;
 
-    public ItemStack(float amount, I item) {
-        Preconditions.checkArgument(amount >= item.getMinimumStackSize() && amount <= item.getMaximumStackSize(),
-            "The stackSize '%s' is forbidden for the item '%s.'", amount, item.getName());
-        this.amount = amount;
+    public ItemStack(float stackSize, I item) {
+        Preconditions.checkArgument(stackSize >= item.getMinimumStackSize() && stackSize <= item.getMaximumStackSize(),
+            "The stackSize '%s' is forbidden for the item '%s.'", stackSize, item.getName());
+        this.stackSize = stackSize;
         this.item = item;
     }
 
@@ -45,7 +45,7 @@ public class ItemStack<I extends IItem> {
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
     public float addAmount(float amount) {
-        return setAmount(getAmount() + amount);
+        return setAmount(getStackSize() + amount);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ItemStack<I extends IItem> {
      * @return The resulting change in the amount of the {@link ItemStack}.
      */
     public float subtractAmount(float amount) {
-        return setAmount(getAmount() - amount);
+        return setAmount(getStackSize() - amount);
     }
 
     /**
@@ -71,13 +71,13 @@ public class ItemStack<I extends IItem> {
     public float setAmount(float amount) {
         float newAmount = Floats.constrainToRange(amount, item.getMinimumStackSize(),
             item.getMaximumStackSize());
-        float change = newAmount - getAmount();
-        this.amount = newAmount;
+        float change = newAmount - getStackSize();
+        this.stackSize = newAmount;
         return change;
     }
 
-    public float getAmount() {
-        return amount;
+    public float getStackSize() {
+        return stackSize;
     }
 
     public I getItem() {

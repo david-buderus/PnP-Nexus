@@ -12,8 +12,8 @@ import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
 public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> implements
     IHandheldEquipment {
 
-    public WeaponEquipment(float amount, IOffensiveItem item, int durability) {
-        super(amount, item, durability);
+    public WeaponEquipment(float stackSize, IOffensiveItem item, int durability) {
+        super(stackSize, item, durability);
     }
 
     /**

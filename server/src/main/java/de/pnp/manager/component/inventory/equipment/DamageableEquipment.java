@@ -15,8 +15,8 @@ public abstract class DamageableEquipment<I extends IDamageableItem & IEquipable
      */
     protected int durability;
 
-    public DamageableEquipment(float amount, I item, int durability) {
-        super(amount, item);
+    public DamageableEquipment(float stackSize, I item, int durability) {
+        super(stackSize, item);
         this.durability = durability;
     }
 
