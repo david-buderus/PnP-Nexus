@@ -12,8 +12,8 @@ import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
 public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> implements
     IHandheldEquipment {
 
-    public WeaponEquipment(float stackSize, IOffensiveItem item, int durability) {
-        super(stackSize, item, durability);
+    public WeaponEquipment(float stackSize, IOffensiveItem item, int wear) {
+        super(stackSize, item, wear);
     }
 
     /**
@@ -21,8 +21,11 @@ public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> impleme
      * {@link #getRelativeDurability() durability} and {@link #getUpgrades() upgrades}.
      */
     public int getDamage() {
-        return Math.round(
-            applyUpgradeEffects(EUpgradeManipulator.DAMAGE, getItem().getDamage()) * getRelativeDurability());
+        return Math.round(getMaxDamage() * getRelativeDurability());
+    }
+
+    public int getMaxDamage() {
+        return applyUpgradeEffects(EUpgradeManipulator.DAMAGE, getItem().getDamage());
     }
 
     @Override
@@ -33,5 +36,10 @@ public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> impleme
     @Override
     public float getInitiative() {
         return applyUpgradeEffects(EUpgradeManipulator.INITIATIVE, getItem().getInitiative());
+    }
+
+    @Override
+    public int getMaxDurability() {
+        return getMaxDamage();
     }
 }

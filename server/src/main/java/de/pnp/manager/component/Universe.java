@@ -22,9 +22,19 @@ public class Universe {
 
     private StatComputationRules statComputationRules;
 
+    /**
+     * The settings of the {@link Universe}
+     */
+    private final UniverseSettings settings;
+
     public Universe(String name, String displayName) {
+        this(name, displayName, UniverseSettings.DEFAULT);
+    }
+
+    public Universe(String name, String displayName, UniverseSettings settings) {
         this.name = name;
         this.displayName = displayName;
+        this.settings = settings;
     }
 
     public String getName() {
@@ -33,5 +43,20 @@ public class Universe {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public UniverseSettings getSettings() {
+        return settings;
+    }
+
+    /**
+     * The settings of the {@link Universe}.
+     */
+    public record UniverseSettings(int wearFactor) {
+
+        /**
+         * The default settings
+         */
+        public final static UniverseSettings DEFAULT = new UniverseSettings(10);
     }
 }

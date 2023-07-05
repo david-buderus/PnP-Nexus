@@ -1,7 +1,7 @@
 package de.pnp.manager.server.database.upgrade;
 
 import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.TypeRestriction;
+import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
@@ -29,8 +29,8 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
     @Test
     void testTypeLink() {
         ItemType typeA = typeRepository.insert(universeName,
-            new ItemType(null, "Type A", TypeRestriction.ITEM));
-        ItemType typeB = new ItemType(null, "Type B", TypeRestriction.ITEM);
+            new ItemType(null, "Type A", ETypeRestriction.ITEM));
+        ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.ITEM);
         Upgrade upgrade = new Upgrade(null, "Shine", typeA, 1, 10,
             List.of(SimpleUpgradeEffect.create("The weapon emits light")));
 
@@ -39,20 +39,21 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
 
     @Override
     protected Upgrade createObject() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Weapon", TypeRestriction.WEAPON));
+        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Weapon", ETypeRestriction.WEAPON));
         return new Upgrade(null, "Shine", type, 1, 10, List.of(SimpleUpgradeEffect.create("The weapon emits light")));
     }
 
     @Override
     protected Upgrade createSlightlyChangeObject() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Equipment", TypeRestriction.EQUIPMENT));
+        ItemType type = typeRepository.insert(universeName,
+            new ItemType(null, "Equipment", ETypeRestriction.EQUIPMENT));
         return new Upgrade(null, "Shine", type, 1, 10,
             List.of(SimpleUpgradeEffect.create("The equipment emits light")));
     }
 
     @Override
     protected Collection<Upgrade> createMultipleObjects() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Item", TypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Item", ETypeRestriction.ITEM));
         return List.of(
             new Upgrade(null, "Shine", type, 1, 10,
                 List.of(new MultiplicativeUpgradeEffect("The weapon emits light", EUpgradeManipulator.HIT, 2))),

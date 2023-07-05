@@ -1,7 +1,7 @@
 package de.pnp.manager.server.database.upgrade;
 
 import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.TypeRestriction;
+import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
@@ -30,7 +30,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Test
     void testUpgradeLink() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Type", TypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Type", ETypeRestriction.ITEM));
         Upgrade upgradeA = upgradeRepository.insert(universeName, new Upgrade(null, "Shine A", type, 1, 10,
             List.of(SimpleUpgradeEffect.create("The weapon emits light"))));
         Upgrade upgradeB = new Upgrade(null, "Shine B", type, 1, 10,
@@ -42,7 +42,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Test
     void testNecessaryUpgradeLink() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Type", TypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Type", ETypeRestriction.ITEM));
         Upgrade result = upgradeRepository.insert(universeName, new Upgrade(null, "Result", type, 1, 10, List.of()));
         Upgrade upgradeA = upgradeRepository.insert(universeName, new Upgrade(null, "Shine A", type, 1, 10,
             List.of(SimpleUpgradeEffect.create("The weapon emits light"))));
@@ -56,7 +56,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Override
     protected UpgradeRecipe createObject() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", TypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade = upgradeRepository.insert(universeName, new Upgrade(null, "Test", type, 1, 0, List.of()));
         return new UpgradeRecipe(null, upgrade, List.of(), "", List.of());
     }
@@ -64,7 +64,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     @Override
     protected UpgradeRecipe createSlightlyChangeObject() {
         ItemType type = typeRepository.insert(universeName,
-            new ItemType(null, "Other Test-Type", TypeRestriction.ITEM));
+            new ItemType(null, "Other Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade = upgradeRepository.insert(universeName,
             new Upgrade(null, "Other Test", type, 1, 0, List.of()));
         return new UpgradeRecipe(null, upgrade, List.of(), "Something", List.of());
@@ -72,7 +72,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Override
     protected Collection<UpgradeRecipe> createMultipleObjects() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", TypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade1 = upgradeRepository.insert(universeName, new Upgrade(null, "Test 1", type, 1, 0, List.of()));
         Upgrade upgrade2 = upgradeRepository.insert(universeName, new Upgrade(null, "Test 2", type, 1, 0, List.of()));
         return List.of(new UpgradeRecipe(null, upgrade1, List.of(), "", List.of()),

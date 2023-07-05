@@ -40,11 +40,6 @@ public class Armor extends EquipableItem implements IDefensiveItem {
     }
 
     @Override
-    public int getMaxDurability() {
-        return getArmor();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

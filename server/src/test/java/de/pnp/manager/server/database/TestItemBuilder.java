@@ -4,10 +4,11 @@ import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.TypeRestriction;
+import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.EquipableItem;
+import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
@@ -165,6 +166,30 @@ public class TestItemBuilder {
     }
 
     /**
+     * @see Weapon#getDamage()
+     */
+    public TestItemBuilder withDamage(int damage) {
+        this.damage = damage;
+        return this;
+    }
+
+    /**
+     * @see HandheldEquipableItem#getHit()
+     */
+    public TestItemBuilder withHit(int hit) {
+        this.hit = hit;
+        return this;
+    }
+
+    /**
+     * @see HandheldEquipableItem#getInitiative()
+     */
+    public TestItemBuilder withInitiative(int initiative) {
+        this.initiativeModifier = initiative;
+        return this;
+    }
+
+    /**
      * Creates an item matching this builder.
      */
     public Item buildItem() {
@@ -198,9 +223,9 @@ public class TestItemBuilder {
 
     private ItemType getType(String typeName) {
         if (typeRepository == null) {
-            return new ItemType(null, typeName, TypeRestriction.ITEM);
+            return new ItemType(null, typeName, ETypeRestriction.ITEM);
         }
         return typeRepository.get(universe, typeName).orElse(
-            typeRepository.insert(universe, new ItemType(null, typeName, TypeRestriction.ITEM)));
+            typeRepository.insert(universe, new ItemType(null, typeName, ETypeRestriction.ITEM)));
     }
 }

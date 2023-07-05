@@ -1,7 +1,7 @@
 package de.pnp.manager.server.database.item;
 
 import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.TypeRestriction;
+import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.server.database.RepositoryTestBase;
 import java.util.Collection;
 import java.util.List;
@@ -18,17 +18,17 @@ class ItemTypeRepositoryTest extends RepositoryTestBase<ItemType, ItemTypeReposi
 
     @Override
     protected ItemType createObject() {
-        return new ItemType(null, "Weapon", TypeRestriction.ITEM);
+        return new ItemType(null, "Weapon", ETypeRestriction.ITEM);
     }
 
     @Override
     protected ItemType createSlightlyChangeObject() {
-        return new ItemType(null, "Weapon", TypeRestriction.WEAPON);
+        return new ItemType(null, "Weapon", ETypeRestriction.WEAPON);
     }
 
     @Override
     protected Collection<ItemType> createMultipleObjects() {
-        return List.of(new ItemType(null, "Armor", TypeRestriction.ARMOR),
-            new ItemType(null, "Shield", TypeRestriction.SHIELD));
+        return List.of(new ItemType(null, "Armor", ETypeRestriction.ARMOR),
+            new ItemType(null, "Shield", ETypeRestriction.SHIELD));
     }
 }

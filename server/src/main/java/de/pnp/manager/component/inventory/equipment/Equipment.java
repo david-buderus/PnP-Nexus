@@ -31,7 +31,7 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
     }
 
     /**
-     * Returns {@link EquipableItem#getUpgradeSlots()} with regards to the {@link #upgrades}.
+     * Returns {@link EquipableItem#getUpgradeSlots()} in regard to the {@link #upgrades}.
      */
     public int getUpgradeSlots() {
         return applyUpgradeEffects(EUpgradeManipulator.SLOTS, getItem().getUpgradeSlots());

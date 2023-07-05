@@ -12,8 +12,8 @@ import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
 public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> implements
     IHandheldEquipment {
 
-    public DefensiveEquipment(float stackSize, IDefensiveItem item, int durability) {
-        super(stackSize, item, durability);
+    public DefensiveEquipment(float stackSize, IDefensiveItem item, int wear) {
+        super(stackSize, item, wear);
     }
 
     /**
@@ -23,6 +23,10 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
     public int getArmor() {
         return Math.round(
             applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability());
+    }
+
+    public int getMaxArmor() {
+        return applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor());
     }
 
     /**
@@ -48,5 +52,10 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
             return handHoldItem.getInitiative();
         }
         throw new AssertionError("Only HandholdItems have initiative.");
+    }
+
+    @Override
+    public int getMaxDurability() {
+        return getMaxArmor();
     }
 }

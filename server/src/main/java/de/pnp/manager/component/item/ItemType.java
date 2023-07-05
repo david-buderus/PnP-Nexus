@@ -28,11 +28,11 @@ public class ItemType extends DatabaseObject implements IUniquelyNamedDataObject
     private final String name;
 
     /**
-     * The {@link TypeRestriction} of this type.
+     * The {@link ETypeRestriction} of this type.
      */
-    private final TypeRestriction typeRestriction;
+    private final ETypeRestriction typeRestriction;
 
-    public ItemType(ObjectId id, String name, TypeRestriction typeRestriction) {
+    public ItemType(ObjectId id, String name, ETypeRestriction typeRestriction) {
         super(id);
         this.name = name;
         this.typeRestriction = typeRestriction;
@@ -43,7 +43,7 @@ public class ItemType extends DatabaseObject implements IUniquelyNamedDataObject
         return name;
     }
 
-    public TypeRestriction getTypeRestriction() {
+    public ETypeRestriction getTypeRestriction() {
         return typeRestriction;
     }
 
@@ -76,13 +76,13 @@ public class ItemType extends DatabaseObject implements IUniquelyNamedDataObject
     /**
      * A restriction of a {@link ItemType}.
      */
-    public enum TypeRestriction {
+    public enum ETypeRestriction {
         ITEM(Item.class), EQUIPMENT(EquipableItem.class), JEWELLERY(Jewellery.class),
         WEAPON(Weapon.class), ARMOR(Armor.class), SHIELD(Shield.class);
 
         private final Class<? extends Item> correlatingClass;
 
-        TypeRestriction(Class<? extends Item> correlatingClass) {
+        ETypeRestriction(Class<? extends Item> correlatingClass) {
             this.correlatingClass = correlatingClass;
         }
 

@@ -40,11 +40,6 @@ public class Shield extends HandheldEquipableItem implements IDefensiveItem {
     }
 
     @Override
-    public int getMaxDurability() {
-        return getArmor();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

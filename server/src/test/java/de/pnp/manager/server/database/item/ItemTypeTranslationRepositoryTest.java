@@ -3,7 +3,7 @@ package de.pnp.manager.server.database.item;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.TypeRestriction;
+import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.ItemTypeTranslation;
 import de.pnp.manager.server.database.RepositoryTestBase;
 import java.util.Collection;
@@ -73,8 +73,8 @@ public class ItemTypeTranslationRepositoryTest extends
     @Test
     void testTypeLink() {
         ItemType typeA = typeRepository.insert(universeName,
-            new ItemType(null, "Type A", TypeRestriction.ITEM));
-        ItemType typeB = new ItemType(null, "Type B", TypeRestriction.WEAPON);
+            new ItemType(null, "Type A", ETypeRestriction.ITEM));
+        ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.WEAPON);
         ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, typeA, Set.of());
 
         testRepositoryLink(ItemTypeTranslation::getType, typeRepository, typeTranslation, typeA, typeB);
@@ -83,8 +83,8 @@ public class ItemTypeTranslationRepositoryTest extends
     @Test
     void testVariantsLink() {
         ItemType typeA = typeRepository.insert(universeName,
-            new ItemType(null, "Type A", TypeRestriction.ITEM));
-        ItemType typeB = new ItemType(null, "Type B", TypeRestriction.WEAPON);
+            new ItemType(null, "Type A", ETypeRestriction.ITEM));
+        ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.WEAPON);
         ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, asType("test"),
             Set.of(typeA));
 
@@ -115,6 +115,6 @@ public class ItemTypeTranslationRepositoryTest extends
      */
     protected ItemType asType(String type) {
         return typeRepository.get(universeName, type)
-            .orElse(typeRepository.insert(universeName, new ItemType(null, type, TypeRestriction.ITEM)));
+            .orElse(typeRepository.insert(universeName, new ItemType(null, type, ETypeRestriction.ITEM)));
     }
 }

@@ -40,11 +40,6 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
     }
 
     @Override
-    public int getMaxDurability() {
-        return getDamage();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
