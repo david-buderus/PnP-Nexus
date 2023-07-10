@@ -13,25 +13,15 @@ public abstract class DamageableEquipment<I extends IDamageableItem & IEquipable
     /**
      * The current wear of this {@link Equipment}.
      */
-    protected int wear;
+    protected float wear;
 
-    /**
-     * The factor how much the wear damages the equipment. The higher the factor, the lower the influence.
-     * <p>
-     * A wear factor of {@code -1} means that wear has no influence on the equipment.
-     */
-    protected transient int wearFactor = -1;
-
-    public DamageableEquipment(float stackSize, I item, int wear) {
+    public DamageableEquipment(float stackSize, I item, float wear) {
         super(stackSize, item);
         this.wear = wear;
     }
 
     @Override
-    public void applyWear(int wear) {
-        if (wearFactor == -1) {
-            return;
-        }
+    public void applyWear(float wear) {
         this.wear += wear;
     }
 
@@ -42,18 +32,11 @@ public abstract class DamageableEquipment<I extends IDamageableItem & IEquipable
 
     @Override
     public float getRelativeDurability() {
-        if (wearFactor == -1) {
-            return 1;
-        }
-        return (getMaxDurability() - (wear / (float) wearFactor)) / getMaxDurability();
+        return (getMaxDurability() - wear) / getMaxDurability();
     }
 
     /**
      * Returns the maximal durability.
      */
     public abstract int getMaxDurability();
-
-    public void setWearFactor(int wearFactor) {
-        this.wearFactor = wearFactor;
-    }
 }

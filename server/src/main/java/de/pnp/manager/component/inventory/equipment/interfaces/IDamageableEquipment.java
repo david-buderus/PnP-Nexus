@@ -8,7 +8,7 @@ public interface IDamageableEquipment extends IEquipment {
     /**
      * Applies wear to the equipment.
      */
-    void applyWear(int wear);
+    void applyWear(float wear);
 
     /**
      * Completely repairs the equipment.

@@ -21,7 +21,7 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
      * {@link #getRelativeDurability() durability} and {@link #getUpgrades() upgrades}.
      */
     public int getArmor() {
-        return Math.round(
+        return (int) Math.ceil(
             applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability());
     }
 

@@ -1,6 +1,7 @@
 package de.pnp.manager.component;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 
 /**
  * The description of a universe.
@@ -20,8 +21,6 @@ public class Universe {
      */
     private final String displayName;
 
-    private StatComputationRules statComputationRules;
-
     /**
      * The settings of the {@link Universe}
      */
@@ -31,6 +30,7 @@ public class Universe {
         this(name, displayName, UniverseSettings.DEFAULT);
     }
 
+    @PersistenceCreator
     public Universe(String name, String displayName, UniverseSettings settings) {
         this.name = name;
         this.displayName = displayName;

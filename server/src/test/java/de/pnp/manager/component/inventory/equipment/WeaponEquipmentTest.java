@@ -20,14 +20,16 @@ class WeaponEquipmentTest {
     @Test
     void testGetDamage() {
         WeaponEquipment weapon = new WeaponEquipment(1, TEST_WEAPON, 0);
-        weapon.setWearFactor(10);
         assertThat(weapon.getDamage()).isEqualTo(5);
 
         weapon.addUpgrade(
             createUpgrade().addEffect(new MultiplicativeUpgradeEffect("", EUpgradeManipulator.DAMAGE, 2)).build());
         assertThat(weapon.getDamage()).isEqualTo(10);
 
-        weapon.applyWear(10);
+        weapon.applyWear(1);
         assertThat(weapon.getDamage()).isEqualTo(9);
+
+        weapon.applyWear(1.6f);
+        assertThat(weapon.getDamage()).isEqualTo(8);
     }
 }

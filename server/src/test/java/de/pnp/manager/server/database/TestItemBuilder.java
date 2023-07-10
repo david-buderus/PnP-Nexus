@@ -11,6 +11,7 @@ import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Weapon;
+import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -186,6 +187,14 @@ public class TestItemBuilder {
      */
     public TestItemBuilder withInitiative(int initiative) {
         this.initiativeModifier = initiative;
+        return this;
+    }
+
+    /**
+     * @see IDefensiveItem#getArmor()
+     */
+    public TestItemBuilder withArmor(int armor) {
+        this.armor = armor;
         return this;
     }
 

@@ -21,7 +21,7 @@ public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> impleme
      * {@link #getRelativeDurability() durability} and {@link #getUpgrades() upgrades}.
      */
     public int getDamage() {
-        return Math.round(getMaxDamage() * getRelativeDurability());
+        return (int) Math.ceil(getMaxDamage() * getRelativeDurability());
     }
 
     public int getMaxDamage() {
