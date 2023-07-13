@@ -1,11 +1,15 @@
 package de.pnp.manager.server.exception;
 
-public class UniverseNotFoundException extends RuntimeException {
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+import org.springframework.web.server.ResponseStatusException;
+
+public class UniverseNotFoundException extends ResponseStatusException {
 
     private final String universe;
 
     public UniverseNotFoundException(String universe) {
-        super("Universe " + universe + " does not exist");
+        super(NOT_FOUND, "Universe " + universe + " does not exist");
         this.universe = universe;
     }
 
