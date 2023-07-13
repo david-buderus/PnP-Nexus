@@ -18,7 +18,7 @@ public class ItemStackController {
     /**
      * Wears down the given {@link IDamageableEquipment equipment} by the amount of usages of the equipment.
      *
-     * @return if the {@link IDamageableEquipment equipment} is still whole.
+     * @return whether the {@link IDamageableEquipment equipment} is not broken and can be used.
      */
     public boolean applyWearByUsage(String universe, IDamageableEquipment equipment, int usages) {
         int wearFactor = universeRepository.getSetting(universe).wearFactor();
