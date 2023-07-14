@@ -2,17 +2,20 @@ package de.pnp.manager.component;
 
 import static de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository.NAME_ATTRIBUTE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.reflections.scanners.Scanners.SubTypes;
 
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.reflections.Reflections;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
@@ -34,10 +37,19 @@ class IUniquelyNamedDataObjectTest {
     }
 
     private static Stream<Arguments> provideIUniquelyNamedDataObjectClasses() {
-        Reflections reflections = new Reflections("de.pnp.manager");
+        Set<Class<?>> subTypes;
 
-        Set<Class<?>> subTypes =
-            reflections.get(SubTypes.of(IUniquelyNamedDataObject.class).asClass());
+        try {
+            subTypes = ClassPath.from(ClassLoader.getSystemClassLoader())
+                .getAllClasses()
+                .stream()
+                .filter(clazz -> clazz.getPackageName().startsWith("de.pnp.manager"))
+                .map(ClassInfo::load)
+                .filter(IUniquelyNamedDataObjectTest::implementsIUniquelyNamedDataObject)
+                .collect(Collectors.toSet());
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
 
         // soundness check
         assertThat(subTypes).isNotEmpty();
@@ -54,5 +66,12 @@ class IUniquelyNamedDataObjectTest {
             }
         }
         return null;
+    }
+
+    private static boolean implementsIUniquelyNamedDataObject(Class<?> clazz) {
+        if (Arrays.asList(clazz.getInterfaces()).contains(IUniquelyNamedDataObject.class)) {
+            return true;
+        }
+        return clazz.getSuperclass() != null && implementsIUniquelyNamedDataObject(clazz.getSuperclass());
     }
 }
