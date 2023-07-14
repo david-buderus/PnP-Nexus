@@ -191,17 +191,13 @@
               "material": {
                 "$ref": "#/components/schemas/Material"
               },
-              "maxDurability": {
-                "type": "integer",
-                "format": "int32"
-              },
               "upgradeSlots": {
                 "type": "integer",
                 "format": "int32"
               },
               "weight": {
                 "type": "number",
-                "format": "double"
+                "format": "float"
               }
             }
           }
@@ -216,7 +212,7 @@
           {
             "type": "object",
             "properties": {
-              "defense": {
+              "armor": {
                 "type": "integer",
                 "format": "int32"
               },
@@ -231,15 +227,35 @@
               "item": {
                 "$ref": "#/components/schemas/IDefensiveItem"
               },
+              "maxArmor": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              },
               "relativeDurability": {
                 "type": "number",
                 "format": "float"
+              },
+              "remainingUpgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
               },
               "upgrades": {
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/Upgrade"
                 }
+              },
+              "weight": {
+                "type": "integer",
+                "format": "int32"
               }
             }
           }
@@ -256,6 +272,14 @@
             "properties": {
               "item": {
                 "$ref": "#/components/schemas/IEquipableItem"
+              },
+              "remainingUpgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
               },
               "upgrades": {
                 "type": "array",
@@ -280,15 +304,11 @@
           "effect": {
             "type": "string"
           },
-          "maxDurability": {
+          "maximumStackSize": {
             "type": "integer",
             "format": "int32"
           },
-          "maximalStackSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "minimalStackSize": {
+          "minimumStackSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -332,7 +352,7 @@
           },
           "weight": {
             "type": "number",
-            "format": "double"
+            "format": "float"
           }
         }
       },
@@ -345,11 +365,11 @@
           "effect": {
             "type": "string"
           },
-          "maximalStackSize": {
+          "maximumStackSize": {
             "type": "integer",
             "format": "int32"
           },
-          "minimalStackSize": {
+          "minimumStackSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -417,15 +437,11 @@
             "type": "number",
             "format": "float"
           },
-          "maxDurability": {
+          "maximumStackSize": {
             "type": "integer",
             "format": "int32"
           },
-          "maximalStackSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "minimalStackSize": {
+          "minimumStackSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -469,14 +485,6 @@
           }
         }
       },
-      "IUpgradeEffect": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
-          }
-        }
-      },
       "Item": {
         "type": "object",
         "properties": {
@@ -489,11 +497,11 @@
           "id": {
             "$ref": "#/components/schemas/ObjectId"
           },
-          "maximalStackSize": {
+          "maximumStackSize": {
             "type": "integer",
             "format": "int32"
           },
-          "minimalStackSize": {
+          "minimumStackSize": {
             "type": "integer",
             "format": "int32"
           },
@@ -538,7 +546,8 @@
         "properties": {
           "amount": {
             "type": "number",
-            "format": "float"
+            "format": "float",
+            "writeOnly": true
           },
           "item": {
             "oneOf": [
@@ -558,6 +567,10 @@
                 "$ref": "#/components/schemas/Weapon"
               }
             ]
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
           }
         }
       },
@@ -657,17 +670,13 @@
               "material": {
                 "$ref": "#/components/schemas/Material"
               },
-              "maxDurability": {
-                "type": "integer",
-                "format": "int32"
-              },
               "upgradeSlots": {
                 "type": "integer",
                 "format": "int32"
               },
               "weight": {
                 "type": "number",
-                "format": "double"
+                "format": "float"
               }
             }
           }
@@ -679,7 +688,7 @@
           "effects": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/IUpgradeEffect"
+              "$ref": "#/components/schemas/UpgradeEffect"
             }
           },
           "id": {
@@ -698,6 +707,14 @@
           "vendorPrice": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "UpgradeEffect": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
           }
         }
       },
@@ -727,10 +744,6 @@
               },
               "material": {
                 "$ref": "#/components/schemas/Material"
-              },
-              "maxDurability": {
-                "type": "integer",
-                "format": "int32"
               },
               "upgradeSlots": {
                 "type": "integer",
@@ -764,9 +777,25 @@
               "item": {
                 "$ref": "#/components/schemas/IOffensiveItem"
               },
+              "maxDamage": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              },
               "relativeDurability": {
                 "type": "number",
                 "format": "float"
+              },
+              "remainingUpgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
               },
               "upgrades": {
                 "type": "array",

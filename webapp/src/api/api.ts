@@ -52,13 +52,13 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'maximalStackSize'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof Armor
      */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -124,12 +124,6 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
     'upgradeSlots'?: number;
     /**
      * 
@@ -173,12 +167,6 @@ export interface ArmorAllOf {
      * @type {number}
      * @memberof ArmorAllOf
      */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ArmorAllOf
-     */
     'upgradeSlots'?: number;
     /**
      * 
@@ -210,7 +198,13 @@ export interface DefensiveEquipment {
      * @type {number}
      * @memberof DefensiveEquipment
      */
-    'defense'?: number;
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'armor'?: number;
     /**
      * 
      * @type {number}
@@ -228,13 +222,43 @@ export interface DefensiveEquipment {
      * @type {number}
      * @memberof DefensiveEquipment
      */
+    'maxArmor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'upgradeSlots'?: number;
     /**
      * 
      * @type {Array<Upgrade>}
      * @memberof DefensiveEquipment
      */
     'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'weight'?: number;
 }
 /**
  * 
@@ -247,7 +271,7 @@ export interface DefensiveEquipmentAllOf {
      * @type {number}
      * @memberof DefensiveEquipmentAllOf
      */
-    'defense'?: number;
+    'armor'?: number;
     /**
      * 
      * @type {number}
@@ -271,13 +295,43 @@ export interface DefensiveEquipmentAllOf {
      * @type {number}
      * @memberof DefensiveEquipmentAllOf
      */
+    'maxArmor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'upgradeSlots'?: number;
     /**
      * 
      * @type {Array<Upgrade>}
      * @memberof DefensiveEquipmentAllOf
      */
     'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'weight'?: number;
 }
 /**
  * 
@@ -299,6 +353,24 @@ export interface Equipment {
     'item'?: IEquipableItem;
     /**
      * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
      * @type {Array<Upgrade>}
      * @memberof Equipment
      */
@@ -316,6 +388,18 @@ export interface EquipmentAllOf {
      * @memberof EquipmentAllOf
      */
     'item'?: IEquipableItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentAllOf
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentAllOf
+     */
+    'upgradeSlots'?: number;
     /**
      * 
      * @type {Array<Upgrade>}
@@ -358,19 +442,13 @@ export interface IDefensiveItem {
      * @type {number}
      * @memberof IDefensiveItem
      */
-    'maxDurability'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof IDefensiveItem
      */
-    'maximalStackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -467,13 +545,13 @@ export interface IEquipableItem {
      * @type {number}
      * @memberof IEquipableItem
      */
-    'maximalStackSize'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof IEquipableItem
      */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -588,19 +666,13 @@ export interface IOffensiveItem {
      * @type {number}
      * @memberof IOffensiveItem
      */
-    'maxDurability'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof IOffensiveItem
      */
-    'maximalStackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -671,19 +743,6 @@ export type IOffensiveItemRarityEnum = typeof IOffensiveItemRarityEnum[keyof typ
 /**
  * 
  * @export
- * @interface IUpgradeEffect
- */
-export interface IUpgradeEffect {
-    /**
-     * 
-     * @type {string}
-     * @memberof IUpgradeEffect
-     */
-    'description'?: string;
-}
-/**
- * 
- * @export
  * @interface Item
  */
 export interface Item {
@@ -710,13 +769,13 @@ export interface Item {
      * @type {number}
      * @memberof Item
      */
-    'maximalStackSize'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof Item
      */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -802,6 +861,12 @@ export interface ItemStackItem {
      * @memberof ItemStackItem
      */
     'item'?: GetItem1200Response;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackItem
+     */
+    'stackSize'?: number;
 }
 /**
  * 
@@ -869,13 +934,13 @@ export interface Jewellery {
      * @type {number}
      * @memberof Jewellery
      */
-    'maximalStackSize'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof Jewellery
      */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -1041,13 +1106,13 @@ export interface Shield {
      * @type {number}
      * @memberof Shield
      */
-    'maximalStackSize'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof Shield
      */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -1125,12 +1190,6 @@ export interface Shield {
      * @type {number}
      * @memberof Shield
      */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
     'upgradeSlots'?: number;
     /**
      * 
@@ -1186,12 +1245,6 @@ export interface ShieldAllOf {
      * @type {number}
      * @memberof ShieldAllOf
      */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
     'upgradeSlots'?: number;
     /**
      * 
@@ -1208,10 +1261,10 @@ export interface ShieldAllOf {
 export interface Upgrade {
     /**
      * 
-     * @type {Array<IUpgradeEffect>}
+     * @type {Array<UpgradeEffect>}
      * @memberof Upgrade
      */
-    'effects'?: Array<IUpgradeEffect>;
+    'effects'?: Array<UpgradeEffect>;
     /**
      * 
      * @type {ObjectId}
@@ -1246,6 +1299,19 @@ export interface Upgrade {
 /**
  * 
  * @export
+ * @interface UpgradeEffect
+ */
+export interface UpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpgradeEffect
+     */
+    'description'?: string;
+}
+/**
+ * 
+ * @export
  * @interface Weapon
  */
 export interface Weapon {
@@ -1272,13 +1338,13 @@ export interface Weapon {
      * @type {number}
      * @memberof Weapon
      */
-    'maximalStackSize'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'minimalStackSize'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
@@ -1362,12 +1428,6 @@ export interface Weapon {
      * @type {number}
      * @memberof Weapon
      */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
     'upgradeSlots'?: number;
 }
 
@@ -1423,12 +1483,6 @@ export interface WeaponAllOf {
      * @type {number}
      * @memberof WeaponAllOf
      */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
     'upgradeSlots'?: number;
 }
 /**
@@ -1454,6 +1508,12 @@ export interface WeaponEquipment {
      * @type {number}
      * @memberof WeaponEquipment
      */
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
     'damage'?: number;
     /**
      * 
@@ -1472,7 +1532,31 @@ export interface WeaponEquipment {
      * @type {number}
      * @memberof WeaponEquipment
      */
+    'maxDamage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'upgradeSlots'?: number;
     /**
      * 
      * @type {Array<Upgrade>}
@@ -1515,7 +1599,31 @@ export interface WeaponEquipmentAllOf {
      * @type {number}
      * @memberof WeaponEquipmentAllOf
      */
+    'maxDamage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
     'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'upgradeSlots'?: number;
     /**
      * 
      * @type {Array<Upgrade>}
