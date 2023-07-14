@@ -53,7 +53,7 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
     @Override
     public float getInitiative() {
         if (getItem() instanceof IHandheldItem handHoldItem) {
-            return handHoldItem.getInitiative();
+            return applyUpgradeEffects(EUpgradeManipulator.INITIATIVE, handHoldItem.getInitiative());
         }
         throw new AssertionError("Only HandholdItems have initiative.");
     }

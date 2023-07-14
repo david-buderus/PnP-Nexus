@@ -10,6 +10,7 @@ import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
 import de.pnp.manager.component.item.equipable.Jewellery;
+import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
@@ -199,6 +200,14 @@ public class TestItemBuilder {
     }
 
     /**
+     * @see IDefensiveItem#getWeight()
+     */
+    public TestItemBuilder withWeight(int weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    /**
      * Creates an item matching this builder.
      */
     public Item buildItem() {
@@ -220,6 +229,14 @@ public class TestItemBuilder {
     public Weapon buildWeapon() {
         return new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
+    }
+
+    /**
+     * Creates shield matching this builder.
+     */
+    public Shield buildShield() {
+        return new Shield(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note,
+            material, upgradeSlots, initiativeModifier, hit, weight, armor, 1, 1);
     }
 
     /**

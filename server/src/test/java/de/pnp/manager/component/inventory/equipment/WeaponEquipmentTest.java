@@ -5,6 +5,7 @@ import static de.pnp.manager.utils.TestUpgradeBuilder.createUpgrade;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.item.equipable.Weapon;
+import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
 import de.pnp.manager.component.upgrade.effect.MultiplicativeUpgradeEffect;
 import org.junit.jupiter.api.Test;
@@ -14,8 +15,8 @@ import org.junit.jupiter.api.Test;
  */
 class WeaponEquipmentTest {
 
-    private static final Weapon TEST_WEAPON = createItemBuilder().withDamage(5).withHit(2).withUpgradeSlots(2)
-        .buildWeapon();
+    private static final Weapon TEST_WEAPON = createItemBuilder().withDamage(5).withHit(2).withInitiative(1)
+        .withUpgradeSlots(2).buildWeapon();
 
     @Test
     void testGetDamage() {
@@ -31,5 +32,28 @@ class WeaponEquipmentTest {
 
         weapon.applyWear(1.6F);
         assertThat(weapon.getDamage()).isEqualTo(8);
+
+        weapon.repair();
+        assertThat(weapon.getDamage()).isEqualTo(10);
+    }
+
+    @Test
+    void testGetHit() {
+        WeaponEquipment weapon = new WeaponEquipment(1, TEST_WEAPON, 0);
+        assertThat(weapon.getHit()).isEqualTo(2);
+
+        weapon.addUpgrade(
+            createUpgrade().addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.HIT, 1)).build());
+        assertThat(weapon.getHit()).isEqualTo(3);
+    }
+
+    @Test
+    void testGetInitiative() {
+        WeaponEquipment weapon = new WeaponEquipment(1, TEST_WEAPON, 0);
+        assertThat(weapon.getInitiative()).isEqualTo(1);
+
+        weapon.addUpgrade(
+            createUpgrade().addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.INITIATIVE, 0.5F)).build());
+        assertThat(weapon.getInitiative()).isEqualTo(1.5F);
     }
 }
