@@ -25,6 +25,10 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
             applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability());
     }
 
+    /**
+     * Returns the {@link IDefensiveItem#getArmor() defense} of the underlying {@link Item} with regard to the
+     * {@link #getUpgrades() upgrades}.
+     */
     public int getMaxArmor() {
         return applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor());
     }

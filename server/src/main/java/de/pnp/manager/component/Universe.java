@@ -57,6 +57,6 @@ public class Universe {
         /**
          * The default settings
          */
-        public final static UniverseSettings DEFAULT = new UniverseSettings(10);
+        public static final UniverseSettings DEFAULT = new UniverseSettings(10);
     }
 }

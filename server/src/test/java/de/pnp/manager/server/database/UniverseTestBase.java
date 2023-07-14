@@ -39,7 +39,7 @@ public abstract class UniverseTestBase {
     /**
      * Updates the {@link UniverseSettings} of the {@link Universe test universe}.
      */
-    protected void updateSettings(UniverseSettings settings) {
+    protected void updateUniverseSettings(UniverseSettings settings) {
         Universe universe = universeRepository.get(universeName).orElseThrow();
         universeRepository.update(new Universe(universeName, universe.getDisplayName(), settings));
     }

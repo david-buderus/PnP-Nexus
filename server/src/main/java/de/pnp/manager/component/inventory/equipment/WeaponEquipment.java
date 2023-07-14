@@ -24,6 +24,10 @@ public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> impleme
         return (int) Math.ceil(getMaxDamage() * getRelativeDurability());
     }
 
+    /**
+     * Returns the {@link Weapon#getDamage() damage} of the underlying {@link Item} with regard to the
+     * {@link #getUpgrades() upgrades}.
+     */
     public int getMaxDamage() {
         return applyUpgradeEffects(EUpgradeManipulator.DAMAGE, getItem().getDamage());
     }

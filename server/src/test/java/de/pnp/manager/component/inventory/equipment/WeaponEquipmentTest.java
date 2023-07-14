@@ -29,7 +29,7 @@ class WeaponEquipmentTest {
         weapon.applyWear(1);
         assertThat(weapon.getDamage()).isEqualTo(9);
 
-        weapon.applyWear(1.6f);
+        weapon.applyWear(1.6F);
         assertThat(weapon.getDamage()).isEqualTo(8);
     }
 }
