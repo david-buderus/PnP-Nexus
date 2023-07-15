@@ -11,7 +11,60 @@
     }
   ],
   "paths": {
-    "/{universe}/items/id": {
+    "/{universe}/items/{id}": {
+      "get": {
+        "tags": [
+          "item-service"
+        ],
+        "summary": "Get an object from the database",
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "universe",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Item"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Armor"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Jewellery"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Shield"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Weapon"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": [
           "item-service"
@@ -26,72 +79,9 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/Item"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Armor"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Jewellery"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Shield"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Weapon"
-                  }
-                ]
-              }
-            }
           },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/Item"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Armor"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Jewellery"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Shield"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Weapon"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "item-service"
-        ],
-        "summary": "Inserts an object into the database",
-        "operationId": "insert",
-        "parameters": [
           {
-            "name": "universe",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -148,117 +138,6 @@
                       "$ref": "#/components/schemas/Weapon"
                     }
                   ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/{universe}/items/all": {
-      "get": {
-        "tags": [
-          "item-service"
-        ],
-        "summary": "Get all objects from the database",
-        "operationId": "getAll_1",
-        "parameters": [
-          {
-            "name": "universe",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/Item"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Armor"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Jewellery"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Shield"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Weapon"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": [
-          "item-service"
-        ],
-        "summary": "Get all objects with the given ids from the database",
-        "operationId": "getAll",
-        "parameters": [
-          {
-            "name": "universe",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ObjectId"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/Item"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Armor"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Jewellery"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Shield"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Weapon"
-                      }
-                    ]
-                  }
                 }
               }
             }
@@ -269,8 +148,8 @@
         "tags": [
           "item-service"
         ],
-        "summary": "Get all objects with the given ids from the database",
-        "operationId": "deleteAll",
+        "summary": "Deletes an object from the database",
+        "operationId": "delete",
         "parameters": [
           {
             "name": "universe",
@@ -279,21 +158,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ObjectId"
-                }
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "204": {
             "description": "No Content"
@@ -301,13 +175,13 @@
         }
       }
     },
-    "/{universe}/items/all/named": {
-      "post": {
+    "/{universe}/items": {
+      "get": {
         "tags": [
           "item-service"
         ],
-        "summary": "Get all objects with the given names from the database",
-        "operationId": "getAllByName",
+        "summary": "Get all objects from the database",
+        "operationId": "getAll",
         "parameters": [
           {
             "name": "universe",
@@ -316,21 +190,19 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
               }
             }
-          },
-          "required": true
-        },
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -362,9 +234,7 @@
             }
           }
         }
-      }
-    },
-    "/{universe}/items/all/insert": {
+      },
       "post": {
         "tags": [
           "item-service"
@@ -441,123 +311,13 @@
             }
           }
         }
-      }
-    },
-    "/{universe}/items/named/{name}": {
-      "get": {
-        "tags": [
-          "item-service"
-        ],
-        "summary": "Get an object from the database",
-        "operationId": "getByName",
-        "parameters": [
-          {
-            "name": "universe",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/Item"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Armor"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Jewellery"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Shield"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Weapon"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/{universe}/items/id/{id}": {
-      "get": {
-        "tags": [
-          "item-service"
-        ],
-        "summary": "Get an object from the database",
-        "operationId": "get",
-        "parameters": [
-          {
-            "name": "universe",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "oneOf": [
-                    {
-                      "$ref": "#/components/schemas/Item"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Armor"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Jewellery"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Shield"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Weapon"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
       },
       "delete": {
         "tags": [
           "item-service"
         ],
-        "summary": "Deletes an object from the database",
-        "operationId": "delete",
+        "summary": "Get all objects with the given ids from the database",
+        "operationId": "deleteAll",
         "parameters": [
           {
             "name": "universe",
@@ -568,11 +328,14 @@
             }
           },
           {
-            "name": "id",
-            "in": "path",
+            "name": "ids",
+            "in": "query",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         ],
