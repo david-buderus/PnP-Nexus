@@ -50,7 +50,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @DeleteMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Get all objects with the given ids from the database", operationId = "deleteAll")
+    @Operation(summary = "Deletes all objects with the given ids from the database", operationId = "deleteAll")
     public void deleteAll(@PathVariable String universe, @RequestParam List<String> ids) {
         if (!repository.removeAll(universe, ids)) {
             throw createNotFound("Unable to find all resource with the given ids");
