@@ -1,5 +1,6 @@
-package de.pnp.manager.component;
+package de.pnp.manager.component.crafting;
 
+import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import java.util.Collection;

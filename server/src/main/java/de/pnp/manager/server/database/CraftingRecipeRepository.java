@@ -1,6 +1,6 @@
 package de.pnp.manager.server.database;
 
-import de.pnp.manager.component.CraftingRecipe;
+import de.pnp.manager.component.crafting.CraftingRecipe;
 import org.springframework.stereotype.Component;
 
 /**
