@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("{universe}/items")
-public class ItemService extends IUniquelyNamedRepositoryServiceBase<Item, ItemRepository> {
+public class ItemService extends RepositoryServiceBase<Item, ItemRepository> {
 
     protected ItemService(@Autowired ItemRepository repository) {
         super(repository);
