@@ -21,8 +21,8 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
      * {@link #getRelativeDurability() durability} and {@link #getUpgrades() upgrades}.
      */
     public int getArmor() {
-        return (int) Math.ceil(
-            applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability());
+        return Math.max(0, (int) Math.ceil(
+            applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability()));
     }
 
     /**
@@ -30,7 +30,7 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
      * {@link #getUpgrades() upgrades}.
      */
     public int getMaxArmor() {
-        return applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor());
+        return Math.max(0, applyUpgradeEffects(EUpgradeManipulator.ARMOR, getItem().getArmor()));
     }
 
     /**

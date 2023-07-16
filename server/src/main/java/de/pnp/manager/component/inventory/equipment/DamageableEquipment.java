@@ -32,7 +32,7 @@ public abstract class DamageableEquipment<I extends IDamageableItem & IEquipable
 
     @Override
     public float getRelativeDurability() {
-        return (getMaxDurability() - wear) / getMaxDurability();
+        return Math.max(0, (getMaxDurability() - wear) / getMaxDurability());
     }
 
     /**

@@ -9,6 +9,7 @@ import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
+import de.pnp.manager.component.upgrade.effect.MultiplicativeUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -54,5 +55,22 @@ class EquipmentTest {
                 .build());
         assertThat(equipment.getUpgradeSlots()).isEqualTo(4);
         assertThat(equipment.getRemainingUpgradeSlots()).isEqualTo(3);
+    }
+
+    @Test
+    void testUpgradeEffectOrder() {
+        Equipment<EquipableItem> equipment = new Equipment<>(1, TEST_ITEM);
+
+        equipment.addUpgrade(
+            createUpgrade().withSlots(0).addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.SLOTS, 2))
+                .build());
+        equipment.addUpgrade(
+            createUpgrade().withSlots(0).addEffect(new MultiplicativeUpgradeEffect("", EUpgradeManipulator.SLOTS, 2))
+                .build());
+        equipment.addUpgrade(
+            createUpgrade().withSlots(0).addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.SLOTS, 2))
+                .build());
+
+        assertThat(equipment.getUpgradeSlots()).isEqualTo(12);
     }
 }
