@@ -16,20 +16,20 @@ public abstract class UniverseTestBase {
     /**
      * Database name that should be used for testing
      */
-    protected final String universe;
+    protected final String universeName;
 
 
     protected UniverseTestBase() {
-        universe = UUID.randomUUID().toString();
+        universeName = UUID.randomUUID().toString();
     }
 
     @BeforeEach
     void setup(@Autowired UniverseRepository repository) {
-        repository.insert(new Universe(universe, universe));
+        repository.insert(new Universe(universeName, universeName));
     }
 
     @AfterEach
     void tearDown(@Autowired UniverseRepository repository) {
-        repository.remove(universe);
+        repository.remove(universeName);
     }
 }

@@ -42,15 +42,15 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     @Test
     void testInsert() {
         E object = createObject();
-        E persistedObject = repository.insert(universe, object);
+        E persistedObject = repository.insert(universeName, object);
 
         assertThat(persistedObject).isEqualTo(object);
-        assertThat(repository.getAll(universe)).contains(object);
-        assertThat(repository.get(universe, persistedObject.getId())).contains(object);
+        assertThat(repository.getAll(universeName)).contains(object);
+        assertThat(repository.get(universeName, persistedObject.getId())).contains(object);
 
         if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
             IUniquelyNamedDataObject namedObject = (IUniquelyNamedDataObject) object;
-            Optional<?> optional = uniqueNameRepository.get(universe, namedObject.getName());
+            Optional<?> optional = uniqueNameRepository.get(universeName, namedObject.getName());
             assertThat(optional).isNotEmpty();
             assertThat(optional.get()).isEqualTo(object);
         }
@@ -58,34 +58,34 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
 
     @Test
     void testRemove() {
-        E object = repository.insert(universe, createObject());
-        assertThat(repository.getAll(universe)).contains(object);
+        E object = repository.insert(universeName, createObject());
+        assertThat(repository.getAll(universeName)).contains(object);
 
-        assertThat(repository.remove(universe, object.getId())).isTrue();
-        assertThat(repository.getAll(universe)).isEmpty();
-        assertThat(repository.get(universe, object.getId())).isEmpty();
+        assertThat(repository.remove(universeName, object.getId())).isTrue();
+        assertThat(repository.getAll(universeName)).isEmpty();
+        assertThat(repository.get(universeName, object.getId())).isEmpty();
 
         if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
             IUniquelyNamedDataObject namedObject = (IUniquelyNamedDataObject) object;
-            assertThat(uniqueNameRepository.get(universe, namedObject.getName())).isEmpty();
+            assertThat(uniqueNameRepository.get(universeName, namedObject.getName())).isEmpty();
         }
     }
 
     @Test
     void testUpdate() {
-        E object = repository.insert(universe, createObject());
-        assertThat(repository.getAll(universe)).contains(object);
+        E object = repository.insert(universeName, createObject());
+        assertThat(repository.getAll(universeName)).contains(object);
 
         E change = createSlightlyChangeObject();
-        E persistedChange = repository.update(universe, object.getId(), change);
+        E persistedChange = repository.update(universeName, object.getId(), change);
         assertThat(persistedChange).isEqualTo(change);
         assertThat(persistedChange.getId()).isEqualTo(object.getId());
-        assertThat(repository.getAll(universe)).contains(change);
-        assertThat(repository.get(universe, persistedChange.getId())).contains(change);
+        assertThat(repository.getAll(universeName)).contains(change);
+        assertThat(repository.get(universeName, persistedChange.getId())).contains(change);
 
         if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
             IUniquelyNamedDataObject namedChange = (IUniquelyNamedDataObject) persistedChange;
-            Optional<?> optional = uniqueNameRepository.get(universe, namedChange.getName());
+            Optional<?> optional = uniqueNameRepository.get(universeName, namedChange.getName());
             assertThat(optional).isNotEmpty();
             assertThat(optional.get()).isEqualTo(change);
         }
@@ -95,16 +95,16 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     @SuppressWarnings("unchecked")
     void testInsertAll() {
         List<E> objects = createMultipleObjects();
-        Collection<E> insertedObjects = repository.insertAll(universe, objects);
+        Collection<E> insertedObjects = repository.insertAll(universeName, objects);
 
         assertThat(insertedObjects).containsExactlyInAnyOrderElementsOf(objects);
-        assertThat(repository.getAll(universe)).containsExactlyInAnyOrderElementsOf(objects);
-        assertThat(repository.getAll(universe,
+        assertThat(repository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(objects);
+        assertThat(repository.getAll(universeName,
             insertedObjects.stream().map(E::getId).toList())).containsExactlyInAnyOrderElementsOf(
             objects);
 
         if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
-            assertThat(uniqueNameRepository.getAllByName(universe,
+            assertThat(uniqueNameRepository.getAllByName(universeName,
                 insertedObjects.stream().map(obj -> (IUniquelyNamedDataObject) obj)
                     .map(IUniquelyNamedDataObject::getName)
                     .toList())).map(obj -> (E) obj).containsExactlyInAnyOrderElementsOf(
@@ -114,16 +114,16 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
 
     @Test
     void testRemoveAll() {
-        Collection<E> objects = repository.insertAll(universe, createMultipleObjects());
-        assertThat(repository.getAll(universe)).containsAll(objects);
+        Collection<E> objects = repository.insertAll(universeName, createMultipleObjects());
+        assertThat(repository.getAll(universeName)).containsAll(objects);
 
         List<ObjectId> objectIds = objects.stream().map(E::getId).toList();
-        assertThat(repository.removeAll(universe, objectIds)).isTrue();
-        assertThat(repository.getAll(universe, objectIds)).isEmpty();
-        assertThat(repository.getAll(universe)).isEmpty();
+        assertThat(repository.removeAll(universeName, objectIds)).isTrue();
+        assertThat(repository.getAll(universeName, objectIds)).isEmpty();
+        assertThat(repository.getAll(universeName)).isEmpty();
 
         if (repository instanceof IUniquelyNamedRepository<?> uniqueNameRepository) {
-            assertThat(uniqueNameRepository.getAllByName(universe,
+            assertThat(uniqueNameRepository.getAllByName(universeName,
                 objects.stream().map(obj -> (IUniquelyNamedDataObject) obj)
                     .map(IUniquelyNamedDataObject::getName).toList())).isEmpty();
         }
@@ -139,16 +139,16 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
         Function<A, Link> linkGetter,
         RepositoryBase<Link> linkRepository, A object, Link originalLink,
         Link changedLink) {
-        assertThat(linkRepository.get(universe, originalLink.getId())).as(
+        assertThat(linkRepository.get(universeName, originalLink.getId())).as(
             "The original link has to be already persisted.").isNotEmpty();
 
-        E persistedObject = repository.insert(universe, object);
-        assertThat(repository.get(universe, persistedObject.getId())).contains(object);
+        E persistedObject = repository.insert(universeName, object);
+        assertThat(repository.get(universeName, persistedObject.getId())).contains(object);
 
-        linkRepository.update(universe, originalLink.getId(), changedLink);
-        assertThat(linkRepository.get(universe, originalLink.getId())).contains(changedLink);
+        linkRepository.update(universeName, originalLink.getId(), changedLink);
+        assertThat(linkRepository.get(universeName, originalLink.getId())).contains(changedLink);
 
-        Optional<E> optional = repository.get(universe, persistedObject.getId());
+        Optional<E> optional = repository.get(universeName, persistedObject.getId());
         assertThat(optional).isNotEmpty();
         assertThat(linkGetter.apply((A) optional.get())).isEqualTo(changedLink);
     }
@@ -163,25 +163,25 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
         Function<A, Collection<Link>> linkGetter,
         RepositoryBase<Link> linkRepository, A object, Collection<Link> originalLinks,
         Map<Link, Link> changedLinks) {
-        assertThat(linkRepository.getAll(universe)).as(
+        assertThat(linkRepository.getAll(universeName)).as(
             "The original links have to be already persisted.").containsAll(originalLinks);
 
-        E persistedObject = repository.insert(universe, object);
-        assertThat(repository.get(universe, persistedObject.getId())).contains(object);
+        E persistedObject = repository.insert(universeName, object);
+        assertThat(repository.get(universeName, persistedObject.getId())).contains(object);
 
         for (Link originalLink : originalLinks) {
             Link changedLink = changedLinks.get(originalLink);
 
             if (changedLink != null) {
-                linkRepository.update(universe, originalLink.getId(), changedLink);
-                assertThat(linkRepository.get(universe, originalLink.getId())).contains(changedLink);
+                linkRepository.update(universeName, originalLink.getId(), changedLink);
+                assertThat(linkRepository.get(universeName, originalLink.getId())).contains(changedLink);
             } else {
-                linkRepository.remove(universe, originalLink.getId());
-                assertThat(linkRepository.get(universe, originalLink.getId())).isEmpty();
+                linkRepository.remove(universeName, originalLink.getId());
+                assertThat(linkRepository.get(universeName, originalLink.getId())).isEmpty();
             }
         }
 
-        Optional<E> optional = repository.get(universe, persistedObject.getId());
+        Optional<E> optional = repository.get(universeName, persistedObject.getId());
         assertThat(optional).isNotEmpty();
         assertThat(linkGetter.apply((A) optional.get())).containsExactlyInAnyOrderElementsOf(
             changedLinks.values());
