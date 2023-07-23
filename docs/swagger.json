@@ -316,7 +316,7 @@
         "tags": [
           "item-service"
         ],
-        "summary": "Get all objects with the given ids from the database",
+        "summary": "Deletes all objects with the given ids from the database",
         "operationId": "deleteAll",
         "parameters": [
           {
@@ -385,7 +385,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "$ref": "#/components/schemas/ObjectId"
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -433,7 +433,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "$ref": "#/components/schemas/ObjectId"
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -478,7 +478,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "$ref": "#/components/schemas/ObjectId"
+            "type": "string"
           },
           "name": {
             "type": "string"
@@ -488,19 +488,6 @@
             "items": {
               "$ref": "#/components/schemas/Item"
             }
-          }
-        }
-      },
-      "ObjectId": {
-        "type": "object",
-        "properties": {
-          "timestamp": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "date": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       },

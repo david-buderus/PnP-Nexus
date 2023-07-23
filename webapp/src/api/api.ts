@@ -31,10 +31,10 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 export interface Armor {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Armor
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -189,10 +189,10 @@ export type Get200Response = Armor | Item | Jewellery | Shield | Weapon;
 export interface Item {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Item
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -274,10 +274,10 @@ export type ItemRarityEnum = typeof ItemRarityEnum[keyof typeof ItemRarityEnum];
 export interface ItemType {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof ItemType
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -311,10 +311,10 @@ export type ItemTypeTypeRestrictionEnum = typeof ItemTypeTypeRestrictionEnum[key
 export interface Jewellery {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Jewellery
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -439,10 +439,10 @@ export interface JewelleryAllOf {
 export interface Material {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Material
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -459,34 +459,15 @@ export interface Material {
 /**
  * 
  * @export
- * @interface ObjectId
- */
-export interface ObjectId {
-    /**
-     * 
-     * @type {number}
-     * @memberof ObjectId
-     */
-    'timestamp'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof ObjectId
-     */
-    'date'?: string;
-}
-/**
- * 
- * @export
  * @interface Shield
  */
 export interface Shield {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Shield
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -659,10 +640,10 @@ export interface ShieldAllOf {
 export interface Weapon {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Weapon
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -874,7 +855,7 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary Get all objects with the given ids from the database
+         * @summary Deletes all objects with the given ids from the database
          * @param {string} universe 
          * @param {Array<string>} ids 
          * @param {*} [options] Override http request option.
@@ -1098,7 +1079,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get all objects with the given ids from the database
+         * @summary Deletes all objects with the given ids from the database
          * @param {string} universe 
          * @param {Array<string>} ids 
          * @param {*} [options] Override http request option.
@@ -1180,7 +1161,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
-         * @summary Get all objects with the given ids from the database
+         * @summary Deletes all objects with the given ids from the database
          * @param {string} universe 
          * @param {Array<string>} ids 
          * @param {*} [options] Override http request option.
@@ -1259,7 +1240,7 @@ export class ItemServiceApi extends BaseAPI {
 
     /**
      * 
-     * @summary Get all objects with the given ids from the database
+     * @summary Deletes all objects with the given ids from the database
      * @param {string} universe 
      * @param {Array<string>} ids 
      * @param {*} [options] Override http request option.
