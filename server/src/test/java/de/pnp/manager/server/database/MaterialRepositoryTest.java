@@ -2,7 +2,6 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -47,7 +46,7 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
     }
 
     @Override
-    protected Collection<Material> createMultipleObjects() {
+    protected List<Material> createMultipleObjects() {
         return List.of(new Material(null, "Iron", List.of()), new Material(null, "Copper", List.of()));
     }
 }

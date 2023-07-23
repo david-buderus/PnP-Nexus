@@ -5,8 +5,8 @@ import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistent
 import com.google.common.base.Preconditions;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.server.exception.AlreadyPersistedException;
-import de.pnp.manager.server.exception.UniverseNotFoundException;
+import de.pnp.manager.exception.AlreadyPersistedException;
+import de.pnp.manager.exception.UniverseNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -87,9 +87,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
         if (object.isPersisted()) {
             throw new AlreadyPersistedException(object);
         }
-        onBeforePersistent(universe, object);
+        onBeforePersistent(universe, List.of(object));
         E persistedObject = getTemplate(universe).insert(object, collectionName);
-        onAfterPersistent(universe, persistedObject);
+        onAfterPersistent(universe, List.of(object));
         return persistedObject;
     }
 
@@ -99,14 +99,14 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * @throws AlreadyPersistedException if at least one object
      *                                   {@link DatabaseObject#isPersisted() is already persisted}.
      */
-    public Collection<E> insertAll(String universe, Collection<E> collection) {
+    public Collection<E> insertAll(String universe, List<E> collection) {
         if (collection.stream().anyMatch(DatabaseObject::isPersisted)) {
             throw new AlreadyPersistedException(
                 collection.stream().filter(DatabaseObject::isPersisted).toList());
         }
-        collection.forEach(object -> onBeforePersistent(universe, object));
+        onBeforePersistent(universe, collection);
         Collection<E> persistedObjects = getTemplate(universe).insert(collection, collectionName);
-        persistedObjects.forEach(object -> onAfterPersistent(universe, object));
+        onAfterPersistent(universe, collection);
         return persistedObjects;
     }
 
@@ -124,11 +124,11 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      */
     public E update(String universe, ObjectId id, E object) {
         Preconditions.checkNotNull(id);
-        onBeforePersistent(universe, object);
+        onBeforePersistent(universe, List.of(object));
         E persistedObject = getTemplate(universe).findAndReplace(
             Query.query(Criteria.where("_id").is(id)),
             object, FindAndReplaceOptions.options().returnNew(), collectionName);
-        onAfterPersistent(universe, object);
+        onAfterPersistent(universe, List.of(object));
         return persistedObject;
     }
 
@@ -145,7 +145,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     /**
      * Removes the objects stored under the given ids.
      */
-    public boolean removeAll(String universe, Collection<?> ids) {
+    public boolean removeAll(String universe, Collection<ObjectId> ids) {
         List<Object> deletedIds = getTemplate(universe).findAllAndRemove(
             Query.query(Criteria.where("_id").in(ids)), collectionName);
         return deletedIds.size() == ids.size();
@@ -162,18 +162,18 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     }
 
     /**
-     * Possibility to add validations or something similar before the repository tries to persist the object.
+     * Possibility to add validations or something similar before the repository tries to persist the objects.
      */
-    protected void onBeforePersistent(String universe, E object) {
+    protected void onBeforePersistent(String universe, List<E> objects) {
         // no op
     }
 
     /**
      * Possibility to add hooks or something similar after the repository has successfully persisted the object.
      * <p>
-     * This means the object will always have an {@link DatabaseObject#getId() id}.
+     * This means the objects will always have an {@link DatabaseObject#getId() id}.
      */
-    protected void onAfterPersistent(String universe, E object) {
+    protected void onAfterPersistent(String universe, List<E> objects) {
         // no op
     }
 }

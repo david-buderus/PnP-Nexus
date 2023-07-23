@@ -3,7 +3,6 @@ package de.pnp.manager.server.database;
 import de.pnp.manager.component.Spell;
 import de.pnp.manager.component.attributes.EPrimaryAttribute;
 import de.pnp.manager.component.character.Talent;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
     }
 
     @Override
-    protected Collection<Spell> createMultipleObjects() {
+    protected List<Spell> createMultipleObjects() {
         return List.of(new Spell(null, "Wall", "", "", "", List.of(), 2),
             new Spell(null, "Shock", "", "", "", List.of(), 1));
     }

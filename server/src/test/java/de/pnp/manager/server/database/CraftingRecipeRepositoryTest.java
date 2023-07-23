@@ -7,7 +7,6 @@ import de.pnp.manager.component.CraftingRecipe.CraftingItem;
 import de.pnp.manager.component.CraftingRecipe.CraftingMaterial;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +95,7 @@ class CraftingRecipeRepositoryTest extends
     }
 
     @Override
-    protected Collection<CraftingRecipe> createMultipleObjects() {
+    protected List<CraftingRecipe> createMultipleObjects() {
         Item itemA = itemRepository.insert(universe,
             itemBuilder.createItemBuilder(universe).withName("A").buildItem());
         Item itemB = itemRepository.insert(universe,

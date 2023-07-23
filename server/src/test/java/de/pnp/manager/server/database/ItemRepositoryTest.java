@@ -8,7 +8,6 @@ import de.pnp.manager.component.item.ItemType.TypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.Weapon;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -100,7 +99,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     }
 
     @Override
-    protected Collection<Item> createMultipleObjects() {
+    protected List<Item> createMultipleObjects() {
         return List.of(itemBuilder.createItemBuilder(universe).withName("A").buildItem(),
             itemBuilder.createItemBuilder(universe).withName("B").buildItem(),
             itemBuilder.createItemBuilder(universe).withName("C").buildItem());

@@ -1,4 +1,4 @@
-package de.pnp.manager.server.exception;
+package de.pnp.manager.exception;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 

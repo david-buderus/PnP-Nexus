@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.TypeRestriction;
 import de.pnp.manager.component.item.ItemTypeTranslation;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +102,7 @@ public class ItemTypeTranslationRepositoryTest extends
     }
 
     @Override
-    protected Collection<ItemTypeTranslation> createMultipleObjects() {
+    protected List<ItemTypeTranslation> createMultipleObjects() {
         return List.of(new ItemTypeTranslation(null, asType("Sword"),
             Set.of(asType("Blade"), asType("Weapon"))), new ItemTypeTranslation(null, asType("Blade"),
             Set.of(asType("Weapon"))));

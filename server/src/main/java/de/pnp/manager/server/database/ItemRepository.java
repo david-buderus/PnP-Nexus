@@ -2,6 +2,8 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
+import de.pnp.manager.server.validation.ItemValidator;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +26,15 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
     }
 
     @Override
-    protected void onAfterPersistent(String universe, Item item) {
-        typeTranslationRepository.addTypeTranslation(universe, item.getSubtype(),
-            item.getType());
+    protected void onBeforePersistent(String universe, List<Item> items) {
+        ItemValidator.validateItems(items);
+    }
+
+    @Override
+    protected void onAfterPersistent(String universe, List<Item> items) {
+        for (Item item : items) {
+            typeTranslationRepository.addTypeTranslation(universe, item.getSubtype(),
+                item.getType());
+        }
     }
 }

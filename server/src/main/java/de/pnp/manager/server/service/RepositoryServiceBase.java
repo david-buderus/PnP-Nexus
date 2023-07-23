@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Base class to provide service access to {@link RepositoryBase}.
  */
+@RestController
 public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo extends RepositoryBase<Obj>> {
 
     /**
@@ -35,23 +37,23 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @GetMapping
     @Operation(summary = "Get all objects from the database", operationId = "getAll")
-    public Collection<Obj> getAll(@PathVariable String universe, @RequestParam(required = false) List<String> ids) {
-        if (ids.isEmpty()) {
+    public Collection<Obj> getAll(@PathVariable String universe, @RequestParam(required = false) List<ObjectId> ids) {
+        if (ids == null || ids.isEmpty()) {
             return repository.getAll(universe);
         }
-        return repository.getAll(universe, ids.stream().map(ObjectId::new).toList());
+        return repository.getAll(universe, ids);
     }
 
     @PostMapping
     @Operation(summary = "Inserts the objects into the database", operationId = "insertAll")
-    public Collection<Obj> insertAll(@PathVariable String universe, @RequestBody Collection<Obj> objects) {
+    public Collection<Obj> insertAll(@PathVariable String universe, @RequestBody List<Obj> objects) {
         return repository.insertAll(universe, objects);
     }
 
     @DeleteMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Deletes all objects with the given ids from the database", operationId = "deleteAll")
-    public void deleteAll(@PathVariable String universe, @RequestParam List<String> ids) {
+    public void deleteAll(@PathVariable String universe, @RequestParam List<ObjectId> ids) {
         if (!repository.removeAll(universe, ids)) {
             throw createNotFound("Unable to find all resource with the given ids");
         }
@@ -59,22 +61,22 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @GetMapping("{id}")
     @Operation(summary = "Get an object from the database", operationId = "get")
-    public Obj get(@PathVariable String universe, @PathVariable String id) {
-        return repository.get(universe, new ObjectId(id))
+    public Obj get(@PathVariable String universe, @PathVariable ObjectId id) {
+        return repository.get(universe, id)
             .orElseThrow(() -> createNotFound("Unable to find resource with id '%s'", id));
     }
 
     @PutMapping("{id}")
     @Operation(summary = "Updates an object in the database", operationId = "update")
-    public Obj update(@PathVariable String universe, @PathVariable String id, @RequestBody Obj object) {
-        return repository.update(universe, new ObjectId(id), object);
+    public Obj update(@PathVariable String universe, @PathVariable ObjectId id, @RequestBody Obj object) {
+        return repository.update(universe, id, object);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Deletes an object from the database", operationId = "delete")
-    public void delete(@PathVariable String universe, @PathVariable String id) {
-        if (!repository.remove(universe, new ObjectId(id))) {
+    public void delete(@PathVariable String universe, @PathVariable ObjectId id) {
+        if (!repository.remove(universe, id)) {
             throw createNotFound("Unable to find resource with id '%s'", id);
         }
     }

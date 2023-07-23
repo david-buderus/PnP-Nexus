@@ -2,7 +2,6 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.TypeRestriction;
-import java.util.Collection;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +25,7 @@ class ItemTypeRepositoryTest extends RepositoryTestBase<ItemType, ItemTypeReposi
     }
 
     @Override
-    protected Collection<ItemType> createMultipleObjects() {
+    protected List<ItemType> createMultipleObjects() {
         return List.of(new ItemType(null, "Armor", TypeRestriction.ARMOR),
             new ItemType(null, "Shield", TypeRestriction.SHIELD));
     }
