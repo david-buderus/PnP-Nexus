@@ -33,7 +33,9 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
     @Test
     void testInsertArmor() {
-        Armor armor = itemBuilder.createItemBuilder(universeName).buildArmor();
+        Material material = materialRepository.insert(universeName,
+            new Material(null, "Material", Collections.emptyList()));
+        Armor armor = itemBuilder.createItemBuilder(universeName).withMaterial(material).buildArmor();
         Item persistedArmor = repository.insert(universeName, armor);
 
         assertThat(repository.getAll(universeName)).contains(armor);

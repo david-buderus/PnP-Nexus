@@ -10,7 +10,6 @@ import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.ItemTypeRepository;
 import de.pnp.manager.server.database.MaterialRepository;
-import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -76,7 +75,7 @@ public class TestItemBuilder {
         tier = 1;
         description = "description";
         note = "note";
-        material = getMaterial("Material");
+        material = null;
         upgradeSlots = 0;
         armor = 1;
         weight = 0;
@@ -161,10 +160,5 @@ public class TestItemBuilder {
     private ItemType getType(String typeName) {
         return typeRepository.get(universe, typeName).orElse(
             typeRepository.insert(universe, new ItemType(null, typeName, TypeRestriction.ITEM)));
-    }
-
-    private Material getMaterial(String materialName) {
-        return materialRepository.get(universe, materialName).orElse(
-            materialRepository.insert(universe, new Material(null, materialName, Collections.emptyList())));
     }
 }
