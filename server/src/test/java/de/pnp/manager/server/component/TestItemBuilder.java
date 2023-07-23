@@ -9,7 +9,6 @@ import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.ItemTypeRepository;
-import de.pnp.manager.server.database.MaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,20 +26,16 @@ public class TestItemBuilder {
         @Autowired
         private ItemTypeRepository typeRepository;
 
-        @Autowired
-        private MaterialRepository materialRepository;
-
         /**
          * Builder with default values.
          */
         public TestItemBuilder createItemBuilder(String universe) {
-            return new TestItemBuilder(universe, typeRepository, materialRepository);
+            return new TestItemBuilder(universe, typeRepository);
         }
     }
 
     private final String universe;
     private final ItemTypeRepository typeRepository;
-    private final MaterialRepository materialRepository;
 
     private String name;
     private ItemType type;
@@ -61,10 +56,9 @@ public class TestItemBuilder {
     private int damage;
     private String dice;
 
-    private TestItemBuilder(String universe, ItemTypeRepository typeRepository, MaterialRepository materialRepository) {
+    private TestItemBuilder(String universe, ItemTypeRepository typeRepository) {
         this.universe = universe;
         this.typeRepository = typeRepository;
-        this.materialRepository = materialRepository;
         name = "name";
         type = getType("Type");
         subtype = getType("Subtype");
