@@ -1,5 +1,7 @@
 package de.pnp.manager.server.database.upgrade;
 
+import de.pnp.manager.component.IRecipeEntry.CharacterResource;
+import de.pnp.manager.component.IRecipeEntry.CharacterResourceRecipeEntry;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
@@ -67,7 +69,8 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
             new ItemType(null, "Other Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade = upgradeRepository.insert(universeName,
             new Upgrade(null, "Other Test", type, 1, 0, List.of()));
-        return new UpgradeRecipe(null, upgrade, List.of(), "Something", List.of());
+        return new UpgradeRecipe(null, upgrade, List.of(), "Something",
+            List.of(new CharacterResourceRecipeEntry(10, CharacterResource.MANA)));
     }
 
     @Override
