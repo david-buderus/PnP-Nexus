@@ -40,31 +40,31 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Armor
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {ItemType}
      * @memberof Armor
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {string}
      * @memberof Armor
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {string}
      * @memberof Armor
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
      * @type {string}
@@ -88,19 +88,19 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Armor
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {Material}
      * @memberof Armor
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -198,31 +198,31 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Item
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {ItemType}
      * @memberof Item
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {string}
      * @memberof Item
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {string}
      * @memberof Item
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
      * @type {string}
@@ -246,13 +246,13 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Item
      */
-    'note'?: string;
+    'note': string;
 }
 
 export const ItemRarityEnum = {
@@ -320,31 +320,31 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Jewellery
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {ItemType}
      * @memberof Jewellery
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {string}
      * @memberof Jewellery
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {string}
      * @memberof Jewellery
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
      * @type {string}
@@ -368,19 +368,19 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Jewellery
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {Material}
      * @memberof Jewellery
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -392,7 +392,7 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'gem'?: string;
+    'gem': string;
 }
 
 export const JewelleryRarityEnum = {
@@ -473,31 +473,31 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Shield
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {ItemType}
      * @memberof Shield
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {string}
      * @memberof Shield
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {string}
      * @memberof Shield
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
      * @type {string}
@@ -521,19 +521,19 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Shield
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {Material}
      * @memberof Shield
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -649,31 +649,31 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Weapon
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {ItemType}
      * @memberof Weapon
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {string}
      * @memberof Weapon
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {string}
      * @memberof Weapon
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
      * @type {string}
@@ -697,19 +697,19 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Weapon
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {Material}
      * @memberof Weapon
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -739,7 +739,7 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'dice'?: string;
+    'dice': string;
     /**
      * 
      * @type {number}

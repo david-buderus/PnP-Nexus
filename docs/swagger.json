@@ -350,6 +350,16 @@
   "components": {
     "schemas": {
       "Armor": {
+        "required": [
+          "description",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
+        ],
         "type": "object",
         "allOf": [
           {
@@ -362,14 +372,17 @@
                 "$ref": "#/components/schemas/Material"
               },
               "upgradeSlots": {
+                "minimum": 0,
                 "type": "integer",
                 "format": "int32"
               },
               "armor": {
+                "minimum": 0,
                 "type": "integer",
                 "format": "int32"
               },
               "weight": {
+                "minimum": 0,
                 "type": "number",
                 "format": "double"
               },
@@ -382,6 +395,15 @@
         ]
       },
       "Item": {
+        "required": [
+          "description",
+          "effect",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -414,10 +436,12 @@
             ]
           },
           "vendorPrice": {
+            "minimum": 1,
             "type": "integer",
             "format": "int32"
           },
           "tier": {
+            "minimum": 1,
             "type": "integer",
             "format": "int32"
           },
@@ -452,6 +476,17 @@
         }
       },
       "Jewellery": {
+        "required": [
+          "description",
+          "effect",
+          "gem",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
+        ],
         "type": "object",
         "allOf": [
           {
@@ -464,6 +499,7 @@
                 "$ref": "#/components/schemas/Material"
               },
               "upgradeSlots": {
+                "minimum": 0,
                 "type": "integer",
                 "format": "int32"
               },
@@ -492,6 +528,16 @@
         }
       },
       "Shield": {
+        "required": [
+          "description",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
+        ],
         "type": "object",
         "allOf": [
           {
@@ -504,6 +550,7 @@
                 "$ref": "#/components/schemas/Material"
               },
               "upgradeSlots": {
+                "minimum": 0,
                 "type": "integer",
                 "format": "int32"
               },
@@ -516,10 +563,12 @@
                 "format": "int32"
               },
               "armor": {
+                "minimum": 0,
                 "type": "integer",
                 "format": "int32"
               },
               "weight": {
+                "minimum": 0,
                 "type": "number",
                 "format": "double"
               },
@@ -532,6 +581,17 @@
         ]
       },
       "Weapon": {
+        "required": [
+          "description",
+          "dice",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
+        ],
         "type": "object",
         "allOf": [
           {
@@ -544,6 +604,7 @@
                 "$ref": "#/components/schemas/Material"
               },
               "upgradeSlots": {
+                "minimum": 0,
                 "type": "integer",
                 "format": "int32"
               },
@@ -556,6 +617,7 @@
                 "format": "int32"
               },
               "damage": {
+                "minimum": 0,
                 "type": "integer",
                 "format": "int32"
               },
