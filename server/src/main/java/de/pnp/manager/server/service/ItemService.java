@@ -1,7 +1,7 @@
 package de.pnp.manager.server.service;
 
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.server.database.ItemRepository;
+import de.pnp.manager.server.database.item.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

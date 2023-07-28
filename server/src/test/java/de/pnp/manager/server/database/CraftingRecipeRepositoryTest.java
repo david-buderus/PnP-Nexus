@@ -3,13 +3,14 @@ package de.pnp.manager.server.database;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.CraftingRecipe;
-import de.pnp.manager.component.CraftingRecipe.CraftingItem;
-import de.pnp.manager.component.CraftingRecipe.CraftingMaterial;
+import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
+import de.pnp.manager.server.database.item.ItemRepository;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,25 +31,16 @@ class CraftingRecipeRepositoryTest extends
     }
 
     @Test
-    void testChangeCraftingRecipeResult() {
+    void testResultLink() {
         Item resultOld = itemRepository.insert(universeName,
             itemBuilder.createItemBuilder(universeName).withName("Result old").buildItem());
-        Item itemA = itemRepository.insert(universeName,
-            itemBuilder.createItemBuilder(universeName).withName("A").buildItem());
-
-        CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
-            new CraftingItem(1, resultOld), null, List.of(new CraftingItem(2, itemA)));
-
-        repository.insert(universeName, craftingRecipe);
-        assertThat(repository.getAll(universeName)).contains(craftingRecipe);
-
         Item resultNew = itemBuilder.createItemBuilder(universeName).withName("Result new").buildItem();
-        itemRepository.update(universeName, resultOld.getId(), resultNew);
+        Item materialItem = itemRepository.insert(universeName,
+            itemBuilder.createItemBuilder(universeName).withName("A").buildItem());
+        CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
+            new ItemRecipeEntry(1, resultOld), null, List.of(new ItemRecipeEntry(2, materialItem)));
 
-        Optional<CraftingRecipe> optFabrication = repository.getAll(universeName).stream()
-            .findFirst();
-        assertThat(optFabrication).isNotEmpty();
-        assertThat(optFabrication.get().getProduct().item()).isEqualTo(resultNew);
+        testRepositoryLink(recipe -> recipe.getProduct().item(), itemRepository, craftingRecipe, resultOld, resultNew);
     }
 
 
@@ -60,8 +52,8 @@ class CraftingRecipeRepositoryTest extends
             new Material(null, "Material", Collections.emptyList()));
 
         CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
-            new CraftingItem(1, result),
-            null, List.of(new CraftingMaterial(7, material)));
+            new ItemRecipeEntry(1, result),
+            null, List.of(new MaterialRecipeEntry(7, material)));
 
         repository.insert(universeName, craftingRecipe);
         assertThat(repository.getAll(universeName)).contains(craftingRecipe);
@@ -77,9 +69,9 @@ class CraftingRecipeRepositoryTest extends
             itemBuilder.createItemBuilder(universeName).withName("B").buildItem());
 
         return new CraftingRecipe(null, "", "", "",
-            new CraftingItem(1, result),
-            null, List.of(new CraftingItem(7, itemA),
-            new CraftingItem(4, itemB)));
+            new ItemRecipeEntry(1, result),
+            null, List.of(new ItemRecipeEntry(7, itemA),
+            new ItemRecipeEntry(4, itemB)));
     }
 
     @Override
@@ -89,9 +81,9 @@ class CraftingRecipeRepositoryTest extends
         Item itemB = itemRepository.get(universeName, "B").orElseThrow();
 
         return new CraftingRecipe(null, "Alchemy", "", "Fire",
-            new CraftingItem(1, result),
-            null, List.of(new CraftingItem(7, itemA),
-            new CraftingItem(4, itemB)));
+            new ItemRecipeEntry(1, result),
+            null, List.of(new ItemRecipeEntry(7, itemA),
+            new ItemRecipeEntry(4, itemB)));
     }
 
     @Override
@@ -101,10 +93,10 @@ class CraftingRecipeRepositoryTest extends
         Item itemB = itemRepository.insert(universeName,
             itemBuilder.createItemBuilder(universeName).withName("B").buildItem());
 
-        CraftingRecipe recipeA = new CraftingRecipe(null, "", "", "", new CraftingItem(1, itemA),
-            null, List.of(new CraftingItem(4, itemB)));
-        CraftingRecipe recipeB = new CraftingRecipe(null, "", "", "", new CraftingItem(1, itemB),
-            null, List.of(new CraftingItem(4, itemA)));
+        CraftingRecipe recipeA = new CraftingRecipe(null, "", "", "", new ItemRecipeEntry(1, itemA),
+            null, List.of(new ItemRecipeEntry(4, itemB)));
+        CraftingRecipe recipeB = new CraftingRecipe(null, "", "", "", new ItemRecipeEntry(1, itemB),
+            null, List.of(new ItemRecipeEntry(4, itemA)));
 
         return List.of(recipeA, recipeB);
     }

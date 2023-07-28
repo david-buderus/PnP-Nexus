@@ -1,11 +1,9 @@
 package de.pnp.manager.component;
 
-import de.pnp.manager.component.item.Item;
-import de.pnp.manager.component.item.Material;
+import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
  * A crafting recipe in the universe.
@@ -30,21 +28,21 @@ public class CraftingRecipe extends DatabaseObject {
     /**
      * The product of this {@link CraftingRecipe}
      */
-    private final CraftingItem product;
+    private final ItemRecipeEntry product;
 
     /**
      * The side-product of this {@link CraftingRecipe}
      */
-    private final CraftingItem sideProduct;
+    private final ItemRecipeEntry sideProduct;
 
     /**
      * The materials needed to use this {@link CraftingRecipe}
      */
-    private final Collection<ICraftingEntry> materials;
+    private final Collection<IRecipeEntry> materials;
 
     public CraftingRecipe(ObjectId id, String profession, String requirement,
-        String otherCircumstances, CraftingItem product, CraftingItem sideProduct,
-        Collection<ICraftingEntry> materials) {
+        String otherCircumstances, ItemRecipeEntry product, ItemRecipeEntry sideProduct,
+        Collection<IRecipeEntry> materials) {
         super(id);
         this.profession = profession;
         this.requirement = requirement;
@@ -67,15 +65,15 @@ public class CraftingRecipe extends DatabaseObject {
         return otherCircumstances;
     }
 
-    public CraftingItem getProduct() {
+    public ItemRecipeEntry getProduct() {
         return product;
     }
 
-    public CraftingItem getSideProduct() {
+    public ItemRecipeEntry getSideProduct() {
         return sideProduct;
     }
 
-    public Collection<ICraftingEntry> getMaterials() {
+    public Collection<IRecipeEntry> getMaterials() {
         return materials;
     }
 
@@ -100,31 +98,5 @@ public class CraftingRecipe extends DatabaseObject {
     public int hashCode() {
         return Objects.hash(getProfession(), getRequirement(), getOtherCircumstances(), getProduct(),
             getSideProduct(), getMaterials());
-    }
-
-    /**
-     * An entry in the {@link CraftingRecipe#getMaterials() material list} of a {@link CraftingRecipe}.
-     */
-    public sealed interface ICraftingEntry {
-
-        /**
-         * The amount needed for this {@link ICraftingEntry}
-         */
-        float amount();
-    }
-
-    /**
-     * A {@link ICraftingEntry} which uses a specific {@link Item}.
-     */
-    public record CraftingItem(float amount, @DBRef Item item) implements ICraftingEntry {
-
-    }
-
-    /**
-     * A {@link ICraftingEntry} which uses a {@link Material}.
-     */
-    public record CraftingMaterial(float amount, @DBRef Material material) implements
-        ICraftingEntry {
-
     }
 }

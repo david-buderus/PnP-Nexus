@@ -2,6 +2,8 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
+import de.pnp.manager.server.database.item.ItemRepository;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;

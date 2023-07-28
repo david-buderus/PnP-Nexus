@@ -1,7 +1,8 @@
-package de.pnp.manager.server.database;
+package de.pnp.manager.server.database.item;
 
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemTypeTranslation;
+import de.pnp.manager.server.database.RepositoryBase;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;

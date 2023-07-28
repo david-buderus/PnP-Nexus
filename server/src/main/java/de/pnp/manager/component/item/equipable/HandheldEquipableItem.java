@@ -22,14 +22,11 @@ public abstract class HandheldEquipableItem extends EquipableItem implements IHa
      */
     protected final int hit;
 
-    public HandheldEquipableItem(ObjectId id, String name, ItemType type, ItemType subtype,
-        String requirement,
-        String effect, ERarity rarity, int vendorPrice, int tier,
-        String description, String note, Material material, int upgradeSlots, float initiative,
-        int hit) {
-        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note,
-            material, upgradeSlots);
+    public HandheldEquipableItem(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
+        String effect, ERarity rarity, int vendorPrice, int tier, String description, String note, Material material,
+        int upgradeSlots, float initiative, int hit, int maximumStackSize, int minimumStackSize) {
+        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
+            upgradeSlots, maximumStackSize, minimumStackSize);
         this.initiative = initiative;
         this.hit = hit;
     }

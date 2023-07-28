@@ -23,31 +23,23 @@ public class Shield extends HandheldEquipableItem implements IDefensiveItem {
      * The weight of this armor.
      */
     @Min(0)
-    protected final double weight;
+    protected final float weight;
 
-    public Shield(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description,
-        String note, Material material, int upgradeSlots, float initiative,
-        int hit, double weight, int armor) {
-        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note,
-            material, upgradeSlots, initiative, hit);
+    public Shield(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
+        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+        float initiative, int hit, float weight, int armor, int maximumStackSize, int minimumStackSize) {
+        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
+            upgradeSlots, initiative, hit, maximumStackSize, minimumStackSize);
         this.weight = weight;
         this.armor = armor;
     }
 
-    public double getWeight() {
+    public float getWeight() {
         return weight;
     }
 
     public int getArmor() {
         return armor;
-    }
-
-    @Override
-    public int getMaxDurability() {
-        return getArmor();
     }
 
     @Override

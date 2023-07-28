@@ -26,14 +26,11 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
     @NotBlank
     protected final String dice;
 
-    public Weapon(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description, String note,
-        Material material,
-        int upgradeSlots, float initiative, int hit, int damage, String dice) {
-        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description,
-            note,
-            material, upgradeSlots, initiative, hit);
+    public Weapon(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
+        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+        float initiative, int hit, int damage, String dice, int maximumStackSize, int minimumStackSize) {
+        super(id, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note, material,
+            upgradeSlots, initiative, hit, maximumStackSize, minimumStackSize);
         this.damage = damage;
         this.dice = dice;
     }
@@ -44,11 +41,6 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
 
     public String getDice() {
         return dice;
-    }
-
-    @Override
-    public int getMaxDurability() {
-        return getDamage();
     }
 
     @Override
