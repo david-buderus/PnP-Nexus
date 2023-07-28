@@ -2,7 +2,7 @@ package de.pnp.manager.server.service;
 
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.server.database.ItemRepository;
+import de.pnp.manager.server.database.item.ItemRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

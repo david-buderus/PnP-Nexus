@@ -1,14 +1,16 @@
 package de.pnp.manager.component.item;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.google.common.base.Preconditions;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
+import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
-import de.pnp.manager.server.database.ItemRepository;
+import de.pnp.manager.server.database.item.ItemRepository;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -28,7 +30,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObject {
 
     /**
-     * The human-readable name of this material.
+     * The human-readable name of this item.
      * <p>
      * This entry is always unique.
      */
@@ -86,10 +88,26 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      */
     protected final String note;
 
-    public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description, String note) {
+    /**
+     * The maximum amount of this item that can be contained in one {@link ItemStack}.
+     */
+    protected final int maximumStackSize;
+
+    /**
+     * The minimum amount of this item that has to be contained in one {@link ItemStack}.
+     * <p>
+     * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
+     */
+    protected final int minimumStackSize;
+
+    public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
+        ERarity rarity, int vendorPrice, int tier, String description, String note, int maximumStackSize,
+        int minimumStackSize) {
         super(id);
+        Preconditions.checkArgument(maximumStackSize >= minimumStackSize,
+            "The maximumStackSize must be greater or equal to the minimumStackSize.");
+        Preconditions.checkArgument(maximumStackSize > 0, "The maximumStackSize must be greater then 0.");
+        Preconditions.checkArgument(minimumStackSize >= 0, "The minimumStackSize must be greater or equal to 0.");
         this.name = name;
         this.type = type;
         this.subtype = subtype;
@@ -100,6 +118,8 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         this.tier = tier;
         this.description = description;
         this.note = note;
+        this.maximumStackSize = maximumStackSize;
+        this.minimumStackSize = minimumStackSize;
     }
 
     @Override
@@ -153,27 +173,38 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     }
 
     @Override
+    public int getMaximumStackSize() {
+        return maximumStackSize;
+    }
+
+    @Override
+    public int getMinimumStackSize() {
+        return minimumStackSize;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (o == null || o.getClass() != getClass()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Item item = (Item) o;
-
         return getVendorPrice() == item.getVendorPrice() && getTier() == item.getTier()
-            && getName().equals(item.getName()) && getType().equals(item.getType())
-            && getSubtype().equals(item.getSubtype()) && Objects.equals(getRequirement(),
+            && getMaximumStackSize() == item.getMaximumStackSize()
+            && getMinimumStackSize() == item.getMinimumStackSize()
+            && Objects.equals(getName(), item.getName()) && Objects.equals(getType(), item.getType())
+            && Objects.equals(getSubtype(), item.getSubtype()) && Objects.equals(getRequirement(),
             item.getRequirement()) && Objects.equals(getEffect(), item.getEffect())
-            && getRarity() == item.getRarity() && Objects.equals(getDescription(),
-            item.getDescription()) && Objects.equals(getNote(), item.getNote());
+            && getRarity() == item.getRarity() && Objects.equals(getDescription(), item.getDescription())
+            && Objects.equals(getNote(), item.getNote());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getType(), getSubtype(), getRequirement(), getEffect(),
-            getRarity(), getVendorPrice(), getTier(), getDescription(), getNote());
+        return Objects.hash(getName(), getType(), getSubtype(), getRequirement(), getEffect(), getRarity(),
+            getVendorPrice(), getTier(), getDescription(), getNote(), getMaximumStackSize(), getMinimumStackSize());
     }
 
     @Override
@@ -189,6 +220,8 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
             ", tier=" + tier +
             ", description='" + description + '\'' +
             ", note='" + note + '\'' +
+            ", maximalStackSize=" + maximumStackSize +
+            ", minimalStackSize=" + minimumStackSize +
             '}';
     }
 }

@@ -2,6 +2,7 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
+import de.pnp.manager.server.database.item.ItemRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +23,9 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
 
     @Test
     void testItemLink() {
-        Item itemWithSpellingMistake = itemRepository.insert(universe,
-            itemBuilder.createItemBuilder(universe).withName("Iron ingt").buildItem());
-        Item item = itemBuilder.createItemBuilder(universe).withName("Iron ingot").buildItem();
+        Item itemWithSpellingMistake = itemRepository.insert(universeName,
+            itemBuilder.createItemBuilder(universeName).withName("Iron ingt").buildItem());
+        Item item = itemBuilder.createItemBuilder(universeName).withName("Iron ingot").buildItem();
         Material material = new Material(null, "Iron", List.of(itemWithSpellingMistake));
 
         testRepositoryCollectionLink(Material::getItems, itemRepository, material,
@@ -34,15 +35,15 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
 
     @Override
     protected Material createObject() {
-        Item ironIngot = itemRepository.insert(universe,
-            itemBuilder.createItemBuilder(universe).withName("Iron ingot").buildItem());
+        Item ironIngot = itemRepository.insert(universeName,
+            itemBuilder.createItemBuilder(universeName).withName("Iron ingot").buildItem());
         return new Material(null, "Iron", List.of(ironIngot));
     }
 
     @Override
     protected Material createSlightlyChangeObject() {
-        Item ironNugget = itemRepository.insert(universe,
-            itemBuilder.createItemBuilder(universe).withName("Iron nugget").buildItem());
+        Item ironNugget = itemRepository.insert(universeName,
+            itemBuilder.createItemBuilder(universeName).withName("Iron nugget").buildItem());
         return new Material(null, "Iron", List.of(ironNugget));
     }
 

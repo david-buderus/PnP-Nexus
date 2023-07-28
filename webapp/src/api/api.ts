@@ -31,34 +31,10 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 export interface Armor {
     /**
      * 
-     * @type {ObjectId}
-     * @memberof Armor
-     */
-    'id'?: ObjectId;
-    /**
-     * 
      * @type {string}
      * @memberof Armor
      */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Armor
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Armor
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'requirement'?: string;
+    'description'?: string;
     /**
      * 
      * @type {string}
@@ -67,10 +43,64 @@ export interface Armor {
     'effect'?: string;
     /**
      * 
+     * @type {ObjectId}
+     * @memberof Armor
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'note'?: string;
+    /**
+     * 
      * @type {string}
      * @memberof Armor
      */
     'rarity'?: ArmorRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Armor
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Armor
+     */
+    'type'?: ItemType;
     /**
      * 
      * @type {number}
@@ -82,19 +112,7 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'tier'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'note'?: string;
+    'armor'?: number;
     /**
      * 
      * @type {Material}
@@ -112,19 +130,7 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
-    'maxDurability'?: number;
 }
 
 export const ArmorRarityEnum = {
@@ -146,6 +152,12 @@ export type ArmorRarityEnum = typeof ArmorRarityEnum[keyof typeof ArmorRarityEnu
 export interface ArmorAllOf {
     /**
      * 
+     * @type {number}
+     * @memberof ArmorAllOf
+     */
+    'armor'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof ArmorAllOf
      */
@@ -161,25 +173,572 @@ export interface ArmorAllOf {
      * @type {number}
      * @memberof ArmorAllOf
      */
+    'weight'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface DefensiveEquipment
+ */
+export interface DefensiveEquipment {
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {IDefensiveItem}
+     * @memberof DefensiveEquipment
+     */
+    'item'?: IDefensiveItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
     'armor'?: number;
     /**
      * 
      * @type {number}
-     * @memberof ArmorAllOf
+     * @memberof DefensiveEquipment
      */
-    'weight'?: number;
+    'hit'?: number;
     /**
      * 
      * @type {number}
-     * @memberof ArmorAllOf
+     * @memberof DefensiveEquipment
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'maxArmor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
      */
     'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof DefensiveEquipment
+     */
+    'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipment
+     */
+    'weight'?: number;
 }
 /**
- * @type GetItem200Response
+ * 
+ * @export
+ * @interface DefensiveEquipmentAllOf
+ */
+export interface DefensiveEquipmentAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'armor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {IDefensiveItem}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'item'?: IDefensiveItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'maxArmor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof DefensiveEquipmentAllOf
+     */
+    'weight'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface Equipment
+ */
+export interface Equipment {
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {IEquipableItem}
+     * @memberof Equipment
+     */
+    'item'?: IEquipableItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Equipment
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof Equipment
+     */
+    'upgrades'?: Array<Upgrade>;
+}
+/**
+ * 
+ * @export
+ * @interface EquipmentAllOf
+ */
+export interface EquipmentAllOf {
+    /**
+     * 
+     * @type {IEquipableItem}
+     * @memberof EquipmentAllOf
+     */
+    'item'?: IEquipableItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentAllOf
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentAllOf
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof EquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
+}
+/**
+ * @type GetItem1200Response
  * @export
  */
-export type GetItem200Response = Armor | Item | Jewellery | Shield | Weapon;
+export type GetItem1200Response = Armor | Item | Jewellery | Shield | Weapon;
+
+/**
+ * 
+ * @export
+ * @interface IDefensiveItem
+ */
+export interface IDefensiveItem {
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'armor'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'effect'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'rarity'?: IDefensiveItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof IDefensiveItem
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IDefensiveItem
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IDefensiveItem
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'vendorPrice'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IDefensiveItem
+     */
+    'weight'?: number;
+}
+
+export const IDefensiveItemRarityEnum = {
+    Unknown: 'UNKNOWN',
+    Common: 'COMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type IDefensiveItemRarityEnum = typeof IDefensiveItemRarityEnum[keyof typeof IDefensiveItemRarityEnum];
+
+/**
+ * 
+ * @export
+ * @interface IEquipableItem
+ */
+export interface IEquipableItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'effect'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'rarity'?: IEquipableItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof IEquipableItem
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IEquipableItem
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IEquipableItem
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IEquipableItem
+     */
+    'vendorPrice'?: number;
+}
+
+export const IEquipableItemRarityEnum = {
+    Unknown: 'UNKNOWN',
+    Common: 'COMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type IEquipableItemRarityEnum = typeof IEquipableItemRarityEnum[keyof typeof IEquipableItemRarityEnum];
+
+/**
+ * 
+ * @export
+ * @interface IOffensiveItem
+ */
+export interface IOffensiveItem {
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'damage'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'dice'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'effect'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'rarity'?: IOffensiveItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof IOffensiveItem
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IOffensiveItem
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof IOffensiveItem
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof IOffensiveItem
+     */
+    'vendorPrice'?: number;
+}
+
+export const IOffensiveItemRarityEnum = {
+    Unknown: 'UNKNOWN',
+    Common: 'COMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type IOffensiveItemRarityEnum = typeof IOffensiveItemRarityEnum[keyof typeof IOffensiveItemRarityEnum];
 
 /**
  * 
@@ -187,60 +746,6 @@ export type GetItem200Response = Armor | Item | Jewellery | Shield | Weapon;
  * @interface Item
  */
 export interface Item {
-    /**
-     * 
-     * @type {ObjectId}
-     * @memberof Item
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Item
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Item
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'rarity'?: ItemRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Item
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Item
-     */
-    'tier'?: number;
     /**
      * 
      * @type {string}
@@ -252,7 +757,73 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Item
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
     'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'rarity'?: ItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Item
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Item
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'vendorPrice'?: number;
 }
 
 export const ItemRarityEnum = {
@@ -265,6 +836,12 @@ export const ItemRarityEnum = {
 } as const;
 
 export type ItemRarityEnum = typeof ItemRarityEnum[keyof typeof ItemRarityEnum];
+
+/**
+ * @type ItemStack200Response
+ * @export
+ */
+export type ItemStack200Response = DefensiveEquipment | Equipment | ItemStackItem | WeaponEquipment;
 
 /**
  * 
@@ -280,10 +857,16 @@ export interface ItemStackItem {
     'amount'?: number;
     /**
      * 
-     * @type {GetItem200Response}
+     * @type {GetItem1200Response}
      * @memberof ItemStackItem
      */
-    'item'?: GetItem200Response;
+    'item'?: GetItem1200Response;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackItem
+     */
+    'stackSize'?: number;
 }
 /**
  * 
@@ -330,60 +913,6 @@ export type ItemTypeTypeRestrictionEnum = typeof ItemTypeTypeRestrictionEnum[key
 export interface Jewellery {
     /**
      * 
-     * @type {ObjectId}
-     * @memberof Jewellery
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Jewellery
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Jewellery
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'rarity'?: JewelleryRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Jewellery
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Jewellery
-     */
-    'tier'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof Jewellery
      */
@@ -393,7 +922,73 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Jewellery
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
     'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'rarity'?: JewelleryRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Jewellery
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Jewellery
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'vendorPrice'?: number;
     /**
      * 
      * @type {Material}
@@ -406,12 +1001,6 @@ export interface Jewellery {
      * @memberof Jewellery
      */
     'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'gem'?: string;
 }
 
 export const JewelleryRarityEnum = {
@@ -443,12 +1032,6 @@ export interface JewelleryAllOf {
      * @memberof JewelleryAllOf
      */
     'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof JewelleryAllOf
-     */
-    'gem'?: string;
 }
 /**
  * 
@@ -464,16 +1047,16 @@ export interface Material {
     'id'?: ObjectId;
     /**
      * 
-     * @type {string}
-     * @memberof Material
-     */
-    'name'?: string;
-    /**
-     * 
      * @type {Array<Item>}
      * @memberof Material
      */
     'items'?: Array<Item>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Material
+     */
+    'name'?: string;
 }
 /**
  * 
@@ -483,16 +1066,16 @@ export interface Material {
 export interface ObjectId {
     /**
      * 
-     * @type {number}
-     * @memberof ObjectId
-     */
-    'timestamp'?: number;
-    /**
-     * 
      * @type {string}
      * @memberof ObjectId
      */
     'date'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ObjectId
+     */
+    'timestamp'?: number;
 }
 /**
  * 
@@ -500,60 +1083,6 @@ export interface ObjectId {
  * @interface Shield
  */
 export interface Shield {
-    /**
-     * 
-     * @type {ObjectId}
-     * @memberof Shield
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Shield
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Shield
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'rarity'?: ShieldRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'tier'?: number;
     /**
      * 
      * @type {string}
@@ -565,7 +1094,91 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Shield
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
     'note'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'rarity'?: ShieldRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Shield
+     */
+    'subtype'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Shield
+     */
+    'type'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'vendorPrice'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'armor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'initiative'?: number;
     /**
      * 
      * @type {Material}
@@ -583,31 +1196,7 @@ export interface Shield {
      * @type {number}
      * @memberof Shield
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'maxDurability'?: number;
 }
 
 export const ShieldRarityEnum = {
@@ -629,6 +1218,24 @@ export type ShieldRarityEnum = typeof ShieldRarityEnum[keyof typeof ShieldRarity
 export interface ShieldAllOf {
     /**
      * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'armor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof ShieldAllOf
      */
@@ -644,31 +1251,63 @@ export interface ShieldAllOf {
      * @type {number}
      * @memberof ShieldAllOf
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
     'weight'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface Upgrade
+ */
+export interface Upgrade {
+    /**
+     * 
+     * @type {Array<UpgradeEffect>}
+     * @memberof Upgrade
+     */
+    'effects'?: Array<UpgradeEffect>;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Upgrade
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {string}
+     * @memberof Upgrade
+     */
+    'name'?: string;
     /**
      * 
      * @type {number}
-     * @memberof ShieldAllOf
+     * @memberof Upgrade
      */
-    'maxDurability'?: number;
+    'slots'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Upgrade
+     */
+    'target'?: ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Upgrade
+     */
+    'vendorPrice'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface UpgradeEffect
+ */
+export interface UpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpgradeEffect
+     */
+    'description'?: string;
 }
 /**
  * 
@@ -676,60 +1315,6 @@ export interface ShieldAllOf {
  * @interface Weapon
  */
 export interface Weapon {
-    /**
-     * 
-     * @type {ObjectId}
-     * @memberof Weapon
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Weapon
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Weapon
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'rarity'?: WeaponRarityEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'tier'?: number;
     /**
      * 
      * @type {string}
@@ -741,31 +1326,73 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
+    'effect'?: string;
+    /**
+     * 
+     * @type {ObjectId}
+     * @memberof Weapon
+     */
+    'id'?: ObjectId;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Weapon
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Weapon
+     */
     'note'?: string;
     /**
      * 
-     * @type {Material}
+     * @type {string}
      * @memberof Weapon
      */
-    'material'?: Material;
+    'rarity'?: WeaponRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Weapon
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Weapon
+     */
+    'subtype'?: ItemType;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'upgradeSlots'?: number;
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Weapon
+     */
+    'type'?: ItemType;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'hit'?: number;
+    'vendorPrice'?: number;
     /**
      * 
      * @type {number}
@@ -783,7 +1410,25 @@ export interface Weapon {
      * @type {number}
      * @memberof Weapon
      */
-    'maxDurability'?: number;
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Weapon
+     */
+    'material'?: Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'upgradeSlots'?: number;
 }
 
 export const WeaponRarityEnum = {
@@ -805,30 +1450,6 @@ export type WeaponRarityEnum = typeof WeaponRarityEnum[keyof typeof WeaponRarity
 export interface WeaponAllOf {
     /**
      * 
-     * @type {Material}
-     * @memberof WeaponAllOf
-     */
-    'material'?: Material;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'hit'?: number;
-    /**
-     * 
      * @type {number}
      * @memberof WeaponAllOf
      */
@@ -844,7 +1465,171 @@ export interface WeaponAllOf {
      * @type {number}
      * @memberof WeaponAllOf
      */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof WeaponAllOf
+     */
+    'material'?: Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponAllOf
+     */
+    'upgradeSlots'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface WeaponEquipment
+ */
+export interface WeaponEquipment {
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {IOffensiveItem}
+     * @memberof WeaponEquipment
+     */
+    'item'?: IOffensiveItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'damage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'maxDamage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
     'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof WeaponEquipment
+     */
+    'upgrades'?: Array<Upgrade>;
+}
+/**
+ * 
+ * @export
+ * @interface WeaponEquipmentAllOf
+ */
+export interface WeaponEquipmentAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'damage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {IOffensiveItem}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'item'?: IOffensiveItem;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'maxDamage'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'maxDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'relativeDurability'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof WeaponEquipmentAllOf
+     */
+    'upgrades'?: Array<Upgrade>;
 }
 
 /**
@@ -984,7 +1769,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getItem(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem200Response>> {
+        async getItem(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem1200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getItem(universe, name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -996,7 +1781,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getItem1(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem200Response>> {
+        async getItem1(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem1200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getItem1(universe, name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1007,7 +1792,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemStack(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemStackItem>> {
+        async itemStack(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemStack200Response>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.itemStack(universe, name, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1029,7 +1814,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem(universe: string, name: string, options?: any): AxiosPromise<GetItem200Response> {
+        getItem(universe: string, name: string, options?: any): AxiosPromise<GetItem1200Response> {
             return localVarFp.getItem(universe, name, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1040,7 +1825,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem1(universe: string, name: string, options?: any): AxiosPromise<GetItem200Response> {
+        getItem1(universe: string, name: string, options?: any): AxiosPromise<GetItem1200Response> {
             return localVarFp.getItem1(universe, name, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1050,7 +1835,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemStack(universe: string, name: string, options?: any): AxiosPromise<ItemStackItem> {
+        itemStack(universe: string, name: string, options?: any): AxiosPromise<ItemStack200Response> {
             return localVarFp.itemStack(universe, name, options).then((request) => request(axios, basePath));
         },
     };
