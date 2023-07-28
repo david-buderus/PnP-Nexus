@@ -1,9 +1,9 @@
 package de.pnp.manager.server.service;
 
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.server.component.TestItemBuilder;
-import de.pnp.manager.server.component.TestItemBuilder.TestItemBuilderFactory;
-import de.pnp.manager.server.database.ItemRepository;
+import de.pnp.manager.server.database.TestItemBuilder;
+import de.pnp.manager.server.database.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.server.database.item.ItemRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 

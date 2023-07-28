@@ -9,7 +9,6 @@ import de.pnp.manager.component.upgrade.UpgradeRecipe;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.server.database.RepositoryTestBase;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -74,7 +73,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     }
 
     @Override
-    protected Collection<UpgradeRecipe> createMultipleObjects() {
+    protected List<UpgradeRecipe> createMultipleObjects() {
         ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade1 = upgradeRepository.insert(universeName, new Upgrade(null, "Test 1", type, 1, 0, List.of()));
         Upgrade upgrade2 = upgradeRepository.insert(universeName, new Upgrade(null, "Test 2", type, 1, 0, List.of()));
