@@ -11,9 +11,10 @@ import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.item.ItemRepository;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -79,13 +80,13 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The average price of this item.
      */
-    @Min(1)
+    @Positive
     protected final int vendorPrice;
 
     /**
      * The tier of this item. A higher tier indicates a better item.
      */
-    @Min(1)
+    @Positive
     protected final int tier;
 
     /**
@@ -103,6 +104,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The maximum amount of this item that can be contained in one {@link ItemStack}.
      */
+    @Positive
     protected final int maximumStackSize;
 
     /**
@@ -110,6 +112,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * <p>
      * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
      */
+    @PositiveOrZero
     protected final int minimumStackSize;
 
     public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,

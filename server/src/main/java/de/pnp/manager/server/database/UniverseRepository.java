@@ -5,7 +5,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.Universe.UniverseSettings;
-import de.pnp.manager.server.exception.UniverseNotFoundException;
+import de.pnp.manager.exception.UniverseNotFoundException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;

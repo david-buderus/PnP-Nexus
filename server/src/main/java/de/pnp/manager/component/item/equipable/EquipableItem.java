@@ -5,8 +5,8 @@ import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -26,7 +26,7 @@ public abstract class EquipableItem extends Item implements IEquipableItem {
     /**
      * The amount of upgrades this item can hold.
      */
-    @Min(0)
+    @PositiveOrZero
     protected final int upgradeSlots;
 
     public EquipableItem(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,

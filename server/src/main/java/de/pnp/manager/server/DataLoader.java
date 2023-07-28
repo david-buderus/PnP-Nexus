@@ -4,12 +4,12 @@ import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.TypeRestriction;
+import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
-import de.pnp.manager.server.database.ItemRepository;
-import de.pnp.manager.server.database.ItemTypeRepository;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.server.database.item.ItemTypeRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -46,9 +46,11 @@ public class DataLoader implements ApplicationRunner {
         }
         universeRepository.insert(new Universe(TEST_UNIVERSE, TEST_UNIVERSE));
 
-        ItemType material = typeRepository.insert(TEST_UNIVERSE, new ItemType(null, "Material", TypeRestriction.ITEM));
-        ItemType metal = typeRepository.insert(TEST_UNIVERSE, new ItemType(null, "Metal", TypeRestriction.ITEM));
-        Item ironIngot = itemRepository.insert(TEST_UNIVERSE, new Item(null, "Iron ingot", material, metal, "", "", ERarity.COMMON, 100, 1, "An ingot of iron.", ""));
+        ItemType material = typeRepository.insert(TEST_UNIVERSE, new ItemType(null, "Material", ETypeRestriction.ITEM));
+        ItemType metal = typeRepository.insert(TEST_UNIVERSE, new ItemType(null, "Metal", ETypeRestriction.ITEM));
+        Item ironIngot = itemRepository.insert(TEST_UNIVERSE,
+            new Item(null, "Iron ingot", material, metal, "", "", ERarity.COMMON, 100, 1, "An ingot of iron.", "", 100,
+                0));
         materialRepository.insert(TEST_UNIVERSE, new Material(null, "Iron", List.of(ironIngot)));
     }
 }

@@ -34,31 +34,7 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'name': string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Armor
-     */
-    'type': ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Armor
-     */
-    'subtype': ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'requirement': string;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -70,7 +46,61 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
+    'id'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'note': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
     'rarity'?: ArmorRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Armor
+     */
+    'requirement': string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Armor
+     */
+    'subtype': ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Armor
+     */
+    'type': ItemType;
     /**
      * 
      * @type {number}
@@ -82,19 +112,7 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'tier'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'description': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Armor
-     */
-    'note': string;
+    'armor'?: number;
     /**
      * 
      * @type {Material}
@@ -112,19 +130,7 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
-    'maxDurability'?: number;
 }
 
 export const ArmorRarityEnum = {
@@ -146,6 +152,12 @@ export type ArmorRarityEnum = typeof ArmorRarityEnum[keyof typeof ArmorRarityEnu
 export interface ArmorAllOf {
     /**
      * 
+     * @type {number}
+     * @memberof ArmorAllOf
+     */
+    'armor'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof ArmorAllOf
      */
@@ -161,25 +173,13 @@ export interface ArmorAllOf {
      * @type {number}
      * @memberof ArmorAllOf
      */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ArmorAllOf
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ArmorAllOf
-     */
-    'maxDurability'?: number;
 }
 /**
- * @type Get200Response
+ * @type GetAll200ResponseInner
  * @export
  */
-export type Get200Response = Armor | Item | Jewellery | Shield | Weapon;
+export type GetAll200ResponseInner = Armor | Item | Jewellery | Shield | Weapon;
 
 /**
  * 
@@ -192,31 +192,7 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'name': string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Item
-     */
-    'type': ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Item
-     */
-    'subtype': ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'requirement': string;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -228,13 +204,49 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'rarity'?: ItemRarityEnum;
+    'id'?: string;
     /**
      * 
      * @type {number}
      * @memberof Item
      */
-    'vendorPrice'?: number;
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Item
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'note': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'rarity'?: ItemRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Item
+     */
+    'requirement': string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Item
+     */
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
@@ -243,16 +255,16 @@ export interface Item {
     'tier'?: number;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Item
      */
-    'description': string;
+    'type': ItemType;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof Item
      */
-    'note': string;
+    'vendorPrice'?: number;
 }
 
 export const ItemRarityEnum = {
@@ -314,31 +326,7 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'name': string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Jewellery
-     */
-    'type': ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Jewellery
-     */
-    'subtype': ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'requirement': string;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -350,13 +338,49 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'rarity'?: JewelleryRarityEnum;
+    'id'?: string;
     /**
      * 
      * @type {number}
      * @memberof Jewellery
      */
-    'vendorPrice'?: number;
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Jewellery
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'note': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'rarity'?: JewelleryRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Jewellery
+     */
+    'requirement': string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Jewellery
+     */
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
@@ -365,16 +389,16 @@ export interface Jewellery {
     'tier'?: number;
     /**
      * 
-     * @type {string}
+     * @type {ItemType}
      * @memberof Jewellery
      */
-    'description': string;
+    'type': ItemType;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof Jewellery
      */
-    'note': string;
+    'vendorPrice'?: number;
     /**
      * 
      * @type {Material}
@@ -387,12 +411,6 @@ export interface Jewellery {
      * @memberof Jewellery
      */
     'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Jewellery
-     */
-    'gem': string;
 }
 
 export const JewelleryRarityEnum = {
@@ -424,12 +442,6 @@ export interface JewelleryAllOf {
      * @memberof JewelleryAllOf
      */
     'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof JewelleryAllOf
-     */
-    'gem'?: string;
 }
 /**
  * 
@@ -445,16 +457,16 @@ export interface Material {
     'id'?: string;
     /**
      * 
-     * @type {string}
-     * @memberof Material
-     */
-    'name'?: string;
-    /**
-     * 
      * @type {Array<Item>}
      * @memberof Material
      */
     'items'?: Array<Item>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Material
+     */
+    'name'?: string;
 }
 /**
  * 
@@ -467,31 +479,7 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'name': string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Shield
-     */
-    'type': ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Shield
-     */
-    'subtype': ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Shield
-     */
-    'requirement': string;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -503,7 +491,61 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
+    'id'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'maximumStackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'minimumStackSize'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'note': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
     'rarity'?: ShieldRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Shield
+     */
+    'requirement': string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Shield
+     */
+    'subtype': ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Shield
+     */
+    'type': ItemType;
     /**
      * 
      * @type {number}
@@ -515,19 +557,19 @@ export interface Shield {
      * @type {number}
      * @memberof Shield
      */
-    'tier'?: number;
+    'armor'?: number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof Shield
      */
-    'description': string;
+    'hit'?: number;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof Shield
      */
-    'note': string;
+    'initiative'?: number;
     /**
      * 
      * @type {Material}
@@ -545,31 +587,7 @@ export interface Shield {
      * @type {number}
      * @memberof Shield
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'maxDurability'?: number;
 }
 
 export const ShieldRarityEnum = {
@@ -591,6 +609,24 @@ export type ShieldRarityEnum = typeof ShieldRarityEnum[keyof typeof ShieldRarity
 export interface ShieldAllOf {
     /**
      * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'armor'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
      * @type {Material}
      * @memberof ShieldAllOf
      */
@@ -606,31 +642,7 @@ export interface ShieldAllOf {
      * @type {number}
      * @memberof ShieldAllOf
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
     'weight'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ShieldAllOf
-     */
-    'maxDurability'?: number;
 }
 /**
  * 
@@ -643,31 +655,7 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'id'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'name': string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Weapon
-     */
-    'type': ItemType;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Weapon
-     */
-    'subtype': ItemType;
-    /**
-     * 
-     * @type {string}
-     * @memberof Weapon
-     */
-    'requirement': string;
+    'description': string;
     /**
      * 
      * @type {string}
@@ -679,25 +667,25 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'rarity'?: WeaponRarityEnum;
+    'id'?: string;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'vendorPrice'?: number;
+    'maximumStackSize'?: number;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'tier'?: number;
+    'minimumStackSize'?: number;
     /**
      * 
      * @type {string}
      * @memberof Weapon
      */
-    'description': string;
+    'name': string;
     /**
      * 
      * @type {string}
@@ -706,28 +694,40 @@ export interface Weapon {
     'note': string;
     /**
      * 
-     * @type {Material}
+     * @type {string}
      * @memberof Weapon
      */
-    'material': Material;
+    'rarity'?: WeaponRarityEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Weapon
+     */
+    'requirement': string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Weapon
+     */
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'upgradeSlots'?: number;
+    'tier'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Weapon
+     */
+    'type': ItemType;
     /**
      * 
      * @type {number}
      * @memberof Weapon
      */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'hit'?: number;
+    'vendorPrice'?: number;
     /**
      * 
      * @type {number}
@@ -745,7 +745,25 @@ export interface Weapon {
      * @type {number}
      * @memberof Weapon
      */
-    'maxDurability'?: number;
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Weapon
+     */
+    'material': Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'upgradeSlots'?: number;
 }
 
 export const WeaponRarityEnum = {
@@ -767,30 +785,6 @@ export type WeaponRarityEnum = typeof WeaponRarityEnum[keyof typeof WeaponRarity
 export interface WeaponAllOf {
     /**
      * 
-     * @type {Material}
-     * @memberof WeaponAllOf
-     */
-    'material'?: Material;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponAllOf
-     */
-    'hit'?: number;
-    /**
-     * 
      * @type {number}
      * @memberof WeaponAllOf
      */
@@ -806,7 +800,25 @@ export interface WeaponAllOf {
      * @type {number}
      * @memberof WeaponAllOf
      */
-    'maxDurability'?: number;
+    'hit'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponAllOf
+     */
+    'initiative'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof WeaponAllOf
+     */
+    'material'?: Material;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponAllOf
+     */
+    'upgradeSlots'?: number;
 }
 
 /**
@@ -975,15 +987,15 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<Get200Response>} get200Response 
+         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        insertAll: async (universe: string, get200Response: Array<Get200Response>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        insertAll: async (universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('insertAll', 'universe', universe)
-            // verify required parameter 'get200Response' is not null or undefined
-            assertParamExists('insertAll', 'get200Response', get200Response)
+            // verify required parameter 'getAll200ResponseInner' is not null or undefined
+            assertParamExists('insertAll', 'getAll200ResponseInner', getAll200ResponseInner)
             const localVarPath = `/{universe}/items`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1004,7 +1016,7 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(get200Response, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getAll200ResponseInner, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1016,17 +1028,17 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {Get200Response} get200Response 
+         * @param {GetAll200ResponseInner} getAll200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        update: async (universe: string, id: string, get200Response: Get200Response, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        update: async (universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('update', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('update', 'id', id)
-            // verify required parameter 'get200Response' is not null or undefined
-            assertParamExists('update', 'get200Response', get200Response)
+            // verify required parameter 'getAll200ResponseInner' is not null or undefined
+            assertParamExists('update', 'getAll200ResponseInner', getAll200ResponseInner)
             const localVarPath = `/{universe}/items/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
@@ -1048,7 +1060,7 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(get200Response, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(getAll200ResponseInner, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1097,7 +1109,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async get(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Get200Response>> {
+        async get(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll200ResponseInner>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.get(universe, id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1109,7 +1121,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Get200Response>>> {
+        async getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll200ResponseInner>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAll(universe, ids, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1117,12 +1129,12 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<Get200Response>} get200Response 
+         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async insertAll(universe: string, get200Response: Array<Get200Response>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Get200Response>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll(universe, get200Response, options);
+        async insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll(universe, getAll200ResponseInner, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1130,12 +1142,12 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {Get200Response} get200Response 
+         * @param {GetAll200ResponseInner} getAll200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async update(universe: string, id: string, get200Response: Get200Response, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Get200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.update(universe, id, get200Response, options);
+        async update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll200ResponseInner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update(universe, id, getAll200ResponseInner, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1178,7 +1190,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        get(universe: string, id: string, options?: any): AxiosPromise<Get200Response> {
+        get(universe: string, id: string, options?: any): AxiosPromise<GetAll200ResponseInner> {
             return localVarFp.get(universe, id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1189,31 +1201,31 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAll(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<Get200Response>> {
+        getAll(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<GetAll200ResponseInner>> {
             return localVarFp.getAll(universe, ids, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<Get200Response>} get200Response 
+         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        insertAll(universe: string, get200Response: Array<Get200Response>, options?: any): AxiosPromise<Array<Get200Response>> {
-            return localVarFp.insertAll(universe, get200Response, options).then((request) => request(axios, basePath));
+        insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: any): AxiosPromise<Array<GetAll200ResponseInner>> {
+            return localVarFp.insertAll(universe, getAll200ResponseInner, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {Get200Response} get200Response 
+         * @param {GetAll200ResponseInner} getAll200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        update(universe: string, id: string, get200Response: Get200Response, options?: any): AxiosPromise<Get200Response> {
-            return localVarFp.update(universe, id, get200Response, options).then((request) => request(axios, basePath));
+        update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: any): AxiosPromise<GetAll200ResponseInner> {
+            return localVarFp.update(universe, id, getAll200ResponseInner, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1281,13 +1293,13 @@ export class ItemServiceApi extends BaseAPI {
      * 
      * @summary Inserts the objects into the database
      * @param {string} universe 
-     * @param {Array<Get200Response>} get200Response 
+     * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public insertAll(universe: string, get200Response: Array<Get200Response>, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).insertAll(universe, get200Response, options).then((request) => request(this.axios, this.basePath));
+    public insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).insertAll(universe, getAll200ResponseInner, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1295,13 +1307,13 @@ export class ItemServiceApi extends BaseAPI {
      * @summary Updates an object in the database
      * @param {string} universe 
      * @param {string} id 
-     * @param {Get200Response} get200Response 
+     * @param {GetAll200ResponseInner} getAll200ResponseInner 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public update(universe: string, id: string, get200Response: Get200Response, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).update(universe, id, get200Response, options).then((request) => request(this.axios, this.basePath));
+    public update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).update(universe, id, getAll200ResponseInner, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
