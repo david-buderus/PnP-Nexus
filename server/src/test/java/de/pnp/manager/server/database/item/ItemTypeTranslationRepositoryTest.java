@@ -6,7 +6,6 @@ import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.ItemTypeTranslation;
 import de.pnp.manager.server.database.RepositoryTestBase;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

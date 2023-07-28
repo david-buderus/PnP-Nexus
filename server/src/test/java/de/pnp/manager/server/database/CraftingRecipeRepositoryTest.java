@@ -8,7 +8,6 @@ import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.server.database.item.ItemRepository;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
