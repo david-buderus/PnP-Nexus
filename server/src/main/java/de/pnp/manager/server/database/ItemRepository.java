@@ -2,7 +2,6 @@ package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
-import de.pnp.manager.server.validation.ItemValidator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,11 +22,6 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
 
     public ItemRepository() {
         super(Item.class, REPOSITORY_NAME);
-    }
-
-    @Override
-    protected void onBeforePersistent(String universe, List<Item> items) {
-        ItemValidator.validateItems(items);
     }
 
     @Override

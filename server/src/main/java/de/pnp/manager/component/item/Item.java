@@ -9,6 +9,9 @@ import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.ItemRepository;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -33,6 +36,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * This entry is always unique.
      */
     @Indexed(unique = true)
+    @NotBlank
     protected final String name;
 
     /**
@@ -41,6 +45,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * An example would be material.
      */
     @DBRef
+    @NotNull
     protected final ItemType type;
 
     /**
@@ -49,16 +54,19 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * An example would be metal.
      */
     @DBRef
+    @NotNull
     protected final ItemType subtype;
 
     /**
      * The requirement needed to use this item.
      */
+    @NotNull
     protected final String requirement;
 
     /**
      * The effect of this item.
      */
+    @NotNull
     protected final String effect;
 
     /**
@@ -69,21 +77,25 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The average price of this item.
      */
+    @Min(1)
     protected final int vendorPrice;
 
     /**
      * The tier of this item. A higher tier indicates a better item.
      */
+    @Min(1)
     protected final int tier;
 
     /**
      * A description of this item.
      */
+    @NotNull
     protected final String description;
 
     /**
      * Any kind of additional information.
      */
+    @NotNull
     protected final String note;
 
     public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,

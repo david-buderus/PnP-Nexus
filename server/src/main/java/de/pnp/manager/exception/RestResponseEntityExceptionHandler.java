@@ -1,5 +1,9 @@
 package de.pnp.manager.exception;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +19,17 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
-     * Handles {@link ValidationException}.
+     * Handles {@link ConstraintViolationException}.
      */
-    @ExceptionHandler(ValidationException.class)
-    protected ResponseEntity<Object> handleValidationError(ValidationException ex, WebRequest request) {
-        return handleExceptionInternal(ex, ex.getNotValidatesFields(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    @ExceptionHandler(ConstraintViolationException.class)
+    protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex,
+        WebRequest request) {
+        Map<String, String> response = new HashMap<>();
+
+        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+            response.put(violation.getPropertyPath().toString(), violation.getMessage());
+        }
+
+        return handleExceptionInternal(ex, response, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 }

@@ -5,10 +5,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.server.database.RepositoryBase;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Base class to provide service access to {@link RepositoryBase}.
  */
 @RestController
+@Validated
 public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo extends RepositoryBase<Obj>> {
 
     /**
@@ -46,7 +49,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @PostMapping
     @Operation(summary = "Inserts the objects into the database", operationId = "insertAll")
-    public Collection<Obj> insertAll(@PathVariable String universe, @RequestBody List<Obj> objects) {
+    public Collection<Obj> insertAll(@PathVariable String universe, @RequestBody List<@Valid Obj> objects) {
         return repository.insertAll(universe, objects);
     }
 
@@ -68,7 +71,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @PutMapping("{id}")
     @Operation(summary = "Updates an object in the database", operationId = "update")
-    public Obj update(@PathVariable String universe, @PathVariable ObjectId id, @RequestBody Obj object) {
+    public Obj update(@PathVariable String universe, @PathVariable ObjectId id, @RequestBody @Valid Obj object) {
         return repository.update(universe, id, object);
     }
 

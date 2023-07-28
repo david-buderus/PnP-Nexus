@@ -7,9 +7,16 @@ import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.exception.AlreadyPersistedException;
 import de.pnp.manager.exception.UniverseNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndReplaceOptions;
@@ -37,6 +44,14 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * The class used in this repository.
      */
     protected Class<E> clazz;
+
+    private static final Validator VALIDATOR;
+
+    static {
+        try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()) {
+            VALIDATOR = validatorFactory.getValidator();
+        }
+    }
 
     public RepositoryBase(Class<E> clazz, String collectionName) {
         this.clazz = clazz;
@@ -165,7 +180,15 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * Possibility to add validations or something similar before the repository tries to persist the objects.
      */
     protected void onBeforePersistent(String universe, List<E> objects) {
-        // no op
+        Set<ConstraintViolation<?>> violations = new HashSet<>();
+
+        for (E object : objects) {
+            violations.addAll(VALIDATOR.validate(object));
+        }
+
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
     }
 
     /**

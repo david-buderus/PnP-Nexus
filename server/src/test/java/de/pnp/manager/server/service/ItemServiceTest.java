@@ -14,7 +14,7 @@ public class ItemServiceTest extends RepositoryServiceBaseTest<Item, ItemReposit
 
     @Autowired
     private TestItemBuilderFactory itemBuilder;
-    
+
     public ItemServiceTest(@Autowired ItemService itemService) {
         super(itemService);
     }
