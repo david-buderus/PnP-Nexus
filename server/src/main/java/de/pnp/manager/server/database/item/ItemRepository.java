@@ -1,6 +1,7 @@
-package de.pnp.manager.server.database;
+package de.pnp.manager.server.database.item;
 
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

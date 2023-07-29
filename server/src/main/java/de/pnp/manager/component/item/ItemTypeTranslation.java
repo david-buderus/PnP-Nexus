@@ -1,7 +1,7 @@
 package de.pnp.manager.component.item;
 
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.server.database.ItemTypeTranslationRepository;
+import de.pnp.manager.server.database.item.ItemTypeTranslationRepository;
 import java.util.Objects;
 import java.util.Set;
 import org.bson.types.ObjectId;
