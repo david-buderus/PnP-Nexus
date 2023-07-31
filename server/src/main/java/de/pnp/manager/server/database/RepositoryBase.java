@@ -102,9 +102,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
         if (object.isPersisted()) {
             throw new AlreadyPersistedException(object);
         }
-        onBeforePersistent(universe, List.of(object));
+        onBeforePersist(universe, List.of(object));
         E persistedObject = getTemplate(universe).insert(object, collectionName);
-        onAfterPersistent(universe, List.of(object));
+        onAfterPersist(universe, List.of(object));
         return persistedObject;
     }
 
@@ -119,9 +119,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
             throw new AlreadyPersistedException(
                 collection.stream().filter(DatabaseObject::isPersisted).toList());
         }
-        onBeforePersistent(universe, collection);
+        onBeforePersist(universe, collection);
         Collection<E> persistedObjects = getTemplate(universe).insert(collection, collectionName);
-        onAfterPersistent(universe, collection);
+        onAfterPersist(universe, collection);
         return persistedObjects;
     }
 
@@ -139,11 +139,11 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      */
     public E update(String universe, ObjectId id, E object) {
         Preconditions.checkNotNull(id);
-        onBeforePersistent(universe, List.of(object));
+        onBeforePersist(universe, List.of(object));
         E persistedObject = getTemplate(universe).findAndReplace(
             Query.query(Criteria.where("_id").is(id)),
             object, FindAndReplaceOptions.options().returnNew(), collectionName);
-        onAfterPersistent(universe, List.of(object));
+        onAfterPersist(universe, List.of(object));
         return persistedObject;
     }
 
@@ -179,7 +179,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     /**
      * Possibility to add validations or something similar before the repository tries to persist the objects.
      */
-    protected void onBeforePersistent(String universe, List<E> objects) {
+    protected void onBeforePersist(String universe, List<E> objects) {
         Set<ConstraintViolation<?>> violations = new HashSet<>();
 
         for (E object : objects) {
@@ -196,7 +196,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * <p>
      * This means the objects will always have an {@link DatabaseObject#getId() id}.
      */
-    protected void onAfterPersistent(String universe, List<E> objects) {
+    protected void onAfterPersist(String universe, List<E> objects) {
         // no op
     }
 }

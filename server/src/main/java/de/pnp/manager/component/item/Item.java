@@ -80,7 +80,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The average price of this item.
      */
-    @Positive
+    @PositiveOrZero
     protected final int vendorPrice;
 
     /**
