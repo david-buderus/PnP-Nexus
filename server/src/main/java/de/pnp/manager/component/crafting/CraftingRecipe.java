@@ -1,6 +1,7 @@
 package de.pnp.manager.component.crafting;
 
-import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.crafting.IRecipeEntry.ItemRecipeEntry;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;

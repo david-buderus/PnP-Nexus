@@ -2,9 +2,9 @@ package de.pnp.manager.server.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.pnp.manager.component.CraftingRecipe;
-import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
-import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
+import de.pnp.manager.component.crafting.CraftingRecipe;
+import de.pnp.manager.component.crafting.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.crafting.IRecipeEntry.MaterialRecipeEntry;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.server.database.item.ItemRepository;

@@ -1,7 +1,7 @@
 package de.pnp.manager.component.upgrade;
 
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.component.IRecipeEntry;
+import de.pnp.manager.component.crafting.IRecipeEntry;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;

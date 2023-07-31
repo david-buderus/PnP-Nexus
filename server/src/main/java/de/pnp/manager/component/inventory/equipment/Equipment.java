@@ -1,6 +1,7 @@
 package de.pnp.manager.component.inventory.equipment;
 
 import com.google.common.base.Preconditions;
+import de.pnp.manager.component.crafting.bonus.UpgradeCraftingBonus.CraftingUpgrade;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IEquipment;
 import de.pnp.manager.component.item.equipable.EquipableItem;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents an {@link EquipableItem} that can be held and used.
@@ -84,7 +86,9 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
      */
     protected float applyUpgradeEffects(EUpgradeManipulator manipulator, float value) {
         List<UpgradeEffect> upgradeEffects = getUpgrades().stream().flatMap(upgrade -> upgrade.getEffects().stream())
-            .toList();
+            .collect(Collectors.toCollection(ArrayList::new));
+        upgradeEffects.addAll(getCraftingBonuses().stream().map(CraftingUpgrade::upgradeEffect).toList());
+
         List<UpgradeEffect> additiveEffects = upgradeEffects.stream().filter(AdditiveUpgradeEffect.class::isInstance)
             .toList();
         List<UpgradeEffect> multiplicativeEffects = upgradeEffects.stream()

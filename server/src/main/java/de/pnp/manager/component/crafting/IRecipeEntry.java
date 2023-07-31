@@ -1,4 +1,4 @@
-package de.pnp.manager.component;
+package de.pnp.manager.component.crafting;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import de.pnp.manager.component.item.Item;

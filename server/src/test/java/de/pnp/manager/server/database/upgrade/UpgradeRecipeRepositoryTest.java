@@ -1,7 +1,7 @@
 package de.pnp.manager.server.database.upgrade;
 
-import de.pnp.manager.component.IRecipeEntry.CharacterResource;
-import de.pnp.manager.component.IRecipeEntry.CharacterResourceRecipeEntry;
+import de.pnp.manager.component.crafting.IRecipeEntry.CharacterResource;
+import de.pnp.manager.component.crafting.IRecipeEntry.CharacterResourceRecipeEntry;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
