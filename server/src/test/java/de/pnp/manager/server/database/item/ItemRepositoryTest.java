@@ -10,7 +10,6 @@ import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.RepositoryTestBase;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,10 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
     @Test
     void testInsertArmor() {
-        Armor armor = itemBuilder.createItemBuilder(universeName).buildArmor();
+        Material material = materialRepository.insert(universeName,
+            new Material(null, "ArmorMat", Collections.emptyList()));
+
+        Armor armor = itemBuilder.createItemBuilder(universeName).withMaterial(material).buildArmor();
         Item persistedArmor = repository.insert(universeName, armor);
 
         assertThat(repository.getAll(universeName)).contains(armor);
@@ -102,7 +104,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     }
 
     @Override
-    protected Collection<Item> createMultipleObjects() {
+    protected List<Item> createMultipleObjects() {
         return List.of(itemBuilder.createItemBuilder(universeName).withName("A").buildItem(),
             itemBuilder.createItemBuilder(universeName).withName("B").buildItem(),
             itemBuilder.createItemBuilder(universeName).withName("C").buildItem());

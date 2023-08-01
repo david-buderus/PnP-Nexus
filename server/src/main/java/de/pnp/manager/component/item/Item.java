@@ -11,6 +11,10 @@ import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.item.ItemRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -35,6 +39,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * This entry is always unique.
      */
     @Indexed(unique = true)
+    @NotBlank
     protected final String name;
 
     /**
@@ -43,6 +48,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * An example would be material.
      */
     @DBRef
+    @NotNull
     protected final ItemType type;
 
     /**
@@ -51,16 +57,19 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * An example would be metal.
      */
     @DBRef
+    @NotNull
     protected final ItemType subtype;
 
     /**
      * The requirement needed to use this item.
      */
+    @NotNull
     protected final String requirement;
 
     /**
      * The effect of this item.
      */
+    @NotNull
     protected final String effect;
 
     /**
@@ -71,26 +80,31 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The average price of this item.
      */
+    @PositiveOrZero
     protected final int vendorPrice;
 
     /**
      * The tier of this item. A higher tier indicates a better item.
      */
+    @Positive
     protected final int tier;
 
     /**
      * A description of this item.
      */
+    @NotNull
     protected final String description;
 
     /**
      * Any kind of additional information.
      */
+    @NotNull
     protected final String note;
 
     /**
      * The maximum amount of this item that can be contained in one {@link ItemStack}.
      */
+    @Positive
     protected final int maximumStackSize;
 
     /**
@@ -98,6 +112,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * <p>
      * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
      */
+    @PositiveOrZero
     protected final int minimumStackSize;
 
     public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,

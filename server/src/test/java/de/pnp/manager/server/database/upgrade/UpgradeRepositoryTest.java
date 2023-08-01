@@ -9,7 +9,6 @@ import de.pnp.manager.component.upgrade.effect.MultiplicativeUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.server.database.RepositoryTestBase;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
-import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
     }
 
     @Override
-    protected Collection<Upgrade> createMultipleObjects() {
+    protected List<Upgrade> createMultipleObjects() {
         ItemType type = typeRepository.insert(universeName, new ItemType(null, "Item", ETypeRestriction.ITEM));
         return List.of(
             new Upgrade(null, "Shine", type, 1, 10,

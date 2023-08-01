@@ -1,4 +1,4 @@
-package de.pnp.manager.server.exception;
+package de.pnp.manager.exception;
 
 import de.pnp.manager.component.DatabaseObject;
 import java.util.Collection;

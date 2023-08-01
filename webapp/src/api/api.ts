@@ -34,19 +34,19 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Armor
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Armor
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -64,13 +64,13 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof Armor
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {string}
@@ -82,13 +82,13 @@ export interface Armor {
      * @type {string}
      * @memberof Armor
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Armor
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
@@ -100,7 +100,7 @@ export interface Armor {
      * @type {ItemType}
      * @memberof Armor
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {number}
@@ -118,7 +118,7 @@ export interface Armor {
      * @type {Material}
      * @memberof Armor
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -176,569 +176,10 @@ export interface ArmorAllOf {
     'weight'?: number;
 }
 /**
- * 
- * @export
- * @interface DefensiveEquipment
- */
-export interface DefensiveEquipment {
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'amount'?: number;
-    /**
-     * 
-     * @type {IDefensiveItem}
-     * @memberof DefensiveEquipment
-     */
-    'item'?: IDefensiveItem;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'stackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'maxArmor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'relativeDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'remainingUpgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof DefensiveEquipment
-     */
-    'upgrades'?: Array<Upgrade>;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipment
-     */
-    'weight'?: number;
-}
-/**
- * 
- * @export
- * @interface DefensiveEquipmentAllOf
- */
-export interface DefensiveEquipmentAllOf {
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'armor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {IDefensiveItem}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'item'?: IDefensiveItem;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'maxArmor'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'relativeDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'remainingUpgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'upgrades'?: Array<Upgrade>;
-    /**
-     * 
-     * @type {number}
-     * @memberof DefensiveEquipmentAllOf
-     */
-    'weight'?: number;
-}
-/**
- * 
- * @export
- * @interface Equipment
- */
-export interface Equipment {
-    /**
-     * 
-     * @type {number}
-     * @memberof Equipment
-     */
-    'amount'?: number;
-    /**
-     * 
-     * @type {IEquipableItem}
-     * @memberof Equipment
-     */
-    'item'?: IEquipableItem;
-    /**
-     * 
-     * @type {number}
-     * @memberof Equipment
-     */
-    'stackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Equipment
-     */
-    'remainingUpgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Equipment
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof Equipment
-     */
-    'upgrades'?: Array<Upgrade>;
-}
-/**
- * 
- * @export
- * @interface EquipmentAllOf
- */
-export interface EquipmentAllOf {
-    /**
-     * 
-     * @type {IEquipableItem}
-     * @memberof EquipmentAllOf
-     */
-    'item'?: IEquipableItem;
-    /**
-     * 
-     * @type {number}
-     * @memberof EquipmentAllOf
-     */
-    'remainingUpgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof EquipmentAllOf
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof EquipmentAllOf
-     */
-    'upgrades'?: Array<Upgrade>;
-}
-/**
- * @type GetItem1200Response
+ * @type GetAll200ResponseInner
  * @export
  */
-export type GetItem1200Response = Armor | Item | Jewellery | Shield | Weapon;
-
-/**
- * 
- * @export
- * @interface IDefensiveItem
- */
-export interface IDefensiveItem {
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'armor'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'maximumStackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'minimumStackSize'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'note'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'rarity'?: IDefensiveItemRarityEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof IDefensiveItem
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IDefensiveItem
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'tier'?: number;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IDefensiveItem
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'vendorPrice'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IDefensiveItem
-     */
-    'weight'?: number;
-}
-
-export const IDefensiveItemRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type IDefensiveItemRarityEnum = typeof IDefensiveItemRarityEnum[keyof typeof IDefensiveItemRarityEnum];
-
-/**
- * 
- * @export
- * @interface IEquipableItem
- */
-export interface IEquipableItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof IEquipableItem
-     */
-    'maximumStackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IEquipableItem
-     */
-    'minimumStackSize'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
-    'note'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
-    'rarity'?: IEquipableItemRarityEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof IEquipableItem
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IEquipableItem
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {number}
-     * @memberof IEquipableItem
-     */
-    'tier'?: number;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IEquipableItem
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {number}
-     * @memberof IEquipableItem
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IEquipableItem
-     */
-    'vendorPrice'?: number;
-}
-
-export const IEquipableItemRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type IEquipableItemRarityEnum = typeof IEquipableItemRarityEnum[keyof typeof IEquipableItemRarityEnum];
-
-/**
- * 
- * @export
- * @interface IOffensiveItem
- */
-export interface IOffensiveItem {
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'damage'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'dice'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'maximumStackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'minimumStackSize'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'note'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'rarity'?: IOffensiveItemRarityEnum;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IOffensiveItem
-     */
-    'subtype'?: ItemType;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'tier'?: number;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof IOffensiveItem
-     */
-    'type'?: ItemType;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'vendorPrice'?: number;
-}
-
-export const IOffensiveItemRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type IOffensiveItemRarityEnum = typeof IOffensiveItemRarityEnum[keyof typeof IOffensiveItemRarityEnum];
+export type GetAll200ResponseInner = Armor | Item | Jewellery | Shield | Weapon;
 
 /**
  * 
@@ -751,19 +192,19 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Item
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Item
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -781,13 +222,13 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof Item
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {string}
@@ -799,13 +240,13 @@ export interface Item {
      * @type {string}
      * @memberof Item
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Item
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
@@ -817,7 +258,7 @@ export interface Item {
      * @type {ItemType}
      * @memberof Item
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {number}
@@ -838,37 +279,6 @@ export const ItemRarityEnum = {
 export type ItemRarityEnum = typeof ItemRarityEnum[keyof typeof ItemRarityEnum];
 
 /**
- * @type ItemStack200Response
- * @export
- */
-export type ItemStack200Response = DefensiveEquipment | Equipment | ItemStackItem | WeaponEquipment;
-
-/**
- * 
- * @export
- * @interface ItemStackItem
- */
-export interface ItemStackItem {
-    /**
-     * 
-     * @type {number}
-     * @memberof ItemStackItem
-     */
-    'amount'?: number;
-    /**
-     * 
-     * @type {GetItem1200Response}
-     * @memberof ItemStackItem
-     */
-    'item'?: GetItem1200Response;
-    /**
-     * 
-     * @type {number}
-     * @memberof ItemStackItem
-     */
-    'stackSize'?: number;
-}
-/**
  * 
  * @export
  * @interface ItemType
@@ -876,10 +286,10 @@ export interface ItemStackItem {
 export interface ItemType {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof ItemType
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {string}
@@ -916,19 +326,19 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Jewellery
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Jewellery
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -946,13 +356,13 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof Jewellery
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {string}
@@ -964,13 +374,13 @@ export interface Jewellery {
      * @type {string}
      * @memberof Jewellery
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Jewellery
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
@@ -982,7 +392,7 @@ export interface Jewellery {
      * @type {ItemType}
      * @memberof Jewellery
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {number}
@@ -994,7 +404,7 @@ export interface Jewellery {
      * @type {Material}
      * @memberof Jewellery
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -1041,10 +451,10 @@ export interface JewelleryAllOf {
 export interface Material {
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Material
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {Array<Item>}
@@ -1061,25 +471,6 @@ export interface Material {
 /**
  * 
  * @export
- * @interface ObjectId
- */
-export interface ObjectId {
-    /**
-     * 
-     * @type {string}
-     * @memberof ObjectId
-     */
-    'date'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof ObjectId
-     */
-    'timestamp'?: number;
-}
-/**
- * 
- * @export
  * @interface Shield
  */
 export interface Shield {
@@ -1088,19 +479,19 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Shield
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Shield
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -1118,13 +509,13 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof Shield
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {string}
@@ -1136,13 +527,13 @@ export interface Shield {
      * @type {string}
      * @memberof Shield
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Shield
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
@@ -1154,7 +545,7 @@ export interface Shield {
      * @type {ItemType}
      * @memberof Shield
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {number}
@@ -1184,7 +575,7 @@ export interface Shield {
      * @type {Material}
      * @memberof Shield
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -1256,62 +647,6 @@ export interface ShieldAllOf {
 /**
  * 
  * @export
- * @interface Upgrade
- */
-export interface Upgrade {
-    /**
-     * 
-     * @type {Array<UpgradeEffect>}
-     * @memberof Upgrade
-     */
-    'effects'?: Array<UpgradeEffect>;
-    /**
-     * 
-     * @type {ObjectId}
-     * @memberof Upgrade
-     */
-    'id'?: ObjectId;
-    /**
-     * 
-     * @type {string}
-     * @memberof Upgrade
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof Upgrade
-     */
-    'slots'?: number;
-    /**
-     * 
-     * @type {ItemType}
-     * @memberof Upgrade
-     */
-    'target'?: ItemType;
-    /**
-     * 
-     * @type {number}
-     * @memberof Upgrade
-     */
-    'vendorPrice'?: number;
-}
-/**
- * 
- * @export
- * @interface UpgradeEffect
- */
-export interface UpgradeEffect {
-    /**
-     * 
-     * @type {string}
-     * @memberof UpgradeEffect
-     */
-    'description'?: string;
-}
-/**
- * 
- * @export
  * @interface Weapon
  */
 export interface Weapon {
@@ -1320,19 +655,19 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'description'?: string;
+    'description': string;
     /**
      * 
      * @type {string}
      * @memberof Weapon
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
-     * @type {ObjectId}
+     * @type {string}
      * @memberof Weapon
      */
-    'id'?: ObjectId;
+    'id'?: string;
     /**
      * 
      * @type {number}
@@ -1350,13 +685,13 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof Weapon
      */
-    'note'?: string;
+    'note': string;
     /**
      * 
      * @type {string}
@@ -1368,13 +703,13 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {ItemType}
      * @memberof Weapon
      */
-    'subtype'?: ItemType;
+    'subtype': ItemType;
     /**
      * 
      * @type {number}
@@ -1386,7 +721,7 @@ export interface Weapon {
      * @type {ItemType}
      * @memberof Weapon
      */
-    'type'?: ItemType;
+    'type': ItemType;
     /**
      * 
      * @type {number}
@@ -1404,7 +739,7 @@ export interface Weapon {
      * @type {string}
      * @memberof Weapon
      */
-    'dice'?: string;
+    'dice': string;
     /**
      * 
      * @type {number}
@@ -1422,7 +757,7 @@ export interface Weapon {
      * @type {Material}
      * @memberof Weapon
      */
-    'material'?: Material;
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -1485,152 +820,6 @@ export interface WeaponAllOf {
      */
     'upgradeSlots'?: number;
 }
-/**
- * 
- * @export
- * @interface WeaponEquipment
- */
-export interface WeaponEquipment {
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'amount'?: number;
-    /**
-     * 
-     * @type {IOffensiveItem}
-     * @memberof WeaponEquipment
-     */
-    'item'?: IOffensiveItem;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'stackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'damage'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'maxDamage'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'relativeDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'remainingUpgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipment
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof WeaponEquipment
-     */
-    'upgrades'?: Array<Upgrade>;
-}
-/**
- * 
- * @export
- * @interface WeaponEquipmentAllOf
- */
-export interface WeaponEquipmentAllOf {
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'damage'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {IOffensiveItem}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'item'?: IOffensiveItem;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'maxDamage'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'maxDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'relativeDurability'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'remainingUpgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {Array<Upgrade>}
-     * @memberof WeaponEquipmentAllOf
-     */
-    'upgrades'?: Array<Upgrade>;
-}
 
 /**
  * ItemServiceApi - axios parameter creator
@@ -1640,20 +829,99 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
     return {
         /**
          * 
-         * @summary Get an item
+         * @summary Deletes an object from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem: async (universe: string, name: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        _delete: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('getItem', 'universe', universe)
-            // verify required parameter 'name' is not null or undefined
-            assertParamExists('getItem', 'name', name)
-            const localVarPath = `/{universe}/item/{name}`
+            assertParamExists('_delete', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('_delete', 'id', id)
+            const localVarPath = `/{universe}/items/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
-                .replace(`{${"name"}}`, encodeURIComponent(String(name)));
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll', 'ids', ids)
+            const localVarPath = `/{universe}/items`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get', 'id', id)
+            const localVarPath = `/{universe}/items/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1678,20 +946,17 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
-         * @summary Get an item
+         * @summary Get all objects from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {Array<string>} [ids] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem1: async (universe: string, name: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getAll: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('getItem1', 'universe', universe)
-            // verify required parameter 'name' is not null or undefined
-            assertParamExists('getItem1', 'name', name)
-            const localVarPath = `/{universe}/a/{name}`
-                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
-                .replace(`{${"name"}}`, encodeURIComponent(String(name)));
+            assertParamExists('getAll', 'universe', universe)
+            const localVarPath = `/{universe}/items`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1702,6 +967,10 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
             const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
 
 
     
@@ -1716,19 +985,19 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemStack: async (universe: string, name: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        insertAll: async (universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('itemStack', 'universe', universe)
-            // verify required parameter 'name' is not null or undefined
-            assertParamExists('itemStack', 'name', name)
-            const localVarPath = `/{universe}/itemstack/{name}`
-                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
-                .replace(`{${"name"}}`, encodeURIComponent(String(name)));
+            assertParamExists('insertAll', 'universe', universe)
+            // verify required parameter 'getAll200ResponseInner' is not null or undefined
+            assertParamExists('insertAll', 'getAll200ResponseInner', getAll200ResponseInner)
+            const localVarPath = `/{universe}/items`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1736,15 +1005,62 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
 
     
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getAll200ResponseInner, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {GetAll200ResponseInner} getAll200ResponseInner 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update: async (universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update', 'id', id)
+            // verify required parameter 'getAll200ResponseInner' is not null or undefined
+            assertParamExists('update', 'getAll200ResponseInner', getAll200ResponseInner)
+            const localVarPath = `/{universe}/items/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getAll200ResponseInner, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1763,37 +1079,75 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get an item
+         * @summary Deletes an object from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getItem(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem1200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getItem(universe, name, options);
+        async _delete(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator._delete(universe, id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
-         * @summary Get an item
+         * @summary Deletes all objects with the given ids from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {Array<string>} ids 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getItem1(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetItem1200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getItem1(universe, name, options);
+        async deleteAll(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll(universe, ids, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
+         * @summary Get an object from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async itemStack(universe: string, name: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemStack200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.itemStack(universe, name, options);
+        async get(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll200ResponseInner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll(universe, getAll200ResponseInner, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {GetAll200ResponseInner} getAll200ResponseInner 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll200ResponseInner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update(universe, id, getAll200ResponseInner, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1808,35 +1162,70 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
     return {
         /**
          * 
-         * @summary Get an item
+         * @summary Deletes an object from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem(universe: string, name: string, options?: any): AxiosPromise<GetItem1200Response> {
-            return localVarFp.getItem(universe, name, options).then((request) => request(axios, basePath));
+        _delete(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp._delete(universe, id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary Get an item
+         * @summary Deletes all objects with the given ids from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {Array<string>} ids 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem1(universe: string, name: string, options?: any): AxiosPromise<GetItem1200Response> {
-            return localVarFp.getItem1(universe, name, options).then((request) => request(axios, basePath));
+        deleteAll(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll(universe, ids, options).then((request) => request(axios, basePath));
         },
         /**
          * 
+         * @summary Get an object from the database
          * @param {string} universe 
-         * @param {string} name 
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        itemStack(universe: string, name: string, options?: any): AxiosPromise<ItemStack200Response> {
-            return localVarFp.itemStack(universe, name, options).then((request) => request(axios, basePath));
+        get(universe: string, id: string, options?: any): AxiosPromise<GetAll200ResponseInner> {
+            return localVarFp.get(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<GetAll200ResponseInner>> {
+            return localVarFp.getAll(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: any): AxiosPromise<Array<GetAll200ResponseInner>> {
+            return localVarFp.insertAll(universe, getAll200ResponseInner, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {GetAll200ResponseInner} getAll200ResponseInner 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: any): AxiosPromise<GetAll200ResponseInner> {
+            return localVarFp.update(universe, id, getAll200ResponseInner, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1850,40 +1239,81 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
 export class ItemServiceApi extends BaseAPI {
     /**
      * 
-     * @summary Get an item
+     * @summary Deletes an object from the database
      * @param {string} universe 
-     * @param {string} name 
+     * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public getItem(universe: string, name: string, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).getItem(universe, name, options).then((request) => request(this.axios, this.basePath));
+    public _delete(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration)._delete(universe, id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @summary Get an item
+     * @summary Deletes all objects with the given ids from the database
      * @param {string} universe 
-     * @param {string} name 
+     * @param {Array<string>} ids 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public getItem1(universe: string, name: string, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).getItem1(universe, name, options).then((request) => request(this.axios, this.basePath));
+    public deleteAll(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).deleteAll(universe, ids, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
+     * @summary Get an object from the database
      * @param {string} universe 
-     * @param {string} name 
+     * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public itemStack(universe: string, name: string, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).itemStack(universe, name, options).then((request) => request(this.axios, this.basePath));
+    public get(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).get(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemServiceApi
+     */
+    public getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).getAll(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemServiceApi
+     */
+    public insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).insertAll(universe, getAll200ResponseInner, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {GetAll200ResponseInner} getAll200ResponseInner 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemServiceApi
+     */
+    public update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).update(universe, id, getAll200ResponseInner, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

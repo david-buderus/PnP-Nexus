@@ -1,5 +1,6 @@
-package de.pnp.manager.server;
+package de.pnp.manager;
 
+import de.pnp.manager.server.EJvmFlag;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -93,7 +93,7 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
     @Test
     @SuppressWarnings("unchecked")
     void testInsertAll() {
-        Collection<E> objects = createMultipleObjects();
+        List<E> objects = createMultipleObjects();
         Collection<E> insertedObjects = repository.insertAll(universeName, objects);
 
         assertThat(insertedObjects).containsExactlyInAnyOrderElementsOf(objects);
@@ -205,5 +205,5 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
      * <p>
      * It must be possible to add all objects in the collection without a conflict.
      */
-    protected abstract Collection<E> createMultipleObjects();
+    protected abstract List<E> createMultipleObjects();
 }
