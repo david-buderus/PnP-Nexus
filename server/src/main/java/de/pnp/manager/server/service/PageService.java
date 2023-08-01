@@ -3,6 +3,7 @@ package de.pnp.manager.server.service;
 import de.pnp.manager.server.EJvmFlag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -15,7 +16,7 @@ public class PageService {
      * Returns the base index.html.
      */
     @GetMapping(value = "{destination:(?!.*api).+}", produces = MediaType.TEXT_HTML_VALUE)
-    public String getPage() {
+    public String getPage(@PathVariable String destination) {
         String indexHtml = getIndexHtml();
         if (Boolean.parseBoolean(EJvmFlag.DEV_MODE.getValue())) {
             indexHtml = redirectToDevServer(indexHtml);
