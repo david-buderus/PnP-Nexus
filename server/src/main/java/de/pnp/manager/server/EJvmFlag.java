@@ -30,7 +30,10 @@ public enum EJvmFlag {
         return System.getProperty(flag, defaultValue);
     }
 
+    /**
+     * Returns whether the flag is active. For this, the value needs to be <code>true</code>, case ignored.
+     */
     public boolean isEnabled() {
-        return Boolean.TRUE.toString().equals(getValue());
+        return Boolean.TRUE.toString().equals(getValue().toLowerCase());
     }
 }
