@@ -1,5 +1,5 @@
-import { createRoot } from 'react-dom/client';
-import { App } from './App'
+import { createRoot } from "react-dom/client";
+import { App } from "./App"
 
 
 function showPage(): void {
@@ -8,4 +8,4 @@ function showPage(): void {
     root.render(<App />)
 }
 
-document.addEventListener('DOMContentLoaded', showPage);
+document.addEventListener("DOMContentLoaded", showPage);
