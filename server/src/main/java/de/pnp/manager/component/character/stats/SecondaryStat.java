@@ -6,13 +6,13 @@ import de.pnp.manager.component.character.CharacterStats;
 
 public class SecondaryStat {
 
-  ESecondaryAttribute attribute;
+    ESecondaryAttribute attribute;
 
-  public SecondaryStat(ESecondaryAttribute attribute) {
-    this.attribute = attribute;
-  }
+    public SecondaryStat(ESecondaryAttribute attribute) {
+        this.attribute = attribute;
+    }
 
-  public float getStatMaxValue(StatComputationRules rules, CharacterStats stats) {
-    return rules.getRule(attribute).calculateStat(stats.getPrimaryStats());
-  }
+    public float getStatMaxValue(StatComputationRules rules, CharacterStats stats) {
+        return rules.getRule(attribute).calculateStat(stats.getPrimaryStats());
+    }
 }

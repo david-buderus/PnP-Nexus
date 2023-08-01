@@ -1,5 +1,6 @@
 package de.pnp.manager.component.item.interfaces;
 
+import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.ItemType;
 
@@ -8,24 +9,66 @@ import de.pnp.manager.component.item.ItemType;
  */
 public interface IItem {
 
-  String getName();
+    /**
+     * The human-readable name of this item.
+     */
+    String getName();
 
-  ItemType getType();
+    /**
+     * The type of this item.
+     */
+    ItemType getType();
 
-  ItemType getSubtype();
+    /**
+     * The subtype of this item.
+     */
+    ItemType getSubtype();
 
-  String getRequirement();
+    /**
+     * The requirement needed to use this item.
+     */
+    String getRequirement();
 
-  String getEffect();
+    /**
+     * The effect of this item.
+     */
+    String getEffect();
 
-  ERarity getRarity();
+    /**
+     * The rarity of this item.
+     */
+    ERarity getRarity();
 
-  int getVendorPrice();
+    /**
+     * The average price of this item.
+     */
+    int getVendorPrice();
 
-  int getTier();
+    /**
+     * The tier of this item. A higher tier indicates a better item.
+     */
+    int getTier();
 
-  String getDescription();
+    /**
+     * A description of this item.
+     */
+    String getDescription();
 
-  String getNote();
+    /**
+     * Any kind of additional information.
+     */
+    String getNote();
+
+    /**
+     * The maximum amount of this item that can be contained in one {@link ItemStack}.
+     */
+    int getMaximumStackSize();
+
+    /**
+     * The minimum amount of this item that has to be contained in one {@link ItemStack}.
+     * <p>
+     * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
+     */
+    int getMinimumStackSize();
 }
 

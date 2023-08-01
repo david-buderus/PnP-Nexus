@@ -41,5 +41,4 @@ public class ServerApplication implements WebMvcConfigurer {
             registry.addMapping("/**").allowedMethods("*");
         }
     }
-
 }

@@ -7,7 +7,7 @@ import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
-import de.pnp.manager.server.database.ItemTypeRepository;
+import de.pnp.manager.server.database.item.ItemTypeRepository;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -19,78 +19,78 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(ItemTypeRepository.REPOSITORY_NAME)
 public class ItemType extends DatabaseObject implements IUniquelyNamedDataObject {
 
-  /**
-   * The human-readable name of this type.
-   * <p>
-   * This entry is always unique.
-   */
-  @Indexed(unique = true)
-  private final String name;
+    /**
+     * The human-readable name of this type.
+     * <p>
+     * This entry is always unique.
+     */
+    @Indexed(unique = true)
+    private final String name;
 
-  /**
-   * The {@link TypeRestriction} of this type.
-   */
-  private final TypeRestriction typeRestriction;
+    /**
+     * The {@link ETypeRestriction} of this type.
+     */
+    private final ETypeRestriction typeRestriction;
 
-  public ItemType(ObjectId id, String name, TypeRestriction typeRestriction) {
-    super(id);
-    this.name = name;
-    this.typeRestriction = typeRestriction;
-  }
-
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  public TypeRestriction getTypeRestriction() {
-    return typeRestriction;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public ItemType(ObjectId id, String name, ETypeRestriction typeRestriction) {
+        super(id);
+        this.name = name;
+        this.typeRestriction = typeRestriction;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    @Override
+    public String getName() {
+        return name;
     }
-    ItemType type = (ItemType) o;
-    return Objects.equals(getName(), type.getName())
-        && getTypeRestriction() == type.getTypeRestriction();
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(getName(), getTypeRestriction());
-  }
+    public ETypeRestriction getTypeRestriction() {
+        return typeRestriction;
+    }
 
-  @Override
-  public String toString() {
-    return "ItemType{" +
-        "name='" + name + '\'' +
-        ", typeRestriction=" + typeRestriction +
-        '}';
-  }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ItemType type = (ItemType) o;
+        return Objects.equals(getName(), type.getName())
+            && getTypeRestriction() == type.getTypeRestriction();
+    }
 
-  /**
-   * A restriction of a {@link ItemType}.
-   */
-  public enum TypeRestriction {
-    ITEM(Item.class), EQUIPMENT(EquipableItem.class), JEWELLERY(Jewellery.class),
-    WEAPON(Weapon.class), ARMOR(Armor.class), SHIELD(Shield.class);
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getTypeRestriction());
+    }
 
-    private final Class<? extends Item> correlatingClass;
-
-    TypeRestriction(Class<? extends Item> correlatingClass) {
-      this.correlatingClass = correlatingClass;
+    @Override
+    public String toString() {
+        return "ItemType{" +
+            "name='" + name + '\'' +
+            ", typeRestriction=" + typeRestriction +
+            '}';
     }
 
     /**
-     * Returns whether the restriction does not restrict on the given {@link Item}.
+     * A restriction of a {@link ItemType}.
      */
-    public boolean applicableOn(Item item) {
-      return correlatingClass.isInstance(item);
+    public enum ETypeRestriction {
+        ITEM(Item.class), EQUIPMENT(EquipableItem.class), JEWELLERY(Jewellery.class),
+        WEAPON(Weapon.class), ARMOR(Armor.class), SHIELD(Shield.class);
+
+        private final Class<? extends Item> correlatingClass;
+
+        ETypeRestriction(Class<? extends Item> correlatingClass) {
+            this.correlatingClass = correlatingClass;
+        }
+
+        /**
+         * Returns whether the restriction does not restrict on the given {@link Item}.
+         */
+        public boolean applicableOn(Item item) {
+            return correlatingClass.isInstance(item);
+        }
     }
-  }
 }

@@ -1,6 +1,7 @@
 package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.Universe.UniverseSettings;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,23 +14,33 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public abstract class UniverseTestBase {
 
-  /**
-   * Database name that should be used for testing
-   */
-  protected final String universe;
+    @Autowired
+    private UniverseRepository universeRepository;
 
+    /**
+     * Database name that should be used for testing
+     */
+    protected final String universeName;
 
-  protected UniverseTestBase() {
-    universe = UUID.randomUUID().toString();
-  }
+    protected UniverseTestBase() {
+        universeName = UUID.randomUUID().toString();
+    }
 
-  @BeforeEach
-  void setup(@Autowired UniverseRepository repository) {
-    repository.insert(new Universe(universe, universe));
-  }
+    @BeforeEach
+    void setup() {
+        universeRepository.insert(new Universe(universeName, universeName));
+    }
 
-  @AfterEach
-  void tearDown(@Autowired UniverseRepository repository) {
-    repository.remove(universe);
-  }
+    @AfterEach
+    void tearDown() {
+        universeRepository.remove(universeName);
+    }
+
+    /**
+     * Updates the {@link UniverseSettings} of the {@link Universe test universe}.
+     */
+    protected void updateUniverseSettings(UniverseSettings settings) {
+        Universe universe = universeRepository.get(universeName).orElseThrow();
+        universeRepository.update(new Universe(universeName, universe.getDisplayName(), settings));
+    }
 }

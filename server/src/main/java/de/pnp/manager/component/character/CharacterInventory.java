@@ -4,10 +4,10 @@ import de.pnp.manager.component.inventory.Inventory;
 
 public class CharacterInventory {
 
-  private Inventory inventory;
+    private Inventory inventory;
 
-  static class CharacterPurse {
+    static class CharacterPurse {
 
-    int coin;
-  }
+        int coin;
+    }
 }
