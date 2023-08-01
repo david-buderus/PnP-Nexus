@@ -1,13 +1,16 @@
 package de.pnp.manager.component;
 
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.server.database.CraftingRecipeRepository;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * A crafting recipe in the universe.
  */
+@Document(CraftingRecipeRepository.REPOSITORY_NAME)
 public class CraftingRecipe extends DatabaseObject {
 
     /**

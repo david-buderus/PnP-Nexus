@@ -2,14 +2,17 @@ package de.pnp.manager.component.upgrade;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IRecipeEntry;
+import de.pnp.manager.server.database.upgrade.UpgradeRecipeRepository;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * A recipe to perform an {@link Upgrade}.
  */
+@Document(UpgradeRecipeRepository.REPOSITORY_NAME)
 public class UpgradeRecipe extends DatabaseObject {
 
     /**
