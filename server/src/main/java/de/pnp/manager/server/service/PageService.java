@@ -18,7 +18,7 @@ public class PageService {
     @GetMapping(value = "{destination:(?!.*api).+}", produces = MediaType.TEXT_HTML_VALUE)
     public String getPage(@PathVariable String destination) {
         String indexHtml = getIndexHtml();
-        if (Boolean.parseBoolean(EJvmFlag.DEV_MODE.getValue())) {
+        if (EJvmFlag.DEV_MODE.isEnabled()) {
             indexHtml = redirectToDevServer(indexHtml);
         }
         return indexHtml;

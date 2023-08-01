@@ -34,7 +34,7 @@ public class ServerApplication implements WebMvcConfigurer {
 
         @Override
         public void addCorsMappings(@NotNull CorsRegistry registry) {
-            if (Boolean.parseBoolean(EJvmFlag.DEV_MODE.getValue())) {
+            if (EJvmFlag.DEV_MODE.isEnabled()) {
                 registry.addMapping("/**").allowedMethods("*");
             }
         }
