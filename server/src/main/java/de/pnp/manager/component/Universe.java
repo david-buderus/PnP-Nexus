@@ -1,11 +1,14 @@
 package de.pnp.manager.component;
 
+import de.pnp.manager.server.database.UniverseRepository;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * The description of a universe.
  */
+@Document(UniverseRepository.REPOSITORY_NAME)
 public class Universe {
 
     /**

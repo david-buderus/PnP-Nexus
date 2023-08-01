@@ -4,14 +4,17 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
+import de.pnp.manager.server.database.upgrade.UpgradeRepository;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * A concrete upgrade of an {@link EquipableItem} in a universe.
  */
+@Document(UpgradeRepository.REPOSITORY_NAME)
 public class Upgrade extends DatabaseObject {
 
     /**
