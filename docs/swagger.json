@@ -11,6 +11,36 @@
     }
   ],
   "paths": {
+    "/{destination}": {
+      "get": {
+        "operationId": "getPage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "destination",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "page-service"
+        ]
+      }
+    },
     "/{universe}/a/{name}": {
       "get": {
         "operationId": "getItem_1",
