@@ -4,15 +4,16 @@ import de.pnp.manager.server.EJvmFlag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-
+/**
+ * Service which returns html documents.
+ */
 @RestController
 public class PageService {
 
+    /**
+     * Returns the base index.html.
+     */
     @GetMapping(value = "{destination:(?!.*api).+}", produces = MediaType.TEXT_HTML_VALUE)
     public String getPage() {
         String indexHtml = getIndexHtml();
@@ -20,20 +21,6 @@ public class PageService {
             indexHtml = redirectToDevServer(indexHtml);
         }
         return indexHtml;
-    }
-
-    @GetMapping(value = "@fs/**")
-    public RedirectView getFromFileSystem() throws MalformedURLException {
-        if (!Boolean.parseBoolean(EJvmFlag.DEV_MODE.getValue())) {
-            return null;
-        }
-        ServletUriComponentsBuilder builder = ServletUriComponentsBuilder.fromCurrentRequestUri();
-        builder.host("localhost");
-        builder.port("5173");
-        URI uri = builder.build().toUri();
-        RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(uri.toURL().toString());
-        return redirectView;
     }
 
     private String redirectToDevServer(String indexHtml) {

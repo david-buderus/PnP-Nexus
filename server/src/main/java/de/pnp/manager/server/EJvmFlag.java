@@ -21,8 +21,6 @@ public enum EJvmFlag {
 
     /**
      * Returns the value of the flag.
-     *
-     * @return
      */
     public String getValue() {
         return System.getProperty(flag, defaultValue);
