@@ -30,6 +30,10 @@ jobs:
         if: steps.verify-open-api-documentation.outputs.files_changed == 'true'
         run: |
           echo "Changed files: ${{ steps.verify-open-api-documentation.outputs.changed_files }}"
+          for file in ${{ steps.verify-open-api-documentation.outputs.changed_files }}
+          do
+            git diff file
+          done
           exit 1
 
       - name: Regenerate webapp API client
@@ -49,6 +53,10 @@ jobs:
         if: steps.verify-webapp-api-client.outputs.files_changed == 'true'
         run: |
           echo "Changed files: ${{ steps.verify-webapp-api-client.outputs.changed_files }}"
+          for file in ${{ steps.verify-open-api-documentation.outputs.changed_files }}
+          do
+            git diff file
+          done
           exit 1
   
   test:
