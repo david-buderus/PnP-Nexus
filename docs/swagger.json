@@ -11,42 +11,9 @@
     }
   ],
   "paths": {
-    "/{universe}/items": {
-      "delete": {
-        "operationId": "deleteAll",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes all objects with the given ids from the database",
-        "tags": [
-          "item-service"
-        ]
-      },
+    "/{universe}/a/{name}": {
       "get": {
-        "operationId": "getAll",
+        "operationId": "getItem_1",
         "parameters": [
           {
             "in": "path",
@@ -57,14 +24,11 @@
             }
           },
           {
-            "in": "query",
-            "name": "ids",
-            "required": false,
+            "in": "path",
+            "name": "name",
+            "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "type": "string"
             }
           }
         ],
@@ -73,55 +37,6 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/Item"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Armor"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Jewellery"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Shield"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Weapon"
-                      }
-                    ]
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get all objects from the database",
-        "tags": [
-          "item-service"
-        ]
-      },
-      "post": {
-        "operationId": "insertAll",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
                   "oneOf": [
                     {
                       "$ref": "#/components/schemas/Item"
@@ -141,80 +56,19 @@
                   ]
                 }
               }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "oneOf": [
-                      {
-                        "$ref": "#/components/schemas/Item"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Armor"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Jewellery"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Shield"
-                      },
-                      {
-                        "$ref": "#/components/schemas/Weapon"
-                      }
-                    ]
-                  }
-                }
-              }
             },
             "description": "OK"
           }
         },
-        "summary": "Inserts the objects into the database",
+        "summary": "Get an item",
         "tags": [
           "item-service"
         ]
       }
     },
-    "/{universe}/items/{id}": {
-      "delete": {
-        "operationId": "delete",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes an object from the database",
-        "tags": [
-          "item-service"
-        ]
-      },
+    "/{universe}/item/{name}": {
       "get": {
-        "operationId": "get",
+        "operationId": "getItem",
         "parameters": [
           {
             "in": "path",
@@ -226,7 +80,7 @@
           },
           {
             "in": "path",
-            "name": "id",
+            "name": "name",
             "required": true,
             "schema": {
               "type": "string"
@@ -261,13 +115,15 @@
             "description": "OK"
           }
         },
-        "summary": "Get an object from the database",
+        "summary": "Get an item",
         "tags": [
           "item-service"
         ]
-      },
-      "put": {
-        "operationId": "update",
+      }
+    },
+    "/{universe}/itemstack/{name}": {
+      "get": {
+        "operationId": "itemStack",
         "parameters": [
           {
             "in": "path",
@@ -279,39 +135,13 @@
           },
           {
             "in": "path",
-            "name": "id",
+            "name": "name",
             "required": true,
             "schema": {
               "type": "string"
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/Item"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Armor"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Jewellery"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Shield"
-                  },
-                  {
-                    "$ref": "#/components/schemas/Weapon"
-                  }
-                ]
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "content": {
@@ -319,19 +149,16 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/Item"
+                      "$ref": "#/components/schemas/ItemStackItem"
                     },
                     {
-                      "$ref": "#/components/schemas/Armor"
+                      "$ref": "#/components/schemas/DefensiveEquipment"
                     },
                     {
-                      "$ref": "#/components/schemas/Jewellery"
+                      "$ref": "#/components/schemas/Equipment"
                     },
                     {
-                      "$ref": "#/components/schemas/Shield"
-                    },
-                    {
-                      "$ref": "#/components/schemas/Weapon"
+                      "$ref": "#/components/schemas/WeaponEquipment"
                     }
                   ]
                 }
@@ -340,7 +167,6 @@
             "description": "OK"
           }
         },
-        "summary": "Updates an object in the database",
         "tags": [
           "item-service"
         ]
@@ -375,28 +201,291 @@
               }
             }
           }
-        ],
-        "required": [
-          "description",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
         ]
       },
+      "DefensiveEquipment": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ItemStackItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "armor": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
+              "item": {
+                "$ref": "#/components/schemas/IDefensiveItem"
+              },
+              "maxArmor": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "relativeDurability": {
+                "type": "number",
+                "format": "float"
+              },
+              "remainingUpgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgrades": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              },
+              "weight": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "Equipment": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ItemStackItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "item": {
+                "$ref": "#/components/schemas/IEquipableItem"
+              },
+              "remainingUpgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgrades": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "IDefensiveItem": {
+        "type": "object",
+        "properties": {
+          "armor": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          },
+          "maximumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "COMMON",
+              "RARE",
+              "EPIC",
+              "LEGENDARY",
+              "GODLIKE"
+            ]
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weight": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "IEquipableItem": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          },
+          "maximumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "COMMON",
+              "RARE",
+              "EPIC",
+              "LEGENDARY",
+              "GODLIKE"
+            ]
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "IOffensiveItem": {
+        "type": "object",
+        "properties": {
+          "damage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dice": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          },
+          "hit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "initiative": {
+            "type": "number",
+            "format": "float"
+          },
+          "maximumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "rarity": {
+            "type": "string",
+            "enum": [
+              "UNKNOWN",
+              "COMMON",
+              "RARE",
+              "EPIC",
+              "LEGENDARY",
+              "GODLIKE"
+            ]
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "subtype": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "Item": {
-        "required": [
-          "description",
-          "effect",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
-        ],
         "type": "object",
         "properties": {
           "description": {
@@ -406,7 +495,7 @@
             "type": "string"
           },
           "id": {
-            "type": "string"
+            "$ref": "#/components/schemas/ObjectId"
           },
           "maximumStackSize": {
             "type": "integer",
@@ -452,11 +541,44 @@
           }
         }
       },
+      "ItemStackItem": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "writeOnly": true
+          },
+          "item": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Item"
+              },
+              {
+                "$ref": "#/components/schemas/Armor"
+              },
+              {
+                "$ref": "#/components/schemas/Jewellery"
+              },
+              {
+                "$ref": "#/components/schemas/Shield"
+              },
+              {
+                "$ref": "#/components/schemas/Weapon"
+              }
+            ]
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
       "ItemType": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "$ref": "#/components/schemas/ObjectId"
           },
           "name": {
             "type": "string"
@@ -492,23 +614,13 @@
               }
             }
           }
-        ],
-        "required": [
-          "description",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
         ]
       },
       "Material": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "$ref": "#/components/schemas/ObjectId"
           },
           "items": {
             "type": "array",
@@ -518,6 +630,19 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "ObjectId": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -555,17 +680,43 @@
               }
             }
           }
-        ],
-        "required": [
-          "description",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
         ]
+      },
+      "Upgrade": {
+        "type": "object",
+        "properties": {
+          "effects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpgradeEffect"
+            }
+          },
+          "id": {
+            "$ref": "#/components/schemas/ObjectId"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "target": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UpgradeEffect": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          }
+        }
       },
       "Weapon": {
         "type": "object",
@@ -600,17 +751,60 @@
               }
             }
           }
-        ],
-        "required": [
-          "description",
-          "dice",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
+        ]
+      },
+      "WeaponEquipment": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ItemStackItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "damage": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "hit": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "initiative": {
+                "type": "number",
+                "format": "float"
+              },
+              "item": {
+                "$ref": "#/components/schemas/IOffensiveItem"
+              },
+              "maxDamage": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "maxDurability": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "relativeDurability": {
+                "type": "number",
+                "format": "float"
+              },
+              "remainingUpgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgradeSlots": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "upgrades": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              }
+            }
+          }
         ]
       }
     }

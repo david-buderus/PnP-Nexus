@@ -38,7 +38,7 @@ public class DataLoader implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        if (!args.containsOption("DEV")) {
+        if (!EJvmFlag.DEV_MODE.isEnabled()) {
             return;
         }
         if (universeRepository.exists(TEST_UNIVERSE)) {
