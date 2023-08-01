@@ -30,9 +30,9 @@ jobs:
         if: steps.verify-open-api-documentation.outputs.files_changed == 'true'
         run: |
           echo "Changed files: ${{ steps.verify-open-api-documentation.outputs.changed_files }}"
-          for file in ${{ steps.verify-open-api-documentation.outputs.changed_files }}
+          for FILE in ${{ steps.verify-open-api-documentation.outputs.changed_files }}
           do
-            git diff file
+            git diff $FILE
           done
           exit 1
 
@@ -53,9 +53,9 @@ jobs:
         if: steps.verify-webapp-api-client.outputs.files_changed == 'true'
         run: |
           echo "Changed files: ${{ steps.verify-webapp-api-client.outputs.changed_files }}"
-          for file in ${{ steps.verify-open-api-documentation.outputs.changed_files }}
+          for FILE in ${{ steps.verify-open-api-documentation.outputs.changed_files }}
           do
-            git diff file
+            git diff $FILE
           done
           exit 1
   
