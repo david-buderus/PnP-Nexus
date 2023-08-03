@@ -1,6 +1,6 @@
 package de.pnp.manager.component.inventory;
 
-import static de.pnp.manager.server.database.TestItemBuilder.createItemBuilder;
+import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.item.Item;

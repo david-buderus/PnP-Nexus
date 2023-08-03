@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import de.pnp.manager.component.Universe.UniverseSettings;
 import de.pnp.manager.component.inventory.equipment.DefensiveEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
-import de.pnp.manager.server.database.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.server.database.UniverseTestBase;
+import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

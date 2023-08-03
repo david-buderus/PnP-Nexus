@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Service to access {@link ItemRepository}.
  */
 @RestController
-@RequestMapping("{universe}/items")
+@RequestMapping("api/{universe}/items")
 public class ItemService extends RepositoryServiceBase<Item, ItemRepository> {
 
     protected ItemService(@Autowired ItemRepository repository) {
