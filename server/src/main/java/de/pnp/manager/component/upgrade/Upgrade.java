@@ -5,6 +5,7 @@ import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -51,7 +52,7 @@ public class Upgrade extends DatabaseObject {
      * The {@link UpgradeEffect effects} oft this upgrade.
      */
     @NotEmpty
-    private final Collection<UpgradeEffect> effects;
+    private final Collection<@Valid UpgradeEffect> effects;
 
     public Upgrade(ObjectId id, String name, ItemType target, int slots, int vendorPrice,
         Collection<UpgradeEffect> effects) {

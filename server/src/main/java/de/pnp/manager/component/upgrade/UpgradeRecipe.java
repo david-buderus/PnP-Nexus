@@ -3,6 +3,7 @@ package de.pnp.manager.component.upgrade;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IRecipeEntry;
 import de.pnp.manager.server.database.upgrade.UpgradeRecipeRepository;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
@@ -41,7 +42,7 @@ public class UpgradeRecipe extends DatabaseObject {
      * The materials needed to use this {@link UpgradeRecipe}
      */
     @NotEmpty
-    private final Collection<IRecipeEntry> materials;
+    private final Collection<@Valid IRecipeEntry> materials;
 
     public UpgradeRecipe(ObjectId id, Upgrade upgrade, Collection<Upgrade> requiredUpgrades, String requirement,
         Collection<IRecipeEntry> materials) {
