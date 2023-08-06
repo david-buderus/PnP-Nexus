@@ -3,6 +3,7 @@ package de.pnp.manager.utils;
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.upgrade.Upgrade;
+import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
@@ -74,6 +75,14 @@ public class TestUpgradeBuilder extends TestBuilderBase {
     }
 
     /**
+     * @see Upgrade#getTarget()
+     */
+    public TestUpgradeBuilder withTarget(ItemType target) {
+        this.type = target;
+        return this;
+    }
+
+    /**
      * @see Upgrade#getSlots()
      */
     public TestUpgradeBuilder withSlots(int slots) {
@@ -93,6 +102,9 @@ public class TestUpgradeBuilder extends TestBuilderBase {
      * Builds an {@link Upgrade} matching this builder.
      */
     public Upgrade build() {
+        if (effects.isEmpty()) {
+            effects.add(SimpleUpgradeEffect.create("default effect"));
+        }
         return new Upgrade(null, name, type, slots, vendorPrice, effects);
     }
 

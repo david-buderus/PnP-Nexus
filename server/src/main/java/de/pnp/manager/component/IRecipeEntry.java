@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
@@ -25,21 +27,25 @@ public sealed interface IRecipeEntry {
     /**
      * An {@link IRecipeEntry} which uses a specific {@link Item}.
      */
-    record ItemRecipeEntry(float amountOfRequiredUnits, @DBRef Item item) implements IRecipeEntry {
+    record ItemRecipeEntry(@Positive float amountOfRequiredUnits, @DBRef @NotNull Item item) implements
+        IRecipeEntry {
 
     }
 
     /**
      * An {@link IRecipeEntry} which uses a {@link Material}.
      */
-    record MaterialRecipeEntry(float amountOfRequiredUnits, @DBRef Material material) implements IRecipeEntry {
+    record MaterialRecipeEntry(@Positive float amountOfRequiredUnits,
+                               @DBRef @NotNull Material material) implements
+        IRecipeEntry {
 
     }
 
     /**
-     * An {@link IRecipeEntry} which uses a {@link CharacterResource} of a player.
+     * An {@link IRecipeEntry} which uses a {@link ECharacterResource} of a player.
      */
-    record CharacterResourceRecipeEntry(float amountOfRequiredUnits, CharacterResource resource) implements
+    record CharacterResourceRecipeEntry(@Positive float amountOfRequiredUnits,
+                                        ECharacterResource resource) implements
         IRecipeEntry {
 
     }
@@ -47,7 +53,7 @@ public sealed interface IRecipeEntry {
     /**
      * The different character resources which can be used to craft something.
      */
-    enum CharacterResource {
+    enum ECharacterResource {
         HEALTH, MANA, MENTAL_HEALTH
     }
 }

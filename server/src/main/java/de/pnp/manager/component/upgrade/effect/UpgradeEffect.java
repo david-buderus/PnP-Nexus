@@ -2,6 +2,7 @@ package de.pnp.manager.component.upgrade.effect;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import de.pnp.manager.component.upgrade.Upgrade;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
 /**
@@ -17,6 +18,7 @@ public abstract class UpgradeEffect {
     /**
      * A human-readable description of the effect.
      */
+    @NotBlank
     protected final String description;
 
     /**
@@ -30,7 +32,8 @@ public abstract class UpgradeEffect {
     }
 
     /**
-     * Applies the effect of this {@link UpgradeEffect}, if the given {@link EUpgradeManipulator} is compatible with this upgrade.
+     * Applies the effect of this {@link UpgradeEffect}, if the given {@link EUpgradeManipulator} is compatible with
+     * this upgrade.
      */
     public float apply(EUpgradeManipulator manipulator, float value) {
         if (manipulator == upgradeManipulator) {

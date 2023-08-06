@@ -11,9 +11,39 @@
     }
   ],
   "paths": {
-    "/api/{universe}/items": {
+    "/{destination}": {
+      "get": {
+        "operationId": "getPage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "destination",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "page-service"
+        ]
+      }
+    },
+    "/{universe}/items": {
       "delete": {
-        "operationId": "deleteAll_2",
+        "operationId": "deleteAll",
         "parameters": [
           {
             "in": "path",
@@ -46,7 +76,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_2",
+        "operationId": "getAll",
         "parameters": [
           {
             "in": "path",
@@ -105,7 +135,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_2",
+        "operationId": "insertAll",
         "parameters": [
           {
             "in": "path",
@@ -182,9 +212,9 @@
         ]
       }
     },
-    "/api/{universe}/items/{id}": {
+    "/{universe}/items/{id}": {
       "delete": {
-        "operationId": "delete_2",
+        "operationId": "delete",
         "parameters": [
           {
             "in": "path",
@@ -214,7 +244,7 @@
         ]
       },
       "get": {
-        "operationId": "get_2",
+        "operationId": "get",
         "parameters": [
           {
             "in": "path",
@@ -267,7 +297,7 @@
         ]
       },
       "put": {
-        "operationId": "update_2",
+        "operationId": "update",
         "parameters": [
           {
             "in": "path",
@@ -345,537 +375,11 @@
           "item-service"
         ]
       }
-    },
-    "/api/{universe}/upgrade-recipes": {
-      "delete": {
-        "operationId": "deleteAll_1",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes all objects with the given ids from the database",
-        "tags": [
-          "upgrade-recipe-service"
-        ]
-      },
-      "get": {
-        "operationId": "getAll_1",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UpgradeRecipe"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get all objects from the database",
-        "tags": [
-          "upgrade-recipe-service"
-        ]
-      },
-      "post": {
-        "operationId": "insertAll_1",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/UpgradeRecipe"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UpgradeRecipe"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Inserts the objects into the database",
-        "tags": [
-          "upgrade-recipe-service"
-        ]
-      }
-    },
-    "/api/{universe}/upgrade-recipes/{id}": {
-      "delete": {
-        "operationId": "delete_1",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes an object from the database",
-        "tags": [
-          "upgrade-recipe-service"
-        ]
-      },
-      "get": {
-        "operationId": "get_1",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpgradeRecipe"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get an object from the database",
-        "tags": [
-          "upgrade-recipe-service"
-        ]
-      },
-      "put": {
-        "operationId": "update_1",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpgradeRecipe"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpgradeRecipe"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Updates an object in the database",
-        "tags": [
-          "upgrade-recipe-service"
-        ]
-      }
-    },
-    "/api/{universe}/upgrades": {
-      "delete": {
-        "operationId": "deleteAll",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes all objects with the given ids from the database",
-        "tags": [
-          "upgrade-service"
-        ]
-      },
-      "get": {
-        "operationId": "getAll",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Upgrade"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get all objects from the database",
-        "tags": [
-          "upgrade-service"
-        ]
-      },
-      "post": {
-        "operationId": "insertAll",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Upgrade"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Inserts the objects into the database",
-        "tags": [
-          "upgrade-service"
-        ]
-      }
-    },
-    "/api/{universe}/upgrades/{id}": {
-      "delete": {
-        "operationId": "delete",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes an object from the database",
-        "tags": [
-          "upgrade-service"
-        ]
-      },
-      "get": {
-        "operationId": "get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get an object from the database",
-        "tags": [
-          "upgrade-service"
-        ]
-      },
-      "put": {
-        "operationId": "update",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Upgrade"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Updates an object in the database",
-        "tags": [
-          "upgrade-service"
-        ]
-      }
-    },
-    "/{destination}": {
-      "get": {
-        "operationId": "getPage",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "destination",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "tags": [
-          "page-service"
-        ]
-      }
     }
   },
   "components": {
     "schemas": {
-      "AdditiveUpgradeEffect": {
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/UpgradeEffect"
-          }
-        ]
-      },
       "Armor": {
-        "required": [
-          "description",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
-        ],
         "type": "object",
         "allOf": [
           {
@@ -901,35 +405,17 @@
               }
             }
           }
+        ],
+        "required": [
+          "description",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
         ]
-      },
-      "CharacterResourceRecipeEntry": {
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IRecipeEntry"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "amountOfRequiredUnits": {
-                "type": "number",
-                "format": "float"
-              },
-              "resource": {
-                "type": "string",
-                "enum": [
-                  "HEALTH",
-                  "MANA",
-                  "MENTAL_HEALTH"
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "IRecipeEntry": {
-        "type": "object"
       },
       "Item": {
         "required": [
@@ -996,26 +482,6 @@
           }
         }
       },
-      "ItemRecipeEntry": {
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IRecipeEntry"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "amountOfRequiredUnits": {
-                "type": "number",
-                "format": "float"
-              },
-              "item": {
-                "$ref": "#/components/schemas/Item"
-              }
-            }
-          }
-        ]
-      },
       "ItemType": {
         "type": "object",
         "properties": {
@@ -1032,23 +498,15 @@
               "EQUIPMENT",
               "JEWELLERY",
               "WEAPON",
-              "ARMOR",
-              "SHIELD"
+              "DEFENSIVE_ITEM",
+              "SHIELD",
+              "HANDHELD",
+              "ARMOR"
             ]
           }
         }
       },
       "Jewellery": {
-        "required": [
-          "description",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
-        ],
         "type": "object",
         "allOf": [
           {
@@ -1066,6 +524,16 @@
               }
             }
           }
+        ],
+        "required": [
+          "description",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
         ]
       },
       "Material": {
@@ -1085,45 +553,7 @@
           }
         }
       },
-      "MaterialRecipeEntry": {
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IRecipeEntry"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "amountOfRequiredUnits": {
-                "type": "number",
-                "format": "float"
-              },
-              "material": {
-                "$ref": "#/components/schemas/Material"
-              }
-            }
-          }
-        ]
-      },
-      "MultiplicativeUpgradeEffect": {
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/UpgradeEffect"
-          }
-        ]
-      },
       "Shield": {
-        "required": [
-          "description",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
-        ],
         "type": "object",
         "allOf": [
           {
@@ -1157,102 +587,9 @@
               }
             }
           }
-        ]
-      },
-      "SimpleUpgradeEffect": {
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/UpgradeEffect"
-          }
-        ]
-      },
-      "Upgrade": {
-        "type": "object",
-        "properties": {
-          "effects": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/AdditiveUpgradeEffect"
-                },
-                {
-                  "$ref": "#/components/schemas/MultiplicativeUpgradeEffect"
-                },
-                {
-                  "$ref": "#/components/schemas/SimpleUpgradeEffect"
-                }
-              ]
-            }
-          },
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "slots": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "target": {
-            "$ref": "#/components/schemas/ItemType"
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "UpgradeEffect": {
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
-          }
-        }
-      },
-      "UpgradeRecipe": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "materials": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/CharacterResourceRecipeEntry"
-                },
-                {
-                  "$ref": "#/components/schemas/ItemRecipeEntry"
-                },
-                {
-                  "$ref": "#/components/schemas/MaterialRecipeEntry"
-                }
-              ]
-            }
-          },
-          "requiredUpgrades": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Upgrade"
-            }
-          },
-          "requirement": {
-            "type": "string"
-          },
-          "upgrade": {
-            "$ref": "#/components/schemas/Upgrade"
-          }
-        }
-      },
-      "Weapon": {
+        ],
         "required": [
           "description",
-          "dice",
           "effect",
           "material",
           "name",
@@ -1260,7 +597,9 @@
           "requirement",
           "subtype",
           "type"
-        ],
+        ]
+      },
+      "Weapon": {
         "type": "object",
         "allOf": [
           {
@@ -1293,6 +632,17 @@
               }
             }
           }
+        ],
+        "required": [
+          "description",
+          "dice",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
         ]
       }
     }

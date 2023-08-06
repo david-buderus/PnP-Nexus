@@ -1,7 +1,7 @@
 package de.pnp.manager.server.service;
 
-import de.pnp.manager.component.IRecipeEntry.CharacterResource;
 import de.pnp.manager.component.IRecipeEntry.CharacterResourceRecipeEntry;
+import de.pnp.manager.component.IRecipeEntry.ECharacterResource;
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
 import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
 import de.pnp.manager.component.item.Material;
@@ -34,6 +34,6 @@ class UpgradeRecipeServiceTest extends
                 List.of(createUpgrade().withName("B2").buildPersisted()), "",
                 List.of(new MaterialRecipeEntry(2, material))),
             new UpgradeRecipe(null, createUpgrade().withName("C").buildPersisted(), List.of(), "",
-                List.of(new CharacterResourceRecipeEntry(100, CharacterResource.MENTAL_HEALTH))));
+                List.of(new CharacterResourceRecipeEntry(100, ECharacterResource.MENTAL_HEALTH))));
     }
 }
