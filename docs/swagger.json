@@ -865,6 +865,15 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/UpgradeEffect"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "format": "float"
+              }
+            }
           }
         ]
       },
@@ -1126,6 +1135,15 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/UpgradeEffect"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "factor": {
+                "type": "number",
+                "format": "float"
+              }
+            }
           }
         ]
       },
@@ -1237,6 +1255,18 @@
         "properties": {
           "description": {
             "type": "string"
+          },
+          "upgradeManipulator": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "SLOTS",
+              "DAMAGE",
+              "HIT",
+              "INITIATIVE",
+              "ARMOR",
+              "WEIGHT"
+            ]
           }
         }
       },

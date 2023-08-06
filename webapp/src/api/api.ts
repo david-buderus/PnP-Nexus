@@ -35,6 +35,44 @@ export interface AdditiveUpgradeEffect {
      * @memberof AdditiveUpgradeEffect
      */
     'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AdditiveUpgradeEffect
+     */
+    'upgradeManipulator'?: AdditiveUpgradeEffectUpgradeManipulatorEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof AdditiveUpgradeEffect
+     */
+    'value'?: number;
+}
+
+export const AdditiveUpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type AdditiveUpgradeEffectUpgradeManipulatorEnum = typeof AdditiveUpgradeEffectUpgradeManipulatorEnum[keyof typeof AdditiveUpgradeEffectUpgradeManipulatorEnum];
+
+/**
+ * 
+ * @export
+ * @interface AdditiveUpgradeEffectAllOf
+ */
+export interface AdditiveUpgradeEffectAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof AdditiveUpgradeEffectAllOf
+     */
+    'value'?: number;
 }
 /**
  * 
@@ -625,6 +663,44 @@ export interface MultiplicativeUpgradeEffect {
      * @memberof MultiplicativeUpgradeEffect
      */
     'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiplicativeUpgradeEffect
+     */
+    'upgradeManipulator'?: MultiplicativeUpgradeEffectUpgradeManipulatorEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiplicativeUpgradeEffect
+     */
+    'factor'?: number;
+}
+
+export const MultiplicativeUpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type MultiplicativeUpgradeEffectUpgradeManipulatorEnum = typeof MultiplicativeUpgradeEffectUpgradeManipulatorEnum[keyof typeof MultiplicativeUpgradeEffectUpgradeManipulatorEnum];
+
+/**
+ * 
+ * @export
+ * @interface MultiplicativeUpgradeEffectAllOf
+ */
+export interface MultiplicativeUpgradeEffectAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiplicativeUpgradeEffectAllOf
+     */
+    'factor'?: number;
 }
 /**
  * 
@@ -814,7 +890,26 @@ export interface SimpleUpgradeEffect {
      * @memberof SimpleUpgradeEffect
      */
     'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SimpleUpgradeEffect
+     */
+    'upgradeManipulator'?: SimpleUpgradeEffectUpgradeManipulatorEnum;
 }
+
+export const SimpleUpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type SimpleUpgradeEffectUpgradeManipulatorEnum = typeof SimpleUpgradeEffectUpgradeManipulatorEnum[keyof typeof SimpleUpgradeEffectUpgradeManipulatorEnum];
+
 /**
  * 
  * @export
@@ -870,7 +965,26 @@ export interface UpgradeEffect {
      * @memberof UpgradeEffect
      */
     'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpgradeEffect
+     */
+    'upgradeManipulator'?: UpgradeEffectUpgradeManipulatorEnum;
 }
+
+export const UpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type UpgradeEffectUpgradeManipulatorEnum = typeof UpgradeEffectUpgradeManipulatorEnum[keyof typeof UpgradeEffectUpgradeManipulatorEnum];
+
 /**
  * @type UpgradeEffectsInner
  * @export

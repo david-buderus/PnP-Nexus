@@ -1,5 +1,6 @@
 package de.pnp.manager.component.upgrade.effect;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import de.pnp.manager.component.upgrade.Upgrade;
 import jakarta.validation.constraints.NotBlank;
@@ -24,6 +25,7 @@ public abstract class UpgradeEffect {
     /**
      * Which value this {@link UpgradeEffect} manipulates.
      */
+    @JsonProperty
     protected final EUpgradeManipulator upgradeManipulator;
 
     public UpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
