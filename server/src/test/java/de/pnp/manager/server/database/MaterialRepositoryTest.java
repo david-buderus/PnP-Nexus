@@ -3,10 +3,11 @@ package de.pnp.manager.server.database;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.server.database.item.ItemRepository;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Tests for {@link MaterialRepository}
@@ -22,27 +23,27 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
 
     @Test
     void testItemLink() {
-        Item itemWithSpellingMistake = itemRepository.insert(universeName,
-            itemBuilder.createItemBuilder(universeName).withName("Iron ingt").buildItem());
-        Item item = itemBuilder.createItemBuilder(universeName).withName("Iron ingot").buildItem();
+        Item itemWithSpellingMistake = itemRepository.insert(getUniverseName(),
+                itemBuilder.createItemBuilder(getUniverseName()).withName("Iron ingt").buildItem());
+        Item item = itemBuilder.createItemBuilder(getUniverseName()).withName("Iron ingot").buildItem();
         Material material = new Material(null, "Iron", List.of(itemWithSpellingMistake));
 
         testRepositoryCollectionLink(Material::getItems, itemRepository, material,
-            List.of(itemWithSpellingMistake),
-            Map.of(itemWithSpellingMistake, item));
+                List.of(itemWithSpellingMistake),
+                Map.of(itemWithSpellingMistake, item));
     }
 
     @Override
     protected Material createObject() {
-        Item ironIngot = itemRepository.insert(universeName,
-            itemBuilder.createItemBuilder(universeName).withName("Iron ingot").buildItem());
+        Item ironIngot = itemRepository.insert(getUniverseName(),
+                itemBuilder.createItemBuilder(getUniverseName()).withName("Iron ingot").buildItem());
         return new Material(null, "Iron", List.of(ironIngot));
     }
 
     @Override
     protected Material createSlightlyChangeObject() {
-        Item ironNugget = itemRepository.insert(universeName,
-            itemBuilder.createItemBuilder(universeName).withName("Iron nugget").buildItem());
+        Item ironNugget = itemRepository.insert(getUniverseName(),
+                itemBuilder.createItemBuilder(getUniverseName()).withName("Iron nugget").buildItem());
         return new Material(null, "Iron", List.of(ironNugget));
     }
 
