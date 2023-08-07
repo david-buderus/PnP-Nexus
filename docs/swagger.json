@@ -11,6 +11,148 @@
     }
   ],
   "paths": {
+    "/api/universes": {
+      "get": {
+        "operationId": "getAllUniverses",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Universe"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all Universes",
+        "tags": [
+          "universe-service"
+        ]
+      },
+      "post": {
+        "operationId": "createUniverse",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Universe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Universe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Create a universe",
+        "tags": [
+          "universe-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateUniverse",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Universe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Universe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update a universe",
+        "tags": [
+          "universe-service"
+        ]
+      }
+    },
+    "/api/universes/{universe}": {
+      "delete": {
+        "operationId": "deleteUniverse",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Delete a universe",
+        "tags": [
+          "universe-service"
+        ]
+      },
+      "get": {
+        "operationId": "getUniverse",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Universe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get a universe",
+        "tags": [
+          "universe-service"
+        ]
+      }
+    },
     "/{destination}": {
       "get": {
         "operationId": "getPage",
@@ -596,6 +738,29 @@
           "subtype",
           "type"
         ]
+      },
+      "Universe": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/UniverseSettings"
+          }
+        }
+      },
+      "UniverseSettings": {
+        "type": "object",
+        "properties": {
+          "wearFactor": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "Weapon": {
         "type": "object",
