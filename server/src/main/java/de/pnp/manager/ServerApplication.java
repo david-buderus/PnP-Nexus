@@ -62,7 +62,7 @@ public class ServerApplication implements WebMvcConfigurer {
      * Link the {@link #messageSource()} with the validators.
      */
     @Bean
-    public LocalValidatorFactoryBean getValidator() {
+    public LocalValidatorFactoryBean validatorFactoryBean() {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
