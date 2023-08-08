@@ -11,7 +11,6 @@ import de.pnp.manager.component.upgrade.UpgradeRecipe;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.server.database.RepositoryTestBase;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
-import de.pnp.manager.utils.TestItemBuilder;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     @Test
     void testUpgradeLink() {
         Upgrade upgradeA = createUpgrade().withName("Shine A")
-            .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).buildPersisted();
+            .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).persist().build();
         Upgrade upgradeB = createUpgrade().withName("Shine B")
             .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).build();
         UpgradeRecipe recipe = new UpgradeRecipe(null, upgradeA, List.of(), "",
@@ -46,9 +45,9 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Test
     void testNecessaryUpgradeLink() {
-        Upgrade result = createUpgrade().withName("Result").buildPersisted();
+        Upgrade result = createUpgrade().withName("Result").persist().build();
         Upgrade upgradeA = createUpgrade().withName("Shine A")
-            .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).buildPersisted();
+            .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).persist().build();
 
         Upgrade upgradeB = createUpgrade().withName("Shine B")
             .addEffect(SimpleUpgradeEffect.create("The weapon emits a lot of light")).build();
@@ -62,7 +61,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     @Override
     protected UpgradeRecipe createObject() {
         ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
-        Upgrade upgrade = createUpgrade().withName("Test").withTarget(type).buildPersisted();
+        Upgrade upgrade = createUpgrade().withName("Test").withTarget(type).persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "",
             List.of(new CharacterResourceRecipeEntry(10, ECharacterResource.HEALTH)));
     }
@@ -71,7 +70,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     protected UpgradeRecipe createSlightlyChangeObject() {
         ItemType type = typeRepository.insert(universeName,
             new ItemType(null, "Other Test-Type", ETypeRestriction.ITEM));
-        Upgrade upgrade = createUpgrade().withName("Other Test").withTarget(type).buildPersisted();
+        Upgrade upgrade = createUpgrade().withName("Other Test").withTarget(type).persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "Something",
             List.of(new CharacterResourceRecipeEntry(10, ECharacterResource.MANA)));
     }
@@ -79,9 +78,9 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     @Override
     protected List<UpgradeRecipe> createMultipleObjects() {
         ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
-        Upgrade upgrade1 = createUpgrade().withName("Test 1").withTarget(type).buildPersisted();
-        Upgrade upgrade2 = createUpgrade().withName("Test 2").withTarget(type).buildPersisted();
-        Item item = createItem().buildPersisted(TestItemBuilder::buildItem);
+        Upgrade upgrade1 = createUpgrade().withName("Test 1").withTarget(type).persist().build();
+        Upgrade upgrade2 = createUpgrade().withName("Test 2").withTarget(type).persist().build();
+        Item item = createItem().persist().buildItem();
         return List.of(new UpgradeRecipe(null, upgrade1, List.of(), "", List.of(new ItemRecipeEntry(2, item))),
             new UpgradeRecipe(null, upgrade2, List.of(upgrade1), "", List.of(new ItemRecipeEntry(10, item))));
     }

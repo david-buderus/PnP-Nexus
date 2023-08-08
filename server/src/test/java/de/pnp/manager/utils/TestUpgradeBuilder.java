@@ -54,6 +54,8 @@ public class TestUpgradeBuilder extends TestBuilderBase {
 
     private final Collection<UpgradeEffect> effects;
 
+    private boolean persist;
+
     private final UpgradeRepository upgradeRepository;
 
     public TestUpgradeBuilder(String universe, ItemTypeRepository typeRepository, UpgradeRepository upgradeRepository) {
@@ -64,6 +66,7 @@ public class TestUpgradeBuilder extends TestBuilderBase {
         slots = 1;
         vendorPrice = 10;
         effects = new ArrayList<>();
+        persist = false;
     }
 
     /**
@@ -99,21 +102,24 @@ public class TestUpgradeBuilder extends TestBuilderBase {
     }
 
     /**
+     * Sets that the resulting {@link Upgrade} will be persisted.
+     */
+    public TestUpgradeBuilder persist() {
+        this.persist = true;
+        return this;
+    }
+
+    /**
      * Builds an {@link Upgrade} matching this builder.
      */
     public Upgrade build() {
         if (effects.isEmpty()) {
             effects.add(SimpleUpgradeEffect.create("default effect"));
         }
-        return new Upgrade(null, name, type, slots, vendorPrice, effects);
-    }
-
-    /**
-     * Builds an {@link Upgrade} matching this builder.
-     * <p>
-     * The upgrade is already persisted in the database.
-     */
-    public Upgrade buildPersisted() {
-        return upgradeRepository.insert(universe, build());
+        Upgrade upgrade = new Upgrade(null, name, type, slots, vendorPrice, effects);
+        if (persist) {
+            return upgradeRepository.insert(universe, upgrade);
+        }
+        return upgrade;
     }
 }

@@ -14,7 +14,6 @@ import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
-import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -71,6 +70,8 @@ public class TestItemBuilder extends TestBuilderBase {
     private int maximumStackSize;
     private int minimumStackSize;
 
+    private boolean persist;
+
     private final ItemRepository itemRepository;
 
     private TestItemBuilder(String universe, ItemTypeRepository typeRepository, ItemRepository itemRepository) {
@@ -96,6 +97,7 @@ public class TestItemBuilder extends TestBuilderBase {
         dice = "D6";
         maximumStackSize = 100;
         minimumStackSize = 0;
+        persist = false;
     }
 
     /**
@@ -211,52 +213,71 @@ public class TestItemBuilder extends TestBuilderBase {
     }
 
     /**
+     * Sets that the resulting {@link Item} will be persisted.
+     */
+    public TestItemBuilder persist() {
+        this.persist = true;
+        return this;
+    }
+
+    /**
      * Creates an item matching this builder.
      */
     public Item buildItem() {
-        return new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Item item = new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, maximumStackSize, minimumStackSize);
+        if (persist) {
+            return itemRepository.insert(universe, item);
+        }
+         return item;
     }
 
     /**
      * Creates armor matching this builder.
      */
     public Armor buildArmor() {
-        return new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Armor armorItem = new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, armor, weight, 1, 1);
+        if (persist) {
+            return (Armor) itemRepository.insert(universe, armorItem);
+        }
+        return armorItem;
     }
 
     /**
      * Creates weapon matching this builder.
      */
     public Weapon buildWeapon() {
-        return new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Weapon weapon = new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
+        if (persist) {
+            return (Weapon) itemRepository.insert(universe, weapon);
+        }
+        return weapon;
     }
 
     /**
      * Creates shield matching this builder.
      */
     public Shield buildShield() {
-        return new Shield(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note,
+        Shield shield = new Shield(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+            description, note,
             material, upgradeSlots, initiativeModifier, hit, weight, armor, 1, 1);
+        if (persist) {
+            return (Shield) itemRepository.insert(universe, shield);
+        }
+        return shield;
     }
 
     /**
      * Creates jewellery matching this builder.
      */
     public Jewellery buildJewellery() {
-        return new Jewellery(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Jewellery jewellery = new Jewellery(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, 1, 1);
-    }
-
-    /**
-     * Builds the given item already persisted.
-     * <p>
-     * Use {@link #buildItem()}, {@link #buildWeapon()}, ... as parameter.
-     */
-    @SuppressWarnings("unchecked")
-    public <I extends Item> I buildPersisted(Function<TestItemBuilder, I> build) {
-        return (I) itemRepository.insert(universe, build.apply(this));
+        if (persist) {
+            return (Jewellery) itemRepository.insert(universe, jewellery);
+        }
+        return jewellery;
     }
 }
