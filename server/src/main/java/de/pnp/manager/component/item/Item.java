@@ -11,6 +11,7 @@ import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.validation.MatchingItemTypes;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,6 +31,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
     @JsonSubTypes.Type(value = Armor.class),
     @JsonSubTypes.Type(value = Jewellery.class),
 })
+@MatchingItemTypes
 @Document(ItemRepository.REPOSITORY_NAME)
 public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObject {
 
