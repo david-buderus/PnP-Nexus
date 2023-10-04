@@ -1,7 +1,8 @@
 package de.pnp.manager.component.item;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.google.common.base.Preconditions;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.inventory.ItemStack;
@@ -26,11 +27,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * A concrete item in the universe.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = Weapon.class),
-    @JsonSubTypes.Type(value = Shield.class),
-    @JsonSubTypes.Type(value = Armor.class),
-    @JsonSubTypes.Type(value = Jewellery.class),
+    @JsonSubTypes.Type(value = Weapon.class, name = "Weapon"),
+    @JsonSubTypes.Type(value = Shield.class, name = "Shield"),
+    @JsonSubTypes.Type(value = Armor.class, name = "Armor"),
+    @JsonSubTypes.Type(value = Jewellery.class, name = "Jewellery"),
 })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @MatchingItemTypes
 @Document(ItemRepository.REPOSITORY_NAME)
 public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObject {
@@ -117,14 +119,11 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     @PositiveOrZero
     protected final int minimumStackSize;
 
+    @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
         ERarity rarity, int vendorPrice, int tier, String description, String note, int maximumStackSize,
         int minimumStackSize) {
         super(id);
-        Preconditions.checkArgument(maximumStackSize >= minimumStackSize,
-            "The maximumStackSize must be greater or equal to the minimumStackSize.");
-        Preconditions.checkArgument(maximumStackSize > 0, "The maximumStackSize must be greater then 0.");
-        Preconditions.checkArgument(minimumStackSize >= 0, "The minimumStackSize must be greater or equal to 0.");
         this.name = name;
         this.type = type;
         this.subtype = subtype;
