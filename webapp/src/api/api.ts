@@ -454,8 +454,10 @@ export const ItemTypeTypeRestrictionEnum = {
     Equipment: 'EQUIPMENT',
     Jewellery: 'JEWELLERY',
     Weapon: 'WEAPON',
-    Armor: 'ARMOR',
-    Shield: 'SHIELD'
+    DefensiveItem: 'DEFENSIVE_ITEM',
+    Shield: 'SHIELD',
+    Handheld: 'HANDHELD',
+    Armor: 'ARMOR'
 } as const;
 
 export type ItemTypeTypeRestrictionEnum = typeof ItemTypeTypeRestrictionEnum[keyof typeof ItemTypeTypeRestrictionEnum];

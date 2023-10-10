@@ -4,9 +4,12 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.EquipableItem;
+import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
+import de.pnp.manager.component.item.interfaces.IDefensiveItem;
+import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -77,13 +80,18 @@ public class ItemType extends DatabaseObject implements IUniquelyNamedDataObject
      * A restriction of a {@link ItemType}.
      */
     public enum ETypeRestriction {
-        ITEM(Item.class), EQUIPMENT(EquipableItem.class), JEWELLERY(Jewellery.class),
-        WEAPON(Weapon.class), ARMOR(Armor.class), SHIELD(Shield.class);
+        ITEM(Item.class, "item"), EQUIPMENT(EquipableItem.class, "equipment"),
+        JEWELLERY(Jewellery.class, "jewellery"), WEAPON(Weapon.class, "weapon"),
+        DEFENSIVE_ITEM(IDefensiveItem.class, "defensive_item"), SHIELD(Shield.class, "shield"),
+        HANDHELD(HandheldEquipableItem.class, "handheld_item"), ARMOR(Armor.class, "armor");
 
-        private final Class<? extends Item> correlatingClass;
+        private final Class<? extends IItem> correlatingClass;
 
-        ETypeRestriction(Class<? extends Item> correlatingClass) {
+        private final String messageTemplate;
+
+        ETypeRestriction(Class<? extends IItem> correlatingClass, String messageTemplate) {
             this.correlatingClass = correlatingClass;
+            this.messageTemplate = messageTemplate;
         }
 
         /**
@@ -91,6 +99,13 @@ public class ItemType extends DatabaseObject implements IUniquelyNamedDataObject
          */
         public boolean applicableOn(Item item) {
             return correlatingClass.isInstance(item);
+        }
+
+        /**
+         * The message template to localize this enum for users.
+         */
+        public String getMessageTemplate() {
+            return messageTemplate;
         }
     }
 }

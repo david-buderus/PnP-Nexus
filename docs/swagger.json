@@ -1047,8 +1047,10 @@
               "EQUIPMENT",
               "JEWELLERY",
               "WEAPON",
-              "ARMOR",
-              "SHIELD"
+              "DEFENSIVE_ITEM",
+              "SHIELD",
+              "HANDHELD",
+              "ARMOR"
             ]
           }
         }

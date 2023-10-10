@@ -27,7 +27,7 @@ class ItemTypeRepositoryTest extends RepositoryTestBase<ItemType, ItemTypeReposi
 
     @Override
     protected List<ItemType> createMultipleObjects() {
-        return List.of(new ItemType(null, "Armor", ETypeRestriction.ARMOR),
+        return List.of(new ItemType(null, "Armor", ETypeRestriction.DEFENSIVE_ITEM),
             new ItemType(null, "Shield", ETypeRestriction.SHIELD));
     }
 }
