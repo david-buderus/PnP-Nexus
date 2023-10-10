@@ -70,7 +70,7 @@ public class TestItemBuilder extends TestBuilderBase {
     private int maximumStackSize;
     private int minimumStackSize;
 
-    private boolean persist;
+    private boolean shouldGetPersisted;
 
     private final ItemRepository itemRepository;
 
@@ -97,7 +97,7 @@ public class TestItemBuilder extends TestBuilderBase {
         dice = "D6";
         maximumStackSize = 100;
         minimumStackSize = 0;
-        persist = false;
+        shouldGetPersisted = false;
     }
 
     /**
@@ -216,7 +216,7 @@ public class TestItemBuilder extends TestBuilderBase {
      * Sets that the resulting {@link Item} will be persisted.
      */
     public TestItemBuilder persist() {
-        this.persist = true;
+        this.shouldGetPersisted = true;
         return this;
     }
 
@@ -226,7 +226,7 @@ public class TestItemBuilder extends TestBuilderBase {
     public Item buildItem() {
         Item item = new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, maximumStackSize, minimumStackSize);
-        if (persist) {
+        if (shouldGetPersisted) {
             return itemRepository.insert(universe, item);
         }
          return item;
@@ -238,7 +238,7 @@ public class TestItemBuilder extends TestBuilderBase {
     public Armor buildArmor() {
         Armor armorItem = new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, armor, weight, 1, 1);
-        if (persist) {
+        if (shouldGetPersisted) {
             return (Armor) itemRepository.insert(universe, armorItem);
         }
         return armorItem;
@@ -250,7 +250,7 @@ public class TestItemBuilder extends TestBuilderBase {
     public Weapon buildWeapon() {
         Weapon weapon = new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
-        if (persist) {
+        if (shouldGetPersisted) {
             return (Weapon) itemRepository.insert(universe, weapon);
         }
         return weapon;
@@ -263,7 +263,7 @@ public class TestItemBuilder extends TestBuilderBase {
         Shield shield = new Shield(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note,
             material, upgradeSlots, initiativeModifier, hit, weight, armor, 1, 1);
-        if (persist) {
+        if (shouldGetPersisted) {
             return (Shield) itemRepository.insert(universe, shield);
         }
         return shield;
@@ -275,7 +275,7 @@ public class TestItemBuilder extends TestBuilderBase {
     public Jewellery buildJewellery() {
         Jewellery jewellery = new Jewellery(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, 1, 1);
-        if (persist) {
+        if (shouldGetPersisted) {
             return (Jewellery) itemRepository.insert(universe, jewellery);
         }
         return jewellery;

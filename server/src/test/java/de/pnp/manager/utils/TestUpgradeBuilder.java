@@ -54,7 +54,7 @@ public class TestUpgradeBuilder extends TestBuilderBase {
 
     private final Collection<UpgradeEffect> effects;
 
-    private boolean persist;
+    private boolean shouldGetPersisted;
 
     private final UpgradeRepository upgradeRepository;
 
@@ -66,7 +66,7 @@ public class TestUpgradeBuilder extends TestBuilderBase {
         slots = 1;
         vendorPrice = 10;
         effects = new ArrayList<>();
-        persist = false;
+        shouldGetPersisted = false;
     }
 
     /**
@@ -105,7 +105,7 @@ public class TestUpgradeBuilder extends TestBuilderBase {
      * Sets that the resulting {@link Upgrade} will be persisted.
      */
     public TestUpgradeBuilder persist() {
-        this.persist = true;
+        this.shouldGetPersisted = true;
         return this;
     }
 
@@ -117,7 +117,7 @@ public class TestUpgradeBuilder extends TestBuilderBase {
             effects.add(SimpleUpgradeEffect.create("default effect"));
         }
         Upgrade upgrade = new Upgrade(null, name, type, slots, vendorPrice, effects);
-        if (persist) {
+        if (shouldGetPersisted) {
             return upgradeRepository.insert(universe, upgrade);
         }
         return upgrade;
