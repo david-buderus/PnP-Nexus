@@ -33,7 +33,7 @@ public class StatComputationRule {
         }
 
         public float getSummand(Map<EPrimaryAttribute, PrimaryStat> stats) {
-            return getSummand(stats.get(primaryAttribute).getStatValue());
+            return getSummand(stats.get(primaryAttribute).getValue());
         }
     }
 }

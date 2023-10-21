@@ -1,8 +1,11 @@
 package de.pnp.manager.component.character.stats;
 
-public class PrimaryStat {
+import de.pnp.manager.component.attributes.EPrimaryAttribute;
 
-    public int getStatValue() {
-        throw new UnsupportedOperationException("Not yet implemented");
+public class PrimaryStat extends Stat<EPrimaryAttribute> {
+
+
+    public PrimaryStat(EPrimaryAttribute attribute, int value) {
+        super(attribute, value);
     }
 }

@@ -4,15 +4,17 @@ import de.pnp.manager.component.StatComputationRules;
 import de.pnp.manager.component.attributes.ESecondaryAttribute;
 import de.pnp.manager.component.character.CharacterStats;
 
-public class SecondaryStat {
+public class SecondaryStat extends Stat<ESecondaryAttribute> {
 
-    ESecondaryAttribute attribute;
+    public SecondaryStat(ESecondaryAttribute attribute, int value) {
+        super(attribute, value);
+    }
 
-    public SecondaryStat(ESecondaryAttribute attribute) {
-        this.attribute = attribute;
+    public void setValue(int value) {
+        this.value = value;
     }
 
     public float getStatMaxValue(StatComputationRules rules, CharacterStats stats) {
-        return rules.getRule(attribute).calculateStat(stats.getPrimaryStats());
+        return rules.getRule(getAttribute()).calculateStat(stats.getPrimaryStats());
     }
 }

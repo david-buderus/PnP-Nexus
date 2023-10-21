@@ -1,6 +1,6 @@
 package de.pnp.manager.component.attributes;
 
-public enum EPrimaryAttribute {
+public enum EPrimaryAttribute implements IAttribute {
     STRENGTH, ENDURANCE,
     DEXTERITY, INTELLIGENCE,
     CHARISMA, RESILIENCE,
