@@ -3,6 +3,9 @@ package de.pnp.manager.component.upgrade;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IRecipeEntry;
 import de.pnp.manager.server.database.upgrade.UpgradeRecipeRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -19,23 +22,27 @@ public class UpgradeRecipe extends DatabaseObject {
      * The product of this {@link UpgradeRecipe}.
      */
     @DBRef
+    @NotNull
     private final Upgrade upgrade;
 
     /**
      * The {@link Upgrade upgrads} which already need to be present on the item to use this {@link UpgradeRecipe}.
      */
     @DBRef
+    @NotNull
     private final Collection<Upgrade> requiredUpgrades;
 
     /**
      * Additional requirements needed to use this {@link UpgradeRecipe}.
      */
+    @NotNull
     private final String requirement;
 
     /**
      * The materials needed to use this {@link UpgradeRecipe}
      */
-    private final Collection<IRecipeEntry> materials;
+    @NotEmpty
+    private final Collection<@Valid IRecipeEntry> materials;
 
     public UpgradeRecipe(ObjectId id, Upgrade upgrade, Collection<Upgrade> requiredUpgrades, String requirement,
         Collection<IRecipeEntry> materials) {

@@ -23,8 +23,8 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
     @Test
     void testItemLink() {
         Item itemWithSpellingMistake = itemRepository.insert(universeName,
-            itemBuilder.createItemBuilder(universeName).withName("Iron ingt").buildItem());
-        Item item = itemBuilder.createItemBuilder(universeName).withName("Iron ingot").buildItem();
+            createItem().withName("Iron ingt").buildItem());
+        Item item = createItem().withName("Iron ingot").buildItem();
         Material material = new Material(null, "Iron", List.of(itemWithSpellingMistake));
 
         testRepositoryCollectionLink(Material::getItems, itemRepository, material,
@@ -35,14 +35,14 @@ public class MaterialRepositoryTest extends RepositoryTestBase<Material, Materia
     @Override
     protected Material createObject() {
         Item ironIngot = itemRepository.insert(universeName,
-            itemBuilder.createItemBuilder(universeName).withName("Iron ingot").buildItem());
+            createItem().withName("Iron ingot").buildItem());
         return new Material(null, "Iron", List.of(ironIngot));
     }
 
     @Override
     protected Material createSlightlyChangeObject() {
         Item ironNugget = itemRepository.insert(universeName,
-            itemBuilder.createItemBuilder(universeName).withName("Iron nugget").buildItem());
+            createItem().withName("Iron nugget").buildItem());
         return new Material(null, "Iron", List.of(ironNugget));
     }
 

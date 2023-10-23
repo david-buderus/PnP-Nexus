@@ -14,6 +14,10 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.server.database.UniverseTestBase;
+import de.pnp.manager.utils.TestItemBuilder;
+import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.utils.TestUpgradeBuilder;
+import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +54,12 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private TestItemBuilderFactory itemBuilder;
+
+    @Autowired
+    private TestUpgradeBuilderFactory upgradeBuilder;
 
     public RepositoryServiceBaseTest(Service service, Class<Obj> objClass) {
         this.service = service;
@@ -223,5 +233,19 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
             basePath = "/" + basePath;
         }
         return basePath;
+    }
+
+    /**
+     * A helper method to create {@link TestItemBuilder}.
+     */
+    protected TestItemBuilder createItem() {
+        return itemBuilder.createItemBuilder(universeName);
+    }
+
+    /**
+     * A helper method to create {@link TestItemBuilder}.
+     */
+    protected TestUpgradeBuilder createUpgrade() {
+        return upgradeBuilder.createUpgradeBuilder(universeName);
     }
 }

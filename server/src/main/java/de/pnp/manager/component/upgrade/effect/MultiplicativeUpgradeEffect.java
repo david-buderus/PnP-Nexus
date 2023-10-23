@@ -1,5 +1,6 @@
 package de.pnp.manager.component.upgrade.effect;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
@@ -7,6 +8,7 @@ import java.util.Objects;
  */
 public class MultiplicativeUpgradeEffect extends UpgradeEffect {
 
+    @JsonProperty
     private final float factor;
 
     public MultiplicativeUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator, float factor) {
