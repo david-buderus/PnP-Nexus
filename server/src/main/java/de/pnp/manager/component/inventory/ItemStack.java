@@ -1,6 +1,7 @@
 package de.pnp.manager.component.inventory;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Floats;
 import de.pnp.manager.component.inventory.equipment.DefensiveEquipment;
@@ -13,10 +14,11 @@ import de.pnp.manager.component.item.interfaces.IItem;
  * Represents an {@link Item} that can be held and used.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = Equipment.class),
-    @JsonSubTypes.Type(value = DefensiveEquipment.class),
-    @JsonSubTypes.Type(value = WeaponEquipment.class),
+    @JsonSubTypes.Type(value = Equipment.class, name = "Equipment"),
+    @JsonSubTypes.Type(value = DefensiveEquipment.class, name = "DefensiveEquipment"),
+    @JsonSubTypes.Type(value = WeaponEquipment.class, name = "WeaponEquipment"),
 })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public class ItemStack<I extends IItem> {
 
     /**
