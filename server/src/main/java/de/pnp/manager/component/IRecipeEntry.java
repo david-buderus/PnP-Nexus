@@ -1,6 +1,7 @@
 package de.pnp.manager.component;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
@@ -12,10 +13,11 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
  * The product or an entry in the material list of a {@link CraftingRecipe} or an {@link UpgradeRecipe}.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = IRecipeEntry.ItemRecipeEntry.class),
-    @JsonSubTypes.Type(value = IRecipeEntry.MaterialRecipeEntry.class),
-    @JsonSubTypes.Type(value = IRecipeEntry.CharacterResourceRecipeEntry.class)
+    @JsonSubTypes.Type(value = IRecipeEntry.ItemRecipeEntry.class, name = "ItemRecipeEntry"),
+    @JsonSubTypes.Type(value = IRecipeEntry.MaterialRecipeEntry.class, name = "MaterialRecipeEntry"),
+    @JsonSubTypes.Type(value = IRecipeEntry.CharacterResourceRecipeEntry.class, name = "CharacterResourceRecipeEntry")
 })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public sealed interface IRecipeEntry {
 
     /**

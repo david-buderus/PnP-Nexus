@@ -15,12 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UpgradeServiceTest extends RepositoryServiceBaseTest<Upgrade, UpgradeRepository, UpgradeService> {
 
     public UpgradeServiceTest(@Autowired UpgradeService upgradeService) {
-        super(upgradeService);
+        super(upgradeService, Upgrade.class);
     }
 
     @Override
     protected List<Upgrade> createObjects() {
-
         return List.of(createUpgrade().withName("A")
                 .addEffect(new AdditiveUpgradeEffect("More Damage", EUpgradeManipulator.DAMAGE, 2)).build(),
             createUpgrade().withName("B")

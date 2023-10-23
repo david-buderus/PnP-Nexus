@@ -21,7 +21,7 @@ class UpgradeRecipeServiceTest extends
     private MaterialRepository materialRepository;
 
     public UpgradeRecipeServiceTest(@Autowired UpgradeRecipeService upgradeRecipeService) {
-        super(upgradeRecipeService);
+        super(upgradeRecipeService, UpgradeRecipe.class);
     }
 
     @Override
