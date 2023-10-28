@@ -26,15 +26,15 @@ class ItemStackControllerTest extends UniverseTestBase {
         updateUniverseSettings(new UniverseSettings(10));
 
         WeaponEquipment equipment = new WeaponEquipment(1,
-            itemBuilder.createItemBuilder(universeName).withDamage(3).buildWeapon(), 0);
+            itemBuilder.createItemBuilder(getUniverseName()).withDamage(3).buildWeapon(), 0);
 
-        assertThat(controller.applyWearByUsage(universeName, equipment, 4)).isTrue();
+        assertThat(controller.applyWearByUsage(getUniverseName(), equipment, 4)).isTrue();
         assertThat(equipment.getDamage()).isEqualTo(3);
 
-        assertThat(controller.applyWearByUsage(universeName, equipment, 6)).isTrue();
+        assertThat(controller.applyWearByUsage(getUniverseName(), equipment, 6)).isTrue();
         assertThat(equipment.getDamage()).isEqualTo(2);
 
-        assertThat(controller.applyWearByUsage(universeName, equipment, 20)).isFalse();
+        assertThat(controller.applyWearByUsage(getUniverseName(), equipment, 20)).isFalse();
         assertThat(equipment.getDamage()).isEqualTo(0);
     }
 
@@ -43,9 +43,9 @@ class ItemStackControllerTest extends UniverseTestBase {
         updateUniverseSettings(new UniverseSettings(-1));
 
         DefensiveEquipment equipment = new DefensiveEquipment(1,
-            itemBuilder.createItemBuilder(universeName).withArmor(3).buildArmor(), 0);
+            itemBuilder.createItemBuilder(getUniverseName()).withArmor(3).buildArmor(), 0);
 
-        assertThat(controller.applyWearByUsage(universeName, equipment, 40)).isTrue();
+        assertThat(controller.applyWearByUsage(getUniverseName(), equipment, 40)).isTrue();
         assertThat(equipment.getArmor()).isEqualTo(3);
     }
 }

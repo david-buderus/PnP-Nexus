@@ -1,4 +1,4 @@
-package de.pnp.manager.server.service;
+package de.pnp.manager.server.service.upgrade;
 
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
@@ -6,6 +6,7 @@ import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
 import de.pnp.manager.component.upgrade.effect.MultiplicativeUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
+import de.pnp.manager.server.service.RepositoryServiceBaseTest;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 

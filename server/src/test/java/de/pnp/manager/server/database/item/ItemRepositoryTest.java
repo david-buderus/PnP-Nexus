@@ -35,20 +35,20 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
     @Test
     void testInsertArmor() {
-        Material material = materialRepository.insert(universeName,
+        Material material = materialRepository.insert(getUniverseName(),
             new Material(null, "ArmorMat", Collections.emptyList()));
 
         Armor armor = createItem().withMaterial(material).buildArmor();
-        Item persistedArmor = repository.insert(universeName, armor);
+        Item persistedArmor = repository.insert(getUniverseName(), armor);
 
-        assertThat(repository.getAll(universeName)).contains(armor);
-        assertThat(repository.get(universeName, armor.getName())).contains(armor);
-        assertThat(repository.get(universeName, persistedArmor.getId())).contains(armor);
+        assertThat(repository.getAll(getUniverseName())).contains(armor);
+        assertThat(repository.get(getUniverseName(), armor.getName())).contains(armor);
+        assertThat(repository.get(getUniverseName(), persistedArmor.getId())).contains(armor);
     }
 
     @Test
     void testTypeLink() {
-        ItemType typeA = typeRepository.insert(universeName,
+        ItemType typeA = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Type A", ETypeRestriction.ITEM));
         ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.ITEM);
         Item item = createItem().withType(typeA).buildItem();
@@ -58,7 +58,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
     @Test
     void testSubtypeLink() {
-        ItemType typeA = typeRepository.insert(universeName,
+        ItemType typeA = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Type A", ETypeRestriction.ITEM));
         ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.ITEM);
         Item item = createItem().withSubtype(typeA).buildItem();
@@ -68,7 +68,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
     @Test
     void testMaterialLink() {
-        Material materialA = materialRepository.insert(universeName,
+        Material materialA = materialRepository.insert(getUniverseName(),
             new Material(null, "Material A", Collections.emptyList()));
         Material materialB = new Material(null, "Material B", Collections.emptyList());
         Weapon weapon = createItem().withName("Test").withMaterial(materialA)
@@ -80,16 +80,16 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
     @Test
     void testAutomaticTypeTranslations() {
-        ItemType type = typeRepository.insert(universeName,
+        ItemType type = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Type", ETypeRestriction.ITEM));
-        ItemType subtype = typeRepository.insert(universeName,
+        ItemType subtype = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Subtype", ETypeRestriction.ITEM));
-        Item item = repository.insert(universeName,
+        Item item = repository.insert(getUniverseName(),
             createItem().withType(type).withSubtype(subtype).buildItem());
         assertThat(item).isNotNull();
 
         assertThat(
-            typeTranslationRepository.getAllVariants(universeName, subtype)).containsExactlyInAnyOrder(type,
+            typeTranslationRepository.getAllVariants(getUniverseName(), subtype)).containsExactlyInAnyOrder(type,
             subtype);
     }
 

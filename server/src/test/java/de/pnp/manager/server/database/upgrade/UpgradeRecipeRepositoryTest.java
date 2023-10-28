@@ -60,7 +60,8 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Override
     protected UpgradeRecipe createObject() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(getUniverseName(),
+            new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade = createUpgrade().withName("Test").withTarget(type).persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "",
             List.of(new CharacterResourceRecipeEntry(10, ECharacterResource.HEALTH)));
@@ -68,7 +69,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Override
     protected UpgradeRecipe createSlightlyChangeObject() {
-        ItemType type = typeRepository.insert(universeName,
+        ItemType type = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Other Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade = createUpgrade().withName("Other Test").withTarget(type).persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "Something",
@@ -77,7 +78,8 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Override
     protected List<UpgradeRecipe> createMultipleObjects() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(getUniverseName(),
+            new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
         Upgrade upgrade1 = createUpgrade().withName("Test 1").withTarget(type).persist().build();
         Upgrade upgrade2 = createUpgrade().withName("Test 2").withTarget(type).persist().build();
         Item item = createItem().persist().buildItem();

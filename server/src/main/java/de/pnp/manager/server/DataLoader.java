@@ -6,6 +6,7 @@ import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
+import de.pnp.manager.component.item.Material.MaterialItem;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
@@ -51,6 +52,6 @@ public class DataLoader implements ApplicationRunner {
         Item ironIngot = itemRepository.insert(TEST_UNIVERSE,
             new Item(null, "Iron ingot", material, metal, "", "", ERarity.COMMON, 100, 1, "An ingot of iron.", "", 100,
                 0));
-        materialRepository.insert(TEST_UNIVERSE, new Material(null, "Iron", List.of(ironIngot)));
+        materialRepository.insert(TEST_UNIVERSE, new Material(null, "Iron", List.of(new MaterialItem(1, ironIngot))));
     }
 }

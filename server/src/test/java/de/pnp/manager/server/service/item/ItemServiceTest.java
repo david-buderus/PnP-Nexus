@@ -1,9 +1,10 @@
-package de.pnp.manager.server.service;
+package de.pnp.manager.server.service.item;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.server.service.RepositoryServiceBaseTest;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,7 +22,7 @@ public class ItemServiceTest extends RepositoryServiceBaseTest<Item, ItemReposit
 
     @Override
     protected List<Item> createObjects() {
-        Material material = materialRepository.insert(universeName, new Material(null, "Material", List.of()));
+        Material material = materialRepository.insert(getUniverseName(), new Material(null, "Material", List.of()));
         return List.of(
             createItem().withName("Item").buildItem(),
             createItem().withName("Weapon").withMaterial(material).buildWeapon(),

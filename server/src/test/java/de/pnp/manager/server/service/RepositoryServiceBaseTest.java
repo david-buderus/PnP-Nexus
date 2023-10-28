@@ -75,57 +75,57 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     @Test
     void testGetAll() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(universeName, objects);
+        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
 
-        assertThat(getAll(universeName, null)).containsExactlyInAnyOrderElementsOf(objects);
-        assertThat(getAll(universeName, Collections.emptyList())).containsExactlyInAnyOrderElementsOf(objects);
+        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(objects);
+        assertThat(getAll(getUniverseName(), Collections.emptyList())).containsExactlyInAnyOrderElementsOf(objects);
 
-        assertThat(getAll(universeName, persistedObjects.stream().map(DatabaseObject::getId).limit(2)
+        assertThat(getAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
             .toList())).containsExactlyInAnyOrderElementsOf(persistedObjects.stream().limit(2).toList());
     }
 
     @Test
     void testDeleteAll() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(universeName, objects);
+        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
 
-        deleteAll(universeName, persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList());
-        assertThat(getAll(universeName, null)).containsExactlyInAnyOrderElementsOf(
+        deleteAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList());
+        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(
             objects.stream().skip(2).toList());
     }
 
     @Test
     void testGet() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(universeName, objects);
+        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
 
-        assertThat(getOne(universeName, persistedObjects.stream().findFirst().orElseThrow().getId())).isEqualTo(
+        assertThat(getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId())).isEqualTo(
             objects.get(0));
     }
 
     @Test
     void testUpdate() throws Exception {
         List<Obj> objects = createObjects();
-        Obj persistedObject = insertAll(universeName, List.of(objects.get(0))).stream().findFirst()
+        Obj persistedObject = insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
             .orElseThrow();
 
-        assertThat(getOne(universeName, persistedObject.getId())).isEqualTo(persistedObject);
+        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(persistedObject);
         Obj updatedObject = objects.get(1);
-        assertThat(update(universeName, persistedObject.getId(), updatedObject)).isEqualTo(updatedObject);
-        assertThat(getOne(universeName, persistedObject.getId())).isEqualTo(updatedObject);
+        assertThat(update(getUniverseName(), persistedObject.getId(), updatedObject)).isEqualTo(updatedObject);
+        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(updatedObject);
     }
 
     @Test
     void testDelete() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(universeName, objects);
+        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
 
         ObjectId deletedId = persistedObjects.stream().findFirst().orElseThrow().getId();
-        deleteOne(universeName, deletedId);
+        deleteOne(getUniverseName(), deletedId);
 
-        assertThat(getAll(universeName, null)).containsExactlyInAnyOrderElementsOf(
+        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(
             objects.stream().skip(1).toList());
-        assertThatThrownBy(() -> getOne(universeName, deletedId)).isInstanceOf(ResponseStatusException.class)
+        assertThatThrownBy(() -> getOne(getUniverseName(), deletedId)).isInstanceOf(ResponseStatusException.class)
             .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -239,13 +239,13 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      * A helper method to create {@link TestItemBuilder}.
      */
     protected TestItemBuilder createItem() {
-        return itemBuilder.createItemBuilder(universeName);
+        return itemBuilder.createItemBuilder(getUniverseName());
     }
 
     /**
      * A helper method to create {@link TestItemBuilder}.
      */
     protected TestUpgradeBuilder createUpgrade() {
-        return upgradeBuilder.createUpgradeBuilder(universeName);
+        return upgradeBuilder.createUpgradeBuilder(getUniverseName());
     }
 }
