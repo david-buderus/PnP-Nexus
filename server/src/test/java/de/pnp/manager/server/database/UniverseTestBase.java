@@ -20,7 +20,7 @@ public abstract class UniverseTestBase {
     /**
      * Database name that should be used for testing
      */
-    protected final String universeName;
+    private final String universeName;
 
     protected UniverseTestBase() {
         universeName = UUID.randomUUID().toString();
@@ -42,5 +42,9 @@ public abstract class UniverseTestBase {
     protected void updateUniverseSettings(UniverseSettings settings) {
         Universe universe = universeRepository.get(universeName).orElseThrow();
         universeRepository.update(new Universe(universeName, universe.getDisplayName(), settings));
+    }
+
+    protected String getUniverseName() {
+        return universeName;
     }
 }

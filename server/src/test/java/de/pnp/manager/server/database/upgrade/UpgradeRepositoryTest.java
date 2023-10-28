@@ -27,7 +27,7 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
 
     @Test
     void testTypeLink() {
-        ItemType typeA = typeRepository.insert(universeName,
+        ItemType typeA = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Type A", ETypeRestriction.ITEM));
         ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.ITEM);
         Upgrade upgrade = new Upgrade(null, "Shine", typeA, 1, 10,
@@ -38,13 +38,13 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
 
     @Override
     protected Upgrade createObject() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Weapon", ETypeRestriction.WEAPON));
+        ItemType type = typeRepository.insert(getUniverseName(), new ItemType(null, "Weapon", ETypeRestriction.WEAPON));
         return new Upgrade(null, "Shine", type, 1, 10, List.of(SimpleUpgradeEffect.create("The weapon emits light")));
     }
 
     @Override
     protected Upgrade createSlightlyChangeObject() {
-        ItemType type = typeRepository.insert(universeName,
+        ItemType type = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Equipment", ETypeRestriction.EQUIPMENT));
         return new Upgrade(null, "Shine", type, 1, 10,
             List.of(SimpleUpgradeEffect.create("The equipment emits light")));
@@ -52,7 +52,7 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
 
     @Override
     protected List<Upgrade> createMultipleObjects() {
-        ItemType type = typeRepository.insert(universeName, new ItemType(null, "Item", ETypeRestriction.ITEM));
+        ItemType type = typeRepository.insert(getUniverseName(), new ItemType(null, "Item", ETypeRestriction.ITEM));
         return List.of(
             new Upgrade(null, "Shine", type, 1, 10,
                 List.of(new MultiplicativeUpgradeEffect("The weapon emits light", EUpgradeManipulator.HIT, 2))),

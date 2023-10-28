@@ -22,7 +22,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Test
     void testTalentLink() {
-        Talent earthMagic = talentRepository.insert(universeName,
+        Talent earthMagic = talentRepository.insert(getUniverseName(),
             new Talent(null, "Earth Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
                 EPrimaryAttribute.STRENGTH, EPrimaryAttribute.CHARISMA));
         Spell spell = new Spell(null, "Wall", "Create a wall", "10 Mana per meter", "1 per meter",
@@ -37,7 +37,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Override
     protected Spell createObject() {
-        Talent fireMagic = talentRepository.insert(universeName,
+        Talent fireMagic = talentRepository.insert(getUniverseName(),
             new Talent(null, "Fire Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
                 EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
 
@@ -47,7 +47,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Override
     protected Spell createSlightlyChangeObject() {
-        Talent fireMagic = talentRepository.insert(universeName,
+        Talent fireMagic = talentRepository.insert(getUniverseName(),
             new Talent(null, "Fire Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
                 EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
 

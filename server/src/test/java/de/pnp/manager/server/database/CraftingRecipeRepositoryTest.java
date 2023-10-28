@@ -31,10 +31,10 @@ class CraftingRecipeRepositoryTest extends
 
     @Test
     void testResultLink() {
-        Item resultOld = itemRepository.insert(universeName,
+        Item resultOld = itemRepository.insert(getUniverseName(),
             createItem().withName("Result old").buildItem());
         Item resultNew = createItem().withName("Result new").buildItem();
-        Item materialItem = itemRepository.insert(universeName,
+        Item materialItem = itemRepository.insert(getUniverseName(),
             createItem().withName("A").buildItem());
         CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
             new ItemRecipeEntry(1, resultOld), null, List.of(new ItemRecipeEntry(2, materialItem)));
@@ -45,26 +45,26 @@ class CraftingRecipeRepositoryTest extends
 
     @Test
     void testCraftingRecipeMaterial() {
-        Item result = itemRepository.insert(universeName,
+        Item result = itemRepository.insert(getUniverseName(),
             createItem().withName("Result").buildItem());
-        Material material = materialRepository.insert(universeName,
+        Material material = materialRepository.insert(getUniverseName(),
             new Material(null, "Material", Collections.emptyList()));
 
         CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
             new ItemRecipeEntry(1, result),
             null, List.of(new MaterialRecipeEntry(7, material)));
 
-        repository.insert(universeName, craftingRecipe);
-        assertThat(repository.getAll(universeName)).contains(craftingRecipe);
+        repository.insert(getUniverseName(), craftingRecipe);
+        assertThat(repository.getAll(getUniverseName())).contains(craftingRecipe);
     }
 
     @Override
     protected CraftingRecipe createObject() {
-        Item result = itemRepository.insert(universeName,
+        Item result = itemRepository.insert(getUniverseName(),
             createItem().withName("Result").buildItem());
-        Item itemA = itemRepository.insert(universeName,
+        Item itemA = itemRepository.insert(getUniverseName(),
             createItem().withName("A").buildItem());
-        Item itemB = itemRepository.insert(universeName,
+        Item itemB = itemRepository.insert(getUniverseName(),
             createItem().withName("B").buildItem());
 
         return new CraftingRecipe(null, "", "", "",
@@ -75,9 +75,9 @@ class CraftingRecipeRepositoryTest extends
 
     @Override
     protected CraftingRecipe createSlightlyChangeObject() {
-        Item result = itemRepository.get(universeName, "Result").orElseThrow();
-        Item itemA = itemRepository.get(universeName, "A").orElseThrow();
-        Item itemB = itemRepository.get(universeName, "B").orElseThrow();
+        Item result = itemRepository.get(getUniverseName(), "Result").orElseThrow();
+        Item itemA = itemRepository.get(getUniverseName(), "A").orElseThrow();
+        Item itemB = itemRepository.get(getUniverseName(), "B").orElseThrow();
 
         return new CraftingRecipe(null, "Alchemy", "", "Fire",
             new ItemRecipeEntry(1, result),
@@ -87,9 +87,9 @@ class CraftingRecipeRepositoryTest extends
 
     @Override
     protected List<CraftingRecipe> createMultipleObjects() {
-        Item itemA = itemRepository.insert(universeName,
+        Item itemA = itemRepository.insert(getUniverseName(),
             createItem().withName("A").buildItem());
-        Item itemB = itemRepository.insert(universeName,
+        Item itemB = itemRepository.insert(getUniverseName(),
             createItem().withName("B").buildItem());
 
         CraftingRecipe recipeA = new CraftingRecipe(null, "", "", "", new ItemRecipeEntry(1, itemA),

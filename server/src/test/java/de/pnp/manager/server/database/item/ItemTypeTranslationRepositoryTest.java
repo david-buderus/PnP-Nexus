@@ -30,14 +30,14 @@ public class ItemTypeTranslationRepositoryTest extends
     @Test
     void testAddTypeTranslation() {
         ItemType type = asType("One-handed Sword");
-        ItemTypeTranslation typeTranslation = repository.addTypeTranslation(universeName, type,
+        ItemTypeTranslation typeTranslation = repository.addTypeTranslation(getUniverseName(), type,
             Set.of(asType("Weapon"), asType("One-handed weapon")));
 
         assertThat(typeTranslation.getType()).isEqualTo(type);
         assertThat(typeTranslation.getBroaderVariants()).containsExactlyInAnyOrder(asType("Weapon"),
             asType("One-handed weapon"));
 
-        typeTranslation = repository.addTypeTranslation(universeName, type, asType("Blade"));
+        typeTranslation = repository.addTypeTranslation(getUniverseName(), type, asType("Blade"));
 
         assertThat(typeTranslation.getType()).isEqualTo(type);
         assertThat(typeTranslation.getBroaderVariants()).containsExactlyInAnyOrder(asType("Weapon"),
@@ -46,15 +46,15 @@ public class ItemTypeTranslationRepositoryTest extends
 
     @Test
     void testTransitiveGet() {
-        repository.addTypeTranslation(universeName, asType("One-handed sword"),
+        repository.addTypeTranslation(getUniverseName(), asType("One-handed sword"),
             Set.of(asType("Sword"), asType("One-handed weapon")));
-        repository.addTypeTranslation(universeName, asType("Sword"),
+        repository.addTypeTranslation(getUniverseName(), asType("Sword"),
             Set.of(asType("Weapon"), asType("Blade")));
-        repository.addTypeTranslation(universeName, asType("One-handed weapon"),
+        repository.addTypeTranslation(getUniverseName(), asType("One-handed weapon"),
             Set.of(asType("Weapon")));
 
         assertThat(
-            repository.getAllVariants(universeName, asType("One-handed sword"))).containsExactlyInAnyOrder(
+            repository.getAllVariants(getUniverseName(), asType("One-handed sword"))).containsExactlyInAnyOrder(
             asType("One-handed sword"), asType("Sword"), asType("One-handed weapon"), asType("Weapon"),
             asType("Blade"));
     }
@@ -62,16 +62,16 @@ public class ItemTypeTranslationRepositoryTest extends
     @Test
     @Timeout(1)
     void testLoopSafety() {
-        repository.addTypeTranslation(universeName, asType("A"), Set.of(asType("B")));
-        repository.addTypeTranslation(universeName, asType("B"), Set.of(asType("A")));
+        repository.addTypeTranslation(getUniverseName(), asType("A"), Set.of(asType("B")));
+        repository.addTypeTranslation(getUniverseName(), asType("B"), Set.of(asType("A")));
 
-        assertThat(repository.getAllVariants(universeName, asType("A"))).containsExactlyInAnyOrder(
+        assertThat(repository.getAllVariants(getUniverseName(), asType("A"))).containsExactlyInAnyOrder(
             asType("A"), asType("B"));
     }
 
     @Test
     void testTypeLink() {
-        ItemType typeA = typeRepository.insert(universeName,
+        ItemType typeA = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Type A", ETypeRestriction.ITEM));
         ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.WEAPON);
         ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, typeA, Set.of());
@@ -81,7 +81,7 @@ public class ItemTypeTranslationRepositoryTest extends
 
     @Test
     void testVariantsLink() {
-        ItemType typeA = typeRepository.insert(universeName,
+        ItemType typeA = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Type A", ETypeRestriction.ITEM));
         ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.WEAPON);
         ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, asType("test"),
@@ -113,7 +113,7 @@ public class ItemTypeTranslationRepositoryTest extends
      * Returns an already persisted {@link ItemType} with the given name.
      */
     protected ItemType asType(String type) {
-        return typeRepository.get(universeName, type)
-            .orElse(typeRepository.insert(universeName, new ItemType(null, type, ETypeRestriction.ITEM)));
+        return typeRepository.get(getUniverseName(), type)
+            .orElse(typeRepository.insert(getUniverseName(), new ItemType(null, type, ETypeRestriction.ITEM)));
     }
 }

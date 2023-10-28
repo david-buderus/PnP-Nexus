@@ -5,6 +5,7 @@ import de.pnp.manager.server.database.CraftingRecipeRepository;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -36,6 +37,7 @@ public class CraftingRecipe extends DatabaseObject {
     /**
      * The side-product of this {@link CraftingRecipe}
      */
+    @Nullable
     private final ItemRecipeEntry sideProduct;
 
     /**
@@ -44,7 +46,7 @@ public class CraftingRecipe extends DatabaseObject {
     private final Collection<IRecipeEntry> materials;
 
     public CraftingRecipe(ObjectId id, String profession, String requirement,
-        String otherCircumstances, ItemRecipeEntry product, ItemRecipeEntry sideProduct,
+        String otherCircumstances, ItemRecipeEntry product, @Nullable ItemRecipeEntry sideProduct,
         Collection<IRecipeEntry> materials) {
         super(id);
         this.profession = profession;
@@ -72,6 +74,7 @@ public class CraftingRecipe extends DatabaseObject {
         return product;
     }
 
+    @Nullable
     public ItemRecipeEntry getSideProduct() {
         return sideProduct;
     }
