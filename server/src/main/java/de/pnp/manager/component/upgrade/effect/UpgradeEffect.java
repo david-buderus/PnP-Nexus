@@ -1,27 +1,33 @@
 package de.pnp.manager.component.upgrade.effect;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.pnp.manager.component.upgrade.Upgrade;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 
 /**
  * Represents an effect of an {@link Upgrade}.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = SimpleUpgradeEffect.class),
-    @JsonSubTypes.Type(value = AdditiveUpgradeEffect.class),
-    @JsonSubTypes.Type(value = MultiplicativeUpgradeEffect.class),
+    @JsonSubTypes.Type(value = SimpleUpgradeEffect.class, name = "SimpleUpgradeEffect"),
+    @JsonSubTypes.Type(value = AdditiveUpgradeEffect.class, name = "AdditiveUpgradeEffect"),
+    @JsonSubTypes.Type(value = MultiplicativeUpgradeEffect.class, name = "MultiplicativeUpgradeEffect"),
 })
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public abstract class UpgradeEffect {
 
     /**
      * A human-readable description of the effect.
      */
+    @NotBlank
     protected final String description;
 
     /**
      * Which value this {@link UpgradeEffect} manipulates.
      */
+    @JsonProperty
     protected final EUpgradeManipulator upgradeManipulator;
 
     public UpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
@@ -30,7 +36,8 @@ public abstract class UpgradeEffect {
     }
 
     /**
-     * Applies the effect of this {@link UpgradeEffect}, if the given {@link EUpgradeManipulator} is compatible with this upgrade.
+     * Applies the effect of this {@link UpgradeEffect}, if the given {@link EUpgradeManipulator} is compatible with
+     * this upgrade.
      */
     public float apply(EUpgradeManipulator manipulator, float value) {
         if (manipulator == upgradeManipulator) {

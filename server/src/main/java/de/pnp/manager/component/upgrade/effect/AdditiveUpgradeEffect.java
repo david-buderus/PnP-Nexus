@@ -1,5 +1,6 @@
 package de.pnp.manager.component.upgrade.effect;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
@@ -10,6 +11,7 @@ public class AdditiveUpgradeEffect extends UpgradeEffect {
     /**
      * The value which gets added to the corresponding attribute.
      */
+    @JsonProperty
     private final float value;
 
     public AdditiveUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator, float value) {

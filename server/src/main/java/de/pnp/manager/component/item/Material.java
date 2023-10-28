@@ -3,6 +3,10 @@ package de.pnp.manager.component.item;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.server.database.MaterialRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -20,6 +24,7 @@ public class Material extends DatabaseObject implements IUniquelyNamedDataObject
      * The human-readable name of this material.
      */
     @Indexed(unique = true)
+    @NotBlank
     protected final String name;
 
     /**
@@ -27,10 +32,10 @@ public class Material extends DatabaseObject implements IUniquelyNamedDataObject
      * <p>
      * An example would be: The material iron get represented by the item iron ingot.
      */
-    @DBRef
-    protected final Collection<Item> items;
+    @NotNull
+    protected final Collection<@Valid MaterialItem> items;
 
-    public Material(ObjectId id, String name, Collection<Item> items) {
+    public Material(ObjectId id, String name, Collection<MaterialItem> items) {
         super(id);
         this.name = name;
         this.items = items;
@@ -40,7 +45,7 @@ public class Material extends DatabaseObject implements IUniquelyNamedDataObject
         return name;
     }
 
-    public Collection<Item> getItems() {
+    public Collection<MaterialItem> getItems() {
         return items;
     }
 
@@ -59,5 +64,12 @@ public class Material extends DatabaseObject implements IUniquelyNamedDataObject
     @Override
     public int hashCode() {
         return Objects.hash(name, items);
+    }
+
+    /**
+     * Determines how many of an item is needed to equal the material.
+     */
+    public record MaterialItem(@Positive double amount, @NotNull @DBRef Item item) {
+        // empty
     }
 }

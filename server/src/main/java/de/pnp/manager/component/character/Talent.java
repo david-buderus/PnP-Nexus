@@ -1,5 +1,6 @@
 package de.pnp.manager.component.character;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.attributes.EPrimaryAttribute;
 import de.pnp.manager.server.database.TalentRepository;
@@ -75,6 +76,7 @@ public class Talent extends DatabaseObject {
     /**
      * The {@link EPrimaryAttribute primary attributes} for a talent check in correct order.
      */
+    @JsonIgnore
     public List<EPrimaryAttribute> getAttributes() {
         return List.of(getFirstAttribute(), getSecondAttribute(), getThirdAttribute());
     }

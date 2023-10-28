@@ -5,6 +5,11 @@ import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -20,29 +25,34 @@ public class Upgrade extends DatabaseObject {
     /**
      * The name of this upgrade.
      */
+    @NotBlank
     private final String name;
 
     /**
      * The {@link ItemType} on which this {@link Upgrade} can be used.
      */
     @DBRef
+    @NotNull
     private final ItemType target;
 
     /**
      * The amount of {@link EquipableItem#getUpgradeSlots() slots} needed for an {@link EquipableItem} to hold this
      * upgrade.
      */
+    @PositiveOrZero
     private final int slots;
 
     /**
      * The average price of this item.
      */
+    @PositiveOrZero
     protected final int vendorPrice;
 
     /**
      * The {@link UpgradeEffect effects} oft this upgrade.
      */
-    private final Collection<UpgradeEffect> effects;
+    @NotEmpty
+    private final Collection<@Valid UpgradeEffect> effects;
 
     public Upgrade(ObjectId id, String name, ItemType target, int slots, int vendorPrice,
         Collection<UpgradeEffect> effects) {

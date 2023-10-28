@@ -11,9 +11,63 @@
     }
   ],
   "paths": {
-    "/api/universes": {
+    "/api/{universe}/item-type-translations": {
+      "delete": {
+        "operationId": "deleteAll_8",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "item-type-translation-service"
+        ]
+      },
       "get": {
-        "operationId": "getAllUniverses",
+        "operationId": "getAll_8",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -21,7 +75,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Universe"
+                    "$ref": "#/components/schemas/ItemTypeTranslation"
                   }
                 }
               }
@@ -29,18 +83,31 @@
             "description": "OK"
           }
         },
-        "summary": "Get all Universes",
+        "summary": "Get all objects from the database",
         "tags": [
-          "universe-service"
+          "item-type-translation-service"
         ]
       },
       "post": {
-        "operationId": "createUniverse",
+        "operationId": "insertAll_8",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Universe"
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ItemTypeTranslation"
+                }
               }
             }
           },
@@ -51,25 +118,115 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Universe"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemTypeTranslation"
+                  }
                 }
               }
             },
             "description": "OK"
           }
         },
-        "summary": "Create a universe",
+        "summary": "Inserts the objects into the database",
         "tags": [
-          "universe-service"
+          "item-type-translation-service"
+        ]
+      }
+    },
+    "/api/{universe}/item-type-translations/{id}": {
+      "delete": {
+        "operationId": "delete_8",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "item-type-translation-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_8",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemTypeTranslation"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "item-type-translation-service"
         ]
       },
       "put": {
-        "operationId": "updateUniverse",
+        "operationId": "update_8",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Universe"
+                "$ref": "#/components/schemas/ItemTypeTranslation"
               }
             }
           },
@@ -80,22 +237,22 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Universe"
+                  "$ref": "#/components/schemas/ItemTypeTranslation"
                 }
               }
             },
             "description": "OK"
           }
         },
-        "summary": "Update a universe",
+        "summary": "Updates an object in the database",
         "tags": [
-          "universe-service"
+          "item-type-translation-service"
         ]
       }
     },
-    "/api/universes/{universe}": {
+    "/api/{universe}/item-types": {
       "delete": {
-        "operationId": "deleteUniverse",
+        "operationId": "deleteAll_7",
         "parameters": [
           {
             "in": "path",
@@ -104,31 +261,163 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            },
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           }
         },
-        "summary": "Delete a universe",
+        "summary": "Deletes all objects with the given ids from the database",
         "tags": [
-          "universe-service"
+          "item-type-service"
         ]
       },
       "get": {
-        "operationId": "getUniverse",
+        "operationId": "getAll_7",
         "parameters": [
           {
             "in": "path",
             "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemType"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "item-type-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_7",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ItemType"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ItemType"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "item-type-service"
+        ]
+      }
+    },
+    "/api/{universe}/item-types/{id}": {
+      "delete": {
+        "operationId": "delete_7",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "item-type-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_7",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
               "type": "string"
@@ -140,52 +429,69 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Universe"
+                  "$ref": "#/components/schemas/ItemType"
                 }
               }
             },
             "description": "OK"
           }
         },
-        "summary": "Get a universe",
+        "summary": "Get an object from the database",
         "tags": [
-          "universe-service"
+          "item-type-service"
         ]
-      }
-    },
-    "/{destination}": {
-      "get": {
-        "operationId": "getPage",
+      },
+      "put": {
+        "operationId": "update_7",
         "parameters": [
           {
             "in": "path",
-            "name": "destination",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
               "type": "string"
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemType"
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "content": {
-              "text/html": {
+              "*/*": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ItemType"
                 }
               }
             },
             "description": "OK"
           }
         },
+        "summary": "Updates an object in the database",
         "tags": [
-          "page-service"
+          "item-type-service"
         ]
       }
     },
-    "/{universe}/items": {
+    "/api/{universe}/items": {
       "delete": {
-        "operationId": "deleteAll",
+        "operationId": "deleteAll_6",
         "parameters": [
           {
             "in": "path",
@@ -218,7 +524,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll",
+        "operationId": "getAll_6",
         "parameters": [
           {
             "in": "path",
@@ -277,7 +583,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll",
+        "operationId": "insertAll_6",
         "parameters": [
           {
             "in": "path",
@@ -354,9 +660,9 @@
         ]
       }
     },
-    "/{universe}/items/{id}": {
+    "/api/{universe}/items/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "delete_6",
         "parameters": [
           {
             "in": "path",
@@ -386,7 +692,7 @@
         ]
       },
       "get": {
-        "operationId": "get",
+        "operationId": "get_6",
         "parameters": [
           {
             "in": "path",
@@ -439,7 +745,7 @@
         ]
       },
       "put": {
-        "operationId": "update",
+        "operationId": "update_6",
         "parameters": [
           {
             "in": "path",
@@ -517,11 +823,1505 @@
           "item-service"
         ]
       }
+    },
+    "/api/{universe}/upgrade-recipes": {
+      "delete": {
+        "operationId": "deleteAll_5",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "upgrade-recipe-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll_5",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpgradeRecipe"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "upgrade-recipe-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_5",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/UpgradeRecipe"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UpgradeRecipe"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "upgrade-recipe-service"
+        ]
+      }
+    },
+    "/api/{universe}/upgrade-recipes/{id}": {
+      "delete": {
+        "operationId": "delete_5",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "upgrade-recipe-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_5",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpgradeRecipe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "upgrade-recipe-service"
+        ]
+      },
+      "put": {
+        "operationId": "update_5",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpgradeRecipe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpgradeRecipe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "upgrade-recipe-service"
+        ]
+      }
+    },
+    "/api/{universe}/upgrades": {
+      "delete": {
+        "operationId": "deleteAll_4",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "upgrade-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll_4",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Upgrade"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "upgrade-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_4",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Upgrade"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "upgrade-service"
+        ]
+      }
+    },
+    "/api/{universe}/upgrades/{id}": {
+      "delete": {
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "upgrade-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_4",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "upgrade-service"
+        ]
+      },
+      "put": {
+        "operationId": "update_4",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Upgrade"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Upgrade"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "upgrade-service"
+        ]
+      }
+    },
+    "/{destination}": {
+      "get": {
+        "operationId": "getPage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "destination",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "page-service"
+        ]
+      }
+    },
+    "/{universe}/crafting-recipes": {
+      "delete": {
+        "operationId": "deleteAll_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "crafting-recipe-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CraftingRecipe"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "crafting-recipe-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CraftingRecipe"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CraftingRecipe"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "crafting-recipe-service"
+        ]
+      }
+    },
+    "/{universe}/crafting-recipes/{id}": {
+      "delete": {
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "crafting-recipe-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CraftingRecipe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "crafting-recipe-service"
+        ]
+      },
+      "put": {
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CraftingRecipe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CraftingRecipe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "crafting-recipe-service"
+        ]
+      }
+    },
+    "/{universe}/materials": {
+      "delete": {
+        "operationId": "deleteAll_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "material-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Material"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "material-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Material"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Material"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "material-service"
+        ]
+      }
+    },
+    "/{universe}/materials/{id}": {
+      "delete": {
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "material-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Material"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "material-service"
+        ]
+      },
+      "put": {
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Material"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Material"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "material-service"
+        ]
+      }
+    },
+    "/{universe}/spells": {
+      "delete": {
+        "operationId": "deleteAll_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "spell-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Spell"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "spell-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Spell"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Spell"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "spell-service"
+        ]
+      }
+    },
+    "/{universe}/spells/{id}": {
+      "delete": {
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "spell-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Spell"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "spell-service"
+        ]
+      },
+      "put": {
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Spell"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Spell"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "spell-service"
+        ]
+      }
+    },
+    "/{universe}/talents": {
+      "delete": {
+        "operationId": "deleteAll",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "talent-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Talent"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "talent-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Talent"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Talent"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "talent-service"
+        ]
+      }
+    },
+    "/{universe}/talents/{id}": {
+      "delete": {
+        "operationId": "delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "talent-service"
+        ]
+      },
+      "get": {
+        "operationId": "get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Talent"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "talent-service"
+        ]
+      },
+      "put": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Talent"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Talent"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "talent-service"
+        ]
+      }
     }
   },
   "components": {
     "schemas": {
+      "AdditiveUpgradeEffect": {
+        "required": [
+          "description"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/UpgradeEffect"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          }
+        ]
+      },
       "Armor": {
+        "required": [
+          "description",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
+        ],
         "type": "object",
         "allOf": [
           {
@@ -547,17 +2347,74 @@
               }
             }
           }
-        ],
-        "required": [
-          "description",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
         ]
+      },
+      "CharacterResourceRecipeEntry": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IRecipeEntry"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "amountOfRequiredUnits": {
+                "type": "number",
+                "format": "float"
+              },
+              "resource": {
+                "type": "string",
+                "enum": [
+                  "HEALTH",
+                  "MANA",
+                  "MENTAL_HEALTH"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "CraftingRecipe": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "materials": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/CharacterResourceRecipeEntry"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemRecipeEntry"
+                },
+                {
+                  "$ref": "#/components/schemas/MaterialRecipeEntry"
+                }
+              ]
+            }
+          },
+          "otherCircumstances": {
+            "type": "string"
+          },
+          "product": {
+            "$ref": "#/components/schemas/ItemRecipeEntry"
+          },
+          "profession": {
+            "type": "string"
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "sideProduct": {
+            "$ref": "#/components/schemas/ItemRecipeEntry"
+          }
+        }
+      },
+      "IRecipeEntry": {
+        "type": "object"
       },
       "Item": {
         "required": [
@@ -624,6 +2481,45 @@
           }
         }
       },
+      "ItemRecipeEntry": {
+        "required": [
+          "item"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IRecipeEntry"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "amountOfRequiredUnits": {
+                "type": "number",
+                "format": "float"
+              },
+              "item": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Item"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Armor"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Jewellery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Shield"
+                  },
+                  {
+                    "$ref": "#/components/schemas/Weapon"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
       "ItemType": {
         "type": "object",
         "properties": {
@@ -640,13 +2536,43 @@
               "EQUIPMENT",
               "JEWELLERY",
               "WEAPON",
-              "ARMOR",
-              "SHIELD"
+              "DEFENSIVE_ITEM",
+              "SHIELD",
+              "HANDHELD",
+              "ARMOR"
             ]
           }
         }
       },
+      "ItemTypeTranslation": {
+        "type": "object",
+        "properties": {
+          "broaderVariants": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemType"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          }
+        }
+      },
       "Jewellery": {
+        "required": [
+          "description",
+          "effect",
+          "material",
+          "name",
+          "note",
+          "requirement",
+          "subtype",
+          "type"
+        ],
         "type": "object",
         "allOf": [
           {
@@ -664,7 +2590,104 @@
               }
             }
           }
+        ]
+      },
+      "Material": {
+        "required": [
+          "items",
+          "name"
         ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MaterialItem"
+            }
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "MaterialItem": {
+        "required": [
+          "item"
+        ],
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "item": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Item"
+              },
+              {
+                "$ref": "#/components/schemas/Armor"
+              },
+              {
+                "$ref": "#/components/schemas/Jewellery"
+              },
+              {
+                "$ref": "#/components/schemas/Shield"
+              },
+              {
+                "$ref": "#/components/schemas/Weapon"
+              }
+            ]
+          }
+        }
+      },
+      "MaterialRecipeEntry": {
+        "required": [
+          "material"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IRecipeEntry"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "amountOfRequiredUnits": {
+                "type": "number",
+                "format": "float"
+              },
+              "material": {
+                "$ref": "#/components/schemas/Material"
+              }
+            }
+          }
+        ]
+      },
+      "MultiplicativeUpgradeEffect": {
+        "required": [
+          "description"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/UpgradeEffect"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "factor": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          }
+        ]
+      },
+      "Shield": {
         "required": [
           "description",
           "effect",
@@ -674,26 +2697,7 @@
           "requirement",
           "subtype",
           "type"
-        ]
-      },
-      "Material": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Item"
-            }
-          },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "Shield": {
+        ],
         "type": "object",
         "allOf": [
           {
@@ -727,9 +2731,214 @@
               }
             }
           }
+        ]
+      },
+      "SimpleUpgradeEffect": {
+        "required": [
+          "description"
         ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/UpgradeEffect"
+          }
+        ]
+      },
+      "Spell": {
+        "type": "object",
+        "properties": {
+          "castTime": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "talents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Talent"
+            }
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Talent": {
+        "type": "object",
+        "properties": {
+          "firstAttribute": {
+            "type": "string",
+            "enum": [
+              "STRENGTH",
+              "ENDURANCE",
+              "DEXTERITY",
+              "INTELLIGENCE",
+              "CHARISMA",
+              "RESILIENCE",
+              "AGILITY",
+              "PRECISION"
+            ]
+          },
+          "group": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "secondAttribute": {
+            "type": "string",
+            "enum": [
+              "STRENGTH",
+              "ENDURANCE",
+              "DEXTERITY",
+              "INTELLIGENCE",
+              "CHARISMA",
+              "RESILIENCE",
+              "AGILITY",
+              "PRECISION"
+            ]
+          },
+          "thirdAttribute": {
+            "type": "string",
+            "enum": [
+              "STRENGTH",
+              "ENDURANCE",
+              "DEXTERITY",
+              "INTELLIGENCE",
+              "CHARISMA",
+              "RESILIENCE",
+              "AGILITY",
+              "PRECISION"
+            ]
+          }
+        }
+      },
+      "Upgrade": {
+        "required": [
+          "effects",
+          "name",
+          "target"
+        ],
+        "type": "object",
+        "properties": {
+          "effects": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/AdditiveUpgradeEffect"
+                },
+                {
+                  "$ref": "#/components/schemas/MultiplicativeUpgradeEffect"
+                },
+                {
+                  "$ref": "#/components/schemas/SimpleUpgradeEffect"
+                }
+              ]
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "target": {
+            "$ref": "#/components/schemas/ItemType"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UpgradeEffect": {
+        "required": [
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "upgradeManipulator": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "SLOTS",
+              "DAMAGE",
+              "HIT",
+              "INITIATIVE",
+              "ARMOR",
+              "WEIGHT"
+            ]
+          }
+        }
+      },
+      "UpgradeRecipe": {
+        "required": [
+          "materials",
+          "requiredUpgrades",
+          "requirement",
+          "upgrade"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "materials": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/CharacterResourceRecipeEntry"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemRecipeEntry"
+                },
+                {
+                  "$ref": "#/components/schemas/MaterialRecipeEntry"
+                }
+              ]
+            }
+          },
+          "requiredUpgrades": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Upgrade"
+            }
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "upgrade": {
+            "$ref": "#/components/schemas/Upgrade"
+          }
+        }
+      },
+      "Weapon": {
         "required": [
           "description",
+          "dice",
           "effect",
           "material",
           "name",
@@ -737,32 +2946,7 @@
           "requirement",
           "subtype",
           "type"
-        ]
-      },
-      "Universe": {
-        "type": "object",
-        "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "settings": {
-            "$ref": "#/components/schemas/UniverseSettings"
-          }
-        }
-      },
-      "UniverseSettings": {
-        "type": "object",
-        "properties": {
-          "wearFactor": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "Weapon": {
+        ],
         "type": "object",
         "allOf": [
           {
@@ -795,17 +2979,6 @@
               }
             }
           }
-        ],
-        "required": [
-          "description",
-          "dice",
-          "effect",
-          "material",
-          "name",
-          "note",
-          "requirement",
-          "subtype",
-          "type"
         ]
       }
     }

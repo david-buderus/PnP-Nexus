@@ -1,10 +1,9 @@
-package de.pnp.manager.server.database;
+package de.pnp.manager.utils;
 
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.EquipableItem;
@@ -13,6 +12,7 @@ import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
+import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 /**
  * Helper class to create {@link Item items}.
  */
-public class TestItemBuilder {
+public class TestItemBuilder extends TestBuilderBase {
 
     /**
      * Component wrapper for the {@link TestItemBuilder}.
@@ -31,11 +31,14 @@ public class TestItemBuilder {
         @Autowired
         private ItemTypeRepository typeRepository;
 
+        @Autowired
+        private ItemRepository itemRepository;
+
         /**
          * Builder with default values.
          */
         public TestItemBuilder createItemBuilder(String universe) {
-            return new TestItemBuilder(universe, typeRepository);
+            return new TestItemBuilder(universe, typeRepository, itemRepository);
         }
     }
 
@@ -43,11 +46,8 @@ public class TestItemBuilder {
      * Returns a builder without a link to a {@link Universe} or database.
      */
     public static TestItemBuilder createItemBuilder() {
-        return new TestItemBuilder(null, null);
+        return new TestItemBuilder(null, null, null);
     }
-
-    private final String universe;
-    private final ItemTypeRepository typeRepository;
 
     private String name;
     private ItemType type;
@@ -70,9 +70,13 @@ public class TestItemBuilder {
     private int maximumStackSize;
     private int minimumStackSize;
 
-    private TestItemBuilder(String universe, ItemTypeRepository typeRepository) {
-        this.universe = universe;
-        this.typeRepository = typeRepository;
+    private boolean shouldGetPersisted;
+
+    private final ItemRepository itemRepository;
+
+    private TestItemBuilder(String universe, ItemTypeRepository typeRepository, ItemRepository itemRepository) {
+        super(universe, typeRepository);
+        this.itemRepository = itemRepository;
         name = "name";
         type = getType("Type");
         subtype = getType("Subtype");
@@ -93,6 +97,7 @@ public class TestItemBuilder {
         dice = "D6";
         maximumStackSize = 100;
         minimumStackSize = 0;
+        shouldGetPersisted = false;
     }
 
     /**
@@ -208,50 +213,71 @@ public class TestItemBuilder {
     }
 
     /**
+     * Sets that the resulting {@link Item} will be persisted.
+     */
+    public TestItemBuilder persist() {
+        this.shouldGetPersisted = true;
+        return this;
+    }
+
+    /**
      * Creates an item matching this builder.
      */
     public Item buildItem() {
-        return new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Item item = new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, maximumStackSize, minimumStackSize);
+        if (shouldGetPersisted) {
+            return itemRepository.insert(universe, item);
+        }
+         return item;
     }
 
     /**
      * Creates armor matching this builder.
      */
     public Armor buildArmor() {
-        return new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Armor armorItem = new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, armor, weight, 1, 1);
+        if (shouldGetPersisted) {
+            return (Armor) itemRepository.insert(universe, armorItem);
+        }
+        return armorItem;
     }
 
     /**
      * Creates weapon matching this builder.
      */
     public Weapon buildWeapon() {
-        return new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Weapon weapon = new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
+        if (shouldGetPersisted) {
+            return (Weapon) itemRepository.insert(universe, weapon);
+        }
+        return weapon;
     }
 
     /**
      * Creates shield matching this builder.
      */
     public Shield buildShield() {
-        return new Shield(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier, description, note,
+        Shield shield = new Shield(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+            description, note,
             material, upgradeSlots, initiativeModifier, hit, weight, armor, 1, 1);
+        if (shouldGetPersisted) {
+            return (Shield) itemRepository.insert(universe, shield);
+        }
+        return shield;
     }
 
     /**
      * Creates jewellery matching this builder.
      */
     public Jewellery buildJewellery() {
-        return new Jewellery(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Jewellery jewellery = new Jewellery(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, 1, 1);
-    }
-
-    private ItemType getType(String typeName) {
-        if (typeRepository == null) {
-            return new ItemType(null, typeName, ETypeRestriction.ITEM);
+        if (shouldGetPersisted) {
+            return (Jewellery) itemRepository.insert(universe, jewellery);
         }
-        return typeRepository.get(universe, typeName).orElse(
-            typeRepository.insert(universe, new ItemType(null, typeName, ETypeRestriction.ITEM)));
+        return jewellery;
     }
 }
