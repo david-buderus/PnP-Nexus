@@ -4,8 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
-import de.pnp.manager.server.database.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
+import de.pnp.manager.utils.TestItemBuilder;
+import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.utils.TestUpgradeBuilder;
+import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +26,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends RepositoryBase<E>> extends
     UniverseTestBase {
 
-    /**
-     * A factory to create {@link TestItemBuilder}.
-     */
     @Autowired
-    protected TestItemBuilderFactory itemBuilder;
+    private TestItemBuilderFactory itemBuilder;
+
+    @Autowired
+    private TestUpgradeBuilderFactory upgradeBuilder;
 
     /**
      * The main repository for the test.
@@ -206,4 +209,18 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
      * It must be possible to add all objects in the collection without a conflict.
      */
     protected abstract List<E> createMultipleObjects();
+
+    /**
+     * A helper method to create {@link TestItemBuilder}.
+     */
+    protected TestItemBuilder createItem() {
+        return itemBuilder.createItemBuilder(universeName);
+    }
+
+    /**
+     * A helper method to create {@link TestItemBuilder}.
+     */
+    protected TestUpgradeBuilder createUpgrade() {
+        return upgradeBuilder.createUpgradeBuilder(universeName);
+    }
 }

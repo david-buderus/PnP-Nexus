@@ -1,8 +1,8 @@
 package de.pnp.manager.server.service;
 
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.server.database.TestItemBuilder;
-import de.pnp.manager.server.database.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.component.item.Material;
+import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ItemServiceTest extends RepositoryServiceBaseTest<Item, ItemRepository, ItemService> {
 
     @Autowired
-    private TestItemBuilderFactory itemBuilder;
+    private MaterialRepository materialRepository;
 
     public ItemServiceTest(@Autowired ItemService itemService) {
-        super(itemService);
+        super(itemService, Item.class);
     }
 
     @Override
     protected List<Item> createObjects() {
-        return List.of(createItem().withName("A").buildItem(), createItem().withName("B").buildItem(),
-            createItem().withName("C").buildItem(), createItem().withName("D").buildItem());
-    }
-
-    /**
-     * A helper method to create {@link TestItemBuilder}.
-     */
-    protected TestItemBuilder createItem() {
-        return itemBuilder.createItemBuilder(universeName);
+        Material material = materialRepository.insert(universeName, new Material(null, "Material", List.of()));
+        return List.of(
+            createItem().withName("Item").buildItem(),
+            createItem().withName("Weapon").withMaterial(material).buildWeapon(),
+            createItem().withName("Shield").withMaterial(material).buildShield(),
+            createItem().withName("Armor").withMaterial(material).buildArmor(),
+            createItem().withName("Jewellery").withMaterial(material).buildJewellery()
+        );
     }
 }

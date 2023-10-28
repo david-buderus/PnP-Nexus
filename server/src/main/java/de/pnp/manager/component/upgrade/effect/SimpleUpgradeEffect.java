@@ -13,7 +13,7 @@ public class SimpleUpgradeEffect extends UpgradeEffect {
         return new SimpleUpgradeEffect(description, EUpgradeManipulator.NONE);
     }
 
-    private SimpleUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
+    public SimpleUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
         super(description, upgradeManipulator);
     }
 
