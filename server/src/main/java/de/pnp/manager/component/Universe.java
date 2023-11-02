@@ -1,6 +1,8 @@
 package de.pnp.manager.component;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.server.database.UniverseRepository;
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -34,6 +36,7 @@ public class Universe {
     }
 
     @PersistenceCreator
+    @JsonCreator
     public Universe(String name, String displayName, UniverseSettings settings) {
         this.name = name;
         this.displayName = displayName;
@@ -50,6 +53,24 @@ public class Universe {
 
     public UniverseSettings getSettings() {
         return settings;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Universe universe = (Universe) o;
+        return getName().equals(universe.getName()) && getDisplayName().equals(universe.getDisplayName())
+            && getSettings().equals(universe.getSettings());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getDisplayName(), getSettings());
     }
 
     /**

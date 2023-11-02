@@ -1,7 +1,8 @@
-package de.pnp.manager.server;
+package de.pnp.manager.server.configurator;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+import de.pnp.manager.server.ServerTestBase;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -10,7 +11,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * The test configuration for integration tests.
  */
 public enum EServerTestConfiguration {
-    BASIC_TEST_SERVER(BasicTestServerConfiguration.class, null);
+
+    EMPTY(NoOpServerConfigurator.class, null),
+    BASIC(BasicTestServerConfiguration.class, null);
 
     private final Class<? extends TestServerConfiguratorBase> configuratorClass;
     private final Path backupZip;

@@ -2,13 +2,15 @@ package de.pnp.manager.server;
 
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.Universe.UniverseSettings;
+import de.pnp.manager.server.configurator.BasicTestServerConfiguration;
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.UniverseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Base test class for every test that needs an existing empty universe in the database.
  */
-@TestServer(EServerTestConfiguration.BASIC_TEST_SERVER)
+@TestServer(EServerTestConfiguration.BASIC)
 public abstract class UniverseTestBase extends ServerTestBase {
 
     @Autowired

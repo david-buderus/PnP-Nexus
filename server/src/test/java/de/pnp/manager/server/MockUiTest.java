@@ -2,12 +2,13 @@ package de.pnp.manager.server;
 
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import org.junit.jupiter.api.Test;
 
 /**
  * Simple ui test.
  */
-@TestServer(EServerTestConfiguration.BASIC_TEST_SERVER)
+@TestServer(EServerTestConfiguration.BASIC)
 @UiTestServer
 public class MockUiTest extends ServerTestBase {
 

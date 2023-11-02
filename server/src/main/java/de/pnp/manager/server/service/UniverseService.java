@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
- *
+ * Service to access {@link UniverseRepository}.
  */
 @RestController
 @Validated
@@ -32,6 +32,7 @@ public class UniverseService {
      * Message of the 404 exception thrown if the universe does not exist.
      */
     public static final String UNIVERSE_DOES_NOT_EXIST_EXCEPTION_MESSAGE = "Universe does not exist.";
+
     @Autowired
     private UniverseRepository universeRepository;
 

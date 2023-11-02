@@ -1,4 +1,4 @@
-package de.pnp.manager.server;
+package de.pnp.manager.server.configurator;
 
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.server.service.UniverseService;

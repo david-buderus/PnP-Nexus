@@ -1,4 +1,4 @@
-package de.pnp.manager.server;
+package de.pnp.manager.server.configurator;
 
 import static org.junit.jupiter.api.Assertions.fail;
 

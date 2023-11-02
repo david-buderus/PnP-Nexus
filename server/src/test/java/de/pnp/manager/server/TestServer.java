@@ -1,5 +1,6 @@
 package de.pnp.manager.server;
 
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
