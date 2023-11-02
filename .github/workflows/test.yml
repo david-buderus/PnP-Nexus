@@ -61,6 +61,8 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright/java:v1.39.0-jammy
 
     steps:
       - uses: actions/checkout@v3
