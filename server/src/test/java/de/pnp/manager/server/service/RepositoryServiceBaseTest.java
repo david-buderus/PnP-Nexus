@@ -12,8 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.server.database.RepositoryBase;
-import de.pnp.manager.server.database.UniverseTestBase;
 import de.pnp.manager.utils.TestItemBuilder;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.utils.TestUpgradeBuilder;

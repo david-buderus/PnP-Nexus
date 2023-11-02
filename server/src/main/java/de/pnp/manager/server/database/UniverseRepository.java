@@ -70,7 +70,6 @@ public class UniverseRepository {
      */
     public Universe insert(Universe universe) {
         Preconditions.checkArgument(!FORBIDDEN_UNIVERSE_NAMES.contains(universe.getName()));
-        Preconditions.checkArgument(!exists(universe.getName()));
         return mongoTemplate.insert(universe, REPOSITORY_NAME);
     }
 
