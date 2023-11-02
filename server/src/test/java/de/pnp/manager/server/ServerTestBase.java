@@ -9,6 +9,7 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.utils.TestUtils;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -43,6 +44,8 @@ public abstract class ServerTestBase {
      * Is only initialized if the test is a {@link UiTestServer}.
      */
     protected Browser browser;
+
+    private Playwright playwright;
 
     @LocalServerPort
     private int port;
@@ -88,13 +91,17 @@ public abstract class ServerTestBase {
         if (browser != null) {
             browser.close();
         }
+        if (playwright != null) {
+            playwright.close();
+        }
     }
 
     private void startUiServer() {
-        try (Playwright playwright = Playwright.create(new Playwright.CreateOptions())) {
-            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false);
-            browser = playwright.chromium().launch(launchOptions);
-        }
+        playwright = Playwright.create(new Playwright.CreateOptions());
+        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(
+            TestUtils.isRunningInCI());
+        browser = playwright.chromium().launch(launchOptions);
+
     }
 
     private boolean isUiTestServer() {

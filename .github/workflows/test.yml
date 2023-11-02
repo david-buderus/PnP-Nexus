@@ -86,6 +86,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: test
+        env:
+          RUNNING_IN_CI: true
 
       - name: Upload to Teamscale
         uses: 'cqse/teamscale-upload-action@v2.8.0'
