@@ -1,61 +1,74 @@
 package de.pnp.manager.server;
 
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.server.database.UniverseRepository;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.lang.annotation.Annotation;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@ContextConfiguration(initializers = ServerTestBase.ServerTestBaseInitializer.class)
+/**
+ * Test base for integration tests.
+ * <p>
+ * Needs to be used in combination with {@link TestServer}.
+ */
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ServerTestBase {
 
     @Autowired
     private UniverseRepository universeRepository;
 
-    private @Autowired AutowireCapableBeanFactory beanFactory;
+    @Autowired
+    private AutowireCapableBeanFactory beanFactory;
 
-    protected @Nullable Browser browser;
+    /**
+     * Browser which can be used for testing.
+     * <p>
+     * Is only initialized if the test is a {@link UiTestServer}.
+     */
+    protected Browser browser;
 
-    protected TestServerParameters testServerParameters;
+    @LocalServerPort
+    private int port;
 
-    ServerTestBase() {
-        initializeConfiguration();
+    /**
+     * Returns the baseUrl of the test server.
+     */
+    protected URL getBaseUrl() {
+        try {
+            return URI.create("http://localhost:" + getPort()).toURL();
+        } catch (MalformedURLException e) {
+            return fail(e);
+        }
     }
 
     protected int getPort() {
-        return getTestServerAnnotation().value().getPort();
+        return port;
     }
 
     public AutowireCapableBeanFactory getBeanFactory() {
         return beanFactory;
     }
 
-    private void initializeConfiguration() {
-        ServerTestBaseInitializer.PORT = getPort();
-    }
-
     @BeforeEach
     protected void setup() {
-        testServerParameters = getTestServerAnnotation().value().setupTestData(this);
+        getTestServerAnnotation().value().setupTestData(this);
         if (isUiTestServer()) {
             startUiServer();
         }
@@ -78,21 +91,23 @@ public abstract class ServerTestBase {
     }
 
     private void startUiServer() {
-        Playwright playwright = Playwright.create(new Playwright.CreateOptions());
-        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false);
-        browser = playwright.chromium().launch(launchOptions);
-
+        try (Playwright playwright = Playwright.create(new Playwright.CreateOptions())) {
+            BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(false);
+            browser = playwright.chromium().launch(launchOptions);
+        }
     }
 
     private boolean isUiTestServer() {
         Annotation[] declaredAnnotations = getClass().getDeclaredAnnotations();
-        List<UiTestServer> testServerAnnotations = Arrays.stream(declaredAnnotations).filter(UiTestServer.class::isInstance).map(UiTestServer.class::cast).toList();
+        List<UiTestServer> testServerAnnotations = Arrays.stream(declaredAnnotations)
+            .filter(UiTestServer.class::isInstance).map(UiTestServer.class::cast).toList();
         return !testServerAnnotations.isEmpty();
     }
 
     private TestServer getTestServerAnnotation() {
         List<TestServer> testServerAnnotations = getAnnotationsInClassHierarchy();
-        assertThat(testServerAnnotations).size().withFailMessage("Inheritors of TestServerBase must have exactly one TestServer annotation.").isEqualTo(1);
+        assertThat(testServerAnnotations).size()
+            .withFailMessage("Inheritors of TestServerBase must have exactly one TestServer annotation.").isEqualTo(1);
         return testServerAnnotations.get(0);
     }
 
@@ -104,14 +119,5 @@ public abstract class ServerTestBase {
             currentClass = currentClass.getSuperclass();
         } while (currentClass != null);
         return testServerAnnotations;
-    }
-
-    public static class ServerTestBaseInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        public static int PORT;
-
-        @Override
-        public void initialize(@NotNull ConfigurableApplicationContext applicationContext) {
-            System.setProperty("server.port", String.valueOf(PORT));
-        }
     }
 }

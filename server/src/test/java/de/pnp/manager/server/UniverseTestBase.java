@@ -6,7 +6,7 @@ import de.pnp.manager.server.database.UniverseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Base test class for every test that needs an existing universe in the database.
+ * Base test class for every test that needs an existing empty universe in the database.
  */
 @TestServer(EServerTestConfiguration.BASIC_TEST_SERVER)
 public abstract class UniverseTestBase extends ServerTestBase {

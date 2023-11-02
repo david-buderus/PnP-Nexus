@@ -4,21 +4,18 @@ import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
-
+/**
+ * Simple ui test.
+ */
 @TestServer(EServerTestConfiguration.BASIC_TEST_SERVER)
 @UiTestServer
-public class BasicTestServer extends ServerTestBase {
+public class MockUiTest extends ServerTestBase {
 
     @Test
     public void test() {
         BrowserContext browserContext = browser.newContext();
         Page page = browserContext.newPage();
-        try {
-            page.navigate(String.valueOf(testServerParameters.uri().toURL()));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
+        page.navigate(String.valueOf(getBaseUrl()));
         page.bringToFront();
     }
 }
