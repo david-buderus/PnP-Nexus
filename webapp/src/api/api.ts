@@ -26,6 +26,57 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  * 
  * @export
+ * @interface AdditiveUpgradeEffect
+ */
+export interface AdditiveUpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof AdditiveUpgradeEffect
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AdditiveUpgradeEffect
+     */
+    'upgradeManipulator'?: AdditiveUpgradeEffectUpgradeManipulatorEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof AdditiveUpgradeEffect
+     */
+    'value'?: number;
+}
+
+export const AdditiveUpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type AdditiveUpgradeEffectUpgradeManipulatorEnum = typeof AdditiveUpgradeEffectUpgradeManipulatorEnum[keyof typeof AdditiveUpgradeEffectUpgradeManipulatorEnum];
+
+/**
+ * 
+ * @export
+ * @interface AdditiveUpgradeEffectAllOf
+ */
+export interface AdditiveUpgradeEffectAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof AdditiveUpgradeEffectAllOf
+     */
+    'value'?: number;
+}
+/**
+ * 
+ * @export
  * @interface Armor
  */
 export interface Armor {
@@ -176,10 +227,121 @@ export interface ArmorAllOf {
     'weight'?: number;
 }
 /**
- * @type GetAll200ResponseInner
+ * 
+ * @export
+ * @interface CharacterResourceRecipeEntry
+ */
+export interface CharacterResourceRecipeEntry {
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterResourceRecipeEntry
+     */
+    'amountOfRequiredUnits'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterResourceRecipeEntry
+     */
+    'resource'?: CharacterResourceRecipeEntryResourceEnum;
+}
+
+export const CharacterResourceRecipeEntryResourceEnum = {
+    Health: 'HEALTH',
+    Mana: 'MANA',
+    MentalHealth: 'MENTAL_HEALTH'
+} as const;
+
+export type CharacterResourceRecipeEntryResourceEnum = typeof CharacterResourceRecipeEntryResourceEnum[keyof typeof CharacterResourceRecipeEntryResourceEnum];
+
+/**
+ * 
+ * @export
+ * @interface CharacterResourceRecipeEntryAllOf
+ */
+export interface CharacterResourceRecipeEntryAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterResourceRecipeEntryAllOf
+     */
+    'amountOfRequiredUnits'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterResourceRecipeEntryAllOf
+     */
+    'resource'?: CharacterResourceRecipeEntryAllOfResourceEnum;
+}
+
+export const CharacterResourceRecipeEntryAllOfResourceEnum = {
+    Health: 'HEALTH',
+    Mana: 'MANA',
+    MentalHealth: 'MENTAL_HEALTH'
+} as const;
+
+export type CharacterResourceRecipeEntryAllOfResourceEnum = typeof CharacterResourceRecipeEntryAllOfResourceEnum[keyof typeof CharacterResourceRecipeEntryAllOfResourceEnum];
+
+/**
+ * 
+ * @export
+ * @interface CraftingRecipe
+ */
+export interface CraftingRecipe {
+    /**
+     * 
+     * @type {string}
+     * @memberof CraftingRecipe
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {Array<CraftingRecipeMaterialsInner>}
+     * @memberof CraftingRecipe
+     */
+    'materials'?: Array<CraftingRecipeMaterialsInner>;
+    /**
+     * 
+     * @type {string}
+     * @memberof CraftingRecipe
+     */
+    'otherCircumstances'?: string;
+    /**
+     * 
+     * @type {ItemRecipeEntry}
+     * @memberof CraftingRecipe
+     */
+    'product'?: ItemRecipeEntry;
+    /**
+     * 
+     * @type {string}
+     * @memberof CraftingRecipe
+     */
+    'profession'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CraftingRecipe
+     */
+    'requirement'?: string;
+    /**
+     * 
+     * @type {ItemRecipeEntry}
+     * @memberof CraftingRecipe
+     */
+    'sideProduct'?: ItemRecipeEntry;
+}
+/**
+ * @type CraftingRecipeMaterialsInner
  * @export
  */
-export type GetAll200ResponseInner = Armor | Item | Jewellery | Shield | Weapon;
+export type CraftingRecipeMaterialsInner = CharacterResourceRecipeEntry | ItemRecipeEntry | MaterialRecipeEntry;
+
+/**
+ * @type GetAll6200ResponseInner
+ * @export
+ */
+export type GetAll6200ResponseInner = Armor | Item | Jewellery | Shield | Weapon;
 
 /**
  * 
@@ -281,6 +443,44 @@ export type ItemRarityEnum = typeof ItemRarityEnum[keyof typeof ItemRarityEnum];
 /**
  * 
  * @export
+ * @interface ItemRecipeEntry
+ */
+export interface ItemRecipeEntry {
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemRecipeEntry
+     */
+    'amountOfRequiredUnits'?: number;
+    /**
+     * 
+     * @type {GetAll6200ResponseInner}
+     * @memberof ItemRecipeEntry
+     */
+    'item': GetAll6200ResponseInner;
+}
+/**
+ * 
+ * @export
+ * @interface ItemRecipeEntryAllOf
+ */
+export interface ItemRecipeEntryAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemRecipeEntryAllOf
+     */
+    'amountOfRequiredUnits'?: number;
+    /**
+     * 
+     * @type {GetAll6200ResponseInner}
+     * @memberof ItemRecipeEntryAllOf
+     */
+    'item'?: GetAll6200ResponseInner;
+}
+/**
+ * 
+ * @export
  * @interface ItemType
  */
 export interface ItemType {
@@ -309,12 +509,39 @@ export const ItemTypeTypeRestrictionEnum = {
     Equipment: 'EQUIPMENT',
     Jewellery: 'JEWELLERY',
     Weapon: 'WEAPON',
-    Armor: 'ARMOR',
-    Shield: 'SHIELD'
+    DefensiveItem: 'DEFENSIVE_ITEM',
+    Shield: 'SHIELD',
+    Handheld: 'HANDHELD',
+    Armor: 'ARMOR'
 } as const;
 
 export type ItemTypeTypeRestrictionEnum = typeof ItemTypeTypeRestrictionEnum[keyof typeof ItemTypeTypeRestrictionEnum];
 
+/**
+ * 
+ * @export
+ * @interface ItemTypeTranslation
+ */
+export interface ItemTypeTranslation {
+    /**
+     * 
+     * @type {Set<ItemType>}
+     * @memberof ItemTypeTranslation
+     */
+    'broaderVariants'?: Set<ItemType>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemTypeTranslation
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof ItemTypeTranslation
+     */
+    'type'?: ItemType;
+}
 /**
  * 
  * @export
@@ -457,16 +684,124 @@ export interface Material {
     'id'?: string;
     /**
      * 
-     * @type {Array<Item>}
+     * @type {Array<MaterialItem>}
      * @memberof Material
      */
-    'items'?: Array<Item>;
+    'items': Array<MaterialItem>;
     /**
      * 
      * @type {string}
      * @memberof Material
      */
-    'name'?: string;
+    'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface MaterialItem
+ */
+export interface MaterialItem {
+    /**
+     * 
+     * @type {number}
+     * @memberof MaterialItem
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {GetAll6200ResponseInner}
+     * @memberof MaterialItem
+     */
+    'item': GetAll6200ResponseInner;
+}
+/**
+ * 
+ * @export
+ * @interface MaterialRecipeEntry
+ */
+export interface MaterialRecipeEntry {
+    /**
+     * 
+     * @type {number}
+     * @memberof MaterialRecipeEntry
+     */
+    'amountOfRequiredUnits'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof MaterialRecipeEntry
+     */
+    'material': Material;
+}
+/**
+ * 
+ * @export
+ * @interface MaterialRecipeEntryAllOf
+ */
+export interface MaterialRecipeEntryAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof MaterialRecipeEntryAllOf
+     */
+    'amountOfRequiredUnits'?: number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof MaterialRecipeEntryAllOf
+     */
+    'material'?: Material;
+}
+/**
+ * 
+ * @export
+ * @interface MultiplicativeUpgradeEffect
+ */
+export interface MultiplicativeUpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiplicativeUpgradeEffect
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MultiplicativeUpgradeEffect
+     */
+    'upgradeManipulator'?: MultiplicativeUpgradeEffectUpgradeManipulatorEnum;
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiplicativeUpgradeEffect
+     */
+    'factor'?: number;
+}
+
+export const MultiplicativeUpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type MultiplicativeUpgradeEffectUpgradeManipulatorEnum = typeof MultiplicativeUpgradeEffectUpgradeManipulatorEnum[keyof typeof MultiplicativeUpgradeEffectUpgradeManipulatorEnum];
+
+/**
+ * 
+ * @export
+ * @interface MultiplicativeUpgradeEffectAllOf
+ */
+export interface MultiplicativeUpgradeEffectAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof MultiplicativeUpgradeEffectAllOf
+     */
+    'factor'?: number;
 }
 /**
  * 
@@ -647,6 +982,168 @@ export interface ShieldAllOf {
 /**
  * 
  * @export
+ * @interface SimpleUpgradeEffect
+ */
+export interface SimpleUpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof SimpleUpgradeEffect
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SimpleUpgradeEffect
+     */
+    'upgradeManipulator'?: SimpleUpgradeEffectUpgradeManipulatorEnum;
+}
+
+export const SimpleUpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type SimpleUpgradeEffectUpgradeManipulatorEnum = typeof SimpleUpgradeEffectUpgradeManipulatorEnum[keyof typeof SimpleUpgradeEffectUpgradeManipulatorEnum];
+
+/**
+ * 
+ * @export
+ * @interface Spell
+ */
+export interface Spell {
+    /**
+     * 
+     * @type {string}
+     * @memberof Spell
+     */
+    'castTime'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Spell
+     */
+    'cost'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Spell
+     */
+    'effect'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Spell
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Spell
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {Array<Talent>}
+     * @memberof Spell
+     */
+    'talents'?: Array<Talent>;
+    /**
+     * 
+     * @type {number}
+     * @memberof Spell
+     */
+    'tier'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface Talent
+ */
+export interface Talent {
+    /**
+     * 
+     * @type {string}
+     * @memberof Talent
+     */
+    'firstAttribute'?: TalentFirstAttributeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Talent
+     */
+    'group'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Talent
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Talent
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Talent
+     */
+    'secondAttribute'?: TalentSecondAttributeEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof Talent
+     */
+    'thirdAttribute'?: TalentThirdAttributeEnum;
+}
+
+export const TalentFirstAttributeEnum = {
+    Strength: 'STRENGTH',
+    Endurance: 'ENDURANCE',
+    Dexterity: 'DEXTERITY',
+    Intelligence: 'INTELLIGENCE',
+    Charisma: 'CHARISMA',
+    Resilience: 'RESILIENCE',
+    Agility: 'AGILITY',
+    Precision: 'PRECISION'
+} as const;
+
+export type TalentFirstAttributeEnum = typeof TalentFirstAttributeEnum[keyof typeof TalentFirstAttributeEnum];
+export const TalentSecondAttributeEnum = {
+    Strength: 'STRENGTH',
+    Endurance: 'ENDURANCE',
+    Dexterity: 'DEXTERITY',
+    Intelligence: 'INTELLIGENCE',
+    Charisma: 'CHARISMA',
+    Resilience: 'RESILIENCE',
+    Agility: 'AGILITY',
+    Precision: 'PRECISION'
+} as const;
+
+export type TalentSecondAttributeEnum = typeof TalentSecondAttributeEnum[keyof typeof TalentSecondAttributeEnum];
+export const TalentThirdAttributeEnum = {
+    Strength: 'STRENGTH',
+    Endurance: 'ENDURANCE',
+    Dexterity: 'DEXTERITY',
+    Intelligence: 'INTELLIGENCE',
+    Charisma: 'CHARISMA',
+    Resilience: 'RESILIENCE',
+    Agility: 'AGILITY',
+    Precision: 'PRECISION'
+} as const;
+
+export type TalentThirdAttributeEnum = typeof TalentThirdAttributeEnum[keyof typeof TalentThirdAttributeEnum];
+
+/**
+ * 
+ * @export
  * @interface Universe
  */
 export interface Universe {
@@ -681,6 +1178,124 @@ export interface UniverseSettings {
      * @memberof UniverseSettings
      */
     'wearFactor'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface Upgrade
+ */
+export interface Upgrade {
+    /**
+     * 
+     * @type {Array<UpgradeEffectsInner>}
+     * @memberof Upgrade
+     */
+    'effects': Array<UpgradeEffectsInner>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Upgrade
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Upgrade
+     */
+    'name': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Upgrade
+     */
+    'slots'?: number;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof Upgrade
+     */
+    'target': ItemType;
+    /**
+     * 
+     * @type {number}
+     * @memberof Upgrade
+     */
+    'vendorPrice'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface UpgradeEffect
+ */
+export interface UpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpgradeEffect
+     */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpgradeEffect
+     */
+    'upgradeManipulator'?: UpgradeEffectUpgradeManipulatorEnum;
+}
+
+export const UpgradeEffectUpgradeManipulatorEnum = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type UpgradeEffectUpgradeManipulatorEnum = typeof UpgradeEffectUpgradeManipulatorEnum[keyof typeof UpgradeEffectUpgradeManipulatorEnum];
+
+/**
+ * @type UpgradeEffectsInner
+ * @export
+ */
+export type UpgradeEffectsInner = AdditiveUpgradeEffect | MultiplicativeUpgradeEffect | SimpleUpgradeEffect;
+
+/**
+ * 
+ * @export
+ * @interface UpgradeRecipe
+ */
+export interface UpgradeRecipe {
+    /**
+     * 
+     * @type {string}
+     * @memberof UpgradeRecipe
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {Array<CraftingRecipeMaterialsInner>}
+     * @memberof UpgradeRecipe
+     */
+    'materials': Array<CraftingRecipeMaterialsInner>;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof UpgradeRecipe
+     */
+    'requiredUpgrades': Array<Upgrade>;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpgradeRecipe
+     */
+    'requirement': string;
+    /**
+     * 
+     * @type {Upgrade}
+     * @memberof UpgradeRecipe
+     */
+    'upgrade': Upgrade;
 }
 /**
  * 
@@ -860,10 +1475,10 @@ export interface WeaponAllOf {
 }
 
 /**
- * ItemServiceApi - axios parameter creator
+ * CraftingRecipeServiceApi - axios parameter creator
  * @export
  */
-export const ItemServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+export const CraftingRecipeServiceApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
@@ -873,12 +1488,12 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        _delete: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        delete3: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('_delete', 'universe', universe)
+            assertParamExists('delete3', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('_delete', 'id', id)
-            const localVarPath = `/{universe}/items/{id}`
+            assertParamExists('delete3', 'id', id)
+            const localVarPath = `/{universe}/crafting-recipes/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -911,12 +1526,12 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteAll: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        deleteAll3: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('deleteAll', 'universe', universe)
+            assertParamExists('deleteAll3', 'universe', universe)
             // verify required parameter 'ids' is not null or undefined
-            assertParamExists('deleteAll', 'ids', ids)
-            const localVarPath = `/{universe}/items`
+            assertParamExists('deleteAll3', 'ids', ids)
+            const localVarPath = `/{universe}/crafting-recipes`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -952,12 +1567,12 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        get: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        get3: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('get', 'universe', universe)
+            assertParamExists('get3', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('get', 'id', id)
-            const localVarPath = `/{universe}/items/{id}`
+            assertParamExists('get3', 'id', id)
+            const localVarPath = `/{universe}/crafting-recipes/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -990,10 +1605,10 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAll: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getAll3: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('getAll', 'universe', universe)
-            const localVarPath = `/{universe}/items`
+            assertParamExists('getAll3', 'universe', universe)
+            const localVarPath = `/{universe}/crafting-recipes`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1025,16 +1640,16 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
+         * @param {Array<CraftingRecipe>} craftingRecipe 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        insertAll: async (universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        insertAll3: async (universe: string, craftingRecipe: Array<CraftingRecipe>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('insertAll', 'universe', universe)
-            // verify required parameter 'getAll200ResponseInner' is not null or undefined
-            assertParamExists('insertAll', 'getAll200ResponseInner', getAll200ResponseInner)
-            const localVarPath = `/{universe}/items`
+            assertParamExists('insertAll3', 'universe', universe)
+            // verify required parameter 'craftingRecipe' is not null or undefined
+            assertParamExists('insertAll3', 'craftingRecipe', craftingRecipe)
+            const localVarPath = `/{universe}/crafting-recipes`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1054,7 +1669,7 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(getAll200ResponseInner, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(craftingRecipe, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1066,18 +1681,18 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {GetAll200ResponseInner} getAll200ResponseInner 
+         * @param {CraftingRecipe} craftingRecipe 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        update: async (universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        update3: async (universe: string, id: string, craftingRecipe: CraftingRecipe, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('update', 'universe', universe)
+            assertParamExists('update3', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('update', 'id', id)
-            // verify required parameter 'getAll200ResponseInner' is not null or undefined
-            assertParamExists('update', 'getAll200ResponseInner', getAll200ResponseInner)
-            const localVarPath = `/{universe}/items/{id}`
+            assertParamExists('update3', 'id', id)
+            // verify required parameter 'craftingRecipe' is not null or undefined
+            assertParamExists('update3', 'craftingRecipe', craftingRecipe)
+            const localVarPath = `/{universe}/crafting-recipes/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1098,7 +1713,504 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(getAll200ResponseInner, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(craftingRecipe, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CraftingRecipeServiceApi - functional programming interface
+ * @export
+ */
+export const CraftingRecipeServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CraftingRecipeServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete3(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete3(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll3(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll3(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get3(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CraftingRecipe>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get3(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll3(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CraftingRecipe>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll3(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<CraftingRecipe>} craftingRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll3(universe: string, craftingRecipe: Array<CraftingRecipe>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CraftingRecipe>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll3(universe, craftingRecipe, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {CraftingRecipe} craftingRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update3(universe: string, id: string, craftingRecipe: CraftingRecipe, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CraftingRecipe>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update3(universe, id, craftingRecipe, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * CraftingRecipeServiceApi - factory interface
+ * @export
+ */
+export const CraftingRecipeServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CraftingRecipeServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete3(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete3(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll3(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll3(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get3(universe: string, id: string, options?: any): AxiosPromise<CraftingRecipe> {
+            return localVarFp.get3(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll3(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<CraftingRecipe>> {
+            return localVarFp.getAll3(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<CraftingRecipe>} craftingRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll3(universe: string, craftingRecipe: Array<CraftingRecipe>, options?: any): AxiosPromise<Array<CraftingRecipe>> {
+            return localVarFp.insertAll3(universe, craftingRecipe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {CraftingRecipe} craftingRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update3(universe: string, id: string, craftingRecipe: CraftingRecipe, options?: any): AxiosPromise<CraftingRecipe> {
+            return localVarFp.update3(universe, id, craftingRecipe, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CraftingRecipeServiceApi - object-oriented interface
+ * @export
+ * @class CraftingRecipeServiceApi
+ * @extends {BaseAPI}
+ */
+export class CraftingRecipeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CraftingRecipeServiceApi
+     */
+    public delete3(universe: string, id: string, options?: AxiosRequestConfig) {
+        return CraftingRecipeServiceApiFp(this.configuration).delete3(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CraftingRecipeServiceApi
+     */
+    public deleteAll3(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return CraftingRecipeServiceApiFp(this.configuration).deleteAll3(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CraftingRecipeServiceApi
+     */
+    public get3(universe: string, id: string, options?: AxiosRequestConfig) {
+        return CraftingRecipeServiceApiFp(this.configuration).get3(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CraftingRecipeServiceApi
+     */
+    public getAll3(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return CraftingRecipeServiceApiFp(this.configuration).getAll3(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<CraftingRecipe>} craftingRecipe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CraftingRecipeServiceApi
+     */
+    public insertAll3(universe: string, craftingRecipe: Array<CraftingRecipe>, options?: AxiosRequestConfig) {
+        return CraftingRecipeServiceApiFp(this.configuration).insertAll3(universe, craftingRecipe, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {CraftingRecipe} craftingRecipe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CraftingRecipeServiceApi
+     */
+    public update3(universe: string, id: string, craftingRecipe: CraftingRecipe, options?: AxiosRequestConfig) {
+        return CraftingRecipeServiceApiFp(this.configuration).update3(universe, id, craftingRecipe, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ItemServiceApi - axios parameter creator
+ * @export
+ */
+export const ItemServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete6: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('delete6', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete6', 'id', id)
+            const localVarPath = `/api/{universe}/items/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll6: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll6', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll6', 'ids', ids)
+            const localVarPath = `/api/{universe}/items`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get6: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get6', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get6', 'id', id)
+            const localVarPath = `/api/{universe}/items/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll6: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll6', 'universe', universe)
+            const localVarPath = `/api/{universe}/items`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<GetAll6200ResponseInner>} getAll6200ResponseInner 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll6: async (universe: string, getAll6200ResponseInner: Array<GetAll6200ResponseInner>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll6', 'universe', universe)
+            // verify required parameter 'getAll6200ResponseInner' is not null or undefined
+            assertParamExists('insertAll6', 'getAll6200ResponseInner', getAll6200ResponseInner)
+            const localVarPath = `/api/{universe}/items`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getAll6200ResponseInner, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {GetAll6200ResponseInner} getAll6200ResponseInner 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update6: async (universe: string, id: string, getAll6200ResponseInner: GetAll6200ResponseInner, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update6', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update6', 'id', id)
+            // verify required parameter 'getAll6200ResponseInner' is not null or undefined
+            assertParamExists('update6', 'getAll6200ResponseInner', getAll6200ResponseInner)
+            const localVarPath = `/api/{universe}/items/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(getAll6200ResponseInner, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1123,8 +2235,8 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async _delete(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator._delete(universe, id, options);
+        async delete6(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete6(universe, id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1135,8 +2247,8 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteAll(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll(universe, ids, options);
+        async deleteAll6(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll6(universe, ids, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1147,8 +2259,8 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async get(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll200ResponseInner>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.get(universe, id, options);
+        async get6(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll6200ResponseInner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get6(universe, id, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1159,20 +2271,20 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll(universe, ids, options);
+        async getAll6(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll6200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll6(universe, ids, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
+         * @param {Array<GetAll6200ResponseInner>} getAll6200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll(universe, getAll200ResponseInner, options);
+        async insertAll6(universe: string, getAll6200ResponseInner: Array<GetAll6200ResponseInner>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAll6200ResponseInner>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll6(universe, getAll6200ResponseInner, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1180,12 +2292,12 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {GetAll200ResponseInner} getAll200ResponseInner 
+         * @param {GetAll6200ResponseInner} getAll6200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll200ResponseInner>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.update(universe, id, getAll200ResponseInner, options);
+        async update6(universe: string, id: string, getAll6200ResponseInner: GetAll6200ResponseInner, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAll6200ResponseInner>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update6(universe, id, getAll6200ResponseInner, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1206,8 +2318,8 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        _delete(universe: string, id: string, options?: any): AxiosPromise<void> {
-            return localVarFp._delete(universe, id, options).then((request) => request(axios, basePath));
+        delete6(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete6(universe, id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1217,8 +2329,8 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteAll(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
-            return localVarFp.deleteAll(universe, ids, options).then((request) => request(axios, basePath));
+        deleteAll6(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll6(universe, ids, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1228,8 +2340,8 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        get(universe: string, id: string, options?: any): AxiosPromise<GetAll200ResponseInner> {
-            return localVarFp.get(universe, id, options).then((request) => request(axios, basePath));
+        get6(universe: string, id: string, options?: any): AxiosPromise<GetAll6200ResponseInner> {
+            return localVarFp.get6(universe, id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1239,31 +2351,31 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAll(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<GetAll200ResponseInner>> {
-            return localVarFp.getAll(universe, ids, options).then((request) => request(axios, basePath));
+        getAll6(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<GetAll6200ResponseInner>> {
+            return localVarFp.getAll6(universe, ids, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
+         * @param {Array<GetAll6200ResponseInner>} getAll6200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: any): AxiosPromise<Array<GetAll200ResponseInner>> {
-            return localVarFp.insertAll(universe, getAll200ResponseInner, options).then((request) => request(axios, basePath));
+        insertAll6(universe: string, getAll6200ResponseInner: Array<GetAll6200ResponseInner>, options?: any): AxiosPromise<Array<GetAll6200ResponseInner>> {
+            return localVarFp.insertAll6(universe, getAll6200ResponseInner, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {GetAll200ResponseInner} getAll200ResponseInner 
+         * @param {GetAll6200ResponseInner} getAll6200ResponseInner 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: any): AxiosPromise<GetAll200ResponseInner> {
-            return localVarFp.update(universe, id, getAll200ResponseInner, options).then((request) => request(axios, basePath));
+        update6(universe: string, id: string, getAll6200ResponseInner: GetAll6200ResponseInner, options?: any): AxiosPromise<GetAll6200ResponseInner> {
+            return localVarFp.update6(universe, id, getAll6200ResponseInner, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1284,8 +2396,8 @@ export class ItemServiceApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public _delete(universe: string, id: string, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration)._delete(universe, id, options).then((request) => request(this.axios, this.basePath));
+    public delete6(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).delete6(universe, id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1297,8 +2409,8 @@ export class ItemServiceApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public deleteAll(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).deleteAll(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    public deleteAll6(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).deleteAll6(universe, ids, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1310,8 +2422,8 @@ export class ItemServiceApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public get(universe: string, id: string, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).get(universe, id, options).then((request) => request(this.axios, this.basePath));
+    public get6(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).get6(universe, id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1323,21 +2435,21 @@ export class ItemServiceApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).getAll(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    public getAll6(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).getAll6(universe, ids, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Inserts the objects into the database
      * @param {string} universe 
-     * @param {Array<GetAll200ResponseInner>} getAll200ResponseInner 
+     * @param {Array<GetAll6200ResponseInner>} getAll6200ResponseInner 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public insertAll(universe: string, getAll200ResponseInner: Array<GetAll200ResponseInner>, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).insertAll(universe, getAll200ResponseInner, options).then((request) => request(this.axios, this.basePath));
+    public insertAll6(universe: string, getAll6200ResponseInner: Array<GetAll6200ResponseInner>, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).insertAll6(universe, getAll6200ResponseInner, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1345,13 +2457,1504 @@ export class ItemServiceApi extends BaseAPI {
      * @summary Updates an object in the database
      * @param {string} universe 
      * @param {string} id 
-     * @param {GetAll200ResponseInner} getAll200ResponseInner 
+     * @param {GetAll6200ResponseInner} getAll6200ResponseInner 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public update(universe: string, id: string, getAll200ResponseInner: GetAll200ResponseInner, options?: AxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).update(universe, id, getAll200ResponseInner, options).then((request) => request(this.axios, this.basePath));
+    public update6(universe: string, id: string, getAll6200ResponseInner: GetAll6200ResponseInner, options?: AxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).update6(universe, id, getAll6200ResponseInner, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ItemTypeServiceApi - axios parameter creator
+ * @export
+ */
+export const ItemTypeServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete7: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('delete7', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete7', 'id', id)
+            const localVarPath = `/api/{universe}/item-types/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll7: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll7', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll7', 'ids', ids)
+            const localVarPath = `/api/{universe}/item-types`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get7: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get7', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get7', 'id', id)
+            const localVarPath = `/api/{universe}/item-types/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll7: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll7', 'universe', universe)
+            const localVarPath = `/api/{universe}/item-types`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ItemType>} itemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll7: async (universe: string, itemType: Array<ItemType>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll7', 'universe', universe)
+            // verify required parameter 'itemType' is not null or undefined
+            assertParamExists('insertAll7', 'itemType', itemType)
+            const localVarPath = `/api/{universe}/item-types`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemType, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ItemType} itemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update7: async (universe: string, id: string, itemType: ItemType, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update7', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update7', 'id', id)
+            // verify required parameter 'itemType' is not null or undefined
+            assertParamExists('update7', 'itemType', itemType)
+            const localVarPath = `/api/{universe}/item-types/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemType, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ItemTypeServiceApi - functional programming interface
+ * @export
+ */
+export const ItemTypeServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ItemTypeServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete7(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete7(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll7(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll7(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get7(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemType>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get7(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll7(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ItemType>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll7(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ItemType>} itemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll7(universe: string, itemType: Array<ItemType>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ItemType>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll7(universe, itemType, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ItemType} itemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update7(universe: string, id: string, itemType: ItemType, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemType>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update7(universe, id, itemType, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ItemTypeServiceApi - factory interface
+ * @export
+ */
+export const ItemTypeServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ItemTypeServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete7(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete7(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll7(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll7(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get7(universe: string, id: string, options?: any): AxiosPromise<ItemType> {
+            return localVarFp.get7(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll7(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<ItemType>> {
+            return localVarFp.getAll7(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ItemType>} itemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll7(universe: string, itemType: Array<ItemType>, options?: any): AxiosPromise<Array<ItemType>> {
+            return localVarFp.insertAll7(universe, itemType, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ItemType} itemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update7(universe: string, id: string, itemType: ItemType, options?: any): AxiosPromise<ItemType> {
+            return localVarFp.update7(universe, id, itemType, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ItemTypeServiceApi - object-oriented interface
+ * @export
+ * @class ItemTypeServiceApi
+ * @extends {BaseAPI}
+ */
+export class ItemTypeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeServiceApi
+     */
+    public delete7(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemTypeServiceApiFp(this.configuration).delete7(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeServiceApi
+     */
+    public deleteAll7(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return ItemTypeServiceApiFp(this.configuration).deleteAll7(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeServiceApi
+     */
+    public get7(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemTypeServiceApiFp(this.configuration).get7(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeServiceApi
+     */
+    public getAll7(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return ItemTypeServiceApiFp(this.configuration).getAll7(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<ItemType>} itemType 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeServiceApi
+     */
+    public insertAll7(universe: string, itemType: Array<ItemType>, options?: AxiosRequestConfig) {
+        return ItemTypeServiceApiFp(this.configuration).insertAll7(universe, itemType, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {ItemType} itemType 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeServiceApi
+     */
+    public update7(universe: string, id: string, itemType: ItemType, options?: AxiosRequestConfig) {
+        return ItemTypeServiceApiFp(this.configuration).update7(universe, id, itemType, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ItemTypeTranslationServiceApi - axios parameter creator
+ * @export
+ */
+export const ItemTypeTranslationServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete8: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('delete8', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete8', 'id', id)
+            const localVarPath = `/api/{universe}/item-type-translations/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll8: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll8', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll8', 'ids', ids)
+            const localVarPath = `/api/{universe}/item-type-translations`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get8: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get8', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get8', 'id', id)
+            const localVarPath = `/api/{universe}/item-type-translations/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll8: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll8', 'universe', universe)
+            const localVarPath = `/api/{universe}/item-type-translations`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ItemTypeTranslation>} itemTypeTranslation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll8: async (universe: string, itemTypeTranslation: Array<ItemTypeTranslation>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll8', 'universe', universe)
+            // verify required parameter 'itemTypeTranslation' is not null or undefined
+            assertParamExists('insertAll8', 'itemTypeTranslation', itemTypeTranslation)
+            const localVarPath = `/api/{universe}/item-type-translations`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemTypeTranslation, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ItemTypeTranslation} itemTypeTranslation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update8: async (universe: string, id: string, itemTypeTranslation: ItemTypeTranslation, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update8', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update8', 'id', id)
+            // verify required parameter 'itemTypeTranslation' is not null or undefined
+            assertParamExists('update8', 'itemTypeTranslation', itemTypeTranslation)
+            const localVarPath = `/api/{universe}/item-type-translations/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemTypeTranslation, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ItemTypeTranslationServiceApi - functional programming interface
+ * @export
+ */
+export const ItemTypeTranslationServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ItemTypeTranslationServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete8(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete8(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll8(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll8(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get8(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemTypeTranslation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get8(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll8(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ItemTypeTranslation>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll8(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ItemTypeTranslation>} itemTypeTranslation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll8(universe: string, itemTypeTranslation: Array<ItemTypeTranslation>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ItemTypeTranslation>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll8(universe, itemTypeTranslation, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ItemTypeTranslation} itemTypeTranslation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update8(universe: string, id: string, itemTypeTranslation: ItemTypeTranslation, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ItemTypeTranslation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update8(universe, id, itemTypeTranslation, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ItemTypeTranslationServiceApi - factory interface
+ * @export
+ */
+export const ItemTypeTranslationServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ItemTypeTranslationServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete8(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete8(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll8(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll8(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get8(universe: string, id: string, options?: any): AxiosPromise<ItemTypeTranslation> {
+            return localVarFp.get8(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll8(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<ItemTypeTranslation>> {
+            return localVarFp.getAll8(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ItemTypeTranslation>} itemTypeTranslation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll8(universe: string, itemTypeTranslation: Array<ItemTypeTranslation>, options?: any): AxiosPromise<Array<ItemTypeTranslation>> {
+            return localVarFp.insertAll8(universe, itemTypeTranslation, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ItemTypeTranslation} itemTypeTranslation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update8(universe: string, id: string, itemTypeTranslation: ItemTypeTranslation, options?: any): AxiosPromise<ItemTypeTranslation> {
+            return localVarFp.update8(universe, id, itemTypeTranslation, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ItemTypeTranslationServiceApi - object-oriented interface
+ * @export
+ * @class ItemTypeTranslationServiceApi
+ * @extends {BaseAPI}
+ */
+export class ItemTypeTranslationServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeTranslationServiceApi
+     */
+    public delete8(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemTypeTranslationServiceApiFp(this.configuration).delete8(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeTranslationServiceApi
+     */
+    public deleteAll8(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return ItemTypeTranslationServiceApiFp(this.configuration).deleteAll8(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeTranslationServiceApi
+     */
+    public get8(universe: string, id: string, options?: AxiosRequestConfig) {
+        return ItemTypeTranslationServiceApiFp(this.configuration).get8(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeTranslationServiceApi
+     */
+    public getAll8(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return ItemTypeTranslationServiceApiFp(this.configuration).getAll8(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<ItemTypeTranslation>} itemTypeTranslation 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeTranslationServiceApi
+     */
+    public insertAll8(universe: string, itemTypeTranslation: Array<ItemTypeTranslation>, options?: AxiosRequestConfig) {
+        return ItemTypeTranslationServiceApiFp(this.configuration).insertAll8(universe, itemTypeTranslation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {ItemTypeTranslation} itemTypeTranslation 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemTypeTranslationServiceApi
+     */
+    public update8(universe: string, id: string, itemTypeTranslation: ItemTypeTranslation, options?: AxiosRequestConfig) {
+        return ItemTypeTranslationServiceApiFp(this.configuration).update8(universe, id, itemTypeTranslation, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * MaterialServiceApi - axios parameter creator
+ * @export
+ */
+export const MaterialServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete2: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('delete2', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete2', 'id', id)
+            const localVarPath = `/{universe}/materials/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll2: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll2', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll2', 'ids', ids)
+            const localVarPath = `/{universe}/materials`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get2: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get2', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get2', 'id', id)
+            const localVarPath = `/{universe}/materials/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll2: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll2', 'universe', universe)
+            const localVarPath = `/{universe}/materials`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Material>} material 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll2: async (universe: string, material: Array<Material>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll2', 'universe', universe)
+            // verify required parameter 'material' is not null or undefined
+            assertParamExists('insertAll2', 'material', material)
+            const localVarPath = `/{universe}/materials`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(material, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Material} material 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update2: async (universe: string, id: string, material: Material, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update2', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update2', 'id', id)
+            // verify required parameter 'material' is not null or undefined
+            assertParamExists('update2', 'material', material)
+            const localVarPath = `/{universe}/materials/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(material, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * MaterialServiceApi - functional programming interface
+ * @export
+ */
+export const MaterialServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = MaterialServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete2(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete2(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll2(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll2(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get2(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Material>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get2(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll2(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Material>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll2(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Material>} material 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll2(universe: string, material: Array<Material>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Material>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll2(universe, material, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Material} material 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update2(universe: string, id: string, material: Material, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Material>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update2(universe, id, material, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * MaterialServiceApi - factory interface
+ * @export
+ */
+export const MaterialServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = MaterialServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete2(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete2(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll2(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll2(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get2(universe: string, id: string, options?: any): AxiosPromise<Material> {
+            return localVarFp.get2(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll2(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<Material>> {
+            return localVarFp.getAll2(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Material>} material 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll2(universe: string, material: Array<Material>, options?: any): AxiosPromise<Array<Material>> {
+            return localVarFp.insertAll2(universe, material, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Material} material 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update2(universe: string, id: string, material: Material, options?: any): AxiosPromise<Material> {
+            return localVarFp.update2(universe, id, material, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * MaterialServiceApi - object-oriented interface
+ * @export
+ * @class MaterialServiceApi
+ * @extends {BaseAPI}
+ */
+export class MaterialServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MaterialServiceApi
+     */
+    public delete2(universe: string, id: string, options?: AxiosRequestConfig) {
+        return MaterialServiceApiFp(this.configuration).delete2(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MaterialServiceApi
+     */
+    public deleteAll2(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return MaterialServiceApiFp(this.configuration).deleteAll2(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MaterialServiceApi
+     */
+    public get2(universe: string, id: string, options?: AxiosRequestConfig) {
+        return MaterialServiceApiFp(this.configuration).get2(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MaterialServiceApi
+     */
+    public getAll2(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return MaterialServiceApiFp(this.configuration).getAll2(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<Material>} material 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MaterialServiceApi
+     */
+    public insertAll2(universe: string, material: Array<Material>, options?: AxiosRequestConfig) {
+        return MaterialServiceApiFp(this.configuration).insertAll2(universe, material, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {Material} material 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MaterialServiceApi
+     */
+    public update2(universe: string, id: string, material: Material, options?: AxiosRequestConfig) {
+        return MaterialServiceApiFp(this.configuration).update2(universe, id, material, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1453,6 +4056,1000 @@ export class PageServiceApi extends BaseAPI {
      */
     public getPage(destination: string, options?: AxiosRequestConfig) {
         return PageServiceApiFp(this.configuration).getPage(destination, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * SpellServiceApi - axios parameter creator
+ * @export
+ */
+export const SpellServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete1: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('delete1', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete1', 'id', id)
+            const localVarPath = `/{universe}/spells/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll1: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll1', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll1', 'ids', ids)
+            const localVarPath = `/{universe}/spells`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get1: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get1', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get1', 'id', id)
+            const localVarPath = `/{universe}/spells/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll1: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll1', 'universe', universe)
+            const localVarPath = `/{universe}/spells`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Spell>} spell 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll1: async (universe: string, spell: Array<Spell>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll1', 'universe', universe)
+            // verify required parameter 'spell' is not null or undefined
+            assertParamExists('insertAll1', 'spell', spell)
+            const localVarPath = `/{universe}/spells`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(spell, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Spell} spell 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update1: async (universe: string, id: string, spell: Spell, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update1', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update1', 'id', id)
+            // verify required parameter 'spell' is not null or undefined
+            assertParamExists('update1', 'spell', spell)
+            const localVarPath = `/{universe}/spells/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(spell, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SpellServiceApi - functional programming interface
+ * @export
+ */
+export const SpellServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SpellServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete1(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete1(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll1(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll1(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get1(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Spell>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get1(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll1(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Spell>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll1(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Spell>} spell 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll1(universe: string, spell: Array<Spell>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Spell>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll1(universe, spell, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Spell} spell 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update1(universe: string, id: string, spell: Spell, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Spell>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update1(universe, id, spell, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * SpellServiceApi - factory interface
+ * @export
+ */
+export const SpellServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SpellServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete1(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete1(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll1(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll1(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get1(universe: string, id: string, options?: any): AxiosPromise<Spell> {
+            return localVarFp.get1(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll1(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<Spell>> {
+            return localVarFp.getAll1(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Spell>} spell 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll1(universe: string, spell: Array<Spell>, options?: any): AxiosPromise<Array<Spell>> {
+            return localVarFp.insertAll1(universe, spell, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Spell} spell 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update1(universe: string, id: string, spell: Spell, options?: any): AxiosPromise<Spell> {
+            return localVarFp.update1(universe, id, spell, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * SpellServiceApi - object-oriented interface
+ * @export
+ * @class SpellServiceApi
+ * @extends {BaseAPI}
+ */
+export class SpellServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpellServiceApi
+     */
+    public delete1(universe: string, id: string, options?: AxiosRequestConfig) {
+        return SpellServiceApiFp(this.configuration).delete1(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpellServiceApi
+     */
+    public deleteAll1(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return SpellServiceApiFp(this.configuration).deleteAll1(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpellServiceApi
+     */
+    public get1(universe: string, id: string, options?: AxiosRequestConfig) {
+        return SpellServiceApiFp(this.configuration).get1(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpellServiceApi
+     */
+    public getAll1(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return SpellServiceApiFp(this.configuration).getAll1(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<Spell>} spell 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpellServiceApi
+     */
+    public insertAll1(universe: string, spell: Array<Spell>, options?: AxiosRequestConfig) {
+        return SpellServiceApiFp(this.configuration).insertAll1(universe, spell, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {Spell} spell 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SpellServiceApi
+     */
+    public update1(universe: string, id: string, spell: Spell, options?: AxiosRequestConfig) {
+        return SpellServiceApiFp(this.configuration).update1(universe, id, spell, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * TalentServiceApi - axios parameter creator
+ * @export
+ */
+export const TalentServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        _delete: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('_delete', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('_delete', 'id', id)
+            const localVarPath = `/{universe}/talents/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll', 'ids', ids)
+            const localVarPath = `/{universe}/talents`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get', 'id', id)
+            const localVarPath = `/{universe}/talents/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll', 'universe', universe)
+            const localVarPath = `/{universe}/talents`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Talent>} talent 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll: async (universe: string, talent: Array<Talent>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll', 'universe', universe)
+            // verify required parameter 'talent' is not null or undefined
+            assertParamExists('insertAll', 'talent', talent)
+            const localVarPath = `/{universe}/talents`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(talent, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Talent} talent 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update: async (universe: string, id: string, talent: Talent, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update', 'id', id)
+            // verify required parameter 'talent' is not null or undefined
+            assertParamExists('update', 'talent', talent)
+            const localVarPath = `/{universe}/talents/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(talent, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TalentServiceApi - functional programming interface
+ * @export
+ */
+export const TalentServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TalentServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async _delete(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator._delete(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Talent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Talent>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Talent>} talent 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll(universe: string, talent: Array<Talent>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Talent>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll(universe, talent, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Talent} talent 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update(universe: string, id: string, talent: Talent, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Talent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update(universe, id, talent, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * TalentServiceApi - factory interface
+ * @export
+ */
+export const TalentServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TalentServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        _delete(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp._delete(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get(universe: string, id: string, options?: any): AxiosPromise<Talent> {
+            return localVarFp.get(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<Talent>> {
+            return localVarFp.getAll(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Talent>} talent 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll(universe: string, talent: Array<Talent>, options?: any): AxiosPromise<Array<Talent>> {
+            return localVarFp.insertAll(universe, talent, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Talent} talent 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update(universe: string, id: string, talent: Talent, options?: any): AxiosPromise<Talent> {
+            return localVarFp.update(universe, id, talent, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TalentServiceApi - object-oriented interface
+ * @export
+ * @class TalentServiceApi
+ * @extends {BaseAPI}
+ */
+export class TalentServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TalentServiceApi
+     */
+    public _delete(universe: string, id: string, options?: AxiosRequestConfig) {
+        return TalentServiceApiFp(this.configuration)._delete(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TalentServiceApi
+     */
+    public deleteAll(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return TalentServiceApiFp(this.configuration).deleteAll(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TalentServiceApi
+     */
+    public get(universe: string, id: string, options?: AxiosRequestConfig) {
+        return TalentServiceApiFp(this.configuration).get(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TalentServiceApi
+     */
+    public getAll(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return TalentServiceApiFp(this.configuration).getAll(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<Talent>} talent 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TalentServiceApi
+     */
+    public insertAll(universe: string, talent: Array<Talent>, options?: AxiosRequestConfig) {
+        return TalentServiceApiFp(this.configuration).insertAll(universe, talent, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {Talent} talent 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TalentServiceApi
+     */
+    public update(universe: string, id: string, talent: Talent, options?: AxiosRequestConfig) {
+        return TalentServiceApiFp(this.configuration).update(universe, id, talent, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1661,7 +5258,7 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteUniverse(universe: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+        async deleteUniverse(universe: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUniverse(universe, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1724,7 +5321,7 @@ export const UniverseServiceApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteUniverse(universe: string, options?: any): AxiosPromise<boolean> {
+        deleteUniverse(universe: string, options?: any): AxiosPromise<void> {
             return localVarFp.deleteUniverse(universe, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1823,6 +5420,1000 @@ export class UniverseServiceApi extends BaseAPI {
      */
     public updateUniverse(universe: Universe, options?: AxiosRequestConfig) {
         return UniverseServiceApiFp(this.configuration).updateUniverse(universe, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * UpgradeRecipeServiceApi - axios parameter creator
+ * @export
+ */
+export const UpgradeRecipeServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete5: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('delete5', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete5', 'id', id)
+            const localVarPath = `/api/{universe}/upgrade-recipes/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll5: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll5', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll5', 'ids', ids)
+            const localVarPath = `/api/{universe}/upgrade-recipes`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get5: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get5', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get5', 'id', id)
+            const localVarPath = `/api/{universe}/upgrade-recipes/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll5: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll5', 'universe', universe)
+            const localVarPath = `/api/{universe}/upgrade-recipes`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<UpgradeRecipe>} upgradeRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll5: async (universe: string, upgradeRecipe: Array<UpgradeRecipe>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll5', 'universe', universe)
+            // verify required parameter 'upgradeRecipe' is not null or undefined
+            assertParamExists('insertAll5', 'upgradeRecipe', upgradeRecipe)
+            const localVarPath = `/api/{universe}/upgrade-recipes`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRecipe, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {UpgradeRecipe} upgradeRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update5: async (universe: string, id: string, upgradeRecipe: UpgradeRecipe, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update5', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update5', 'id', id)
+            // verify required parameter 'upgradeRecipe' is not null or undefined
+            assertParamExists('update5', 'upgradeRecipe', upgradeRecipe)
+            const localVarPath = `/api/{universe}/upgrade-recipes/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRecipe, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UpgradeRecipeServiceApi - functional programming interface
+ * @export
+ */
+export const UpgradeRecipeServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UpgradeRecipeServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete5(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete5(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll5(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll5(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get5(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpgradeRecipe>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get5(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll5(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UpgradeRecipe>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll5(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<UpgradeRecipe>} upgradeRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll5(universe: string, upgradeRecipe: Array<UpgradeRecipe>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UpgradeRecipe>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll5(universe, upgradeRecipe, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {UpgradeRecipe} upgradeRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update5(universe: string, id: string, upgradeRecipe: UpgradeRecipe, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UpgradeRecipe>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update5(universe, id, upgradeRecipe, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UpgradeRecipeServiceApi - factory interface
+ * @export
+ */
+export const UpgradeRecipeServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UpgradeRecipeServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete5(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete5(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll5(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll5(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get5(universe: string, id: string, options?: any): AxiosPromise<UpgradeRecipe> {
+            return localVarFp.get5(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll5(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<UpgradeRecipe>> {
+            return localVarFp.getAll5(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<UpgradeRecipe>} upgradeRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll5(universe: string, upgradeRecipe: Array<UpgradeRecipe>, options?: any): AxiosPromise<Array<UpgradeRecipe>> {
+            return localVarFp.insertAll5(universe, upgradeRecipe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {UpgradeRecipe} upgradeRecipe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update5(universe: string, id: string, upgradeRecipe: UpgradeRecipe, options?: any): AxiosPromise<UpgradeRecipe> {
+            return localVarFp.update5(universe, id, upgradeRecipe, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UpgradeRecipeServiceApi - object-oriented interface
+ * @export
+ * @class UpgradeRecipeServiceApi
+ * @extends {BaseAPI}
+ */
+export class UpgradeRecipeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeRecipeServiceApi
+     */
+    public delete5(universe: string, id: string, options?: AxiosRequestConfig) {
+        return UpgradeRecipeServiceApiFp(this.configuration).delete5(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeRecipeServiceApi
+     */
+    public deleteAll5(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return UpgradeRecipeServiceApiFp(this.configuration).deleteAll5(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeRecipeServiceApi
+     */
+    public get5(universe: string, id: string, options?: AxiosRequestConfig) {
+        return UpgradeRecipeServiceApiFp(this.configuration).get5(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeRecipeServiceApi
+     */
+    public getAll5(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return UpgradeRecipeServiceApiFp(this.configuration).getAll5(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<UpgradeRecipe>} upgradeRecipe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeRecipeServiceApi
+     */
+    public insertAll5(universe: string, upgradeRecipe: Array<UpgradeRecipe>, options?: AxiosRequestConfig) {
+        return UpgradeRecipeServiceApiFp(this.configuration).insertAll5(universe, upgradeRecipe, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {UpgradeRecipe} upgradeRecipe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeRecipeServiceApi
+     */
+    public update5(universe: string, id: string, upgradeRecipe: UpgradeRecipe, options?: AxiosRequestConfig) {
+        return UpgradeRecipeServiceApiFp(this.configuration).update5(universe, id, upgradeRecipe, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * UpgradeServiceApi - axios parameter creator
+ * @export
+ */
+export const UpgradeServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete4: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('delete4', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('delete4', 'id', id)
+            const localVarPath = `/api/{universe}/upgrades/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll4: async (universe: string, ids: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAll4', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAll4', 'ids', ids)
+            const localVarPath = `/api/{universe}/upgrades`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get4: async (universe: string, id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('get4', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('get4', 'id', id)
+            const localVarPath = `/api/{universe}/upgrades/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll4: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAll4', 'universe', universe)
+            const localVarPath = `/api/{universe}/upgrades`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Upgrade>} upgrade 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll4: async (universe: string, upgrade: Array<Upgrade>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAll4', 'universe', universe)
+            // verify required parameter 'upgrade' is not null or undefined
+            assertParamExists('insertAll4', 'upgrade', upgrade)
+            const localVarPath = `/api/{universe}/upgrades`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upgrade, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Upgrade} upgrade 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update4: async (universe: string, id: string, upgrade: Upgrade, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('update4', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('update4', 'id', id)
+            // verify required parameter 'upgrade' is not null or undefined
+            assertParamExists('update4', 'upgrade', upgrade)
+            const localVarPath = `/api/{universe}/upgrades/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upgrade, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UpgradeServiceApi - functional programming interface
+ * @export
+ */
+export const UpgradeServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UpgradeServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async delete4(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.delete4(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAll4(universe: string, ids: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAll4(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async get4(universe: string, id: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Upgrade>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.get4(universe, id, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAll4(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Upgrade>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAll4(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Upgrade>} upgrade 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAll4(universe: string, upgrade: Array<Upgrade>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Upgrade>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAll4(universe, upgrade, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Upgrade} upgrade 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async update4(universe: string, id: string, upgrade: Upgrade, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Upgrade>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.update4(universe, id, upgrade, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UpgradeServiceApi - factory interface
+ * @export
+ */
+export const UpgradeServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UpgradeServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        delete4(universe: string, id: string, options?: any): AxiosPromise<void> {
+            return localVarFp.delete4(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAll4(universe: string, ids: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteAll4(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        get4(universe: string, id: string, options?: any): AxiosPromise<Upgrade> {
+            return localVarFp.get4(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll4(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<Upgrade>> {
+            return localVarFp.getAll4(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<Upgrade>} upgrade 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAll4(universe: string, upgrade: Array<Upgrade>, options?: any): AxiosPromise<Array<Upgrade>> {
+            return localVarFp.insertAll4(universe, upgrade, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {Upgrade} upgrade 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        update4(universe: string, id: string, upgrade: Upgrade, options?: any): AxiosPromise<Upgrade> {
+            return localVarFp.update4(universe, id, upgrade, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UpgradeServiceApi - object-oriented interface
+ * @export
+ * @class UpgradeServiceApi
+ * @extends {BaseAPI}
+ */
+export class UpgradeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeServiceApi
+     */
+    public delete4(universe: string, id: string, options?: AxiosRequestConfig) {
+        return UpgradeServiceApiFp(this.configuration).delete4(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeServiceApi
+     */
+    public deleteAll4(universe: string, ids: Array<string>, options?: AxiosRequestConfig) {
+        return UpgradeServiceApiFp(this.configuration).deleteAll4(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeServiceApi
+     */
+    public get4(universe: string, id: string, options?: AxiosRequestConfig) {
+        return UpgradeServiceApiFp(this.configuration).get4(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeServiceApi
+     */
+    public getAll4(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return UpgradeServiceApiFp(this.configuration).getAll4(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<Upgrade>} upgrade 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeServiceApi
+     */
+    public insertAll4(universe: string, upgrade: Array<Upgrade>, options?: AxiosRequestConfig) {
+        return UpgradeServiceApiFp(this.configuration).insertAll4(universe, upgrade, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {Upgrade} upgrade 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeServiceApi
+     */
+    public update4(universe: string, id: string, upgrade: Upgrade, options?: AxiosRequestConfig) {
+        return UpgradeServiceApiFp(this.configuration).update4(universe, id, upgrade, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

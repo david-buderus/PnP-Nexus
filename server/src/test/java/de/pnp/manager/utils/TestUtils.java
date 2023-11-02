@@ -9,6 +9,6 @@ public class TestUtils {
      * Returns whether the tests are currently running in a CI pipeline.
      */
     public static boolean isRunningInCI() {
-        return true;// Boolean.parseBoolean(System.getenv("RUNNING_IN_CI"));
+        return Boolean.parseBoolean(System.getenv("RUNNING_IN_CI"));
     }
 }
