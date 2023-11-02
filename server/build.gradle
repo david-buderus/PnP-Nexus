@@ -80,3 +80,12 @@ openApiGenerate {
     inputSpec.set("$rootDir/docs/swagger.json")
     outputDir.set("$rootDir/webapp/src/api")
 }
+
+task playwright(type: JavaExec) {
+    classpath(sourceSets["test"].runtimeClasspath)
+    mainClass.set("com.microsoft.playwright.CLI")
+    classpath sourceSets.main.runtimeClasspath
+    if (project.hasProperty('args')) {
+        args project.getProperty('args')
+    }
+}

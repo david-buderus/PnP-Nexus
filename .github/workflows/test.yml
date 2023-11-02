@@ -61,8 +61,6 @@ jobs:
   
   test:
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright/java:v1.39.0-jammy
 
     steps:
       - uses: actions/checkout@v3
@@ -78,6 +76,11 @@ jobs:
           mongodb-version: '6.0'
           mongodb-username: admin
           mongodb-password: admin
+
+      - name: Setup playwright
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: playwright --args "install --with-deps"
 
       - name: Setup and execute Gradle 'test' task
         uses: gradle/gradle-build-action@v2
