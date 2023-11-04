@@ -7,8 +7,10 @@ import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.Material.MaterialItem;
+import de.pnp.manager.component.user.PnPGrantedAuthority;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import java.util.List;
@@ -37,11 +39,30 @@ public class DataLoader implements ApplicationRunner {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private UserDetailsRepository userDetailsRepository;
+
     @Override
     public void run(ApplicationArguments args) {
         if (!EJvmFlag.DEV_MODE.isEnabled()) {
             return;
         }
+
+        if (userDetailsRepository.getUser("admin").isPresent()) {
+            userDetailsRepository.removeUser("admin");
+        }
+        userDetailsRepository.addNewAdmin("admin", "admin");
+
+        if (userDetailsRepository.getUser("write").isPresent()) {
+            userDetailsRepository.removeUser("write");
+        }
+        userDetailsRepository.addNewUser("write", "write", List.of(new PnPGrantedAuthority(TEST_UNIVERSE, true)));
+
+        if (userDetailsRepository.getUser("read").isPresent()) {
+            userDetailsRepository.removeUser("read");
+        }
+        userDetailsRepository.addNewUser("read", "read", List.of(new PnPGrantedAuthority(TEST_UNIVERSE, false)));
+
         if (universeRepository.exists(TEST_UNIVERSE)) {
             universeRepository.remove(TEST_UNIVERSE);
         }

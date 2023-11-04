@@ -3,11 +3,15 @@ package de.pnp.manager.server.service;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.pnp.manager.component.Universe;
+import de.pnp.manager.security.AdminRights;
+import de.pnp.manager.security.UniverseRead;
+import de.pnp.manager.security.UniverseWrite;
 import de.pnp.manager.server.database.UniverseRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,12 +41,14 @@ public class UniverseService {
     private UniverseRepository universeRepository;
 
     @GetMapping
+    @PostFilter("hasRole('ADMIN') || hasPermission(filterObject.name, 'UNIVERSE', 'READ')")
     @Operation(summary = "Get all Universes", operationId = "getAllUniverses")
     public Collection<Universe> getUniverses() {
         return universeRepository.getAll();
     }
 
     @GetMapping("{universe}")
+    @UniverseRead
     @Operation(summary = "Get a universe", operationId = "getUniverse")
     public Universe getUniverse(@PathVariable String universe) {
         return universeRepository.get(universe)
@@ -50,6 +56,7 @@ public class UniverseService {
     }
 
     @DeleteMapping("{universe}")
+    @AdminRights
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a universe", operationId = "deleteUniverse")
     public void deleteUniverse(@PathVariable String universe) {
@@ -59,12 +66,14 @@ public class UniverseService {
     }
 
     @PostMapping
+    @AdminRights
     @Operation(summary = "Create a universe", operationId = "createUniverse")
     public Universe createUniverse(@RequestBody Universe universe) {
         return universeRepository.insert(universe);
     }
 
     @PutMapping
+    @UniverseWrite
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
     public Universe updateUniverse(@RequestBody Universe newUniverse) {
         return universeRepository.update(newUniverse);
