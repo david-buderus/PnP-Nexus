@@ -33,7 +33,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests((authorize) -> authorize
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/v3/api-docs").permitAll() // OpenApi generate needs this
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults())
