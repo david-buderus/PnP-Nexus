@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.utils.TestItemBuilder;
@@ -70,13 +71,13 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void soundnessCheck() {
         assertThat(createObjects()).hasSizeGreaterThanOrEqualTo(3);
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void testGetAll() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
@@ -89,7 +90,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void testDeleteAll() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
@@ -100,7 +101,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void testGet() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
@@ -110,7 +111,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void testUpdate() throws Exception {
         List<Obj> objects = createObjects();
         Obj persistedObject = insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
@@ -123,7 +124,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void testDelete() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);

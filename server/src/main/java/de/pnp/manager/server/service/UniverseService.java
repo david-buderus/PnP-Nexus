@@ -1,9 +1,10 @@
 package de.pnp.manager.server.service;
 
+import static de.pnp.manager.security.SecurityConstants.ADMIN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.pnp.manager.component.Universe;
-import de.pnp.manager.security.AdminRights;
+import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseRead;
 import de.pnp.manager.server.database.UniverseRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,7 +42,8 @@ public class UniverseService {
     private UniverseRepository universeRepository;
 
     @GetMapping
-    @PostFilter("hasRole('ADMIN') || hasPermission(filterObject, 'READ')")
+    @PostFilter("hasRole('" + SecurityConstants.ADMIN + "') || hasPermission(filterObject, '"
+        + SecurityConstants.READ_ACCESS + "')")
     @Operation(summary = "Get all Universes", operationId = "getAllUniverses")
     public Collection<Universe> getUniverses() {
         return universeRepository.getAll();
@@ -56,7 +58,9 @@ public class UniverseService {
     }
 
     @DeleteMapping("{universe}")
-    @AdminRights
+    @PreAuthorize(
+        "hasRole('" + ADMIN + "') || hasPermission(#universe, '" + SecurityConstants.UNIVERSE_TARGET_ID + "', '"
+            + SecurityConstants.OWNER + "')")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a universe", operationId = "deleteUniverse")
     public void deleteUniverse(@PathVariable String universe) {
@@ -66,14 +70,16 @@ public class UniverseService {
     }
 
     @PostMapping
-    @AdminRights
+    @PreAuthorize("hasRole('" + SecurityConstants.UNIVERSE_CREATOR + "')")
     @Operation(summary = "Create a universe", operationId = "createUniverse")
     public Universe createUniverse(@RequestBody Universe universe) {
         return universeRepository.insert(universe);
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ADMIN') || hasPermission(#universe, 'OWNER')")
+    @PreAuthorize(
+        "hasRole('" + SecurityConstants.ADMIN + "') || hasPermission(#newUniverse, '" + SecurityConstants.OWNER
+            + "')")
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
     public Universe updateUniverse(@RequestBody Universe newUniverse) {
         return universeRepository.update(newUniverse);

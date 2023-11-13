@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.component.Universe;
+import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -41,9 +42,9 @@ public class UniverseServiceTest extends ServerTestBase {
     private ObjectMapper objectMapper;
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void testCreate() throws Exception {
-        Universe exampleUniverse = new Universe("some-exampe", "Example Universe");
+        Universe exampleUniverse = new Universe("some-example", "Example Universe");
         Universe persistedExampleUniverse = create(exampleUniverse);
         assertThat(persistedExampleUniverse).isEqualTo(exampleUniverse);
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
@@ -51,9 +52,9 @@ public class UniverseServiceTest extends ServerTestBase {
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void testUpdate() throws Exception {
-        Universe exampleUniverse = new Universe("some-exampe", "Example Universe");
+        Universe exampleUniverse = new Universe("some-example", "Example Universe");
         create(exampleUniverse);
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
 
@@ -66,9 +67,9 @@ public class UniverseServiceTest extends ServerTestBase {
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = "ADMIN")
+    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
     void deleteUniverse() throws Exception {
-        Universe exampleUniverse = new Universe("some-exampe", "Example Universe");
+        Universe exampleUniverse = new Universe("some-example", "Example Universe");
         create(exampleUniverse);
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
 
@@ -89,7 +90,7 @@ public class UniverseServiceTest extends ServerTestBase {
         MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH + "/{universe}", universe))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 400) {
+        if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -102,6 +103,10 @@ public class UniverseServiceTest extends ServerTestBase {
                     .content(objectMapper.writeValueAsString(universe)))
             .andReturn().getResponse();
 
+        if (response.getStatus() >= 300) {
+            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
+        }
+
         return objectMapper.readValue(response.getContentAsString(), Universe.class);
     }
 
@@ -111,7 +116,7 @@ public class UniverseServiceTest extends ServerTestBase {
                     .content(objectMapper.writeValueAsString(universe)))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 400) {
+        if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
         return objectMapper.readValue(response.getContentAsString(), Universe.class);

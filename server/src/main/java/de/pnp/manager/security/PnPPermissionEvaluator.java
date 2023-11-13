@@ -15,44 +15,25 @@ public class PnPPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permissionObj) {
         if (targetDomainObject instanceof Universe universe && permissionObj instanceof String permission) {
-            return hasUniversePrivilege(auth, permission, universe.getName());
+            return hasUniversePrivilege(auth, universe.getName(), permission);
         }
         return false;
     }
 
     @Override
     public boolean hasPermission(Authentication auth, Serializable targetId, String targetType, Object permissionObj) {
-        if ((auth == null) || !(targetId instanceof String universe) || !(permissionObj instanceof String permission)) {
-            return false;
-        }
-        if ("UNIVERSE".equals(targetType)) {
-            return hasUniversePrivilege(auth, permission, universe);
+        if (SecurityConstants.UNIVERSE_TARGET_ID.equals(targetType) && targetId instanceof String universe
+            && permissionObj instanceof String permission) {
+            return hasUniversePrivilege(auth, universe, permission);
         }
         return false;
     }
 
-    private boolean hasUniversePrivilege(Authentication auth, String permission, String universe) {
+    private boolean hasUniversePrivilege(Authentication auth, String universe, String permission) {
         for (GrantedAuthority authority : auth.getAuthorities()) {
-            if (!(authority instanceof GrantedUniverseAuthority universeAuthority)) {
-                continue;
-            }
-            switch (permission) {
-                case "READ":
-                    if (universeAuthority.canRead(universe)) {
-                        return true;
-                    }
-                    break;
-                case "WRITE":
-                    if (universeAuthority.canWrite(universe)) {
-                        return true;
-                    }
-                    break;
-                case "OWNER":
-                    if (universeAuthority.isOwner(universe)) {
-                        return true;
-                    }
-                default:
-                    break;
+            if (authority instanceof GrantedUniverseAuthority universeAuthority && universeAuthority.hasRight(universe,
+                permission)) {
+                return true;
             }
         }
         return false;

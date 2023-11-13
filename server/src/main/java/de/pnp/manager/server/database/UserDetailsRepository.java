@@ -5,6 +5,7 @@ import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.PnPUserDetails;
+import de.pnp.manager.security.SecurityConstants;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +74,7 @@ public class UserDetailsRepository implements UserDetailsService {
      * Inserts the user into the database.
      */
     public void addNewAdmin(String username, String password) {
-        addNewUser(username, password, List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        addNewUser(username, password, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE)));
     }
 
     /**

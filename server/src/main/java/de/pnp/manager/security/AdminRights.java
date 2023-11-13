@@ -1,5 +1,7 @@
 package de.pnp.manager.security;
 
+import static de.pnp.manager.security.SecurityConstants.ADMIN;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('" + ADMIN + "')")
 public @interface AdminRights {
 
 }

@@ -1,5 +1,9 @@
 package de.pnp.manager.security;
 
+import static de.pnp.manager.security.SecurityConstants.ADMIN;
+import static de.pnp.manager.security.SecurityConstants.READ_ACCESS;
+import static de.pnp.manager.security.SecurityConstants.UNIVERSE_TARGET_ID;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,7 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize("hasRole('ADMIN') || hasPermission(#universe, 'UNIVERSE', 'READ')")
+@PreAuthorize(
+    "hasRole('" + ADMIN + "') || hasPermission(#universe, '" + UNIVERSE_TARGET_ID + "', '" + READ_ACCESS + "')")
 public @interface UniverseRead {
 
 }

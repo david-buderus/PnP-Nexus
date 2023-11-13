@@ -1,5 +1,9 @@
 package de.pnp.manager.component.user;
 
+import static de.pnp.manager.security.SecurityConstants.OWNER;
+import static de.pnp.manager.security.SecurityConstants.READ_ACCESS;
+import static de.pnp.manager.security.SecurityConstants.WRITE_ACCESS;
+
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -7,14 +11,23 @@ import org.springframework.security.core.GrantedAuthority;
  */
 public class GrantedUniverseAuthority implements GrantedAuthority {
 
+    /**
+     * Creates an {@link GrantedAuthority} which grants read access to the given universe.
+     */
     public static GrantedUniverseAuthority readAuthority(String universe) {
         return new GrantedUniverseAuthority(universe, EAccessRight.READ);
     }
 
+    /**
+     * Creates an {@link GrantedAuthority} which grants write access to the given universe.
+     */
     public static GrantedUniverseAuthority writeAuthority(String universe) {
         return new GrantedUniverseAuthority(universe, EAccessRight.WRITE);
     }
 
+    /**
+     * Creates an {@link GrantedAuthority} which grants owner access to the given universe.
+     */
     public static GrantedUniverseAuthority ownerAuthority(String universe) {
         return new GrantedUniverseAuthority(universe, EAccessRight.OWNER);
     }
@@ -50,6 +63,18 @@ public class GrantedUniverseAuthority implements GrantedAuthority {
      */
     public boolean isOwner(String universe) {
         return accessRight == EAccessRight.OWNER && canRead(universe);
+    }
+
+    /**
+     * Checks if the authority grants the given rights for the given universe;
+     */
+    public boolean hasRight(String universe, String right) {
+        return switch (right) {
+            case READ_ACCESS -> canRead(universe);
+            case WRITE_ACCESS -> canWrite(universe);
+            case OWNER -> isOwner(universe);
+            default -> false;
+        };
     }
 
     @Override
