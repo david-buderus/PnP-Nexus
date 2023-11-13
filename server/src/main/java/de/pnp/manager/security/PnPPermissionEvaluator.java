@@ -1,6 +1,7 @@
 package de.pnp.manager.security;
 
-import de.pnp.manager.component.user.PnPGrantedAuthority;
+import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import java.io.Serializable;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
@@ -12,7 +13,10 @@ import org.springframework.security.core.GrantedAuthority;
 public class PnPPermissionEvaluator implements PermissionEvaluator {
 
     @Override
-    public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permission) {
+    public boolean hasPermission(Authentication auth, Object targetDomainObject, Object permissionObj) {
+        if (targetDomainObject instanceof Universe universe && permissionObj instanceof String permission) {
+            return hasUniversePrivilege(auth, permission, universe.getName());
+        }
         return false;
     }
 
@@ -29,7 +33,7 @@ public class PnPPermissionEvaluator implements PermissionEvaluator {
 
     private boolean hasUniversePrivilege(Authentication auth, String permission, String universe) {
         for (GrantedAuthority authority : auth.getAuthorities()) {
-            if (!(authority instanceof PnPGrantedAuthority universeAuthority)) {
+            if (!(authority instanceof GrantedUniverseAuthority universeAuthority)) {
                 continue;
             }
             switch (permission) {
@@ -43,6 +47,10 @@ public class PnPPermissionEvaluator implements PermissionEvaluator {
                         return true;
                     }
                     break;
+                case "OWNER":
+                    if (universeAuthority.isOwner(universe)) {
+                        return true;
+                    }
                 default:
                     break;
             }

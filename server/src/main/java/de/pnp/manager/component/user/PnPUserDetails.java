@@ -1,10 +1,8 @@
 package de.pnp.manager.component.user;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.data.annotation.Id;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -15,16 +13,14 @@ public class PnPUserDetails implements UserDetails {
     @Id
     private final String username;
     private final String password;
-    private final Collection<PnPGrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
     private final boolean accountNonExpired;
     private final boolean accountNonLocked;
     private final boolean credentialsNonExpired;
     private final boolean enabled;
-    private final boolean admin;
 
-    public PnPUserDetails(String username, String password, Collection<PnPGrantedAuthority> authorities,
-        boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled,
-        boolean admin) {
+    public PnPUserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities,
+        boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled) {
         this.username = username;
         this.password = password;
         this.authorities = authorities;
@@ -32,7 +28,6 @@ public class PnPUserDetails implements UserDetails {
         this.accountNonLocked = accountNonLocked;
         this.credentialsNonExpired = credentialsNonExpired;
         this.enabled = enabled;
-        this.admin = admin;
     }
 
     @Override
@@ -47,15 +42,6 @@ public class PnPUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (!isAdmin()) {
-            return authorities;
-        }
-        Collection<GrantedAuthority> adminAuthorities = new ArrayList<>(authorities);
-        adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        return adminAuthorities;
-    }
-
-    public Collection<PnPGrantedAuthority> getPnPAuthorities() {
         return authorities;
     }
 
@@ -77,9 +63,5 @@ public class PnPUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
-    }
-
-    public boolean isAdmin() {
-        return admin;
     }
 }

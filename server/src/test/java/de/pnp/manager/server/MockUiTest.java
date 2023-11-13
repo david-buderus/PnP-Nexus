@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Simple ui test.
  */
-@TestServer(EServerTestConfiguration.BASIC)
+@TestServer(EServerTestConfiguration.SIMPLE_UNIVERSE)
 @UiTestServer
 public class MockUiTest extends ServerTestBase {
 

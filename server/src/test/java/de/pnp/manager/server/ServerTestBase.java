@@ -9,6 +9,7 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.utils.TestUtils;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -32,8 +33,16 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ServerTestBase {
 
+    /**
+     * Username and password for the admin account.
+     */
+    protected static final String ADMIN = "admin";
+
     @Autowired
     private UniverseRepository universeRepository;
+
+    @Autowired
+    private UserDetailsRepository userRepository;
 
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
@@ -71,6 +80,7 @@ public abstract class ServerTestBase {
 
     @BeforeEach
     protected void setup() {
+        userRepository.addNewAdmin(ADMIN, ADMIN);
         getTestServerAnnotation().value().setupTestData(this);
         if (isUiTestServer()) {
             startUiServer();
@@ -81,6 +91,9 @@ public abstract class ServerTestBase {
     protected void tearDown() {
         for (Universe universe : universeRepository.getAll()) {
             universeRepository.remove(universe.getName());
+        }
+        for (String username : userRepository.getAllUsernames()) {
+            userRepository.removeUser(username);
         }
         if (isUiTestServer()) {
             stopUiServer();

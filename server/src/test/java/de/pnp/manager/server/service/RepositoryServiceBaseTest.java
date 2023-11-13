@@ -3,6 +3,7 @@ package de.pnp.manager.server.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,6 +29,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,11 +70,13 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void soundnessCheck() {
         assertThat(createObjects()).hasSizeGreaterThanOrEqualTo(3);
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void testGetAll() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
@@ -85,6 +89,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void testDeleteAll() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
@@ -95,6 +100,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void testGet() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
@@ -104,6 +110,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void testUpdate() throws Exception {
         List<Obj> objects = createObjects();
         Obj persistedObject = insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
@@ -116,6 +123,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void testDelete() throws Exception {
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
@@ -153,7 +161,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     protected List<Obj> insertAll(String universe, List<Obj> objects) throws Exception {
         CollectionType collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class, objClass);
 
-        String json = mockMvc.perform(post(basePath, universe).contentType(MediaType.APPLICATION_JSON)
+        String json = mockMvc.perform(post(basePath, universe).with(csrf()).contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writerFor(collectionType).writeValueAsString(objects)))
             .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
 
@@ -164,7 +172,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      * Wraps {@link RepositoryServiceBase#deleteAll(String, List)} in a REST call.
      */
     protected void deleteAll(String universe, List<ObjectId> ids) throws Exception {
-        mockMvc.perform(delete(basePath, universe)
+        mockMvc.perform(delete(basePath, universe).with(csrf())
                 .queryParam("ids", ids.stream().map(ObjectId::toHexString).toArray(String[]::new)))
             .andExpect(status().isNoContent());
     }
@@ -187,8 +195,9 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      * Wraps {@link RepositoryServiceBase#update(String, ObjectId, DatabaseObject)} in a REST call.
      */
     protected Obj update(String universe, ObjectId id, Obj obj) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(put(basePath + "/{id}", universe, id.toHexString())
-                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(obj)))
+        MockHttpServletResponse response = mockMvc.perform(
+                put(basePath + "/{id}", universe, id.toHexString()).with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(obj)))
             .andReturn().getResponse();
 
         if (response.getStatus() >= 400) {
@@ -201,7 +210,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      * Wraps {@link RepositoryServiceBase#delete(String, ObjectId)} in a REST call.
      */
     protected void deleteOne(String universe, ObjectId id) throws Exception {
-        mockMvc.perform(delete(basePath + "/{id}", universe, id.toHexString()))
+        mockMvc.perform(delete(basePath + "/{id}", universe, id.toHexString()).with(csrf()))
             .andExpect(status().isNoContent());
     }
 
@@ -225,7 +234,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
             serviceClass = serviceClass.getSuperclass();
         } while (serviceClass != null);
 
-        return fail("The service is not annotated with RequestMapping");
+        return fail("The service " + service.getClass().getSimpleName() + " is not annotated with RequestMapping");
     }
 
     private String cleanupBasePath(String basePath) {

@@ -2,6 +2,7 @@ package de.pnp.manager.server.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,6 +41,7 @@ public class UniverseServiceTest extends ServerTestBase {
     private ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void testCreate() throws Exception {
         Universe exampleUniverse = new Universe("some-exampe", "Example Universe");
         Universe persistedExampleUniverse = create(exampleUniverse);
@@ -48,6 +51,7 @@ public class UniverseServiceTest extends ServerTestBase {
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void testUpdate() throws Exception {
         Universe exampleUniverse = new Universe("some-exampe", "Example Universe");
         create(exampleUniverse);
@@ -62,6 +66,7 @@ public class UniverseServiceTest extends ServerTestBase {
     }
 
     @Test
+    @WithMockUser(value = ADMIN, roles = "ADMIN")
     void deleteUniverse() throws Exception {
         Universe exampleUniverse = new Universe("some-exampe", "Example Universe");
         create(exampleUniverse);
@@ -93,7 +98,8 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private Universe create(Universe universe) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                post(BASE_PATH).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(universe)))
+                post(BASE_PATH).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(universe)))
             .andReturn().getResponse();
 
         return objectMapper.readValue(response.getContentAsString(), Universe.class);
@@ -101,7 +107,8 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private Universe update(Universe universe) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                put(BASE_PATH).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(universe)))
+                put(BASE_PATH).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(universe)))
             .andReturn().getResponse();
 
         if (response.getStatus() >= 400) {
@@ -111,7 +118,7 @@ public class UniverseServiceTest extends ServerTestBase {
     }
 
     private void deleteOne(String universe) throws Exception {
-        mockMvc.perform(delete(BASE_PATH + "/{universe}", universe))
+        mockMvc.perform(delete(BASE_PATH + "/{universe}", universe).with(csrf()))
             .andExpect(status().isNoContent());
     }
 }

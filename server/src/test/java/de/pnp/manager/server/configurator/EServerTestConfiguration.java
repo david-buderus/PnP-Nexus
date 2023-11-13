@@ -12,8 +12,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public enum EServerTestConfiguration {
 
-    EMPTY(NoOpServerConfigurator.class, null),
-    BASIC(BasicTestServerConfiguration.class, null);
+    EMPTY(EmptyServerConfigurator.class, null),
+    SIMPLE_UNIVERSE(SimpleUniverseServerConfiguration.class, null);
 
     private final Class<? extends TestServerConfiguratorBase> configuratorClass;
     private final Path backupZip;

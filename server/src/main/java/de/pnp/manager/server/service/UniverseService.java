@@ -5,13 +5,13 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import de.pnp.manager.component.Universe;
 import de.pnp.manager.security.AdminRights;
 import de.pnp.manager.security.UniverseRead;
-import de.pnp.manager.security.UniverseWrite;
 import de.pnp.manager.server.database.UniverseRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +41,7 @@ public class UniverseService {
     private UniverseRepository universeRepository;
 
     @GetMapping
-    @PostFilter("hasRole('ADMIN') || hasPermission(filterObject.name, 'UNIVERSE', 'READ')")
+    @PostFilter("hasRole('ADMIN') || hasPermission(filterObject, 'READ')")
     @Operation(summary = "Get all Universes", operationId = "getAllUniverses")
     public Collection<Universe> getUniverses() {
         return universeRepository.getAll();
@@ -73,7 +73,7 @@ public class UniverseService {
     }
 
     @PutMapping
-    @UniverseWrite
+    @PreAuthorize("hasRole('ADMIN') || hasPermission(#universe, 'OWNER')")
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
     public Universe updateUniverse(@RequestBody Universe newUniverse) {
         return universeRepository.update(newUniverse);

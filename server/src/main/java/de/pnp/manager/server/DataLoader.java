@@ -7,7 +7,7 @@ import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.Material.MaterialItem;
-import de.pnp.manager.component.user.PnPGrantedAuthority;
+import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
@@ -56,12 +56,19 @@ public class DataLoader implements ApplicationRunner {
         if (userDetailsRepository.getUser("write").isPresent()) {
             userDetailsRepository.removeUser("write");
         }
-        userDetailsRepository.addNewUser("write", "write", List.of(new PnPGrantedAuthority(TEST_UNIVERSE, true)));
+        userDetailsRepository.addNewUser("write", "write",
+            List.of(GrantedUniverseAuthority.writeAuthority(TEST_UNIVERSE)));
 
         if (userDetailsRepository.getUser("read").isPresent()) {
             userDetailsRepository.removeUser("read");
         }
-        userDetailsRepository.addNewUser("read", "read", List.of(new PnPGrantedAuthority(TEST_UNIVERSE, false)));
+        userDetailsRepository.addNewUser("read", "read",
+            List.of(GrantedUniverseAuthority.readAuthority(TEST_UNIVERSE)));
+
+        if (userDetailsRepository.getUser("user").isPresent()) {
+            userDetailsRepository.removeUser("user");
+        }
+        userDetailsRepository.addNewUser("user", "user", List.of());
 
         if (universeRepository.exists(TEST_UNIVERSE)) {
             universeRepository.remove(TEST_UNIVERSE);

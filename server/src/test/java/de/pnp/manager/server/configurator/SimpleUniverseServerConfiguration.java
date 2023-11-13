@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Creates an empty universe with the name {@link #UNIVERSE_NAME} if the universe is not part of the backup.
  */
 @Configurable
-public class BasicTestServerConfiguration extends TestServerConfiguratorBase {
+public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBase {
 
     /**
      * The name of the test universe.
@@ -26,7 +26,7 @@ public class BasicTestServerConfiguration extends TestServerConfiguratorBase {
     @Autowired
     private UniverseService universeService;
 
-    public BasicTestServerConfiguration(Path backupZip) {
+    public SimpleUniverseServerConfiguration(Path backupZip) {
         super(backupZip);
     }
 
