@@ -8,8 +8,10 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.user.PnPUserCreation;
+import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UniverseRepository;
-import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.utils.TestUtils;
 import java.lang.annotation.Annotation;
 import java.net.MalformedURLException;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * Test base for integration tests.
@@ -42,7 +45,7 @@ public abstract class ServerTestBase {
     private UniverseRepository universeRepository;
 
     @Autowired
-    private UserDetailsRepository userRepository;
+    private UserController userController;
 
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
@@ -80,7 +83,8 @@ public abstract class ServerTestBase {
 
     @BeforeEach
     protected void setup() {
-        userRepository.addNewAdmin(ADMIN, ADMIN);
+        userController.createNewUser(new PnPUserCreation(ADMIN, ADMIN, ADMIN, null, List.of(new SimpleGrantedAuthority(
+            SecurityConstants.ADMIN_ROLE))));
         getTestServerAnnotation().value().setupTestData(this);
         if (isUiTestServer()) {
             startUiServer();
@@ -92,8 +96,8 @@ public abstract class ServerTestBase {
         for (Universe universe : universeRepository.getAll()) {
             universeRepository.remove(universe.getName());
         }
-        for (String username : userRepository.getAllUsernames()) {
-            userRepository.removeUser(username);
+        for (String username : userController.getAllUsernames()) {
+            userController.removeUser(username);
         }
         if (isUiTestServer()) {
             stopUiServer();

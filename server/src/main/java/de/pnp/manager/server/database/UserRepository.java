@@ -5,8 +5,8 @@ import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
-import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.server.contoller.UserController;
+import java.util.Collection;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -32,7 +32,14 @@ public class UserRepository {
     }
 
     /**
-     * Returns the {@link PnPUserDetails} of the given user.
+     * Returns all users.
+     */
+    public Collection<PnPUser> getAllUsers() {
+        return mongoTemplate.findAll(PnPUser.class, REPOSITORY_NAME);
+    }
+
+    /**
+     * Returns the {@link PnPUser} of the given user.
      */
     public Optional<PnPUser> getUser(String username) {
         return Optional.ofNullable(

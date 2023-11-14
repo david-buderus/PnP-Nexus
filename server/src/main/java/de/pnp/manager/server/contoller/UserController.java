@@ -6,6 +6,9 @@ import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
 import jakarta.validation.ConstraintViolationException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +47,16 @@ public class UserController {
         boolean removedFromUserRepo = userRepository.removeUser(username);
         boolean removedFromDetailsRepo = userDetailsRepository.removeUser(username);
         return removedFromUserRepo && removedFromDetailsRepo;
+    }
+
+    /**
+     * Gets all usernames.
+     */
+    public Collection<String> getAllUsernames() {
+        Set<String> usernames = new HashSet<>();
+        usernames.addAll(userRepository.getAllUsers().stream().map(PnPUser::getUsername).toList());
+        usernames.addAll(userDetailsRepository.getAllUsernames());
+        return usernames;
     }
 
     /**
