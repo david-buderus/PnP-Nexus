@@ -81,7 +81,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @UniverseWrite
     @Operation(summary = "Updates an object in the database", operationId = "update")
     public Obj update(@PathVariable String universe, @PathVariable ObjectId id, @RequestBody @Valid Obj object) {
-        if (!Objects.equals(id, object.getId())) {
+        if (object.getId() != null && !Objects.equals(id, object.getId())) {
             throw new ResponseStatusException(BAD_REQUEST, "The id of the object does not match.");
         }
         return repository.update(universe, id, object);
