@@ -8,15 +8,18 @@ import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.Material.MaterialItem;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.PnPUserCreation;
+import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.UniverseRepository;
-import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 /**
@@ -40,35 +43,14 @@ public class DataLoader implements ApplicationRunner {
     private ItemRepository itemRepository;
 
     @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private UserController userController;
 
     @Override
     public void run(ApplicationArguments args) {
         if (!EJvmFlag.DEV_MODE.isEnabled()) {
             return;
         }
-
-        if (userDetailsRepository.getUser("admin").isPresent()) {
-            userDetailsRepository.removeUser("admin");
-        }
-        userDetailsRepository.addNewAdmin("admin", "admin");
-
-        if (userDetailsRepository.getUser("write").isPresent()) {
-            userDetailsRepository.removeUser("write");
-        }
-        userDetailsRepository.addNewUser("write", "write",
-            List.of(GrantedUniverseAuthority.writeAuthority(TEST_UNIVERSE)));
-
-        if (userDetailsRepository.getUser("read").isPresent()) {
-            userDetailsRepository.removeUser("read");
-        }
-        userDetailsRepository.addNewUser("read", "read",
-            List.of(GrantedUniverseAuthority.readAuthority(TEST_UNIVERSE)));
-
-        if (userDetailsRepository.getUser("user").isPresent()) {
-            userDetailsRepository.removeUser("user");
-        }
-        userDetailsRepository.addNewUser("user", "user", List.of());
+        createTestUsers();
 
         if (universeRepository.exists(TEST_UNIVERSE)) {
             universeRepository.remove(TEST_UNIVERSE);
@@ -81,5 +63,32 @@ public class DataLoader implements ApplicationRunner {
             new Item(null, "Iron ingot", material, metal, "", "", ERarity.COMMON, 100, 1, "An ingot of iron.", "", 100,
                 0));
         materialRepository.insert(TEST_UNIVERSE, new Material(null, "Iron", List.of(new MaterialItem(1, ironIngot))));
+    }
+
+    private void createTestUsers() {
+        if (userController.exists("admin")) {
+            userController.removeUser("admin");
+        }
+        userController.createNewUser(
+            new PnPUserCreation("admin", "admin", "Admin", null, List.of(new SimpleGrantedAuthority(
+                SecurityConstants.ADMIN_ROLE))));
+
+        if (userController.exists("write")) {
+            userController.removeUser("write");
+        }
+        userController.createNewUser(new PnPUserCreation("write", "write", "User with Write permission", null,
+            List.of(GrantedUniverseAuthority.writeAuthority(TEST_UNIVERSE))));
+
+        if (userController.exists("read")) {
+            userController.removeUser("read");
+        }
+        userController.createNewUser(new PnPUserCreation("read", "read", "User with Read permission", null,
+            List.of(GrantedUniverseAuthority.readAuthority(TEST_UNIVERSE))));
+
+        if (userController.exists("user")) {
+            userController.removeUser("user");
+        }
+        userController.createNewUser(new PnPUserCreation("user", "user", "User with no permission", null,
+            List.of()));
     }
 }

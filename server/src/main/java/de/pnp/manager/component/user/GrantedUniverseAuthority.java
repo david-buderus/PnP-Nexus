@@ -4,6 +4,7 @@ import static de.pnp.manager.security.SecurityConstants.OWNER;
 import static de.pnp.manager.security.SecurityConstants.READ_ACCESS;
 import static de.pnp.manager.security.SecurityConstants.WRITE_ACCESS;
 
+import java.util.Objects;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
@@ -75,6 +76,27 @@ public class GrantedUniverseAuthority implements GrantedAuthority {
             case OWNER -> isOwner(universe);
             default -> false;
         };
+    }
+
+    public String getUniverse() {
+        return universe;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GrantedUniverseAuthority that = (GrantedUniverseAuthority) o;
+        return getUniverse().equals(that.getUniverse()) && accessRight == that.accessRight;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUniverse(), accessRight);
     }
 
     @Override

@@ -11,10 +11,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
+import de.pnp.manager.server.database.UserDetailsRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,6 +43,9 @@ public class UniverseServiceTest extends ServerTestBase {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private UserDetailsRepository userRepository;
 
     @Test
     @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
@@ -78,6 +84,19 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(getAll()).isEmpty();
         assertThatThrownBy(() -> getOne(exampleUniverse.getName())).isInstanceOf(ResponseStatusException.class)
             .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @WithMockUser(value = "test", roles = SecurityConstants.UNIVERSE_CREATOR)
+    void createUniverseAsCreator() throws Exception {
+        userRepository.addNewUser("test", "test",
+            List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE)));
+
+        Universe exampleUniverse = new Universe("some-example", "Example Universe");
+        create(exampleUniverse);
+        assertThat(userRepository.loadUserByUsername("test").getAuthorities()).filteredOn(
+                auth -> auth instanceof GrantedUniverseAuthority).hasSize(1)
+            .anyMatch(auth -> ((GrantedUniverseAuthority) auth).isOwner(exampleUniverse.getName()));
     }
 
     private List<Universe> getAll() throws Exception {

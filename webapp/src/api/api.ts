@@ -346,6 +346,19 @@ export type GetAll6200ResponseInner = Armor | Item | Jewellery | Shield | Weapon
 /**
  * 
  * @export
+ * @interface GrantedAuthority
+ */
+export interface GrantedAuthority {
+    /**
+     * 
+     * @type {string}
+     * @memberof GrantedAuthority
+     */
+    'authority'?: string;
+}
+/**
+ * 
+ * @export
  * @interface Item
  */
 export interface Item {
@@ -802,6 +815,87 @@ export interface MultiplicativeUpgradeEffectAllOf {
      * @memberof MultiplicativeUpgradeEffectAllOf
      */
     'factor'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface PasswordChange
+ */
+export interface PasswordChange {
+    /**
+     * 
+     * @type {string}
+     * @memberof PasswordChange
+     */
+    'newPassword'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PasswordChange
+     */
+    'oldPassword'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PnPUser
+ */
+export interface PnPUser {
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUser
+     */
+    'displayName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUser
+     */
+    'email'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUser
+     */
+    'username'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface PnPUserCreation
+ */
+export interface PnPUserCreation {
+    /**
+     * 
+     * @type {Array<GrantedAuthority>}
+     * @memberof PnPUserCreation
+     */
+    'authorities': Array<GrantedAuthority>;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUserCreation
+     */
+    'displayName': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUserCreation
+     */
+    'email'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUserCreation
+     */
+    'password'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUserCreation
+     */
+    'username': string;
 }
 /**
  * 
@@ -5062,6 +5156,52 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
     return {
         /**
          * 
+         * @summary Add the given access right to the given user
+         * @param {string} universe 
+         * @param {string} username 
+         * @param {string} [accessPermission] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addPermission: async (universe: string, username: string, accessPermission?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('addPermission', 'universe', universe)
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('addPermission', 'username', username)
+            const localVarPath = `/api/universes/{universe}/permission`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (username !== undefined) {
+                localVarQueryParameter['username'] = username;
+            }
+
+            if (accessPermission !== undefined) {
+                localVarQueryParameter['accessPermission'] = accessPermission;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Create a universe
          * @param {Universe} universe 
          * @param {*} [options] Override http request option.
@@ -5196,6 +5336,47 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
+         * @summary Removes all access rights to the universe from the given user
+         * @param {string} universe 
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removePermission: async (universe: string, username: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('removePermission', 'universe', universe)
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('removePermission', 'username', username)
+            const localVarPath = `/api/universes/{universe}/permission`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (username !== undefined) {
+                localVarQueryParameter['username'] = username;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update a universe
          * @param {Universe} universe 
          * @param {*} [options] Override http request option.
@@ -5242,6 +5423,19 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Add the given access right to the given user
+         * @param {string} universe 
+         * @param {string} username 
+         * @param {string} [accessPermission] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addPermission(universe: string, username: string, accessPermission?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addPermission(universe, username, accessPermission, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Create a universe
          * @param {Universe} universe 
          * @param {*} [options] Override http request option.
@@ -5285,6 +5479,18 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Removes all access rights to the universe from the given user
+         * @param {string} universe 
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removePermission(universe: string, username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removePermission(universe, username, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Update a universe
          * @param {Universe} universe 
          * @param {*} [options] Override http request option.
@@ -5304,6 +5510,18 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
 export const UniverseServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = UniverseServiceApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary Add the given access right to the given user
+         * @param {string} universe 
+         * @param {string} username 
+         * @param {string} [accessPermission] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addPermission(universe: string, username: string, accessPermission?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.addPermission(universe, username, accessPermission, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary Create a universe
@@ -5345,6 +5563,17 @@ export const UniverseServiceApiFactory = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary Removes all access rights to the universe from the given user
+         * @param {string} universe 
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removePermission(universe: string, username: string, options?: any): AxiosPromise<void> {
+            return localVarFp.removePermission(universe, username, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Update a universe
          * @param {Universe} universe 
          * @param {*} [options] Override http request option.
@@ -5363,6 +5592,20 @@ export const UniverseServiceApiFactory = function (configuration?: Configuration
  * @extends {BaseAPI}
  */
 export class UniverseServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Add the given access right to the given user
+     * @param {string} universe 
+     * @param {string} username 
+     * @param {string} [accessPermission] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseServiceApi
+     */
+    public addPermission(universe: string, username: string, accessPermission?: string, options?: AxiosRequestConfig) {
+        return UniverseServiceApiFp(this.configuration).addPermission(universe, username, accessPermission, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Create a universe
@@ -5408,6 +5651,19 @@ export class UniverseServiceApi extends BaseAPI {
      */
     public getUniverse(universe: string, options?: AxiosRequestConfig) {
         return UniverseServiceApiFp(this.configuration).getUniverse(universe, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Removes all access rights to the universe from the given user
+     * @param {string} universe 
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseServiceApi
+     */
+    public removePermission(universe: string, username: string, options?: AxiosRequestConfig) {
+        return UniverseServiceApiFp(this.configuration).removePermission(universe, username, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6414,6 +6670,475 @@ export class UpgradeServiceApi extends BaseAPI {
      */
     public update4(universe: string, id: string, upgrade: Upgrade, options?: AxiosRequestConfig) {
         return UpgradeServiceApiFp(this.configuration).update4(universe, id, upgrade, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * UserServiceApi - axios parameter creator
+ * @export
+ */
+export const UserServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Create a user
+         * @param {PnPUserCreation} pnPUserCreation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUser: async (pnPUserCreation: PnPUserCreation, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'pnPUserCreation' is not null or undefined
+            assertParamExists('createUser', 'pnPUserCreation', pnPUserCreation)
+            const localVarPath = `/api/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pnPUserCreation, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates the permissions of a user
+         * @param {string} username 
+         * @param {Array<GrantedAuthority>} grantedAuthority 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUser1: async (username: string, grantedAuthority: Array<GrantedAuthority>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('createUser1', 'username', username)
+            // verify required parameter 'grantedAuthority' is not null or undefined
+            assertParamExists('createUser1', 'grantedAuthority', grantedAuthority)
+            const localVarPath = `/api/users/{username}/permissions`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(grantedAuthority, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates the password of a user
+         * @param {string} username 
+         * @param {PasswordChange} passwordChange 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUser2: async (username: string, passwordChange: PasswordChange, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('createUser2', 'username', username)
+            // verify required parameter 'passwordChange' is not null or undefined
+            assertParamExists('createUser2', 'passwordChange', passwordChange)
+            const localVarPath = `/api/users/{username}/password`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(passwordChange, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Delete a universe
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteUser: async (username: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('deleteUser', 'username', username)
+            const localVarPath = `/api/users/{username}`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get a user
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUser: async (username: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('getUser', 'username', username)
+            const localVarPath = `/api/users/{username}`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates a user
+         * @param {string} username 
+         * @param {PnPUser} pnPUser 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUser: async (username: string, pnPUser: PnPUser, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('updateUser', 'username', username)
+            // verify required parameter 'pnPUser' is not null or undefined
+            assertParamExists('updateUser', 'pnPUser', pnPUser)
+            const localVarPath = `/api/users/{username}`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pnPUser, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UserServiceApi - functional programming interface
+ * @export
+ */
+export const UserServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UserServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Create a user
+         * @param {PnPUserCreation} pnPUserCreation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createUser(pnPUserCreation: PnPUserCreation, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createUser(pnPUserCreation, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates the permissions of a user
+         * @param {string} username 
+         * @param {Array<GrantedAuthority>} grantedAuthority 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createUser1(username: string, grantedAuthority: Array<GrantedAuthority>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createUser1(username, grantedAuthority, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates the password of a user
+         * @param {string} username 
+         * @param {PasswordChange} passwordChange 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createUser2(username: string, passwordChange: PasswordChange, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createUser2(username, passwordChange, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Delete a universe
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteUser(username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteUser(username, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get a user
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUser(username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPUser>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUser(username, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates a user
+         * @param {string} username 
+         * @param {PnPUser} pnPUser 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUser(username: string, pnPUser: PnPUser, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUser(username, pnPUser, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UserServiceApi - factory interface
+ * @export
+ */
+export const UserServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UserServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Create a user
+         * @param {PnPUserCreation} pnPUserCreation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUser(pnPUserCreation: PnPUserCreation, options?: any): AxiosPromise<void> {
+            return localVarFp.createUser(pnPUserCreation, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates the permissions of a user
+         * @param {string} username 
+         * @param {Array<GrantedAuthority>} grantedAuthority 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUser1(username: string, grantedAuthority: Array<GrantedAuthority>, options?: any): AxiosPromise<void> {
+            return localVarFp.createUser1(username, grantedAuthority, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates the password of a user
+         * @param {string} username 
+         * @param {PasswordChange} passwordChange 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createUser2(username: string, passwordChange: PasswordChange, options?: any): AxiosPromise<void> {
+            return localVarFp.createUser2(username, passwordChange, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Delete a universe
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteUser(username: string, options?: any): AxiosPromise<void> {
+            return localVarFp.deleteUser(username, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get a user
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUser(username: string, options?: any): AxiosPromise<PnPUser> {
+            return localVarFp.getUser(username, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates a user
+         * @param {string} username 
+         * @param {PnPUser} pnPUser 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUser(username: string, pnPUser: PnPUser, options?: any): AxiosPromise<void> {
+            return localVarFp.updateUser(username, pnPUser, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UserServiceApi - object-oriented interface
+ * @export
+ * @class UserServiceApi
+ * @extends {BaseAPI}
+ */
+export class UserServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Create a user
+     * @param {PnPUserCreation} pnPUserCreation 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public createUser(pnPUserCreation: PnPUserCreation, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).createUser(pnPUserCreation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates the permissions of a user
+     * @param {string} username 
+     * @param {Array<GrantedAuthority>} grantedAuthority 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public createUser1(username: string, grantedAuthority: Array<GrantedAuthority>, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).createUser1(username, grantedAuthority, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates the password of a user
+     * @param {string} username 
+     * @param {PasswordChange} passwordChange 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public createUser2(username: string, passwordChange: PasswordChange, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).createUser2(username, passwordChange, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Delete a universe
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public deleteUser(username: string, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).deleteUser(username, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get a user
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public getUser(username: string, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).getUser(username, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates a user
+     * @param {string} username 
+     * @param {PnPUser} pnPUser 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public updateUser(username: string, pnPUser: PnPUser, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).updateUser(username, pnPUser, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

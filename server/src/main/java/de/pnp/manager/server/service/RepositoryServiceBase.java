@@ -1,5 +1,6 @@
 package de.pnp.manager.server.service;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.pnp.manager.component.DatabaseObject;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -79,6 +81,9 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @UniverseWrite
     @Operation(summary = "Updates an object in the database", operationId = "update")
     public Obj update(@PathVariable String universe, @PathVariable ObjectId id, @RequestBody @Valid Obj object) {
+        if (!Objects.equals(id, object.getId())) {
+            throw new ResponseStatusException(BAD_REQUEST, "The id of the object does not match.");
+        }
         return repository.update(universe, id, object);
     }
 

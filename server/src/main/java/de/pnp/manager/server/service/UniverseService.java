@@ -1,18 +1,24 @@
 package de.pnp.manager.server.service;
 
 import static de.pnp.manager.security.SecurityConstants.ADMIN;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.UserDetailsRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,6 +47,9 @@ public class UniverseService {
 
     @Autowired
     private UniverseRepository universeRepository;
+
+    @Autowired
+    private UserDetailsRepository userDetailsRepository;
 
     @GetMapping
     @PostFilter("hasRole('" + SecurityConstants.ADMIN + "') || hasPermission(filterObject, '"
@@ -72,16 +82,44 @@ public class UniverseService {
     @PostMapping
     @PreAuthorize("hasRole('" + SecurityConstants.UNIVERSE_CREATOR + "')")
     @Operation(summary = "Create a universe", operationId = "createUniverse")
-    public Universe createUniverse(@RequestBody Universe universe) {
-        return universeRepository.insert(universe);
+    public Universe createUniverse(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Universe universe) {
+        Universe persistedUniverse = universeRepository.insert(universe);
+        userDetailsRepository.addGrantedAuthority(userDetails.getUsername(),
+            GrantedUniverseAuthority.ownerAuthority(persistedUniverse.getName()));
+        return persistedUniverse;
     }
 
     @PutMapping
-    @PreAuthorize(
-        "hasRole('" + SecurityConstants.ADMIN + "') || hasPermission(#newUniverse, '" + SecurityConstants.OWNER
-            + "')")
+    @UniverseOwner
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
     public Universe updateUniverse(@RequestBody Universe newUniverse) {
         return universeRepository.update(newUniverse);
+    }
+
+    @PostMapping("{universe}/permission")
+    @UniverseOwner
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Add the given access right to the given user", operationId = "addPermission")
+    public void addPermission(@PathVariable String universe, @RequestParam String username,
+        @RequestParam(defaultValue = SecurityConstants.READ_ACCESS) String accessPermission) {
+        userDetailsRepository.addGrantedAuthority(username, createUniverseAuthority(universe, accessPermission));
+    }
+
+    @DeleteMapping("{universe}/permission")
+    @UniverseOwner
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Removes all access rights to the universe from the given user", operationId = "removePermission")
+    public void removePermission(@PathVariable String universe, @RequestParam String username) {
+        userDetailsRepository.removeGrantedUniverseAuthorities(username, universe);
+    }
+
+    private GrantedUniverseAuthority createUniverseAuthority(String universe, String accessPermission) {
+        return switch (accessPermission) {
+            case SecurityConstants.READ_ACCESS -> GrantedUniverseAuthority.readAuthority(universe);
+            case SecurityConstants.WRITE_ACCESS -> GrantedUniverseAuthority.writeAuthority(universe);
+            case SecurityConstants.OWNER -> GrantedUniverseAuthority.ownerAuthority(universe);
+            default -> throw new ResponseStatusException(BAD_REQUEST,
+                "The access permission '" + accessPermission + "' is not supported.");
+        };
     }
 }

@@ -4,8 +4,11 @@ import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
 
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
-import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.contoller.UserController;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +20,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,6 +65,8 @@ public class UserDetailsRepository implements UserDetailsService {
 
     /**
      * Inserts the user into the database.
+     * <p>
+     * Don't call this directly. Use {@link UserController#createNewUser(PnPUserCreation)}.
      */
     public void addNewUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         mongoTemplate.insert(
@@ -71,10 +75,14 @@ public class UserDetailsRepository implements UserDetailsService {
     }
 
     /**
-     * Inserts the user into the database.
+     * Removes the user from the database.
+     * <p>
+     * Don't call this directly. Use {@link UserController#removeUser(String)}.
      */
-    public void addNewAdmin(String username, String password) {
-        addNewUser(username, password, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE)));
+    public boolean removeUser(String username) {
+        DeleteResult result = mongoTemplate.remove(Query.query(Criteria.where("_id").is(username)),
+            REPOSITORY_NAME);
+        return result.wasAcknowledged();
     }
 
     /**
@@ -98,20 +106,41 @@ public class UserDetailsRepository implements UserDetailsService {
      */
     public void updateGrantedAuthority(String username, Collection<GrantedAuthority> newAuthorities) {
         PnPUserDetails userDetails = loadUserByUsername(username);
-        mongoTemplate.findAndReplace(Query.query(Criteria.where("_id").is(username)),
-            new PnPUserDetails(username, userDetails.getPassword(), newAuthorities,
-                userDetails.isAccountNonExpired(), userDetails.isAccountNonLocked(),
-                userDetails.isCredentialsNonExpired(), userDetails.isEnabled()),
-            REPOSITORY_NAME);
+        setUserGrantedAuthorities(userDetails, newAuthorities);
     }
 
     /**
-     * Removes the user from the database.
+     * Adds the {@link GrantedUniverseAuthority authorities} to the user.
      */
-    public boolean removeUser(String username) {
-        DeleteResult result = mongoTemplate.remove(Query.query(Criteria.where("_id").is(username)),
+    public void addGrantedAuthority(String username, GrantedAuthority... newAuthorities) {
+        PnPUserDetails userDetails = loadUserByUsername(username);
+        List<GrantedAuthority> allAuthorities = new ArrayList<>(userDetails.getAuthorities());
+        allAuthorities.addAll(Arrays.asList(newAuthorities));
+        setUserGrantedAuthorities(userDetails, allAuthorities);
+    }
+
+    /**
+     * Removes the {@link GrantedUniverseAuthority authorities} from the user.
+     */
+    public void removeGrantedUniverseAuthorities(String username, String universe) {
+        PnPUserDetails userDetails = loadUserByUsername(username);
+        List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
+
+        authorities.removeIf(auth -> {
+            if (auth instanceof GrantedUniverseAuthority universeAuthority) {
+                return universeAuthority.getUniverse().equals(universe);
+            }
+            return false;
+        });
+        setUserGrantedAuthorities(userDetails, authorities);
+    }
+
+    private void setUserGrantedAuthorities(PnPUserDetails userDetails, Collection<GrantedAuthority> authorities) {
+        mongoTemplate.findAndReplace(Query.query(Criteria.where("_id").is(userDetails.getUsername())),
+            new PnPUserDetails(userDetails.getUsername(), userDetails.getPassword(), authorities,
+                userDetails.isAccountNonExpired(), userDetails.isAccountNonLocked(),
+                userDetails.isCredentialsNonExpired(), userDetails.isEnabled()),
             REPOSITORY_NAME);
-        return result.wasAcknowledged();
     }
 
     @Override

@@ -33,12 +33,12 @@ public abstract class SecurityConstants {
     /**
      * Identifier for write access permissions.
      */
-    public static final String WRITE_ACCESS = "Write";
+    public static final String WRITE_ACCESS = "WRITE";
 
     /**
      * Identifier for owner permissions.
      */
-    public static final String OWNER = "Owner";
+    public static final String OWNER = "OWNER";
 
     /**
      * Identifier for permission targeted at universes.
