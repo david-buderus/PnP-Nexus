@@ -30,6 +30,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -95,6 +96,12 @@ public class UniverseServiceTest extends ServerTestBase {
         void testGet() throws Exception {
             runGetTest();
         }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testPermission() throws Exception {
+            runChangePermissionTest();
+        }
     }
 
     @Nested
@@ -144,6 +151,12 @@ public class UniverseServiceTest extends ServerTestBase {
         void testGet() throws Exception {
             runGetOnlyOneTest();
         }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testPermission() throws Exception {
+            runChangePermissionTest();
+        }
     }
 
     @Nested
@@ -158,19 +171,19 @@ public class UniverseServiceTest extends ServerTestBase {
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testCreate() throws Exception {
+        void testCreate() {
             runNotAllowedCreateTest();
         }
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testUpdate() throws Exception {
+        void testUpdate() {
             runNotAllowedUpdateTest();
         }
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testDelete() throws Exception {
+        void testDelete() {
             runNotAllowedDeleteTest();
         }
 
@@ -178,6 +191,12 @@ public class UniverseServiceTest extends ServerTestBase {
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
         void testGet() throws Exception {
             runGetOnlyOneTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testPermission() {
+            runNotAllowedChangePermissionTest();
         }
     }
 
@@ -193,19 +212,19 @@ public class UniverseServiceTest extends ServerTestBase {
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testCreate() throws Exception {
+        void testCreate() {
             runNotAllowedCreateTest();
         }
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testUpdate() throws Exception {
+        void testUpdate() {
             runNotAllowedUpdateTest();
         }
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testDelete() throws Exception {
+        void testDelete() {
             runNotAllowedDeleteTest();
         }
 
@@ -213,6 +232,62 @@ public class UniverseServiceTest extends ServerTestBase {
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
         void testGet() throws Exception {
             runGetOnlyOneTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testPermission() {
+            runNotAllowedChangePermissionTest();
+        }
+    }
+
+    @Nested
+    @DisplayName("as no rights")
+    class AsNoRightsTest {
+
+        @BeforeEach
+        protected void setup() {
+            userController.createNewUser(
+                new PnPUserCreation(USER, USER, USER, null, List.of()));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testCreate() {
+            runNotAllowedCreateTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testUpdate() {
+            runNotAllowedUpdateTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDelete() {
+            runNotAllowedDeleteTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGet() throws Exception {
+            Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
+            universeRepository.insert(exampleUniverse);
+            Universe otherUniverse = new Universe(OTHER_UNIVERSE_NAME, "Other Universe");
+            universeRepository.insert(otherUniverse);
+
+            assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(UNIVERSE_NAME))
+                .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(OTHER_UNIVERSE_NAME))
+                .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(getAll()).isEmpty();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testPermission() {
+            runNotAllowedChangePermissionTest();
         }
     }
 
@@ -224,7 +299,7 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(getAll()).containsExactly(exampleUniverse);
     }
 
-    private void runNotAllowedCreateTest() throws Exception {
+    private void runNotAllowedCreateTest() {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         assertThatExceptionOfType(ResponseStatusException.class)
             .isThrownBy(() -> create(exampleUniverse))
@@ -245,11 +320,9 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(getAll()).containsExactly(changedUniverse);
     }
 
-    private void runNotAllowedUpdateTest() throws Exception {
+    private void runNotAllowedUpdateTest() {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         universeRepository.insert(exampleUniverse);
-
-        assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
 
         assertThatExceptionOfType(ResponseStatusException.class)
             .isThrownBy(() -> update(exampleUniverse))
@@ -268,10 +341,9 @@ public class UniverseServiceTest extends ServerTestBase {
             .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    private void runNotAllowedDeleteTest() throws Exception {
+    private void runNotAllowedDeleteTest() {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         universeRepository.insert(exampleUniverse);
-        assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
 
         assertThatThrownBy(() -> deleteOne(UNIVERSE_NAME)).isInstanceOf(ResponseStatusException.class)
             .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
@@ -298,7 +370,51 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(OTHER_UNIVERSE_NAME))
             .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
         assertThat(getAll()).containsExactly(exampleUniverse);
+    }
 
+    private void runChangePermissionTest() throws Exception {
+        Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
+        universeRepository.insert(exampleUniverse);
+
+        String username = "test";
+        userController.createNewUser(new PnPUserCreation(username, "test", "Test", null, List.of()));
+
+        addPermission(UNIVERSE_NAME, username, SecurityConstants.READ_ACCESS);
+        hasAccessRight(username, GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME));
+        addPermission(UNIVERSE_NAME, username, SecurityConstants.WRITE_ACCESS);
+        hasAccessRight(username, GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME));
+        addPermission(UNIVERSE_NAME, username, SecurityConstants.OWNER);
+        hasAccessRight(username, GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME));
+
+        removePermission(UNIVERSE_NAME, username);
+        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+    }
+
+    private void runNotAllowedChangePermissionTest() {
+        Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
+        universeRepository.insert(exampleUniverse);
+
+        String username = "test";
+        userController.createNewUser(new PnPUserCreation(username, "test", "Test", null, List.of()));
+
+        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.READ_ACCESS))
+            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.WRITE_ACCESS))
+            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.OWNER))
+            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+
+        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> removePermission(UNIVERSE_NAME, username))
+            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+    }
+
+    private void hasAccessRight(String username, GrantedAuthority authority) {
+        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).map(a -> (GrantedAuthority) a)
+            .contains(authority);
     }
 
     private List<Universe> getAll() throws Exception {
@@ -345,6 +461,33 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private void deleteOne(String universe) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{universe}", universe).with(csrf()))
+            .andReturn().getResponse();
+
+        if (response.getStatus() >= 300) {
+            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
+        }
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void addPermission(String universe, String username, String accessPermission) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(post(BASE_PATH + "/{universe}/permission", universe)
+                .param("username", username)
+                .param("accessPermission", accessPermission)
+                .with(csrf()))
+            .andReturn().getResponse();
+
+        if (response.getStatus() >= 300) {
+            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
+        }
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void removePermission(String universe, String username) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{universe}/permission", universe)
+                .param("username", username)
+                .with(csrf()))
             .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {

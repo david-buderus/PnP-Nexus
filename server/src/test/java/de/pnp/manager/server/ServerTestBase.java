@@ -41,6 +41,9 @@ public abstract class ServerTestBase {
     @Autowired
     private UniverseRepository universeRepository;
 
+    /**
+     * {@link UserController} used in the test.
+     */
     @Autowired
     protected UserController userController;
 
