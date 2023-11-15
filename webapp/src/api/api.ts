@@ -5378,14 +5378,18 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
         /**
          * 
          * @summary Update a universe
-         * @param {Universe} universe 
+         * @param {string} universe 
+         * @param {Universe} universe2 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUniverse: async (universe: Universe, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateUniverse: async (universe: string, universe2: Universe, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('updateUniverse', 'universe', universe)
-            const localVarPath = `/api/universes`;
+            // verify required parameter 'universe2' is not null or undefined
+            assertParamExists('updateUniverse', 'universe2', universe2)
+            const localVarPath = `/api/universes/{universe}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -5404,7 +5408,7 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(universe, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(universe2, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5492,12 +5496,13 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Update a universe
-         * @param {Universe} universe 
+         * @param {string} universe 
+         * @param {Universe} universe2 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateUniverse(universe: Universe, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Universe>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUniverse(universe, options);
+        async updateUniverse(universe: string, universe2: Universe, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Universe>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUniverse(universe, universe2, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -5575,12 +5580,13 @@ export const UniverseServiceApiFactory = function (configuration?: Configuration
         /**
          * 
          * @summary Update a universe
-         * @param {Universe} universe 
+         * @param {string} universe 
+         * @param {Universe} universe2 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateUniverse(universe: Universe, options?: any): AxiosPromise<Universe> {
-            return localVarFp.updateUniverse(universe, options).then((request) => request(axios, basePath));
+        updateUniverse(universe: string, universe2: Universe, options?: any): AxiosPromise<Universe> {
+            return localVarFp.updateUniverse(universe, universe2, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -5669,13 +5675,14 @@ export class UniverseServiceApi extends BaseAPI {
     /**
      * 
      * @summary Update a universe
-     * @param {Universe} universe 
+     * @param {string} universe 
+     * @param {Universe} universe2 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UniverseServiceApi
      */
-    public updateUniverse(universe: Universe, options?: AxiosRequestConfig) {
-        return UniverseServiceApiFp(this.configuration).updateUniverse(universe, options).then((request) => request(this.axios, this.basePath));
+    public updateUniverse(universe: string, universe2: Universe, options?: AxiosRequestConfig) {
+        return UniverseServiceApiFp(this.configuration).updateUniverse(universe, universe2, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

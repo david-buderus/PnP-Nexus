@@ -62,35 +62,6 @@
         "tags": [
           "universe-service"
         ]
-      },
-      "put": {
-        "operationId": "updateUniverse",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Universe"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Universe"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Update a universe",
-        "tags": [
-          "universe-service"
-        ]
       }
     },
     "/api/universes/{universe}": {
@@ -141,6 +112,45 @@
           }
         },
         "summary": "Get a universe",
+        "tags": [
+          "universe-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateUniverse",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Universe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Universe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update a universe",
         "tags": [
           "universe-service"
         ]
