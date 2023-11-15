@@ -21,8 +21,8 @@ public class CraftingRecipeServiceTest extends
     @Autowired
     private MaterialRepository materialRepository;
 
-    public CraftingRecipeServiceTest(@Autowired CraftingRecipeService craftingRecipeService) {
-        super(craftingRecipeService, CraftingRecipe.class);
+    public CraftingRecipeServiceTest(@Autowired CraftingRecipeService craftingRecipeService, @Autowired CraftingRecipeRepository repository) {
+        super(craftingRecipeService, repository, CraftingRecipe.class);
     }
 
     @Override

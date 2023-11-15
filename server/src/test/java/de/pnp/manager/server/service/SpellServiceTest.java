@@ -16,8 +16,8 @@ public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepo
     @Autowired
     private TalentRepository talentRepository;
 
-    public SpellServiceTest(@Autowired SpellService spellService) {
-        super(spellService, Spell.class);
+    public SpellServiceTest(@Autowired SpellService spellService, @Autowired SpellRepository repository) {
+        super(spellService, repository, Spell.class);
     }
 
     @Override

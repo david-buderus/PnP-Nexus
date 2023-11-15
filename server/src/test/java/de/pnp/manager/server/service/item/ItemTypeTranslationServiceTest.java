@@ -20,8 +20,8 @@ public class ItemTypeTranslationServiceTest extends
     @Autowired
     private ItemTypeRepository typeRepository;
 
-    public ItemTypeTranslationServiceTest(@Autowired ItemTypeTranslationService itemTypeTranslationService) {
-        super(itemTypeTranslationService, ItemTypeTranslation.class);
+    public ItemTypeTranslationServiceTest(@Autowired ItemTypeTranslationService itemTypeTranslationService, @Autowired ItemTypeTranslationRepository repository) {
+        super(itemTypeTranslationService, repository, ItemTypeTranslation.class);
     }
 
     @Override

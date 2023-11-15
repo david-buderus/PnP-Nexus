@@ -1,6 +1,7 @@
 package de.pnp.manager.server.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -8,11 +9,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.server.database.RepositoryBase;
@@ -23,14 +25,21 @@ import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.bson.types.ObjectId;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,10 +49,17 @@ import org.springframework.web.server.ResponseStatusException;
 public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo extends RepositoryBase<Obj>,
     Service extends RepositoryServiceBase<Obj, Repo>> extends UniverseTestBase {
 
+    private static final String USER = "test-user";
+
     /**
      * The service which gets tested.
      */
     protected Service service;
+
+    /**
+     * The repository behind the service which gets tested.
+     */
+    protected Repo repository;
 
     private final Class<Obj> objClass;
 
@@ -64,23 +80,267 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     @Autowired
     private TestUpgradeBuilderFactory upgradeBuilder;
 
-    public RepositoryServiceBaseTest(Service service, Class<Obj> objClass) {
+    public RepositoryServiceBaseTest(Service service, Repo repository, Class<Obj> objClass) {
         this.service = service;
         this.objClass = objClass;
+        this.repository = repository;
         basePath = extractBasePath();
     }
 
     @Test
-    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
+    @WithMockUser(roles = SecurityConstants.ADMIN)
     void soundnessCheck() {
         assertThat(createObjects()).hasSizeGreaterThanOrEqualTo(3);
     }
 
-    @Test
-    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
-    void testGetAll() throws Exception {
+    @Nested
+    @DisplayName("as admin")
+    class AsAdminTest {
+
+        @BeforeEach
+        protected void setup() {
+            userController.createNewUser(
+                new PnPUserCreation(USER, USER, USER, null, List.of(new SimpleGrantedAuthority(
+                    SecurityConstants.ADMIN_ROLE))));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGetAll() throws Exception {
+            runGetAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGet() throws Exception {
+            runGetTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testInsert() throws Exception {
+            runInsertTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDeleteAll() throws Exception {
+            runDeleteAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDelete() throws Exception {
+            runDeleteTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testUpdate() throws Exception {
+            runUpdateTest();
+        }
+    }
+
+    @Nested
+    @DisplayName("as owner")
+    class AsOwnerTest {
+
+        @BeforeEach
+        protected void setup() {
+            userController.createNewUser(
+                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.ownerAuthority(getUniverseName()))));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGetAll() throws Exception {
+            runGetAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGet() throws Exception {
+            runGetTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testInsert() throws Exception {
+            runInsertTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDeleteAll() throws Exception {
+            runDeleteAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDelete() throws Exception {
+            runDeleteTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testUpdate() throws Exception {
+            runUpdateTest();
+        }
+    }
+
+    @Nested
+    @DisplayName("as writer")
+    class AsWriterTest {
+
+        @BeforeEach
+        protected void setup() {
+            userController.createNewUser(
+                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.writeAuthority(getUniverseName()))));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGetAll() throws Exception {
+            runGetAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGet() throws Exception {
+            runGetTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testInsert() throws Exception {
+            runInsertTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDeleteAll() throws Exception {
+            runDeleteAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDelete() throws Exception {
+            runDeleteTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testUpdate() throws Exception {
+            runUpdateTest();
+        }
+    }
+
+    @Nested
+    @DisplayName("as reader")
+    class AsReaderTest {
+
+        @BeforeEach
+        protected void setup() {
+            userController.createNewUser(
+                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.readAuthority(getUniverseName()))));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGetAll() throws Exception {
+            runGetAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGet() throws Exception {
+            runGetTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testInsert() {
+            runNotAllowedInsertTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDeleteAll() {
+            runNotAllowedDeleteAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDelete() {
+            runNotAllowedDeleteTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testUpdate() throws Exception {
+            runNotAllowedUpdateTest();
+        }
+    }
+
+    @Nested
+    @DisplayName("as no rights")
+    class AsNoRightsTest {
+
+        @BeforeEach
+        protected void setup() {
+            userController.createNewUser(
+                new PnPUserCreation(USER, USER, USER, null, List.of()));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGetAll() {
+            List<Obj> objects = createObjects();
+            Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+
+            assertForbidden(() -> getAll(getUniverseName(), null));
+            assertForbidden(() -> getAll(getUniverseName(), Collections.emptyList()));
+            assertForbidden(() -> getAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
+                .toList()));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testGet() {
+            List<Obj> objects = createObjects();
+            Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+
+            assertForbidden(() ->getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId()));
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testInsert() {
+            runNotAllowedInsertTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDeleteAll() {
+            runNotAllowedDeleteAllTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testDelete() {
+            runNotAllowedDeleteTest();
+        }
+
+        @Test
+        @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
+        void testUpdate() throws Exception {
+            runNotAllowedUpdateTest();
+        }
+    }
+
+    private void runGetAllTest() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
 
         assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(objects);
         assertThat(getAll(getUniverseName(), Collections.emptyList())).containsExactlyInAnyOrderElementsOf(objects);
@@ -89,45 +349,47 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
             .toList())).containsExactlyInAnyOrderElementsOf(persistedObjects.stream().limit(2).toList());
     }
 
-    @Test
-    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
-    void testDeleteAll() throws Exception {
+    private void runGetTest() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+
+        assertThat(getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId())).isEqualTo(
+            objects.get(0));
+    }
+
+    private void runInsertTest() throws Exception {
+        List<Obj> objects = createObjects();
+        List<Obj> persistedObjects = insertAll(getUniverseName(), objects);
+        assertThat(persistedObjects).isEqualTo(objects);
+        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(objects);
+    }
+
+    private void runNotAllowedInsertTest() {
+        List<Obj> objects = createObjects();
+        assertForbidden(() -> insertAll(getUniverseName(), objects));
+        assertThat(repository.getAll(getUniverseName())).isEmpty();
+    }
+
+    private void runDeleteAllTest() throws Exception {
+        List<Obj> objects = createObjects();
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
 
         deleteAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList());
         assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(
             objects.stream().skip(2).toList());
     }
 
-    @Test
-    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
-    void testGet() throws Exception {
+    private void runNotAllowedDeleteAllTest() {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
 
-        assertThat(getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId())).isEqualTo(
-            objects.get(0));
+        assertForbidden(() -> deleteAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList()));
+        assertThat(repository.getAll(getUniverseName())).containsExactlyInAnyOrderElementsOf(persistedObjects);
     }
 
-    @Test
-    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
-    void testUpdate() throws Exception {
+    private void runDeleteTest() throws Exception {
         List<Obj> objects = createObjects();
-        Obj persistedObject = insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
-            .orElseThrow();
-
-        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(persistedObject);
-        Obj updatedObject = objects.get(1);
-        assertThat(update(getUniverseName(), persistedObject.getId(), updatedObject)).isEqualTo(updatedObject);
-        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(updatedObject);
-    }
-
-    @Test
-    @WithMockUser(value = ADMIN, roles = SecurityConstants.ADMIN)
-    void testDelete() throws Exception {
-        List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
 
         ObjectId deletedId = persistedObjects.stream().findFirst().orElseThrow().getId();
         deleteOne(getUniverseName(), deletedId);
@@ -136,6 +398,35 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
             objects.stream().skip(1).toList());
         assertThatThrownBy(() -> getOne(getUniverseName(), deletedId)).isInstanceOf(ResponseStatusException.class)
             .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    private void runNotAllowedDeleteTest() {
+        List<Obj> objects = createObjects();
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+        ObjectId deletedId = persistedObjects.stream().findFirst().orElseThrow().getId();
+
+        assertForbidden(() -> deleteOne(getUniverseName(), deletedId));
+        assertThat(repository.getAll(getUniverseName())).containsExactlyInAnyOrderElementsOf(persistedObjects);
+    }
+
+    private void runUpdateTest() throws Exception {
+        List<Obj> objects = createObjects();
+        Obj persistedObject = repository.insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
+            .orElseThrow();
+
+        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(persistedObject);
+        Obj updatedObject = objects.get(1);
+        assertThat(update(getUniverseName(), persistedObject.getId(), updatedObject)).isEqualTo(updatedObject);
+        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(updatedObject);
+    }
+
+    private void runNotAllowedUpdateTest() {
+        List<Obj> objects = createObjects();
+        Obj persistedObject = repository.insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
+            .orElseThrow();
+        Obj updatedObject = objects.get(1);
+        assertForbidden(() -> update(getUniverseName(), persistedObject.getId(), updatedObject));
+        assertThat(repository.get(getUniverseName(), persistedObject.getId()).orElseThrow()).isEqualTo(persistedObject);
     }
 
     /**
@@ -151,9 +442,14 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         if (ids != null) {
             map.addAll("ids", ids.stream().map(ObjectId::toHexString).toList());
         }
-        String json = mockMvc.perform(get(basePath, universe).queryParams(map)).andExpect(status().isOk()).andReturn()
-            .getResponse().getContentAsString();
-        return objectMapper.readerForListOf(objClass).readValue(json);
+        MockHttpServletResponse response = mockMvc.perform(get(basePath, universe).queryParams(map))
+            .andReturn().getResponse();
+
+        if (response.getStatus() >= 300) {
+            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
+        }
+
+        return objectMapper.readerForListOf(objClass).readValue(response.getContentAsString());
     }
 
     /**
@@ -162,20 +458,31 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     protected List<Obj> insertAll(String universe, List<Obj> objects) throws Exception {
         CollectionType collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class, objClass);
 
-        String json = mockMvc.perform(post(basePath, universe).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writerFor(collectionType).writeValueAsString(objects)))
-            .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        MockHttpServletResponse response = mockMvc.perform(
+                post(basePath, universe).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writerFor(collectionType).writeValueAsString(objects)))
+            .andReturn().getResponse();
 
-        return objectMapper.readerForListOf(objClass).readValue(json);
+        if (response.getStatus() >= 300) {
+            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
+        }
+
+        return objectMapper.readerForListOf(objClass).readValue(response.getContentAsString());
     }
 
     /**
      * Wraps {@link RepositoryServiceBase#deleteAll(String, List)} in a REST call.
      */
     protected void deleteAll(String universe, List<ObjectId> ids) throws Exception {
-        mockMvc.perform(delete(basePath, universe).with(csrf())
+        MockHttpServletResponse response = mockMvc.perform(delete(basePath, universe).with(csrf())
                 .queryParam("ids", ids.stream().map(ObjectId::toHexString).toArray(String[]::new)))
-            .andExpect(status().isNoContent());
+            .andReturn().getResponse();
+
+        if (response.getStatus() >= 300) {
+            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
+        }
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     /**
@@ -185,7 +492,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         MockHttpServletResponse response = mockMvc.perform(get(basePath + "/{id}", universe, id.toHexString()))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 400) {
+        if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -201,7 +508,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
                     .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(obj)))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 400) {
+        if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
         return objectMapper.readValue(response.getContentAsString(), objClass);
@@ -211,8 +518,15 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      * Wraps {@link RepositoryServiceBase#delete(String, ObjectId)} in a REST call.
      */
     protected void deleteOne(String universe, ObjectId id) throws Exception {
-        mockMvc.perform(delete(basePath + "/{id}", universe, id.toHexString()).with(csrf()))
-            .andExpect(status().isNoContent());
+        MockHttpServletResponse response = mockMvc.perform(
+                delete(basePath + "/{id}", universe, id.toHexString()).with(csrf()))
+            .andReturn().getResponse();
+
+        if (response.getStatus() >= 300) {
+            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
+        }
+
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     /**
@@ -257,5 +571,10 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      */
     protected TestUpgradeBuilder createUpgrade() {
         return upgradeBuilder.createUpgradeBuilder(getUniverseName());
+    }
+
+    private static void assertForbidden(ThrowingCallable callable) {
+        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(callable)
+            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }

@@ -16,8 +16,8 @@ public class ItemServiceTest extends RepositoryServiceBaseTest<Item, ItemReposit
     @Autowired
     private MaterialRepository materialRepository;
 
-    public ItemServiceTest(@Autowired ItemService itemService) {
-        super(itemService, Item.class);
+    public ItemServiceTest(@Autowired ItemService itemService, @Autowired ItemRepository repository) {
+        super(itemService, repository, Item.class);
     }
 
     @Override

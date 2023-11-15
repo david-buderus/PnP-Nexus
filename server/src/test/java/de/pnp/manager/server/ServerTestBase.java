@@ -33,11 +33,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class ServerTestBase {
 
-    /**
-     * Username and password for the admin account.
-     */
-    protected static final String ADMIN = "admin";
-
     @Autowired
     private UniverseRepository universeRepository;
 
