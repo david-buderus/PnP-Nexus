@@ -277,7 +277,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testUpdate() throws Exception {
+        void testUpdate() {
             runNotAllowedUpdateTest();
         }
     }
@@ -333,7 +333,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
-        void testUpdate() throws Exception {
+        void testUpdate() {
             runNotAllowedUpdateTest();
         }
     }
