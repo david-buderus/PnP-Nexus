@@ -8,8 +8,6 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import de.pnp.manager.component.Universe;
-import de.pnp.manager.component.user.PnPUserCreation;
-import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.utils.TestUtils;
@@ -26,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 /**
  * Test base for integration tests.
@@ -45,7 +42,7 @@ public abstract class ServerTestBase {
     private UniverseRepository universeRepository;
 
     @Autowired
-    private UserController userController;
+    protected UserController userController;
 
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
@@ -83,8 +80,6 @@ public abstract class ServerTestBase {
 
     @BeforeEach
     protected void setup() {
-        userController.createNewUser(new PnPUserCreation(ADMIN, ADMIN, ADMIN, null, List.of(new SimpleGrantedAuthority(
-            SecurityConstants.ADMIN_ROLE))));
         getTestServerAnnotation().value().setupTestData(this);
         if (isUiTestServer()) {
             startUiServer();

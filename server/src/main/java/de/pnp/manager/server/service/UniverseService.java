@@ -13,6 +13,7 @@ import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Collection;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostFilter;
@@ -89,10 +90,13 @@ public class UniverseService {
         return persistedUniverse;
     }
 
-    @PutMapping
+    @PutMapping("{universe}")
     @UniverseOwner
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
-    public Universe updateUniverse(@RequestBody Universe newUniverse) {
+    public Universe updateUniverse(@PathVariable String universe, @RequestBody Universe newUniverse) {
+        if (!Objects.equals(newUniverse.getName(), universe)) {
+            throw new ResponseStatusException(BAD_REQUEST, "The universe path does not match the given universe name");
+        }
         return universeRepository.update(newUniverse);
     }
 
