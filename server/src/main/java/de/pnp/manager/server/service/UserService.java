@@ -13,6 +13,7 @@ import de.pnp.manager.security.AdminRights;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
+import de.pnp.manager.validation.Password;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Collection;
 import java.util.Objects;
@@ -119,7 +120,7 @@ public class UserService {
      * DTO to update the password of a user.
      */
     @VisibleForTesting
-    record PasswordChange(String oldPassword, String newPassword) {
+    public record PasswordChange(String oldPassword, @Password String newPassword) {
 
     }
 }
