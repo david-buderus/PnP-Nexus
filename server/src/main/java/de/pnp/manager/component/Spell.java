@@ -26,7 +26,7 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
      * This entry is always unique.
      */
     @Indexed(unique = true)
-    @NotNull
+    @NotBlank
     private final String name;
 
     /**
