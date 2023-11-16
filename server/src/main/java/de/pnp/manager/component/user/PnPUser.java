@@ -1,5 +1,6 @@
 package de.pnp.manager.component.user;
 
+import java.util.Objects;
 import org.springframework.data.annotation.Id;
 
 /**
@@ -30,5 +31,23 @@ public class PnPUser {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PnPUser pnPUser = (PnPUser) o;
+        return getUsername().equals(pnPUser.getUsername()) && Objects.equals(getDisplayName(),
+            pnPUser.getDisplayName()) && Objects.equals(getEmail(), pnPUser.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUsername(), getDisplayName(), getEmail());
     }
 }

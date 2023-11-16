@@ -25,10 +25,10 @@ public class PnPUserCreation {
     private final String email;
 
     @NotNull
-    private final Collection<? extends GrantedAuthority> authorities;
+    private final Collection<IGrantedAuthorityDTO> authorities;
 
     public PnPUserCreation(String username, String password, String displayName, String email,
-        Collection<? extends GrantedAuthority> authorities) {
+        Collection<IGrantedAuthorityDTO> authorities) {
         this.username = username;
         this.password = password;
         this.displayName = displayName;
@@ -52,7 +52,17 @@ public class PnPUserCreation {
         return email;
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<IGrantedAuthorityDTO> getAuthorities() {
         return authorities;
+    }
+
+    /**
+     * Creates a simple user creation object.
+     * <p>
+     * Should only be used in DEV and tests.
+     */
+    public static PnPUserCreation simple(String username, Collection<GrantedAuthority> authorities) {
+        return new PnPUserCreation(username, username, username, null,
+            authorities.stream().map(IGrantedAuthorityDTO::from).toList());
     }
 }

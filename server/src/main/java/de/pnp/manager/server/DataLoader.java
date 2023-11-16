@@ -70,25 +70,23 @@ public class DataLoader implements ApplicationRunner {
             userController.removeUser("admin");
         }
         userController.createNewUser(
-            new PnPUserCreation("admin", "admin", "Admin", null, List.of(new SimpleGrantedAuthority(
-                SecurityConstants.ADMIN_ROLE))));
+            PnPUserCreation.simple("admin", List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE))));
 
         if (userController.exists("write")) {
             userController.removeUser("write");
         }
-        userController.createNewUser(new PnPUserCreation("write", "write", "User with Write permission", null,
-            List.of(GrantedUniverseAuthority.writeAuthority(TEST_UNIVERSE))));
+        userController.createNewUser(
+            PnPUserCreation.simple("write", List.of(GrantedUniverseAuthority.writeAuthority(TEST_UNIVERSE))));
 
         if (userController.exists("read")) {
             userController.removeUser("read");
         }
-        userController.createNewUser(new PnPUserCreation("read", "read", "User with Read permission", null,
-            List.of(GrantedUniverseAuthority.readAuthority(TEST_UNIVERSE))));
+        userController.createNewUser(
+            PnPUserCreation.simple("read", List.of(GrantedUniverseAuthority.readAuthority(TEST_UNIVERSE))));
 
         if (userController.exists("user")) {
             userController.removeUser("user");
         }
-        userController.createNewUser(new PnPUserCreation("user", "user", "User with no permission", null,
-            List.of()));
+        userController.createNewUser(PnPUserCreation.simple("user", List.of()));
     }
 }

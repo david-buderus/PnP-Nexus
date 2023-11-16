@@ -1,5 +1,6 @@
 package de.pnp.manager.server.contoller;
 
+import de.pnp.manager.component.user.IGrantedAuthorityDTO;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
@@ -32,7 +33,7 @@ public class UserController {
             userRepository.addNewUser(
                 new PnPUser(userCreation.getUsername(), userCreation.getDisplayName(), userCreation.getEmail()));
             userDetailsRepository.addNewUser(userCreation.getUsername(), userCreation.getPassword(),
-                userCreation.getAuthorities());
+                userCreation.getAuthorities().stream().map(IGrantedAuthorityDTO::convert).toList());
         } catch (ConstraintViolationException e) {
             userRepository.removeUser(userCreation.getUsername());
             userDetailsRepository.removeUser(userCreation.getUsername());

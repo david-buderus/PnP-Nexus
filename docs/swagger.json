@@ -241,8 +241,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           }
         },
         "summary": "Create a user",
@@ -253,7 +253,7 @@
     },
     "/api/users/{username}": {
       "delete": {
-        "operationId": "deleteUser",
+        "operationId": "removeUser",
         "parameters": [
           {
             "in": "path",
@@ -269,7 +269,7 @@
             "description": "No Content"
           }
         },
-        "summary": "Delete a universe",
+        "summary": "Delete a user",
         "tags": [
           "user-service"
         ]
@@ -338,7 +338,7 @@
     },
     "/api/users/{username}/password": {
       "post": {
-        "operationId": "createUser_2",
+        "operationId": "updatePassword",
         "parameters": [
           {
             "in": "path",
@@ -360,8 +360,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           }
         },
         "summary": "Updates the password of a user",
@@ -371,8 +371,47 @@
       }
     },
     "/api/users/{username}/permissions": {
+      "get": {
+        "operationId": "getPermissions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RoleAuthorityDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Gets the permissions of a user",
+        "tags": [
+          "user-service"
+        ]
+      },
       "post": {
-        "operationId": "createUser_1",
+        "operationId": "updatePermissions",
         "parameters": [
           {
             "in": "path",
@@ -389,7 +428,14 @@
               "schema": {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/GrantedAuthority"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RoleAuthorityDTO"
+                    }
+                  ]
                 }
               }
             }
@@ -397,8 +443,8 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "No Content"
           }
         },
         "summary": "Updates the permissions of a user",
@@ -2809,13 +2855,31 @@
           }
         }
       },
-      "GrantedAuthority": {
+      "GrantedUniverseAuthorityDTO": {
+        "required": [
+          "permission",
+          "universe"
+        ],
         "type": "object",
-        "properties": {
-          "authority": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IGrantedAuthorityDTO"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "permission": {
+                "type": "string"
+              },
+              "universe": {
+                "type": "string"
+              }
+            }
           }
-        }
+        ]
+      },
+      "IGrantedAuthorityDTO": {
+        "type": "object"
       },
       "IRecipeEntry": {
         "type": "object"
@@ -3127,7 +3191,14 @@
           "authorities": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GrantedAuthority"
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                },
+                {
+                  "$ref": "#/components/schemas/RoleAuthorityDTO"
+                }
+              ]
             }
           },
           "displayName": {
@@ -3143,6 +3214,25 @@
             "type": "string"
           }
         }
+      },
+      "RoleAuthorityDTO": {
+        "required": [
+          "role"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IGrantedAuthorityDTO"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string"
+              }
+            }
+          }
+        ]
       },
       "Shield": {
         "required": [

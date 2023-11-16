@@ -78,6 +78,9 @@ public class UniverseService {
         if (!universeRepository.remove(universe)) {
             throw new ResponseStatusException(NOT_FOUND, UNIVERSE_DOES_NOT_EXIST_EXCEPTION_MESSAGE);
         }
+        for (String username : userDetailsRepository.getAllUsernames()) {
+            userDetailsRepository.removeGrantedUniverseAuthorities(username, universe);
+        }
     }
 
     @PostMapping
@@ -106,7 +109,7 @@ public class UniverseService {
     @Operation(summary = "Add the given access right to the given user", operationId = "addPermission")
     public void addPermission(@PathVariable String universe, @RequestParam String username,
         @RequestParam(defaultValue = SecurityConstants.READ_ACCESS) String accessPermission) {
-        userDetailsRepository.addGrantedAuthority(username, createUniverseAuthority(universe, accessPermission));
+        userDetailsRepository.addGrantedAuthority(username, GrantedUniverseAuthority.fromPermission(universe, accessPermission));
     }
 
     @DeleteMapping("{universe}/permission")
@@ -115,15 +118,5 @@ public class UniverseService {
     @Operation(summary = "Removes all access rights to the universe from the given user", operationId = "removePermission")
     public void removePermission(@PathVariable String universe, @RequestParam String username) {
         userDetailsRepository.removeGrantedUniverseAuthorities(username, universe);
-    }
-
-    private GrantedUniverseAuthority createUniverseAuthority(String universe, String accessPermission) {
-        return switch (accessPermission) {
-            case SecurityConstants.READ_ACCESS -> GrantedUniverseAuthority.readAuthority(universe);
-            case SecurityConstants.WRITE_ACCESS -> GrantedUniverseAuthority.writeAuthority(universe);
-            case SecurityConstants.OWNER -> GrantedUniverseAuthority.ownerAuthority(universe);
-            default -> throw new ResponseStatusException(BAD_REQUEST,
-                "The access permission '" + accessPermission + "' is not supported.");
-        };
     }
 }

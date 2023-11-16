@@ -5,8 +5,10 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import com.google.common.annotations.VisibleForTesting;
+import de.pnp.manager.component.user.IGrantedAuthorityDTO;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
+import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.security.AdminRights;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
@@ -14,10 +16,10 @@ import de.pnp.manager.server.database.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +51,7 @@ public class UserService {
 
     @PostMapping
     @AdminRights
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Create a user", operationId = "createUser")
     public void createUser(@RequestBody PnPUserCreation userCreation) {
         userController.createNewUser(userCreation);
@@ -76,8 +79,8 @@ public class UserService {
     @DeleteMapping("{username}")
     @PreAuthorize("hasRole('" + ADMIN + "') || #username == authentication.name")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete a universe", operationId = "deleteUser")
-    public void deleteUniverse(@PathVariable String username) {
+    @Operation(summary = "Delete a user", operationId = "removeUser")
+    public void removeUser(@PathVariable String username) {
         if (!userController.removeUser(username)) {
             throw new ResponseStatusException(NOT_FOUND, "User " + username + " not found.");
         }
@@ -85,17 +88,31 @@ public class UserService {
 
     @PostMapping("{username}/password")
     @PreAuthorize("#username == authentication.name")
-    @Operation(summary = "Updates the password of a user", operationId = "createUser")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Updates the password of a user", operationId = "updatePassword")
     public void updatePassword(@PathVariable String username, @RequestBody PasswordChange passwordChange) {
         userDetailsRepository.updatePassword(username, passwordChange.oldPassword(), passwordChange.newPassword());
     }
 
     @PostMapping("{username}/permissions")
     @AdminRights
-    @Operation(summary = "Updates the permissions of a user", operationId = "createUser")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Updates the permissions of a user", operationId = "updatePermissions")
     public void updatePermissions(@PathVariable String username,
-        @RequestBody Collection<GrantedAuthority> authorities) {
-        userDetailsRepository.updateGrantedAuthority(username, authorities);
+        @RequestBody Collection<IGrantedAuthorityDTO> authorities) {
+        userDetailsRepository.updateGrantedAuthority(username,
+            authorities.stream().map(IGrantedAuthorityDTO::convert).toList());
+    }
+
+    @GetMapping("{username}/permissions")
+    @PreAuthorize("hasRole('" + ADMIN + "') || #username == authentication.name")
+    @Operation(summary = "Gets the permissions of a user", operationId = "getPermissions")
+    public Collection<IGrantedAuthorityDTO> getPermissions(@PathVariable String username) {
+        Optional<PnPUserDetails> user = userDetailsRepository.getUser(username);
+        if (user.isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND, "User " + username + " not found.");
+        }
+        return user.get().getAuthorities().stream().map(IGrantedAuthorityDTO::from).toList();
     }
 
     /**

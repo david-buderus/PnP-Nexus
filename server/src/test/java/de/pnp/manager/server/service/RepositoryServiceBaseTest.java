@@ -1,7 +1,7 @@
 package de.pnp.manager.server.service;
 
+import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -25,7 +25,6 @@ import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -100,8 +99,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(new SimpleGrantedAuthority(
-                    SecurityConstants.ADMIN_ROLE))));
+                PnPUserCreation.simple(USER, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE))));
         }
 
         @Test
@@ -148,7 +146,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.ownerAuthority(getUniverseName()))));
+                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.ownerAuthority(getUniverseName()))));
         }
 
         @Test
@@ -195,7 +193,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.writeAuthority(getUniverseName()))));
+                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(getUniverseName()))));
         }
 
         @Test
@@ -242,7 +240,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.readAuthority(getUniverseName()))));
+                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(getUniverseName()))));
         }
 
         @Test
@@ -300,8 +298,9 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
 
             assertForbidden(() -> getAll(getUniverseName(), null));
             assertForbidden(() -> getAll(getUniverseName(), Collections.emptyList()));
-            assertForbidden(() -> getAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
-                .toList()));
+            assertForbidden(
+                () -> getAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
+                    .toList()));
         }
 
         @Test
@@ -310,7 +309,8 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
             List<Obj> objects = createObjects();
             Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
 
-            assertForbidden(() ->getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId()));
+            assertForbidden(
+                () -> getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId()));
         }
 
         @Test
@@ -383,7 +383,8 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         List<Obj> objects = createObjects();
         Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
 
-        assertForbidden(() -> deleteAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList()));
+        assertForbidden(
+            () -> deleteAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList()));
         assertThat(repository.getAll(getUniverseName())).containsExactlyInAnyOrderElementsOf(persistedObjects);
     }
 
@@ -571,10 +572,5 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      */
     protected TestUpgradeBuilder createUpgrade() {
         return upgradeBuilder.createUpgradeBuilder(getUniverseName());
-    }
-
-    private static void assertForbidden(ThrowingCallable callable) {
-        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(callable)
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
     }
 }

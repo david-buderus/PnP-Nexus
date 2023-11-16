@@ -1,7 +1,7 @@
 package de.pnp.manager.server.service;
 
+import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -69,8 +69,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(new SimpleGrantedAuthority(
-                    SecurityConstants.ADMIN_ROLE))));
+                PnPUserCreation.simple(USER, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE))));
         }
 
         @Test
@@ -111,8 +110,9 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(new SimpleGrantedAuthority(
-                    SecurityConstants.UNIVERSE_CREATOR_ROLE), GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME))));
+                PnPUserCreation.simple(USER,
+                    List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE),
+                        GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -166,7 +166,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME))));
+                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -207,7 +207,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of(GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME))));
+                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -277,10 +277,8 @@ public class UniverseServiceTest extends ServerTestBase {
             Universe otherUniverse = new Universe(OTHER_UNIVERSE_NAME, "Other Universe");
             universeRepository.insert(otherUniverse);
 
-            assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(UNIVERSE_NAME))
-                .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
-            assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(OTHER_UNIVERSE_NAME))
-                .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+            assertForbidden(() -> getOne(UNIVERSE_NAME));
+            assertForbidden(() -> getOne(OTHER_UNIVERSE_NAME));
             assertThat(getAll()).isEmpty();
         }
 
@@ -301,9 +299,7 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private void runNotAllowedCreateTest() {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
-        assertThatExceptionOfType(ResponseStatusException.class)
-            .isThrownBy(() -> create(exampleUniverse))
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertForbidden(() -> create(exampleUniverse));
     }
 
     private void runUpdateTest() throws Exception {
@@ -324,9 +320,7 @@ public class UniverseServiceTest extends ServerTestBase {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         universeRepository.insert(exampleUniverse);
 
-        assertThatExceptionOfType(ResponseStatusException.class)
-            .isThrownBy(() -> update(exampleUniverse))
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertForbidden(() -> update(exampleUniverse));
     }
 
     private void runDeleteTest() throws Exception {
@@ -339,6 +333,10 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(getAll()).isEmpty();
         assertThatThrownBy(() -> getOne(exampleUniverse.getName())).isInstanceOf(ResponseStatusException.class)
             .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(userRepository.getAllUsernames().stream()
+            .flatMap(username -> userRepository.loadUserByUsername(username).getAuthorities().stream()
+                .filter(GrantedUniverseAuthority.class::isInstance))
+        ).noneMatch(authority -> ((GrantedUniverseAuthority) authority).getUniverse().equals(UNIVERSE_NAME));
     }
 
     private void runNotAllowedDeleteTest() {
@@ -367,8 +365,7 @@ public class UniverseServiceTest extends ServerTestBase {
         universeRepository.insert(otherUniverse);
 
         assertThat(getOne(UNIVERSE_NAME)).isEqualTo(exampleUniverse);
-        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(OTHER_UNIVERSE_NAME))
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertForbidden(() -> getOne(OTHER_UNIVERSE_NAME));
         assertThat(getAll()).containsExactly(exampleUniverse);
     }
 
@@ -397,18 +394,14 @@ public class UniverseServiceTest extends ServerTestBase {
         String username = "test";
         userController.createNewUser(new PnPUserCreation(username, "test", "Test", null, List.of()));
 
-        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.READ_ACCESS))
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertForbidden(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.READ_ACCESS));
         assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
-        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.WRITE_ACCESS))
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertForbidden(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.WRITE_ACCESS));
         assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
-        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.OWNER))
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertForbidden(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.OWNER));
         assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
 
-        assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> removePermission(UNIVERSE_NAME, username))
-            .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.FORBIDDEN);
+        assertForbidden(() -> removePermission(UNIVERSE_NAME, username));
         assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
     }
 
