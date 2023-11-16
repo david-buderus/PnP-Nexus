@@ -2,11 +2,14 @@ package de.pnp.manager.component.character;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.component.attributes.EPrimaryAttribute;
+import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.server.database.TalentRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -18,6 +21,7 @@ public class Talent extends DatabaseObject {
     /**
      * The human-readable name of this talent.
      */
+    @NotBlank
     private final String name;
 
     /**
@@ -25,26 +29,33 @@ public class Talent extends DatabaseObject {
      * <p>
      * Examples: magic, social, fighting, ...
      */
+    @NotBlank
     private final String group;
 
     /**
-     * The first {@link EPrimaryAttribute} for a talent check.
+     * The first {@link PrimaryAttribute} for a talent check.
      */
-    private final EPrimaryAttribute firstAttribute;
+    @DBRef
+    @NotNull
+    private final PrimaryAttribute firstAttribute;
 
     /**
-     * The second {@link EPrimaryAttribute} for a talent check.
+     * The second {@link PrimaryAttribute} for a talent check.
      */
-    private final EPrimaryAttribute secondAttribute;
+    @DBRef
+    @NotNull
+    private final PrimaryAttribute secondAttribute;
 
     /**
-     * The third {@link EPrimaryAttribute} for a talent check.
+     * The third {@link PrimaryAttribute} for a talent check.
      */
-    private final EPrimaryAttribute thirdAttribute;
+    @DBRef
+    @NotNull
+    private final PrimaryAttribute thirdAttribute;
 
 
-    public Talent(ObjectId id, String name, String group, EPrimaryAttribute firstAttribute,
-        EPrimaryAttribute secondAttribute, EPrimaryAttribute thirdAttribute) {
+    public Talent(ObjectId id, String name, String group, PrimaryAttribute firstAttribute,
+        PrimaryAttribute secondAttribute, PrimaryAttribute thirdAttribute) {
         super(id);
         this.name = Objects.requireNonNull(name);
         this.group = group;
@@ -61,23 +72,23 @@ public class Talent extends DatabaseObject {
         return group;
     }
 
-    public EPrimaryAttribute getFirstAttribute() {
+    public PrimaryAttribute getFirstAttribute() {
         return firstAttribute;
     }
 
-    public EPrimaryAttribute getSecondAttribute() {
+    public PrimaryAttribute getSecondAttribute() {
         return secondAttribute;
     }
 
-    public EPrimaryAttribute getThirdAttribute() {
+    public PrimaryAttribute getThirdAttribute() {
         return thirdAttribute;
     }
 
     /**
-     * The {@link EPrimaryAttribute primary attributes} for a talent check in correct order.
+     * The {@link PrimaryAttribute primary attributes} for a talent check in correct order.
      */
     @JsonIgnore
-    public List<EPrimaryAttribute> getAttributes() {
+    public List<PrimaryAttribute> getAttributes() {
         return List.of(getFirstAttribute(), getSecondAttribute(), getThirdAttribute());
     }
 
@@ -90,15 +101,14 @@ public class Talent extends DatabaseObject {
             return false;
         }
         Talent talent = (Talent) o;
-        return getName().equals(talent.getName()) && Objects.equals(getGroup(),
-            talent.getGroup()) && getFirstAttribute() == talent.getFirstAttribute()
-            && getSecondAttribute() == talent.getSecondAttribute()
-            && getThirdAttribute() == talent.getThirdAttribute();
+        return Objects.equals(getName(), talent.getName()) && Objects.equals(getGroup(),
+            talent.getGroup()) && Objects.equals(getFirstAttribute(), talent.getFirstAttribute())
+            && Objects.equals(getSecondAttribute(), talent.getSecondAttribute()) && Objects.equals(
+            getThirdAttribute(), talent.getThirdAttribute());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getGroup(), getFirstAttribute(), getSecondAttribute(),
-            getThirdAttribute());
+        return Objects.hash(getName(), getGroup(), getFirstAttribute(), getSecondAttribute(), getThirdAttribute());
     }
 }

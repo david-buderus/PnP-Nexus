@@ -1,18 +1,13 @@
 package de.pnp.manager.component.character.stats;
 
-import de.pnp.manager.component.StatComputationRules;
-import de.pnp.manager.component.attributes.ESecondaryAttribute;
-import de.pnp.manager.component.character.CharacterStats;
+import de.pnp.manager.component.attributes.SecondaryAttribute;
 
 public class SecondaryStat {
 
-    ESecondaryAttribute attribute;
+    SecondaryAttribute attribute;
 
-    public SecondaryStat(ESecondaryAttribute attribute) {
+    public SecondaryStat(SecondaryAttribute attribute) {
         this.attribute = attribute;
     }
 
-    public float getStatMaxValue(StatComputationRules rules, CharacterStats stats) {
-        return rules.getRule(attribute).calculateStat(stats.getPrimaryStats());
-    }
 }

@@ -1,10 +1,11 @@
 package de.pnp.manager.server.service;
 
 import de.pnp.manager.component.Spell;
-import de.pnp.manager.component.attributes.EPrimaryAttribute;
+import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
+import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link SpellService}.
  */
 public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepository, SpellService> {
+
+    @Autowired
+    private PrimaryAttributeRepository primaryAttributeRepository;
 
     @Autowired
     private TalentRepository talentRepository;
@@ -22,12 +26,12 @@ public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepo
 
     @Override
     protected List<Spell> createObjects() {
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+            new PrimaryAttribute(null, "Primary", "PRI"));
         Talent fireTalent = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Fire", "Magic", EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.INTELLIGENCE,
-                EPrimaryAttribute.CHARISMA));
+            new Talent(null, "Fire", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
         Talent lightningTalent = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Lightning", "Magic", EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.PRECISION,
-                EPrimaryAttribute.CHARISMA));
+            new Talent(null, "Lightning", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
         return List.of(
             new Spell(null, "Fireball", "Throws a fireball", "10 Mana", "2 Rounds", List.of(fireTalent), 3),
             new Spell(null, "Spark", "Light a fire", "2 Mana", "", List.of(fireTalent), 1),

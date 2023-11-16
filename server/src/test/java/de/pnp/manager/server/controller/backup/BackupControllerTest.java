@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.Spell;
 import de.pnp.manager.component.Universe;
-import de.pnp.manager.component.attributes.EPrimaryAttribute;
+import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
@@ -12,6 +12,7 @@ import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import java.io.File;
@@ -52,6 +53,9 @@ public class BackupControllerTest {
     private TalentRepository talentRepository;
 
     @Autowired
+    private PrimaryAttributeRepository primaryAttributeRepository;
+
+    @Autowired
     private BackupExportController exportController;
 
     @Autowired
@@ -77,9 +81,10 @@ public class BackupControllerTest {
             itemBuilder.createItemBuilder(universeName).withName("Weapon").withMaterial(material)
                 .buildArmor()
         ));
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(universeName,
+            new PrimaryAttribute(null, "Primary", "PRI"));
         Talent talent = talentRepository.insert(universeName,
-            new Talent(null, "Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
-                EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
+            new Talent(null, "Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
         Collection<Spell> spells = spellRepository.insertAll(universeName,
             List.of(new Spell(null, "Spell", "MAGIC!", "", "", List.of(talent), 2)));
 
@@ -99,6 +104,7 @@ public class BackupControllerTest {
         assertThat(materialRepository.getAll(universeName)).containsExactly(material);
         assertThat(itemRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(items);
         assertThat(talentRepository.getAll(universeName)).containsExactly(talent);
+        assertThat(primaryAttributeRepository.getAll(universeName)).containsExactly(primaryAttribute);
         assertThat(spellRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(spells);
     }
 }

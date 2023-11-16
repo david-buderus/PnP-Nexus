@@ -455,7 +455,7 @@
     },
     "/api/{universe}/item-type-translations": {
       "delete": {
-        "operationId": "deleteAll_8",
+        "operationId": "deleteAll_10",
         "parameters": [
           {
             "in": "path",
@@ -488,7 +488,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_8",
+        "operationId": "getAll_10",
         "parameters": [
           {
             "in": "path",
@@ -531,7 +531,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_8",
+        "operationId": "insertAll_10",
         "parameters": [
           {
             "in": "path",
@@ -578,7 +578,7 @@
     },
     "/api/{universe}/item-type-translations/{id}": {
       "delete": {
-        "operationId": "delete_8",
+        "operationId": "delete_10",
         "parameters": [
           {
             "in": "path",
@@ -608,7 +608,7 @@
         ]
       },
       "get": {
-        "operationId": "get_8",
+        "operationId": "get_10",
         "parameters": [
           {
             "in": "path",
@@ -645,7 +645,7 @@
         ]
       },
       "put": {
-        "operationId": "update_8",
+        "operationId": "update_10",
         "parameters": [
           {
             "in": "path",
@@ -694,7 +694,7 @@
     },
     "/api/{universe}/item-types": {
       "delete": {
-        "operationId": "deleteAll_7",
+        "operationId": "deleteAll_9",
         "parameters": [
           {
             "in": "path",
@@ -727,7 +727,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_7",
+        "operationId": "getAll_9",
         "parameters": [
           {
             "in": "path",
@@ -770,7 +770,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_7",
+        "operationId": "insertAll_9",
         "parameters": [
           {
             "in": "path",
@@ -817,7 +817,7 @@
     },
     "/api/{universe}/item-types/{id}": {
       "delete": {
-        "operationId": "delete_7",
+        "operationId": "delete_9",
         "parameters": [
           {
             "in": "path",
@@ -847,7 +847,7 @@
         ]
       },
       "get": {
-        "operationId": "get_7",
+        "operationId": "get_9",
         "parameters": [
           {
             "in": "path",
@@ -884,7 +884,7 @@
         ]
       },
       "put": {
-        "operationId": "update_7",
+        "operationId": "update_9",
         "parameters": [
           {
             "in": "path",
@@ -933,7 +933,7 @@
     },
     "/api/{universe}/items": {
       "delete": {
-        "operationId": "deleteAll_6",
+        "operationId": "deleteAll_8",
         "parameters": [
           {
             "in": "path",
@@ -966,7 +966,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_6",
+        "operationId": "getAll_8",
         "parameters": [
           {
             "in": "path",
@@ -1025,7 +1025,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_6",
+        "operationId": "insertAll_8",
         "parameters": [
           {
             "in": "path",
@@ -1104,7 +1104,7 @@
     },
     "/api/{universe}/items/{id}": {
       "delete": {
-        "operationId": "delete_6",
+        "operationId": "delete_8",
         "parameters": [
           {
             "in": "path",
@@ -1134,7 +1134,7 @@
         ]
       },
       "get": {
-        "operationId": "get_6",
+        "operationId": "get_8",
         "parameters": [
           {
             "in": "path",
@@ -1187,7 +1187,7 @@
         ]
       },
       "put": {
-        "operationId": "update_6",
+        "operationId": "update_8",
         "parameters": [
           {
             "in": "path",
@@ -1268,7 +1268,7 @@
     },
     "/api/{universe}/upgrade-recipes": {
       "delete": {
-        "operationId": "deleteAll_5",
+        "operationId": "deleteAll_7",
         "parameters": [
           {
             "in": "path",
@@ -1301,7 +1301,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_5",
+        "operationId": "getAll_7",
         "parameters": [
           {
             "in": "path",
@@ -1344,7 +1344,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_5",
+        "operationId": "insertAll_7",
         "parameters": [
           {
             "in": "path",
@@ -1391,7 +1391,7 @@
     },
     "/api/{universe}/upgrade-recipes/{id}": {
       "delete": {
-        "operationId": "delete_5",
+        "operationId": "delete_7",
         "parameters": [
           {
             "in": "path",
@@ -1421,7 +1421,7 @@
         ]
       },
       "get": {
-        "operationId": "get_5",
+        "operationId": "get_7",
         "parameters": [
           {
             "in": "path",
@@ -1458,7 +1458,7 @@
         ]
       },
       "put": {
-        "operationId": "update_5",
+        "operationId": "update_7",
         "parameters": [
           {
             "in": "path",
@@ -1507,7 +1507,7 @@
     },
     "/api/{universe}/upgrades": {
       "delete": {
-        "operationId": "deleteAll_4",
+        "operationId": "deleteAll_6",
         "parameters": [
           {
             "in": "path",
@@ -1540,7 +1540,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_4",
+        "operationId": "getAll_6",
         "parameters": [
           {
             "in": "path",
@@ -1583,7 +1583,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_4",
+        "operationId": "insertAll_6",
         "parameters": [
           {
             "in": "path",
@@ -1630,7 +1630,7 @@
     },
     "/api/{universe}/upgrades/{id}": {
       "delete": {
-        "operationId": "delete_4",
+        "operationId": "delete_6",
         "parameters": [
           {
             "in": "path",
@@ -1660,7 +1660,7 @@
         ]
       },
       "get": {
-        "operationId": "get_4",
+        "operationId": "get_6",
         "parameters": [
           {
             "in": "path",
@@ -1697,7 +1697,7 @@
         ]
       },
       "put": {
-        "operationId": "update_4",
+        "operationId": "update_6",
         "parameters": [
           {
             "in": "path",
@@ -1776,7 +1776,7 @@
     },
     "/{universe}/crafting-recipes": {
       "delete": {
-        "operationId": "deleteAll_3",
+        "operationId": "deleteAll_5",
         "parameters": [
           {
             "in": "path",
@@ -1809,7 +1809,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_3",
+        "operationId": "getAll_5",
         "parameters": [
           {
             "in": "path",
@@ -1852,7 +1852,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_3",
+        "operationId": "insertAll_5",
         "parameters": [
           {
             "in": "path",
@@ -1899,7 +1899,7 @@
     },
     "/{universe}/crafting-recipes/{id}": {
       "delete": {
-        "operationId": "delete_3",
+        "operationId": "delete_5",
         "parameters": [
           {
             "in": "path",
@@ -1929,7 +1929,7 @@
         ]
       },
       "get": {
-        "operationId": "get_3",
+        "operationId": "get_5",
         "parameters": [
           {
             "in": "path",
@@ -1966,7 +1966,7 @@
         ]
       },
       "put": {
-        "operationId": "update_3",
+        "operationId": "update_5",
         "parameters": [
           {
             "in": "path",
@@ -2015,7 +2015,7 @@
     },
     "/{universe}/materials": {
       "delete": {
-        "operationId": "deleteAll_2",
+        "operationId": "deleteAll_4",
         "parameters": [
           {
             "in": "path",
@@ -2048,7 +2048,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_2",
+        "operationId": "getAll_4",
         "parameters": [
           {
             "in": "path",
@@ -2091,7 +2091,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_2",
+        "operationId": "insertAll_4",
         "parameters": [
           {
             "in": "path",
@@ -2138,7 +2138,7 @@
     },
     "/{universe}/materials/{id}": {
       "delete": {
-        "operationId": "delete_2",
+        "operationId": "delete_4",
         "parameters": [
           {
             "in": "path",
@@ -2168,7 +2168,7 @@
         ]
       },
       "get": {
-        "operationId": "get_2",
+        "operationId": "get_4",
         "parameters": [
           {
             "in": "path",
@@ -2205,7 +2205,7 @@
         ]
       },
       "put": {
-        "operationId": "update_2",
+        "operationId": "update_4",
         "parameters": [
           {
             "in": "path",
@@ -2249,6 +2249,484 @@
         "summary": "Updates an object in the database",
         "tags": [
           "material-service"
+        ]
+      }
+    },
+    "/{universe}/primary-attributes": {
+      "delete": {
+        "operationId": "deleteAll_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "primary-attribute-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PrimaryAttribute"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "primary-attribute-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PrimaryAttribute"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PrimaryAttribute"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "primary-attribute-service"
+        ]
+      }
+    },
+    "/{universe}/primary-attributes/{id}": {
+      "delete": {
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "primary-attribute-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrimaryAttribute"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "primary-attribute-service"
+        ]
+      },
+      "put": {
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrimaryAttribute"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrimaryAttribute"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "primary-attribute-service"
+        ]
+      }
+    },
+    "/{universe}/secondary-attributes": {
+      "delete": {
+        "operationId": "deleteAll_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "secondary-attribute-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAll_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SecondaryAttribute"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "secondary-attribute-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAll_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SecondaryAttribute"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SecondaryAttribute"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "secondary-attribute-service"
+        ]
+      }
+    },
+    "/{universe}/secondary-attributes/{id}": {
+      "delete": {
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "secondary-attribute-service"
+        ]
+      },
+      "get": {
+        "operationId": "get_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecondaryAttribute"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "secondary-attribute-service"
+        ]
+      },
+      "put": {
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SecondaryAttribute"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecondaryAttribute"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "secondary-attribute-service"
         ]
       }
     },
@@ -3222,6 +3700,39 @@
           }
         }
       },
+      "PrimaryAttribute": {
+        "required": [
+          "name",
+          "shortName"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "shortName": {
+            "type": "string"
+          }
+        }
+      },
+      "PrimaryAttributeDependency": {
+        "required": [
+          "primaryAttribute"
+        ],
+        "type": "object",
+        "properties": {
+          "factor": {
+            "type": "number",
+            "format": "double"
+          },
+          "primaryAttribute": {
+            "$ref": "#/components/schemas/PrimaryAttribute"
+          }
+        }
+      },
       "RoleAuthorityDTO": {
         "required": [
           "role"
@@ -3240,6 +3751,30 @@
             }
           }
         ]
+      },
+      "SecondaryAttribute": {
+        "required": [
+          "name",
+          "primaryAttributeDependencies"
+        ],
+        "type": "object",
+        "properties": {
+          "consumable": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "primaryAttributeDependencies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PrimaryAttributeDependency"
+            }
+          }
+        }
       },
       "Shield": {
         "required": [
@@ -3336,20 +3871,17 @@
         }
       },
       "Talent": {
+        "required": [
+          "firstAttribute",
+          "group",
+          "name",
+          "secondAttribute",
+          "thirdAttribute"
+        ],
         "type": "object",
         "properties": {
           "firstAttribute": {
-            "type": "string",
-            "enum": [
-              "STRENGTH",
-              "ENDURANCE",
-              "DEXTERITY",
-              "INTELLIGENCE",
-              "CHARISMA",
-              "RESILIENCE",
-              "AGILITY",
-              "PRECISION"
-            ]
+            "$ref": "#/components/schemas/PrimaryAttribute"
           },
           "group": {
             "type": "string"
@@ -3361,30 +3893,10 @@
             "type": "string"
           },
           "secondAttribute": {
-            "type": "string",
-            "enum": [
-              "STRENGTH",
-              "ENDURANCE",
-              "DEXTERITY",
-              "INTELLIGENCE",
-              "CHARISMA",
-              "RESILIENCE",
-              "AGILITY",
-              "PRECISION"
-            ]
+            "$ref": "#/components/schemas/PrimaryAttribute"
           },
           "thirdAttribute": {
-            "type": "string",
-            "enum": [
-              "STRENGTH",
-              "ENDURANCE",
-              "DEXTERITY",
-              "INTELLIGENCE",
-              "CHARISMA",
-              "RESILIENCE",
-              "AGILITY",
-              "PRECISION"
-            ]
+            "$ref": "#/components/schemas/PrimaryAttribute"
           }
         }
       },
