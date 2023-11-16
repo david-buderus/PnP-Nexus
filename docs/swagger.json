@@ -62,35 +62,6 @@
         "tags": [
           "universe-service"
         ]
-      },
-      "put": {
-        "operationId": "updateUniverse",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Universe"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Universe"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Update a universe",
-        "tags": [
-          "universe-service"
-        ]
       }
     },
     "/api/universes/{universe}": {
@@ -143,6 +114,342 @@
         "summary": "Get a universe",
         "tags": [
           "universe-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateUniverse",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Universe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Universe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update a universe",
+        "tags": [
+          "universe-service"
+        ]
+      }
+    },
+    "/api/universes/{universe}/permission": {
+      "delete": {
+        "operationId": "removePermission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Removes all access rights to the universe from the given user",
+        "tags": [
+          "universe-service"
+        ]
+      },
+      "post": {
+        "operationId": "addPermission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "accessPermission",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "READ"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Add the given access right to the given user",
+        "tags": [
+          "universe-service"
+        ]
+      }
+    },
+    "/api/users": {
+      "post": {
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PnPUserCreation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Create a user",
+        "tags": [
+          "user-service"
+        ]
+      }
+    },
+    "/api/users/{username}": {
+      "delete": {
+        "operationId": "removeUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Delete a user",
+        "tags": [
+          "user-service"
+        ]
+      },
+      "get": {
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPUser"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get a user",
+        "tags": [
+          "user-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PnPUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Updates a user",
+        "tags": [
+          "user-service"
+        ]
+      }
+    },
+    "/api/users/{username}/password": {
+      "post": {
+        "operationId": "updatePassword",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Updates the password of a user",
+        "tags": [
+          "user-service"
+        ]
+      }
+    },
+    "/api/users/{username}/permissions": {
+      "get": {
+        "operationId": "getPermissions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                      },
+                      {
+                        "$ref": "#/components/schemas/RoleAuthorityDTO"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Gets the permissions of a user",
+        "tags": [
+          "user-service"
+        ]
+      },
+      "post": {
+        "operationId": "updatePermissions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RoleAuthorityDTO"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Updates the permissions of a user",
+        "tags": [
+          "user-service"
         ]
       }
     },
@@ -2548,6 +2855,32 @@
           }
         }
       },
+      "GrantedUniverseAuthorityDTO": {
+        "required": [
+          "permission",
+          "universe"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IGrantedAuthorityDTO"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "permission": {
+                "type": "string"
+              },
+              "universe": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "IGrantedAuthorityDTO": {
+        "type": "object"
+      },
       "IRecipeEntry": {
         "type": "object"
       },
@@ -2817,6 +3150,85 @@
               "factor": {
                 "type": "number",
                 "format": "float"
+              }
+            }
+          }
+        ]
+      },
+      "PasswordChange": {
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string"
+          },
+          "oldPassword": {
+            "type": "string"
+          }
+        }
+      },
+      "PnPUser": {
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "PnPUserCreation": {
+        "required": [
+          "authorities",
+          "displayName",
+          "username"
+        ],
+        "type": "object",
+        "properties": {
+          "authorities": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                },
+                {
+                  "$ref": "#/components/schemas/RoleAuthorityDTO"
+                }
+              ]
+            }
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "RoleAuthorityDTO": {
+        "required": [
+          "role"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IGrantedAuthorityDTO"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "role": {
+                "type": "string"
               }
             }
           }

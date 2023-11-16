@@ -18,13 +18,16 @@ dependencies {
     implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
     implementation group: 'com.google.guava', name: 'guava', version: '32.0.0-jre'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.77'
 
     implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:3.1.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
+    testImplementation 'org.springframework.security:spring-security-test:6.1.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.21.0'
     testImplementation 'com.microsoft.playwright:playwright:1.35.1'

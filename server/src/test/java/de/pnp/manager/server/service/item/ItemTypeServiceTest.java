@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ItemTypeServiceTest extends RepositoryServiceBaseTest<ItemType, ItemTypeRepository, ItemTypeService> {
 
-    public ItemTypeServiceTest(@Autowired ItemTypeService itemTypeService) {
-        super(itemTypeService, ItemType.class);
+    public ItemTypeServiceTest(@Autowired ItemTypeService itemTypeService, @Autowired ItemTypeRepository repository) {
+        super(itemTypeService, repository, ItemType.class);
     }
 
     @Override

@@ -6,14 +6,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Configures nothing on the server.
  */
-public class NoOpServerConfigurator extends TestServerConfiguratorBase {
+public class EmptyServerConfigurator extends TestServerConfiguratorBase {
 
-    public NoOpServerConfigurator(@Nullable Path backupZip) {
+    public EmptyServerConfigurator(@Nullable Path backupZip) {
         super(backupZip);
     }
 
     @Override
     public void configure() {
-        // no op
+        // NO OP
     }
 }

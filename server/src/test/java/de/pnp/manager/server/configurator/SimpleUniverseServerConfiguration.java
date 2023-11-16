@@ -1,17 +1,16 @@
 package de.pnp.manager.server.configurator;
 
 import de.pnp.manager.component.Universe;
-import de.pnp.manager.server.service.UniverseService;
+import de.pnp.manager.server.database.UniverseRepository;
 import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Creates an empty universe with the name {@link #UNIVERSE_NAME} if the universe is not part of the backup.
  */
 @Configurable
-public class BasicTestServerConfiguration extends TestServerConfiguratorBase {
+public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBase {
 
     /**
      * The name of the test universe.
@@ -24,18 +23,16 @@ public class BasicTestServerConfiguration extends TestServerConfiguratorBase {
     public static final String UNIVERSE_DISPLAY_NAME = "My Test Universe";
 
     @Autowired
-    private UniverseService universeService;
+    private UniverseRepository universeRepository;
 
-    public BasicTestServerConfiguration(Path backupZip) {
+    public SimpleUniverseServerConfiguration(Path backupZip) {
         super(backupZip);
     }
 
     @Override
     public void configure() {
-        try {
-            universeService.getUniverse(UNIVERSE_NAME);
-        } catch (ResponseStatusException e) {
-            universeService.createUniverse(new Universe(UNIVERSE_NAME, UNIVERSE_DISPLAY_NAME));
+        if (!universeRepository.exists(UNIVERSE_NAME)) {
+            universeRepository.insert(new Universe(UNIVERSE_NAME, UNIVERSE_DISPLAY_NAME));
         }
     }
 }

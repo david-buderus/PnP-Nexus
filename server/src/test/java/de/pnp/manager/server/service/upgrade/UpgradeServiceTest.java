@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class UpgradeServiceTest extends RepositoryServiceBaseTest<Upgrade, UpgradeRepository, UpgradeService> {
 
-    public UpgradeServiceTest(@Autowired UpgradeService upgradeService) {
-        super(upgradeService, Upgrade.class);
+    public UpgradeServiceTest(@Autowired UpgradeService upgradeService, @Autowired UpgradeRepository repository) {
+        super(upgradeService, repository, Upgrade.class);
     }
 
     @Override

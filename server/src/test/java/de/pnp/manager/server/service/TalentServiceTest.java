@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class TalentServiceTest extends RepositoryServiceBaseTest<Talent, TalentRepository, TalentService> {
 
-    public TalentServiceTest(@Autowired TalentService talentService) {
-        super(talentService, Talent.class);
+    public TalentServiceTest(@Autowired TalentService talentService, @Autowired TalentRepository repository) {
+        super(talentService, repository, Talent.class);
     }
 
     @Override

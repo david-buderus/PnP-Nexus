@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class MaterialServiceTest extends RepositoryServiceBaseTest<Material, MaterialRepository, MaterialService> {
 
-    public MaterialServiceTest(@Autowired MaterialService materialService) {
-        super(materialService, Material.class);
+    public MaterialServiceTest(@Autowired MaterialService materialService, @Autowired MaterialRepository repository) {
+        super(materialService, repository, Material.class);
     }
 
     @Override

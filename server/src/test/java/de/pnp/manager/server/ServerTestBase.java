@@ -8,6 +8,7 @@ import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
 import de.pnp.manager.component.Universe;
+import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.utils.TestUtils;
 import java.lang.annotation.Annotation;
@@ -34,6 +35,12 @@ public abstract class ServerTestBase {
 
     @Autowired
     private UniverseRepository universeRepository;
+
+    /**
+     * {@link UserController} used in the test.
+     */
+    @Autowired
+    protected UserController userController;
 
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
@@ -81,6 +88,9 @@ public abstract class ServerTestBase {
     protected void tearDown() {
         for (Universe universe : universeRepository.getAll()) {
             universeRepository.remove(universe.getName());
+        }
+        for (String username : userController.getAllUsernames()) {
+            userController.removeUser(username);
         }
         if (isUiTestServer()) {
             stopUiServer();
