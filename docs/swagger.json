@@ -2817,6 +2817,13 @@
         ]
       },
       "CraftingRecipe": {
+        "required": [
+          "materials",
+          "otherCircumstances",
+          "product",
+          "profession",
+          "requirement"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -3292,6 +3299,13 @@
         ]
       },
       "Spell": {
+        "required": [
+          "castTime",
+          "cost",
+          "effect",
+          "name",
+          "talents"
+        ],
         "type": "object",
         "properties": {
           "castTime": {
@@ -3375,12 +3389,20 @@
         }
       },
       "Universe": {
+        "required": [
+          "displayName",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "displayName": {
+            "maxLength": 64,
+            "minLength": 3,
             "type": "string"
           },
           "name": {
+            "maxLength": 64,
+            "minLength": 3,
             "type": "string"
           },
           "settings": {
