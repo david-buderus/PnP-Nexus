@@ -81,7 +81,7 @@ public class BackupControllerTest {
             new Talent(null, "Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
                 EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
         Collection<Spell> spells = spellRepository.insertAll(universeName,
-            List.of(new Spell(null, "Spell", "", "", "", List.of(talent), 2)));
+            List.of(new Spell(null, "Spell", "MAGIC!", "", "", List.of(talent), 2)));
 
         File backupZip = tempDir.resolve("backup.zip").toFile();
 

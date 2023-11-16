@@ -57,7 +57,11 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Override
     protected List<Spell> createMultipleObjects() {
-        return List.of(new Spell(null, "Wall", "", "", "", List.of(), 2),
-            new Spell(null, "Shock", "", "", "", List.of(), 1));
+        Talent earthMagic = talentRepository.insert(getUniverseName(),
+            new Talent(null, "Earth Magic", "Magic", EPrimaryAttribute.INTELLIGENCE,
+                EPrimaryAttribute.INTELLIGENCE, EPrimaryAttribute.CHARISMA));
+
+        return List.of(new Spell(null, "Wall", "Creates a wall", "", "", List.of(earthMagic), 2),
+            new Spell(null, "Stone", "Throws a stone", "", "", List.of(earthMagic), 1));
     }
 }
