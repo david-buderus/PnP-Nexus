@@ -20,7 +20,7 @@ public @interface Password {
     /**
      * Used in the spring backend.
      */
-    String message() default "user.creation.email";
+    String message() default "user.creation.password";
 
     /**
      * Used in the spring backend.

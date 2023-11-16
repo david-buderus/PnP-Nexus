@@ -1,6 +1,5 @@
 package de.pnp.manager.server.service;
 
-import static de.pnp.manager.security.SecurityConstants.ADMIN;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -69,9 +68,7 @@ public class UniverseService {
     }
 
     @DeleteMapping("{universe}")
-    @PreAuthorize(
-        "hasRole('" + ADMIN + "') || hasPermission(#universe, '" + SecurityConstants.UNIVERSE_TARGET_ID + "', '"
-            + SecurityConstants.OWNER + "')")
+    @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a universe", operationId = "deleteUniverse")
     public void deleteUniverse(@PathVariable String universe) {
@@ -109,7 +106,8 @@ public class UniverseService {
     @Operation(summary = "Add the given access right to the given user", operationId = "addPermission")
     public void addPermission(@PathVariable String universe, @RequestParam String username,
         @RequestParam(defaultValue = SecurityConstants.READ_ACCESS) String accessPermission) {
-        userDetailsRepository.addGrantedAuthority(username, GrantedUniverseAuthority.fromPermission(universe, accessPermission));
+        userDetailsRepository.addGrantedAuthority(username,
+            GrantedUniverseAuthority.fromPermission(universe, accessPermission));
     }
 
     @DeleteMapping("{universe}/permission")
