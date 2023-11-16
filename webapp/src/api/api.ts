@@ -299,31 +299,31 @@ export interface CraftingRecipe {
      * @type {Array<CraftingRecipeMaterialsInner>}
      * @memberof CraftingRecipe
      */
-    'materials'?: Array<CraftingRecipeMaterialsInner>;
+    'materials': Array<CraftingRecipeMaterialsInner>;
     /**
      * 
      * @type {string}
      * @memberof CraftingRecipe
      */
-    'otherCircumstances'?: string;
+    'otherCircumstances': string;
     /**
      * 
      * @type {ItemRecipeEntry}
      * @memberof CraftingRecipe
      */
-    'product'?: ItemRecipeEntry;
+    'product': ItemRecipeEntry;
     /**
      * 
      * @type {string}
      * @memberof CraftingRecipe
      */
-    'profession'?: string;
+    'profession': string;
     /**
      * 
      * @type {string}
      * @memberof CraftingRecipe
      */
-    'requirement'?: string;
+    'requirement': string;
     /**
      * 
      * @type {ItemRecipeEntry}
@@ -1173,19 +1173,19 @@ export interface Spell {
      * @type {string}
      * @memberof Spell
      */
-    'castTime'?: string;
+    'castTime': string;
     /**
      * 
      * @type {string}
      * @memberof Spell
      */
-    'cost'?: string;
+    'cost': string;
     /**
      * 
      * @type {string}
      * @memberof Spell
      */
-    'effect'?: string;
+    'effect': string;
     /**
      * 
      * @type {string}
@@ -1197,13 +1197,13 @@ export interface Spell {
      * @type {string}
      * @memberof Spell
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {Array<Talent>}
      * @memberof Spell
      */
-    'talents'?: Array<Talent>;
+    'talents': Array<Talent>;
     /**
      * 
      * @type {number}
@@ -1303,13 +1303,13 @@ export interface Universe {
      * @type {string}
      * @memberof Universe
      */
-    'displayName'?: string;
+    'displayName': string;
     /**
      * 
      * @type {string}
      * @memberof Universe
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {UniverseSettings}

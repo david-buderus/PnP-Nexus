@@ -2,6 +2,10 @@ package de.pnp.manager.component;
 
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.server.database.SpellRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -22,32 +26,38 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
      * This entry is always unique.
      */
     @Indexed(unique = true)
+    @NotNull
     private final String name;
 
     /**
      * The effect of this spell.
      */
+    @NotBlank
     private final String effect;
 
     /**
      * The cost to cast this spell.
      */
+    @NotNull
     private final String cost;
 
     /**
      * The time needed to cast this spell.
      */
+    @NotNull
     private final String castTime;
 
     /**
      * The talents needed to cast this spell.
      */
     @DBRef
+    @NotEmpty
     private final List<Talent> talents;
 
     /**
      * The tier of this spell.
      */
+    @PositiveOrZero
     private final int tier;
 
     public Spell(ObjectId id, String name, String effect, String cost, String castTime,

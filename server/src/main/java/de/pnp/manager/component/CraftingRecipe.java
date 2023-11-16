@@ -2,6 +2,8 @@ package de.pnp.manager.component;
 
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
 import de.pnp.manager.server.database.CraftingRecipeRepository;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -17,21 +19,25 @@ public class CraftingRecipe extends DatabaseObject {
     /**
      * The profession needed to use this {@link CraftingRecipe}.
      */
+    @NotNull
     private final String profession;
 
     /**
      * Additional requirements needed to use this {@link CraftingRecipe}.
      */
+    @NotNull
     private final String requirement;
 
     /**
      * Other circumstances needed to use this {@link CraftingRecipe}.
      */
+    @NotNull
     private final String otherCircumstances;
 
     /**
      * The product of this {@link CraftingRecipe}
      */
+    @NotNull
     private final ItemRecipeEntry product;
 
     /**
@@ -43,6 +49,7 @@ public class CraftingRecipe extends DatabaseObject {
     /**
      * The materials needed to use this {@link CraftingRecipe}
      */
+    @NotEmpty
     private final Collection<IRecipeEntry> materials;
 
     public CraftingRecipe(ObjectId id, String profession, String requirement,

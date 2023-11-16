@@ -2,6 +2,8 @@ package de.pnp.manager.component;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.server.database.UniverseRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.PersistenceCreator;
@@ -19,11 +21,15 @@ public class Universe {
      * This will never change.
      */
     @Id
+    @NotBlank
+    @Size(min = 3, max = 64)
     private final String name;
 
     /**
      * The human-readable name of this universe.
      */
+    @NotBlank
+    @Size(min = 3, max = 64)
     private final String displayName;
 
     /**

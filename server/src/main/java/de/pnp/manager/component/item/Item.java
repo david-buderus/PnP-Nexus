@@ -13,6 +13,7 @@ import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.validation.MatchingItemTypes;
+import de.pnp.manager.validation.MatchingStackSizes;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -34,6 +35,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @MatchingItemTypes
+@MatchingStackSizes
 @Document(ItemRepository.REPOSITORY_NAME)
 public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObject {
 
