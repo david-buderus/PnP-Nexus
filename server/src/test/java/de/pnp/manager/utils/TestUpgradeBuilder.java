@@ -1,7 +1,7 @@
 package de.pnp.manager.utils;
 
-import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.item.ItemType;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;

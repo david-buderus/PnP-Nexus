@@ -455,7 +455,7 @@
     },
     "/api/{universe}/item-type-translations": {
       "delete": {
-        "operationId": "deleteAll_10",
+        "operationId": "deleteAllItemTypeTranslations",
         "parameters": [
           {
             "in": "path",
@@ -488,7 +488,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_10",
+        "operationId": "getAllItemTypeTranslations",
         "parameters": [
           {
             "in": "path",
@@ -531,7 +531,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_10",
+        "operationId": "insertAllItemTypeTranslations",
         "parameters": [
           {
             "in": "path",
@@ -578,7 +578,7 @@
     },
     "/api/{universe}/item-type-translations/{id}": {
       "delete": {
-        "operationId": "delete_10",
+        "operationId": "deleteItemTypeTranslation",
         "parameters": [
           {
             "in": "path",
@@ -608,7 +608,7 @@
         ]
       },
       "get": {
-        "operationId": "get_10",
+        "operationId": "getItemTypeTranslation",
         "parameters": [
           {
             "in": "path",
@@ -645,7 +645,7 @@
         ]
       },
       "put": {
-        "operationId": "update_10",
+        "operationId": "updateItemTypeTranslation",
         "parameters": [
           {
             "in": "path",
@@ -694,7 +694,7 @@
     },
     "/api/{universe}/item-types": {
       "delete": {
-        "operationId": "deleteAll_9",
+        "operationId": "deleteAllItemTypes",
         "parameters": [
           {
             "in": "path",
@@ -727,7 +727,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_9",
+        "operationId": "getAllItemTypes",
         "parameters": [
           {
             "in": "path",
@@ -770,7 +770,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_9",
+        "operationId": "insertAllItemTypes",
         "parameters": [
           {
             "in": "path",
@@ -817,7 +817,7 @@
     },
     "/api/{universe}/item-types/{id}": {
       "delete": {
-        "operationId": "delete_9",
+        "operationId": "deleteItemType",
         "parameters": [
           {
             "in": "path",
@@ -847,7 +847,7 @@
         ]
       },
       "get": {
-        "operationId": "get_9",
+        "operationId": "getItemType",
         "parameters": [
           {
             "in": "path",
@@ -884,7 +884,7 @@
         ]
       },
       "put": {
-        "operationId": "update_9",
+        "operationId": "updateItemType",
         "parameters": [
           {
             "in": "path",
@@ -933,7 +933,7 @@
     },
     "/api/{universe}/items": {
       "delete": {
-        "operationId": "deleteAll_8",
+        "operationId": "deleteAllItems",
         "parameters": [
           {
             "in": "path",
@@ -966,7 +966,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_8",
+        "operationId": "getAllItems",
         "parameters": [
           {
             "in": "path",
@@ -1025,7 +1025,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_8",
+        "operationId": "insertAllItems",
         "parameters": [
           {
             "in": "path",
@@ -1104,7 +1104,7 @@
     },
     "/api/{universe}/items/{id}": {
       "delete": {
-        "operationId": "delete_8",
+        "operationId": "deleteItem",
         "parameters": [
           {
             "in": "path",
@@ -1134,7 +1134,7 @@
         ]
       },
       "get": {
-        "operationId": "get_8",
+        "operationId": "getItem",
         "parameters": [
           {
             "in": "path",
@@ -1187,7 +1187,7 @@
         ]
       },
       "put": {
-        "operationId": "update_8",
+        "operationId": "updateItem",
         "parameters": [
           {
             "in": "path",
@@ -1268,7 +1268,7 @@
     },
     "/api/{universe}/upgrade-recipes": {
       "delete": {
-        "operationId": "deleteAll_7",
+        "operationId": "deleteAllUpgradeRecipes",
         "parameters": [
           {
             "in": "path",
@@ -1301,7 +1301,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_7",
+        "operationId": "getAllUpgradeRecipes",
         "parameters": [
           {
             "in": "path",
@@ -1344,7 +1344,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_7",
+        "operationId": "insertAllUpgradeRecipes",
         "parameters": [
           {
             "in": "path",
@@ -1391,7 +1391,7 @@
     },
     "/api/{universe}/upgrade-recipes/{id}": {
       "delete": {
-        "operationId": "delete_7",
+        "operationId": "deleteUpgradeRecipe",
         "parameters": [
           {
             "in": "path",
@@ -1421,7 +1421,7 @@
         ]
       },
       "get": {
-        "operationId": "get_7",
+        "operationId": "getUpgradeRecipe",
         "parameters": [
           {
             "in": "path",
@@ -1458,7 +1458,7 @@
         ]
       },
       "put": {
-        "operationId": "update_7",
+        "operationId": "updateUpgradeRecipe",
         "parameters": [
           {
             "in": "path",
@@ -1507,7 +1507,7 @@
     },
     "/api/{universe}/upgrades": {
       "delete": {
-        "operationId": "deleteAll_6",
+        "operationId": "deleteAllUpgrades",
         "parameters": [
           {
             "in": "path",
@@ -1540,7 +1540,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_6",
+        "operationId": "getAllUpgrades",
         "parameters": [
           {
             "in": "path",
@@ -1583,7 +1583,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_6",
+        "operationId": "insertAllUpgrades",
         "parameters": [
           {
             "in": "path",
@@ -1630,7 +1630,7 @@
     },
     "/api/{universe}/upgrades/{id}": {
       "delete": {
-        "operationId": "delete_6",
+        "operationId": "deleteUpgrade",
         "parameters": [
           {
             "in": "path",
@@ -1660,7 +1660,7 @@
         ]
       },
       "get": {
-        "operationId": "get_6",
+        "operationId": "getUpgrade",
         "parameters": [
           {
             "in": "path",
@@ -1697,7 +1697,7 @@
         ]
       },
       "put": {
-        "operationId": "update_6",
+        "operationId": "updateUpgrade",
         "parameters": [
           {
             "in": "path",
@@ -1776,7 +1776,7 @@
     },
     "/{universe}/crafting-recipes": {
       "delete": {
-        "operationId": "deleteAll_5",
+        "operationId": "deleteAllCraftingRecipes",
         "parameters": [
           {
             "in": "path",
@@ -1809,7 +1809,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_5",
+        "operationId": "getAllCraftingRecipes",
         "parameters": [
           {
             "in": "path",
@@ -1852,7 +1852,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_5",
+        "operationId": "insertAllCraftingRecipes",
         "parameters": [
           {
             "in": "path",
@@ -1899,7 +1899,7 @@
     },
     "/{universe}/crafting-recipes/{id}": {
       "delete": {
-        "operationId": "delete_5",
+        "operationId": "deleteCraftingRecipe",
         "parameters": [
           {
             "in": "path",
@@ -1929,7 +1929,7 @@
         ]
       },
       "get": {
-        "operationId": "get_5",
+        "operationId": "getCraftingRecipe",
         "parameters": [
           {
             "in": "path",
@@ -1966,7 +1966,7 @@
         ]
       },
       "put": {
-        "operationId": "update_5",
+        "operationId": "updateCraftingRecipe",
         "parameters": [
           {
             "in": "path",
@@ -2015,7 +2015,7 @@
     },
     "/{universe}/materials": {
       "delete": {
-        "operationId": "deleteAll_4",
+        "operationId": "deleteAllMaterials",
         "parameters": [
           {
             "in": "path",
@@ -2048,7 +2048,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_4",
+        "operationId": "getAllMaterials",
         "parameters": [
           {
             "in": "path",
@@ -2091,7 +2091,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_4",
+        "operationId": "insertAllMaterials",
         "parameters": [
           {
             "in": "path",
@@ -2138,7 +2138,7 @@
     },
     "/{universe}/materials/{id}": {
       "delete": {
-        "operationId": "delete_4",
+        "operationId": "deleteMaterial",
         "parameters": [
           {
             "in": "path",
@@ -2168,7 +2168,7 @@
         ]
       },
       "get": {
-        "operationId": "get_4",
+        "operationId": "getMaterial",
         "parameters": [
           {
             "in": "path",
@@ -2205,7 +2205,7 @@
         ]
       },
       "put": {
-        "operationId": "update_4",
+        "operationId": "updateMaterial",
         "parameters": [
           {
             "in": "path",
@@ -2254,7 +2254,7 @@
     },
     "/{universe}/primary-attributes": {
       "delete": {
-        "operationId": "deleteAll_3",
+        "operationId": "deleteAllPrimaryAttributes",
         "parameters": [
           {
             "in": "path",
@@ -2287,7 +2287,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_3",
+        "operationId": "getAllPrimaryAttributes",
         "parameters": [
           {
             "in": "path",
@@ -2330,7 +2330,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_3",
+        "operationId": "insertAllPrimaryAttributes",
         "parameters": [
           {
             "in": "path",
@@ -2377,7 +2377,7 @@
     },
     "/{universe}/primary-attributes/{id}": {
       "delete": {
-        "operationId": "delete_3",
+        "operationId": "deletePrimaryAttribute",
         "parameters": [
           {
             "in": "path",
@@ -2407,7 +2407,7 @@
         ]
       },
       "get": {
-        "operationId": "get_3",
+        "operationId": "getPrimaryAttribute",
         "parameters": [
           {
             "in": "path",
@@ -2444,7 +2444,7 @@
         ]
       },
       "put": {
-        "operationId": "update_3",
+        "operationId": "updatePrimaryAttribute",
         "parameters": [
           {
             "in": "path",
@@ -2493,7 +2493,7 @@
     },
     "/{universe}/secondary-attributes": {
       "delete": {
-        "operationId": "deleteAll_2",
+        "operationId": "deleteAllSecondaryAttributes",
         "parameters": [
           {
             "in": "path",
@@ -2526,7 +2526,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_2",
+        "operationId": "getAllSecondaryAttributes",
         "parameters": [
           {
             "in": "path",
@@ -2569,7 +2569,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_2",
+        "operationId": "insertAllSecondaryAttributes",
         "parameters": [
           {
             "in": "path",
@@ -2616,7 +2616,7 @@
     },
     "/{universe}/secondary-attributes/{id}": {
       "delete": {
-        "operationId": "delete_2",
+        "operationId": "deleteSecondaryAttribute",
         "parameters": [
           {
             "in": "path",
@@ -2646,7 +2646,7 @@
         ]
       },
       "get": {
-        "operationId": "get_2",
+        "operationId": "getSecondaryAttribute",
         "parameters": [
           {
             "in": "path",
@@ -2683,7 +2683,7 @@
         ]
       },
       "put": {
-        "operationId": "update_2",
+        "operationId": "updateSecondaryAttribute",
         "parameters": [
           {
             "in": "path",
@@ -2732,7 +2732,7 @@
     },
     "/{universe}/spells": {
       "delete": {
-        "operationId": "deleteAll_1",
+        "operationId": "deleteAllSpells",
         "parameters": [
           {
             "in": "path",
@@ -2765,7 +2765,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll_1",
+        "operationId": "getAllSpells",
         "parameters": [
           {
             "in": "path",
@@ -2808,7 +2808,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll_1",
+        "operationId": "insertAllSpells",
         "parameters": [
           {
             "in": "path",
@@ -2855,7 +2855,7 @@
     },
     "/{universe}/spells/{id}": {
       "delete": {
-        "operationId": "delete_1",
+        "operationId": "deleteSpell",
         "parameters": [
           {
             "in": "path",
@@ -2885,7 +2885,7 @@
         ]
       },
       "get": {
-        "operationId": "get_1",
+        "operationId": "getSpell",
         "parameters": [
           {
             "in": "path",
@@ -2922,7 +2922,7 @@
         ]
       },
       "put": {
-        "operationId": "update_1",
+        "operationId": "updateSpell",
         "parameters": [
           {
             "in": "path",
@@ -2971,7 +2971,7 @@
     },
     "/{universe}/talents": {
       "delete": {
-        "operationId": "deleteAll",
+        "operationId": "deleteAllTalents",
         "parameters": [
           {
             "in": "path",
@@ -3004,7 +3004,7 @@
         ]
       },
       "get": {
-        "operationId": "getAll",
+        "operationId": "getAllTalents",
         "parameters": [
           {
             "in": "path",
@@ -3047,7 +3047,7 @@
         ]
       },
       "post": {
-        "operationId": "insertAll",
+        "operationId": "insertAllTalents",
         "parameters": [
           {
             "in": "path",
@@ -3094,7 +3094,7 @@
     },
     "/{universe}/talents/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "deleteTalent",
         "parameters": [
           {
             "in": "path",
@@ -3124,7 +3124,7 @@
         ]
       },
       "get": {
-        "operationId": "get",
+        "operationId": "getTalent",
         "parameters": [
           {
             "in": "path",
@@ -3161,7 +3161,7 @@
         ]
       },
       "put": {
-        "operationId": "update",
+        "operationId": "updateTalent",
         "parameters": [
           {
             "in": "path",
@@ -3213,7 +3213,8 @@
     "schemas": {
       "AdditiveUpgradeEffect": {
         "required": [
-          "description"
+          "description",
+          "upgradeManipulator"
         ],
         "type": "object",
         "allOf": [
@@ -3233,14 +3234,22 @@
       },
       "Armor": {
         "required": [
+          "armor",
           "description",
           "effect",
           "material",
+          "maximumStackSize",
+          "minimumStackSize",
           "name",
           "note",
+          "rarity",
           "requirement",
           "subtype",
-          "type"
+          "tier",
+          "type",
+          "upgradeSlots",
+          "vendorPrice",
+          "weight"
         ],
         "type": "object",
         "allOf": [
@@ -3340,6 +3349,47 @@
           }
         }
       },
+      "CurrencyCalculation": {
+        "required": [
+          "baseCurrency",
+          "baseCurrencyShortForm",
+          "calculationEntries"
+        ],
+        "type": "object",
+        "properties": {
+          "baseCurrency": {
+            "type": "string"
+          },
+          "baseCurrencyShortForm": {
+            "type": "string"
+          },
+          "calculationEntries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CurrencyCalculationEntry"
+            }
+          }
+        }
+      },
+      "CurrencyCalculationEntry": {
+        "required": [
+          "currency",
+          "currencyShortForm"
+        ],
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "currencyShortForm": {
+            "type": "string"
+          },
+          "factor": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "GrantedUniverseAuthorityDTO": {
         "required": [
           "permission",
@@ -3373,11 +3423,16 @@
         "required": [
           "description",
           "effect",
+          "maximumStackSize",
+          "minimumStackSize",
           "name",
           "note",
+          "rarity",
           "requirement",
           "subtype",
-          "type"
+          "tier",
+          "type",
+          "vendorPrice"
         ],
         "type": "object",
         "properties": {
@@ -3474,6 +3529,10 @@
         ]
       },
       "ItemType": {
+        "required": [
+          "name",
+          "typeRestriction"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -3498,6 +3557,10 @@
         }
       },
       "ItemTypeTranslation": {
+        "required": [
+          "broaderVariants",
+          "type"
+        ],
         "type": "object",
         "properties": {
           "broaderVariants": {
@@ -3520,11 +3583,17 @@
           "description",
           "effect",
           "material",
+          "maximumStackSize",
+          "minimumStackSize",
           "name",
           "note",
+          "rarity",
           "requirement",
           "subtype",
-          "type"
+          "tier",
+          "type",
+          "upgradeSlots",
+          "vendorPrice"
         ],
         "type": "object",
         "allOf": [
@@ -3622,7 +3691,8 @@
       },
       "MultiplicativeUpgradeEffect": {
         "required": [
-          "description"
+          "description",
+          "upgradeManipulator"
         ],
         "type": "object",
         "allOf": [
@@ -3754,6 +3824,7 @@
       },
       "SecondaryAttribute": {
         "required": [
+          "consumable",
           "name",
           "primaryAttributeDependencies"
         ],
@@ -3778,14 +3849,24 @@
       },
       "Shield": {
         "required": [
+          "armor",
           "description",
           "effect",
+          "hit",
+          "initiative",
           "material",
+          "maximumStackSize",
+          "minimumStackSize",
           "name",
           "note",
+          "rarity",
           "requirement",
           "subtype",
-          "type"
+          "tier",
+          "type",
+          "upgradeSlots",
+          "vendorPrice",
+          "weight"
         ],
         "type": "object",
         "allOf": [
@@ -3824,7 +3905,8 @@
       },
       "SimpleUpgradeEffect": {
         "required": [
-          "description"
+          "description",
+          "upgradeManipulator"
         ],
         "type": "object",
         "allOf": [
@@ -3839,7 +3921,8 @@
           "cost",
           "effect",
           "name",
-          "talents"
+          "talents",
+          "tier"
         ],
         "type": "object",
         "properties": {
@@ -3903,7 +3986,8 @@
       "Universe": {
         "required": [
           "displayName",
-          "name"
+          "name",
+          "settings"
         ],
         "type": "object",
         "properties": {
@@ -3923,8 +4007,14 @@
         }
       },
       "UniverseSettings": {
+        "required": [
+          "currencyCalculation"
+        ],
         "type": "object",
         "properties": {
+          "currencyCalculation": {
+            "$ref": "#/components/schemas/CurrencyCalculation"
+          },
           "wearFactor": {
             "type": "integer",
             "format": "int32"
@@ -3935,7 +4025,9 @@
         "required": [
           "effects",
           "name",
-          "target"
+          "slots",
+          "target",
+          "vendorPrice"
         ],
         "type": "object",
         "properties": {
@@ -3976,7 +4068,8 @@
       },
       "UpgradeEffect": {
         "required": [
-          "description"
+          "description",
+          "upgradeManipulator"
         ],
         "type": "object",
         "properties": {
@@ -4041,15 +4134,24 @@
       },
       "Weapon": {
         "required": [
+          "damage",
           "description",
           "dice",
           "effect",
+          "hit",
+          "initiative",
           "material",
+          "maximumStackSize",
+          "minimumStackSize",
           "name",
           "note",
+          "rarity",
           "requirement",
           "subtype",
-          "type"
+          "tier",
+          "type",
+          "upgradeSlots",
+          "vendorPrice"
         ],
         "type": "object",
         "allOf": [

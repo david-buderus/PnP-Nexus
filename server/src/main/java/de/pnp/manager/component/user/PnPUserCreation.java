@@ -1,6 +1,7 @@
 package de.pnp.manager.component.user;
 
 import de.pnp.manager.validation.Password;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ public class PnPUserCreation {
     private final String email;
 
     @NotNull
-    private final Collection<IGrantedAuthorityDTO> authorities;
+    private final Collection<@Valid IGrantedAuthorityDTO> authorities;
 
     public PnPUserCreation(String username, String password, String displayName, String email,
         Collection<IGrantedAuthorityDTO> authorities) {

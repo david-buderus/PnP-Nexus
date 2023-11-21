@@ -57,6 +57,7 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
     /**
      * The tier of this spell.
      */
+    @NotNull
     @PositiveOrZero
     private final int tier;
 

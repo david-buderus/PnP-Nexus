@@ -39,12 +39,14 @@ public class Upgrade extends DatabaseObject {
      * The amount of {@link EquipableItem#getUpgradeSlots() slots} needed for an {@link EquipableItem} to hold this
      * upgrade.
      */
+    @NotNull
     @PositiveOrZero
     private final int slots;
 
     /**
      * The average price of this item.
      */
+    @NotNull
     @PositiveOrZero
     protected final int vendorPrice;
 

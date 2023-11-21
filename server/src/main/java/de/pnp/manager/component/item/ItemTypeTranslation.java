@@ -2,6 +2,8 @@ package de.pnp.manager.component.item;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.server.database.item.ItemTypeTranslationRepository;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
 import org.bson.types.ObjectId;
@@ -21,12 +23,14 @@ public class ItemTypeTranslation extends DatabaseObject {
      */
     @Indexed(unique = true)
     @DBRef
+    @NotNull
     private final ItemType type;
 
     /**
      * The broader variants of this type.
      */
     @DBRef
+    @NotEmpty
     private final Set<ItemType> broaderVariants;
 
     public ItemTypeTranslation(ObjectId id, ItemType type,

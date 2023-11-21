@@ -1,7 +1,9 @@
 package de.pnp.manager;
 
 import de.pnp.manager.server.EJvmFlag;
+import de.pnp.manager.server.service.RepositoryServiceBase;
 import org.jetbrains.annotations.NotNull;
+import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
@@ -66,5 +68,23 @@ public class ServerApplication implements WebMvcConfigurer {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource());
         return bean;
+    }
+
+    /**
+     * Adjusts the operation ids of all {@link RepositoryServiceBase}.
+     */
+    @Bean
+    public OperationCustomizer operationIdCustomizer() {
+        return (operation, handlerMethod) -> {
+            Class<?> clazz = handlerMethod.getBeanType();
+            if (RepositoryServiceBase.class.isAssignableFrom(clazz)) {
+                String name = clazz.getSimpleName();
+                String content = name.substring(0, name.length() - "Service".length());
+                String id = operation.getOperationId();
+                String suffix = content + (id.toLowerCase().contains("all") ? "s" : "");
+                operation.setOperationId(id + suffix);
+            }
+            return operation;
+        };
     }
 }

@@ -5,6 +5,7 @@ import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IOffensiveItem;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -17,6 +18,7 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
     /**
      * The damage modifier of this weapon.
      */
+    @NotNull
     @PositiveOrZero
     protected final int damage;
 

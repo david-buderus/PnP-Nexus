@@ -11,6 +11,8 @@ import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -27,12 +29,14 @@ public class ItemType extends DatabaseObject implements IUniquelyNamedDataObject
      * <p>
      * This entry is always unique.
      */
+    @NotBlank
     @Indexed(unique = true)
     private final String name;
 
     /**
      * The {@link ETypeRestriction} of this type.
      */
+    @NotNull
     private final ETypeRestriction typeRestriction;
 
     public ItemType(ObjectId id, String name, ETypeRestriction typeRestriction) {

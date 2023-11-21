@@ -4,6 +4,7 @@ import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IHandheldItem;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 
@@ -15,11 +16,13 @@ public abstract class HandheldEquipableItem extends EquipableItem implements IHa
     /**
      * The initiative modifier of this item.
      */
+    @NotNull
     protected final float initiative;
 
     /**
      * The hit modifier of this item.
      */
+    @NotNull
     protected final int hit;
 
     public HandheldEquipableItem(ObjectId id, String name, ItemType type, ItemType subtype, String requirement,

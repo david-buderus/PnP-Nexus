@@ -3,7 +3,7 @@ package de.pnp.manager.server.service;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseOwner;

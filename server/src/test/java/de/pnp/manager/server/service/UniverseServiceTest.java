@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;

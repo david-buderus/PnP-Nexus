@@ -2,11 +2,13 @@ package de.pnp.manager.server.contoller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.pnp.manager.component.Universe.UniverseSettings;
 import de.pnp.manager.component.inventory.equipment.DefensiveEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
+import de.pnp.manager.component.universe.CurrencyCalculation;
+import de.pnp.manager.component.universe.UniverseSettings;
 import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,7 +25,7 @@ class ItemStackControllerTest extends UniverseTestBase {
 
     @Test
     void testApplyWearByUsage() {
-        updateUniverseSettings(new UniverseSettings(10));
+        updateUniverseSettings(new UniverseSettings(10, new CurrencyCalculation("Copper", "C", List.of())));
 
         WeaponEquipment equipment = new WeaponEquipment(1,
             itemBuilder.createItemBuilder(getUniverseName()).withDamage(3).buildWeapon(), 0);
@@ -40,7 +42,7 @@ class ItemStackControllerTest extends UniverseTestBase {
 
     @Test
     void testUniverseWithoutWear() {
-        updateUniverseSettings(new UniverseSettings(-1));
+        updateUniverseSettings(new UniverseSettings(-1, new CurrencyCalculation("Copper", "C", List.of())));
 
         DefensiveEquipment equipment = new DefensiveEquipment(1,
             itemBuilder.createItemBuilder(getUniverseName()).withArmor(3).buildArmor(), 0);
