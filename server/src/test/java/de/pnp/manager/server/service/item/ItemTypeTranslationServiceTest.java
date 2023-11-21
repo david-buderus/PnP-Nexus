@@ -20,7 +20,8 @@ public class ItemTypeTranslationServiceTest extends
     @Autowired
     private ItemTypeRepository typeRepository;
 
-    public ItemTypeTranslationServiceTest(@Autowired ItemTypeTranslationService itemTypeTranslationService, @Autowired ItemTypeTranslationRepository repository) {
+    public ItemTypeTranslationServiceTest(@Autowired ItemTypeTranslationService itemTypeTranslationService,
+        @Autowired ItemTypeTranslationRepository repository) {
         super(itemTypeTranslationService, repository, ItemTypeTranslation.class);
     }
 
@@ -32,8 +33,10 @@ public class ItemTypeTranslationServiceTest extends
             new ItemTypeTranslation(null, getItemType("Weapon", ETypeRestriction.WEAPON),
                 Set.of(getItemType("Handheld", ETypeRestriction.HANDHELD),
                     getItemType("Equipment", ETypeRestriction.EQUIPMENT))),
-            new ItemTypeTranslation(null, getItemType("Handheld", ETypeRestriction.HANDHELD), Set.of()),
-            new ItemTypeTranslation(null, getItemType("Equipment", ETypeRestriction.EQUIPMENT), Set.of())
+            new ItemTypeTranslation(null, getItemType("Handheld", ETypeRestriction.HANDHELD),
+                Set.of(getItemType("Item", ETypeRestriction.ITEM))),
+            new ItemTypeTranslation(null, getItemType("Equipment", ETypeRestriction.EQUIPMENT),
+                Set.of(getItemType("Item", ETypeRestriction.ITEM)))
         );
     }
 

@@ -1,6 +1,5 @@
 package de.pnp.manager;
 
-import de.pnp.manager.server.EJvmFlag;
 import de.pnp.manager.server.service.RepositoryServiceBase;
 import org.jetbrains.annotations.NotNull;
 import org.springdoc.core.customizers.OperationCustomizer;

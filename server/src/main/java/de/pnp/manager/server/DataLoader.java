@@ -1,5 +1,6 @@
 package de.pnp.manager.server;
 
+import de.pnp.manager.EJvmFlag;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
