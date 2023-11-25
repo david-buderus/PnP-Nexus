@@ -6,6 +6,10 @@ import { Universe } from "../api";
  * For example as 2G 11S 9K
  */
 export function currencyToHumanReadable(universe: Universe, amount: number): string {
+    if (universe === null) {
+        return amount.toString();
+    }
+
     const currencyCalculation = universe.settings.currencyCalculation;
 
     if (amount <= 0) {

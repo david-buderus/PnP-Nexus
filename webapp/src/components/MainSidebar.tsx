@@ -5,9 +5,13 @@ import { FiArrowLeftCircle, FiArrowRightCircle } from "react-icons/fi";
 import { TfiWorld } from "react-icons/tfi";
 import { GiDiceSixFacesFour, GiSwapBag, GiAxeSword, GiShield, GiChestArmor, GiRing } from "react-icons/gi";
 import { Link } from "react-router-dom";
+import { UserPermissions } from "./interfaces/UserPermissions";
 
+interface MainSidebarProps {
+  userPermissions: UserPermissions;
+}
 
-function MainSidebar() {
+function MainSidebar(props: React.PropsWithChildren<MainSidebarProps>) {
 
   const [menuCollapse, setMenuCollapse] = useState(false);
 
@@ -33,8 +37,8 @@ function MainSidebar() {
           <MenuItem icon={<GiChestArmor/>} component={<Link to="/armor" />}> Armor </MenuItem>
           <MenuItem icon={<GiRing/>} component={<Link to="/jewellery" />}> Jewellery </MenuItem>
         </SubMenu>
-        <MenuItem component={<Link to="/" />}> Home </MenuItem>
-        <MenuItem component={<Link to="/about" />}> About </MenuItem>
+        { props.userPermissions.isAdmin ? <MenuItem component={<Link to="/" />}> Home </MenuItem> : "" }
+        { props.userPermissions.isAdmin ? <MenuItem component={<Link to="/about" />}> About </MenuItem> : "" }
       </Menu>
     </Sidebar>
   );

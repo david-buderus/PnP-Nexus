@@ -1719,6 +1719,104 @@ export interface WeaponAllOf {
 }
 
 /**
+ * AuthenticationServiceApi - axios parameter creator
+ * @export
+ */
+export const AuthenticationServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Returns the username of the authenticated user
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsername: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/authentication/current-user`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AuthenticationServiceApi - functional programming interface
+ * @export
+ */
+export const AuthenticationServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AuthenticationServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Returns the username of the authenticated user
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUsername(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsername(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * AuthenticationServiceApi - factory interface
+ * @export
+ */
+export const AuthenticationServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AuthenticationServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Returns the username of the authenticated user
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUsername(options?: any): AxiosPromise<string> {
+            return localVarFp.getUsername(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AuthenticationServiceApi - object-oriented interface
+ * @export
+ * @class AuthenticationServiceApi
+ * @extends {BaseAPI}
+ */
+export class AuthenticationServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Returns the username of the authenticated user
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationServiceApi
+     */
+    public getUsername(options?: AxiosRequestConfig) {
+        return AuthenticationServiceApiFp(this.configuration).getUsername(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * CraftingRecipeServiceApi - axios parameter creator
  * @export
  */

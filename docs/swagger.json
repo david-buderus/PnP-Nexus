@@ -11,6 +11,27 @@
     }
   ],
   "paths": {
+    "/api/authentication/current-user": {
+      "get": {
+        "operationId": "getUsername",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Returns the username of the authenticated user",
+        "tags": [
+          "authentication-service"
+        ]
+      }
+    },
     "/api/universes": {
       "get": {
         "operationId": "getAllUniverses",

@@ -19,7 +19,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
             <TableHead>
               <TableRow>
                 {props.columns.map(column => (
-                    <TableCell>{column.name}</TableCell>
+                    <TableCell key={column.name}>{column.name}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
@@ -30,7 +30,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                     {props.columns.map(column => (
-                        <TableCell>{column.getter(row)}</TableCell>
+                        <TableCell key={column.name}>{column.getter(row)}</TableCell>
                     ))}
                 </TableRow>
               ))}
