@@ -4,7 +4,7 @@ import Home from './pages/home';
 import About from './pages/about';
 import PageBase from './components/PageBase';
 import Universe from './pages/universe';
-import Items from './pages/items';
+import Items from './pages/items/items';
 
 class App extends Component {
     render() {

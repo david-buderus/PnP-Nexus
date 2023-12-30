@@ -68,7 +68,7 @@ function PageBase() {
             </button>
           </div>
         </header>
-        <div className='p-2'>
+        <div className="p-2">
           <Outlet context={{ universes: universes, activeUniverse: activeUniverse, userPermissions: userPermissions }} />
         </div>
       </div>
