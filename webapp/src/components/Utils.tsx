@@ -16,6 +16,10 @@ export function currencyToHumanReadable(universe: Universe, amount: number): str
         return "0" + currencyCalculation.baseCurrencyShortForm;
     }
 
+    if (currencyCalculation.calculationEntries.length === 0) {
+        return amount + currencyCalculation.baseCurrencyShortForm;
+    }
+
     let remainingAmount = amount;
     let result = "";
     let previousCoin = currencyCalculation.baseCurrencyShortForm;

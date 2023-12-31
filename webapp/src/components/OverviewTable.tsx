@@ -1,4 +1,4 @@
-import { Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel } from "@mui/material";
+import { Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
 import React, { Dispatch, SetStateAction } from "react";
 
 interface Column<T> {
@@ -24,6 +24,7 @@ interface TableProps<T> {
   order: Order;
   orderBy: keyof T;
   rowCount: number;
+  filterUpdate: (value: string, index: number) => void
 }
 
 function descendingComparator<T>(a: T, b: T, getter: (type: T) => string | number) {
@@ -51,7 +52,7 @@ function getComparator<T>(
 }
 
 function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
-  const { onSelectAllClick, columns, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { onSelectAllClick, columns, order, orderBy, numSelected, rowCount, onRequestSort, filterUpdate } = props;
   const createSortHandler =
     (property: keyof T) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -71,19 +72,32 @@ function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
             }}
           />
         </TableCell>
-        {columns.map(column => (
+        {columns.map((column, index) => (
           <TableCell
             key={column.id as string}
             align={column.numeric ? 'right' : 'left'}
             sortDirection={orderBy === column.id ? order : false}
           >
+            <div className="flex">
+            <Tooltip title={column.label} placement="bottom-start">
+            <TextField
+                label={column.label}
+                size="small"
+                type="search"
+                variant="standard"
+                onChange={event => {
+                  filterUpdate(event.target.value.toLowerCase(), index)
+                }}
+              >
+              </TextField>
+              </Tooltip>
             <TableSortLabel
               active={orderBy === column.id}
               direction={orderBy === column.id ? order : 'asc'}
               onClick={createSortHandler(column.id)}
-            >
-              {column.label}
+            >  
             </TableSortLabel>
+            </div>
           </TableCell>
         ))}
       </TableRow>
@@ -98,7 +112,8 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   const [selected, setSelected] = props.selectedState;
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
+  const [filters, setFilters] = React.useState(Array(columns.length).fill(""))
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -155,18 +170,28 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   const visibleRows = React.useMemo(
     () => {
       const getter = columns.find(c => c.id === orderBy)?.getter
-      return data.slice(
+      return data.filter(dataValue => columns.every((column, index) => {
+        if (!filters[index]) {
+          return true;
+        }
+        const fieldValue = column.getter(dataValue)
+        if (column.numeric) {
+          return fieldValue === filters[index];
+        } else {
+          return (fieldValue as string).toLowerCase().includes(filters[index]);
+        }
+    })).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ).sort(getComparator(order, getter))
     },
-    [order, orderBy, page, rowsPerPage, data],
+    [order, orderBy, page, rowsPerPage, data, filters],
   );
 
   return (
     <Paper>
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+      <TableContainer sx={{ maxHeight: 0.8, minHeight: 0.8 }}>
+        <Table sx={{ minWidth: 650 }} stickyHeader size="small" aria-label="a dense table">
           <OverviewTableHead
             columns={columns}
             numSelected={selected.length}
@@ -175,6 +200,14 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
             rowCount={data.length}
+            filterUpdate={(value, index) => {
+              setFilters(filters.map((old, i) => {
+                if (i === index) {
+                  return value;
+                }
+                return old;
+              }))
+            }}
           />
           <TableBody>
             {visibleRows.map((row, index) => {
@@ -201,7 +234,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                   />
                 </TableCell>
                 {columns.map(column => (
-                  <TableCell 
+                  <TableCell
                     key={column.label}
                     align={column.numeric ? 'right' : 'left'}
                   >{column.getter(row)}</TableCell>
@@ -222,14 +255,14 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
         </Table>
       </TableContainer>
       <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        rowsPerPageOptions={[5, 10, 25, 50, { value: -1, label: 'All' }]}
+        component="div"
+        count={data.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </Paper>
   );
 }

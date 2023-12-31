@@ -1,10 +1,11 @@
-import { AuthenticationServiceApi, Universe, UniverseServiceApi, UserServiceApi, GrantedUniverseAuthorityDTO, RoleAuthorityDTO } from '../api';
-import { Outlet, useOutletContext } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { AuthenticationServiceApi, Universe, UniverseServiceApi, UserServiceApi } from '../api';
+import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
 import { FaUser } from "react-icons/fa";
 import { Autocomplete, TextField } from '@mui/material';
 import MainSidebar from './MainSidebar';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
+import { useLocation } from "react-router-dom"
 
 type UniverseContext = { universes: Universe[] | [], activeUniverse: Universe | null };
 type UserContext = { userPermissions: UserPermissions };
@@ -15,6 +16,7 @@ const USER_API = new UserServiceApi();
 
 function PageBase() {
   const [universes, setUniverses] = useState<Universe[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
   const [username, setUsername] = useState<string>(null);
   const [userPermissions, setUserPermissions] = useState<UserPermissions>({
@@ -27,12 +29,23 @@ function PageBase() {
 
   useEffect(() => {
     UNIVERSE_API.getAllUniverses().then(response => {
-      setUniverses(response.data)
+      setUniverses(response.data);
+      const universe = response.data.find(universe => universe.name === searchParams.get("universe"));
+      if (universe !== undefined) {
+        setActiveUniverse(universe);
+      }
     });
     AUTHENTICATION_API.getUsername().then(response => {
-      setUsername(response.data)
+      setUsername(response.data);
     });
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (activeUniverse) {
+      searchParams.set("universe", activeUniverse.name);
+      setSearchParams(searchParams);
+    }
+  }, [activeUniverse]);
 
   useEffect(() => {
     if (username === null) {
@@ -60,15 +73,16 @@ function PageBase() {
               onChange={(_, value) => {
                 setActiveUniverse(value)
               }}
+              value={activeUniverse}
             />
             : ''}
-          <div className=' float-right'>
+          <div className='float-right'>
             <button className='text-center inline-flex items-center btn-icon h-9 w-9'>
               <FaUser />
             </button>
           </div>
         </header>
-        <div className="p-2">
+        <div className="p-2 overflow-auto max-h-[calc(100vh-55px)]">
           <Outlet context={{ universes: universes, activeUniverse: activeUniverse, userPermissions: userPermissions }} />
         </div>
       </div>
@@ -85,3 +99,10 @@ export function getUserContext() {
 }
 
 export default PageBase;
+
+function useQuery() {
+  const { search } = useLocation();
+
+  return useMemo(() => new URLSearchParams(search), [search]);
+}
+

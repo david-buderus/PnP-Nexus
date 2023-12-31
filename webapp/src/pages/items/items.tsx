@@ -35,8 +35,6 @@ const Items = () => {
         fetchItems(activeUniverse).then(fetchedItems => setItems(fetchedItems));
     }, [activeUniverse]);
 
-    console.log(selected);
-
     return <div>
         <OverviewTable id='id' sortBy="name" data={items} columns={[
             { label: "Name", id: "name", getter: item => item.name, numeric: false },
