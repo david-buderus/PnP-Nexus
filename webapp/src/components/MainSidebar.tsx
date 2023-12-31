@@ -6,20 +6,21 @@ import { TfiWorld } from "react-icons/tfi";
 import { GiDiceSixFacesFour, GiSwapBag, GiAxeSword, GiShield, GiChestArmor, GiRing } from "react-icons/gi";
 import { Link, To, useSearchParams } from "react-router-dom";
 import { UserPermissions } from "./interfaces/UserPermissions";
+import { useTranslation } from "react-i18next";
 
 interface MainSidebarProps {
   userPermissions: UserPermissions;
 }
 
-function buildLink(path: string, searchParams: URLSearchParams): To {
-  return {
+function buildLink(path: string, searchParams: URLSearchParams) {
+  return <Link to={{
     pathname: path, 
     search: searchParams.toString()
-  }
+  }} />
 }
 
 function MainSidebar(props: React.PropsWithChildren<MainSidebarProps>) {
-
+  const { t } = useTranslation();
   const [menuCollapse, setMenuCollapse] = useState(false);
   const [searchParams, _] = useSearchParams();
 
@@ -38,15 +39,15 @@ function MainSidebar(props: React.PropsWithChildren<MainSidebarProps>) {
         </div>
       </header>
       <Menu>
-        <MenuItem icon={<TfiWorld/>} component={<Link to={buildLink("/universe", searchParams)} />}> Universe </MenuItem>
-        <SubMenu label="Items" icon={<GiSwapBag/>} component={<Link to ={buildLink("/items", searchParams)} />}>
-          <MenuItem icon={<GiAxeSword/>} component={<Link to={buildLink("/weapons", searchParams)} />}> Weapons </MenuItem>
-          <MenuItem icon={<GiShield/>} component={<Link to={buildLink("/shields", searchParams)} />}> Shields </MenuItem>
-          <MenuItem icon={<GiChestArmor/>} component={<Link to={buildLink("/armor", searchParams)} />}> Armor </MenuItem>
-          <MenuItem icon={<GiRing/>} component={<Link to={buildLink("/jewellery", searchParams)} />}> Jewellery </MenuItem>
+        <MenuItem icon={<TfiWorld/>} component={buildLink("/universe", searchParams)}> {t("universe")} </MenuItem>
+        <SubMenu label={t("items")} icon={<GiSwapBag/>} component={buildLink("/items", searchParams)}>
+          <MenuItem icon={<GiAxeSword/>} component={buildLink("/weapons", searchParams)}> {t("weapons")} </MenuItem>
+          <MenuItem icon={<GiShield/>} component={buildLink("/shields", searchParams)}> {t("shields")} </MenuItem>
+          <MenuItem icon={<GiChestArmor/>} component={buildLink("/armor", searchParams)}> {t("armor")} </MenuItem>
+          <MenuItem icon={<GiRing/>} component={buildLink("/jewellery", searchParams)}> {t("jewellery")} </MenuItem>
         </SubMenu>
-        { props.userPermissions.isAdmin ? <MenuItem component={<Link to={buildLink("/", searchParams)} />}> Home </MenuItem> : "" }
-        { props.userPermissions.isAdmin ? <MenuItem component={<Link to={buildLink("/about", searchParams)} />}> About </MenuItem> : "" }
+        { props.userPermissions.isAdmin ? <MenuItem component={buildLink("/", searchParams)}> Home </MenuItem> : "" }
+        { props.userPermissions.isAdmin ? <MenuItem component={buildLink("/about", searchParams)}> About </MenuItem> : "" }
       </Menu>
     </Sidebar>
   );

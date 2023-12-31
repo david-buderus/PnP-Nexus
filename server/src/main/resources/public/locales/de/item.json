@@ -1,0 +1,6 @@
+{
+  "type": "Typ",
+  "subtype": "Subtyp",
+  "minStackSize": "Min. Stapelgröße",
+  "maxStackSize": "Max. Stapelgröße"
+}

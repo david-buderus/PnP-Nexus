@@ -1,0 +1,20 @@
+{
+  "universe": "Universum",
+  "items": "Items",
+  "item": "Item",
+  "weapons": "Waffen",
+  "weapon": "Waffe",
+  "shields": "Schilde",
+  "shield": "Schild",
+  "armor": "Rüstung",
+  "jewellery": "Schmuck",
+  "add": "Hinzufügen",
+  "delete": "Löschen",
+  "edit": "Bearbeiten",
+  "name": "Name",
+  "rarity": "Seltenheit",
+  "effect": "Effekt",
+  "description": "Beschreibung",
+  "price": "Preis",
+  "note": "Notiz"
+}
