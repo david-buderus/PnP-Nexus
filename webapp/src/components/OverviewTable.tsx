@@ -1,13 +1,16 @@
-import { Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
+import { Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
 import React, { Dispatch, SetStateAction } from "react";
 
+/** Description of a column */
 interface Column<T> {
   label: string;
   id: keyof T;
+  /** The result of the getter will be shown in the table cell */
   getter: (type: T) => string | number
   numeric: boolean;
 }
 
+/** Description of a table */
 interface OverviewTableProps<T> {
   data: T[];
   id: keyof T;
@@ -16,14 +19,21 @@ interface OverviewTableProps<T> {
   selectedState: [readonly T[keyof T][], Dispatch<SetStateAction<readonly T[keyof T][]>>]
 }
 
+/** Sorting  order for the table */
+type Order = 'asc' | 'desc';
+
+/** Internal description of a table */
 interface TableProps<T> {
   columns: Column<T>[];
   numSelected: number;
+  /** Eventhandler */
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void;
+  /** Eventhandler */
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: keyof T;
   rowCount: number;
+  /** Eventhandler */
   filterUpdate: (value: string, index: number) => void
 }
 
@@ -37,11 +47,9 @@ function descendingComparator<T>(a: T, b: T, getter: (type: T) => string | numbe
   return 0;
 }
 
-type Order = 'asc' | 'desc';
-
 function getComparator<T>(
   order: Order,
-  getter: (type: T) => string | number,
+  getter: (type: T) => string | number
 ): (
   a: T,
   b: T,
@@ -68,7 +76,7 @@ function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all',
+              'aria-label': 'select all'
             }}
           />
         </TableCell>
@@ -79,24 +87,22 @@ function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
             sortDirection={orderBy === column.id ? order : false}
           >
             <div className="flex">
-            <Tooltip title={column.label} placement="bottom-start">
-            <TextField
-                label={column.label}
-                size="small"
-                type="search"
-                variant="standard"
-                onChange={event => {
-                  filterUpdate(event.target.value.toLowerCase(), index)
-                }}
-              >
-              </TextField>
+              <Tooltip title={column.label} placement="bottom-start">
+                <TextField
+                  label={column.label}
+                  size="small"
+                  type="search"
+                  variant="standard"
+                  onChange={event => filterUpdate(event.target.value.toLowerCase(), index)}
+                >
+                </TextField>
               </Tooltip>
-            <TableSortLabel
-              active={orderBy === column.id}
-              direction={orderBy === column.id ? order : 'asc'}
-              onClick={createSortHandler(column.id)}
-            >  
-            </TableSortLabel>
+              <TableSortLabel
+                active={orderBy === column.id}
+                direction={orderBy === column.id ? order : 'asc'}
+                onClick={createSortHandler(column.id)}
+              >
+              </TableSortLabel>
             </div>
           </TableCell>
         ))}
@@ -111,13 +117,13 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   const [orderBy, setOrderBy] = React.useState<keyof T>(sortBy);
   const [selected, setSelected] = props.selectedState;
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const [dense] = React.useState(false); // I may want to change this to be toggleble
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
-  const [filters, setFilters] = React.useState(Array(columns.length).fill(""))
+  const [filters, setFilters] = React.useState(Array(columns.length).fill(""));
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof T,
+    property: keyof T
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -133,12 +139,12 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: T[keyof T]) => {
-    const selectedIndex = selected.indexOf(id);
+  const handleClick = (event: React.MouseEvent<unknown>, identifier: T[keyof T]) => {
+    const selectedIndex = selected.indexOf(identifier);
     let newSelected: readonly T[keyof T][] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selected, identifier);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -146,7 +152,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
         selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selected.slice(selectedIndex + 1)
       );
     }
     setSelected(newSelected);
@@ -161,7 +167,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
     setPage(0);
   };
 
-  const isSelected = (id: T[keyof T]) => selected.indexOf(id) !== -1;
+  const isSelected = (identifier: T[keyof T]) => selected.indexOf(identifier) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -169,23 +175,23 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
 
   const visibleRows = React.useMemo(
     () => {
-      const getter = columns.find(c => c.id === orderBy)?.getter
+      const getter = columns.find(c => c.id === orderBy)?.getter;
       return data.filter(dataValue => columns.every((column, index) => {
         if (!filters[index]) {
           return true;
         }
-        const fieldValue = column.getter(dataValue)
+        const fieldValue = column.getter(dataValue);
         if (column.numeric) {
           return fieldValue === filters[index];
         } else {
           return (fieldValue as string).toLowerCase().includes(filters[index]);
         }
-    })).slice(
+      })).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ).sort(getComparator(order, getter))
     },
-    [order, orderBy, page, rowsPerPage, data, filters],
+    [order, orderBy, page, rowsPerPage, data, filters]
   );
 
   return (
@@ -200,23 +206,23 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
             rowCount={data.length}
-            filterUpdate={(value, index) => {
+            filterUpdate={(value, index) =>
               setFilters(filters.map((old, i) => {
                 if (i === index) {
                   return value;
                 }
                 return old;
               }))
-            }}
+            }
           />
           <TableBody>
             {visibleRows.map((row, index) => {
               const isItemSelected = isSelected(row[id]);
               const labelId = `enhanced-table-checkbox-${index}`;
 
-              return (<TableRow
+              return <TableRow
                 hover
-                onClick={(event) => handleClick(event, row[id])}
+                onClick={(event) => { handleClick(event, row[id]); }}
                 role="checkbox"
                 aria-checked={isItemSelected}
                 tabIndex={-1}
@@ -229,23 +235,24 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                     color="primary"
                     checked={isItemSelected}
                     inputProps={{
-                      'aria-labelledby': labelId,
+                      'aria-labelledby': labelId
                     }}
                   />
                 </TableCell>
-                {columns.map(column => (
+                {columns.map(column => 
                   <TableCell
                     key={column.label}
                     align={column.numeric ? 'right' : 'left'}
-                  >{column.getter(row)}</TableCell>
-                ))}
-              </TableRow>
-              );
+                  >
+                    {column.getter(row)}
+                  </TableCell>
+                )}
+              </TableRow>;
             })}
             {emptyRows > 0 && (
               <TableRow
                 style={{
-                  height: (dense ? 33 : 53) * emptyRows,
+                  height: (dense ? 33 : 53) * emptyRows
                 }}
               >
                 <TableCell colSpan={6} />
@@ -267,4 +274,4 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   );
 }
 
-export default OverviewTable
+export default OverviewTable;

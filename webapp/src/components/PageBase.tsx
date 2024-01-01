@@ -1,13 +1,12 @@
 import { AuthenticationServiceApi, Universe, UniverseServiceApi, UserServiceApi } from '../api';
 import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaUser } from "react-icons/fa";
 import { Autocomplete, TextField } from '@mui/material';
 import MainSidebar from './MainSidebar';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
-import { useLocation } from "react-router-dom"
 
-type UniverseContext = { universes: Universe[] | [], activeUniverse: Universe | null };
+type UniverseContext = { universes: Universe[], activeUniverse: Universe };
 type UserContext = { userPermissions: UserPermissions };
 
 const UNIVERSE_API = new UniverseServiceApi();
@@ -30,7 +29,7 @@ function PageBase() {
   useEffect(() => {
     UNIVERSE_API.getAllUniverses().then(response => {
       setUniverses(response.data);
-      const universe = response.data.find(universe => universe.name === searchParams.get("universe"));
+      const universe = response.data.find(u => u.name === searchParams.get("universe"));
       if (universe !== undefined) {
         setActiveUniverse(universe);
       }
@@ -52,7 +51,7 @@ function PageBase() {
       return;
     }
     USER_API.getPermissions(username).then(response => {
-      setUserPermissions(extractUserPermissions(response.data, activeUniverse))
+      setUserPermissions(extractUserPermissions(response.data, activeUniverse));
     });
   }, [activeUniverse, username]);
 
@@ -71,7 +70,7 @@ function PageBase() {
               isOptionEqualToValue={(option: Universe, value: Universe) => option.name === value.name}
               renderInput={(params) => <TextField {...params} className='h-10' variant='standard' size="small" label="Universe" />}
               onChange={(_, value) => {
-                setActiveUniverse(value)
+                setActiveUniverse(value);
               }}
               value={activeUniverse}
             />
@@ -90,19 +89,14 @@ function PageBase() {
   );
 }
 
+/** Returns context over the currently avaible universes. */
 export function getUniverseContext() {
   return useOutletContext<UniverseContext>();
 }
 
+/** Returns context over the currently logged in user. */
 export function getUserContext() {
   return useOutletContext<UserContext>();
 }
 
 export default PageBase;
-
-function useQuery() {
-  const { search } = useLocation();
-
-  return useMemo(() => new URLSearchParams(search), [search]);
-}
-

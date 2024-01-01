@@ -11,6 +11,35 @@ export interface UserPermissions {
   isActiveUniverseOwner: boolean;
 }
 
+function extractUniversePermissions(universePermission: GrantedUniverseAuthorityDTO, activeUniverse: Universe, userPermissions: UserPermissions) {
+  if (activeUniverse !== null && universePermission.universe === activeUniverse.name) {
+    switch (universePermission.permission) {
+      case "OWNER": userPermissions.isActiveUniverseOwner = true; // Fall through
+      case "WRITE": userPermissions.canWriteActiveUniverse = true; // Fall through
+      case "READ": userPermissions.canReadActiveUniverse = true;
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+function extractRolePermissions(rolePermission: RoleAuthorityDTO, userPermissions: UserPermissions) {
+  switch (rolePermission.role) {
+    case "ADMIN": userPermissions.isActiveUniverseOwner = true;
+      userPermissions.canWriteActiveUniverse = true;
+      userPermissions.canReadActiveUniverse = true;
+      userPermissions.isAdmin = true;
+      userPermissions.canCreateUniverses = true;
+      break;
+    case "UNIVERSE_CREATOR":
+      userPermissions.canCreateUniverses = true;
+      break;
+    default:
+      break;
+  }
+}
+
 /**
  * Extracts {@link UserPermissions} from the server DTOs.
  */
@@ -26,28 +55,13 @@ export function extractUserPermissions(permissions: any[], activeUniverse: Unive
   for (const permission of permissions) {
     switch (permission["@type"]) {
       case "UniverseAuthority":
-        const universePermission = permission as GrantedUniverseAuthorityDTO;
-        if (activeUniverse !== null && universePermission.universe === activeUniverse.name) {
-          switch (universePermission.permission) {
-            case "OWNER": userPermissions.isActiveUniverseOwner = true;
-            case "WRITE": userPermissions.canWriteActiveUniverse = true;
-            case "READ": userPermissions.canReadActiveUniverse = true;
-          }
-        }
+        extractUniversePermissions(permission as GrantedUniverseAuthorityDTO, activeUniverse, userPermissions);
         break;
       case "Role":
         const rolePermission = permission as RoleAuthorityDTO;
-        switch (rolePermission.role) {
-          case "ADMIN": userPermissions.isActiveUniverseOwner = true;
-            userPermissions.canWriteActiveUniverse = true;
-            userPermissions.canReadActiveUniverse = true;
-            userPermissions.isAdmin = true;
-            userPermissions.canCreateUniverses = true;
-            break;
-          case "UNIVERSE_CREATOR":
-            userPermissions.canCreateUniverses = true;
-            break;
-        }
+        extractRolePermissions(rolePermission, userPermissions);
+        break;
+      default:
         break;
     }
   }

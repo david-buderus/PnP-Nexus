@@ -3,7 +3,6 @@ import { getUniverseContext, getUserContext } from '../../components/PageBase';
 import { useEffect, useState } from 'react';
 import { Item, ItemServiceApi, Universe } from '../../api';
 import { currencyToHumanReadable } from '../../components/Utils';
-import { NoUniverse } from '../NoUniverse';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -31,7 +30,7 @@ const Items = () => {
     const { userPermissions } = getUserContext();
     const [items, setItems] = useState<Item[]>([]);
     const selectedState = useState<string[]>([]);
-    const [selected, _] = selectedState;
+    const [selected] = selectedState;
 
     useEffect(() => {
         fetchItems(activeUniverse).then(fetchedItems => setItems(fetchedItems));
@@ -61,7 +60,7 @@ const Items = () => {
                         <Button className='btn' disabled={selected.length !== 1}>
                             {t("edit")}
                         </Button>
-                        <Button className='btn' disabled={selected.length === 0} onClick={_ => {
+                        <Button className='btn' disabled={selected.length === 0} onClick={() => {
                             deleteItems(activeUniverse, selected).then(sucessful => {
                                 if (sucessful) {
                                     fetchItems(activeUniverse).then(fetchedItems => setItems(fetchedItems));

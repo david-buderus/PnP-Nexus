@@ -22,7 +22,7 @@ function buildLink(path: string, searchParams: URLSearchParams) {
 function MainSidebar(props: React.PropsWithChildren<MainSidebarProps>) {
   const { t } = useTranslation();
   const [menuCollapse, setMenuCollapse] = useState(false);
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const menuIconClick = () => {
     setMenuCollapse(!menuCollapse);
