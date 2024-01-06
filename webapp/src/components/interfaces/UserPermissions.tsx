@@ -4,10 +4,15 @@ import { GrantedUniverseAuthorityDTO, RoleAuthorityDTO, Universe } from "../../a
  * The permissions the currently authenticated user has on the active universe.
  */
 export interface UserPermissions {
+  /** User is admin */
   isAdmin: boolean;
+  /** User can create universes */
   canCreateUniverses: boolean;
+  /** User can read the currently selected universe */
   canReadActiveUniverse: boolean;
+  /** User can write to the currently selected universe */
   canWriteActiveUniverse: boolean;
+  /** User is the owner of the currently selected universe */
   isActiveUniverseOwner: boolean;
 }
 
@@ -50,7 +55,7 @@ export function extractUserPermissions(permissions: any[], activeUniverse: Unive
     canReadActiveUniverse: false,
     canWriteActiveUniverse: false,
     isActiveUniverseOwner: false
-  }
+  };
 
   for (const permission of permissions) {
     switch (permission["@type"]) {
@@ -58,8 +63,7 @@ export function extractUserPermissions(permissions: any[], activeUniverse: Unive
         extractUniversePermissions(permission as GrantedUniverseAuthorityDTO, activeUniverse, userPermissions);
         break;
       case "Role":
-        const rolePermission = permission as RoleAuthorityDTO;
-        extractRolePermissions(rolePermission, userPermissions);
+        extractRolePermissions(permission as RoleAuthorityDTO, userPermissions);
         break;
       default:
         break;

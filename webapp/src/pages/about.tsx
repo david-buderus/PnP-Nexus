@@ -22,6 +22,6 @@ function About() {
                 <MenuItem value={"en"}>English</MenuItem>
             </Select>
         </FormControl>
-    </div>
+    </div>;
 }
 export default About;

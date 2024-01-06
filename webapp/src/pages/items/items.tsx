@@ -29,8 +29,7 @@ const Items = () => {
     const { activeUniverse } = getUniverseContext();
     const { userPermissions } = getUserContext();
     const [items, setItems] = useState<Item[]>([]);
-    const selectedState = useState<string[]>([]);
-    const [selected] = selectedState;
+    const [selected, setSelected] = useState<string[]>([]);
 
     useEffect(() => {
         fetchItems(activeUniverse).then(fetchedItems => setItems(fetchedItems));
@@ -48,11 +47,11 @@ const Items = () => {
             { label: t("item:minStackSize"), id: "minimumStackSize", getter: item => item.minimumStackSize, numeric: true },
             { label: t("item:maxStackSize"), id: "maximumStackSize", getter: item => item.maximumStackSize, numeric: true },
             { label: t("note"), id: "note", getter: item => item.note, numeric: false }
-        ]} selectedState={selectedState}>
+        ]} selectedState={[selected, setSelected]}>
         </OverviewTable>
         {
             userPermissions.canWriteActiveUniverse ?
-                (<div className='w-full pt-2'>
+                <div className='w-full pt-2'>
                     <div className='float-right'>
                         <Button className='btn'>
                             {t("add")}
@@ -65,12 +64,12 @@ const Items = () => {
                                 if (sucessful) {
                                     fetchItems(activeUniverse).then(fetchedItems => setItems(fetchedItems));
                                 }
-                            })
+                            });
                         }}>
                             {t("delete")}
                         </Button>
                     </div>
-                </div>)
+                </div>
                 : null
         }
     </div>;

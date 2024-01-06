@@ -4,11 +4,13 @@ import { Sidebar,  Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { FiArrowLeftCircle, FiArrowRightCircle } from "react-icons/fi";
 import { TfiWorld } from "react-icons/tfi";
 import { GiDiceSixFacesFour, GiSwapBag, GiAxeSword, GiShield, GiChestArmor, GiRing } from "react-icons/gi";
-import { Link, To, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { UserPermissions } from "./interfaces/UserPermissions";
 import { useTranslation } from "react-i18next";
 
+/** Props needed for the sidebar */
 interface MainSidebarProps {
+  /** Permissions of the currently logged in user */
   userPermissions: UserPermissions;
 }
 
@@ -16,7 +18,7 @@ function buildLink(path: string, searchParams: URLSearchParams) {
   return <Link to={{
     pathname: path, 
     search: searchParams.toString()
-  }} />
+  }} />;
 }
 
 function MainSidebar(props: React.PropsWithChildren<MainSidebarProps>) {

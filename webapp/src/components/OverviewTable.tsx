@@ -1,21 +1,31 @@
 import { Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
 import React, { Dispatch, SetStateAction } from "react";
 
+type Getter<T> = (type: T) => string | number
+
 /** Description of a column */
 interface Column<T> {
+  /** Human-readable column label */
   label: string;
+  /** Field of T represented by this column */
   id: keyof T;
   /** The result of the getter will be shown in the table cell */
-  getter: (type: T) => string | number
+  getter: Getter<T>
+  /** If this field shows a number */
   numeric: boolean;
 }
 
 /** Description of a table */
 interface OverviewTableProps<T> {
+  /** Data shown in this tagble */
   data: T[];
+  /** Field of T which identifies it uniquely */
   id: keyof T;
+  /** Which key is used for default sorting */
   sortBy: keyof T;
+  /** The columns shown in the table */
   columns: Column<T>[];
+  /** Setter and getter to set/get the currently selcted data */
   selectedState: [readonly T[keyof T][], Dispatch<SetStateAction<readonly T[keyof T][]>>]
 }
 
@@ -24,20 +34,25 @@ type Order = 'asc' | 'desc';
 
 /** Internal description of a table */
 interface TableProps<T> {
+   /** The columns shown in the table */
   columns: Column<T>[];
+  /** The amount of selected items */
   numSelected: number;
   /** Eventhandler */
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void;
   /** Eventhandler */
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  /** How the items are orderd */
   order: Order;
+  /** The key of T used to order the items */
   orderBy: keyof T;
+  /** The number of rows shown */
   rowCount: number;
   /** Eventhandler */
   filterUpdate: (value: string, index: number) => void
 }
 
-function descendingComparator<T>(a: T, b: T, getter: (type: T) => string | number) {
+function descendingComparator<T>(a: T, b: T, getter: Getter<T>) {
   if (getter(b) < getter(a)) {
     return -1;
   }
@@ -49,7 +64,7 @@ function descendingComparator<T>(a: T, b: T, getter: (type: T) => string | numbe
 
 function getComparator<T>(
   order: Order,
-  getter: (type: T) => string | number
+  getter: Getter<T>
 ): (
   a: T,
   b: T,
@@ -80,7 +95,7 @@ function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
             }}
           />
         </TableCell>
-        {columns.map((column, index) => (
+        {columns.map((column, index) => 
           <TableCell
             key={column.id as string}
             align={column.numeric ? 'right' : 'left'}
@@ -105,7 +120,7 @@ function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
               </TableSortLabel>
             </div>
           </TableCell>
-        ))}
+        )}
       </TableRow>
     </TableHead>
   );
@@ -117,7 +132,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   const [orderBy, setOrderBy] = React.useState<keyof T>(sortBy);
   const [selected, setSelected] = props.selectedState;
   const [page, setPage] = React.useState(0);
-  const [dense] = React.useState(false); // I may want to change this to be toggleble
+  const [dense, setDense] = React.useState(false); // I may want to change this to be toggleble
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [filters, setFilters] = React.useState(Array(columns.length).fill(""));
 
@@ -189,7 +204,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
       })).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
-      ).sort(getComparator(order, getter))
+      ).sort(getComparator(order, getter));
     },
     [order, orderBy, page, rowsPerPage, data, filters]
   );
@@ -249,7 +264,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                 )}
               </TableRow>;
             })}
-            {emptyRows > 0 && (
+            {emptyRows > 0 && 
               <TableRow
                 style={{
                   height: (dense ? 33 : 53) * emptyRows
@@ -257,7 +272,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
               >
                 <TableCell colSpan={6} />
               </TableRow>
-            )}
+            }
           </TableBody>
         </Table>
       </TableContainer>
