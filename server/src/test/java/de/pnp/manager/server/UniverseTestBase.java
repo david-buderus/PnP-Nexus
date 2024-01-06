@@ -1,7 +1,7 @@
 package de.pnp.manager.server;
 
-import de.pnp.manager.component.Universe;
-import de.pnp.manager.component.Universe.UniverseSettings;
+import de.pnp.manager.component.universe.Universe;
+import de.pnp.manager.component.universe.UniverseSettings;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.configurator.SimpleUniverseServerConfiguration;
 import de.pnp.manager.server.database.UniverseRepository;

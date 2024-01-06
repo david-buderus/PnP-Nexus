@@ -1,10 +1,20 @@
 package de.pnp.manager.ui.setting;
 
-import de.pnp.manager.main.*;
+import de.pnp.manager.main.DatabaseLoader;
+import de.pnp.manager.main.Language;
+import de.pnp.manager.main.LanguageUtility;
+import de.pnp.manager.main.NexusExporter;
+import de.pnp.manager.main.UpdateChecker;
+import de.pnp.manager.main.Utility;
 import de.pnp.manager.ui.IView;
 import de.pnp.manager.ui.ViewPart;
 import de.pnp.manager.ui.utility.InfoView;
 import de.pnp.manager.ui.utility.UpdateView;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -16,18 +26,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang.exception.ExceptionUtils;
-
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
 
 public class BasicSettingsView extends ViewPart {
 
@@ -122,6 +127,47 @@ public class BasicSettingsView extends ViewPart {
         checkUpdateButton.setMaxWidth(Double.MAX_VALUE);
         settingsPane.add(checkUpdateButton, 0, 4, 2, 1);
 
+        Label urlText = new Label();
+        urlText.setText("Url");
+        settingsPane.add(urlText, 0, 5);
+
+        TextField urlField = new TextField();
+        urlField.setMaxWidth(Double.MAX_VALUE);
+        urlField.setText("http://localhost:8080/");
+        settingsPane.add(urlField, 1, 5);
+
+        Label usernameText = new Label();
+        usernameText.setText("Username");
+        settingsPane.add(usernameText, 0, 6);
+
+        TextField usernameField = new TextField();
+        usernameField.setMaxWidth(Double.MAX_VALUE);
+        settingsPane.add(usernameField, 1, 6);
+
+        Label passwordText = new Label();
+        passwordText.setText("Password");
+        settingsPane.add(passwordText, 0, 7);
+
+        PasswordField passwordField = new PasswordField();
+        passwordField.setMaxWidth(Double.MAX_VALUE);
+        settingsPane.add(passwordField, 1, 7);
+
+        Label universeText = new Label();
+        universeText.setText("Universe");
+        settingsPane.add(universeText, 0, 8);
+
+        TextField universeField = new TextField();
+        universeField.setMaxWidth(Double.MAX_VALUE);
+        settingsPane.add(universeField, 1, 8);
+
+        Button exportButton = new Button();
+        exportButton.setText("Export to Nexus");
+        exportButton.setOnAction(
+            ev -> NexusExporter.export(urlField.getText(), universeField.getText(), usernameField.getText(),
+                passwordField.getText()));
+        exportButton.setMaxWidth(Double.MAX_VALUE);
+        settingsPane.add(exportButton, 0, 9, 2, 1);
+
         var response = UpdateChecker.checkForUpdates();
 
         if (response.updateDoesExists) {
@@ -139,8 +185,8 @@ public class BasicSettingsView extends ViewPart {
     private void load() {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("accessFile"), "*.accdb"),
-                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
+            new FileChooser.ExtensionFilter(LanguageUtility.getMessage("accessFile"), "*.accdb"),
+            new FileChooser.ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
         File file = chooser.showOpenDialog(getStage());
 
         if (file == null) {
@@ -153,8 +199,8 @@ public class BasicSettingsView extends ViewPart {
     private void setDefaultPath() {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("accessFile"), "*.accdb"),
-                new FileChooser.ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
+            new FileChooser.ExtensionFilter(LanguageUtility.getMessage("accessFile"), "*.accdb"),
+            new FileChooser.ExtensionFilter(LanguageUtility.getMessage("allFiles"), "*.*"));
         File file = chooser.showOpenDialog(getStage());
 
         if (file == null) {
@@ -177,7 +223,8 @@ public class BasicSettingsView extends ViewPart {
                         Properties properties = new Properties();
                         properties.put("ConnSettings", "SET LOCALE TO de_DE");
 
-                        try (Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + file.getPath(), properties)) {
+                        try (Connection connection = DriverManager.getConnection("jdbc:ucanaccess://" + file.getPath(),
+                            properties)) {
                             info.addAll(DatabaseLoader.loadDatabase(connection, false));
                         } catch (SQLException e) {
                             info.add(ExceptionUtils.getFullStackTrace(e));
@@ -200,8 +247,9 @@ public class BasicSettingsView extends ViewPart {
         });
         service.setOnCancelled(ev -> {
             this.fileName.bind(LanguageUtility.getMessageProperty("manager.fileNotLoaded"));
-            if (!info.isEmpty())
+            if (!info.isEmpty()) {
                 info.show();
+            }
         });
         service.start();
     }

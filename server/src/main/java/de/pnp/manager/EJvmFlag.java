@@ -1,4 +1,4 @@
-package de.pnp.manager.server;
+package de.pnp.manager;
 
 /**
  * Enumeration for any JVM flags which configure PnP-Nexus.
@@ -6,8 +6,8 @@ package de.pnp.manager.server;
 public enum EJvmFlag {
 
     /**
-     * Enum value for the development mode.
-     * Configures the web frontend to run embedded, i.e. any html and ts files are served by Spring.
+     * Enum value for the development mode. Configures the web frontend to run embedded, i.e. any html and ts files are
+     * served by Spring.
      */
     DEV_MODE("pnp-nexus.dev-mode", false);
 

@@ -26,6 +26,7 @@ public abstract class EquipableItem extends Item implements IEquipableItem {
     /**
      * The amount of upgrades this item can hold.
      */
+    @NotNull
     @PositiveOrZero
     protected final int upgradeSlots;
 

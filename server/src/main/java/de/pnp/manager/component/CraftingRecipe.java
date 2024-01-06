@@ -2,6 +2,7 @@ package de.pnp.manager.component;
 
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
 import de.pnp.manager.server.database.CraftingRecipeRepository;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.Collection;
@@ -38,19 +39,21 @@ public class CraftingRecipe extends DatabaseObject {
      * The product of this {@link CraftingRecipe}
      */
     @NotNull
+    @Valid
     private final ItemRecipeEntry product;
 
     /**
      * The side-product of this {@link CraftingRecipe}
      */
     @Nullable
+    @Valid
     private final ItemRecipeEntry sideProduct;
 
     /**
      * The materials needed to use this {@link CraftingRecipe}
      */
     @NotEmpty
-    private final Collection<IRecipeEntry> materials;
+    private final Collection<@Valid IRecipeEntry> materials;
 
     public CraftingRecipe(ObjectId id, String profession, String requirement,
         String otherCircumstances, ItemRecipeEntry product, @Nullable ItemRecipeEntry sideProduct,

@@ -1,6 +1,6 @@
 package de.pnp.manager.server.controller.backup;
 
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.RepositoryBase;
 import org.bson.Document;
 

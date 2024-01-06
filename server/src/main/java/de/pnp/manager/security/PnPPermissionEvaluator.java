@@ -1,6 +1,6 @@
 package de.pnp.manager.security;
 
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import java.io.Serializable;
 import org.springframework.security.access.PermissionEvaluator;

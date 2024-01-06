@@ -21,7 +21,7 @@ public class ItemStackController {
      * @return whether the {@link IDamageableEquipment equipment} is not broken and can be used.
      */
     public boolean applyWearByUsage(String universe, IDamageableEquipment equipment, int usages) {
-        int wearFactor = universeRepository.getSetting(universe).wearFactor();
+        int wearFactor = universeRepository.getSetting(universe).getWearFactor();
         if (wearFactor == -1) {
             return true;
         }

@@ -3,11 +3,11 @@ package de.pnp.manager.server.controller.backup;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.Spell;
-import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;

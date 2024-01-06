@@ -1,8 +1,10 @@
-package de.pnp.manager.component;
+package de.pnp.manager.component.universe;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.server.database.UniverseRepository;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
@@ -35,6 +37,8 @@ public class Universe {
     /**
      * The settings of the {@link Universe}
      */
+    @Valid
+    @NotNull
     private final UniverseSettings settings;
 
     public Universe(String name, String displayName) {
@@ -79,14 +83,4 @@ public class Universe {
         return Objects.hash(getName(), getDisplayName(), getSettings());
     }
 
-    /**
-     * The settings of the {@link Universe}.
-     */
-    public record UniverseSettings(int wearFactor) {
-
-        /**
-         * The default settings
-         */
-        public static final UniverseSettings DEFAULT = new UniverseSettings(10);
-    }
 }

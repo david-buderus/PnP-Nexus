@@ -1,6 +1,5 @@
 package de.pnp.manager.utils;
 
-import de.pnp.manager.component.Universe;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
@@ -12,6 +11,7 @@ import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -229,7 +229,7 @@ public class TestItemBuilder extends TestBuilderBase {
         if (shouldGetPersisted) {
             return itemRepository.insert(universe, item);
         }
-         return item;
+        return item;
     }
 
     /**

@@ -3,7 +3,7 @@ package de.pnp.manager.server.service;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseOwner;
@@ -11,6 +11,7 @@ import de.pnp.manager.security.UniverseRead;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,8 @@ public class UniverseService {
     @PostMapping
     @PreAuthorize("hasRole('" + SecurityConstants.UNIVERSE_CREATOR + "')")
     @Operation(summary = "Create a universe", operationId = "createUniverse")
-    public Universe createUniverse(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Universe universe) {
+    public Universe createUniverse(@AuthenticationPrincipal UserDetails userDetails,
+        @Valid @RequestBody Universe universe) {
         Universe persistedUniverse = universeRepository.insert(universe);
         userDetailsRepository.addGrantedAuthority(userDetails.getUsername(),
             GrantedUniverseAuthority.ownerAuthority(persistedUniverse.getName()));
@@ -93,7 +95,7 @@ public class UniverseService {
     @PutMapping("{universe}")
     @UniverseOwner
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
-    public Universe updateUniverse(@PathVariable String universe, @RequestBody Universe newUniverse) {
+    public Universe updateUniverse(@PathVariable String universe, @Valid @RequestBody Universe newUniverse) {
         if (!Objects.equals(newUniverse.getName(), universe)) {
             throw new ResponseStatusException(BAD_REQUEST, "The universe path does not match the given universe name");
         }

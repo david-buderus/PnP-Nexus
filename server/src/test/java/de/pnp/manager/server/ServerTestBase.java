@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.utils.TestUtils;

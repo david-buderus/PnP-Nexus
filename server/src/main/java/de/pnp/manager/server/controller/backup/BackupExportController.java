@@ -2,7 +2,7 @@ package de.pnp.manager.server.controller.backup;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.UniverseRepository;
 import java.io.IOException;

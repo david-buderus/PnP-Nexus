@@ -81,17 +81,20 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The rarity of this item.
      */
+    @NotNull
     protected final ERarity rarity;
 
     /**
      * The average price of this item.
      */
+    @NotNull
     @PositiveOrZero
     protected final int vendorPrice;
 
     /**
      * The tier of this item. A higher tier indicates a better item.
      */
+    @NotNull
     @Positive
     protected final int tier;
 
@@ -110,6 +113,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     /**
      * The maximum amount of this item that can be contained in one {@link ItemStack}.
      */
+    @NotNull
     @Positive
     protected final int maximumStackSize;
 
@@ -118,6 +122,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * <p>
      * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
      */
+    @NotNull
     @PositiveOrZero
     protected final int minimumStackSize;
 

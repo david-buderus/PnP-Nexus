@@ -1,17 +1,21 @@
 package de.pnp.manager.main;
 
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.*;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableMap;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 
 public abstract class TypTranslation {
 
-    private static final ObservableMap<String, ObservableSet<String>> translationMap = FXCollections.observableMap(new HashMap<>());
+    public static final ObservableMap<String, ObservableSet<String>> translationMap = FXCollections.observableMap(
+        new HashMap<>());
     public static final ListProperty<String> allTypes = new SimpleListProperty<>(FXCollections.observableArrayList());
 
     static {

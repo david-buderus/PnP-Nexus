@@ -32,3 +32,6 @@ bin/
 src/test/resources/Welteninhalt.laccdb
 
 local.properties
+
+# webapp
+webapp/dist

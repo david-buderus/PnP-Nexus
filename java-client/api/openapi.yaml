@@ -1,0 +1,3221 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- description: Generated server url
+  url: http://localhost:8080
+paths:
+  /api/authentication/current-user:
+    get:
+      operationId: getUsername
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                type: string
+          description: OK
+      summary: Returns the username of the authenticated user
+      tags:
+      - authentication-service
+      x-accepts: '*/*'
+  /api/universes:
+    get:
+      operationId: getAllUniverses
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Universe'
+                type: array
+          description: OK
+      summary: Get all Universes
+      tags:
+      - universe-service
+      x-accepts: '*/*'
+    post:
+      operationId: createUniverse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Universe'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Universe'
+          description: OK
+      summary: Create a universe
+      tags:
+      - universe-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/universes/{universe}:
+    delete:
+      operationId: deleteUniverse
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a universe
+      tags:
+      - universe-service
+      x-accepts: application/json
+    get:
+      operationId: getUniverse
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Universe'
+          description: OK
+      summary: Get a universe
+      tags:
+      - universe-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateUniverse
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Universe'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Universe'
+          description: OK
+      summary: Update a universe
+      tags:
+      - universe-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/universes/{universe}/permission:
+    delete:
+      operationId: removePermission
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: username
+        required: true
+        schema:
+          type: string
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Removes all access rights to the universe from the given user
+      tags:
+      - universe-service
+      x-accepts: application/json
+    post:
+      operationId: addPermission
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: username
+        required: true
+        schema:
+          type: string
+        style: form
+      - explode: true
+        in: query
+        name: accessPermission
+        required: false
+        schema:
+          default: READ
+          type: string
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Add the given access right to the given user
+      tags:
+      - universe-service
+      x-accepts: application/json
+  /api/users:
+    post:
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PnPUserCreation'
+        required: true
+      responses:
+        "204":
+          description: No Content
+      summary: Create a user
+      tags:
+      - user-service
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/users/{username}:
+    delete:
+      operationId: removeUser
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a user
+      tags:
+      - user-service
+      x-accepts: application/json
+    get:
+      operationId: getUser
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PnPUser'
+          description: OK
+      summary: Get a user
+      tags:
+      - user-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateUser
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PnPUser'
+        required: true
+      responses:
+        "204":
+          description: No Content
+      summary: Updates a user
+      tags:
+      - user-service
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/users/{username}/password:
+    post:
+      operationId: updatePassword
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+        required: true
+      responses:
+        "204":
+          description: No Content
+      summary: Updates the password of a user
+      tags:
+      - user-service
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/users/{username}/permissions:
+    get:
+      operationId: getPermissions
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/getPermissions_200_response_inner'
+                type: array
+          description: OK
+      summary: Gets the permissions of a user
+      tags:
+      - user-service
+      x-accepts: '*/*'
+    post:
+      operationId: updatePermissions
+      parameters:
+      - explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/getPermissions_200_response_inner'
+              type: array
+        required: true
+      responses:
+        "204":
+          description: No Content
+      summary: Updates the permissions of a user
+      tags:
+      - user-service
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/{universe}/item-type-translations:
+    delete:
+      operationId: deleteAllItemTypeTranslations
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - item-type-translation-service
+      x-accepts: application/json
+    get:
+      operationId: getAllItemTypeTranslations
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/ItemTypeTranslation'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - item-type-translation-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllItemTypeTranslations
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/ItemTypeTranslation'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/ItemTypeTranslation'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - item-type-translation-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/item-type-translations/{id}:
+    delete:
+      operationId: deleteItemTypeTranslation
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - item-type-translation-service
+      x-accepts: application/json
+    get:
+      operationId: getItemTypeTranslation
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemTypeTranslation'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - item-type-translation-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateItemTypeTranslation
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemTypeTranslation'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemTypeTranslation'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - item-type-translation-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/item-types:
+    delete:
+      operationId: deleteAllItemTypes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - item-type-service
+      x-accepts: application/json
+    get:
+      operationId: getAllItemTypes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/ItemType'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - item-type-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllItemTypes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/ItemType'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/ItemType'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - item-type-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/item-types/{id}:
+    delete:
+      operationId: deleteItemType
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - item-type-service
+      x-accepts: application/json
+    get:
+      operationId: getItemType
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemType'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - item-type-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateItemType
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemType'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ItemType'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - item-type-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/items:
+    delete:
+      operationId: deleteAllItems
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - item-service
+      x-accepts: application/json
+    get:
+      operationId: getAllItems
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/getAllItems_200_response_inner'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - item-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllItems
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/getAllItems_200_response_inner'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/getAllItems_200_response_inner'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - item-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/items/{id}:
+    delete:
+      operationId: deleteItem
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - item-service
+      x-accepts: application/json
+    get:
+      operationId: getItem
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/getAllItems_200_response_inner'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - item-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateItem
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/getAllItems_200_response_inner'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/getAllItems_200_response_inner'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - item-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/upgrade-recipes:
+    delete:
+      operationId: deleteAllUpgradeRecipes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - upgrade-recipe-service
+      x-accepts: application/json
+    get:
+      operationId: getAllUpgradeRecipes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/UpgradeRecipe'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - upgrade-recipe-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllUpgradeRecipes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/UpgradeRecipe'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/UpgradeRecipe'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - upgrade-recipe-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/upgrade-recipes/{id}:
+    delete:
+      operationId: deleteUpgradeRecipe
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - upgrade-recipe-service
+      x-accepts: application/json
+    get:
+      operationId: getUpgradeRecipe
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UpgradeRecipe'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - upgrade-recipe-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateUpgradeRecipe
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpgradeRecipe'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/UpgradeRecipe'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - upgrade-recipe-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/upgrades:
+    delete:
+      operationId: deleteAllUpgrades
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - upgrade-service
+      x-accepts: application/json
+    get:
+      operationId: getAllUpgrades
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Upgrade'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - upgrade-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllUpgrades
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/Upgrade'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Upgrade'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - upgrade-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /api/{universe}/upgrades/{id}:
+    delete:
+      operationId: deleteUpgrade
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - upgrade-service
+      x-accepts: application/json
+    get:
+      operationId: getUpgrade
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Upgrade'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - upgrade-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateUpgrade
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Upgrade'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Upgrade'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - upgrade-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{destination}:
+    get:
+      operationId: getPage
+      parameters:
+      - explode: false
+        in: path
+        name: destination
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/html:
+              schema:
+                type: string
+          description: OK
+      tags:
+      - page-service
+      x-accepts: text/html
+  /{universe}/crafting-recipes:
+    delete:
+      operationId: deleteAllCraftingRecipes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - crafting-recipe-service
+      x-accepts: application/json
+    get:
+      operationId: getAllCraftingRecipes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/CraftingRecipe'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - crafting-recipe-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllCraftingRecipes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/CraftingRecipe'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/CraftingRecipe'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - crafting-recipe-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/crafting-recipes/{id}:
+    delete:
+      operationId: deleteCraftingRecipe
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - crafting-recipe-service
+      x-accepts: application/json
+    get:
+      operationId: getCraftingRecipe
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CraftingRecipe'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - crafting-recipe-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateCraftingRecipe
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CraftingRecipe'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/CraftingRecipe'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - crafting-recipe-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/materials:
+    delete:
+      operationId: deleteAllMaterials
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - material-service
+      x-accepts: application/json
+    get:
+      operationId: getAllMaterials
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Material'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - material-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllMaterials
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/Material'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Material'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - material-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/materials/{id}:
+    delete:
+      operationId: deleteMaterial
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - material-service
+      x-accepts: application/json
+    get:
+      operationId: getMaterial
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Material'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - material-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateMaterial
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Material'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Material'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - material-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/primary-attributes:
+    delete:
+      operationId: deleteAllPrimaryAttributes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - primary-attribute-service
+      x-accepts: application/json
+    get:
+      operationId: getAllPrimaryAttributes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/PrimaryAttribute'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - primary-attribute-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllPrimaryAttributes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/PrimaryAttribute'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/PrimaryAttribute'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - primary-attribute-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/primary-attributes/{id}:
+    delete:
+      operationId: deletePrimaryAttribute
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - primary-attribute-service
+      x-accepts: application/json
+    get:
+      operationId: getPrimaryAttribute
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PrimaryAttribute'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - primary-attribute-service
+      x-accepts: '*/*'
+    put:
+      operationId: updatePrimaryAttribute
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrimaryAttribute'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/PrimaryAttribute'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - primary-attribute-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/secondary-attributes:
+    delete:
+      operationId: deleteAllSecondaryAttributes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - secondary-attribute-service
+      x-accepts: application/json
+    get:
+      operationId: getAllSecondaryAttributes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/SecondaryAttribute'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - secondary-attribute-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllSecondaryAttributes
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/SecondaryAttribute'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/SecondaryAttribute'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - secondary-attribute-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/secondary-attributes/{id}:
+    delete:
+      operationId: deleteSecondaryAttribute
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - secondary-attribute-service
+      x-accepts: application/json
+    get:
+      operationId: getSecondaryAttribute
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SecondaryAttribute'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - secondary-attribute-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateSecondaryAttribute
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecondaryAttribute'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/SecondaryAttribute'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - secondary-attribute-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/spells:
+    delete:
+      operationId: deleteAllSpells
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - spell-service
+      x-accepts: application/json
+    get:
+      operationId: getAllSpells
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Spell'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - spell-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllSpells
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/Spell'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Spell'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - spell-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/spells/{id}:
+    delete:
+      operationId: deleteSpell
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - spell-service
+      x-accepts: application/json
+    get:
+      operationId: getSpell
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Spell'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - spell-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateSpell
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Spell'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Spell'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - spell-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/talents:
+    delete:
+      operationId: deleteAllTalents
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: true
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes all objects with the given ids from the database
+      tags:
+      - talent-service
+      x-accepts: application/json
+    get:
+      operationId: getAllTalents
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: true
+        in: query
+        name: ids
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        style: form
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Talent'
+                type: array
+          description: OK
+      summary: Get all objects from the database
+      tags:
+      - talent-service
+      x-accepts: '*/*'
+    post:
+      operationId: insertAllTalents
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: '#/components/schemas/Talent'
+              type: array
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                items:
+                  $ref: '#/components/schemas/Talent'
+                type: array
+          description: OK
+      summary: Inserts the objects into the database
+      tags:
+      - talent-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+  /{universe}/talents/{id}:
+    delete:
+      operationId: deleteTalent
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No Content
+      summary: Deletes an object from the database
+      tags:
+      - talent-service
+      x-accepts: application/json
+    get:
+      operationId: getTalent
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Talent'
+          description: OK
+      summary: Get an object from the database
+      tags:
+      - talent-service
+      x-accepts: '*/*'
+    put:
+      operationId: updateTalent
+      parameters:
+      - explode: false
+        in: path
+        name: universe
+        required: true
+        schema:
+          type: string
+        style: simple
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Talent'
+        required: true
+      responses:
+        "200":
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Talent'
+          description: OK
+      summary: Updates an object in the database
+      tags:
+      - talent-service
+      x-content-type: application/json
+      x-accepts: '*/*'
+components:
+  schemas:
+    AdditiveUpgradeEffect:
+      allOf:
+      - $ref: '#/components/schemas/UpgradeEffect'
+      - $ref: '#/components/schemas/AdditiveUpgradeEffect_allOf'
+      required:
+      - description
+      - upgradeManipulator
+      type: object
+    Armor:
+      allOf:
+      - $ref: '#/components/schemas/Item'
+      - $ref: '#/components/schemas/Armor_allOf'
+      required:
+      - armor
+      - description
+      - effect
+      - material
+      - maximumStackSize
+      - minimumStackSize
+      - name
+      - note
+      - rarity
+      - requirement
+      - subtype
+      - tier
+      - type
+      - upgradeSlots
+      - vendorPrice
+      - weight
+      type: object
+    CharacterResourceRecipeEntry:
+      allOf:
+      - $ref: '#/components/schemas/IRecipeEntry'
+      - $ref: '#/components/schemas/CharacterResourceRecipeEntry_allOf'
+      type: object
+    CraftingRecipe:
+      example:
+        profession: profession
+        otherCircumstances: otherCircumstances
+        product: null
+        materials:
+        - null
+        - null
+        id: id
+        requirement: requirement
+        sideProduct: null
+      properties:
+        id:
+          type: string
+        materials:
+          items:
+            $ref: '#/components/schemas/CraftingRecipe_materials_inner'
+          type: array
+        otherCircumstances:
+          type: string
+        product:
+          $ref: '#/components/schemas/ItemRecipeEntry'
+        profession:
+          type: string
+        requirement:
+          type: string
+        sideProduct:
+          $ref: '#/components/schemas/ItemRecipeEntry'
+      required:
+      - materials
+      - otherCircumstances
+      - product
+      - profession
+      - requirement
+      type: object
+    CurrencyCalculation:
+      example:
+        calculationEntries:
+        - currencyShortForm: currencyShortForm
+          currency: currency
+          factor: 0
+        - currencyShortForm: currencyShortForm
+          currency: currency
+          factor: 0
+        baseCurrencyShortForm: baseCurrencyShortForm
+        baseCurrency: baseCurrency
+      properties:
+        baseCurrency:
+          type: string
+        baseCurrencyShortForm:
+          type: string
+        calculationEntries:
+          items:
+            $ref: '#/components/schemas/CurrencyCalculationEntry'
+          type: array
+      required:
+      - baseCurrency
+      - baseCurrencyShortForm
+      - calculationEntries
+      type: object
+    CurrencyCalculationEntry:
+      example:
+        currencyShortForm: currencyShortForm
+        currency: currency
+        factor: 0
+      properties:
+        currency:
+          type: string
+        currencyShortForm:
+          type: string
+        factor:
+          format: int32
+          type: integer
+      required:
+      - currency
+      - currencyShortForm
+      type: object
+    GrantedUniverseAuthorityDTO:
+      allOf:
+      - $ref: '#/components/schemas/IGrantedAuthorityDTO'
+      - $ref: '#/components/schemas/GrantedUniverseAuthorityDTO_allOf'
+      required:
+      - permission
+      - universe
+      type: object
+    IGrantedAuthorityDTO:
+      type: object
+    IRecipeEntry:
+      type: object
+    Item:
+      properties:
+        description:
+          type: string
+        effect:
+          type: string
+        id:
+          type: string
+        maximumStackSize:
+          format: int32
+          type: integer
+        minimumStackSize:
+          format: int32
+          type: integer
+        name:
+          type: string
+        note:
+          type: string
+        rarity:
+          enum:
+          - UNKNOWN
+          - COMMON
+          - RARE
+          - EPIC
+          - LEGENDARY
+          - GODLIKE
+          type: string
+        requirement:
+          type: string
+        subtype:
+          $ref: '#/components/schemas/ItemType'
+        tier:
+          format: int32
+          type: integer
+        type:
+          $ref: '#/components/schemas/ItemType'
+        vendorPrice:
+          format: int32
+          type: integer
+      required:
+      - description
+      - effect
+      - maximumStackSize
+      - minimumStackSize
+      - name
+      - note
+      - rarity
+      - requirement
+      - subtype
+      - tier
+      - type
+      - vendorPrice
+      type: object
+    ItemRecipeEntry:
+      allOf:
+      - $ref: '#/components/schemas/IRecipeEntry'
+      - $ref: '#/components/schemas/ItemRecipeEntry_allOf'
+      required:
+      - item
+      type: object
+    ItemType:
+      example:
+        typeRestriction: ITEM
+        name: name
+        id: id
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        typeRestriction:
+          enum:
+          - ITEM
+          - EQUIPMENT
+          - JEWELLERY
+          - WEAPON
+          - DEFENSIVE_ITEM
+          - SHIELD
+          - HANDHELD
+          - ARMOR
+          type: string
+      required:
+      - name
+      - typeRestriction
+      type: object
+    ItemTypeTranslation:
+      example:
+        broaderVariants:
+        - typeRestriction: ITEM
+          name: name
+          id: id
+        - typeRestriction: ITEM
+          name: name
+          id: id
+        id: id
+        type:
+          typeRestriction: ITEM
+          name: name
+          id: id
+      properties:
+        broaderVariants:
+          items:
+            $ref: '#/components/schemas/ItemType'
+          type: array
+          uniqueItems: true
+        id:
+          type: string
+        type:
+          $ref: '#/components/schemas/ItemType'
+      required:
+      - broaderVariants
+      - type
+      type: object
+    Jewellery:
+      allOf:
+      - $ref: '#/components/schemas/Item'
+      - $ref: '#/components/schemas/Jewellery_allOf'
+      required:
+      - description
+      - effect
+      - material
+      - maximumStackSize
+      - minimumStackSize
+      - name
+      - note
+      - rarity
+      - requirement
+      - subtype
+      - tier
+      - type
+      - upgradeSlots
+      - vendorPrice
+      type: object
+    Material:
+      example:
+        name: name
+        id: id
+        items:
+        - amount: 0.8008281904610115
+          item: null
+        - amount: 0.8008281904610115
+          item: null
+      properties:
+        id:
+          type: string
+        items:
+          items:
+            $ref: '#/components/schemas/MaterialItem'
+          type: array
+        name:
+          type: string
+      required:
+      - items
+      - name
+      type: object
+    MaterialItem:
+      example:
+        amount: 0.8008281904610115
+        item: null
+      properties:
+        amount:
+          format: double
+          type: number
+        item:
+          $ref: '#/components/schemas/getAllItems_200_response_inner'
+      required:
+      - item
+      type: object
+    MaterialRecipeEntry:
+      allOf:
+      - $ref: '#/components/schemas/IRecipeEntry'
+      - $ref: '#/components/schemas/MaterialRecipeEntry_allOf'
+      required:
+      - material
+      type: object
+    MultiplicativeUpgradeEffect:
+      allOf:
+      - $ref: '#/components/schemas/UpgradeEffect'
+      - $ref: '#/components/schemas/MultiplicativeUpgradeEffect_allOf'
+      required:
+      - description
+      - upgradeManipulator
+      type: object
+    PasswordChange:
+      properties:
+        newPassword:
+          type: string
+        oldPassword:
+          type: string
+      type: object
+    PnPUser:
+      example:
+        displayName: displayName
+        email: email
+        username: username
+      properties:
+        displayName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+      type: object
+    PnPUserCreation:
+      properties:
+        authorities:
+          items:
+            $ref: '#/components/schemas/getPermissions_200_response_inner'
+          type: array
+        displayName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        username:
+          type: string
+      required:
+      - authorities
+      - displayName
+      - username
+      type: object
+    PrimaryAttribute:
+      example:
+        name: name
+        id: id
+        shortName: shortName
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        shortName:
+          type: string
+      required:
+      - name
+      - shortName
+      type: object
+    PrimaryAttributeDependency:
+      example:
+        primaryAttribute:
+          name: name
+          id: id
+          shortName: shortName
+        factor: 0.8008281904610115
+      properties:
+        factor:
+          format: double
+          type: number
+        primaryAttribute:
+          $ref: '#/components/schemas/PrimaryAttribute'
+      required:
+      - primaryAttribute
+      type: object
+    RoleAuthorityDTO:
+      allOf:
+      - $ref: '#/components/schemas/IGrantedAuthorityDTO'
+      - $ref: '#/components/schemas/RoleAuthorityDTO_allOf'
+      required:
+      - role
+      type: object
+    SecondaryAttribute:
+      example:
+        primaryAttributeDependencies:
+        - primaryAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          factor: 0.8008281904610115
+        - primaryAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          factor: 0.8008281904610115
+        consumable: true
+        name: name
+        id: id
+      properties:
+        consumable:
+          type: boolean
+        id:
+          type: string
+        name:
+          type: string
+        primaryAttributeDependencies:
+          items:
+            $ref: '#/components/schemas/PrimaryAttributeDependency'
+          type: array
+      required:
+      - consumable
+      - name
+      - primaryAttributeDependencies
+      type: object
+    Shield:
+      allOf:
+      - $ref: '#/components/schemas/Item'
+      - $ref: '#/components/schemas/Shield_allOf'
+      required:
+      - armor
+      - description
+      - effect
+      - hit
+      - initiative
+      - material
+      - maximumStackSize
+      - minimumStackSize
+      - name
+      - note
+      - rarity
+      - requirement
+      - subtype
+      - tier
+      - type
+      - upgradeSlots
+      - vendorPrice
+      - weight
+      type: object
+    SimpleUpgradeEffect:
+      allOf:
+      - $ref: '#/components/schemas/UpgradeEffect'
+      required:
+      - description
+      - upgradeManipulator
+      type: object
+    Spell:
+      example:
+        cost: cost
+        castTime: castTime
+        tier: 0
+        effect: effect
+        name: name
+        id: id
+        talents:
+        - firstAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          name: name
+          secondAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          id: id
+          thirdAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          group: group
+        - firstAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          name: name
+          secondAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          id: id
+          thirdAttribute:
+            name: name
+            id: id
+            shortName: shortName
+          group: group
+      properties:
+        castTime:
+          type: string
+        cost:
+          type: string
+        effect:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        talents:
+          items:
+            $ref: '#/components/schemas/Talent'
+          type: array
+        tier:
+          format: int32
+          type: integer
+      required:
+      - castTime
+      - cost
+      - effect
+      - name
+      - talents
+      - tier
+      type: object
+    Talent:
+      example:
+        firstAttribute:
+          name: name
+          id: id
+          shortName: shortName
+        name: name
+        secondAttribute:
+          name: name
+          id: id
+          shortName: shortName
+        id: id
+        thirdAttribute:
+          name: name
+          id: id
+          shortName: shortName
+        group: group
+      properties:
+        firstAttribute:
+          $ref: '#/components/schemas/PrimaryAttribute'
+        group:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        secondAttribute:
+          $ref: '#/components/schemas/PrimaryAttribute'
+        thirdAttribute:
+          $ref: '#/components/schemas/PrimaryAttribute'
+      required:
+      - firstAttribute
+      - group
+      - name
+      - secondAttribute
+      - thirdAttribute
+      type: object
+    Universe:
+      example:
+        settings:
+          currencyCalculation:
+            calculationEntries:
+            - currencyShortForm: currencyShortForm
+              currency: currency
+              factor: 0
+            - currencyShortForm: currencyShortForm
+              currency: currency
+              factor: 0
+            baseCurrencyShortForm: baseCurrencyShortForm
+            baseCurrency: baseCurrency
+          wearFactor: 6
+        displayName: displayName
+        name: name
+      properties:
+        displayName:
+          maxLength: 64
+          minLength: 3
+          type: string
+        name:
+          maxLength: 64
+          minLength: 3
+          type: string
+        settings:
+          $ref: '#/components/schemas/UniverseSettings'
+      required:
+      - displayName
+      - name
+      - settings
+      type: object
+    UniverseSettings:
+      example:
+        currencyCalculation:
+          calculationEntries:
+          - currencyShortForm: currencyShortForm
+            currency: currency
+            factor: 0
+          - currencyShortForm: currencyShortForm
+            currency: currency
+            factor: 0
+          baseCurrencyShortForm: baseCurrencyShortForm
+          baseCurrency: baseCurrency
+        wearFactor: 6
+      properties:
+        currencyCalculation:
+          $ref: '#/components/schemas/CurrencyCalculation'
+        wearFactor:
+          format: int32
+          type: integer
+      required:
+      - currencyCalculation
+      type: object
+    Upgrade:
+      example:
+        effects:
+        - null
+        - null
+        slots: 0
+        name: name
+        id: id
+        vendorPrice: 6
+        target:
+          typeRestriction: ITEM
+          name: name
+          id: id
+      properties:
+        effects:
+          items:
+            $ref: '#/components/schemas/Upgrade_effects_inner'
+          type: array
+        id:
+          type: string
+        name:
+          type: string
+        slots:
+          format: int32
+          type: integer
+        target:
+          $ref: '#/components/schemas/ItemType'
+        vendorPrice:
+          format: int32
+          type: integer
+      required:
+      - effects
+      - name
+      - slots
+      - target
+      - vendorPrice
+      type: object
+    UpgradeEffect:
+      properties:
+        description:
+          type: string
+        upgradeManipulator:
+          enum:
+          - NONE
+          - SLOTS
+          - DAMAGE
+          - HIT
+          - INITIATIVE
+          - ARMOR
+          - WEIGHT
+          type: string
+      required:
+      - description
+      - upgradeManipulator
+      type: object
+    UpgradeRecipe:
+      example:
+        upgrade:
+          effects:
+          - null
+          - null
+          slots: 0
+          name: name
+          id: id
+          vendorPrice: 6
+          target:
+            typeRestriction: ITEM
+            name: name
+            id: id
+        materials:
+        - null
+        - null
+        requiredUpgrades:
+        - effects:
+          - null
+          - null
+          slots: 0
+          name: name
+          id: id
+          vendorPrice: 6
+          target:
+            typeRestriction: ITEM
+            name: name
+            id: id
+        - effects:
+          - null
+          - null
+          slots: 0
+          name: name
+          id: id
+          vendorPrice: 6
+          target:
+            typeRestriction: ITEM
+            name: name
+            id: id
+        id: id
+        requirement: requirement
+      properties:
+        id:
+          type: string
+        materials:
+          items:
+            $ref: '#/components/schemas/CraftingRecipe_materials_inner'
+          type: array
+        requiredUpgrades:
+          items:
+            $ref: '#/components/schemas/Upgrade'
+          type: array
+        requirement:
+          type: string
+        upgrade:
+          $ref: '#/components/schemas/Upgrade'
+      required:
+      - materials
+      - requiredUpgrades
+      - requirement
+      - upgrade
+      type: object
+    Weapon:
+      allOf:
+      - $ref: '#/components/schemas/Item'
+      - $ref: '#/components/schemas/Weapon_allOf'
+      required:
+      - damage
+      - description
+      - dice
+      - effect
+      - hit
+      - initiative
+      - material
+      - maximumStackSize
+      - minimumStackSize
+      - name
+      - note
+      - rarity
+      - requirement
+      - subtype
+      - tier
+      - type
+      - upgradeSlots
+      - vendorPrice
+      type: object
+    getPermissions_200_response_inner:
+      oneOf:
+      - $ref: '#/components/schemas/GrantedUniverseAuthorityDTO'
+      - $ref: '#/components/schemas/RoleAuthorityDTO'
+    getAllItems_200_response_inner:
+      oneOf:
+      - $ref: '#/components/schemas/Item'
+      - $ref: '#/components/schemas/Armor'
+      - $ref: '#/components/schemas/Jewellery'
+      - $ref: '#/components/schemas/Shield'
+      - $ref: '#/components/schemas/Weapon'
+    AdditiveUpgradeEffect_allOf:
+      properties:
+        value:
+          format: float
+          type: number
+      type: object
+      example: null
+    Armor_allOf:
+      properties:
+        armor:
+          format: int32
+          type: integer
+        material:
+          $ref: '#/components/schemas/Material'
+        upgradeSlots:
+          format: int32
+          type: integer
+        weight:
+          format: float
+          type: number
+      type: object
+      example: null
+    CharacterResourceRecipeEntry_allOf:
+      properties:
+        amountOfRequiredUnits:
+          format: float
+          type: number
+        resource:
+          enum:
+          - HEALTH
+          - MANA
+          - MENTAL_HEALTH
+          type: string
+      type: object
+      example: null
+    CraftingRecipe_materials_inner:
+      oneOf:
+      - $ref: '#/components/schemas/CharacterResourceRecipeEntry'
+      - $ref: '#/components/schemas/ItemRecipeEntry'
+      - $ref: '#/components/schemas/MaterialRecipeEntry'
+    GrantedUniverseAuthorityDTO_allOf:
+      properties:
+        permission:
+          type: string
+        universe:
+          type: string
+      type: object
+      example: null
+    ItemRecipeEntry_allOf:
+      properties:
+        amountOfRequiredUnits:
+          format: float
+          type: number
+        item:
+          $ref: '#/components/schemas/getAllItems_200_response_inner'
+      type: object
+      example: null
+    Jewellery_allOf:
+      properties:
+        material:
+          $ref: '#/components/schemas/Material'
+        upgradeSlots:
+          format: int32
+          type: integer
+      type: object
+      example: null
+    MaterialRecipeEntry_allOf:
+      properties:
+        amountOfRequiredUnits:
+          format: float
+          type: number
+        material:
+          $ref: '#/components/schemas/Material'
+      type: object
+      example: null
+    MultiplicativeUpgradeEffect_allOf:
+      properties:
+        factor:
+          format: float
+          type: number
+      type: object
+      example: null
+    RoleAuthorityDTO_allOf:
+      properties:
+        role:
+          type: string
+      type: object
+      example: null
+    Shield_allOf:
+      properties:
+        armor:
+          format: int32
+          type: integer
+        hit:
+          format: int32
+          type: integer
+        initiative:
+          format: float
+          type: number
+        material:
+          $ref: '#/components/schemas/Material'
+        upgradeSlots:
+          format: int32
+          type: integer
+        weight:
+          format: float
+          type: number
+      type: object
+      example: null
+    Upgrade_effects_inner:
+      oneOf:
+      - $ref: '#/components/schemas/AdditiveUpgradeEffect'
+      - $ref: '#/components/schemas/MultiplicativeUpgradeEffect'
+      - $ref: '#/components/schemas/SimpleUpgradeEffect'
+    Weapon_allOf:
+      properties:
+        damage:
+          format: int32
+          type: integer
+        dice:
+          type: string
+        hit:
+          format: int32
+          type: integer
+        initiative:
+          format: float
+          type: number
+        material:
+          $ref: '#/components/schemas/Material'
+        upgradeSlots:
+          format: int32
+          type: integer
+      type: object
+      example: null
+

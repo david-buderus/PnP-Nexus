@@ -1,0 +1,20 @@
+{
+  "universe": "Universe",
+  "items": "Items",
+  "item": "Item",
+  "weapons": "Weapons",
+  "weapon": "Weapon",
+  "shields": "Shields",
+  "shield": "Shield",
+  "armor": "Armor",
+  "jewellery": "Jewellery",
+  "add": "Add",
+  "delete": "Delete",
+  "edit": "Edit",
+  "name": "Name",
+  "rarity": "Rarity",
+  "effect": "Effect",
+  "description": "Description",
+  "price": "Price",
+  "note": "Note"
+}

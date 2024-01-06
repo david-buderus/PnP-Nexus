@@ -15,13 +15,13 @@ import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.validation.Password;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +37,6 @@ import org.springframework.web.server.ResponseStatusException;
  * Service to access {@link UserRepository} and {@link UserDetailsRepository}.
  */
 @RestController
-@Validated
 @RequestMapping("/api/users")
 public class UserService {
 
@@ -54,7 +53,7 @@ public class UserService {
     @AdminRights
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Create a user", operationId = "createUser")
-    public void createUser(@RequestBody PnPUserCreation userCreation) {
+    public void createUser(@Valid @RequestBody PnPUserCreation userCreation) {
         userController.createNewUser(userCreation);
     }
 
@@ -70,7 +69,7 @@ public class UserService {
     @PreAuthorize("hasRole('" + ADMIN + "') || #username == authentication.name")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Updates a user", operationId = "updateUser")
-    public void updateUser(@PathVariable String username, @RequestBody PnPUser user) {
+    public void updateUser(@PathVariable String username, @Valid @RequestBody PnPUser user) {
         if (!Objects.equals(username, user.getUsername())) {
             throw new ResponseStatusException(BAD_REQUEST, "The username of the object does not match.");
         }
@@ -91,7 +90,7 @@ public class UserService {
     @PreAuthorize("#username == authentication.name")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Updates the password of a user", operationId = "updatePassword")
-    public void updatePassword(@PathVariable String username, @RequestBody PasswordChange passwordChange) {
+    public void updatePassword(@PathVariable String username, @Valid @RequestBody PasswordChange passwordChange) {
         userDetailsRepository.updatePassword(username, passwordChange.oldPassword(), passwordChange.newPassword());
     }
 
@@ -100,7 +99,7 @@ public class UserService {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Updates the permissions of a user", operationId = "updatePermissions")
     public void updatePermissions(@PathVariable String username,
-        @RequestBody Collection<IGrantedAuthorityDTO> authorities) {
+        @Valid @RequestBody Collection<IGrantedAuthorityDTO> authorities) {
         userDetailsRepository.updateGrantedAuthority(username,
             authorities.stream().map(IGrantedAuthorityDTO::convert).toList());
     }

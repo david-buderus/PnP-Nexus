@@ -3,6 +3,7 @@ package de.pnp.manager.component.attributes;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.Character;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -26,10 +27,11 @@ public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamed
     @NotBlank
     private final String name;
 
+    @NotNull
     private final boolean consumable;
 
     @NotEmpty
-    private final Collection<PrimaryAttributeDependency> primaryAttributeDependencies;
+    private final Collection<@Valid PrimaryAttributeDependency> primaryAttributeDependencies;
 
     public SecondaryAttribute(ObjectId id, String name, boolean consumable,
         Collection<PrimaryAttributeDependency> primaryAttributeDependencies) {

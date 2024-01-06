@@ -1,6 +1,6 @@
 package de.pnp.manager.server.configurator;
 
-import de.pnp.manager.component.Universe;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.UniverseRepository;
 import java.nio.file.Path;
 import org.springframework.beans.factory.annotation.Autowired;

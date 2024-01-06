@@ -49,13 +49,15 @@ public class UserServiceTest extends ServerTestBase {
 
     private static final String BASE_PATH = "/api/users";
     private static final String USER = "test-user";
+    private static final String USER_PASSWORD = "@@2QTt.ujzKmFVu*";
     private static final String OTHER_USER = "other-user";
+    private static final String OTHER_USER_PASSWORD = "!w84xRx4m_4_jrvb";
     private static final String UNIVERSE = "test-universe";
     private static final String EMAIL = "user@test.com";
-    private static final PnPUserCreation USER_CREATION = new PnPUserCreation(USER, USER, USER,
+    private static final PnPUserCreation USER_CREATION = new PnPUserCreation(USER, USER_PASSWORD, USER,
         EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.readAuthority(UNIVERSE))));
-    private static final PnPUserCreation OTHER_USER_CREATION = new PnPUserCreation(OTHER_USER, OTHER_USER, OTHER_USER,
-        EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.writeAuthority(UNIVERSE))));
+    private static final PnPUserCreation OTHER_USER_CREATION = new PnPUserCreation(OTHER_USER, OTHER_USER_PASSWORD,
+        OTHER_USER, EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.writeAuthority(UNIVERSE))));
 
     @Autowired
     private MockMvc mockMvc;
@@ -141,7 +143,8 @@ public class UserServiceTest extends ServerTestBase {
         void testUpdatePassword() {
             userController.createNewUser(OTHER_USER_CREATION);
 
-            assertForbidden(() -> updatePassword(OTHER_USER, new PasswordChange(OTHER_USER, "OTHER")));
+            assertForbidden(() -> updatePassword(OTHER_USER,
+                new PasswordChange(OTHER_USER_PASSWORD, OTHER_USER_PASSWORD + "CHANGE")));
         }
     }
 
@@ -218,14 +221,16 @@ public class UserServiceTest extends ServerTestBase {
             userController.createNewUser(USER_CREATION);
             userController.createNewUser(OTHER_USER_CREATION);
 
-            assertHttpStatusException(() -> updatePassword(USER, new PasswordChange("FALSE_PASSWORD", "OTHER")),
+            assertHttpStatusException(
+                () -> updatePassword(USER, new PasswordChange("FALSE_PASSWORD", USER_PASSWORD + "CHANGE")),
                 HttpStatus.UNAUTHORIZED);
 
             String oldPassword = userDetailsRepository.loadUserByUsername(USER).getPassword();
-            updatePassword(USER, new PasswordChange(USER, "OTHER"));
+            updatePassword(USER, new PasswordChange(USER_PASSWORD, USER_PASSWORD + "CHANGE"));
             assertThat(userDetailsRepository.loadUserByUsername(USER).getPassword()).isNotEqualTo(oldPassword);
 
-            assertForbidden(() -> updatePassword(OTHER_USER, new PasswordChange(OTHER_USER, "OTHER")));
+            assertForbidden(() -> updatePassword(OTHER_USER,
+                new PasswordChange(OTHER_USER_PASSWORD, OTHER_USER_PASSWORD + "CHANGE")));
         }
     }
 
@@ -235,7 +240,7 @@ public class UserServiceTest extends ServerTestBase {
                     .content(objectMapper.writeValueAsString(userCreation)))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 300) {
+        if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -246,7 +251,7 @@ public class UserServiceTest extends ServerTestBase {
         MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH + "/{username}", username))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 300) {
+        if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -259,7 +264,7 @@ public class UserServiceTest extends ServerTestBase {
                     .content(objectMapper.writeValueAsString(user)))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 300) {
+        if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -270,7 +275,7 @@ public class UserServiceTest extends ServerTestBase {
         MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{username}", username).with(csrf()))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 300) {
+        if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -286,7 +291,7 @@ public class UserServiceTest extends ServerTestBase {
                     .content(objectMapper.writerFor(collectionType).writeValueAsString(authorities)))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 300) {
+        if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -297,7 +302,7 @@ public class UserServiceTest extends ServerTestBase {
         MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH + "/{username}/permissions", username))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 300) {
+        if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 
@@ -310,7 +315,7 @@ public class UserServiceTest extends ServerTestBase {
                     .content(objectMapper.writeValueAsString(passwordChange)))
             .andReturn().getResponse();
 
-        if (response.getStatus() >= 300) {
+        if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
         }
 

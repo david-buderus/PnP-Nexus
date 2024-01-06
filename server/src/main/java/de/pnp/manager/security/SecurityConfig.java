@@ -3,7 +3,7 @@ package de.pnp.manager.security;
 import static de.pnp.manager.security.SecurityConstants.ADMIN_ROLE;
 import static de.pnp.manager.security.SecurityConstants.UNIVERSE_CREATOR_ROLE;
 
-import de.pnp.manager.server.EJvmFlag;
+import de.pnp.manager.EJvmFlag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;

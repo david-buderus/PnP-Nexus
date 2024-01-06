@@ -74,7 +74,9 @@ public class ItemTypeTranslationRepositoryTest extends
         ItemType typeA = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Type A", ETypeRestriction.ITEM));
         ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.WEAPON);
-        ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, typeA, Set.of());
+        ItemType subType = typeRepository.insert(getUniverseName(),
+            new ItemType(null, "SubType", ETypeRestriction.HANDHELD));
+        ItemTypeTranslation typeTranslation = new ItemTypeTranslation(null, typeA, Set.of(subType));
 
         testRepositoryLink(ItemTypeTranslation::getType, typeRepository, typeTranslation, typeA, typeB);
     }

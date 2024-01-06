@@ -4,6 +4,7 @@ import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -16,12 +17,14 @@ public class Armor extends EquipableItem implements IDefensiveItem {
     /**
      * The defense value of this armor.
      */
+    @NotNull
     @PositiveOrZero
     protected final int armor;
 
     /**
      * The weight of this armor.
      */
+    @NotNull
     @PositiveOrZero
     protected final float weight;
 

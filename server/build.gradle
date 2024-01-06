@@ -80,8 +80,20 @@ openApi {
 
 openApiGenerate {
     generatorName.set("typescript-axios")
-    inputSpec.set("$rootDir/docs/swagger.json")
     outputDir.set("$rootDir/webapp/src/api")
+    inputSpec.set("$rootDir/docs/swagger.json")
+}
+
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
+tasks.register("generateJavaClient", GenerateTask) {
+    generateJavaClient.generatorName.set("java")
+    generateJavaClient.library.set("feign")
+    generateJavaClient.inputSpec.set("$rootDir/docs/swagger.json")
+    generateJavaClient.outputDir.set("$rootDir/java-client")
+    generateJavaClient.modelNameSuffix.set("Dto")
+    generateJavaClient.groupId.set("de.pnp.api")
+    generateJavaClient.id.set("javaClient")
 }
 
 tasks.register("playwright", JavaExec) {
