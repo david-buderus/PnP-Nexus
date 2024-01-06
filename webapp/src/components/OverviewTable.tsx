@@ -132,7 +132,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   const [orderBy, setOrderBy] = React.useState<keyof T>(sortBy);
   const [selected, setSelected] = props.selectedState;
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false); // I may want to change this to be toggleble
+  const [dense, _] = React.useState(false); // I may want to change this to be toggleble
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [filters, setFilters] = React.useState(Array(columns.length).fill(""));
 
