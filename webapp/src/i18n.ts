@@ -5,7 +5,7 @@ import { initReactI18next } from "react-i18next";
 i18n.use(Backend).use(initReactI18next).init({
     lng: "en",
     fallbackLng: "en",
-    ns: ['translation', 'enum', 'item'],
+    ns: ['translation', 'enum', 'item', 'error'],
     backend: {
         loadPath: '/locales/{{lng}}/{{ns}}.json'
     }

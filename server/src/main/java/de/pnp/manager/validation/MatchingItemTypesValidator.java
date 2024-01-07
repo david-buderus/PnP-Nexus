@@ -17,12 +17,12 @@ public class MatchingItemTypesValidator implements ConstraintValidator<MatchingI
         context.disableDefaultConstraintViolation();
         boolean valid = true;
 
-        if (!item.getType().getTypeRestriction().applicableOn(item)) {
+        if (item.getType() != null && !item.getType().getTypeRestriction().applicableOn(item)) {
             context.buildConstraintViolationWithTemplate(getMessageTemplate(item.getType().getTypeRestriction()))
                 .addPropertyNode("type").addConstraintViolation();
             valid = false;
         }
-        if (!item.getSubtype().getTypeRestriction().applicableOn(item)) {
+        if (item.getSubtype() != null && !item.getSubtype().getTypeRestriction().applicableOn(item)) {
             context.buildConstraintViolationWithTemplate(getMessageTemplate(item.getSubtype().getTypeRestriction()))
                 .addPropertyNode("subtype").addConstraintViolation();
             valid = false;

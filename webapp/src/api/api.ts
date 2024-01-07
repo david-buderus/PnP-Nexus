@@ -124,10 +124,10 @@ export interface Armor {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Armor
      */
-    'rarity': ArmorRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -184,16 +184,6 @@ export interface Armor {
     'weight': number;
 }
 
-export const ArmorRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type ArmorRarityEnum = typeof ArmorRarityEnum[keyof typeof ArmorRarityEnum];
 
 /**
  * 
@@ -388,6 +378,24 @@ export interface CurrencyCalculationEntry {
     'factor'?: number;
 }
 /**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ERarity = {
+    Common: 'COMMON',
+    Uncommon: 'UNCOMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type ERarity = typeof ERarity[keyof typeof ERarity];
+
+
+/**
  * @type GetAllItems200ResponseInner
  * @export
  */
@@ -487,10 +495,10 @@ export interface Item {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Item
      */
-    'rarity': ItemRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -523,16 +531,6 @@ export interface Item {
     'vendorPrice': number;
 }
 
-export const ItemRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type ItemRarityEnum = typeof ItemRarityEnum[keyof typeof ItemRarityEnum];
 
 /**
  * 
@@ -686,10 +684,10 @@ export interface Jewellery {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Jewellery
      */
-    'rarity': JewelleryRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -734,16 +732,6 @@ export interface Jewellery {
     'upgradeSlots': number;
 }
 
-export const JewelleryRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type JewelleryRarityEnum = typeof JewelleryRarityEnum[keyof typeof JewelleryRarityEnum];
 
 /**
  * 
@@ -1129,10 +1117,10 @@ export interface Shield {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Shield
      */
-    'rarity': ShieldRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -1201,16 +1189,6 @@ export interface Shield {
     'weight': number;
 }
 
-export const ShieldRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type ShieldRarityEnum = typeof ShieldRarityEnum[keyof typeof ShieldRarityEnum];
 
 /**
  * 
@@ -1591,10 +1569,10 @@ export interface Weapon {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Weapon
      */
-    'rarity': WeaponRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -1663,16 +1641,6 @@ export interface Weapon {
     'upgradeSlots': number;
 }
 
-export const WeaponRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type WeaponRarityEnum = typeof WeaponRarityEnum[keyof typeof WeaponRarityEnum];
 
 /**
  * 

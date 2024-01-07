@@ -3411,6 +3411,17 @@
           }
         }
       },
+      "ERarity": {
+        "type": "string",
+        "enum": [
+          "COMMON",
+          "UNCOMMON",
+          "RARE",
+          "EPIC",
+          "LEGENDARY",
+          "GODLIKE"
+        ]
+      },
       "GrantedUniverseAuthorityDTO": {
         "required": [
           "permission",
@@ -3481,15 +3492,7 @@
             "type": "string"
           },
           "rarity": {
-            "type": "string",
-            "enum": [
-              "UNKNOWN",
-              "COMMON",
-              "RARE",
-              "EPIC",
-              "LEGENDARY",
-              "GODLIKE"
-            ]
+            "$ref": "#/components/schemas/ERarity"
           },
           "requirement": {
             "type": "string"
