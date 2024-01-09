@@ -82,23 +82,6 @@ export function ItemManipulation(props: ItemManipulationProps) {
     useEffect(() => {
         let newItem: SomeItem;
         switch (itemClass) {
-            case "item":
-                newItem = {
-                    id: item?.id,
-                    name: name,
-                    type: type,
-                    subtype: subtype,
-                    rarity: rarity,
-                    tier: Number(tier),
-                    effect: effect,
-                    description: description,
-                    requirement: requirement,
-                    vendorPrice: Number(price),
-                    minimumStackSize: Number(minStackSize),
-                    maximumStackSize: Number(maxStackSize),
-                    note: note
-                };
-                break;
             case "weapon":
                 newItem = {
                     id: item?.id,
@@ -186,9 +169,24 @@ export function ItemManipulation(props: ItemManipulationProps) {
                 };
                 break;
             default:
-                break;
+                newItem = {
+                id: item?.id,
+                name: name,
+                type: type,
+                subtype: subtype,
+                rarity: rarity,
+                tier: Number(tier),
+                effect: effect,
+                description: description,
+                requirement: requirement,
+                vendorPrice: Number(price),
+                minimumStackSize: Number(minStackSize),
+                maximumStackSize: Number(maxStackSize),
+                note: note
+            };
+            break;
         }
-        newItem["@type"] = itemClass;
+        newItem["@type"] = itemClass !== "item" ? itemClass : 'Item';
         setItem(newItem);
     }, [itemClass, name, type, subtype, rarity, tier, effect, description, requirement, price, minStackSize, maxStackSize, note, material, upgradeSlots, hit, initiative, weight, armor, damage, dice]);
 

@@ -34,7 +34,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
     @JsonSubTypes.Type(value = Armor.class, name = "armor"),
     @JsonSubTypes.Type(value = Jewellery.class, name = "jewellery"),
 })
-@JsonTypeName("item")
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @MatchingItemTypes
 @MatchingStackSizes
