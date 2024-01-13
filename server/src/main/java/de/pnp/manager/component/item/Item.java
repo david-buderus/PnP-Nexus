@@ -3,7 +3,6 @@ package de.pnp.manager.component.item;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.inventory.ItemStack;
@@ -29,10 +28,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * A concrete item in the universe.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = Weapon.class, name = "weapon"),
-    @JsonSubTypes.Type(value = Shield.class, name = "shield"),
-    @JsonSubTypes.Type(value = Armor.class, name = "armor"),
-    @JsonSubTypes.Type(value = Jewellery.class, name = "jewellery"),
+    @JsonSubTypes.Type(value = Weapon.class, name = "Weapon"),
+    @JsonSubTypes.Type(value = Shield.class, name = "Shield"),
+    @JsonSubTypes.Type(value = Armor.class, name = "Armor"),
+    @JsonSubTypes.Type(value = Jewellery.class, name = "Jewellery"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @MatchingItemTypes

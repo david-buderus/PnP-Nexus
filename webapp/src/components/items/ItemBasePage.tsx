@@ -2,8 +2,7 @@ import { ItemClass, SomeItem } from "../Constants";
 import OverviewTable, { Column } from '../../components/OverviewTable';
 import { getUniverseContext, getUserContext } from '../../components/PageBase';
 import { useEffect, useState } from 'react';
-import { Item, ItemServiceApi, ItemType, ItemTypeServiceApi, Material, MaterialServiceApi, Universe } from '../../api';
-import { currencyToHumanReadable } from '../../components/Utils';
+import { ItemServiceApi, ItemType, ItemTypeServiceApi, Material, MaterialServiceApi, Universe } from '../../api';
 import { Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ItemCreationDialog } from '../../components/items/ItemCreationDialog';
@@ -16,6 +15,7 @@ const MATERIAL_API = new MaterialServiceApi();
 
 /** Props needed for the items page */
 interface ItemBasePageProps<I> {
+    /** Item class which will be shown */
     itemClass: ItemClass;
     /** The columns shown on the item page */
     columns: Column<I>[];
@@ -24,7 +24,7 @@ interface ItemBasePageProps<I> {
 async function fetchItems<I>(universe: Universe, itemClass: ItemClass): Promise<I[]> {
     if (universe === null) {
         return [];
-    } else if (itemClass !== "item") {
+    } else if (itemClass !== "Item") {
         return (await ITEM_API.getAllItems(universe.name)).data.filter(item => item["@type"] === itemClass).map(item => item as I);
     } else {
         return (await ITEM_API.getAllItems(universe.name)).data.map(item => item as I);
@@ -55,8 +55,9 @@ async function fetchMaterials(universe: Universe): Promise<Material[]> {
     }
 }
 
+/** Table to show specific item class */
 export function ItemBasePage<I extends SomeItem>(props: ItemBasePageProps<I>) {
-    const { itemClass, columns} = props;
+    const { itemClass, columns } = props;
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();
     const { userPermissions } = getUserContext();
@@ -120,8 +121,8 @@ export function ItemBasePage<I extends SomeItem>(props: ItemBasePageProps<I>) {
                             setOpenItemEditDialog(false);
                         }}
                         itemTypes={itemTypes}
-                        materials={materials} 
-                        itemToEdit={openItemEditDialog ? items.find(item => item.id === selected[0]) : null}                    
+                        materials={materials}
+                        itemToEdit={openItemEditDialog ? items.find(item => item.id === selected[0]) : null}
                     />
                     <ConfirmationDialog
                         title={t('items:confirmDeletionTitle')}

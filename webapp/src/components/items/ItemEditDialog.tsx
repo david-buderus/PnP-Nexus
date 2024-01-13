@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogTitle, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { Button, Dialog, DialogTitle, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ItemServiceApi, ItemType, Material } from "../../api";
 import { useState } from "react";
@@ -14,7 +14,7 @@ interface ItemCreationDialogProps {
     /** If the dialog is open */
     open: boolean;
     /** On close handler */
-    onClose: (event: {}, reason: "backdropClick" | "escapeKeyDown"|"succesful") => void;
+    onClose: (event: unknown, reason: "backdropClick" | "escapeKeyDown" | "succesful") => void;
     /** The known item types */
     itemTypes: ItemType[];
     /** The known materials */
@@ -31,12 +31,12 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
 
     const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
     const [item, setItem] = useState(itemToEdit);
-    const itemClass = open? item["@type"] as ItemClass : "item";
+    const itemClass = open ? item["@type"] as ItemClass : "Item";
 
     return <Dialog open={open} onClose={onClose} fullWidth>
         <DialogTitle>Set backup account</DialogTitle>
         <Stack spacing={2} className="p-2">
-            <ItemManipulation 
+            <ItemManipulation
                 itemTypes={itemTypes}
                 materials={materials}
                 itemClass={itemClass}
@@ -46,10 +46,10 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
             />
             <div className='w-full pt-2'>
                 <div className='float-right'>
-                    <Button variant="contained" color="success" onClick={ () => {
+                    <Button variant="contained" color="success" onClick={() => {
                         ITEM_API.updateItem(activeUniverse.name, item.id, item).then(() => onClose({}, "succesful")).catch((err: Error | AxiosError) => {
-                            if (!axios.isAxiosError(err))  {
-                              return;
+                            if (!axios.isAxiosError(err)) {
+                                return;
                             }
                             if (err.response.status !== 400) {
                                 return;
@@ -60,7 +60,7 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
                                 errorMap[key] = value;
                             });
                             setErrors(errorMap);
-                          });
+                        });
                     }}>
                         {t("edit")}
                     </Button>

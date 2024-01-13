@@ -1,8 +1,8 @@
-import { Box, Checkbox, FormControlLabel, FormGroup, Grid, IconButton, Paper, Popover, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, IconButton, Paper, Popover, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
 import React, { Dispatch, SetStateAction } from "react";
 import { IoSettingsSharp } from "react-icons/io5";
 
-type Getter<T> = (type: T) => string | number
+type Getter<T> = (type: T) => string | number;
 
 /** Description of a column */
 export interface Column<T> {
@@ -11,7 +11,7 @@ export interface Column<T> {
   /** Field of T represented by this column */
   id: keyof T;
   /** The result of the getter will be shown in the table cell */
-  getter: Getter<T>
+  getter: Getter<T>;
   /** If this field shows a number. Default: false */
   numeric?: boolean;
   /** If the column is visible at the start. Default: true */
@@ -29,7 +29,7 @@ interface OverviewTableProps<T> {
   /** The columns shown in the table */
   columns: Column<T>[];
   /** Setter and getter to set/get the currently selcted data */
-  selectedState: [readonly T[keyof T][], Dispatch<SetStateAction<readonly T[keyof T][]>>]
+  selectedState: [readonly T[keyof T][], Dispatch<SetStateAction<readonly T[keyof T][]>>];
 }
 
 /** Sorting  order for the table */
@@ -54,7 +54,7 @@ interface TableProps<T> {
   /** The number of rows shown */
   rowCount: number;
   /** Eventhandler */
-  filterUpdate: (value: string, index: number) => void
+  filterUpdate: (value: string, index: number) => void;
 }
 
 function descendingComparator<T>(a: T, b: T, getter: Getter<T>) {

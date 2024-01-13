@@ -14,12 +14,12 @@ interface RaritySelectProps {
     /** indicates whether the selection is an error case */
     error?: boolean;
     /** if it fills the full width */
-    fullWidth?: boolean
+    fullWidth?: boolean;
 }
 
 /** A select for rarity */
 export function RaritySelect(props: React.PropsWithChildren<RaritySelectProps>) {
-    const { value, onChange, helperText, error, ...rest} = props;
+    const { value, onChange, helperText, error, ...rest } = props;
     const { t } = useTranslation();
 
     return <FormControl fullWidth>
@@ -35,6 +35,6 @@ export function RaritySelect(props: React.PropsWithChildren<RaritySelectProps>) 
                 Object.values(ERarity).map(rarity => <MenuItem key={rarity} value={rarity}>{t("enum:" + rarity.toLowerCase())}</MenuItem>)
             }
         </Select>
-        { helperText !== undefined ? <FormHelperText error={error}>{helperText}</FormHelperText> : '' }
+        {helperText !== undefined ? <FormHelperText error={error}>{helperText}</FormHelperText> : ''}
     </FormControl>;
 }

@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogTitle, FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material";
+import { Button, Dialog, DialogTitle, FormControl, MenuItem, Select, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ItemServiceApi, ItemType, Material } from "../../api";
 import { useState } from "react";
@@ -14,7 +14,7 @@ interface ItemCreationDialogProps {
     /** If the dialog is open */
     open: boolean;
     /** On close handler */
-    onClose: (event: {}, reason: "backdropClick" | "escapeKeyDown"|"succesful") => void;
+    onClose: (event: unknown, reason: "backdropClick" | "escapeKeyDown" | "succesful") => void;
     /** The known item types */
     itemTypes: ItemType[];
     /** The known materials */
@@ -28,7 +28,7 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
     const { open, onClose, itemTypes, materials, initialItemsClass } = props;
     const { activeUniverse } = getUniverseContext();
     const { t } = useTranslation();
-    
+
     const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
     const [item, setItem] = useState<SomeItem>(null);
     const [itemClass, setItemClass] = useState<ItemClass>(initialItemsClass);
@@ -41,10 +41,10 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
                     value={itemClass}
                     onChange={event => { setItemClass(event.target.value as ItemClass); }}
                 >
-                    { ["item", "weapon", "shield", "armor", "jewellery"].map(clazz => <MenuItem key={clazz} value={clazz}>{t(clazz)}</MenuItem>)}
+                    {["Item", "Weapon", "Shield", "Armor", "Jewellery"].map(clazz => <MenuItem key={clazz} value={clazz}>{t(clazz.toLowerCase())}</MenuItem>)}
                 </Select>
             </FormControl>
-            <ItemManipulation 
+            <ItemManipulation
                 itemTypes={itemTypes}
                 materials={materials}
                 itemClass={itemClass}
@@ -53,10 +53,10 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
             />
             <div className='w-full pt-2'>
                 <div className='float-right'>
-                    <Button variant="contained" color="success" onClick={ () => {
+                    <Button variant="contained" color="success" onClick={() => {
                         ITEM_API.insertAllItems(activeUniverse.name, [item]).then(() => onClose({}, "succesful")).catch((err: Error | AxiosError) => {
-                            if (!axios.isAxiosError(err))  {
-                              return;
+                            if (!axios.isAxiosError(err)) {
+                                return;
                             }
                             if (err.response.status !== 400) {
                                 return;
@@ -67,7 +67,7 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
                                 errorMap[key.substring("insertAll.objects[0].".length)] = value;
                             });
                             setErrors(errorMap);
-                          });
+                        });
                     }}>
                         {t("add")}
                     </Button>

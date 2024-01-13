@@ -1,7 +1,8 @@
 import { Universe } from "../api";
 
+/** Helper class to calculate human readable currency */
 interface CurrencyCalculationStep {
-    shortForm:  string;
+    shortForm: string;
     factor: number;
 }
 
@@ -27,7 +28,7 @@ export function currencyToHumanReadable(universe: Universe, amount: number): str
         return amount + currencyCalculation.baseCurrencyShortForm;
     }
 
-    const calcuationSteps: CurrencyCalculationStep[] = [{shortForm: currencyCalculation.baseCurrencyShortForm, factor: 1}];
+    const calcuationSteps: CurrencyCalculationStep[] = [{ shortForm: currencyCalculation.baseCurrencyShortForm, factor: 1 }];
 
     for (const entry of currencyCalculation.calculationEntries) {
         calcuationSteps.unshift({
@@ -38,13 +39,13 @@ export function currencyToHumanReadable(universe: Universe, amount: number): str
 
     let result = "";
     let remainingAmount = amount;
-    
+
     for (const step of calcuationSteps) {
         const coins = Math.floor(remainingAmount / step.factor);
         if (coins > 0) {
-            result += " " + coins + step.shortForm; 
+            result += " " + coins + step.shortForm;
         }
-        remainingAmount = remainingAmount % step.factor;
+        remainingAmount %= step.factor;
 
         if (remainingAmount <= 0) {
             break;

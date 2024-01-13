@@ -1,21 +1,26 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
-import { Armor, ERarity, Item, ItemType, Jewellery, Material, Weapon } from "../../api";
+import { ERarity, ItemType, Material } from "../../api";
 import { useEffect, useState } from "react";
 import { RaritySelect } from "../inputs/RaritySelect";
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../PageBase";
 import { currencyToHumanReadable } from "../Utils";
-import { TFunction, init } from "i18next";
+import { TFunction } from "i18next";
 import { ItemClass, SomeItem } from "../Constants";
 
 /** Props needed for the item manipulation */
 interface ItemManipulationProps {
     /** The known item types */
     itemTypes: ItemType[];
+    /** The known materials */
     materials: Material[];
+    /** The item class which gets manipulated */
     itemClass: ItemClass;
+    /** The current errors */
     errors: Map<string, string>;
+    /** The optional item which can get manipulated */
     item?: SomeItem;
+    /** Hook to the current item */
     setItem: (item: SomeItem) => void;
 }
 
@@ -34,7 +39,7 @@ function errorMessage(id: string, errorMap: Map<string, string>, int?: boolean, 
                 id: id,
                 error: true,
                 helperText: t('error:notInteger')
-            }
+            };
         }
     }
     if (errorMap[id]) {
@@ -49,6 +54,9 @@ function errorMessage(id: string, errorMap: Map<string, string>, int?: boolean, 
     };
 }
 
+/**
+ * All text fields needed to manipulate/create items.
+ */
 export function ItemManipulation(props: ItemManipulationProps) {
     const { itemTypes, materials, itemClass, errors, item, setItem } = props;
     const { t } = useTranslation();
@@ -82,7 +90,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
     useEffect(() => {
         let newItem: SomeItem;
         switch (itemClass) {
-            case "weapon":
+            case "Weapon":
                 newItem = {
                     id: item?.id,
                     name: name,
@@ -105,7 +113,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                     dice: dice
                 };
                 break;
-            case "shield":
+            case "Shield":
                 newItem = {
                     id: item?.id,
                     name: name,
@@ -128,7 +136,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                     armor: Number(armor)
                 };
                 break;
-            case "armor":
+            case "Armor":
                 newItem = {
                     id: item?.id,
                     name: name,
@@ -149,7 +157,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                     armor: Number(armor)
                 };
                 break;
-            case "jewellery":
+            case "Jewellery":
                 newItem = {
                     id: item?.id,
                     name: name,
@@ -170,23 +178,23 @@ export function ItemManipulation(props: ItemManipulationProps) {
                 break;
             default:
                 newItem = {
-                id: item?.id,
-                name: name,
-                type: type,
-                subtype: subtype,
-                rarity: rarity,
-                tier: Number(tier),
-                effect: effect,
-                description: description,
-                requirement: requirement,
-                vendorPrice: Number(price),
-                minimumStackSize: Number(minStackSize),
-                maximumStackSize: Number(maxStackSize),
-                note: note
-            };
-            break;
+                    id: item?.id,
+                    name: name,
+                    type: type,
+                    subtype: subtype,
+                    rarity: rarity,
+                    tier: Number(tier),
+                    effect: effect,
+                    description: description,
+                    requirement: requirement,
+                    vendorPrice: Number(price),
+                    minimumStackSize: Number(minStackSize),
+                    maximumStackSize: Number(maxStackSize),
+                    note: note
+                };
+                break;
         }
-        newItem["@type"] = itemClass !== "item" ? itemClass : 'Item';
+        newItem["@type"] = itemClass;
         setItem(newItem);
     }, [itemClass, name, type, subtype, rarity, tier, effect, description, requirement, price, minStackSize, maxStackSize, note, material, upgradeSlots, hit, initiative, weight, armor, damage, dice]);
 
@@ -218,7 +226,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                 onChange={(_, value) => { setSubtype(value); }}
             />
         </Stack>
-        {itemClass !== "item" &&
+        {itemClass !== "Item" &&
             <Autocomplete
                 disablePortal
                 options={materials}
@@ -231,27 +239,27 @@ export function ItemManipulation(props: ItemManipulationProps) {
                 onChange={(_, value) => { setMaterial(value); }}
             />
         }
-        {(itemClass === "armor" || itemClass === "shield") &&
+        {(itemClass === "Armor" || itemClass === "Shield") &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("weight", errors, false, weight, t)} label={t("weight")} variant="outlined" value={weight} onChange={event => setWeight(event.target.value)} fullWidth/>
-                <TextField {...errorMessage("armor", errors, true, armor, t)} label={t("armor")} variant="outlined" value={armor} onChange={event => setArmor(event.target.value)} fullWidth/>
+                <TextField {...errorMessage("weight", errors, false, weight, t)} label={t("weight")} variant="outlined" value={weight} onChange={event => setWeight(event.target.value)} fullWidth />
+                <TextField {...errorMessage("armor", errors, true, armor, t)} label={t("armor")} variant="outlined" value={armor} onChange={event => setArmor(event.target.value)} fullWidth />
             </Stack>
         }
-        {(itemClass === "weapon") &&
+        {itemClass === "Weapon" &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("damage", errors, true, damage, t)} label={t("damage")} variant="outlined" value={damage} onChange={event => setDamage(event.target.value)} fullWidth/>
-                <TextField {...errorMessage("dice", errors)} label={t("dice")} variant="outlined" value={dice} onChange={event => setDice(event.target.value)} fullWidth/>
+                <TextField {...errorMessage("damage", errors, true, damage, t)} label={t("damage")} variant="outlined" value={damage} onChange={event => setDamage(event.target.value)} fullWidth />
+                <TextField {...errorMessage("dice", errors)} label={t("dice")} variant="outlined" value={dice} onChange={event => setDice(event.target.value)} fullWidth />
             </Stack>
         }
-        {(itemClass === "weapon" || itemClass === "shield") &&
+        {(itemClass === "Weapon" || itemClass === "Shield") &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("hit", errors, true, hit, t)} label={t("hit")} variant="outlined" value={hit} onChange={event => setHit(event.target.value)} fullWidth/>
-                <TextField {...errorMessage("initiative", errors, false, initiative, t)} label={t("initiative")} variant="outlined" value={initiative} onChange={event => setInitiative(event.target.value)} fullWidth/>
+                <TextField {...errorMessage("hit", errors, true, hit, t)} label={t("hit")} variant="outlined" value={hit} onChange={event => setHit(event.target.value)} fullWidth />
+                <TextField {...errorMessage("initiative", errors, false, initiative, t)} label={t("initiative")} variant="outlined" value={initiative} onChange={event => setInitiative(event.target.value)} fullWidth />
             </Stack>
         }
         <TextField {...errorMessage("effect", errors)} label={t("effect")} variant="outlined" multiline rows={2} value={effect} onChange={event => setEffect(event.target.value)} />
         <TextField {...errorMessage("description", errors)} label={t("description")} variant="outlined" multiline rows={2} value={description} onChange={event => setDescription(event.target.value)} />
-        {itemClass !== "item" &&
+        {itemClass !== "Item" &&
             <TextField {...errorMessage("upgradeSlots", errors, true, upgradeSlots, t)} label={t("upgradeSlots")} variant="outlined" value={upgradeSlots} onChange={event => setUpgradeSlots(event.target.value)} />
         }
         <Stack direction="row" spacing={2}>
@@ -265,10 +273,10 @@ export function ItemManipulation(props: ItemManipulationProps) {
         </Stack>
         <TextField {...errorMessage("requirement", errors)} label={t("requirement")} variant="outlined" multiline rows={2} value={requirement} onChange={event => setRequirement(event.target.value)} />
         <Stack direction="row" spacing={2}>
-            <TextField {...errorMessage("vendorPrice", errors, true, price, t)} label={t("price")} variant="outlined" value={price} onChange={event => setPrice(event.target.value)} fullWidth/>
-            <TextField label={t("item:resultingPrice")} variant="outlined" value={currencyToHumanReadable(activeUniverse, Number(price))} InputProps={{ readOnly: true }} fullWidth/>
+            <TextField {...errorMessage("vendorPrice", errors, true, price, t)} label={t("price")} variant="outlined" value={price} onChange={event => setPrice(event.target.value)} fullWidth />
+            <TextField label={t("item:resultingPrice")} variant="outlined" value={currencyToHumanReadable(activeUniverse, Number(price))} InputProps={{ readOnly: true }} fullWidth />
         </Stack>
-        {itemClass === "item" && <Stack direction="row" spacing={2}>
+        {itemClass === "Item" && <Stack direction="row" spacing={2}>
             <TextField {...errorMessage("minimumStackSize", errors, true, minStackSize, t)} label={t("item:minStackSize")} variant="outlined" value={minStackSize} onChange={event => setMinStackSize(event.target.value)} fullWidth />
             <TextField {...errorMessage("maximumStackSize", errors, true, maxStackSize, t)} label={t("item:maxStackSize")} variant="outlined" value={maxStackSize} onChange={event => setMaxStackSize(event.target.value)} fullWidth />
         </Stack>}
