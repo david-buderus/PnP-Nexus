@@ -1825,6 +1825,43 @@ export const BackupServiceApiAxiosParamCreator = function (configuration?: Confi
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Import a backup to the nexus
+         * @param {File} backup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        importBackup: async (backup: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'backup' is not null or undefined
+            assertParamExists('importBackup', 'backup', backup)
+            const localVarPath = `/api/backup/import`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (backup !== undefined) {
+                localVarQueryParameter['backup'] = backup;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -1844,6 +1881,17 @@ export const BackupServiceApiFp = function(configuration?: Configuration) {
          */
         async exportBackup(universes?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.exportBackup(universes, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Import a backup to the nexus
+         * @param {File} backup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async importBackup(backup: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.importBackup(backup, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1866,6 +1914,16 @@ export const BackupServiceApiFactory = function (configuration?: Configuration, 
         exportBackup(universes?: Array<string>, options?: any): AxiosPromise<object> {
             return localVarFp.exportBackup(universes, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary Import a backup to the nexus
+         * @param {File} backup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        importBackup(backup: File, options?: any): AxiosPromise<void> {
+            return localVarFp.importBackup(backup, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -1886,6 +1944,18 @@ export class BackupServiceApi extends BaseAPI {
      */
     public exportBackup(universes?: Array<string>, options?: AxiosRequestConfig) {
         return BackupServiceApiFp(this.configuration).exportBackup(universes, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Import a backup to the nexus
+     * @param {File} backup 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BackupServiceApi
+     */
+    public importBackup(backup: File, options?: AxiosRequestConfig) {
+        return BackupServiceApiFp(this.configuration).importBackup(backup, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

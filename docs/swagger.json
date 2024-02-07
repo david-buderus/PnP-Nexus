@@ -66,6 +66,31 @@
         ]
       }
     },
+    "/api/backup/import": {
+      "post": {
+        "operationId": "importBackup",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "backup",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Import a backup to the nexus",
+        "tags": [
+          "backup-service"
+        ]
+      }
+    },
     "/api/universes": {
       "get": {
         "operationId": "getAllUniverses",

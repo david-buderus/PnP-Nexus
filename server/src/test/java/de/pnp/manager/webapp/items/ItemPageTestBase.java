@@ -26,6 +26,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @TestServer(EServerTestConfiguration.BASIC_ITEMS)
 @UiTestServer
+@ResourceLock("BASIC_ITEMS")
 public abstract class ItemPageTestBase extends ServerTestBase {
 
     /**
