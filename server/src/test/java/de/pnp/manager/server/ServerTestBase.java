@@ -102,7 +102,9 @@ public abstract class ServerTestBase {
 
     @BeforeAll
     static void setupFlags() {
-        System.setProperty(EJvmFlag.DEV_MODE.getFlag(), "true");
+        if (!TestUtils.isRunningInCI()) {
+            System.setProperty(EJvmFlag.DEV_MODE.getFlag(), "true");
+        }
     }
 
     @BeforeEach

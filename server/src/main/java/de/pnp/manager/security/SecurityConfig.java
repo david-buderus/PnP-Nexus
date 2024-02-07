@@ -42,6 +42,9 @@ public class SecurityConfig {
 
         if (EJvmFlag.DEV_MODE.isEnabled()) {
             http.csrf(AbstractHttpConfigurer::disable);
+        } else {
+            // TODO https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
+            http.csrf(AbstractHttpConfigurer::disable);
         }
 
         return http.build();

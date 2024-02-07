@@ -83,18 +83,18 @@ jobs:
           mongodb-username: admin
           mongodb-password: admin
 
-      - name: Setup playwright
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: playwright --args "install --with-deps"
-
       - name: Download Webapp dependencies
         working-directory: ./webapp
         run: npm install
 
-      - name: Start Webapp
+      - name: Build Webapp into the Server
         working-directory: ./webapp
-        run: npm run dev
+        run: npm run build
+
+      - name: Setup playwright
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: playwright --args "install --with-deps"
 
       - name: Setup and execute Gradle 'test' task
         uses: gradle/gradle-build-action@v2
