@@ -71,7 +71,7 @@ jobs:
           distribution: 'zulu'
           java-version: 17
 
-      - name: Use Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
@@ -89,9 +89,11 @@ jobs:
           arguments: playwright --args "install --with-deps"
 
       - name: Download Webapp dependencies
+        working-directory: ./webapp
         run: npm install
 
       - name: Start Webapp
+        working-directory: ./webapp
         run: npm run dev
 
       - name: Setup and execute Gradle 'test' task
