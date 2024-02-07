@@ -88,6 +88,9 @@ jobs:
         with:
           arguments: playwright --args "install --with-deps"
 
+      - name: Download Webapp dependencies
+        run: npm install
+
       - name: Start Webapp
         run: npm run dev
 
