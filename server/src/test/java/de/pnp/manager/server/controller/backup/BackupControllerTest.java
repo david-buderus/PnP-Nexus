@@ -91,7 +91,7 @@ public class BackupControllerTest {
         File backupZip = tempDir.resolve("backup.zip").toFile();
 
         try (FileOutputStream outputStream = new FileOutputStream(backupZip)) {
-            exportController.exportUniverses(outputStream);
+            exportController.export(outputStream, null);
         }
 
         assertThat(universeRepository.remove(universeName)).isTrue();

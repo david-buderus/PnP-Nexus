@@ -1,4 +1,4 @@
-import { ItemClass, SomeItem } from "../Constants";
+import { ApiConfiguration, ItemClass, SomeItem } from "../Constants";
 import OverviewTable, { Column } from '../../components/OverviewTable';
 import { getUniverseContext, getUserContext } from '../../components/PageBase';
 import { useEffect, useState } from 'react';
@@ -9,9 +9,9 @@ import { ItemCreationDialog } from '../../components/items/ItemCreationDialog';
 import { ItemEditDialog } from '../../components/items/ItemEditDialog';
 import { ConfirmationDialog } from '../../components/inputs/ConfirmationDialog';
 
-const ITEM_API = new ItemServiceApi();
-const ITEM_TYPE_API = new ItemTypeServiceApi();
-const MATERIAL_API = new MaterialServiceApi();
+const ITEM_API = new ItemServiceApi(ApiConfiguration);
+const ITEM_TYPE_API = new ItemTypeServiceApi(ApiConfiguration);
+const MATERIAL_API = new MaterialServiceApi(ApiConfiguration);
 
 /** Props needed for the items page */
 interface ItemBasePageProps<I> {

@@ -1,10 +1,14 @@
 package de.pnp.manager.server.controller.backup;
 
+import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.UserDetailsRepository;
+import de.pnp.manager.server.database.UserRepository;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -16,6 +20,7 @@ import org.bson.Document;
 import org.bson.codecs.EncoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.io.BasicOutputBuffer;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +61,25 @@ public class BackupExportController {
      */
     public static final String METADATA_FILE = "metadata";
 
+    /**
+     * The file name of the file which contains all user data of a backup.
+     */
+    public static final String USER_FILE = "users";
+
+    /**
+     * The key to access the users of a backup.
+     *
+     * @see #USER_FILE
+     */
+    public static final String USER_REPOSITORY = "user";
+
+    /**
+     * The key to access the user details of a backup.
+     *
+     * @see #USER_FILE
+     */
+    public static final String USER_DETAILS_REPOSITORY = "details";
+
     private final MongoClient mongoClient;
     private final MongoConfig mongoConfig;
     private final UniverseRepository universeRepository;
@@ -71,39 +95,58 @@ public class BackupExportController {
     }
 
     /**
-     * Exports all universes as a zip into the given {@link OutputStream}.
+     * Exports the given universes and global data as a zip into the given {@link OutputStream}.
+     * <p>
+     * If the given universe list is empty or null, all universes will be exported.
      */
-    public void exportUniverses(OutputStream outputStream) throws IOException {
-        List<String> universeNames = universeRepository.getAll().stream().map(Universe::getName)
-            .toList();
-        if (universeNames.isEmpty()) {
-            return;
+    public void export(OutputStream outputStream, @Nullable Collection<String> universeNames) throws IOException {
+        if (universeNames == null || universeNames.isEmpty()) {
+            universeNames = universeRepository.getAll().stream().map(Universe::getName)
+                .toList();
         }
-        exportUniverses(outputStream, universeNames);
+
+        EncoderContext context = EncoderContext.builder().isEncodingCollectibleDocument(true).build();
+
+        try (ZipOutputStream zipOut = new ZipOutputStream(outputStream)) {
+            exportGlobalData(context, zipOut);
+            exportUniverses(context, zipOut, universeNames);
+        }
+    }
+
+    private void exportGlobalData(EncoderContext context, ZipOutputStream zipOut) throws IOException {
+        Document metadata = new Document();
+        metadata.put(VERSION, EBackupVersion.CURRENT);
+
+        ZipEntry metadataEntry = new ZipEntry(METADATA_FILE);
+        zipOut.putNextEntry(metadataEntry);
+        zipOut.write(encode(metadata, codecRegistry, context));
+        zipOut.closeEntry();
+
+        Document userData = new Document();
+
+        List<Document> userRepositoryContent = mongoConfig.mongoTemplate(DATABASE_NAME)
+            .findAll(Document.class, UserRepository.REPOSITORY_NAME);
+        userData.put(USER_REPOSITORY, userRepositoryContent);
+        List<Document> userDetailsRepositoryContent = mongoConfig.mongoTemplate(DATABASE_NAME)
+            .findAll(Document.class, UserDetailsRepository.REPOSITORY_NAME);
+        userData.put(USER_DETAILS_REPOSITORY, userDetailsRepositoryContent);
+
+        ZipEntry userEntry = new ZipEntry(USER_FILE);
+        zipOut.putNextEntry(userEntry);
+        zipOut.write(encode(userData, codecRegistry, context));
+        zipOut.closeEntry();
     }
 
     /**
      * Exports the given universes as a zip into the given {@link OutputStream}.
      */
-    public void exportUniverses(OutputStream outputStream, Collection<String> universes)
+    private void exportUniverses(EncoderContext context, ZipOutputStream zipOut, Collection<String> universes)
         throws IOException {
-        EncoderContext context = EncoderContext.builder().isEncodingCollectibleDocument(true).build();
-
-        try (ZipOutputStream zipOut = new ZipOutputStream(outputStream)) {
-            for (String universe : universes) {
-                if (!universeRepository.exists(universe)) {
-                    throw new IllegalArgumentException("Universe " + universe + " does not exist.");
-                }
-                exportUniverse(zipOut, universe, mongoClient.getDatabase(universe), context);
+        for (String universe : universes) {
+            if (!universeRepository.exists(universe)) {
+                throw new IllegalArgumentException("Universe " + universe + " does not exist.");
             }
-
-            Document metadata = new Document();
-            metadata.put(VERSION, EBackupVersion.CURRENT);
-
-            ZipEntry zipEntry = new ZipEntry(METADATA_FILE);
-            zipOut.putNextEntry(zipEntry);
-            zipOut.write(encode(metadata, codecRegistry, context));
-            zipOut.closeEntry();
+            exportUniverse(zipOut, universe, mongoClient.getDatabase(universe), context);
         }
     }
 

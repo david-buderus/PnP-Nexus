@@ -1,9 +1,17 @@
 package de.pnp.manager.exception;
 
+import com.mongodb.ErrorCategory;
+import com.mongodb.MongoBulkWriteException;
+import com.mongodb.MongoServerException;
+import com.mongodb.MongoWriteException;
+import com.mongodb.WriteError;
+import com.mongodb.bulk.BulkWriteError;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,6 +44,48 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
 
         return handleExceptionInternal(ex, response, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler({MongoWriteException.class, MongoBulkWriteException.class})
+    protected ResponseEntity<Object> handleMongoWriteException(MongoServerException ex,
+        WebRequest request) {
+        if (ex instanceof MongoWriteException writeException) {
+            return handleDuplicateKeys(writeException, request, List.of(writeException.getError()));
+        }
+        if (ex instanceof MongoBulkWriteException writeException) {
+            return handleDuplicateKeys(writeException, request, writeException.getWriteErrors());
+        }
+
+        return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    private ResponseEntity<Object> handleDuplicateKeys(MongoServerException ex, WebRequest request,
+        List<? extends WriteError> writeErrors) {
+        if (writeErrors.stream().anyMatch(error -> error.getCategory() != ErrorCategory.DUPLICATE_KEY)) {
+            return handleExceptionInternal(ex, null, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
+        }
+        ResourceBundle bundle = ResourceBundle.getBundle("messages", request.getLocale());
+        String errorMessage = bundle.getString("error.duplicate.key");
+
+        Map<String, String> response = new HashMap<>();
+
+        for (WriteError writeError : writeErrors) {
+            String field = extractWriteErrorField(writeError);
+            if (writeError instanceof BulkWriteError bulkWriteError) {
+                response.put("objects[" + bulkWriteError.getIndex() + "]." + field, errorMessage);
+            } else {
+                response.put(field, errorMessage);
+            }
+        }
+
+        return handleExceptionInternal(ex, response, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    private String extractWriteErrorField(WriteError error) {
+        String message = error.getMessage();
+        int startIndex = message.indexOf("index:") + 6;
+        int endIndex = message.indexOf("dup key:");
+        return message.substring(startIndex, endIndex).trim();
     }
 
     @Override

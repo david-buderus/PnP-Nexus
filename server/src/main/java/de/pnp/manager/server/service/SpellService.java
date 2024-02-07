@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Service to access {@link SpellRepository}.
  */
 @RestController
-@RequestMapping("{universe}/spells")
+@RequestMapping("/api/{universe}/spells")
 public class SpellService extends RepositoryServiceBase<Spell, SpellRepository> {
 
     protected SpellService(@Autowired SpellRepository repository) {

@@ -8,7 +8,7 @@ const JewelleryPage = () => {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();
 
-    return <ItemBasePage itemClass={'jewellery'} columns={[
+    return <ItemBasePage itemClass={'Jewellery'} columns={[
         { label: t("name"), id: "name", getter: item => item.name },
         { label: t("item:type"), id: "type", getter: item => item.type.name },
         { label: t("item:subtype"), id: "subtype", getter: item => item.subtype.name },
@@ -23,8 +23,8 @@ const JewelleryPage = () => {
         { label: t("item:minStackSize"), id: "minimumStackSize", getter: item => item.minimumStackSize, numeric: true, defaultVisible: false },
         { label: t("item:maxStackSize"), id: "maximumStackSize", getter: item => item.maximumStackSize, numeric: true, defaultVisible: false },
         { label: t("note"), id: "note", getter: item => item.note, defaultVisible: false }
-    ]}        
-    />
+    ]}
+    />;
 };
 
 export default JewelleryPage;

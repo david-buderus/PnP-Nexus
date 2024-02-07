@@ -5,9 +5,9 @@ import { useState } from "react";
 import { getUniverseContext } from "../PageBase";
 import axios, { AxiosError } from "axios";
 import { ItemManipulation } from "./ItemManipulation";
-import { ItemClass, SomeItem } from "../Constants";
+import { ApiConfiguration, ItemClass, SomeItem } from "../Constants";
 
-const ITEM_API = new ItemServiceApi();
+const ITEM_API = new ItemServiceApi(ApiConfiguration);
 
 /** Props needed for the dialog */
 interface ItemCreationDialogProps {
@@ -33,7 +33,7 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
     const [item, setItem] = useState(itemToEdit);
     const itemClass = open ? item["@type"] as ItemClass : "Item";
 
-    return <Dialog open={open} onClose={onClose} fullWidth>
+    return <Dialog open={open} onClose={onClose} fullWidth data-testid="item-edit-dialog">
         <DialogTitle>Set backup account</DialogTitle>
         <Stack spacing={2} className="p-2">
             <ItemManipulation
@@ -46,7 +46,7 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
             />
             <div className='w-full pt-2'>
                 <div className='float-right'>
-                    <Button variant="contained" color="success" onClick={() => {
+                    <Button variant="contained" data-testid="item-edit" color="success" onClick={() => {
                         ITEM_API.updateItem(activeUniverse.name, item.id, item).then(() => onClose({}, "succesful")).catch((err: Error | AxiosError) => {
                             if (!axios.isAxiosError(err)) {
                                 return;

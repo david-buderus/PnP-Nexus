@@ -5,9 +5,9 @@ import { useState } from "react";
 import { getUniverseContext } from "../PageBase";
 import axios, { AxiosError } from "axios";
 import { ItemManipulation } from "./ItemManipulation";
-import { ItemClass, SomeItem } from "../Constants";
+import { ApiConfiguration, ItemClass, SomeItem } from "../Constants";
 
-const ITEM_API = new ItemServiceApi();
+const ITEM_API = new ItemServiceApi(ApiConfiguration);
 
 /** Props needed for the dialog */
 interface ItemCreationDialogProps {
@@ -33,13 +33,14 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
     const [item, setItem] = useState<SomeItem>(null);
     const [itemClass, setItemClass] = useState<ItemClass>(initialItemsClass);
 
-    return <Dialog open={open} onClose={onClose} fullWidth>
+    return <Dialog open={open} onClose={onClose} fullWidth data-testid="item-creation-dialog">
         <DialogTitle>Set backup account</DialogTitle>
         <Stack spacing={2} className="p-2">
             <FormControl fullWidth>
                 <Select
                     value={itemClass}
                     onChange={event => { setItemClass(event.target.value as ItemClass); }}
+                    data-testid="item-class-select"
                 >
                     {["Item", "Weapon", "Shield", "Armor", "Jewellery"].map(clazz => <MenuItem key={clazz} value={clazz}>{t(clazz.toLowerCase())}</MenuItem>)}
                 </Select>
@@ -53,7 +54,7 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
             />
             <div className='w-full pt-2'>
                 <div className='float-right'>
-                    <Button variant="contained" color="success" onClick={() => {
+                    <Button variant="contained" data-testid="item-add" color="success" onClick={() => {
                         ITEM_API.insertAllItems(activeUniverse.name, [item]).then(() => onClose({}, "succesful")).catch((err: Error | AxiosError) => {
                             if (!axios.isAxiosError(err)) {
                                 return;
@@ -64,7 +65,7 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
                             const errorMap = new Map<string, string>();
                             Object.entries(err.response.data).forEach(entry => {
                                 const [key, value] = entry;
-                                errorMap[key.substring("insertAll.objects[0].".length)] = value;
+                                errorMap[key.substring(key.lastIndexOf(".") + 1)] = value;
                             });
                             setErrors(errorMap);
                         });

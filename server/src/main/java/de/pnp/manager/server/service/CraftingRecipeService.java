@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Service to access {@link CraftingRecipeRepository}.
  */
 @RestController
-@RequestMapping("{universe}/crafting-recipes")
+@RequestMapping("/api/{universe}/crafting-recipes")
 public class CraftingRecipeService extends RepositoryServiceBase<CraftingRecipe, CraftingRecipeRepository> {
 
     protected CraftingRecipeService(@Autowired CraftingRecipeRepository repository) {

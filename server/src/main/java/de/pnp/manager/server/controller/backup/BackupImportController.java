@@ -3,11 +3,16 @@ package de.pnp.manager.server.controller.backup;
 import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_CONTENT;
 import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_NAME;
 import static de.pnp.manager.server.controller.backup.BackupExportController.UNIVERSE_FILE;
+import static de.pnp.manager.server.controller.backup.BackupExportController.USER_DETAILS_REPOSITORY;
+import static de.pnp.manager.server.controller.backup.BackupExportController.USER_FILE;
+import static de.pnp.manager.server.controller.backup.BackupExportController.USER_REPOSITORY;
 import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
 
 import com.mongodb.client.MongoClient;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.UserDetailsRepository;
+import de.pnp.manager.server.database.UserRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,6 +30,8 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
 
@@ -73,6 +80,36 @@ public class BackupImportController {
                 String.class));
         List<? extends IBackupMigration> migrations = backupVersion.getNecessaryMigrations();
 
+        importGlobalData(tmpDir, decoderContext, migrations);
+
+        importUniverses(tmpDir, decoderContext, migrations);
+    }
+
+    private void importGlobalData(File tmpDir, DecoderContext decoderContext,
+        List<? extends IBackupMigration> migrations) throws IOException {
+
+        Document userDocument = decode(new File(tmpDir, USER_FILE),
+            codecRegistry, decoderContext);
+        List<Document> userRepository = userDocument.getList(USER_REPOSITORY, Document.class);
+        userRepository.forEach(user -> migrations.forEach(migration -> migration.migrateUsers(user)));
+        List<Document> userDetailsRepository = userDocument.getList(USER_DETAILS_REPOSITORY, Document.class);
+        userDetailsRepository.forEach(
+            userDetails -> migrations.forEach(migration -> migration.migrateUserDetails(userDetails)));
+
+        MongoTemplate mongoTemplate = mongoConfig.mongoTemplate(UniverseRepository.DATABASE_NAME);
+
+        List<Object> ids = userRepository.stream().map(doc -> doc.get("_id")).toList();
+        mongoTemplate.findAllAndRemove(Query.query(Criteria.where("_id").in(ids)), UserRepository.REPOSITORY_NAME);
+        mongoTemplate.findAllAndRemove(Query.query(Criteria.where("_id").in(ids)),
+            UserDetailsRepository.REPOSITORY_NAME);
+
+        mongoTemplate.insert(userRepository, UserRepository.REPOSITORY_NAME);
+        mongoTemplate.insert(userDetailsRepository, UserDetailsRepository.REPOSITORY_NAME);
+    }
+
+    private void importUniverses(File tmpDir, DecoderContext decoderContext,
+        List<? extends IBackupMigration> migrations)
+        throws IOException {
         for (File universeFolder : Objects.requireNonNull(tmpDir.listFiles(File::isDirectory))) {
             Document universeDocument = decode(new File(universeFolder, UNIVERSE_FILE),
                 codecRegistry, decoderContext);

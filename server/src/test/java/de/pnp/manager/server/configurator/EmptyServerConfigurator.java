@@ -1,6 +1,6 @@
 package de.pnp.manager.server.configurator;
 
-import java.nio.file.Path;
+import java.io.File;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -8,7 +8,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public class EmptyServerConfigurator extends TestServerConfiguratorBase {
 
-    public EmptyServerConfigurator(@Nullable Path backupZip) {
+    public EmptyServerConfigurator(@Nullable File backupZip) {
         super(backupZip);
     }
 

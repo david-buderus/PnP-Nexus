@@ -216,8 +216,12 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
     [order, orderBy, page, rowsPerPage, data, filters]
   );
 
+  React.useEffect(() => {
+    setSelected(selected.filter(s => data.some(d => d[id] === s)));
+  }, [data]);
+
   return (
-    <Paper>
+    <Paper data-testid="overview-table">
       <Stack direction="row" justifyContent="flex-end" className="-mb-8">
         <IconButton aria-label="delete" size="medium" className="float align-middle z-40" onClick={event => setSettingsAnchor(event.currentTarget)}>
           <IoSettingsSharp fontSize="inherit" />
@@ -283,6 +287,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                 key={row[id] as string}
                 selected={isItemSelected}
                 sx={{ cursor: 'pointer' }}
+                data-testid={row[id]}
               >
                 <TableCell padding="checkbox">
                   <Checkbox

@@ -12,8 +12,10 @@ import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.universe.Universe;
+import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +36,14 @@ public class TestItemBuilder extends TestBuilderBase {
         @Autowired
         private ItemRepository itemRepository;
 
+        @Autowired
+        private MaterialRepository materialRepository;
+
         /**
          * Builder with default values.
          */
         public TestItemBuilder createItemBuilder(String universe) {
-            return new TestItemBuilder(universe, typeRepository, itemRepository);
+            return new TestItemBuilder(universe, typeRepository, itemRepository, materialRepository);
         }
     }
 
@@ -46,7 +51,7 @@ public class TestItemBuilder extends TestBuilderBase {
      * Returns a builder without a link to a {@link Universe} or database.
      */
     public static TestItemBuilder createItemBuilder() {
-        return new TestItemBuilder(null, null, null);
+        return new TestItemBuilder(null, null, null, null);
     }
 
     private String name;
@@ -73,10 +78,13 @@ public class TestItemBuilder extends TestBuilderBase {
     private boolean shouldGetPersisted;
 
     private final ItemRepository itemRepository;
+    private final MaterialRepository materialRepository;
 
-    private TestItemBuilder(String universe, ItemTypeRepository typeRepository, ItemRepository itemRepository) {
+    private TestItemBuilder(String universe, ItemTypeRepository typeRepository, ItemRepository itemRepository,
+        MaterialRepository materialRepository) {
         super(universe, typeRepository);
         this.itemRepository = itemRepository;
+        this.materialRepository = materialRepository;
         name = "name";
         type = getType("Type");
         subtype = getType("Subtype");
@@ -143,8 +151,24 @@ public class TestItemBuilder extends TestBuilderBase {
     /**
      * @see EquipableItem#getMaterial()
      */
+    public TestItemBuilder withMaterial(String material) {
+        this.material = getMaterial(material);
+        return this;
+    }
+
+    /**
+     * @see EquipableItem#getMaterial()
+     */
     public TestItemBuilder withMaterial(Material material) {
         this.material = material;
+        return this;
+    }
+
+    /**
+     * @see Item#getTier()
+     */
+    public TestItemBuilder withTier(int tier) {
+        this.tier = tier;
         return this;
     }
 
@@ -181,6 +205,14 @@ public class TestItemBuilder extends TestBuilderBase {
     }
 
     /**
+     * @see Weapon#getDice()
+     */
+    public TestItemBuilder withDice(String dice) {
+        this.dice = dice;
+        return this;
+    }
+
+    /**
      * @see HandheldEquipableItem#getHit()
      */
     public TestItemBuilder withHit(int hit) {
@@ -209,6 +241,54 @@ public class TestItemBuilder extends TestBuilderBase {
      */
     public TestItemBuilder withWeight(int weight) {
         this.weight = weight;
+        return this;
+    }
+
+    /**
+     * @see Item#getEffect()
+     */
+    public TestItemBuilder withEffect(String effect) {
+        this.effect = effect;
+        return this;
+    }
+
+    /**
+     * @see Item#getDescription()
+     */
+    public TestItemBuilder withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * @see Item#getRarity()
+     */
+    public TestItemBuilder withRarity(ERarity rarity) {
+        this.rarity = rarity;
+        return this;
+    }
+
+    /**
+     * @see Item#getRequirement()
+     */
+    public TestItemBuilder withRequirement(String requirement) {
+        this.requirement = requirement;
+        return this;
+    }
+
+    /**
+     * @see Item#getVendorPrice()
+     */
+    public TestItemBuilder withVendorPrice(int vendorPrice) {
+        this.vendorPrice = vendorPrice;
+        return this;
+    }
+
+    /**
+     * @see Item#getNote()
+     */
+    public TestItemBuilder withNote(String note) {
+        this.note = note;
         return this;
     }
 
@@ -279,5 +359,13 @@ public class TestItemBuilder extends TestBuilderBase {
             return (Jewellery) itemRepository.insert(universe, jewellery);
         }
         return jewellery;
+    }
+
+    private Material getMaterial(String materialName) {
+        if (materialRepository == null) {
+            return new Material(null, materialName, List.of());
+        }
+        return materialRepository.get(universe, materialName).orElseGet(() ->
+            materialRepository.insert(universe, new Material(null, materialName, List.of())));
     }
 }

@@ -199,7 +199,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
     }, [itemClass, name, type, subtype, rarity, tier, effect, description, requirement, price, minStackSize, maxStackSize, note, material, upgradeSlots, hit, initiative, weight, armor, damage, dice]);
 
     return <Stack spacing={2}>
-        <TextField {...errorMessage("name", errors)} label={t("name")} variant="outlined" value={name} onChange={event => setName(event.target.value)} fullWidth />
+        <TextField {...errorMessage("name", errors)} data-testid="name" label={t("name")} variant="outlined" value={name} onChange={event => setName(event.target.value)} fullWidth />
         <Stack direction="row" spacing={2}>
             <Autocomplete
                 fullWidth
@@ -212,6 +212,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                 renderInput={(params) => <TextField {...params} {...errorMessage("type", errors)} label={t("item:type")} />}
                 value={type ?? null}
                 onChange={(_, value) => { setType(value); }}
+                data-testid="type"
             />
             <Autocomplete
                 fullWidth
@@ -224,6 +225,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                 renderInput={(params) => <TextField {...params} {...errorMessage("subtype", errors)} label={t("item:subtype")} />}
                 value={subtype ?? null}
                 onChange={(_, value) => { setSubtype(value); }}
+                data-testid="subtype"
             />
         </Stack>
         {itemClass !== "Item" &&
@@ -237,49 +239,51 @@ export function ItemManipulation(props: ItemManipulationProps) {
                 renderInput={(params) => <TextField {...params} {...errorMessage("material", errors)} label={t("material")} />}
                 value={material ?? null}
                 onChange={(_, value) => { setMaterial(value); }}
+                data-testid="material"
             />
         }
         {(itemClass === "Armor" || itemClass === "Shield") &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("weight", errors, false, weight, t)} label={t("weight")} variant="outlined" value={weight} onChange={event => setWeight(event.target.value)} fullWidth />
-                <TextField {...errorMessage("armor", errors, true, armor, t)} label={t("armor")} variant="outlined" value={armor} onChange={event => setArmor(event.target.value)} fullWidth />
+                <TextField {...errorMessage("weight", errors, false, weight, t)} data-testid="weight" label={t("weight")} variant="outlined" value={weight} onChange={event => setWeight(event.target.value)} fullWidth />
+                <TextField {...errorMessage("armor", errors, true, armor, t)} data-testid="armor" label={t("armor")} variant="outlined" value={armor} onChange={event => setArmor(event.target.value)} fullWidth />
             </Stack>
         }
         {itemClass === "Weapon" &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("damage", errors, true, damage, t)} label={t("damage")} variant="outlined" value={damage} onChange={event => setDamage(event.target.value)} fullWidth />
-                <TextField {...errorMessage("dice", errors)} label={t("dice")} variant="outlined" value={dice} onChange={event => setDice(event.target.value)} fullWidth />
+                <TextField {...errorMessage("damage", errors, true, damage, t)} data-testid="damage" label={t("damage")} variant="outlined" value={damage} onChange={event => setDamage(event.target.value)} fullWidth />
+                <TextField {...errorMessage("dice", errors)} label={t("dice")} data-testid="dice" variant="outlined" value={dice} onChange={event => setDice(event.target.value)} fullWidth />
             </Stack>
         }
         {(itemClass === "Weapon" || itemClass === "Shield") &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("hit", errors, true, hit, t)} label={t("hit")} variant="outlined" value={hit} onChange={event => setHit(event.target.value)} fullWidth />
-                <TextField {...errorMessage("initiative", errors, false, initiative, t)} label={t("initiative")} variant="outlined" value={initiative} onChange={event => setInitiative(event.target.value)} fullWidth />
+                <TextField {...errorMessage("hit", errors, true, hit, t)} data-testid="hit" label={t("hit")} variant="outlined" value={hit} onChange={event => setHit(event.target.value)} fullWidth />
+                <TextField {...errorMessage("initiative", errors, false, initiative, t)} data-testid="initiative" label={t("initiative")} variant="outlined" value={initiative} onChange={event => setInitiative(event.target.value)} fullWidth />
             </Stack>
         }
-        <TextField {...errorMessage("effect", errors)} label={t("effect")} variant="outlined" multiline rows={2} value={effect} onChange={event => setEffect(event.target.value)} />
-        <TextField {...errorMessage("description", errors)} label={t("description")} variant="outlined" multiline rows={2} value={description} onChange={event => setDescription(event.target.value)} />
+        <TextField {...errorMessage("effect", errors)} label={t("effect")} data-testid="effect" variant="outlined" multiline rows={2} value={effect} onChange={event => setEffect(event.target.value)} />
+        <TextField {...errorMessage("description", errors)} label={t("description")} data-testid="description" variant="outlined" multiline rows={2} value={description} onChange={event => setDescription(event.target.value)} />
         {itemClass !== "Item" &&
-            <TextField {...errorMessage("upgradeSlots", errors, true, upgradeSlots, t)} label={t("upgradeSlots")} variant="outlined" value={upgradeSlots} onChange={event => setUpgradeSlots(event.target.value)} />
+            <TextField {...errorMessage("upgradeSlots", errors, true, upgradeSlots, t)} data-testid="upgradeSlots" label={t("upgradeSlots")} variant="outlined" value={upgradeSlots} onChange={event => setUpgradeSlots(event.target.value)} />
         }
         <Stack direction="row" spacing={2}>
             <RaritySelect
                 {...errorMessage("rarity", errors)}
+                data-testid="rarity"
                 value={rarity}
                 onChange={setRarity}
                 fullWidth
             />
-            <TextField {...errorMessage("tier", errors, true, tier, t)} label={t("tier")} variant="outlined" value={tier} onChange={event => setTier(event.target.value)} fullWidth />
+            <TextField {...errorMessage("tier", errors, true, tier, t)} data-testid="tier" label={t("tier")} variant="outlined" value={tier} onChange={event => setTier(event.target.value)} fullWidth />
         </Stack>
-        <TextField {...errorMessage("requirement", errors)} label={t("requirement")} variant="outlined" multiline rows={2} value={requirement} onChange={event => setRequirement(event.target.value)} />
+        <TextField {...errorMessage("requirement", errors)} data-testid="requirement" label={t("requirement")} variant="outlined" multiline rows={2} value={requirement} onChange={event => setRequirement(event.target.value)} />
         <Stack direction="row" spacing={2}>
-            <TextField {...errorMessage("vendorPrice", errors, true, price, t)} label={t("price")} variant="outlined" value={price} onChange={event => setPrice(event.target.value)} fullWidth />
-            <TextField label={t("item:resultingPrice")} variant="outlined" value={currencyToHumanReadable(activeUniverse, Number(price))} InputProps={{ readOnly: true }} fullWidth />
+            <TextField {...errorMessage("vendorPrice", errors, true, price, t)} data-testid="vendorPrice" label={t("price")} variant="outlined" value={price} onChange={event => setPrice(event.target.value)} fullWidth />
+            <TextField label={t("item:resultingPrice")} data-testid="resultingPrice" variant="outlined" value={currencyToHumanReadable(activeUniverse, Number(price))} InputProps={{ readOnly: true }} fullWidth />
         </Stack>
         {itemClass === "Item" && <Stack direction="row" spacing={2}>
-            <TextField {...errorMessage("minimumStackSize", errors, true, minStackSize, t)} label={t("item:minStackSize")} variant="outlined" value={minStackSize} onChange={event => setMinStackSize(event.target.value)} fullWidth />
-            <TextField {...errorMessage("maximumStackSize", errors, true, maxStackSize, t)} label={t("item:maxStackSize")} variant="outlined" value={maxStackSize} onChange={event => setMaxStackSize(event.target.value)} fullWidth />
+            <TextField {...errorMessage("minimumStackSize", errors, true, minStackSize, t)} data-testid="minimumStackSize" label={t("item:minStackSize")} variant="outlined" value={minStackSize} onChange={event => setMinStackSize(event.target.value)} fullWidth />
+            <TextField {...errorMessage("maximumStackSize", errors, true, maxStackSize, t)} data-testid="maximumStackSize" label={t("item:maxStackSize")} variant="outlined" value={maxStackSize} onChange={event => setMaxStackSize(event.target.value)} fullWidth />
         </Stack>}
-        <TextField {...errorMessage("note", errors)} label={t("note")} variant="outlined" multiline rows={2} value={note} onChange={event => setNote(event.target.value)} />
+        <TextField {...errorMessage("note", errors)} data-testid="note" label={t("note")} variant="outlined" multiline rows={2} value={note} onChange={event => setNote(event.target.value)} />
     </Stack>;
 }
