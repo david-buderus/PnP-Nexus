@@ -231,7 +231,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
         <TextFieldWithError fieldId="effect" errorMap={errors} label={t("effect")} multiline rows={2} value={effect} onChange={setEffect} />
         <TextFieldWithError fieldId="description" errorMap={errors} label={t("description")} multiline rows={2} value={description} onChange={setDescription} />
         {itemClass !== "Item" &&
-            <TextFieldWithError fieldId="fieldId" errorMap={errors} integerField label={t("upgradeSlots")} value={upgradeSlots} onChange={setUpgradeSlots} />
+            <TextFieldWithError fieldId="upgradeSlots" errorMap={errors} integerField label={t("upgradeSlots")} value={upgradeSlots} onChange={setUpgradeSlots} />
         }
         <Stack direction="row" spacing={2}>
             <RaritySelect
