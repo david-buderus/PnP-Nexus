@@ -125,7 +125,7 @@ export function ItemBasePage<I extends SomeItem>(props: ItemBasePageProps<I>) {
                         itemToEdit={openItemEditDialog ? items.find(item => item.id === selected[0]) : null}
                     />
                     <ConfirmationDialog
-                        title={t('items:confirmDeletionTitle')}
+                        title={t('item:confirmDeletionTitle')}
                         open={openDeleteDialog}
                         onClose={confirmation => {
                             setOpenDeleteDialog(false);
