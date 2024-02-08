@@ -1,23 +1,14 @@
 package de.pnp.manager;
 
-import de.pnp.manager.component.user.IGrantedAuthorityDTO.RoleAuthorityDTO;
-import de.pnp.manager.component.user.PnPUserCreation;
-import de.pnp.manager.security.SecurityConstants;
-import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.service.RepositoryServiceBase;
-import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.springdoc.core.customizers.OperationCustomizer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -94,21 +85,5 @@ public class ServerApplication implements WebMvcConfigurer {
             }
             return operation;
         };
-    }
-
-    @Component
-    private static class DataLoader implements ApplicationRunner {
-
-        @Autowired
-        private UserController userController;
-
-        @Override
-        public void run(ApplicationArguments args) {
-            if (userController.getAllUsernames().isEmpty()) {
-                userController.createNewUser(
-                    new PnPUserCreation("admin", "admin", "admin", null,
-                        List.of(new RoleAuthorityDTO(SecurityConstants.ADMIN))));
-            }
-        }
     }
 }

@@ -1,4 +1,4 @@
-import TextField, { OutlinedTextFieldProps, TextFieldProps } from "@mui/material/TextField";
+import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 
@@ -58,8 +58,15 @@ export function TextFieldWithError(props: {
     />;
 }
 
+/**
+ * A TextField where the helpertext is used as an error message.
+ * 
+ * Should be used as renderer in AutoCompletes.
+ */
 export function TextFieldWithErrorForAutoComplete(props: {
+    /** The id of the field which gets tested. Used as data-testid. */
     fieldId: string,
+    /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
     errorMap: Map<string, string>;
 } & Omit<TextFieldProps, 'variant'>) {
     const { fieldId, errorMap, ...rest } = props;

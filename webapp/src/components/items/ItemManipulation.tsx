@@ -1,11 +1,10 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
-import { ERarity, ItemType, Material, Weapon } from "../../api";
+import { ERarity, ItemType, Material } from "../../api";
 import { useEffect, useState } from "react";
 import { RaritySelect } from "../inputs/RaritySelect";
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../PageBase";
 import { currencyToHumanReadable } from "../Utils";
-import { TFunction } from "i18next";
 import { ItemClass, SomeItem } from "../Constants";
 import { TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/TestFieldWithError";
 
