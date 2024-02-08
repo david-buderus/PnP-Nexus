@@ -4,7 +4,11 @@ import Home from './pages/home';
 import About from './pages/about';
 import PageBase from './components/PageBase';
 import Universe from './pages/universe';
-import Items from './pages/items/items';
+import ItemPage from './pages/items/items';
+import WeaponPage from './pages/items/weapons';
+import ShieldPage from './pages/items/shields';
+import ArmorPage from './pages/items/armor';
+import JewelleryPage from './pages/items/jewellery';
 
 class App extends Component {
     render() {
@@ -22,11 +26,11 @@ class App extends Component {
                         <Route path='/' element={< Home />}></Route>
                         <Route path='/universe'  element={< Universe />}></Route>
                         <Route path='/about' element={< About />}></Route>
-                        <Route path='/items' element={< Items />}></Route>
-                        <Route path='/weapons' element={< About />}></Route>
-                        <Route path='/shields' element={< About />}></Route>
-                        <Route path='/armor' element={< About />}></Route>
-                        <Route path='/jewellery' element={< About />}></Route>
+                        <Route path='/items' element={< ItemPage />}></Route>
+                        <Route path='/weapons' element={< WeaponPage />}></Route>
+                        <Route path='/shields' element={< ShieldPage />}></Route>
+                        <Route path='/armor' element={< ArmorPage />}></Route>
+                        <Route path='/jewellery' element={< JewelleryPage />}></Route>
                     </Route>
                 </Routes>
             </Router>

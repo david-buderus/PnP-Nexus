@@ -2,7 +2,7 @@ package de.pnp.manager.server.configurator;
 
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.UniverseRepository;
-import java.nio.file.Path;
+import java.io.File;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -25,7 +25,7 @@ public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBas
     @Autowired
     private UniverseRepository universeRepository;
 
-    public SimpleUniverseServerConfiguration(Path backupZip) {
+    public SimpleUniverseServerConfiguration(File backupZip) {
         super(backupZip);
     }
 

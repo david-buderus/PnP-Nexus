@@ -1,0 +1,4 @@
+{
+  "notNumber": "has to be a number",
+  "notInteger": "has to be a natural number"
+}

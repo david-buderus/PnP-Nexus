@@ -16,5 +16,17 @@
   "effect": "Effect",
   "description": "Description",
   "price": "Price",
-  "note": "Note"
+  "note": "Note",
+  "material": "Material",
+  "tier": "Tier",
+  "requirement": "Requirement",
+  "upgradeSlots": "Upgrade Slots",
+  "damage": "Damage",
+  "dice": "Dice",
+  "hit": "Hit",
+  "initiative": "Initiative",
+  "weight": "Gewicht",
+  "resultingPrice": "Resulting Price",
+  "cancel": "Cancel",
+  "confirm": "Confirm"
 }

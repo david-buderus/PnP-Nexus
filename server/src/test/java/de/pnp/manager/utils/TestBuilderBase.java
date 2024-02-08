@@ -30,7 +30,7 @@ public abstract class TestBuilderBase {
         if (typeRepository == null) {
             return new ItemType(null, typeName, ETypeRestriction.ITEM);
         }
-        return typeRepository.get(universe, typeName).orElse(
+        return typeRepository.get(universe, typeName).orElseGet(() ->
             typeRepository.insert(universe, new ItemType(null, typeName, ETypeRestriction.ITEM)));
     }
 }

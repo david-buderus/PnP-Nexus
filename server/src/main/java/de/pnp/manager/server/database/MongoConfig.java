@@ -5,11 +5,20 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
+import org.springframework.data.mongodb.core.convert.DbRefResolver;
+import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.convert.MongoConverter;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 
 /**
  * Configuration for MongoDB.
@@ -40,8 +49,27 @@ public class MongoConfig {
      */
     public MongoTemplate mongoTemplate(String database) {
         if (!templateCache.containsKey(database)) {
-            templateCache.put(database, new MongoTemplate(mongo(), database));
+            SimpleMongoClientDatabaseFactory clientFactory = new SimpleMongoClientDatabaseFactory(mongo(), database);
+            templateCache.put(database, new MongoTemplate(clientFactory, createMongoConverter(clientFactory)));
         }
         return templateCache.get(database);
+    }
+
+    private static MongoConverter createMongoConverter(MongoDatabaseFactory factory) {
+
+        DbRefResolver dbRefResolver = new DefaultDbRefResolver(factory);
+        MongoCustomConversions conversions = new MongoCustomConversions(Collections.emptyList());
+
+        MongoMappingContext mappingContext = new MongoMappingContext();
+        mappingContext.setSimpleTypeHolder(conversions.getSimpleTypeHolder());
+        mappingContext.afterPropertiesSet();
+        mappingContext.setAutoIndexCreation(true);
+
+        MappingMongoConverter converter = new MappingMongoConverter(dbRefResolver, mappingContext);
+        converter.setCustomConversions(conversions);
+        converter.setCodecRegistryProvider(factory);
+        converter.afterPropertiesSet();
+
+        return converter;
     }
 }

@@ -1,18 +1,21 @@
-import { Checkbox, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, IconButton, Paper, Popover, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TableSortLabel, TextField, Tooltip } from "@mui/material";
 import React, { Dispatch, SetStateAction } from "react";
+import { IoSettingsSharp } from "react-icons/io5";
 
-type Getter<T> = (type: T) => string | number
+type Getter<T> = (type: T) => string | number;
 
 /** Description of a column */
-interface Column<T> {
+export interface Column<T> {
   /** Human-readable column label */
   label: string;
   /** Field of T represented by this column */
   id: keyof T;
   /** The result of the getter will be shown in the table cell */
-  getter: Getter<T>
-  /** If this field shows a number */
-  numeric: boolean;
+  getter: Getter<T>;
+  /** If this field shows a number. Default: false */
+  numeric?: boolean;
+  /** If the column is visible at the start. Default: true */
+  defaultVisible?: boolean;
 }
 
 /** Description of a table */
@@ -26,7 +29,7 @@ interface OverviewTableProps<T> {
   /** The columns shown in the table */
   columns: Column<T>[];
   /** Setter and getter to set/get the currently selcted data */
-  selectedState: [readonly T[keyof T][], Dispatch<SetStateAction<readonly T[keyof T][]>>]
+  selectedState: [readonly T[keyof T][], Dispatch<SetStateAction<readonly T[keyof T][]>>];
 }
 
 /** Sorting  order for the table */
@@ -34,8 +37,10 @@ type Order = 'asc' | 'desc';
 
 /** Internal description of a table */
 interface TableProps<T> {
-   /** The columns shown in the table */
+  /** The columns shown in the table */
   columns: Column<T>[];
+  /** Whether the column at the index is visible */
+  visibleColums: boolean[];
   /** The amount of selected items */
   numSelected: number;
   /** Eventhandler */
@@ -49,7 +54,7 @@ interface TableProps<T> {
   /** The number of rows shown */
   rowCount: number;
   /** Eventhandler */
-  filterUpdate: (value: string, index: number) => void
+  filterUpdate: (value: string, index: number) => void;
 }
 
 function descendingComparator<T>(a: T, b: T, getter: Getter<T>) {
@@ -75,7 +80,7 @@ function getComparator<T>(
 }
 
 function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
-  const { onSelectAllClick, columns, order, orderBy, numSelected, rowCount, onRequestSort, filterUpdate } = props;
+  const { onSelectAllClick, columns, visibleColums, order, orderBy, numSelected, rowCount, onRequestSort, filterUpdate } = props;
   const createSortHandler =
     (property: keyof T) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
@@ -95,8 +100,8 @@ function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
             }}
           />
         </TableCell>
-        {columns.map((column, index) => 
-          <TableCell
+        {columns.map((column, index) =>
+          visibleColums[index] && <TableCell
             key={column.id as string}
             align={column.numeric ? 'right' : 'left'}
             sortDirection={orderBy === column.id ? order : false}
@@ -134,6 +139,8 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [filters, setFilters] = React.useState(Array(columns.length).fill(""));
+  const [visibleColums, setVisibleColums] = React.useState<boolean[]>(columns.map(column => column.defaultVisible === undefined ? true : column.defaultVisible));
+  const [settingsAnchor, setSettingsAnchor] = React.useState<null | HTMLElement>(null);
   const dense = false; // I may want to change this to be toggleble
 
   const handleRequestSort = (
@@ -209,12 +216,48 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
     [order, orderBy, page, rowsPerPage, data, filters]
   );
 
+  React.useEffect(() => {
+    setSelected(selected.filter(s => data.some(d => d[id] === s)));
+  }, [data]);
+
   return (
-    <Paper>
+    <Paper data-testid="overview-table">
+      <Stack direction="row" justifyContent="flex-end" className="-mb-8">
+        <IconButton aria-label="delete" size="medium" className="float align-middle z-40" onClick={event => setSettingsAnchor(event.currentTarget)}>
+          <IoSettingsSharp fontSize="inherit" />
+        </IconButton>
+        <Popover
+          open={Boolean(settingsAnchor)}
+          anchorEl={settingsAnchor}
+          onClose={() => setSettingsAnchor(null)}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+        >
+          <FormGroup className="p-2">
+            {columns.map((column, index) =>
+              <FormControlLabel key={column.id as string} control={<Checkbox checked={visibleColums[index]} />} label={column.label} onChange={(_, checked) =>
+                setVisibleColums(visibleColums.map((old, i) => {
+                  if (i === index) {
+                    return checked;
+                  }
+                  return old;
+                }))
+              } />
+            )}
+          </FormGroup>
+        </Popover>
+      </Stack>
       <TableContainer sx={{ maxHeight: 0.8, minHeight: 0.8 }}>
         <Table sx={{ minWidth: 650 }} stickyHeader size="small" aria-label="a dense table">
           <OverviewTableHead
             columns={columns}
+            visibleColums={visibleColums}
             numSelected={selected.length}
             order={order}
             orderBy={orderBy}
@@ -244,6 +287,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                 key={row[id] as string}
                 selected={isItemSelected}
                 sx={{ cursor: 'pointer' }}
+                data-testid={row[id]}
               >
                 <TableCell padding="checkbox">
                   <Checkbox
@@ -254,8 +298,8 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                     }}
                   />
                 </TableCell>
-                {columns.map(column => 
-                  <TableCell
+                {columns.map((column, colIndex) =>
+                  visibleColums[colIndex] && <TableCell
                     key={column.label}
                     align={column.numeric ? 'right' : 'left'}
                   >
@@ -264,7 +308,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                 )}
               </TableRow>;
             })}
-            {emptyRows > 0 && 
+            {emptyRows > 0 &&
               <TableRow
                 style={{
                   height: (dense ? 33 : 53) * emptyRows

@@ -53,7 +53,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
         }
     }
 
-    public RepositoryBase(Class<E> clazz, String collectionName) {
+    protected RepositoryBase(Class<E> clazz, String collectionName) {
         this.clazz = clazz;
         this.collectionName = collectionName;
     }

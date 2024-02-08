@@ -5,13 +5,14 @@ import { FaUser } from "react-icons/fa";
 import { Autocomplete, TextField } from '@mui/material';
 import MainSidebar from './MainSidebar';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
+import { API_CONFIGURATION } from './Constants';
 
-type UniverseContext = { universes: Universe[], activeUniverse: Universe };
-type UserContext = { userPermissions: UserPermissions };
+type UniverseContext = { universes: Universe[], activeUniverse: Universe; };
+type UserContext = { userPermissions: UserPermissions; };
 
-const UNIVERSE_API = new UniverseServiceApi();
-const AUTHENTICATION_API = new AuthenticationServiceApi();
-const USER_API = new UserServiceApi();
+const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
+const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
+const USER_API = new UserServiceApi(API_CONFIGURATION);
 
 function PageBase() {
   const [universes, setUniverses] = useState<Universe[]>([]);
@@ -63,6 +64,7 @@ function PageBase() {
           {universes.length > 0 ?
             <Autocomplete
               className="float-left w-60 h-11"
+              data-testid="universe-selector"
               options={universes}
               getOptionLabel={(option: Universe) => {
                 return option?.displayName;

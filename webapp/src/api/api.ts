@@ -124,10 +124,10 @@ export interface Armor {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Armor
      */
-    'rarity': ArmorRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -184,16 +184,6 @@ export interface Armor {
     'weight': number;
 }
 
-export const ArmorRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type ArmorRarityEnum = typeof ArmorRarityEnum[keyof typeof ArmorRarityEnum];
 
 /**
  * 
@@ -388,6 +378,24 @@ export interface CurrencyCalculationEntry {
     'factor'?: number;
 }
 /**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ERarity = {
+    Common: 'COMMON',
+    Uncommon: 'UNCOMMON',
+    Rare: 'RARE',
+    Epic: 'EPIC',
+    Legendary: 'LEGENDARY',
+    Godlike: 'GODLIKE'
+} as const;
+
+export type ERarity = typeof ERarity[keyof typeof ERarity];
+
+
+/**
  * @type GetAllItems200ResponseInner
  * @export
  */
@@ -487,10 +495,10 @@ export interface Item {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Item
      */
-    'rarity': ItemRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -523,16 +531,6 @@ export interface Item {
     'vendorPrice': number;
 }
 
-export const ItemRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type ItemRarityEnum = typeof ItemRarityEnum[keyof typeof ItemRarityEnum];
 
 /**
  * 
@@ -548,10 +546,10 @@ export interface ItemRecipeEntry {
     'amountOfRequiredUnits'?: number;
     /**
      * 
-     * @type {GetAllItems200ResponseInner}
+     * @type {Item}
      * @memberof ItemRecipeEntry
      */
-    'item': GetAllItems200ResponseInner;
+    'item': Item;
 }
 /**
  * 
@@ -567,10 +565,10 @@ export interface ItemRecipeEntryAllOf {
     'amountOfRequiredUnits'?: number;
     /**
      * 
-     * @type {GetAllItems200ResponseInner}
+     * @type {Item}
      * @memberof ItemRecipeEntryAllOf
      */
-    'item'?: GetAllItems200ResponseInner;
+    'item'?: Item;
 }
 /**
  * 
@@ -686,10 +684,10 @@ export interface Jewellery {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Jewellery
      */
-    'rarity': JewelleryRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -734,16 +732,6 @@ export interface Jewellery {
     'upgradeSlots': number;
 }
 
-export const JewelleryRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type JewelleryRarityEnum = typeof JewelleryRarityEnum[keyof typeof JewelleryRarityEnum];
 
 /**
  * 
@@ -803,10 +791,10 @@ export interface MaterialItem {
     'amount'?: number;
     /**
      * 
-     * @type {GetAllItems200ResponseInner}
+     * @type {Item}
      * @memberof MaterialItem
      */
-    'item': GetAllItems200ResponseInner;
+    'item': Item;
 }
 /**
  * 
@@ -1129,10 +1117,10 @@ export interface Shield {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Shield
      */
-    'rarity': ShieldRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -1201,16 +1189,6 @@ export interface Shield {
     'weight': number;
 }
 
-export const ShieldRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type ShieldRarityEnum = typeof ShieldRarityEnum[keyof typeof ShieldRarityEnum];
 
 /**
  * 
@@ -1591,10 +1569,10 @@ export interface Weapon {
     'note': string;
     /**
      * 
-     * @type {string}
+     * @type {ERarity}
      * @memberof Weapon
      */
-    'rarity': WeaponRarityEnum;
+    'rarity': ERarity;
     /**
      * 
      * @type {string}
@@ -1663,16 +1641,6 @@ export interface Weapon {
     'upgradeSlots': number;
 }
 
-export const WeaponRarityEnum = {
-    Unknown: 'UNKNOWN',
-    Common: 'COMMON',
-    Rare: 'RARE',
-    Epic: 'EPIC',
-    Legendary: 'LEGENDARY',
-    Godlike: 'GODLIKE'
-} as const;
-
-export type WeaponRarityEnum = typeof WeaponRarityEnum[keyof typeof WeaponRarityEnum];
 
 /**
  * 
@@ -1817,6 +1785,182 @@ export class AuthenticationServiceApi extends BaseAPI {
 
 
 /**
+ * BackupServiceApi - axios parameter creator
+ * @export
+ */
+export const BackupServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Creates a backup of the nexus
+         * @param {Array<string>} [universes] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        exportBackup: async (universes?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/backup/export`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (universes) {
+                localVarQueryParameter['universes'] = universes;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Import a backup to the nexus
+         * @param {File} backup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        importBackup: async (backup: File, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'backup' is not null or undefined
+            assertParamExists('importBackup', 'backup', backup)
+            const localVarPath = `/api/backup/import`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (backup !== undefined) {
+                localVarQueryParameter['backup'] = backup;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BackupServiceApi - functional programming interface
+ * @export
+ */
+export const BackupServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BackupServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates a backup of the nexus
+         * @param {Array<string>} [universes] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async exportBackup(universes?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.exportBackup(universes, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Import a backup to the nexus
+         * @param {File} backup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async importBackup(backup: File, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.importBackup(backup, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * BackupServiceApi - factory interface
+ * @export
+ */
+export const BackupServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BackupServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates a backup of the nexus
+         * @param {Array<string>} [universes] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        exportBackup(universes?: Array<string>, options?: any): AxiosPromise<object> {
+            return localVarFp.exportBackup(universes, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Import a backup to the nexus
+         * @param {File} backup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        importBackup(backup: File, options?: any): AxiosPromise<void> {
+            return localVarFp.importBackup(backup, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * BackupServiceApi - object-oriented interface
+ * @export
+ * @class BackupServiceApi
+ * @extends {BaseAPI}
+ */
+export class BackupServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Creates a backup of the nexus
+     * @param {Array<string>} [universes] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BackupServiceApi
+     */
+    public exportBackup(universes?: Array<string>, options?: AxiosRequestConfig) {
+        return BackupServiceApiFp(this.configuration).exportBackup(universes, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Import a backup to the nexus
+     * @param {File} backup 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BackupServiceApi
+     */
+    public importBackup(backup: File, options?: AxiosRequestConfig) {
+        return BackupServiceApiFp(this.configuration).importBackup(backup, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * CraftingRecipeServiceApi - axios parameter creator
  * @export
  */
@@ -1835,7 +1979,7 @@ export const CraftingRecipeServiceApiAxiosParamCreator = function (configuration
             assertParamExists('deleteAllCraftingRecipes', 'universe', universe)
             // verify required parameter 'ids' is not null or undefined
             assertParamExists('deleteAllCraftingRecipes', 'ids', ids)
-            const localVarPath = `/{universe}/crafting-recipes`
+            const localVarPath = `/api/{universe}/crafting-recipes`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1876,7 +2020,7 @@ export const CraftingRecipeServiceApiAxiosParamCreator = function (configuration
             assertParamExists('deleteCraftingRecipe', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteCraftingRecipe', 'id', id)
-            const localVarPath = `/{universe}/crafting-recipes/{id}`
+            const localVarPath = `/api/{universe}/crafting-recipes/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1912,7 +2056,7 @@ export const CraftingRecipeServiceApiAxiosParamCreator = function (configuration
         getAllCraftingRecipes: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getAllCraftingRecipes', 'universe', universe)
-            const localVarPath = `/{universe}/crafting-recipes`
+            const localVarPath = `/api/{universe}/crafting-recipes`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1953,7 +2097,7 @@ export const CraftingRecipeServiceApiAxiosParamCreator = function (configuration
             assertParamExists('getCraftingRecipe', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getCraftingRecipe', 'id', id)
-            const localVarPath = `/{universe}/crafting-recipes/{id}`
+            const localVarPath = `/api/{universe}/crafting-recipes/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1991,7 +2135,7 @@ export const CraftingRecipeServiceApiAxiosParamCreator = function (configuration
             assertParamExists('insertAllCraftingRecipes', 'universe', universe)
             // verify required parameter 'craftingRecipe' is not null or undefined
             assertParamExists('insertAllCraftingRecipes', 'craftingRecipe', craftingRecipe)
-            const localVarPath = `/{universe}/crafting-recipes`
+            const localVarPath = `/api/{universe}/crafting-recipes`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2034,7 +2178,7 @@ export const CraftingRecipeServiceApiAxiosParamCreator = function (configuration
             assertParamExists('updateCraftingRecipe', 'id', id)
             // verify required parameter 'craftingRecipe' is not null or undefined
             assertParamExists('updateCraftingRecipe', 'craftingRecipe', craftingRecipe)
-            const localVarPath = `/{universe}/crafting-recipes/{id}`
+            const localVarPath = `/api/{universe}/crafting-recipes/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3823,7 +3967,7 @@ export const MaterialServiceApiAxiosParamCreator = function (configuration?: Con
             assertParamExists('deleteAllMaterials', 'universe', universe)
             // verify required parameter 'ids' is not null or undefined
             assertParamExists('deleteAllMaterials', 'ids', ids)
-            const localVarPath = `/{universe}/materials`
+            const localVarPath = `/api/{universe}/materials`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3864,7 +4008,7 @@ export const MaterialServiceApiAxiosParamCreator = function (configuration?: Con
             assertParamExists('deleteMaterial', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteMaterial', 'id', id)
-            const localVarPath = `/{universe}/materials/{id}`
+            const localVarPath = `/api/{universe}/materials/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3900,7 +4044,7 @@ export const MaterialServiceApiAxiosParamCreator = function (configuration?: Con
         getAllMaterials: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getAllMaterials', 'universe', universe)
-            const localVarPath = `/{universe}/materials`
+            const localVarPath = `/api/{universe}/materials`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -3941,7 +4085,7 @@ export const MaterialServiceApiAxiosParamCreator = function (configuration?: Con
             assertParamExists('getMaterial', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getMaterial', 'id', id)
-            const localVarPath = `/{universe}/materials/{id}`
+            const localVarPath = `/api/{universe}/materials/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3979,7 +4123,7 @@ export const MaterialServiceApiAxiosParamCreator = function (configuration?: Con
             assertParamExists('insertAllMaterials', 'universe', universe)
             // verify required parameter 'material' is not null or undefined
             assertParamExists('insertAllMaterials', 'material', material)
-            const localVarPath = `/{universe}/materials`
+            const localVarPath = `/api/{universe}/materials`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -4022,7 +4166,7 @@ export const MaterialServiceApiAxiosParamCreator = function (configuration?: Con
             assertParamExists('updateMaterial', 'id', id)
             // verify required parameter 'material' is not null or undefined
             assertParamExists('updateMaterial', 'material', material)
-            const localVarPath = `/{universe}/materials/{id}`
+            const localVarPath = `/api/{universe}/materials/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5415,7 +5559,7 @@ export const SpellServiceApiAxiosParamCreator = function (configuration?: Config
             assertParamExists('deleteAllSpells', 'universe', universe)
             // verify required parameter 'ids' is not null or undefined
             assertParamExists('deleteAllSpells', 'ids', ids)
-            const localVarPath = `/{universe}/spells`
+            const localVarPath = `/api/{universe}/spells`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5456,7 +5600,7 @@ export const SpellServiceApiAxiosParamCreator = function (configuration?: Config
             assertParamExists('deleteSpell', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteSpell', 'id', id)
-            const localVarPath = `/{universe}/spells/{id}`
+            const localVarPath = `/api/{universe}/spells/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5492,7 +5636,7 @@ export const SpellServiceApiAxiosParamCreator = function (configuration?: Config
         getAllSpells: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getAllSpells', 'universe', universe)
-            const localVarPath = `/{universe}/spells`
+            const localVarPath = `/api/{universe}/spells`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5533,7 +5677,7 @@ export const SpellServiceApiAxiosParamCreator = function (configuration?: Config
             assertParamExists('getSpell', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getSpell', 'id', id)
-            const localVarPath = `/{universe}/spells/{id}`
+            const localVarPath = `/api/{universe}/spells/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5571,7 +5715,7 @@ export const SpellServiceApiAxiosParamCreator = function (configuration?: Config
             assertParamExists('insertAllSpells', 'universe', universe)
             // verify required parameter 'spell' is not null or undefined
             assertParamExists('insertAllSpells', 'spell', spell)
-            const localVarPath = `/{universe}/spells`
+            const localVarPath = `/api/{universe}/spells`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5614,7 +5758,7 @@ export const SpellServiceApiAxiosParamCreator = function (configuration?: Config
             assertParamExists('updateSpell', 'id', id)
             // verify required parameter 'spell' is not null or undefined
             assertParamExists('updateSpell', 'spell', spell)
-            const localVarPath = `/{universe}/spells/{id}`
+            const localVarPath = `/api/{universe}/spells/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5912,7 +6056,7 @@ export const TalentServiceApiAxiosParamCreator = function (configuration?: Confi
             assertParamExists('deleteAllTalents', 'universe', universe)
             // verify required parameter 'ids' is not null or undefined
             assertParamExists('deleteAllTalents', 'ids', ids)
-            const localVarPath = `/{universe}/talents`
+            const localVarPath = `/api/{universe}/talents`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5953,7 +6097,7 @@ export const TalentServiceApiAxiosParamCreator = function (configuration?: Confi
             assertParamExists('deleteTalent', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('deleteTalent', 'id', id)
-            const localVarPath = `/{universe}/talents/{id}`
+            const localVarPath = `/api/{universe}/talents/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -5989,7 +6133,7 @@ export const TalentServiceApiAxiosParamCreator = function (configuration?: Confi
         getAllTalents: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getAllTalents', 'universe', universe)
-            const localVarPath = `/{universe}/talents`
+            const localVarPath = `/api/{universe}/talents`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6030,7 +6174,7 @@ export const TalentServiceApiAxiosParamCreator = function (configuration?: Confi
             assertParamExists('getTalent', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getTalent', 'id', id)
-            const localVarPath = `/{universe}/talents/{id}`
+            const localVarPath = `/api/{universe}/talents/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6068,7 +6212,7 @@ export const TalentServiceApiAxiosParamCreator = function (configuration?: Confi
             assertParamExists('insertAllTalents', 'universe', universe)
             // verify required parameter 'talent' is not null or undefined
             assertParamExists('insertAllTalents', 'talent', talent)
-            const localVarPath = `/{universe}/talents`
+            const localVarPath = `/api/{universe}/talents`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6111,7 +6255,7 @@ export const TalentServiceApiAxiosParamCreator = function (configuration?: Confi
             assertParamExists('updateTalent', 'id', id)
             // verify required parameter 'talent' is not null or undefined
             assertParamExists('updateTalent', 'talent', talent)
-            const localVarPath = `/{universe}/talents/{id}`
+            const localVarPath = `/api/{universe}/talents/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.

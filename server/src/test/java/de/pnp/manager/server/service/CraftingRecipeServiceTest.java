@@ -5,6 +5,7 @@ import de.pnp.manager.component.IRecipeEntry.CharacterResourceRecipeEntry;
 import de.pnp.manager.component.IRecipeEntry.ECharacterResource;
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
 import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
+import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.Material.MaterialItem;
 import de.pnp.manager.server.database.CraftingRecipeRepository;
@@ -21,18 +22,20 @@ public class CraftingRecipeServiceTest extends
     @Autowired
     private MaterialRepository materialRepository;
 
-    public CraftingRecipeServiceTest(@Autowired CraftingRecipeService craftingRecipeService, @Autowired CraftingRecipeRepository repository) {
+    public CraftingRecipeServiceTest(@Autowired CraftingRecipeService craftingRecipeService,
+        @Autowired CraftingRecipeRepository repository) {
         super(craftingRecipeService, repository, CraftingRecipe.class);
     }
 
     @Override
     protected List<CraftingRecipe> createObjects() {
+        Item ironIngot = createItem().withName("Iron Ingot").persist().buildItem();
         Material iron = materialRepository.insert(getUniverseName(), new Material(null, "Iron",
-            List.of(new MaterialItem(1, createItem().withName("Iron Ingot").persist().buildItem()))));
+            List.of(new MaterialItem(1, ironIngot))));
 
         return List.of(
             new CraftingRecipe(null, "Smith", "Crafting: 4", "Furnace",
-                new ItemRecipeEntry(1, createItem().withName("Iron Ingot").persist().buildItem()), null,
+                new ItemRecipeEntry(1, ironIngot), null,
                 List.of(new ItemRecipeEntry(2, createItem().withName("Iron Ore").persist().buildItem()))),
             new CraftingRecipe(null, "", "", "",
                 new ItemRecipeEntry(1, createItem().withName("Blood").persist().buildItem()), null,

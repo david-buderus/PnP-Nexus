@@ -20,6 +20,8 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.5'
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.77'
 
+    implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.5.24'
+
     implementation 'org.springframework.boot:spring-boot-starter-web:3.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:3.1.0'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'

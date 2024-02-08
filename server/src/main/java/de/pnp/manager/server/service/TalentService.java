@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Service to access {@link TalentRepository}.
  */
 @RestController
-@RequestMapping("{universe}/talents")
+@RequestMapping("/api/{universe}/talents")
 public class TalentService extends RepositoryServiceBase<Talent, TalentRepository> {
 
     protected TalentService(@Autowired TalentRepository repository) {

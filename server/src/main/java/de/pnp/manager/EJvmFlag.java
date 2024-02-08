@@ -23,6 +23,10 @@ public enum EJvmFlag {
         this(flag, Boolean.toString(defaultValue));
     }
 
+    public String getFlag() {
+        return flag;
+    }
+
     /**
      * Returns the value of the flag.
      */

@@ -16,5 +16,17 @@
   "effect": "Effekt",
   "description": "Beschreibung",
   "price": "Preis",
-  "note": "Notiz"
+  "note": "Notiz",
+  "material": "Material",
+  "tier": "Tier",
+  "requirement": "Voraussetzung",
+  "upgradeSlots": "Upgrade Slots",
+  "damage": "Damage",
+  "dice": "Würfel",
+  "hit": "Treffer",
+  "initiative": "Initiative",
+  "weight": "Weight",
+  "resultingPrice": "Resultierender Preis",
+  "cancel": "Abbrechen",
+  "confirm": "Bestätigen"
 }

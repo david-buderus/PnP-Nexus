@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
  * Service to access {@link MaterialRepository}.
  */
 @RestController
-@RequestMapping("{universe}/materials")
+@RequestMapping("/api/{universe}/materials")
 public class MaterialService extends RepositoryServiceBase<Material, MaterialRepository> {
-    
+
     protected MaterialService(@Autowired MaterialRepository repository) {
         super(repository);
     }
