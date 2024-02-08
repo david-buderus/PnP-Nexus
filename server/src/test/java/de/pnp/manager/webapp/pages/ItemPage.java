@@ -16,6 +16,9 @@ public class ItemPage extends PageBase {
         super(page);
     }
 
+    /**
+     * Returns the table of the page.
+     */
     public OverviewTable getTable() {
         return OverviewTable.getOverviewTable(page);
     }

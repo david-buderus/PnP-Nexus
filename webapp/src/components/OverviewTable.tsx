@@ -298,8 +298,8 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
                     }}
                   />
                 </TableCell>
-                {columns.map((column, index) =>
-                  visibleColums[index] && <TableCell
+                {columns.map((column, colIndex) =>
+                  visibleColums[colIndex] && <TableCell
                     key={column.label}
                     align={column.numeric ? 'right' : 'left'}
                   >

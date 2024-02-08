@@ -5,9 +5,9 @@ import { useState } from "react";
 import { getUniverseContext } from "../PageBase";
 import axios, { AxiosError } from "axios";
 import { ItemManipulation } from "./ItemManipulation";
-import { ApiConfiguration, ItemClass, SomeItem } from "../Constants";
+import { API_CONFIGURATION, ItemClass, SomeItem } from "../Constants";
 
-const ITEM_API = new ItemServiceApi(ApiConfiguration);
+const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 
 /** Props needed for the dialog */
 interface ItemCreationDialogProps {
@@ -34,7 +34,7 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
     const itemClass = open ? item["@type"] as ItemClass : "Item";
 
     return <Dialog open={open} onClose={onClose} fullWidth data-testid="item-edit-dialog">
-        <DialogTitle>Set backup account</DialogTitle>
+        <DialogTitle>{t('items:editTitle')}</DialogTitle>
         <Stack spacing={2} className="p-2">
             <ItemManipulation
                 itemTypes={itemTypes}

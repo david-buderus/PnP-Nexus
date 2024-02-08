@@ -1,5 +1,5 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
-import { ERarity, ItemType, Material } from "../../api";
+import { ERarity, ItemType, Material, Weapon } from "../../api";
 import { useEffect, useState } from "react";
 import { RaritySelect } from "../inputs/RaritySelect";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,110 @@ import { getUniverseContext } from "../PageBase";
 import { currencyToHumanReadable } from "../Utils";
 import { TFunction } from "i18next";
 import { ItemClass, SomeItem } from "../Constants";
+import { TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/TestFieldWithError";
+
+function createItem(itemClass: string, id: string, name: string, type: ItemType, subtype: ItemType, rarity: ERarity, tier: string, effect: string, description: string, requirement: string, price: string, note: string, material: Material, upgradeSlots: string, hit: string, initiative: string, damage: string, dice: string, weight: string, armor: string, minStackSize: string, maxStackSize: string) {
+    switch (itemClass) {
+        case "Weapon":
+            return {
+                id: id,
+                name: name,
+                type: type,
+                subtype: subtype,
+                rarity: rarity,
+                tier: Number(tier),
+                effect: effect,
+                description: description,
+                requirement: requirement,
+                vendorPrice: Number(price),
+                minimumStackSize: 1,
+                maximumStackSize: 1,
+                note: note,
+                material: material,
+                upgradeSlots: Number(upgradeSlots),
+                hit: Number(hit),
+                initiative: Number(initiative),
+                damage: Number(damage),
+                dice: dice
+            };
+        case "Shield":
+            return {
+                id: id,
+                name: name,
+                type: type,
+                subtype: subtype,
+                rarity: rarity,
+                tier: Number(tier),
+                effect: effect,
+                description: description,
+                requirement: requirement,
+                vendorPrice: Number(price),
+                minimumStackSize: 1,
+                maximumStackSize: 1,
+                note: note,
+                material: material,
+                upgradeSlots: Number(upgradeSlots),
+                hit: Number(hit),
+                initiative: Number(initiative),
+                weight: Number(weight),
+                armor: Number(armor)
+            };
+        case "Armor":
+            return {
+                id: id,
+                name: name,
+                type: type,
+                subtype: subtype,
+                rarity: rarity,
+                tier: Number(tier),
+                effect: effect,
+                description: description,
+                requirement: requirement,
+                vendorPrice: Number(price),
+                minimumStackSize: 1,
+                maximumStackSize: 1,
+                note: note,
+                material: material,
+                upgradeSlots: Number(upgradeSlots),
+                weight: Number(weight),
+                armor: Number(armor)
+            };
+        case "Jewellery":
+            return {
+                id: id,
+                name: name,
+                type: type,
+                subtype: subtype,
+                rarity: rarity,
+                tier: Number(tier),
+                effect: effect,
+                description: description,
+                requirement: requirement,
+                vendorPrice: Number(price),
+                minimumStackSize: 1,
+                maximumStackSize: 1,
+                note: note,
+                material: material,
+                upgradeSlots: Number(upgradeSlots)
+            };
+        default:
+            return {
+                id: id,
+                name: name,
+                type: type,
+                subtype: subtype,
+                rarity: rarity,
+                tier: Number(tier),
+                effect: effect,
+                description: description,
+                requirement: requirement,
+                vendorPrice: Number(price),
+                minimumStackSize: Number(minStackSize),
+                maximumStackSize: Number(maxStackSize),
+                note: note
+            };
+    }
+}
 
 /** Props needed for the item manipulation */
 interface ItemManipulationProps {
@@ -24,36 +128,6 @@ interface ItemManipulationProps {
     setItem: (item: SomeItem) => void;
 }
 
-function errorMessage(id: string, errorMap: Map<string, string>, int?: boolean, content?: string, t?: TFunction<"translation", undefined>) {
-    if (content !== undefined) {
-        const n = Number(content);
-        if (Number.isNaN(n)) {
-            return {
-                id: id,
-                error: true,
-                helperText: t('error:notNumber')
-            };
-        }
-        if (int && !Number.isInteger(n)) {
-            return {
-                id: id,
-                error: true,
-                helperText: t('error:notInteger')
-            };
-        }
-    }
-    if (errorMap[id]) {
-        return {
-            id: id,
-            error: true,
-            helperText: errorMap[id]
-        };
-    }
-    return {
-        id: id
-    };
-}
-
 /**
  * All text fields needed to manipulate/create items.
  */
@@ -66,7 +140,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
     const [type, setType] = useState<ItemType>(item?.type ?? null);
     const [subtype, setSubtype] = useState<ItemType>(item?.subtype ?? null);
     const [rarity, setRarity] = useState<ERarity>(item?.rarity ?? ERarity.Common);
-    const [tier, setTier] = useState<string>(item?.tier?.toString() ?? "");
+    const [tier, setTier] = useState<string>(item?.tier?.toString() ?? "1");
     const [effect, setEffect] = useState<string>(item?.effect ?? "");
     const [description, setDescription] = useState<string>(item?.description ?? "");
     const [requirement, setRequirement] = useState<string>(item?.requirement ?? "");
@@ -88,118 +162,13 @@ export function ItemManipulation(props: ItemManipulationProps) {
     const [dice, setDice] = useState<string>(item ? item["dice"] ?? "D6" : "D6");
 
     useEffect(() => {
-        let newItem: SomeItem;
-        switch (itemClass) {
-            case "Weapon":
-                newItem = {
-                    id: item?.id,
-                    name: name,
-                    type: type,
-                    subtype: subtype,
-                    rarity: rarity,
-                    tier: Number(tier),
-                    effect: effect,
-                    description: description,
-                    requirement: requirement,
-                    vendorPrice: Number(price),
-                    minimumStackSize: 1,
-                    maximumStackSize: 1,
-                    note: note,
-                    material: material,
-                    upgradeSlots: Number(upgradeSlots),
-                    hit: Number(hit),
-                    initiative: Number(initiative),
-                    damage: Number(damage),
-                    dice: dice
-                };
-                break;
-            case "Shield":
-                newItem = {
-                    id: item?.id,
-                    name: name,
-                    type: type,
-                    subtype: subtype,
-                    rarity: rarity,
-                    tier: Number(tier),
-                    effect: effect,
-                    description: description,
-                    requirement: requirement,
-                    vendorPrice: Number(price),
-                    minimumStackSize: 1,
-                    maximumStackSize: 1,
-                    note: note,
-                    material: material,
-                    upgradeSlots: Number(upgradeSlots),
-                    hit: Number(hit),
-                    initiative: Number(initiative),
-                    weight: Number(weight),
-                    armor: Number(armor)
-                };
-                break;
-            case "Armor":
-                newItem = {
-                    id: item?.id,
-                    name: name,
-                    type: type,
-                    subtype: subtype,
-                    rarity: rarity,
-                    tier: Number(tier),
-                    effect: effect,
-                    description: description,
-                    requirement: requirement,
-                    vendorPrice: Number(price),
-                    minimumStackSize: 1,
-                    maximumStackSize: 1,
-                    note: note,
-                    material: material,
-                    upgradeSlots: Number(upgradeSlots),
-                    weight: Number(weight),
-                    armor: Number(armor)
-                };
-                break;
-            case "Jewellery":
-                newItem = {
-                    id: item?.id,
-                    name: name,
-                    type: type,
-                    subtype: subtype,
-                    rarity: rarity,
-                    tier: Number(tier),
-                    effect: effect,
-                    description: description,
-                    requirement: requirement,
-                    vendorPrice: Number(price),
-                    minimumStackSize: 1,
-                    maximumStackSize: 1,
-                    note: note,
-                    material: material,
-                    upgradeSlots: Number(upgradeSlots)
-                };
-                break;
-            default:
-                newItem = {
-                    id: item?.id,
-                    name: name,
-                    type: type,
-                    subtype: subtype,
-                    rarity: rarity,
-                    tier: Number(tier),
-                    effect: effect,
-                    description: description,
-                    requirement: requirement,
-                    vendorPrice: Number(price),
-                    minimumStackSize: Number(minStackSize),
-                    maximumStackSize: Number(maxStackSize),
-                    note: note
-                };
-                break;
-        }
+        let newItem: SomeItem = createItem(itemClass, item?.id, name, type, subtype, rarity, tier, effect, description, requirement, price, note, material, upgradeSlots, hit, initiative, damage, dice, weight, armor, minStackSize, maxStackSize);
         newItem["@type"] = itemClass;
         setItem(newItem);
     }, [itemClass, name, type, subtype, rarity, tier, effect, description, requirement, price, minStackSize, maxStackSize, note, material, upgradeSlots, hit, initiative, weight, armor, damage, dice]);
 
     return <Stack spacing={2}>
-        <TextField {...errorMessage("name", errors)} data-testid="name" label={t("name")} variant="outlined" value={name} onChange={event => setName(event.target.value)} fullWidth />
+        <TextFieldWithError fieldId="name" errorMap={errors} value={name} onChange={setName} label={t("name")} fullWidth />
         <Stack direction="row" spacing={2}>
             <Autocomplete
                 fullWidth
@@ -209,7 +178,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                     return option?.name;
                 }}
                 isOptionEqualToValue={(option: ItemType, value: ItemType) => option.id === value.id}
-                renderInput={(params) => <TextField {...params} {...errorMessage("type", errors)} label={t("item:type")} />}
+                renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId="type" errorMap={errors} label={t("item:type")} />}
                 value={type ?? null}
                 onChange={(_, value) => { setType(value); }}
                 data-testid="type"
@@ -222,7 +191,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                     return option?.name;
                 }}
                 isOptionEqualToValue={(option: ItemType, value: ItemType) => option.id === value.id}
-                renderInput={(params) => <TextField {...params} {...errorMessage("subtype", errors)} label={t("item:subtype")} />}
+                renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId="subtype" errorMap={errors} label={t("item:subtype")} />}
                 value={subtype ?? null}
                 onChange={(_, value) => { setSubtype(value); }}
                 data-testid="subtype"
@@ -236,7 +205,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
                     return option?.name;
                 }}
                 isOptionEqualToValue={(option: Material, value: Material) => option.id === value.id}
-                renderInput={(params) => <TextField {...params} {...errorMessage("material", errors)} label={t("material")} />}
+                renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId="material" errorMap={errors} label={t("material")} />}
                 value={material ?? null}
                 onChange={(_, value) => { setMaterial(value); }}
                 data-testid="material"
@@ -244,46 +213,49 @@ export function ItemManipulation(props: ItemManipulationProps) {
         }
         {(itemClass === "Armor" || itemClass === "Shield") &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("weight", errors, false, weight, t)} data-testid="weight" label={t("weight")} variant="outlined" value={weight} onChange={event => setWeight(event.target.value)} fullWidth />
-                <TextField {...errorMessage("armor", errors, true, armor, t)} data-testid="armor" label={t("armor")} variant="outlined" value={armor} onChange={event => setArmor(event.target.value)} fullWidth />
+                <TextFieldWithError fieldId="weight" errorMap={errors} numberField label={t("weight")} value={weight} onChange={setWeight} fullWidth />
+                <TextFieldWithError fieldId="armor" errorMap={errors} integerField label={t("armor")} value={armor} onChange={setArmor} fullWidth />
             </Stack>
         }
         {itemClass === "Weapon" &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("damage", errors, true, damage, t)} data-testid="damage" label={t("damage")} variant="outlined" value={damage} onChange={event => setDamage(event.target.value)} fullWidth />
-                <TextField {...errorMessage("dice", errors)} label={t("dice")} data-testid="dice" variant="outlined" value={dice} onChange={event => setDice(event.target.value)} fullWidth />
+                <TextFieldWithError fieldId="damage" errorMap={errors} integerField label={t("damage")} value={damage} onChange={setDamage} fullWidth />
+                <TextFieldWithError fieldId="dice" errorMap={errors} label={t("dice")} value={dice} onChange={setDice} fullWidth />
             </Stack>
         }
         {(itemClass === "Weapon" || itemClass === "Shield") &&
             <Stack direction="row" spacing={2}>
-                <TextField {...errorMessage("hit", errors, true, hit, t)} data-testid="hit" label={t("hit")} variant="outlined" value={hit} onChange={event => setHit(event.target.value)} fullWidth />
-                <TextField {...errorMessage("initiative", errors, false, initiative, t)} data-testid="initiative" label={t("initiative")} variant="outlined" value={initiative} onChange={event => setInitiative(event.target.value)} fullWidth />
+                <TextFieldWithError fieldId="hit" errorMap={errors} integerField label={t("hit")} value={hit} onChange={setHit} fullWidth />
+                <TextFieldWithError fieldId="initiative" errorMap={errors} numberField label={t("initiative")} value={initiative} onChange={setInitiative} fullWidth />
             </Stack>
         }
-        <TextField {...errorMessage("effect", errors)} label={t("effect")} data-testid="effect" variant="outlined" multiline rows={2} value={effect} onChange={event => setEffect(event.target.value)} />
-        <TextField {...errorMessage("description", errors)} label={t("description")} data-testid="description" variant="outlined" multiline rows={2} value={description} onChange={event => setDescription(event.target.value)} />
+        <TextFieldWithError fieldId="effect" errorMap={errors} label={t("effect")} multiline rows={2} value={effect} onChange={setEffect} />
+        <TextFieldWithError fieldId="description" errorMap={errors} label={t("description")} multiline rows={2} value={description} onChange={setDescription} />
         {itemClass !== "Item" &&
-            <TextField {...errorMessage("upgradeSlots", errors, true, upgradeSlots, t)} data-testid="upgradeSlots" label={t("upgradeSlots")} variant="outlined" value={upgradeSlots} onChange={event => setUpgradeSlots(event.target.value)} />
+            <TextFieldWithError fieldId="fieldId" errorMap={errors} integerField label={t("upgradeSlots")} value={upgradeSlots} onChange={setUpgradeSlots} />
         }
         <Stack direction="row" spacing={2}>
             <RaritySelect
-                {...errorMessage("rarity", errors)}
+                {...(errors["rarity"] !== undefined ? {
+                    error: true,
+                    helperText: errors["rarity"]
+                } : {})}
                 data-testid="rarity"
                 value={rarity}
                 onChange={setRarity}
                 fullWidth
             />
-            <TextField {...errorMessage("tier", errors, true, tier, t)} data-testid="tier" label={t("tier")} variant="outlined" value={tier} onChange={event => setTier(event.target.value)} fullWidth />
+            <TextFieldWithError fieldId="tier" errorMap={errors} integerField label={t("tier")} value={tier} onChange={setTier} fullWidth />
         </Stack>
-        <TextField {...errorMessage("requirement", errors)} data-testid="requirement" label={t("requirement")} variant="outlined" multiline rows={2} value={requirement} onChange={event => setRequirement(event.target.value)} />
+        <TextFieldWithError fieldId="requirement" errorMap={errors} label={t("requirement")} multiline rows={2} value={requirement} onChange={setRequirement} />
         <Stack direction="row" spacing={2}>
-            <TextField {...errorMessage("vendorPrice", errors, true, price, t)} data-testid="vendorPrice" label={t("price")} variant="outlined" value={price} onChange={event => setPrice(event.target.value)} fullWidth />
+            <TextFieldWithError fieldId="vendorPrice" errorMap={errors} integerField label={t("price")} value={price} onChange={setPrice} fullWidth />
             <TextField label={t("item:resultingPrice")} data-testid="resultingPrice" variant="outlined" value={currencyToHumanReadable(activeUniverse, Number(price))} InputProps={{ readOnly: true }} fullWidth />
         </Stack>
         {itemClass === "Item" && <Stack direction="row" spacing={2}>
-            <TextField {...errorMessage("minimumStackSize", errors, true, minStackSize, t)} data-testid="minimumStackSize" label={t("item:minStackSize")} variant="outlined" value={minStackSize} onChange={event => setMinStackSize(event.target.value)} fullWidth />
-            <TextField {...errorMessage("maximumStackSize", errors, true, maxStackSize, t)} data-testid="maximumStackSize" label={t("item:maxStackSize")} variant="outlined" value={maxStackSize} onChange={event => setMaxStackSize(event.target.value)} fullWidth />
+            <TextFieldWithError fieldId="minimumStackSize" errorMap={errors} integerField label={t("item:minStackSize")} value={minStackSize} onChange={setMinStackSize} fullWidth />
+            <TextFieldWithError fieldId="maximumStackSize" errorMap={errors} integerField label={t("item:maxStackSize")} value={maxStackSize} onChange={setMaxStackSize} fullWidth />
         </Stack>}
-        <TextField {...errorMessage("note", errors)} data-testid="note" label={t("note")} variant="outlined" multiline rows={2} value={note} onChange={event => setNote(event.target.value)} />
+        <TextFieldWithError fieldId="note" errorMap={errors} label={t("note")} multiline rows={2} value={note} onChange={setNote} />
     </Stack>;
 }

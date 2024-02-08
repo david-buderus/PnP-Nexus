@@ -2,7 +2,9 @@ import { Universe } from "../api";
 
 /** Helper class to calculate human readable currency */
 interface CurrencyCalculationStep {
+    /** the short form of the currency */
     shortForm: string;
+    /** the factor of the currency */
     factor: number;
 }
 

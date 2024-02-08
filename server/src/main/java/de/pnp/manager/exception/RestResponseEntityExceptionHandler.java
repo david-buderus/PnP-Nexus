@@ -46,6 +46,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return handleExceptionInternal(ex, response, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    /**
+     * Handles {@link MongoWriteException} and {@link MongoBulkWriteException}.
+     */
     @ExceptionHandler({MongoWriteException.class, MongoBulkWriteException.class})
     protected ResponseEntity<Object> handleMongoWriteException(MongoServerException ex,
         WebRequest request) {

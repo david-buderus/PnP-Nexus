@@ -6,6 +6,7 @@ export type ItemClass = "Item" | "Weapon" | "Shield" | "Armor" | "Jewellery";
 /** All possible item classes */
 export type SomeItem = Item | Weapon | Shield | Armor | Jewellery;
 
-export const ApiConfiguration = new Configuration({
+/** The api configration which should be used by all APIs */
+export const API_CONFIGURATION = new Configuration({
     basePath: window.location.origin
 }); 

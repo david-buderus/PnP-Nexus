@@ -5,14 +5,14 @@ import { FaUser } from "react-icons/fa";
 import { Autocomplete, TextField } from '@mui/material';
 import MainSidebar from './MainSidebar';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
-import { ApiConfiguration } from './Constants';
+import { API_CONFIGURATION } from './Constants';
 
 type UniverseContext = { universes: Universe[], activeUniverse: Universe; };
 type UserContext = { userPermissions: UserPermissions; };
 
-const UNIVERSE_API = new UniverseServiceApi(ApiConfiguration);
-const AUTHENTICATION_API = new AuthenticationServiceApi(ApiConfiguration);
-const USER_API = new UserServiceApi(ApiConfiguration);
+const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
+const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
+const USER_API = new UserServiceApi(API_CONFIGURATION);
 
 function PageBase() {
   const [universes, setUniverses] = useState<Universe[]>([]);

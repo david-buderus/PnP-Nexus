@@ -29,7 +29,7 @@ public class WebDriver {
         Page page = browserContext.newPage();
         page.navigate(String.valueOf(baseUrl));
         page.bringToFront();
-
+        
         page.locator("id=username").fill(username);
         page.locator("id=password").fill(password);
         page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in")).click();

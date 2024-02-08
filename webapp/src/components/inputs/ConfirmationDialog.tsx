@@ -24,7 +24,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
         open={open}
     >
         <DialogTitle>{title}</DialogTitle>
-        {text !== undefined ??
+        {text !== undefined &&
             <DialogContent>
                 {text}
             </DialogContent>
