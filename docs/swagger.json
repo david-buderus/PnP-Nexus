@@ -4041,7 +4041,8 @@
         "required": [
           "displayName",
           "name",
-          "settings"
+          "settings",
+          "shortDescription"
         ],
         "type": "object",
         "properties": {
@@ -4057,6 +4058,9 @@
           },
           "settings": {
             "$ref": "#/components/schemas/UniverseSettings"
+          },
+          "shortDescription": {
+            "type": "string"
           }
         }
       },

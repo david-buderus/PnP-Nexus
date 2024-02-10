@@ -1381,6 +1381,12 @@ export interface Universe {
      * @memberof Universe
      */
     'settings': UniverseSettings;
+    /**
+     * 
+     * @type {string}
+     * @memberof Universe
+     */
+    'shortDescription': string;
 }
 /**
  * 

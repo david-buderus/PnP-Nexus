@@ -34,6 +34,9 @@ public class Universe {
     @Size(min = 3, max = 64)
     private final String displayName;
 
+    @NotNull
+    private final String shortDescription;
+
     /**
      * The settings of the {@link Universe}
      */
@@ -42,14 +45,15 @@ public class Universe {
     private final UniverseSettings settings;
 
     public Universe(String name, String displayName) {
-        this(name, displayName, UniverseSettings.DEFAULT);
+        this(name, displayName, "", UniverseSettings.DEFAULT);
     }
 
     @PersistenceCreator
     @JsonCreator
-    public Universe(String name, String displayName, UniverseSettings settings) {
+    public Universe(String name, String displayName, String shortDescription, UniverseSettings settings) {
         this.name = name;
         this.displayName = displayName;
+        this.shortDescription = shortDescription;
         this.settings = settings;
     }
 
@@ -59,6 +63,10 @@ public class Universe {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
     }
 
     public UniverseSettings getSettings() {
@@ -75,12 +83,13 @@ public class Universe {
         }
         Universe universe = (Universe) o;
         return getName().equals(universe.getName()) && getDisplayName().equals(universe.getDisplayName())
+            && getShortDescription().equals(universe.getShortDescription())
             && getSettings().equals(universe.getSettings());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDisplayName(), getSettings());
+        return Objects.hash(getName(), getDisplayName(), getShortDescription(), getSettings());
     }
 
 }

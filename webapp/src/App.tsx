@@ -24,7 +24,7 @@ class App extends Component {
                 <Routes>
                     <Route path="/" element={<PageBase />} >
                         <Route path='/' element={< Home />}></Route>
-                        <Route path='/universe'  element={< Universe />}></Route>
+                        <Route path='/universe' element={< Universe />}></Route>
                         <Route path='/about' element={< About />}></Route>
                         <Route path='/items' element={< ItemPage />}></Route>
                         <Route path='/weapons' element={< WeaponPage />}></Route>
