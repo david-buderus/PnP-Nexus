@@ -90,6 +90,7 @@ function MenuEntry(props: InternalMenuEntryProps) {
     if (!hasSubEntries) {
         return <ListItem key={id} data-testid={id} disablePadding >
             <ListItemButton
+                key={id + "_button"}
                 onClick={handleClick}
                 component={Link}
                 to={{
@@ -97,16 +98,17 @@ function MenuEntry(props: InternalMenuEntryProps) {
                     search: searchParams.toString()
                 }}
             >
-                <ListItemIcon>
+                <ListItemIcon key={id + "_icon"}>
                     {icon}
                 </ListItemIcon>
-                <ListItemText primary={label} />
+                <ListItemText key={id + "_text"} primary={label} />
             </ListItemButton>
         </ListItem>;
     }
 
     return <ListItem key={id} data-testid={id} disablePadding sx={{ display: 'block' }}>
         <ListItemButton
+            key={id + "_button"}
             onClick={handleClick}
             component={Link}
             to={{
@@ -114,16 +116,18 @@ function MenuEntry(props: InternalMenuEntryProps) {
                 search: searchParams.toString()
             }}
         >
-            <ListItemIcon>
+            <ListItemIcon key={id + "_icon"}>
                 {icon}
             </ListItemIcon>
-            <ListItemText primary={label} />
+            <ListItemText key={id + "_text"} primary={label} />
             {open ? <MdOutlineExpandLess /> : <MdOutlineExpandMore />}
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
+            <List key={id + "_submenu"} component="div" disablePadding>
                 {subEntries.map(entry =>
                     <ListItemButton
+                        key={entry.id}
+                        data-testid={entry.id}
                         sx={{ pl: 4 }}
                         component={Link}
                         to={{
@@ -148,10 +152,10 @@ export function NexusSidebar(props: NexusAppBarProps) {
 
     return <CustomDrawer variant="permanent" open={open}>
         <DrawerHeader />
-        <IconButton onClick={handleDrawerChange}>
+        <IconButton id="collapse_button" onClick={handleDrawerChange} >
             {open ? <FiArrowRightCircle /> : <FiArrowLeftCircle />}
         </IconButton>
-        <List>
+        <List id="entries">
             {entries.map(entry => (
                 <MenuEntry {...entry} searchParams={searchParams} />
             ))}

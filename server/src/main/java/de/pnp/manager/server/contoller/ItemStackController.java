@@ -22,7 +22,7 @@ public class ItemStackController {
      */
     public boolean applyWearByUsage(String universe, IDamageableEquipment equipment, int usages) {
         int wearFactor = universeRepository.getSetting(universe).getWearFactor();
-        if (wearFactor == -1) {
+        if (wearFactor < 1) {
             return true;
         }
         equipment.applyWear(usages / (float) wearFactor);

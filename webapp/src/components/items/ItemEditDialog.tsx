@@ -34,7 +34,7 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
     const itemClass = open ? item["@type"] as ItemClass : "Item";
 
     return <Dialog open={open} onClose={onClose} fullWidth data-testid="item-edit-dialog">
-        <DialogTitle>{t('items:editTitle')}</DialogTitle>
+        <DialogTitle>{t('item:editTitle')}</DialogTitle>
         <Stack spacing={2} className="p-2">
             <ItemManipulation
                 itemTypes={itemTypes}

@@ -1,0 +1,22 @@
+{
+  "createUniverse": "Create a new universe",
+  "displayName": "Display name",
+  "shortDescription": "A short description of the universe",
+  "settings": "Universe Settings",
+  "wearFactor": "Equipment wear rate",
+  "wearFactorDisabled": "Equipment wear is disabled",
+  "wearFactorEnabled": "Enabled",
+  "wearFactorTooltip": "Whether and how quickly equipment wears out.\nIt takes x uses of the item for it to wear out once, where x is the wear rate.\nIn the case of a weapon, this would mean it would lose one damage.\nA wear factor of zero or smaller means it is deactivated.",
+  "currency": "Currency",
+  "baseCurrency": "Smallest unit",
+  "baseCurrencyShortForm": "Symbol",
+  "baseCurrencyShortFormTooltip": "A well-known example is € for the euro.",
+  "calculationCurrency": "Next bigger unit",
+  "calculationCurrencyShortForm": "Symbol",
+  "calculationFactor": "Factor",
+  "currencyFactor": "{{smallerCoin}} are one {{largerCoin}}",
+  "noUniverses": "You don't have access to any universe.",
+  "noUniversesDetails": "Talk to a universe owner or to an admin to get the rights to create universes.",
+  "noUniverseSelected": "No universe has been selected.",
+  "noUniverseSelectedDetails": "Please select a universe. If you can't select a universe, you must be invited to a universe."
+}

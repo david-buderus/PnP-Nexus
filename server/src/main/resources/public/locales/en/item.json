@@ -3,5 +3,7 @@
   "subtype": "Subtype",
   "minStackSize": "Min. Stack Size",
   "maxStackSize": "Max. Stack Size",
-  "confirmDeletionTitle": "Do you want to delete the selected items?"
+  "confirmDeletionTitle": "Do you want to delete the selected items?",
+  "creationTitle": "Create Item",
+  "editTitle": "Edit Item"
 }

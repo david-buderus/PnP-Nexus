@@ -1,32 +1,90 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { getUniverseContext, getUserContext } from '../components/PageBase';
-import { Box, Card, CardActionArea, CardContent, Grid, Typography } from '@mui/material';
+import { Box, Card, CardActionArea, CardContent, Grid, Paper, Stack, Typography, styled } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import { FaPlus } from "react-icons/fa";
+import { UniverseCreationDialog } from '../components/universes/UniverseCreationDialog';
 
 function Home() {
-    const { activeUniverse, universes, setActiveUniverse } = getUniverseContext();
+    const { t } = useTranslation();
+    const { universes, setActiveUniverse, fetchUniverses } = getUniverseContext();
     const { userPermissions } = getUserContext();
 
-    return <Box sx={{ flexGrow: 1 }}>
+    const [openUniverseCreationDialog, setOpenUniverseCreationDialog] = useState(false);
+
+    if (universes.length === 0 && !userPermissions.canCreateUniverses) {
+        return <Grid
+            container
+            direction="column"
+            justifyContent="flex-start"
+            alignItems="center"
+        >
+            <Typography gutterBottom variant="h5" component="div" align='center'>
+                {t("universe:noUniverses")}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="div" align='center'>
+                {t("universe:noUniversesDetails")}
+            </Typography>
+        </Grid>;
+    }
+
+    return <Box>
         <Grid container
             direction="row"
             justifyContent="center"
             alignItems="flex-start"
-            spacing={5}>
+            spacing={3}
+        >
             {universes.map(universe =>
-                <Card sx={{ maxWidth: 345 }}>
-                    <CardActionArea>
+                <Grid item key={universe.name}>
+                    <Card >
+                        <CardActionArea sx={{ width: 250, height: 250 }} onClick={() => setActiveUniverse(universe)}>
+                            <CardContent>
+                                <Grid
+                                    container
+                                    direction="column"
+                                    justifyContent="flex-start"
+                                    alignItems="center"
+                                >
+                                    <Typography gutterBottom variant="h5" component="div" align='center'>
+                                        {universe.displayName}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {universe.shortDescription}
+                                    </Typography>
+                                </Grid>
+                            </CardContent>
+                        </CardActionArea>
+                    </Card>
+                </Grid>
+            )}
+            {userPermissions.canCreateUniverses && <Grid item>
+                <Card >
+                    <CardActionArea sx={{ width: 250, height: 250 }} onClick={() => setOpenUniverseCreationDialog(true)}>
                         <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                {universe.displayName}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {universe.shortDescription}
-                            </Typography>
+                            <Grid
+                                container
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
+                            >
+                                <Typography gutterBottom variant="h5" component="div" align='center'>
+                                    {t("universe:createUniverse")}
+                                </Typography>
+                                <FaPlus size={30} />
+                            </Grid>
                         </CardContent>
                     </CardActionArea>
                 </Card>
-            )}
+            </Grid>}
         </Grid>
+        <UniverseCreationDialog open={openUniverseCreationDialog} onClose={(event, reason) => {
+            if (reason === "successful") {
+                fetchUniverses();
+            }
+            setOpenUniverseCreationDialog(false);
+        }}
+        />
     </Box>;
 }
 

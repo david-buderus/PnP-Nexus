@@ -1,9 +1,7 @@
 import { AuthenticationServiceApi, Universe, UniverseServiceApi, UserServiceApi } from '../api';
 import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { FaUser } from "react-icons/fa";
-import { Autocomplete, Box, CssBaseline, TextField, Toolbar, styled } from '@mui/material';
-import MainSidebar from './MainSidebar';
+import { Box, CssBaseline, ThemeProvider, Toolbar, createTheme } from '@mui/material';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
 import { API_CONFIGURATION } from './Constants';
 import { NexusAppBar } from './NexusAppBar';
@@ -12,12 +10,23 @@ import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
 import { GiAxeSword, GiChestArmor, GiRing, GiShield, GiSwapBag } from 'react-icons/gi';
 
-type UniverseContext = { universes: Universe[], activeUniverse: Universe; setActiveUniverse: (activeUniverse: Universe) => void; };
+type UniverseContext = { universes: Universe[], activeUniverse: Universe; setActiveUniverse: (activeUniverse: Universe) => void; fetchUniverses: () => void; };
 type UserContext = { userPermissions: UserPermissions; };
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#4a148c',
+    },
+    secondary: {
+      main: '#4a148c',
+    },
+  },
+});
 
 function PageBase() {
   const { t } = useTranslation();
@@ -38,7 +47,7 @@ function PageBase() {
     setOpen(!open);
   };
 
-  useEffect(() => {
+  const fetchUniverses = () => {
     UNIVERSE_API.getAllUniverses().then(response => {
       setUniverses(response.data);
       const universe = response.data.find(u => u.name === searchParams.get("universe"));
@@ -46,6 +55,10 @@ function PageBase() {
         setActiveUniverse(universe);
       }
     });
+  };
+
+  useEffect(() => {
+    fetchUniverses();
     AUTHENTICATION_API.getUsername().then(response => {
       setUsername(response.data);
     });
@@ -67,28 +80,30 @@ function PageBase() {
     });
   }, [activeUniverse, username]);
 
-  return <Box sx={{ display: 'flex' }}>
-    <CssBaseline />
-    <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
-    <NexusSidebar open={open} handleDrawerChange={handleDrawerChange} entries={[
-      { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
-      {
-        id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [
-          { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
-          { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
-          { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
-          { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
-        ]
-      }
-    ]} />
-    <Box component="main" height="100vh" display="flex" flexDirection="column" padding={2}>
-      <Toolbar />
-      <Box flex={1} overflow="auto">
-        <Outlet context={{ universes: universes, activeUniverse: activeUniverse, setActiveUniverse: setActiveUniverse, userPermissions: userPermissions }} />
+  return <ThemeProvider theme={theme}>
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
+      <NexusSidebar open={open} handleDrawerChange={handleDrawerChange} entries={[
+        { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
+        {
+          id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [
+            { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
+            { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
+            { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
+            { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
+          ]
+        }
+      ]} />
+      <Box component="main" height="100vh" display="flex" flexDirection="column" padding={2}>
+        <Toolbar />
+        <Box flex={1} overflow="auto">
+          <Outlet context={{ universes: universes, activeUniverse: activeUniverse, setActiveUniverse: setActiveUniverse, fetchUniverses: fetchUniverses, userPermissions: userPermissions }} />
+        </Box>
       </Box>
     </Box>
-  </Box>;
-}
+  </ThemeProvider>;
+};
 
 /** Returns context over the currently avaible universes. */
 export function getUniverseContext() {

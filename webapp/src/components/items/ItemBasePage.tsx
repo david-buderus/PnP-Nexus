@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { ItemCreationDialog } from '../../components/items/ItemCreationDialog';
 import { ItemEditDialog } from '../../components/items/ItemEditDialog';
 import { ConfirmationDialog } from '../../components/inputs/ConfirmationDialog';
+import { NoUniverse } from "../../pages/NoUniverse";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);
@@ -81,6 +82,10 @@ export function ItemBasePage<I extends SomeItem>(props: ItemBasePageProps<I>) {
     useEffect(() => {
         fetchMaterials(activeUniverse).then(fetchedMaterials => setMaterials(fetchedMaterials));
     }, [activeUniverse]);
+
+    if (!activeUniverse) {
+        return <NoUniverse />;
+    }
 
     return <div>
         <OverviewTable id='id' sortBy="name" data={items} columns={columns} selectedState={[selected, setSelected]}>
