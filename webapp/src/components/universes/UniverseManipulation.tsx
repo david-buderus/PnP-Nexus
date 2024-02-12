@@ -62,9 +62,7 @@ export function UniverseManipulation(props: UniverseManipulationProps) {
         </Typography>
         <Stack direction="row" spacing={2}>
             <TextFieldWithError fieldId="settings.currencyCalculation.baseCurrency" errorMap={errors} value={baseCurrency} onChange={setBaseCurrency} label={t("universe:baseCurrency")} fullWidth />
-            <Tooltip title={t("universe:baseCurrencyShortFormTooltip")} placement="right-start">
-                <TextFieldWithError fieldId="settings.currencyCalculation.baseCurrencyShortForm" errorMap={errors} value={baseCurrencyShortform} onChange={setBaseCurrencyShortform} label={t("universe:baseCurrencyShortForm")} />
-            </Tooltip>
+            <TextFieldWithError fieldId="settings.currencyCalculation.baseCurrencyShortForm" errorMap={errors} value={baseCurrencyShortform} onChange={setBaseCurrencyShortform} label={t("universe:baseCurrencyShortForm")} tooltip={t("universe:baseCurrencyShortFormTooltip")} />
         </Stack>
         {currencyCalculationEntries.map((entry, index) => {
             const fieldIdPrefix = "settings.currencyCalculation.calculationEntries[" + index + "].";
@@ -91,10 +89,10 @@ export function UniverseManipulation(props: UniverseManipulationProps) {
                     <Typography component="div" variant="h6" sx={{ width: 2 / 4 }}>
                         {currencyFactor}
                     </Typography>
-                    <IconButton onClick={() => setCurrencyCalculationEntries(currencyCalculationEntries.filter((_, i) => i !== index))} sx={{ width: 1 / 4 }}> <FaMinus size={20} /> </IconButton>
+                    <Button onClick={() => setCurrencyCalculationEntries(currencyCalculationEntries.filter((_, i) => i !== index))} sx={{ width: 1 / 4 }} > <FaMinus size={20} /> </Button>
                 </Stack>
             </Stack>;
         })}
-        <Button fullWidth onClick={() => setCurrencyCalculationEntries(currencyCalculationEntries.concat([{ factor: 10, currency: "", currencyShortForm: "" }]))}> <FaPlus size={20} /> </Button>
+        <Button fullWidth onClick={() => setCurrencyCalculationEntries(currencyCalculationEntries.concat([{ factor: 10, currency: "", currencyShortForm: "" }]))} startIcon={<FaPlus />}> {t("universe:addAnotherCoin")}  </Button>
     </Stack>;
 }

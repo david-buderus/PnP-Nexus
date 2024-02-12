@@ -4,9 +4,11 @@ import { Box, Card, CardActionArea, CardContent, Grid, Paper, Stack, Typography,
 import { useTranslation } from 'react-i18next';
 import { FaPlus } from "react-icons/fa";
 import { UniverseCreationDialog } from '../components/universes/UniverseCreationDialog';
+import { Link, useSearchParams } from "react-router-dom";
 
 function Home() {
     const { t } = useTranslation();
+    const [searchParams] = useSearchParams();
     const { universes, setActiveUniverse, fetchUniverses } = getUniverseContext();
     const { userPermissions } = getUserContext();
 
@@ -38,7 +40,15 @@ function Home() {
             {universes.map(universe =>
                 <Grid item key={universe.name}>
                     <Card >
-                        <CardActionArea sx={{ width: 250, height: 250 }} onClick={() => setActiveUniverse(universe)}>
+                        <CardActionArea
+                            sx={{ width: 250, height: 250 }}
+                            onClick={() => setActiveUniverse(universe)}
+                            component={Link}
+                            to={{
+                                pathname: "/universe",
+                                search: searchParams.toString()
+                            }}
+                        >
                             <CardContent>
                                 <Grid
                                     container

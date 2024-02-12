@@ -84,7 +84,7 @@ function PageBase() {
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
-      <NexusSidebar open={open} handleDrawerChange={handleDrawerChange} entries={[
+      <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={[
         { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
         {
           id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [

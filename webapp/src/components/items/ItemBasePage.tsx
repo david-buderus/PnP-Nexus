@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { ItemCreationDialog } from '../../components/items/ItemCreationDialog';
 import { ItemEditDialog } from '../../components/items/ItemEditDialog';
 import { ConfirmationDialog } from '../../components/inputs/ConfirmationDialog';
-import { NoUniverse } from "../../pages/NoUniverse";
+import { NoUniverse } from "../../pages/noUniverse";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);
@@ -91,61 +91,60 @@ export function ItemBasePage<I extends SomeItem>(props: ItemBasePageProps<I>) {
         <OverviewTable id='id' sortBy="name" data={items} columns={columns} selectedState={[selected, setSelected]}>
         </OverviewTable>
         {
-            userPermissions.canWriteActiveUniverse ?
-                <div className='w-full pt-2'>
-                    <div className='float-right'>
-                        <Button className='btn' onClick={() => setOpenItemCreationDialog(true)}>
-                            {t("add")}
-                        </Button>
-                        <Button className='btn' disabled={selected.length !== 1} onClick={() => setOpenItemEditDialog(true)}>
-                            {t("edit")}
-                        </Button>
-                        <Button className='btn' disabled={selected.length === 0} onClick={() => setOpenDeleteDialog(true)}>
-                            {t("delete")}
-                        </Button>
-                    </div>
-                    <ItemCreationDialog
-                        open={openItemCreationDialog}
-                        onClose={(event, reason) => {
-                            if (reason === "succesful") {
-                                fetchItems<I>(activeUniverse, itemClass).then(fetchedItems => setItems(fetchedItems));
-                            }
-                            setOpenItemCreationDialog(false);
-                        }}
-                        itemTypes={itemTypes}
-                        materials={materials}
-                        initialItemsClass={itemClass}
-                    />
-                    <ItemEditDialog
-                        key={openItemEditDialog ? selected[0] as string : "no-selection"}
-                        open={openItemEditDialog}
-                        onClose={(event, reason) => {
-                            if (reason === "succesful") {
-                                fetchItems<I>(activeUniverse, itemClass).then(fetchedItems => setItems(fetchedItems));
-                            }
-                            setOpenItemEditDialog(false);
-                        }}
-                        itemTypes={itemTypes}
-                        materials={materials}
-                        itemToEdit={openItemEditDialog ? items.find(item => item.id === selected[0]) : null}
-                    />
-                    <ConfirmationDialog
-                        title={t('item:confirmDeletionTitle')}
-                        open={openDeleteDialog}
-                        onClose={confirmation => {
-                            setOpenDeleteDialog(false);
-                            if (!confirmation) {
-                                return;
-                            }
-                            deleteItems(activeUniverse, selected).then(sucessful => {
-                                if (sucessful) {
-                                    fetchItems<I>(activeUniverse, itemClass).then(fetchedItems => setItems(fetchedItems));
-                                }
-                            });
-                        }}
-                    />
+            userPermissions.canWriteActiveUniverse &&
+            <div className='w-full pt-2'>
+                <div className='float-right'>
+                    <Button className='btn' onClick={() => setOpenItemCreationDialog(true)}>
+                        {t("add")}
+                    </Button>
+                    <Button className='btn' disabled={selected.length !== 1} onClick={() => setOpenItemEditDialog(true)}>
+                        {t("edit")}
+                    </Button>
+                    <Button className='btn' disabled={selected.length === 0} onClick={() => setOpenDeleteDialog(true)}>
+                        {t("delete")}
+                    </Button>
                 </div>
-                : null
+                <ItemCreationDialog
+                    open={openItemCreationDialog}
+                    onClose={(event, reason) => {
+                        if (reason === "succesful") {
+                            fetchItems<I>(activeUniverse, itemClass).then(fetchedItems => setItems(fetchedItems));
+                        }
+                        setOpenItemCreationDialog(false);
+                    }}
+                    itemTypes={itemTypes}
+                    materials={materials}
+                    initialItemsClass={itemClass}
+                />
+                <ItemEditDialog
+                    key={openItemEditDialog ? selected[0] as string : "no-selection"}
+                    open={openItemEditDialog}
+                    onClose={(event, reason) => {
+                        if (reason === "succesful") {
+                            fetchItems<I>(activeUniverse, itemClass).then(fetchedItems => setItems(fetchedItems));
+                        }
+                        setOpenItemEditDialog(false);
+                    }}
+                    itemTypes={itemTypes}
+                    materials={materials}
+                    itemToEdit={openItemEditDialog ? items.find(item => item.id === selected[0]) : null}
+                />
+                <ConfirmationDialog
+                    title={t('item:confirmDeletionTitle')}
+                    open={openDeleteDialog}
+                    onClose={confirmation => {
+                        setOpenDeleteDialog(false);
+                        if (!confirmation) {
+                            return;
+                        }
+                        deleteItems(activeUniverse, selected).then(sucessful => {
+                            if (sucessful) {
+                                fetchItems<I>(activeUniverse, itemClass).then(fetchedItems => setItems(fetchedItems));
+                            }
+                        });
+                    }}
+                />
+            </div>
         }
     </div>;
 }

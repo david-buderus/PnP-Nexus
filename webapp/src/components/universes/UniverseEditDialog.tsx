@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Universe, UniverseServiceApi } from "../../api";
-import { Button, Dialog, DialogActions, DialogTitle, Stack } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogTitle, Box } from "@mui/material";
 import { API_CONFIGURATION } from "../Constants";
 import axios, { AxiosError } from "axios";
 import { UniverseManipulation } from "./UniverseManipulation";
-import { TextFieldWithError } from "../inputs/TestFieldWithError";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 
@@ -29,12 +28,14 @@ export function UniverseEditDialog(props: UniverseEditDialogProps) {
 
     return <Dialog open={open} onClose={onClose} fullWidth data-testid="universe-edit-dialog">
         <DialogTitle>{t('universe:editUniverse')}</DialogTitle>
-        <UniverseManipulation
-            name={universe.name}
-            universe={universe}
-            setUniverse={setUniverse}
-            errors={errors}
-        />
+        <Box className="p-2">
+            <UniverseManipulation
+                name={universe.name}
+                universe={universe}
+                setUniverse={setUniverse}
+                errors={errors}
+            />
+        </Box>
         <DialogActions>
             <Button autoFocus onClick={() => onClose({}, "cancel")}>
                 {t('cancel')}

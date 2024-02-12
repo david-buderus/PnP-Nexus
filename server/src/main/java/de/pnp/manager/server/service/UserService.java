@@ -49,6 +49,12 @@ public class UserService {
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
+    @GetMapping
+    @Operation(summary = "Get all display names", operationId = "getDisplayNames")
+    public Collection<String> getAllDisplayNames() {
+        return userRepository.getAllUsers().stream().map(PnPUser::getDisplayName).toList();
+    }
+
     @PostMapping
     @AdminRights
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

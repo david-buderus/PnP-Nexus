@@ -1,0 +1,5 @@
+{
+  "read": "Read-Only Access",
+  "write": "Read/Write Access",
+  "owner": "Owner"
+}

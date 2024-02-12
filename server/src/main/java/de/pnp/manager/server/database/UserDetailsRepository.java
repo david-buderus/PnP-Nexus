@@ -143,6 +143,14 @@ public class UserDetailsRepository implements UserDetailsService {
             REPOSITORY_NAME);
     }
 
+    /**
+     * Returns all users which have access to the given universes except admins.
+     */
+    public Collection<PnPUserDetails> getAllUsersWithUniversePermissions(String universe) {
+        return mongoTemplate.find(Query.query(Criteria.where("authorities.universe").is(universe)),
+            PnPUserDetails.class, REPOSITORY_NAME);
+    }
+
     @Override
     public PnPUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getUser(username).orElseThrow(

@@ -1405,7 +1405,7 @@ export interface UniverseSettings {
      * @type {number}
      * @memberof UniverseSettings
      */
-    'wearFactor'?: number;
+    'wearFactor': number;
 }
 /**
  * 
@@ -1524,6 +1524,25 @@ export interface UpgradeRecipe {
      * @memberof UpgradeRecipe
      */
     'upgrade': Upgrade;
+}
+/**
+ * 
+ * @export
+ * @interface UserUniversePermissionDTO
+ */
+export interface UserUniversePermissionDTO {
+    /**
+     * 
+     * @type {string}
+     * @memberof UserUniversePermissionDTO
+     */
+    'displayName': string;
+    /**
+     * 
+     * @type {GrantedUniverseAuthorityDTO}
+     * @memberof UserUniversePermissionDTO
+     */
+    'dto': GrantedUniverseAuthorityDTO;
 }
 /**
  * 
@@ -6550,16 +6569,16 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
          * 
          * @summary Add the given access right to the given user
          * @param {string} universe 
-         * @param {string} username 
+         * @param {string} displayName 
          * @param {string} [accessPermission] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addPermission: async (universe: string, username: string, accessPermission?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        addUniversePermission: async (universe: string, displayName: string, accessPermission?: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('addPermission', 'universe', universe)
-            // verify required parameter 'username' is not null or undefined
-            assertParamExists('addPermission', 'username', username)
+            assertParamExists('addUniversePermission', 'universe', universe)
+            // verify required parameter 'displayName' is not null or undefined
+            assertParamExists('addUniversePermission', 'displayName', displayName)
             const localVarPath = `/api/universes/{universe}/permission`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6573,8 +6592,8 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (username !== undefined) {
-                localVarQueryParameter['username'] = username;
+            if (displayName !== undefined) {
+                localVarQueryParameter['displayName'] = displayName;
             }
 
             if (accessPermission !== undefined) {
@@ -6728,17 +6747,51 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
-         * @summary Removes all access rights to the universe from the given user
+         * @summary List all access rights of the universe
          * @param {string} universe 
-         * @param {string} username 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        removePermission: async (universe: string, username: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUniversePermissions: async (universe: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('removePermission', 'universe', universe)
-            // verify required parameter 'username' is not null or undefined
-            assertParamExists('removePermission', 'username', username)
+            assertParamExists('getUniversePermissions', 'universe', universe)
+            const localVarPath = `/api/universes/{universe}/permission`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Removes all access rights to the universe from the given user
+         * @param {string} universe 
+         * @param {string} displayName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUniversePermission: async (universe: string, displayName: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('removeUniversePermission', 'universe', universe)
+            // verify required parameter 'displayName' is not null or undefined
+            assertParamExists('removeUniversePermission', 'displayName', displayName)
             const localVarPath = `/api/universes/{universe}/permission`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -6752,8 +6805,8 @@ export const UniverseServiceApiAxiosParamCreator = function (configuration?: Con
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (username !== undefined) {
-                localVarQueryParameter['username'] = username;
+            if (displayName !== undefined) {
+                localVarQueryParameter['displayName'] = displayName;
             }
 
 
@@ -6821,13 +6874,13 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
          * 
          * @summary Add the given access right to the given user
          * @param {string} universe 
-         * @param {string} username 
+         * @param {string} displayName 
          * @param {string} [accessPermission] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addPermission(universe: string, username: string, accessPermission?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addPermission(universe, username, accessPermission, options);
+        async addUniversePermission(universe: string, displayName: string, accessPermission?: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addUniversePermission(universe, displayName, accessPermission, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -6875,14 +6928,25 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Removes all access rights to the universe from the given user
+         * @summary List all access rights of the universe
          * @param {string} universe 
-         * @param {string} username 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async removePermission(universe: string, username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.removePermission(universe, username, options);
+        async getUniversePermissions(universe: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserUniversePermissionDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUniversePermissions(universe, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Removes all access rights to the universe from the given user
+         * @param {string} universe 
+         * @param {string} displayName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeUniversePermission(universe: string, displayName: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeUniversePermission(universe, displayName, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -6911,13 +6975,13 @@ export const UniverseServiceApiFactory = function (configuration?: Configuration
          * 
          * @summary Add the given access right to the given user
          * @param {string} universe 
-         * @param {string} username 
+         * @param {string} displayName 
          * @param {string} [accessPermission] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addPermission(universe: string, username: string, accessPermission?: string, options?: any): AxiosPromise<void> {
-            return localVarFp.addPermission(universe, username, accessPermission, options).then((request) => request(axios, basePath));
+        addUniversePermission(universe: string, displayName: string, accessPermission?: string, options?: any): AxiosPromise<void> {
+            return localVarFp.addUniversePermission(universe, displayName, accessPermission, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6960,14 +7024,24 @@ export const UniverseServiceApiFactory = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary Removes all access rights to the universe from the given user
+         * @summary List all access rights of the universe
          * @param {string} universe 
-         * @param {string} username 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        removePermission(universe: string, username: string, options?: any): AxiosPromise<void> {
-            return localVarFp.removePermission(universe, username, options).then((request) => request(axios, basePath));
+        getUniversePermissions(universe: string, options?: any): AxiosPromise<Array<UserUniversePermissionDTO>> {
+            return localVarFp.getUniversePermissions(universe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Removes all access rights to the universe from the given user
+         * @param {string} universe 
+         * @param {string} displayName 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUniversePermission(universe: string, displayName: string, options?: any): AxiosPromise<void> {
+            return localVarFp.removeUniversePermission(universe, displayName, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6994,14 +7068,14 @@ export class UniverseServiceApi extends BaseAPI {
      * 
      * @summary Add the given access right to the given user
      * @param {string} universe 
-     * @param {string} username 
+     * @param {string} displayName 
      * @param {string} [accessPermission] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UniverseServiceApi
      */
-    public addPermission(universe: string, username: string, accessPermission?: string, options?: AxiosRequestConfig) {
-        return UniverseServiceApiFp(this.configuration).addPermission(universe, username, accessPermission, options).then((request) => request(this.axios, this.basePath));
+    public addUniversePermission(universe: string, displayName: string, accessPermission?: string, options?: AxiosRequestConfig) {
+        return UniverseServiceApiFp(this.configuration).addUniversePermission(universe, displayName, accessPermission, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7053,15 +7127,27 @@ export class UniverseServiceApi extends BaseAPI {
 
     /**
      * 
-     * @summary Removes all access rights to the universe from the given user
+     * @summary List all access rights of the universe
      * @param {string} universe 
-     * @param {string} username 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UniverseServiceApi
      */
-    public removePermission(universe: string, username: string, options?: AxiosRequestConfig) {
-        return UniverseServiceApiFp(this.configuration).removePermission(universe, username, options).then((request) => request(this.axios, this.basePath));
+    public getUniversePermissions(universe: string, options?: AxiosRequestConfig) {
+        return UniverseServiceApiFp(this.configuration).getUniversePermissions(universe, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Removes all access rights to the universe from the given user
+     * @param {string} universe 
+     * @param {string} displayName 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseServiceApi
+     */
+    public removeUniversePermission(universe: string, displayName: string, options?: AxiosRequestConfig) {
+        return UniverseServiceApiFp(this.configuration).removeUniversePermission(universe, displayName, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8117,6 +8203,36 @@ export const UserServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary Get all display names
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDisplayNames: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Gets the permissions of a user
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8360,6 +8476,16 @@ export const UserServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get all display names
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDisplayNames(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDisplayNames(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Gets the permissions of a user
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8449,6 +8575,15 @@ export const UserServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @summary Get all display names
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDisplayNames(options?: any): AxiosPromise<Array<string>> {
+            return localVarFp.getDisplayNames(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Gets the permissions of a user
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8530,6 +8665,17 @@ export class UserServiceApi extends BaseAPI {
      */
     public createUser(pnPUserCreation: PnPUserCreation, options?: AxiosRequestConfig) {
         return UserServiceApiFp(this.configuration).createUser(pnPUserCreation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all display names
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public getDisplayNames(options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).getDisplayNames(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

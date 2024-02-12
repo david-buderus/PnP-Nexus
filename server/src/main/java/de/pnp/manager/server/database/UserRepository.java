@@ -39,11 +39,27 @@ public class UserRepository {
     }
 
     /**
+     * Returns all users for the given usernames.
+     */
+    public Collection<PnPUser> getAllUsers(Collection<String> usernames) {
+        return mongoTemplate.find(Query.query(Criteria.where("_id").in(usernames)), PnPUser.class, REPOSITORY_NAME);
+    }
+
+    /**
      * Returns the {@link PnPUser} of the given user.
      */
     public Optional<PnPUser> getUser(String username) {
         return Optional.ofNullable(
             mongoTemplate.findById(username, PnPUser.class, REPOSITORY_NAME));
+    }
+
+    /**
+     * Returns the {@link PnPUser} of the given user.
+     */
+    public Optional<PnPUser> getUserByDisplayName(String displayName) {
+        return Optional.ofNullable(
+            mongoTemplate.findOne(Query.query(Criteria.where("displayName").is(displayName)), PnPUser.class,
+                REPOSITORY_NAME));
     }
 
     /**

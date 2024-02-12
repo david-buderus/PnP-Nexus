@@ -1,3 +1,4 @@
+import { Tooltip } from "@mui/material";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
@@ -42,20 +43,24 @@ export function TextFieldWithError(props: {
     numberField?: boolean,
     /** If the textfield is an integer field. */
     integerField?: boolean;
+    /** Tooltip for the textfield. */
+    tooltip?: string;
 } & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
-    const { fieldId, value, onChange, errorMap, numberField, integerField, ...rest } = props;
+    const { fieldId, value, onChange, errorMap, numberField, integerField, tooltip, ...rest } = props;
 
     const { t } = useTranslation();
 
-    return <TextField
-        {...errorMessage(fieldId, errorMap, value, numberField, integerField, t)}
-        id={fieldId}
-        data-testid={fieldId}
-        variant="outlined"
-        value={value}
-        onChange={event => onChange(event.target.value)}
-        {...rest}
-    />;
+    return <Tooltip title={tooltip} placement="right-start">
+        <TextField
+            {...errorMessage(fieldId, errorMap, value, numberField, integerField, t)}
+            id={fieldId}
+            data-testid={fieldId}
+            variant="outlined"
+            value={value}
+            onChange={event => onChange(event.target.value)}
+            {...rest}
+        />
+    </Tooltip>;
 }
 
 /**

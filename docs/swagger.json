@@ -238,7 +238,7 @@
     },
     "/api/universes/{universe}/permission": {
       "delete": {
-        "operationId": "removePermission",
+        "operationId": "removeUniversePermission",
         "parameters": [
           {
             "in": "path",
@@ -250,7 +250,7 @@
           },
           {
             "in": "query",
-            "name": "username",
+            "name": "displayName",
             "required": true,
             "schema": {
               "type": "string"
@@ -267,8 +267,40 @@
           "universe-service"
         ]
       },
+      "get": {
+        "operationId": "getUniversePermissions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserUniversePermissionDTO"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "List all access rights of the universe",
+        "tags": [
+          "universe-service"
+        ]
+      },
       "post": {
-        "operationId": "addPermission",
+        "operationId": "addUniversePermission",
         "parameters": [
           {
             "in": "path",
@@ -280,7 +312,7 @@
           },
           {
             "in": "query",
-            "name": "username",
+            "name": "displayName",
             "required": true,
             "schema": {
               "type": "string"
@@ -308,6 +340,28 @@
       }
     },
     "/api/users": {
+      "get": {
+        "operationId": "getDisplayNames",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all display names",
+        "tags": [
+          "user-service"
+        ]
+      },
       "post": {
         "operationId": "createUser",
         "requestBody": {
@@ -4066,7 +4120,8 @@
       },
       "UniverseSettings": {
         "required": [
-          "currencyCalculation"
+          "currencyCalculation",
+          "wearFactor"
         ],
         "type": "object",
         "properties": {
@@ -4187,6 +4242,21 @@
           },
           "upgrade": {
             "$ref": "#/components/schemas/Upgrade"
+          }
+        }
+      },
+      "UserUniversePermissionDTO": {
+        "required": [
+          "displayName",
+          "dto"
+        ],
+        "type": "object",
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "dto": {
+            "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
           }
         }
       },

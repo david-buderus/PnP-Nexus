@@ -1,4 +1,4 @@
-import { Button, CSSObject, Collapse, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, styled, useTheme } from "@mui/material";
+import { CSSObject, Collapse, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, styled } from "@mui/material";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MdOutlineExpandLess, MdOutlineExpandMore } from "react-icons/md";
@@ -54,7 +54,7 @@ const CustomDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'ope
 );
 
 export interface NexusAppBarProps {
-    open?: boolean;
+    collapsed?: boolean;
     entries: MenuEntryProps[];
     handleDrawerChange: () => void;
 }
@@ -147,13 +147,13 @@ function MenuEntry(props: InternalMenuEntryProps) {
 }
 
 export function NexusSidebar(props: NexusAppBarProps) {
-    const { open, entries, handleDrawerChange } = props;
+    const { collapsed, entries, handleDrawerChange } = props;
     const [searchParams] = useSearchParams();
 
-    return <CustomDrawer variant="permanent" open={open}>
+    return <CustomDrawer variant="permanent" open={collapsed}>
         <DrawerHeader />
         <IconButton id="collapse_button" onClick={handleDrawerChange} >
-            {open ? <FiArrowRightCircle /> : <FiArrowLeftCircle />}
+            {collapsed ? <FiArrowLeftCircle /> : <FiArrowRightCircle />}
         </IconButton>
         <List id="entries">
             {entries.map(entry => (
