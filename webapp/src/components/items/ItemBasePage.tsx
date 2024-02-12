@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { ItemCreationDialog } from '../../components/items/ItemCreationDialog';
 import { ItemEditDialog } from '../../components/items/ItemEditDialog';
 import { ConfirmationDialog } from '../../components/inputs/ConfirmationDialog';
-import { NoUniverse } from "../../pages/noUniverse";
+import { NoUniverse } from "../NoUniverse";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);

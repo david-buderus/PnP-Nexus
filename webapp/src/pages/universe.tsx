@@ -11,7 +11,7 @@ import { TextFieldWithErrorForAutoComplete } from '../components/inputs/TestFiel
 import { NexusSelect } from '../components/inputs/NexusSelect';
 import { useNavigate } from 'react-router-dom';
 import { UniverseEditDialog } from '../components/universes/UniverseEditDialog';
-import { NoUniverse } from './noUniverse';
+import { NoUniverse } from '../components/NoUniverse';
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
