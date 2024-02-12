@@ -1,6 +1,5 @@
 {
   "createUniverse": "Create a new universe",
-  "displayName": "Display name",
   "shortDescription": "A short description of the universe",
   "settings": "Universe Settings",
   "wearFactor": "Equipment wear rate",

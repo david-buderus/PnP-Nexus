@@ -41,7 +41,7 @@ export function UniverseManipulation(props: UniverseManipulationProps) {
     }, [displayName, shortDescription, wearFactor, wearFactorEnabled, baseCurrency, baseCurrencyShortform, currencyCalculationEntries]);
 
     return <Stack spacing={2}>
-        <TextFieldWithError fieldId="displayName" errorMap={errors} value={displayName} onChange={setDisplayName} label={t("universe:displayName")} fullWidth />
+        <TextFieldWithError fieldId="displayName" errorMap={errors} value={displayName} onChange={setDisplayName} label={t("displayName")} fullWidth />
         <TextFieldWithError fieldId="shortDescription" errorMap={errors} value={shortDescription} onChange={setShortDescription} label={t("universe:shortDescription")} fullWidth multiline rows={2} />
         <Typography gutterBottom variant="h6" component="div">
             {t("universe:settings")}
