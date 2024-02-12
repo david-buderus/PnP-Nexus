@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getUniverseContext, getUserContext } from '../components/PageBase';
 import { Autocomplete, Button, Dialog, DialogActions, DialogTitle, Grid, Paper, Stack, Typography } from '@mui/material';
-import { NoUniverse } from './noUniverse';
 import { useTranslation } from 'react-i18next';
 import { UniverseServiceApi, UserServiceApi, UserUniversePermissionDTO } from '../api';
 import { API_CONFIGURATION } from '../components/Constants';
@@ -12,6 +11,7 @@ import { TextFieldWithErrorForAutoComplete } from '../components/inputs/TestFiel
 import { NexusSelect } from '../components/inputs/NexusSelect';
 import { useNavigate } from 'react-router-dom';
 import { UniverseEditDialog } from '../components/universes/UniverseEditDialog';
+import { NoUniverse } from './noUniverse';
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
