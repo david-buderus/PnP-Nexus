@@ -82,7 +82,7 @@ public class UniverseRepository {
         if (!result.wasAcknowledged() && result.getDeletedCount() == 1) {
             return false;
         }
-        mongoClient.getDatabase(universe).drop();
+        mongoClient.getDatabase(DatabaseConstants.UNIVERSE_PREFIX + universe).drop();
         return true;
     }
 

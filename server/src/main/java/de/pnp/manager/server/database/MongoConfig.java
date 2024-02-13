@@ -59,7 +59,7 @@ public class MongoConfig {
      * Returns a client to manipulate the collections of a universe database.
      */
     public MongoTemplate universeMongoTemplate(String universe) {
-        return mongoTemplate("universe-" + universe);
+        return mongoTemplate(DatabaseConstants.UNIVERSE_PREFIX + universe);
     }
 
     private static MongoConverter createMongoConverter(MongoDatabaseFactory factory) {
