@@ -4106,8 +4106,7 @@
             "type": "string"
           },
           "name": {
-            "maxLength": 64,
-            "minLength": 3,
+            "pattern": "[a-z][a-z-]+[a-z]",
             "type": "string"
           },
           "settings": {

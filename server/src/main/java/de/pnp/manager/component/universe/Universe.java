@@ -24,6 +24,7 @@ public class Universe {
      * This will never change.
      */
     @Id
+    @NotBlank
     @Pattern(regexp = "[a-z][a-z-]+[a-z]", message = "{universe.name}")
     private final String name;
 
