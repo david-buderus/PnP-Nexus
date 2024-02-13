@@ -1,6 +1,10 @@
 name: Test Pipeline
 
 on: [ push, pull_request ]
+permissions:
+  contents: read
+  actions: read
+  checks: write
 
 jobs:
   soundness-check:
@@ -115,6 +119,14 @@ jobs:
           format: 'JACOCO'
           message: 'Uploading coverage of the server.'
           files: 'server/build/reports/jacoco/test/jacocoTestReport.xml'
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Server Tests
+          path: server/build/reports/tests/test/.*.xml
+          reporter: java-junit
 
       - uses: actions/upload-artifact@v4
         if: always()

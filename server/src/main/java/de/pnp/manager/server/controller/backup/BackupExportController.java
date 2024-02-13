@@ -147,7 +147,8 @@ public class BackupExportController {
             if (!universeRepository.exists(universe)) {
                 throw new IllegalArgumentException("Universe " + universe + " does not exist.");
             }
-            exportUniverse(zipOut, universe, mongoClient.getDatabase(universe), context);
+            exportUniverse(zipOut, universe, mongoClient.getDatabase(DatabaseConstants.UNIVERSE_PREFIX + universe),
+                context);
         }
     }
 
