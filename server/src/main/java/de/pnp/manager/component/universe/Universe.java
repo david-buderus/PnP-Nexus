@@ -5,6 +5,7 @@ import de.pnp.manager.server.database.UniverseRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
@@ -23,8 +24,7 @@ public class Universe {
      * This will never change.
      */
     @Id
-    @NotBlank
-    @Size(min = 3, max = 64)
+    @Pattern(regexp = "[a-z][a-z-]+[a-z]", message = "{universe.name}")
     private final String name;
 
     /**

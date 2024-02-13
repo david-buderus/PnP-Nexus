@@ -1,6 +1,6 @@
 package de.pnp.manager.server.database;
 
-import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
+import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
 
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
@@ -44,7 +44,7 @@ public class UserDetailsRepository implements UserDetailsService {
     private final MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
     public UserDetailsRepository(@Autowired MongoConfig config) {
-        mongoTemplate = config.mongoTemplate(DATABASE_NAME);
+        mongoTemplate = config.mongoTemplate(METADATA_DATABASE);
     }
 
     /**

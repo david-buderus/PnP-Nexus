@@ -173,7 +173,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
         if (!universeRepository.exists(universe)) {
             throw new UniverseNotFoundException(universe);
         }
-        return config.mongoTemplate(universe);
+        return config.universeMongoTemplate(universe);
     }
 
     /**

@@ -1,6 +1,6 @@
 package de.pnp.manager.server.database;
 
-import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
+import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
 
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.PnPUser;
@@ -28,7 +28,7 @@ public class UserRepository {
     private final MongoTemplate mongoTemplate;
 
     public UserRepository(@Autowired MongoConfig config) {
-        mongoTemplate = config.mongoTemplate(DATABASE_NAME);
+        mongoTemplate = config.mongoTemplate(METADATA_DATABASE);
     }
 
     /**

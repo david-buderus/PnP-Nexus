@@ -55,6 +55,13 @@ public class MongoConfig {
         return templateCache.get(database);
     }
 
+    /**
+     * Returns a client to manipulate the collections of a universe database.
+     */
+    public MongoTemplate universeMongoTemplate(String universe) {
+        return mongoTemplate("universe-" + universe);
+    }
+
     private static MongoConverter createMongoConverter(MongoDatabaseFactory factory) {
 
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(factory);

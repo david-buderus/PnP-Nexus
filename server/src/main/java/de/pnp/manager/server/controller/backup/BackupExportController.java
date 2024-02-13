@@ -1,10 +1,11 @@
 package de.pnp.manager.server.controller.backup;
 
-import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
+import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import de.pnp.manager.component.universe.Universe;
+import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
@@ -91,7 +92,7 @@ public class BackupExportController {
         this.mongoClient = mongoClient;
         this.mongoConfig = mongoConfig;
         this.universeRepository = universeRepository;
-        codecRegistry = mongoClient.getDatabase(UniverseRepository.DATABASE_NAME).getCodecRegistry();
+        codecRegistry = mongoClient.getDatabase(DatabaseConstants.METADATA_DATABASE).getCodecRegistry();
     }
 
     /**
@@ -108,12 +109,12 @@ public class BackupExportController {
         EncoderContext context = EncoderContext.builder().isEncodingCollectibleDocument(true).build();
 
         try (ZipOutputStream zipOut = new ZipOutputStream(outputStream)) {
-            exportGlobalData(context, zipOut);
+            exportMetaData(context, zipOut);
             exportUniverses(context, zipOut, universeNames);
         }
     }
 
-    private void exportGlobalData(EncoderContext context, ZipOutputStream zipOut) throws IOException {
+    private void exportMetaData(EncoderContext context, ZipOutputStream zipOut) throws IOException {
         Document metadata = new Document();
         metadata.put(VERSION, EBackupVersion.CURRENT);
 
@@ -124,10 +125,10 @@ public class BackupExportController {
 
         Document userData = new Document();
 
-        List<Document> userRepositoryContent = mongoConfig.mongoTemplate(DATABASE_NAME)
+        List<Document> userRepositoryContent = mongoConfig.mongoTemplate(METADATA_DATABASE)
             .findAll(Document.class, UserRepository.REPOSITORY_NAME);
         userData.put(USER_REPOSITORY, userRepositoryContent);
-        List<Document> userDetailsRepositoryContent = mongoConfig.mongoTemplate(DATABASE_NAME)
+        List<Document> userDetailsRepositoryContent = mongoConfig.mongoTemplate(METADATA_DATABASE)
             .findAll(Document.class, UserDetailsRepository.REPOSITORY_NAME);
         userData.put(USER_DETAILS_REPOSITORY, userDetailsRepositoryContent);
 
@@ -156,14 +157,14 @@ public class BackupExportController {
 
         ZipEntry universeEntry = new ZipEntry(universe + "/" + UNIVERSE_FILE);
         outputStream.putNextEntry(universeEntry);
-        Document universeDocument = mongoConfig.mongoTemplate(UniverseRepository.DATABASE_NAME)
+        Document universeDocument = mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE)
             .findById(universe, Document.class, UniverseRepository.REPOSITORY_NAME);
         outputStream.write(encode(universeDocument, codecRegistry, context));
         outputStream.closeEntry();
 
         for (String repositoryName : universeDatabase.listCollectionNames()) {
 
-            List<Document> repositoryContent = mongoConfig.mongoTemplate(universe)
+            List<Document> repositoryContent = mongoConfig.universeMongoTemplate(universe)
                 .findAll(Document.class, repositoryName);
             Document repository = new Document();
             repository.put(REPOSITORY_CONTENT, repositoryContent);

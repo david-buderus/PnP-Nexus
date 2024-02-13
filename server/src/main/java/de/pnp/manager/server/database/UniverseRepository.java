@@ -8,7 +8,6 @@ import de.pnp.manager.component.universe.UniverseSettings;
 import de.pnp.manager.exception.UniverseNotFoundException;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,23 +21,15 @@ import org.springframework.stereotype.Component;
 public class UniverseRepository {
 
     /**
-     * Name of the database which stores the {@link Universe universes}.
-     */
-    public static final String DATABASE_NAME = "metadata";
-
-    /**
      * Name of the repository.
      */
     public static final String REPOSITORY_NAME = "universe";
-
-    private static final Set<String> FORBIDDEN_UNIVERSE_NAMES = Set.of(DATABASE_NAME, "admin",
-        "local", "config");
 
     private final MongoTemplate mongoTemplate;
     private final MongoClient mongoClient;
 
     public UniverseRepository(@Autowired MongoConfig config) {
-        mongoTemplate = config.mongoTemplate(DATABASE_NAME);
+        mongoTemplate = config.mongoTemplate(DatabaseConstants.METADATA_DATABASE);
         mongoClient = config.mongo();
     }
 
@@ -69,7 +60,6 @@ public class UniverseRepository {
      * Inserts a new {@link Universe} in the database.
      */
     public Universe insert(Universe universe) {
-        Preconditions.checkArgument(!FORBIDDEN_UNIVERSE_NAMES.contains(universe.getName()));
         return mongoTemplate.insert(universe, REPOSITORY_NAME);
     }
 
