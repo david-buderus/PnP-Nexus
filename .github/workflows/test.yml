@@ -125,7 +125,7 @@ jobs:
         if: always()
         with:
           name: Server Tests
-          path: server/build/reports/tests/test/.*.xml
+          path: server/build/test-results/**/*.xml
           reporter: java-junit
 
       - uses: actions/upload-artifact@v4
