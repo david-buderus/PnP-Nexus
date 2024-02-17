@@ -57,27 +57,39 @@ const CustomDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'ope
     }),
 );
 
-/** Props for the app bar */
-export interface NexusAppBarProps {
+/** Props for the side bar */
+export interface NexusSidebarProps {
+    /** If the sidebar is collapsed */
     collapsed?: boolean;
+    /** The menu entries shown in the sidebar */
     entries: MenuEntryProps[];
+    /** handle for drawer changes */
     handleDrawerChange: () => void;
 }
 
 /** Definition of a menu */
 export interface MenuEntryProps {
+    /** The id of the menu entry. Will also be the data-testid */
     id: string;
+    /** The label of the entry */
     label: string;
+    /** The link of the entry */
     link: string;
+    /** The icon used for the entry */
     icon: React.ReactNode;
+    /** sub menus */
     subEntries?: SubMenuEntryProps[];
 }
 
 /** Definition of a submenu */
 export interface SubMenuEntryProps {
+    /** The id of the menu entry. Will also be the data-testid */
     id: string;
+    /** The label of the entry */
     label: string;
+    /** The link of the entry */
     link: string;
+    /** The icon used for the entry */
     icon: React.ReactNode;
 }
 
@@ -154,7 +166,7 @@ function MenuEntry(props: InternalMenuEntryProps) {
 }
 
 /** Creates the sidebar */
-export function NexusSidebar(props: NexusAppBarProps) {
+export function NexusSidebar(props: NexusSidebarProps) {
     const { collapsed, entries, handleDrawerChange } = props;
     const [searchParams] = useSearchParams();
 
