@@ -103,7 +103,7 @@ function PageBase() {
       </Box>
     </Box>
   </ThemeProvider>;
-};
+}
 
 /** Returns context over the currently avaible universes. */
 export function getUniverseContext() {

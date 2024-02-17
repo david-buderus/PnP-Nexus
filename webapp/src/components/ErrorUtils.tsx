@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 
 /** Handles api errors and returns the resulting error map. */
 export function handleValidationError(setError: (errors: Map<string, string>) => void, keyFormatter?: (key: string) => string): (err: Error | AxiosError) => void {
-    return (err) => {
+    return err => {
         if (!axios.isAxiosError(err)) {
             return;
         }

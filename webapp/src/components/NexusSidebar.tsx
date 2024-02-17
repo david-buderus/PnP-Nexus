@@ -40,20 +40,20 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     ...theme.mixins.toolbar,
 }));
 
-const CustomDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+const CustomDrawer = styled(Drawer, { shouldForwardProp: prop => prop !== 'open' })(
     ({ theme, open }) => ({
         width: DRAWER_WIDTH,
         flexShrink: 0,
         whiteSpace: 'nowrap',
         boxSizing: 'border-box',
-        ...(open && {
+        ...open && {
             ...openedMixin(theme),
             '& .MuiDrawer-paper': openedMixin(theme),
-        }),
-        ...(!open && {
+        },
+        ...!open && {
             ...closedMixin(theme),
             '& .MuiDrawer-paper': closedMixin(theme),
-        }),
+        },
     }),
 );
 
@@ -93,7 +93,9 @@ export interface SubMenuEntryProps {
     icon: React.ReactNode;
 }
 
+/** Definition of a menu with search params */
 interface InternalMenuEntryProps extends MenuEntryProps {
+    /** current search params */
     searchParams: URLSearchParams;
 }
 
@@ -176,9 +178,9 @@ export function NexusSidebar(props: NexusSidebarProps) {
             {collapsed ? <FiArrowLeftCircle /> : <FiArrowRightCircle />}
         </IconButton>
         <List key="entries">
-            {entries.map(entry => (
+            {entries.map(entry =>
                 <MenuEntry key={"entry_" + entry.id} {...entry} searchParams={searchParams} />
-            ))}
+            )}
         </List>
     </CustomDrawer>;
 }
