@@ -55,7 +55,7 @@ interface RaritySelectProps {
 
 /** A select for rarity */
 export function RaritySelect(props: React.PropsWithChildren<RaritySelectProps>) {
-    const { value, onChange, helperText, error, ...rest } = props;
+    const { value, onChange, error, ...rest } = props;
     const { t } = useTranslation();
 
     return <NexusSelect

@@ -1,4 +1,4 @@
-import { AppBar, AppBarProps, Autocomplete, IconButton, TextField, Toolbar, Typography, styled } from "@mui/material";
+import { AppBar, Autocomplete, TextField, Toolbar, Typography, styled } from "@mui/material";
 import { Universe } from "../api";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -10,12 +10,14 @@ const CustomAppBar = styled(AppBar, {})(({ theme }) => ({
     })
 }));
 
+/** The props for the app bar */
 export interface NexusAppBarProps {
     universes: Universe[];
     activeUniverse: Universe;
     setActiveUniverse: (universe: Universe) => void;
 }
 
+/** Creates the app bar */
 export function NexusAppBar(props: NexusAppBarProps) {
     const { universes, activeUniverse, setActiveUniverse } = props;
     const [searchParams] = useSearchParams();

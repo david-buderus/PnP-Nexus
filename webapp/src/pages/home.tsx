@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getUniverseContext, getUserContext } from '../components/PageBase';
-import { Box, Card, CardActionArea, CardContent, Grid, Paper, Stack, Typography, styled } from '@mui/material';
+import { Box, Card, CardActionArea, CardContent, Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { FaPlus } from "react-icons/fa";
 import { UniverseCreationDialog } from '../components/universes/UniverseCreationDialog';

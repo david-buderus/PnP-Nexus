@@ -14,6 +14,7 @@ interface UniverseEditDialogProps {
     open: boolean;
     /** On close handler */
     onClose: (event: unknown, reason: "backdropClick" | "escapeKeyDown" | "successful" | "cancel") => void;
+    /** The universe which should be edited */
     universeToEdit: Universe;
 }
 

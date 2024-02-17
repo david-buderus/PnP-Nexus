@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControlLabel, Grid, IconButton, Paper, Stack, Tooltip, Typography } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Stack, Tooltip, Typography } from "@mui/material";
 import { CurrencyCalculation, CurrencyCalculationEntry, Universe, UniverseSettings } from "../../api";
 import { useState } from "react";
 import { NumberFieldWithError, TextFieldWithError } from "../inputs/TestFieldWithError";
