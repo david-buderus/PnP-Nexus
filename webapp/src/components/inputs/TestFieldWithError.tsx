@@ -1,6 +1,7 @@
 import { Tooltip } from "@mui/material";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { TFunction } from "i18next";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 function errorMessage(fieldId: string, errorMap: Map<string, string>, value: string, numberField: boolean, integerField: boolean, t: TFunction<"translation", undefined>) {
@@ -82,6 +83,39 @@ export function TextFieldWithErrorForAutoComplete(props: {
         {...errorMessage(fieldId, errorMap, null, false, false, t)}
         id={fieldId}
         variant="outlined"
+        {...rest}
+    />;
+}
+
+/**
+ * A NumberField where the helpertext is used as an error message.
+ */
+export function NumberFieldWithError(props: {
+    /** The id of the field which gets tested. Used as data-testid. */
+    fieldId: string,
+    /** The current value of the text field. */
+    value: number,
+    /** On change hook for the value. */
+    onChange: (value: number) => void;
+    /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
+    errorMap: Map<string, string>,
+    /** If the textfield is an integer field. */
+    integerField?: boolean;
+    /** Tooltip for the textfield. */
+    tooltip?: string;
+} & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
+    const { fieldId, value, onChange, errorMap, integerField, tooltip, ...rest } = props;
+    const [stringValue, setStringValue] = useState(Number.isNaN(value) ? "" : value.toString());
+
+    return <TextFieldWithError
+        fieldId={fieldId}
+        value={stringValue}
+        onChange={newValue => {
+            setStringValue(newValue);
+            onChange(Number(newValue));
+        }}
+        errorMap={errorMap}
+        numberField
         {...rest}
     />;
 }

@@ -1368,6 +1368,12 @@ export interface Universe {
      * @type {string}
      * @memberof Universe
      */
+    'description': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Universe
+     */
     'displayName': string;
     /**
      * 

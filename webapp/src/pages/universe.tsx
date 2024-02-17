@@ -103,11 +103,11 @@ function Universe() {
     <Grid item>
       <Paper className='p-4 max-w-md'>
         <Stack>
-          <Typography gutterBottom variant="h5" component="div" align='center'>
-            {activeUniverse.displayName + " (" + activeUniverse.name + ")"}
+          <Typography gutterBottom variant="h4" component="div" align='center'>
+            {activeUniverse.displayName}
           </Typography>
           <Typography gutterBottom variant="body2" component="div" align='left'>
-            {activeUniverse.shortDescription}
+            {activeUniverse.description}
           </Typography>
           {userPermissions.isActiveUniverseOwner &&
             <Stack spacing={2} direction="row" justifyContent="end">

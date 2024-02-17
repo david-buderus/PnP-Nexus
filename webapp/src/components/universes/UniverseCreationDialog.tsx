@@ -17,6 +17,22 @@ interface UniverseCreationDialogProps {
     onClose: (event: unknown, reason: "backdropClick" | "escapeKeyDown" | "successful" | "cancel") => void;
 }
 
+function createEmptyUniverse(): Universe {
+    return {
+        name: "",
+        displayName: "",
+        shortDescription: "",
+        description: "",
+        settings: {
+            wearFactor: 0,
+            currencyCalculation: {
+                baseCurrency: "",
+                baseCurrencyShortForm: "",
+                calculationEntries: []
+            }
+        }
+    };
+}
 
 /** Creates a dialog to create universes */
 export function UniverseCreationDialog(props: UniverseCreationDialogProps) {
@@ -24,15 +40,20 @@ export function UniverseCreationDialog(props: UniverseCreationDialogProps) {
     const { t } = useTranslation();
 
     const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
-    const [name, setName] = useState<string>("");
-    const [universe, setUniverse] = useState<Universe>(null);
+    const [universe, setUniverse] = useState<Universe>(createEmptyUniverse());
+
+    console.log(universe);
 
     return <Dialog open={open} onClose={onClose} fullWidth data-testid="universe-creation-dialog">
         <DialogTitle>{t('universe:createUniverse')}</DialogTitle>
         <Stack spacing={2} className="p-2">
-            <TextFieldWithError fieldId="name" errorMap={errors} value={name} onChange={setName} label={t("name")} fullWidth />
+            <TextFieldWithError fieldId="name" errorMap={errors} value={universe.name} onChange={value => {
+                setUniverse({
+                    ...universe,
+                    name: value
+                });
+            }} label={t("name")} fullWidth />
             <UniverseManipulation
-                name={name}
                 universe={universe}
                 setUniverse={setUniverse}
                 errors={errors}

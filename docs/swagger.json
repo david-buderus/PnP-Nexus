@@ -4093,6 +4093,7 @@
       },
       "Universe": {
         "required": [
+          "description",
           "displayName",
           "name",
           "settings",
@@ -4100,6 +4101,9 @@
         ],
         "type": "object",
         "properties": {
+          "description": {
+            "type": "string"
+          },
           "displayName": {
             "maxLength": 64,
             "minLength": 3,

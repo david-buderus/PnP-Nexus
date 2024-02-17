@@ -309,7 +309,7 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
 
         Universe changedUniverse = new Universe(exampleUniverse.getName(), "Other Title",
-            "", exampleUniverse.getSettings());
+            "", "", exampleUniverse.getSettings());
         Universe oldUniverse = update(changedUniverse);
         assertThat(oldUniverse).isEqualTo(exampleUniverse);
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(changedUniverse);

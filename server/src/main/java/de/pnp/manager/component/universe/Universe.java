@@ -38,6 +38,9 @@ public class Universe {
     @NotNull
     private final String shortDescription;
 
+    @NotNull
+    private final String description;
+
     /**
      * The settings of the {@link Universe}
      */
@@ -46,15 +49,17 @@ public class Universe {
     private final UniverseSettings settings;
 
     public Universe(String name, String displayName) {
-        this(name, displayName, "", UniverseSettings.DEFAULT);
+        this(name, displayName, "", "", UniverseSettings.DEFAULT);
     }
 
     @PersistenceCreator
     @JsonCreator
-    public Universe(String name, String displayName, String shortDescription, UniverseSettings settings) {
+    public Universe(String name, String displayName, String shortDescription, String description,
+        UniverseSettings settings) {
         this.name = name;
         this.displayName = displayName;
         this.shortDescription = shortDescription;
+        this.description = description;
         this.settings = settings;
     }
 
@@ -68,6 +73,10 @@ public class Universe {
 
     public String getShortDescription() {
         return shortDescription;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public UniverseSettings getSettings() {
@@ -84,13 +93,13 @@ public class Universe {
         }
         Universe universe = (Universe) o;
         return getName().equals(universe.getName()) && getDisplayName().equals(universe.getDisplayName())
-            && getShortDescription().equals(universe.getShortDescription())
+            && getShortDescription().equals(universe.getShortDescription()) && getDescription().equals(
+            universe.getDescription())
             && getSettings().equals(universe.getSettings());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDisplayName(), getShortDescription(), getSettings());
+        return Objects.hash(getName(), getDisplayName(), getShortDescription(), getDescription(), getSettings());
     }
-
 }

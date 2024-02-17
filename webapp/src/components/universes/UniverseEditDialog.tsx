@@ -30,7 +30,6 @@ export function UniverseEditDialog(props: UniverseEditDialogProps) {
         <DialogTitle>{t('universe:editUniverse')}</DialogTitle>
         <Box className="p-2">
             <UniverseManipulation
-                name={universe.name}
                 universe={universe}
                 setUniverse={setUniverse}
                 errors={errors}
