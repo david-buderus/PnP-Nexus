@@ -172,12 +172,12 @@ export function NexusSidebar(props: NexusSidebarProps) {
 
     return <CustomDrawer variant="permanent" open={collapsed}>
         <DrawerHeader />
-        <IconButton id="collapse_button" onClick={handleDrawerChange} >
+        <IconButton key="collapse_button" onClick={handleDrawerChange} >
             {collapsed ? <FiArrowLeftCircle /> : <FiArrowRightCircle />}
         </IconButton>
-        <List id="entries">
+        <List key="entries">
             {entries.map(entry => (
-                <MenuEntry {...entry} searchParams={searchParams} />
+                <MenuEntry key={"entry_" + entry.id} {...entry} searchParams={searchParams} />
             ))}
         </List>
     </CustomDrawer>;
