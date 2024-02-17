@@ -5,6 +5,7 @@ import { Button, Dialog, DialogActions, DialogTitle, Box } from "@mui/material";
 import { API_CONFIGURATION } from "../Constants";
 import axios, { AxiosError } from "axios";
 import { UniverseManipulation } from "./UniverseManipulation";
+import { handleValidationError } from "../ErrorUtils";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 
@@ -41,20 +42,7 @@ export function UniverseEditDialog(props: UniverseEditDialogProps) {
                 {t('cancel')}
             </Button>
             <Button onClick={() => {
-                UNIVERSE_API.updateUniverse(universe.name, universe).then(() => onClose({}, "successful")).catch((err: Error | AxiosError) => {
-                    if (!axios.isAxiosError(err)) {
-                        return;
-                    }
-                    if (err.response.status !== 400) {
-                        return;
-                    }
-                    const errorMap = new Map<string, string>();
-                    Object.entries(err.response.data).forEach(entry => {
-                        const [key, value] = entry;
-                        errorMap[key] = value;
-                    });
-                    setErrors(errorMap);
-                });
+                UNIVERSE_API.updateUniverse(universe.name, universe).then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));
             }}>{t('edit')}</Button>
         </DialogActions>
     </Dialog>;
