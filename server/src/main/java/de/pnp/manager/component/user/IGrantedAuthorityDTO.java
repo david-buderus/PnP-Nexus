@@ -39,6 +39,13 @@ public interface IGrantedAuthorityDTO {
     }
 
     /**
+     * Converts the given {@link GrantedAuthority} to an DTO.
+     */
+    static GrantedUniverseAuthorityDTO from(GrantedUniverseAuthority universeAuthority) {
+        return new GrantedUniverseAuthorityDTO(universeAuthority.getUniverse(), universeAuthority.getAccessRight());
+    }
+
+    /**
      * Represents a role.
      */
     class RoleAuthorityDTO implements IGrantedAuthorityDTO {

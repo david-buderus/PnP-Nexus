@@ -9,6 +9,7 @@ import static de.pnp.manager.server.controller.backup.BackupExportController.USE
 import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
 
 import com.mongodb.client.MongoClient;
+import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
@@ -48,7 +49,7 @@ public class BackupImportController {
     public BackupImportController(@Autowired MongoClient mongoClient,
         @Autowired MongoConfig mongoConfig, @Autowired UniverseRepository universeRepository) {
         this.mongoConfig = mongoConfig;
-        codecRegistry = mongoClient.getDatabase(UniverseRepository.DATABASE_NAME).getCodecRegistry();
+        codecRegistry = mongoClient.getDatabase(DatabaseConstants.METADATA_DATABASE).getCodecRegistry();
         this.universeRepository = universeRepository;
     }
 
@@ -80,12 +81,12 @@ public class BackupImportController {
                 String.class));
         List<? extends IBackupMigration> migrations = backupVersion.getNecessaryMigrations();
 
-        importGlobalData(tmpDir, decoderContext, migrations);
+        importMetaData(tmpDir, decoderContext, migrations);
 
         importUniverses(tmpDir, decoderContext, migrations);
     }
 
-    private void importGlobalData(File tmpDir, DecoderContext decoderContext,
+    private void importMetaData(File tmpDir, DecoderContext decoderContext,
         List<? extends IBackupMigration> migrations) throws IOException {
 
         Document userDocument = decode(new File(tmpDir, USER_FILE),
@@ -96,7 +97,7 @@ public class BackupImportController {
         userDetailsRepository.forEach(
             userDetails -> migrations.forEach(migration -> migration.migrateUserDetails(userDetails)));
 
-        MongoTemplate mongoTemplate = mongoConfig.mongoTemplate(UniverseRepository.DATABASE_NAME);
+        MongoTemplate mongoTemplate = mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE);
 
         List<Object> ids = userRepository.stream().map(doc -> doc.get("_id")).toList();
         mongoTemplate.findAllAndRemove(Query.query(Criteria.where("_id").in(ids)), UserRepository.REPOSITORY_NAME);
@@ -120,10 +121,10 @@ public class BackupImportController {
                 throw new IllegalArgumentException("Universe " + universeName + " does already exist.");
             }
 
-            mongoConfig.mongoTemplate(UniverseRepository.DATABASE_NAME)
+            mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE)
                 .insert(universeDocument, UniverseRepository.REPOSITORY_NAME);
 
-            MongoTemplate mongoTemplate = mongoConfig.mongoTemplate(universeName);
+            MongoTemplate mongoTemplate = mongoConfig.universeMongoTemplate(universeName);
 
             for (File repositoryFile : Objects.requireNonNull(
                 universeFolder.listFiles(file -> !UNIVERSE_FILE.equals(file.getName())))) {

@@ -3,5 +3,7 @@
   "subtype": "Subtyp",
   "minStackSize": "Min. Stapelgröße",
   "maxStackSize": "Max. Stapelgröße",
-  "confirmDeletionTitle": "Willst du die ausgewählten Items löschen?"
+  "confirmDeletionTitle": "Willst du die ausgewählten Items löschen?",
+  "creationTitle": "Erstelle ein Item",
+  "editTitle": "Bearbeite ein Item"
 }

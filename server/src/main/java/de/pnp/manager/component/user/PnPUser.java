@@ -2,6 +2,7 @@ package de.pnp.manager.component.user;
 
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
  * A user on the server.
@@ -12,6 +13,8 @@ public class PnPUser {
 
     @Id
     private final String username;
+    
+    @Indexed(unique = true)
     private final String displayName;
     private final String email;
 

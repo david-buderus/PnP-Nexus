@@ -21,12 +21,14 @@
   "tier": "Tier",
   "requirement": "Voraussetzung",
   "upgradeSlots": "Upgrade Slots",
-  "damage": "Damage",
+  "damage": "Schaden",
   "dice": "Würfel",
   "hit": "Treffer",
   "initiative": "Initiative",
-  "weight": "Weight",
+  "weight": "Gewicht",
   "resultingPrice": "Resultierender Preis",
   "cancel": "Abbrechen",
-  "confirm": "Bestätigen"
+  "confirm": "Bestätigen",
+  "permission": "Rechte",
+  "displayName": "Anzeigename"
 }

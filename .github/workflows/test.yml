@@ -1,26 +1,30 @@
 name: Test Pipeline
 
 on: [ push, pull_request ]
+permissions:
+  contents: read
+  actions: read
+  checks: write
 
 jobs:
   soundness-check:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 17
 
       - name: Setup Gradle and run 'generateOpenApiDocs' task
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: generateOpenApiDocs
 
       - name: Verify that OpenApi documentation in git is up-to-date
-        uses: tj-actions/verify-changed-files@v15
+        uses: tj-actions/verify-changed-files@v18
         id: verify-open-api-documentation
         with:
           files: |
@@ -37,12 +41,12 @@ jobs:
           exit 1
 
       - name: Regenerate webapp API client
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: openApiGenerate
 
       - name: Verify that webapp API client in git is up-to-date
-        uses: tj-actions/verify-changed-files@v15
+        uses: tj-actions/verify-changed-files@v18
         id: verify-webapp-api-client
         with:
           files: |
@@ -63,16 +67,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 17
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18.x'
 
@@ -92,12 +96,12 @@ jobs:
         run: npm run build
 
       - name: Setup playwright
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: playwright --args "install --with-deps"
 
       - name: Setup and execute Gradle 'test' task
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: test
         env:
@@ -116,13 +120,21 @@ jobs:
           message: 'Uploading coverage of the server.'
           files: 'server/build/reports/jacoco/test/jacocoTestReport.xml'
 
-      - uses: actions/upload-artifact@v2
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Server Tests
+          path: server/build/test-results/**/*.xml
+          reporter: java-junit
+
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-report-server
           path: server/build/reports/tests/test
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report-server

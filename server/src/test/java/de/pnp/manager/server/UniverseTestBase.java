@@ -20,6 +20,7 @@ public abstract class UniverseTestBase extends ServerTestBase {
      */
     protected void updateUniverseSettings(UniverseSettings settings) {
         Universe universe = universeRepository.get(getUniverseName()).orElseThrow();
-        universeRepository.update(new Universe(getUniverseName(), universe.getDisplayName(), settings));
+        universeRepository.update(
+            new Universe(getUniverseName(), universe.getDisplayName(), "", "", settings));
     }
 }

@@ -1,7 +1,7 @@
 import { Autocomplete, Stack, TextField } from "@mui/material";
 import { ERarity, ItemType, Material } from "../../api";
 import { useEffect, useState } from "react";
-import { RaritySelect } from "../inputs/RaritySelect";
+import { RaritySelect } from "../inputs/NexusSelect";
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../PageBase";
 import { currencyToHumanReadable } from "../Utils";

@@ -309,7 +309,7 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
 
         Universe changedUniverse = new Universe(exampleUniverse.getName(), "Other Title",
-            exampleUniverse.getSettings());
+            "", "", exampleUniverse.getSettings());
         Universe oldUniverse = update(changedUniverse);
         assertThat(oldUniverse).isEqualTo(exampleUniverse);
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(changedUniverse);
@@ -373,36 +373,36 @@ public class UniverseServiceTest extends ServerTestBase {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         universeRepository.insert(exampleUniverse);
 
-        String username = "test";
-        userController.createNewUser(new PnPUserCreation(username, "test", "Test", null, List.of()));
+        String name = "test";
+        userController.createNewUser(new PnPUserCreation(name, "test", name, null, List.of()));
 
-        addPermission(UNIVERSE_NAME, username, SecurityConstants.READ_ACCESS);
-        hasAccessRight(username, GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME));
-        addPermission(UNIVERSE_NAME, username, SecurityConstants.WRITE_ACCESS);
-        hasAccessRight(username, GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME));
-        addPermission(UNIVERSE_NAME, username, SecurityConstants.OWNER);
-        hasAccessRight(username, GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME));
+        addPermission(UNIVERSE_NAME, name, SecurityConstants.READ_ACCESS);
+        hasAccessRight(name, GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME));
+        addPermission(UNIVERSE_NAME, name, SecurityConstants.WRITE_ACCESS);
+        hasAccessRight(name, GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME));
+        addPermission(UNIVERSE_NAME, name, SecurityConstants.OWNER);
+        hasAccessRight(name, GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME));
 
-        removePermission(UNIVERSE_NAME, username);
-        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+        removePermission(UNIVERSE_NAME, name);
+        assertThat(userRepository.loadUserByUsername(name).getAuthorities()).isEmpty();
     }
 
     private void runNotAllowedChangePermissionTest() {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         universeRepository.insert(exampleUniverse);
 
-        String username = "test";
-        userController.createNewUser(new PnPUserCreation(username, "test", "Test", null, List.of()));
+        String name = "test";
+        userController.createNewUser(new PnPUserCreation(name, "test", name, null, List.of()));
 
-        assertForbidden(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.READ_ACCESS));
-        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
-        assertForbidden(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.WRITE_ACCESS));
-        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
-        assertForbidden(() -> addPermission(UNIVERSE_NAME, username, SecurityConstants.OWNER));
-        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+        assertForbidden(() -> addPermission(UNIVERSE_NAME, name, SecurityConstants.READ_ACCESS));
+        assertThat(userRepository.loadUserByUsername(name).getAuthorities()).isEmpty();
+        assertForbidden(() -> addPermission(UNIVERSE_NAME, name, SecurityConstants.WRITE_ACCESS));
+        assertThat(userRepository.loadUserByUsername(name).getAuthorities()).isEmpty();
+        assertForbidden(() -> addPermission(UNIVERSE_NAME, name, SecurityConstants.OWNER));
+        assertThat(userRepository.loadUserByUsername(name).getAuthorities()).isEmpty();
 
-        assertForbidden(() -> removePermission(UNIVERSE_NAME, username));
-        assertThat(userRepository.loadUserByUsername(username).getAuthorities()).isEmpty();
+        assertForbidden(() -> removePermission(UNIVERSE_NAME, name));
+        assertThat(userRepository.loadUserByUsername(name).getAuthorities()).isEmpty();
     }
 
     private void hasAccessRight(String username, GrantedAuthority authority) {
@@ -463,9 +463,9 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private void addPermission(String universe, String username, String accessPermission) throws Exception {
+    private void addPermission(String universe, String displayName, String accessPermission) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(post(BASE_PATH + "/{universe}/permission", universe)
-                .param("username", username)
+                .param("displayName", displayName)
                 .param("accessPermission", accessPermission)
                 .with(csrf()))
             .andReturn().getResponse();
@@ -477,9 +477,9 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private void removePermission(String universe, String username) throws Exception {
+    private void removePermission(String universe, String displayName) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{universe}/permission", universe)
-                .param("username", username)
+                .param("displayName", displayName)
                 .with(csrf()))
             .andReturn().getResponse();
 

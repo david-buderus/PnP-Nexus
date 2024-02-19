@@ -1,6 +1,6 @@
 package de.pnp.manager.server.database;
 
-import static de.pnp.manager.server.database.UniverseRepository.DATABASE_NAME;
+import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
 
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.PnPUser;
@@ -28,7 +28,7 @@ public class UserRepository {
     private final MongoTemplate mongoTemplate;
 
     public UserRepository(@Autowired MongoConfig config) {
-        mongoTemplate = config.mongoTemplate(DATABASE_NAME);
+        mongoTemplate = config.mongoTemplate(METADATA_DATABASE);
     }
 
     /**
@@ -39,11 +39,27 @@ public class UserRepository {
     }
 
     /**
+     * Returns all users for the given usernames.
+     */
+    public Collection<PnPUser> getAllUsers(Collection<String> usernames) {
+        return mongoTemplate.find(Query.query(Criteria.where("_id").in(usernames)), PnPUser.class, REPOSITORY_NAME);
+    }
+
+    /**
      * Returns the {@link PnPUser} of the given user.
      */
     public Optional<PnPUser> getUser(String username) {
         return Optional.ofNullable(
             mongoTemplate.findById(username, PnPUser.class, REPOSITORY_NAME));
+    }
+
+    /**
+     * Returns the {@link PnPUser} of the given user.
+     */
+    public Optional<PnPUser> getUserByDisplayName(String displayName) {
+        return Optional.ofNullable(
+            mongoTemplate.findOne(Query.query(Criteria.where("displayName").is(displayName)), PnPUser.class,
+                REPOSITORY_NAME));
     }
 
     /**

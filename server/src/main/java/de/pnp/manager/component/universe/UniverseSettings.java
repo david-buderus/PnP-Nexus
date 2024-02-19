@@ -17,6 +17,7 @@ public final class UniverseSettings {
     public static final UniverseSettings DEFAULT = new UniverseSettings(10, new CurrencyCalculation("Copper", "C",
         List.of(new CurrencyCalculationEntry(100, "Silver", "S"), new CurrencyCalculationEntry(100, "Gold", "G"))));
 
+    @NotNull
     private final int wearFactor;
 
     @Valid

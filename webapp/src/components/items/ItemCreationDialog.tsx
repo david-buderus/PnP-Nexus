@@ -34,7 +34,7 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
     const [itemClass, setItemClass] = useState<ItemClass>(initialItemsClass);
 
     return <Dialog open={open} onClose={onClose} fullWidth data-testid="item-creation-dialog">
-        <DialogTitle>{t('items:creationTitle')}</DialogTitle>
+        <DialogTitle>{t('item:creationTitle')}</DialogTitle>
         <Stack spacing={2} className="p-2">
             <FormControl fullWidth>
                 <Select

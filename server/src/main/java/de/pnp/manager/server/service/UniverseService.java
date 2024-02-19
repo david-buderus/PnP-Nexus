@@ -5,9 +5,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.UserUniversePermissionDTO;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
+import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +53,9 @@ public class UniverseService {
 
     @Autowired
     private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
+    private UserController userController;
 
     @GetMapping
     @PostFilter("hasRole('" + SecurityConstants.ADMIN + "') || hasPermission(filterObject, '"
@@ -105,18 +110,25 @@ public class UniverseService {
     @PostMapping("{universe}/permission")
     @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Add the given access right to the given user", operationId = "addPermission")
-    public void addPermission(@PathVariable String universe, @RequestParam String username,
+    @Operation(summary = "Add the given access right to the given user", operationId = "addUniversePermission")
+    public void addPermission(@PathVariable String universe, @RequestParam String displayName,
         @RequestParam(defaultValue = SecurityConstants.READ_ACCESS) String accessPermission) {
-        userDetailsRepository.addGrantedAuthority(username,
+        userController.addGrantedAuthorityByDisplayName(displayName,
             GrantedUniverseAuthority.fromPermission(universe, accessPermission));
     }
 
     @DeleteMapping("{universe}/permission")
     @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Removes all access rights to the universe from the given user", operationId = "removePermission")
-    public void removePermission(@PathVariable String universe, @RequestParam String username) {
-        userDetailsRepository.removeGrantedUniverseAuthorities(username, universe);
+    @Operation(summary = "Removes all access rights to the universe from the given user", operationId = "removeUniversePermission")
+    public void removePermission(@PathVariable String universe, @RequestParam String displayName) {
+        userController.removeGrantedUniverseAuthoritiesByDisplayName(displayName, universe);
+    }
+
+    @GetMapping("{universe}/permission")
+    @UniverseOwner
+    @Operation(summary = "List all access rights of the universe", operationId = "getUniversePermissions")
+    public Collection<UserUniversePermissionDTO> getPermissions(@PathVariable String universe) {
+        return userController.getAllUserWithUniversePermission(universe);
     }
 }
