@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Universe, UniverseServiceApi } from "../../api";
 import { Button, Dialog, DialogActions, DialogTitle, Stack } from "@mui/material";
 import { API_CONFIGURATION } from "../Constants";
-import axios, { AxiosError } from "axios";
 import { UniverseManipulation } from "./UniverseManipulation";
 import { TextFieldWithError } from "../inputs/TestFieldWithError";
 import { handleValidationError } from "../ErrorUtils";
