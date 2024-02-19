@@ -42,8 +42,6 @@ export function UniverseCreationDialog(props: UniverseCreationDialogProps) {
     const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
     const [universe, setUniverse] = useState<Universe>(createEmptyUniverse());
 
-    console.log(universe);
-
     return <Dialog open={open} onClose={onClose} fullWidth data-testid="universe-creation-dialog">
         <DialogTitle>{t('universe:createUniverse')}</DialogTitle>
         <Stack spacing={2} className="p-2">

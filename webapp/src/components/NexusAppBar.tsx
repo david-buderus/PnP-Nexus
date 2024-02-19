@@ -12,8 +12,11 @@ const CustomAppBar = styled(AppBar, {})(({ theme }) => ({
 
 /** The props for the app bar */
 export interface NexusAppBarProps {
+    /** All known universes */
     universes: Universe[];
+    /** The currently active universe */
     activeUniverse: Universe;
+    /** Callback to change the active universe */
     setActiveUniverse: (universe: Universe) => void;
 }
 

@@ -16,6 +16,7 @@ import { NoUniverse } from '../components/NoUniverse';
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
+/** Props needed for the permission creation dialog */
 interface PermissionCreationDialogProps {
   /** If the dialog is open */
   open: boolean;
