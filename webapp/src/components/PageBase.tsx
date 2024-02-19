@@ -17,7 +17,7 @@ const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
-const theme = createTheme({
+const THEME = createTheme({
   palette: {
     primary: {
       main: '#4a148c',
@@ -80,7 +80,7 @@ function PageBase() {
     });
   }, [activeUniverse, username]);
 
-  return <ThemeProvider theme={theme}>
+  return <ThemeProvider theme={THEME}>
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />

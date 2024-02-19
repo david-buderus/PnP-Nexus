@@ -32,7 +32,7 @@ export function NexusSelect<Value>(props: NexusSelectProps<Value>) {
             error={error}
         >
             {
-                values.map(value => <MenuItem key={value.key} value={value.content.toString()}> {value.label} </MenuItem>)
+                values.map(v => <MenuItem key={v.key} value={v.content.toString()}> {v.label} </MenuItem>)
             }
         </Select>
         {helperText !== undefined && <FormHelperText error={error}>{helperText}</FormHelperText>}
