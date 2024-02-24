@@ -30,5 +30,9 @@
   "cancel": "Abbrechen",
   "confirm": "Bestätigen",
   "permission": "Rechte",
-  "displayName": "Anzeigename"
+  "displayName": "Anzeigename",
+  "username": "Nutzername",
+  "password": "Passwort",
+  "logIn": "Einloggen",
+  "wrongPassword": "Der Nutzername oder das Passwort ist falsch"
 }
