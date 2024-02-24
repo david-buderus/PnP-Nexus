@@ -9,7 +9,9 @@ import WeaponPage from './pages/items/weapons';
 import ShieldPage from './pages/items/shields';
 import ArmorPage from './pages/items/armor';
 import JewelleryPage from './pages/items/jewellery';
+import { Login } from './pages/login';
 
+/** The entry point of the webapp */
 class App extends Component {
     render() {
         return (
@@ -32,6 +34,7 @@ class App extends Component {
                         <Route path='/armor' element={< ArmorPage />}></Route>
                         <Route path='/jewellery' element={< JewelleryPage />}></Route>
                     </Route>
+                    <Route path="/login" element={<Login />}> </Route>
                 </Routes>
             </Router>
         );

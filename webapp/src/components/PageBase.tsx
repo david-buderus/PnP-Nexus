@@ -3,7 +3,7 @@ import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Box, CssBaseline, ThemeProvider, Toolbar, createTheme } from '@mui/material';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
-import { API_CONFIGURATION } from './Constants';
+import { API_CONFIGURATION, THEME } from './Constants';
 import { NexusAppBar } from './NexusAppBar';
 import { NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
@@ -16,17 +16,6 @@ type UserContext = { userPermissions: UserPermissions; };
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
-
-const THEME = createTheme({
-  palette: {
-    primary: {
-      main: '#4a148c',
-    },
-    secondary: {
-      main: '#4a148c',
-    },
-  },
-});
 
 function PageBase() {
   const { t } = useTranslation();

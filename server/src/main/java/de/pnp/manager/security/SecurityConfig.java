@@ -6,6 +6,7 @@ import static de.pnp.manager.security.SecurityConstants.UNIVERSE_CREATOR_ROLE;
 import de.pnp.manager.EJvmFlag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -37,10 +38,15 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/v3/api-docs").permitAll() // OpenApi generate needs this
+                .requestMatchers("/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/locales/**", "/*.ico").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults())
-            .formLogin(Customizer.withDefaults());
+            .formLogin(form -> form.loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login?error=true"));
 
         if (EJvmFlag.DEV_MODE.isEnabled()) {
             http.csrf(AbstractHttpConfigurer::disable);
