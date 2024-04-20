@@ -39,7 +39,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/v3/api-docs").permitAll() // OpenApi generate needs this
                 .requestMatchers("/login").permitAll()
-                .requestMatchers(HttpMethod.GET, "/locales/**", "/*.ico").permitAll()
+                .requestMatchers(HttpMethod.GET, "/locales/**", "/*.ico", "/assets/**", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults())
@@ -75,7 +75,7 @@ public class SecurityConfig {
      */
     @Bean
     static MethodSecurityExpressionHandler expressionHandler() {
-        var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(new PnPPermissionEvaluator());
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;

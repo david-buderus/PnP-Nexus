@@ -1,5 +1,6 @@
 package de.pnp.manager.server.controller.backup;
 
+import static de.pnp.manager.server.controller.backup.BackupExportController.METADATA_FILE;
 import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_CONTENT;
 import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_NAME;
 import static de.pnp.manager.server.controller.backup.BackupExportController.UNIVERSE_FILE;
@@ -68,7 +69,7 @@ public class BackupImportController {
     private void importBackup(File tmpDir) throws IOException {
         DecoderContext decoderContext = DecoderContext.builder().build();
 
-        Document metadata = decode(new File(tmpDir, BackupExportController.METADATA_FILE),
+        Document metadata = decode(new File(tmpDir, METADATA_FILE),
             codecRegistry, decoderContext);
 
         EBackupVersion backupVersion = EBackupVersion.valueOf(
@@ -86,9 +87,10 @@ public class BackupImportController {
 
         MongoTemplate mongoTemplate = mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE);
 
-        for (File repositoryFile : Objects.requireNonNullElse(tmpDir.listFiles(File::isFile), new File[0])) {
+        for (File repositoryFile : Objects.requireNonNullElse(
+            tmpDir.listFiles(BackupImportController::isRepositoryFile), new File[0])) {
             Document repositoryDocument = decode(repositoryFile, codecRegistry, decoderContext);
-            String repositoryName = repositoryDocument.getString(ID_FIELD_NAME);
+            String repositoryName = repositoryDocument.getString(REPOSITORY_NAME);
             List<Document> repositoryContent = repositoryDocument.getList(REPOSITORY_CONTENT, Document.class);
 
             migrations.forEach(migration -> migration.migrateMetadata(repositoryName, repositoryContent));
@@ -178,5 +180,9 @@ public class BackupImportController {
                 len = zis.read(buffer);
             }
         }
+    }
+
+    private static boolean isRepositoryFile(File file) {
+        return file.isFile() && !file.getName().equals(METADATA_FILE);
     }
 }

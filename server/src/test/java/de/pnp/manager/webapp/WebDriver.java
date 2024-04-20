@@ -3,7 +3,6 @@ package de.pnp.manager.webapp;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.webapp.pages.MainMenu;
 import java.net.URL;
 
@@ -29,10 +28,10 @@ public class WebDriver {
         Page page = browserContext.newPage();
         page.navigate(String.valueOf(baseUrl));
         page.bringToFront();
-        
+
         page.locator("id=username").fill(username);
         page.locator("id=password").fill(password);
-        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in")).click();
+        page.getByTestId("login-button").click();
 
         return new MainMenu(page);
     }

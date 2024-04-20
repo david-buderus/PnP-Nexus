@@ -27,7 +27,7 @@ export function Login() {
             {searchParams.get("error") &&
                 <Alert severity="error" sx={{ width: 320 }}>{t("wrongPassword")}</Alert>
             }
-            <Button variant="contained" type="submit" sx={{ width: 320 }}>{t("logIn")}</Button>
+            <Button data-testid="login-button" variant="contained" type="submit" sx={{ width: 320 }}>{t("logIn")}</Button>
         </Stack>
     </ThemeProvider>;
 }
