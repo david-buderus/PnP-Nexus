@@ -25,7 +25,7 @@ export function Login() {
             <TextField id="username" name="username" label={t("username")} sx={{ width: 320 }} />
             <TextField id="password" name="password" type="password" label={t("password")} sx={{ width: 320 }} />
             {searchParams.get("error") &&
-                <Alert severity="error" sx={{ width: 320 }}>{t("wrongPassword")}</Alert>
+                <Alert data-testid="login-alert" severity="error" sx={{ width: 320 }}>{t("wrongPassword")}</Alert>
             }
             <Button data-testid="login-button" variant="contained" type="submit" sx={{ width: 320 }}>{t("logIn")}</Button>
         </Stack>
