@@ -1,9 +1,6 @@
 package de.pnp.manager.webapp.items;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.TimeoutError;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.webapp.pages.ItemPage;
@@ -22,13 +19,14 @@ public class ItemPageTest extends ItemPageTestBase {
     @Override
     protected ItemPage openTestPage(MainMenu mainMenu) {
         try {
-            return mainMenu.openItemPage();
-        } catch (TimeoutError e) {
-            final Path path = Path.of("build", "reports", "tests", "test", "screenshot.png");
-            mainMenu.asPage().screenshot(new Page.ScreenshotOptions()
-                .setPath(path));
-            return fail(e);
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+        final Path path = Path.of("build", "reports", "tests", "test", "screenshot.png");
+        mainMenu.asPage().screenshot(new Page.ScreenshotOptions()
+            .setPath(path));
+        return mainMenu.openItemPage();
     }
 
     @Override
