@@ -29,10 +29,15 @@
   "resultingPrice": "Resulting Price",
   "cancel": "Cancel",
   "confirm": "Confirm",
+  "save": "Save",
   "permission": "Permission",
   "displayName": "Display Name",
+  "email": "E-Mail",
   "username": "Username",
   "password": "Password",
   "logIn": "Log In",
-  "wrongPassword": "Username or Password are wrong"
+  "logout": "Logout",
+  "wrongPassword": "Username or Password are wrong",
+  "profile": "Profile",
+  "preferences": "Preferences"
 }

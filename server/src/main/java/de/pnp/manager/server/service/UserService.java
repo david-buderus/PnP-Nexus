@@ -9,9 +9,11 @@ import de.pnp.manager.component.user.IGrantedAuthorityDTO;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
+import de.pnp.manager.component.user.PnPUserPreference;
 import de.pnp.manager.security.AdminRights;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
+import de.pnp.manager.server.database.UserPreferenceRepository;
 import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.validation.Password;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,6 +50,9 @@ public class UserService {
 
     @Autowired
     private UserDetailsRepository userDetailsRepository;
+
+    @Autowired
+    private UserPreferenceRepository preferenceRepository;
 
     @GetMapping
     @Operation(summary = "Get all display names", operationId = "getDisplayNames")
@@ -90,6 +95,25 @@ public class UserService {
         if (!userController.removeUser(username)) {
             throw new ResponseStatusException(NOT_FOUND, "User " + username + " not found.");
         }
+    }
+
+    @GetMapping("{username}/preferences")
+    @PreAuthorize("#username == authentication.name")
+    @Operation(summary = "Gets the user preferences", operationId = "getUserPreferences")
+    public PnPUserPreference getPreferences(@PathVariable String username) {
+        return preferenceRepository.getPreference(username)
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User " + username + " not found."));
+    }
+
+    @PutMapping("{username}/preferences")
+    @PreAuthorize("#username == authentication.name")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Updates a user preferences", operationId = "updateUserPreferences")
+    public void updatePreferences(@PathVariable String username, @Valid @RequestBody PnPUserPreference preference) {
+        if (!Objects.equals(username, preference.username())) {
+            throw new ResponseStatusException(BAD_REQUEST, "The username of the object does not match.");
+        }
+        preferenceRepository.updateUser(preference);
     }
 
     @PostMapping("{username}/password")

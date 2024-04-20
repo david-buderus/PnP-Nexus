@@ -3,17 +3,12 @@ package de.pnp.manager.server.controller.backup;
 import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_CONTENT;
 import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_NAME;
 import static de.pnp.manager.server.controller.backup.BackupExportController.UNIVERSE_FILE;
-import static de.pnp.manager.server.controller.backup.BackupExportController.USER_DETAILS_REPOSITORY;
-import static de.pnp.manager.server.controller.backup.BackupExportController.USER_FILE;
-import static de.pnp.manager.server.controller.backup.BackupExportController.USER_REPOSITORY;
 import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
 
 import com.mongodb.client.MongoClient;
 import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.UniverseRepository;
-import de.pnp.manager.server.database.UserDetailsRepository;
-import de.pnp.manager.server.database.UserRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -89,23 +84,20 @@ public class BackupImportController {
     private void importMetaData(File tmpDir, DecoderContext decoderContext,
         List<? extends IBackupMigration> migrations) throws IOException {
 
-        Document userDocument = decode(new File(tmpDir, USER_FILE),
-            codecRegistry, decoderContext);
-        List<Document> userRepository = userDocument.getList(USER_REPOSITORY, Document.class);
-        userRepository.forEach(user -> migrations.forEach(migration -> migration.migrateUsers(user)));
-        List<Document> userDetailsRepository = userDocument.getList(USER_DETAILS_REPOSITORY, Document.class);
-        userDetailsRepository.forEach(
-            userDetails -> migrations.forEach(migration -> migration.migrateUserDetails(userDetails)));
-
         MongoTemplate mongoTemplate = mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE);
 
-        List<Object> ids = userRepository.stream().map(doc -> doc.get("_id")).toList();
-        mongoTemplate.findAllAndRemove(Query.query(Criteria.where("_id").in(ids)), UserRepository.REPOSITORY_NAME);
-        mongoTemplate.findAllAndRemove(Query.query(Criteria.where("_id").in(ids)),
-            UserDetailsRepository.REPOSITORY_NAME);
+        for (File repositoryFile : Objects.requireNonNullElse(tmpDir.listFiles(File::isFile), new File[0])) {
+            Document repositoryDocument = decode(repositoryFile, codecRegistry, decoderContext);
+            String repositoryName = repositoryDocument.getString(ID_FIELD_NAME);
+            List<Document> repositoryContent = repositoryDocument.getList(REPOSITORY_CONTENT, Document.class);
 
-        mongoTemplate.insert(userRepository, UserRepository.REPOSITORY_NAME);
-        mongoTemplate.insert(userDetailsRepository, UserDetailsRepository.REPOSITORY_NAME);
+            migrations.forEach(migration -> migration.migrateMetadata(repositoryName, repositoryContent));
+
+            List<Object> ids = repositoryContent.stream().map(doc -> doc.get("_id")).toList();
+            mongoTemplate.findAllAndRemove(Query.query(Criteria.where("_id").in(ids)), repositoryName);
+
+            mongoTemplate.insert(repositoryContent, repositoryName);
+        }
     }
 
     private void importUniverses(File tmpDir, DecoderContext decoderContext,

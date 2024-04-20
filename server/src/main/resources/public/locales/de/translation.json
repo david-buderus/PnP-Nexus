@@ -29,10 +29,15 @@
   "resultingPrice": "Resultierender Preis",
   "cancel": "Abbrechen",
   "confirm": "Bestätigen",
+  "save": "Speichern",
   "permission": "Rechte",
   "displayName": "Anzeigename",
+  "email": "E-Mail",
   "username": "Nutzername",
   "password": "Passwort",
-  "logIn": "Einloggen",
-  "wrongPassword": "Der Nutzername oder das Passwort ist falsch"
+  "logIn": "Anmelden",
+  "logout": "Abmelden",
+  "wrongPassword": "Der Nutzername oder das Passwort ist falsch",
+  "profile": "Profil",
+  "preferences": "Einstellungen"
 }

@@ -1,5 +1,5 @@
 {
-  "read": "Schreibgeschützter Zugriff",
+  "read": "Lesezugriff",
   "write": "Lese- und Schreibzugriff",
   "owner": "Besitzer"
 }

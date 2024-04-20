@@ -5,8 +5,10 @@ import de.pnp.manager.component.user.IGrantedAuthorityDTO;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
+import de.pnp.manager.component.user.PnPUserPreference;
 import de.pnp.manager.component.user.UserUniversePermissionDTO;
 import de.pnp.manager.server.database.UserDetailsRepository;
+import de.pnp.manager.server.database.UserPreferenceRepository;
 import de.pnp.manager.server.database.UserRepository;
 import jakarta.validation.ConstraintViolationException;
 import java.util.Collection;
@@ -34,18 +36,24 @@ public class UserController {
     @Autowired
     private UserDetailsRepository userDetailsRepository;
 
+    @Autowired
+    private UserPreferenceRepository preferenceRepository;
+
     /**
      * Creates a {@link PnPUser} with corresponding {@link PnPUserDetails}.
      */
     public void createNewUser(PnPUserCreation userCreation) {
+        String username = userCreation.getUsername();
         try {
             userRepository.addNewUser(
-                new PnPUser(userCreation.getUsername(), userCreation.getDisplayName(), userCreation.getEmail()));
-            userDetailsRepository.addNewUser(userCreation.getUsername(), userCreation.getPassword(),
+                new PnPUser(username, userCreation.getDisplayName(), userCreation.getEmail()));
+            userDetailsRepository.addNewUser(username, userCreation.getPassword(),
                 userCreation.getAuthorities().stream().map(IGrantedAuthorityDTO::convert).toList());
+            preferenceRepository.addNewPreference(new PnPUserPreference(username, null, null));
         } catch (ConstraintViolationException e) {
-            userRepository.removeUser(userCreation.getUsername());
-            userDetailsRepository.removeUser(userCreation.getUsername());
+            userRepository.removeUser(username);
+            userDetailsRepository.removeUser(username);
+            preferenceRepository.removeUser(username);
             throw e;
         }
     }
@@ -56,7 +64,8 @@ public class UserController {
     public boolean removeUser(String username) {
         boolean removedFromUserRepo = userRepository.removeUser(username);
         boolean removedFromDetailsRepo = userDetailsRepository.removeUser(username);
-        return removedFromUserRepo && removedFromDetailsRepo;
+        boolean removedFromPreferenceRepo = preferenceRepository.removeUser(username);
+        return removedFromUserRepo && removedFromDetailsRepo && removedFromPreferenceRepo;
     }
 
     /**

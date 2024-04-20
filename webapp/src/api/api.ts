@@ -969,6 +969,31 @@ export interface PnPUserCreation {
 /**
  * 
  * @export
+ * @interface PnPUserPreference
+ */
+export interface PnPUserPreference {
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUserPreference
+     */
+    'language'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUserPreference
+     */
+    'lastSelectedUniverse'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPUserPreference
+     */
+    'username'?: string;
+}
+/**
+ * 
+ * @export
  * @interface PrimaryAttribute
  */
 export interface PrimaryAttribute {
@@ -8307,6 +8332,40 @@ export const UserServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary Gets the user preferences
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserPreferences: async (username: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('getUserPreferences', 'username', username)
+            const localVarPath = `/api/users/{username}/preferences`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Delete a user
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8459,6 +8518,46 @@ export const UserServiceApiAxiosParamCreator = function (configuration?: Configu
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Updates a user preferences
+         * @param {string} username 
+         * @param {PnPUserPreference} pnPUserPreference 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserPreferences: async (username: string, pnPUserPreference: PnPUserPreference, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('updateUserPreferences', 'username', username)
+            // verify required parameter 'pnPUserPreference' is not null or undefined
+            assertParamExists('updateUserPreferences', 'pnPUserPreference', pnPUserPreference)
+            const localVarPath = `/api/users/{username}/preferences`
+                .replace(`{${"username"}}`, encodeURIComponent(String(username)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pnPUserPreference, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -8514,6 +8613,17 @@ export const UserServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Gets the user preferences
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUserPreferences(username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPUserPreference>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserPreferences(username, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Delete a user
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8557,6 +8667,18 @@ export const UserServiceApiFp = function(configuration?: Configuration) {
          */
         async updateUser(username: string, pnPUser: PnPUser, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateUser(username, pnPUser, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates a user preferences
+         * @param {string} username 
+         * @param {PnPUserPreference} pnPUserPreference 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateUserPreferences(username: string, pnPUserPreference: PnPUserPreference, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateUserPreferences(username, pnPUserPreference, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -8610,6 +8732,16 @@ export const UserServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @summary Gets the user preferences
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUserPreferences(username: string, options?: any): AxiosPromise<PnPUserPreference> {
+            return localVarFp.getUserPreferences(username, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Delete a user
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8650,6 +8782,17 @@ export const UserServiceApiFactory = function (configuration?: Configuration, ba
          */
         updateUser(username: string, pnPUser: PnPUser, options?: any): AxiosPromise<void> {
             return localVarFp.updateUser(username, pnPUser, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates a user preferences
+         * @param {string} username 
+         * @param {PnPUserPreference} pnPUserPreference 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateUserPreferences(username: string, pnPUserPreference: PnPUserPreference, options?: any): AxiosPromise<void> {
+            return localVarFp.updateUserPreferences(username, pnPUserPreference, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -8710,6 +8853,18 @@ export class UserServiceApi extends BaseAPI {
 
     /**
      * 
+     * @summary Gets the user preferences
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public getUserPreferences(username: string, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).getUserPreferences(username, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Delete a user
      * @param {string} username 
      * @param {*} [options] Override http request option.
@@ -8757,6 +8912,19 @@ export class UserServiceApi extends BaseAPI {
      */
     public updateUser(username: string, pnPUser: PnPUser, options?: AxiosRequestConfig) {
         return UserServiceApiFp(this.configuration).updateUser(username, pnPUser, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates a user preferences
+     * @param {string} username 
+     * @param {PnPUserPreference} pnPUserPreference 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public updateUserPreferences(username: string, pnPUserPreference: PnPUserPreference, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).updateUserPreferences(username, pnPUserPreference, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

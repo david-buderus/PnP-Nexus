@@ -587,6 +587,69 @@
         ]
       }
     },
+    "/api/users/{username}/preferences": {
+      "get": {
+        "operationId": "getUserPreferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPUserPreference"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Gets the user preferences",
+        "tags": [
+          "user-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateUserPreferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PnPUserPreference"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Updates a user preferences",
+        "tags": [
+          "user-service"
+        ]
+      }
+    },
     "/api/{universe}/crafting-recipes": {
       "delete": {
         "operationId": "deleteAllCraftingRecipes",
@@ -3868,6 +3931,20 @@
             "type": "string"
           },
           "password": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "PnPUserPreference": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "lastSelectedUniverse": {
             "type": "string"
           },
           "username": {

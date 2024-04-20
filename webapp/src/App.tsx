@@ -10,6 +10,7 @@ import ShieldPage from './pages/items/shields';
 import ArmorPage from './pages/items/armor';
 import JewelleryPage from './pages/items/jewellery';
 import { Login } from './pages/login';
+import { UserProfile, UserPreferences } from './pages/user';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -26,6 +27,8 @@ class App extends Component {
                 <Routes>
                     <Route path="/" element={<PageBase />} >
                         <Route path='/' element={< Home />}></Route>
+                        <Route path='/user' element={< UserProfile />}> </Route>
+                        <Route path='/preferences' element={< UserPreferences />}> </Route>
                         <Route path='/universe' element={< Universe />}></Route>
                         <Route path='/about' element={< About />}></Route>
                         <Route path='/items' element={< ItemPage />}></Route>

@@ -95,8 +95,16 @@ export function NexusAppBar(props: NexusAppBarProps) {
                     open={Boolean(userMenuAnchor)}
                     onClose={handleUserMenuClose}
                 >
-                    <MenuItem onClick={handleUserMenuClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleUserMenuClose}>My account</MenuItem>
+                    <MenuItem component={Link}
+                        to={{
+                            pathname: "/user",
+                            search: searchParams.toString()
+                        }}>{t("profile")}</MenuItem>
+                    <MenuItem component={Link}
+                        to={{
+                            pathname: "/preferences",
+                            search: searchParams.toString()
+                        }}>{t("preferences")}</MenuItem>
                     <MenuItem onClick={() => {
                         axios.post("/logout");
                         window.location.reload();
