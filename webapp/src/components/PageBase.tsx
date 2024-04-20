@@ -113,7 +113,7 @@ function PageBase() {
   }, [activeUniverse, userPreferences]);
 
   return <ThemeProvider theme={THEME}>
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }} data-testid="page-base">
       <CssBaseline />
       <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
       <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={[

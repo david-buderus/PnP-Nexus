@@ -1,5 +1,7 @@
 package de.pnp.manager.webapp;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
@@ -32,6 +34,8 @@ public class WebDriver {
         page.locator("id=username").fill(username);
         page.locator("id=password").fill(password);
         page.getByTestId("login-button").click();
+
+        assertThat(page.getByTestId("page-base")).isVisible();
 
         return new MainMenu(page);
     }
