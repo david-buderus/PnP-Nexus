@@ -1,14 +1,12 @@
 package de.pnp.manager.webapp;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import de.pnp.manager.webapp.pages.MainMenu;
 import java.net.URL;
-import org.opentest4j.AssertionFailedError;
 
 /**
  * Basic web driver to test the webapp.
@@ -33,21 +31,11 @@ public class WebDriver {
         page.navigate(String.valueOf(baseUrl));
         page.bringToFront();
 
-        page.locator("id=username").fill(username);
-        page.locator("id=password").fill(password);
+        page.getByTestId("username-field").fill(username);
+        page.getByTestId("password-field").fill(password);
         page.getByTestId("login-button").click();
 
-        try {
-            assertThat(page.getByTestId("page-base")).isVisible();
-        } catch (AssertionFailedError e) {
-            fail("""
-                username: %s (%s)
-                password: %s (%s)
-                """.formatted(
-                page.locator("id=username").textContent(), username,
-                page.locator("id=password").textContent(), password
-            ), e);
-        }
+        assertThat(page.getByTestId("page-base")).isVisible();
 
         return new MainMenu(page);
     }
