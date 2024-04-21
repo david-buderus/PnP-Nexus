@@ -41,11 +41,9 @@ public class WebDriver {
             assertThat(page.getByTestId("page-base")).isVisible();
         } catch (AssertionFailedError e) {
             fail("""
-                Failed to login: %s
                 username: %s (%s)
                 password: %s (%s)
                 """.formatted(
-                page.getByTestId("login-alert").textContent(),
                 page.locator("id=username").textContent(), username,
                 page.locator("id=password").textContent(), password
             ), e);
