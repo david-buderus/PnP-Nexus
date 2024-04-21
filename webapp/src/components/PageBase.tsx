@@ -1,7 +1,7 @@
 import { AuthenticationServiceApi, PnPUser, PnPUserPreference, Universe, UniverseServiceApi, UserServiceApi } from '../api';
 import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Box, CssBaseline, ThemeProvider, Toolbar, createTheme } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, Toolbar } from '@mui/material';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
 import { API_CONFIGURATION, THEME } from './Constants';
 import { NexusAppBar } from './NexusAppBar';

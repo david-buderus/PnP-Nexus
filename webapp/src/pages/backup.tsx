@@ -1,18 +1,7 @@
 import { Button, Stack, TextField, styled } from "@mui/material";
-import { BackupServiceApi } from "../api";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { API_CONFIGURATION } from "../components/Constants";
 import axios from "axios";
-
-
-const BACKUP_API = new BackupServiceApi(API_CONFIGURATION);
-
-const config = {
-    headers: {
-        'Content-Type': 'application/zip'
-    }
-};
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',

@@ -15,7 +15,7 @@ const USER_API = new UserServiceApi(API_CONFIGURATION);
  */
 export function UserProfile() {
     const { t } = useTranslation();
-    const { user, userPreferences, refreshUser } = getUserContext();
+    const { user, refreshUser } = getUserContext();
 
     const [editMode, setEditMode] = useState(false);
     const [editUser, setEditUser] = useState<PnPUser>(user);
@@ -86,10 +86,11 @@ export function UserPreferences() {
 
     return <Stack spacing={2} padding={2}>
         <TextField label={t("username")} value={user.username} InputProps={{ readOnly: !editMode }} />
-        <NexusSelect label={t("language")} value={editPreferences.language} inputProps={{ readOnly: !editMode }} onChange={event => setEditPreferences({
-            ...userPreferences,
-            language: event.target.value
-        })}
+        <NexusSelect label={t("language")} value={editPreferences.language} inputProps={{ readOnly: !editMode }} error={errors.has("language")}
+            onChange={event => setEditPreferences({
+                ...userPreferences,
+                language: event.target.value
+            })}
             values={[
                 {
                     key: "en",

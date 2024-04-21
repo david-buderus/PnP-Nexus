@@ -1,4 +1,4 @@
-import { AppBar, Autocomplete, Box, IconButton, Menu, MenuItem, Stack, TextField, Toolbar, Typography, styled } from "@mui/material";
+import { AppBar, Autocomplete, IconButton, Menu, MenuItem, Stack, TextField, Toolbar, Typography, styled } from "@mui/material";
 import { Universe } from "../api";
 import { Link, useSearchParams } from "react-router-dom";
 import { useState } from "react";
