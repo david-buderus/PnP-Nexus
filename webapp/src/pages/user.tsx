@@ -32,7 +32,7 @@ export function UserProfile() {
     }
 
     return <Stack spacing={2} padding={2}>
-        <TextField label={t("username")} value={user.username} InputProps={{ readOnly: !editMode }} />
+        <TextField label={t("username")} data-testid="username" value={user.username} InputProps={{ readOnly: !editMode }} />
         <TextFieldWithError fieldId="displayname" label={t("displayName")} value={editUser.displayName ?? ""} onChange={value => setEditUser({
             ...editUser,
             displayName: value
@@ -43,19 +43,20 @@ export function UserProfile() {
         })} errorMap={errors} InputProps={{ readOnly: !editMode }} />
         {editMode ?
             <Stack spacing={2} direction="row">
-                <Button onClick={() => {
+                <Button data-testid="cancel" onClick={() => {
                     setEditMode(false);
                     setEditUser(user);
                 }}> {t("cancel")}</Button>
-                <Button onClick={() => {
-                    USER_API.updateUser(user.username, editUser).catch(handleValidationError(setErrors)).then(() => {
+                <Button data-testid="save" onClick={() => {
+                    USER_API.updateUser(user.username, editUser).then(response => {
+                        console.log(response);
                         refreshUser();
                         setEditMode(false);
-                    });
+                    }).catch(handleValidationError(setErrors));
                 }}> {t("save")}</Button>
             </Stack>
             :
-            <Button onClick={() => {
+            <Button data-testid="edit" onClick={() => {
                 setEditMode(true);
             }}> {t("edit")}</Button>
         }
@@ -85,8 +86,9 @@ export function UserPreferences() {
     }
 
     return <Stack spacing={2} padding={2}>
-        <TextField label={t("username")} value={user.username} InputProps={{ readOnly: !editMode }} />
+        <TextField data-testid="username" label={t("username")} value={user.username} InputProps={{ readOnly: !editMode }} />
         <NexusSelect label={t("language")} value={editPreferences.language} inputProps={{ readOnly: !editMode }} error={errors.has("language")}
+            data-testid="language"
             onChange={event => setEditPreferences({
                 ...userPreferences,
                 language: event.target.value
@@ -109,18 +111,18 @@ export function UserPreferences() {
                 <Button onClick={() => {
                     setEditMode(false);
                     setEditPreferences(userPreferences);
-                }}> {t("cancel")}</Button>
+                }} data-testid="cancel"> {t("cancel")}</Button>
                 <Button onClick={() => {
-                    USER_API.updateUserPreferences(user.username, editPreferences).catch(handleValidationError(setErrors)).then(() => {
+                    USER_API.updateUserPreferences(user.username, editPreferences).then(() => {
                         refreshUser();
                         setEditMode(false);
-                    });
-                }}> {t("save")}</Button>
+                    }).catch(handleValidationError(setErrors));
+                }} data-testid="save"> {t("save")}</Button>
             </Stack>
             :
             <Button onClick={() => {
                 setEditMode(true);
-            }}> {t("edit")}</Button>
+            }} data-testid="edit"> {t("edit")}</Button>
         }
 
     </Stack>;

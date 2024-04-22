@@ -71,6 +71,7 @@ export function NexusAppBar(props: NexusAppBarProps) {
             }
             <Stack direction="row" justifyContent="flex-end" sx={{ flexGrow: 1 }}>
                 <IconButton
+                    data-testid="menu-appbar"
                     size="large"
                     aria-label="account of current user"
                     aria-controls="menu-appbar"
@@ -96,19 +97,23 @@ export function NexusAppBar(props: NexusAppBarProps) {
                     onClose={handleUserMenuClose}
                 >
                     <MenuItem component={Link}
+                        data-testid="user-menu"
                         to={{
                             pathname: "/user",
                             search: searchParams.toString()
                         }}>{t("profile")}</MenuItem>
                     <MenuItem component={Link}
+                        data-testid="preferences-menu"
                         to={{
                             pathname: "/preferences",
                             search: searchParams.toString()
                         }}>{t("preferences")}</MenuItem>
-                    <MenuItem onClick={() => {
-                        axios.post("/logout");
-                        window.location.reload();
-                    }}>{t("logout")}</MenuItem>
+                    <MenuItem
+                        data-testid="logout"
+                        onClick={() => {
+                            axios.post("/logout");
+                            window.location.reload();
+                        }}>{t("logout")}</MenuItem>
                 </Menu>
             </Stack>
         </Toolbar>
