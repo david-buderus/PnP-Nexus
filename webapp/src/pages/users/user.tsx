@@ -8,6 +8,7 @@ import { AuthenticationServiceApi, PnPUser, PnPUserPreference, UserServiceApi } 
 import { API_CONFIGURATION } from "../../components/Constants";
 import { handleValidationError } from "../../components/ErrorUtils";
 import { AxiosResponse } from "axios";
+import { ConfirmationDialog } from "../../components/inputs/ConfirmationDialog";
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 const AUTH_API = new AuthenticationServiceApi(API_CONFIGURATION);
@@ -22,7 +23,9 @@ export function UserProfile() {
     const [editMode, setEditMode] = useState(false);
     const [editUser, setEditUser] = useState<PnPUser>(user);
     const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
+
     const [openChangePassword, setOpenChangePassword] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
 
     useEffect(() => {
         setEditUser(user);
@@ -54,9 +57,23 @@ export function UserProfile() {
             onCancel={() => setEditUser(user)}
             onSave={() => USER_API.updateUser(user.username, editUser)}
         />
+        <Button variant="outlined" color="error" data-testid="delete-user" onClick={() => setOpenDelete(true)}>
+            {t('user:deleteUser')}
+        </Button>
         <ChangePasswordDialog
             open={openChangePassword}
             onClose={() => setOpenChangePassword(false)}
+        />
+        <ConfirmationDialog
+            title={t("user:confirmDeleteUser")}
+            open={openDelete}
+            onClose={confirmation => {
+                setOpenDelete(false);
+                if (!confirmation) {
+                    return;
+                }
+                USER_API.removeUser(user.username).then(() => window.location.reload());
+            }}
         />
     </Stack>;
 }

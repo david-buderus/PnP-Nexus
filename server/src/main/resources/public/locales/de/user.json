@@ -9,5 +9,7 @@
   "universeCreationRights": "Kann Universen erstellen",
   "universeReadRights": "Lesezugriffe",
   "universeWriteRights": "Schreibzugriffe",
-  "universeOwnerRights": "Besitzer"
+  "universeOwnerRights": "Besitzer",
+  "deleteUser": "Account löschen",
+  "confirmDeleteUser": "Willst du einen Account wirklich löschen?"
 }

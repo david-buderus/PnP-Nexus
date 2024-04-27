@@ -18,6 +18,7 @@ import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.validation.Password;
 import de.pnp.manager.validation.ValidCurrentPassword;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -102,9 +106,14 @@ public class UserService {
     @PreAuthorize("hasRole('" + ADMIN + "') || #username == authentication.name")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a user", operationId = "removeUser")
-    public void removeUser(@PathVariable String username) {
+    public void removeUser(HttpServletRequest request, @AuthenticationPrincipal UserDetails userDetails,
+        @PathVariable String username) {
         if (!userController.removeUser(username)) {
             throw new ResponseStatusException(NOT_FOUND, "User " + username + " not found.");
+        }
+        if (username.equals(userDetails.getUsername())) {
+            request.getSession().invalidate();
+            SecurityContextHolder.clearContext();
         }
     }
 
