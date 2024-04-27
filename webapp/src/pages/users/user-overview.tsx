@@ -1,14 +1,12 @@
 import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField } from "@mui/material";
 import OverviewTable from "../../components/OverviewTable";
-import { GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, Universe, UserServiceApi } from "../../api";
+import { PnPUser, PnPUserCreation, UserServiceApi } from "../../api";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ConfirmationDialog } from "../../components/inputs/ConfirmationDialog";
 import { handleValidationError } from "../../components/ErrorUtils";
-import { TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../../components/inputs/TestFieldWithError";
-import { FaMinus, FaPlus } from "react-icons/fa";
-import { NexusSelect } from "../../components/inputs/NexusSelect";
+import { TextFieldWithError } from "../../components/inputs/TestFieldWithError";
 import { getUniverseContext } from "../../components/PageBase";
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);

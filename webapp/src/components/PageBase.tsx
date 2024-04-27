@@ -21,7 +21,6 @@ const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
 function PageBase() {
-  const { t } = useTranslation();
   const [universes, setUniverses] = useState<Universe[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
