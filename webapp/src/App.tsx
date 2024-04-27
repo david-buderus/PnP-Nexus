@@ -10,8 +10,10 @@ import ShieldPage from './pages/items/shields';
 import ArmorPage from './pages/items/armor';
 import JewelleryPage from './pages/items/jewellery';
 import { Login } from './pages/login';
-import { UserProfile, UserPreferences } from './pages/user';
+import { UserProfile, UserPreferences } from './pages/users/user';
 import { Backup } from './pages/backup';
+import { UserOverview } from './pages/users/user-overview';
+import { Admin } from './pages/admin';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -37,6 +39,8 @@ class App extends Component {
                         <Route path='/shields' element={< ShieldPage />}></Route>
                         <Route path='/armor' element={< ArmorPage />}></Route>
                         <Route path='/jewellery' element={< JewelleryPage />}></Route>
+                        <Route path='/admin' element={< Admin />}> </Route>
+                        <Route path='/users' element={< UserOverview />}> </Route>
                         <Route path='/backup' element={< Backup />}></Route>
                     </Route>
                     <Route path="/login" element={<Login />}> </Route>

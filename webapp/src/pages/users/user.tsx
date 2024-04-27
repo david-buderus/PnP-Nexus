@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { getUserContext } from "../components/PageBase";
+import { getUserContext } from "../../components/PageBase";
 import { Button, Dialog, DialogActions, DialogTitle, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { TextFieldWithError } from "../components/inputs/TestFieldWithError";
-import { NexusSelect } from "../components/inputs/NexusSelect";
-import { AuthenticationServiceApi, PnPUser, PnPUserPreference, UserServiceApi } from "../api";
-import { API_CONFIGURATION } from "../components/Constants";
-import { handleValidationError } from "../components/ErrorUtils";
+import { TextFieldWithError } from "../../components/inputs/TestFieldWithError";
+import { NexusSelect } from "../../components/inputs/NexusSelect";
+import { AuthenticationServiceApi, PnPUser, PnPUserPreference, UserServiceApi } from "../../api";
+import { API_CONFIGURATION } from "../../components/Constants";
+import { handleValidationError } from "../../components/ErrorUtils";
 import { AxiosResponse } from "axios";
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);

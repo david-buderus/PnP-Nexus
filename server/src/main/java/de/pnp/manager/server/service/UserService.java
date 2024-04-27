@@ -19,7 +19,9 @@ import de.pnp.manager.validation.Password;
 import de.pnp.manager.validation.ValidCurrentPassword;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -55,10 +58,17 @@ public class UserService {
     @Autowired
     private UserPreferenceRepository preferenceRepository;
 
-    @GetMapping
+    @GetMapping("display-names")
     @Operation(summary = "Get all display names", operationId = "getDisplayNames")
     public Collection<String> getAllDisplayNames() {
         return userRepository.getAllUsers().stream().map(PnPUser::getDisplayName).toList();
+    }
+
+    @GetMapping
+    @AdminRights
+    @Operation(summary = "Get all users", operationId = "getAllUsers")
+    public Collection<PnPUser> getAllUsers() {
+        return userRepository.getAllUsers();
     }
 
     @PostMapping
@@ -95,6 +105,24 @@ public class UserService {
     public void removeUser(@PathVariable String username) {
         if (!userController.removeUser(username)) {
             throw new ResponseStatusException(NOT_FOUND, "User " + username + " not found.");
+        }
+    }
+
+    @DeleteMapping
+    @AdminRights
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete users", operationId = "removeUsers")
+    public void removeUsers(@RequestParam List<String> usernames) {
+        List<String> unknownUsers = new ArrayList<>();
+
+        for (String username : usernames) {
+            if (!userController.removeUser(username)) {
+                unknownUsers.add(username);
+            }
+        }
+
+        if (!unknownUsers.isEmpty()) {
+            throw new ResponseStatusException(NOT_FOUND, "Users [" + String.join(", ", unknownUsers) + "] not found.");
         }
     }
 

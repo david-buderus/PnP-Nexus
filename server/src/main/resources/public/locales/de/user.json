@@ -3,5 +3,11 @@
   "oldPassword": "Passwort",
   "newPassword": "Neues Passwort",
   "confirmPassword": "Passwort bestätigen",
-  "passwordNotMatching": "Passwörter stimmen nicht überein"
+  "passwordNotMatching": "Passwörter stimmen nicht überein",
+  "createUser": "Erstelle einen neuen Nutzer",
+  "adminRights": "Adminrechte",
+  "universeCreationRights": "Kann Universen erstellen",
+  "universeReadRights": "Lesezugriffe",
+  "universeWriteRights": "Schreibzugriffe",
+  "universeOwnerRights": "Besitzer"
 }

@@ -8303,12 +8303,42 @@ export const UserServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary Get all users
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllUsers: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get all display names
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         getDisplayNames: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/users`;
+            const localVarPath = `/api/users/display-names`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -8469,6 +8499,43 @@ export const UserServiceApiAxiosParamCreator = function (configuration?: Configu
         },
         /**
          * 
+         * @summary Delete users
+         * @param {Array<string>} usernames 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUsers: async (usernames: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'usernames' is not null or undefined
+            assertParamExists('removeUsers', 'usernames', usernames)
+            const localVarPath = `/api/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (usernames) {
+                localVarQueryParameter['usernames'] = usernames;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Updates the permissions of a user
          * @param {string} username 
          * @param {Array<GetPermissions200ResponseInner>} getPermissions200ResponseInner 
@@ -8610,6 +8677,16 @@ export const UserServiceApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get all users
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllUsers(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPUser>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllUsers(options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Get all display names
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8660,6 +8737,17 @@ export const UserServiceApiFp = function(configuration?: Configuration) {
          */
         async removeUser(username: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.removeUser(username, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Delete users
+         * @param {Array<string>} usernames 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeUsers(usernames: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeUsers(usernames, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -8720,6 +8808,15 @@ export const UserServiceApiFactory = function (configuration?: Configuration, ba
         },
         /**
          * 
+         * @summary Get all users
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllUsers(options?: any): AxiosPromise<Array<PnPUser>> {
+            return localVarFp.getAllUsers(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get all display names
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8766,6 +8863,16 @@ export const UserServiceApiFactory = function (configuration?: Configuration, ba
          */
         removeUser(username: string, options?: any): AxiosPromise<void> {
             return localVarFp.removeUser(username, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Delete users
+         * @param {Array<string>} usernames 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUsers(usernames: Array<string>, options?: any): AxiosPromise<void> {
+            return localVarFp.removeUsers(usernames, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8820,6 +8927,17 @@ export class UserServiceApi extends BaseAPI {
      */
     public createUser(pnPUserCreation: PnPUserCreation, options?: AxiosRequestConfig) {
         return UserServiceApiFp(this.configuration).createUser(pnPUserCreation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all users
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public getAllUsers(options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).getAllUsers(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8879,6 +8997,18 @@ export class UserServiceApi extends BaseAPI {
      */
     public removeUser(username: string, options?: AxiosRequestConfig) {
         return UserServiceApiFp(this.configuration).removeUser(username, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Delete users
+     * @param {Array<string>} usernames 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UserServiceApi
+     */
+    public removeUsers(usernames: Array<string>, options?: AxiosRequestConfig) {
+        return UserServiceApiFp(this.configuration).removeUsers(usernames, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

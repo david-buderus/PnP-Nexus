@@ -5,11 +5,13 @@ import { Box, CssBaseline, ThemeProvider, Toolbar } from '@mui/material';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
 import { API_CONFIGURATION, THEME } from './Constants';
 import { NexusAppBar } from './NexusAppBar';
-import { NexusSidebar } from './NexusSidebar';
+import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
 import { GiAxeSword, GiChestArmor, GiRing, GiShield, GiSwapBag } from 'react-icons/gi';
 import i18n from '../i18n';
+import { IoSettingsSharp } from 'react-icons/io5';
+import { HiUserCircle } from 'react-icons/hi2';
 
 type UniverseContext = { universes: Universe[], activeUniverse: Universe, setActiveUniverse: (activeUniverse: Universe) => void, fetchUniverses: () => void; };
 type UserContext = { userPermissions: UserPermissions, userPreferences: PnPUserPreference, user: PnPUser, refreshUser: () => void; };
@@ -116,17 +118,7 @@ function PageBase() {
     <Box sx={{ display: 'flex' }} data-testid="page-base">
       <CssBaseline />
       <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
-      <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={[
-        { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
-        {
-          id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [
-            { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
-            { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
-            { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
-            { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
-          ]
-        }
-      ]} />
+      <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={generateSidebarEntries(userPermissions)} />
       <Box component="main" height="100vh" display="flex" flexDirection="column" padding={2}>
         <Toolbar />
         <Box flex={1} overflow="auto">
@@ -144,6 +136,34 @@ function PageBase() {
       </Box>
     </Box>
   </ThemeProvider>;
+}
+
+function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProps[] {
+  const { t } = useTranslation();
+
+  const entries = [
+    { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
+    {
+      id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [
+        { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
+        { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
+        { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
+        { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
+      ]
+    }
+  ];
+
+  if (userPermissions.isAdmin) {
+    entries.push(
+      {
+        id: "admin.menu", label: t("admin"), link: "/admin", icon: <IoSettingsSharp />, subEntries: [
+          { id: "users-menu", label: t("users"), link: "/users", icon: <HiUserCircle /> }
+        ]
+      }
+    );
+  }
+
+  return entries;
 }
 
 /** Returns context over the currently avaible universes. */

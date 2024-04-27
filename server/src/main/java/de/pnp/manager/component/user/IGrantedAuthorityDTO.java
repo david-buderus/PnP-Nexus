@@ -1,5 +1,6 @@
 package de.pnp.manager.component.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.GrantedUniverseAuthorityDTO;
@@ -53,6 +54,7 @@ public interface IGrantedAuthorityDTO {
         @NotBlank
         private final String role;
 
+        @JsonCreator
         public RoleAuthorityDTO(String role) {
             this.role = role;
         }
@@ -95,6 +97,7 @@ public interface IGrantedAuthorityDTO {
         @NotBlank
         private final String permission;
 
+        @JsonCreator
         public GrantedUniverseAuthorityDTO(String universe, String permission) {
             this.universe = universe;
             this.permission = permission;

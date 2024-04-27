@@ -364,8 +364,33 @@
       }
     },
     "/api/users": {
+      "delete": {
+        "operationId": "removeUsers",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "usernames",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Delete users",
+        "tags": [
+          "user-service"
+        ]
+      },
       "get": {
-        "operationId": "getDisplayNames",
+        "operationId": "getAllUsers",
         "responses": {
           "200": {
             "content": {
@@ -373,7 +398,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/PnPUser"
                   }
                 }
               }
@@ -381,7 +406,7 @@
             "description": "OK"
           }
         },
-        "summary": "Get all display names",
+        "summary": "Get all users",
         "tags": [
           "user-service"
         ]
@@ -404,6 +429,30 @@
           }
         },
         "summary": "Create a user",
+        "tags": [
+          "user-service"
+        ]
+      }
+    },
+    "/api/users/display-names": {
+      "get": {
+        "operationId": "getDisplayNames",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all display names",
         "tags": [
           "user-service"
         ]

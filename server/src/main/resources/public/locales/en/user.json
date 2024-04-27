@@ -3,5 +3,11 @@
   "oldPassword": "Password",
   "newPassword": "New Password",
   "confirmPassword": "Confirm Password",
-  "passwordNotMatching": "Passwords don't match"
+  "passwordNotMatching": "Passwords don't match",
+  "createUser": "Create a new user",
+  "adminRights": "Admin rights",
+  "universeCreationRights": "Is able to create universes",
+  "universeReadRights": "Right Access",
+  "universeWriteRights": "Write Access",
+  "universeOwnerRights": "Owner"
 }
