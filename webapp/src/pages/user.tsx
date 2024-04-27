@@ -4,12 +4,13 @@ import { Button, Dialog, DialogActions, DialogTitle, Stack, TextField, Typograph
 import { useEffect, useState } from "react";
 import { TextFieldWithError } from "../components/inputs/TestFieldWithError";
 import { NexusSelect } from "../components/inputs/NexusSelect";
-import { PnPUser, PnPUserPreference, UserServiceApi } from "../api";
+import { AuthenticationServiceApi, PnPUser, PnPUserPreference, UserServiceApi } from "../api";
 import { API_CONFIGURATION } from "../components/Constants";
 import { handleValidationError } from "../components/ErrorUtils";
 import { AxiosResponse } from "axios";
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);
+const AUTH_API = new AuthenticationServiceApi(API_CONFIGURATION);
 
 /**
  * View to manipulate the profile of the current logged-in user.
@@ -162,7 +163,6 @@ function ChangePasswordDialog({
     onClose
 }: ChangePasswordDialogProps) {
     const { t } = useTranslation();
-    const { user } = getUserContext();
 
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -208,7 +208,7 @@ function ChangePasswordDialog({
                 {t('cancel')}
             </Button>
             <Button autoFocus disabled={confirmPassword !== newPassword} onClick={() => {
-                USER_API.updatePassword(user.username, {
+                AUTH_API.updatePassword({
                     oldPassword: oldPassword,
                     newPassword: newPassword
                 }).then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));

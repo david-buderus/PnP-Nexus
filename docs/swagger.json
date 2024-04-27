@@ -32,6 +32,30 @@
         ]
       }
     },
+    "/api/authentication/password": {
+      "post": {
+        "operationId": "updatePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Updates the password of a user",
+        "tags": [
+          "authentication-service"
+        ]
+      }
+    },
     "/api/backup/export": {
       "get": {
         "operationId": "exportBackup",
@@ -465,40 +489,6 @@
           }
         },
         "summary": "Updates a user",
-        "tags": [
-          "user-service"
-        ]
-      }
-    },
-    "/api/users/{username}/password": {
-      "post": {
-        "operationId": "updatePassword",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "username",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PasswordChange"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Updates the password of a user",
         "tags": [
           "user-service"
         ]

@@ -1,7 +1,6 @@
 package de.pnp.manager.server.service;
 
 import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
-import static de.pnp.manager.server.service.ServiceTestUtils.assertHttpStatusException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -24,7 +23,6 @@ import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
-import de.pnp.manager.server.service.UserService.PasswordChange;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -137,15 +135,6 @@ public class UserServiceTest extends ServerTestBase {
             assertThat(getPermissions(OTHER_USER)).containsExactlyInAnyOrderElementsOf(
                 OTHER_USER_CREATION.getAuthorities());
         }
-
-        @Test
-        @WithMockUser(value = USER, roles = SecurityConstants.ADMIN)
-        void testUpdatePassword() {
-            userController.createNewUser(OTHER_USER_CREATION);
-
-            assertForbidden(() -> updatePassword(OTHER_USER,
-                new PasswordChange(OTHER_USER_PASSWORD, OTHER_USER_PASSWORD + "CHANGE")));
-        }
     }
 
     @Nested
@@ -213,24 +202,6 @@ public class UserServiceTest extends ServerTestBase {
             assertThat(getPermissions(USER)).containsExactlyInAnyOrderElementsOf(
                 USER_CREATION.getAuthorities());
             assertForbidden(() -> getPermissions(OTHER_USER));
-        }
-
-        @Test
-        @WithMockUser(value = USER)
-        void testUpdatePassword() throws Exception {
-            userController.createNewUser(USER_CREATION);
-            userController.createNewUser(OTHER_USER_CREATION);
-
-            assertHttpStatusException(
-                () -> updatePassword(USER, new PasswordChange("FALSE_PASSWORD", USER_PASSWORD + "CHANGE")),
-                HttpStatus.UNAUTHORIZED);
-
-            String oldPassword = userDetailsRepository.loadUserByUsername(USER).getPassword();
-            updatePassword(USER, new PasswordChange(USER_PASSWORD, USER_PASSWORD + "CHANGE"));
-            assertThat(userDetailsRepository.loadUserByUsername(USER).getPassword()).isNotEqualTo(oldPassword);
-
-            assertForbidden(() -> updatePassword(OTHER_USER,
-                new PasswordChange(OTHER_USER_PASSWORD, OTHER_USER_PASSWORD + "CHANGE")));
         }
     }
 
@@ -307,18 +278,5 @@ public class UserServiceTest extends ServerTestBase {
         }
 
         return objectMapper.readerForListOf(IGrantedAuthorityDTO.class).readValue(response.getContentAsString());
-    }
-
-    private void updatePassword(String username, PasswordChange passwordChange) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(
-                post(BASE_PATH + "/{user}/password", username).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(passwordChange)))
-            .andReturn().getResponse();
-
-        if (HttpStatus.valueOf(response.getStatus()).isError()) {
-            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
-        }
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

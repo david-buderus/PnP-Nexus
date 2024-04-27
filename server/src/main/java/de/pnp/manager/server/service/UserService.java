@@ -117,14 +117,6 @@ public class UserService {
         preferenceRepository.updateUser(preference);
     }
 
-    @PostMapping("{username}/password")
-    @PreAuthorize("#username == authentication.name")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Updates the password of a user", operationId = "updatePassword")
-    public void updatePassword(@PathVariable String username, @Valid @RequestBody PasswordChange passwordChange) {
-        userDetailsRepository.updatePassword(username, passwordChange.oldPassword(), passwordChange.newPassword());
-    }
-
     @PostMapping("{username}/permissions")
     @AdminRights
     @ResponseStatus(value = HttpStatus.NO_CONTENT)

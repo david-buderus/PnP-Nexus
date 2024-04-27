@@ -4,6 +4,7 @@ import de.pnp.manager.server.database.UserDetailsRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
@@ -16,7 +17,13 @@ public class ValidCurrentPasswordValidator implements ConstraintValidator<ValidC
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            // Change password comes from backend. Can not validate the field here.
+            // Validation needs to happen in the repository.
+            return true;
+        }
+        String username = authentication.getName();
         return userRepository.isValidPassword(username, value);
     }
 }
