@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { ItemServiceApi, ItemType, Material } from "../../api";
 import { useState } from "react";
 import { getUniverseContext } from "../PageBase";
-import axios, { AxiosError } from "axios";
 import { ItemManipulation } from "./ItemManipulation";
 import { API_CONFIGURATION, ItemClass, SomeItem } from "../Constants";
 import { handleValidationError } from "../ErrorUtils";

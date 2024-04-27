@@ -113,21 +113,27 @@ export function UserPreferences() {
     </Stack>;
 }
 
-interface ControlButtonsProps<T> {
+/** Props for the control buttons */
+interface ControlButtonsProps {
+    /** Indicates if the menu is in edit mode */
     editMode: boolean;
+    /** Sets the edit mode */
     setEditMode: (mode: boolean) => void;
+    /** Callback for errors */
     setErrors: (errors: Map<string, string>) => void;
+    /** Callback for on cancel */
     onCancel: () => void;
+    /** Callback for on save */
     onSave: () => Promise<AxiosResponse<void, any>>;
 }
 
-function ControlButtons<T>({
+function ControlButtons({
     editMode,
     setEditMode,
     setErrors,
     onCancel,
     onSave
-}: ControlButtonsProps<T>) {
+}: ControlButtonsProps) {
     const { t } = useTranslation();
     const { refreshUser } = getUserContext();
 
@@ -151,6 +157,7 @@ function ControlButtons<T>({
     </Stack>;
 }
 
+/** Props the change password dialog */
 interface ChangePasswordDialogProps {
     /** If the dialog is open */
     open: boolean;
