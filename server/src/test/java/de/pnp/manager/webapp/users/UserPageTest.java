@@ -9,8 +9,10 @@ import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.UiTestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
+import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.webapp.pages.UserPage;
+import de.pnp.manager.webapp.pages.components.ChangePassword;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ public class UserPageTest extends ServerTestBase {
     private final static String USERNAME = "admin";
     private final static String NEW_DISPLAYNAME = "Administrator";
     private final static String NEW_EMAIL = "admin@example.com";
+    private final static String NEW_PASSWORD = "gLQ@oWEbtJi9E6Wx";
 
     /**
      * The test universe.
@@ -36,6 +39,9 @@ public class UserPageTest extends ServerTestBase {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserDetailsRepository userDetailsRepository;
 
     @BeforeEach
     void openItemPage() {
@@ -91,5 +97,20 @@ public class UserPageTest extends ServerTestBase {
         PnPUser user = userRepository.getUser(USERNAME).orElseThrow();
         assertThat(user.getDisplayName()).isEqualTo(USERNAME);
         assertThat(user.getEmail()).isBlank();
+    }
+
+    @Test
+    void testChangePassword() {
+        ChangePassword dialog = page.changePassword();
+        dialog.setCurrentPassword("admin");
+        dialog.setNewPassword(NEW_PASSWORD);
+
+        dialog.assertThatSaveIsDisabled();
+
+        dialog.setConfirmPassword(NEW_PASSWORD);
+        dialog.savePassword();
+
+        dialog.assertIsClosed();
+        assertThat(userDetailsRepository.isValidPassword(USERNAME, NEW_PASSWORD)).isTrue();
     }
 }

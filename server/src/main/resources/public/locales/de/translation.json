@@ -39,5 +39,6 @@
   "logout": "Abmelden",
   "wrongPassword": "Der Nutzername oder das Passwort ist falsch",
   "profile": "Profil",
-  "preferences": "Einstellungen"
+  "preferences": "Einstellungen",
+  "language": "Sprache"
 }

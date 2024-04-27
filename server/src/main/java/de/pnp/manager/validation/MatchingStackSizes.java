@@ -20,7 +20,7 @@ public @interface MatchingStackSizes {
     /**
      * Used in the spring backend.
      */
-    String message() default "item.stackSize.matches";
+    String message() default "{item.stackSize.matches}";
 
     /**
      * Used in the spring backend.

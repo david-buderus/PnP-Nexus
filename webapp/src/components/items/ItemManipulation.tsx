@@ -235,9 +235,9 @@ export function ItemManipulation(props: ItemManipulationProps) {
         }
         <Stack direction="row" spacing={2}>
             <RaritySelect
-                {...(errors["rarity"] !== undefined ? {
+                {...(errors.get("rarity") !== undefined ? {
                     error: true,
-                    helperText: errors["rarity"]
+                    helperText: errors.get("rarity")
                 } : {})}
                 data-testid="rarity"
                 value={rarity}

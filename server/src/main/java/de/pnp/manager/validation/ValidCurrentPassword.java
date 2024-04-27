@@ -9,18 +9,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marker interface for {@link PasswordValidator}.
+ * Marker interface for {@link ValidCurrentPasswordValidator}.
  */
 @Documented
-@Constraint(validatedBy = PasswordValidator.class)
+@Constraint(validatedBy = ValidCurrentPasswordValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Password {
+public @interface ValidCurrentPassword {
 
     /**
      * Used in the spring backend.
      */
-    String message() default "{user.creation.password}";
+    String message() default "{user.currentPassword.invalid}";
 
     /**
      * Used in the spring backend.

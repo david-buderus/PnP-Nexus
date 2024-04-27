@@ -6,6 +6,7 @@ import { getUniverseContext } from "../PageBase";
 import axios, { AxiosError } from "axios";
 import { ItemManipulation } from "./ItemManipulation";
 import { API_CONFIGURATION, ItemClass, SomeItem } from "../Constants";
+import { handleValidationError } from "../ErrorUtils";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 
@@ -55,20 +56,8 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
             <div className='w-full pt-2'>
                 <div className='float-right'>
                     <Button variant="contained" data-testid="item-add" color="success" onClick={() => {
-                        ITEM_API.insertAllItems(activeUniverse.name, [item]).then(() => onClose({}, "succesful")).catch((err: Error | AxiosError) => {
-                            if (!axios.isAxiosError(err)) {
-                                return;
-                            }
-                            if (err.response.status !== 400) {
-                                return;
-                            }
-                            const errorMap = new Map<string, string>();
-                            Object.entries(err.response.data).forEach(entry => {
-                                const [key, value] = entry;
-                                errorMap[key.substring(key.lastIndexOf(".") + 1)] = value;
-                            });
-                            setErrors(errorMap);
-                        });
+                        ITEM_API.insertAllItems(activeUniverse.name, [item]).then(() => onClose({}, "succesful"))
+                            .catch(handleValidationError(setErrors, key => key.substring(key.lastIndexOf(".") + 1)));
                     }}>
                         {t("add")}
                     </Button>

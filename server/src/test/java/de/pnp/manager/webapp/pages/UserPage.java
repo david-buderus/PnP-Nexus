@@ -4,6 +4,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import de.pnp.manager.webapp.pages.components.ChangePassword;
 
 /**
  * Represents the user page
@@ -90,5 +91,13 @@ public class UserPage extends PageBase {
      */
     public void assertIsInEditMode() {
         assertThat(page.getByTestId("save")).isVisible();
+    }
+
+    /**
+     * Opens the change password menu.
+     */
+    public ChangePassword changePassword() {
+        page.getByTestId("change-password").click();
+        return new ChangePassword(page.getByTestId("change-password-dialog"));
     }
 }

@@ -39,5 +39,6 @@
   "logout": "Logout",
   "wrongPassword": "Username or Password are wrong",
   "profile": "Profile",
-  "preferences": "Preferences"
+  "preferences": "Preferences",
+  "language": "Language"
 }

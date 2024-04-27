@@ -5,7 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 i18n.use(Backend).use(LanguageDetector).use(initReactI18next).init({
   fallbackLng: "en",
-  ns: ['translation', 'enum', 'item', 'error', 'universe', 'permission'],
+  ns: ['translation', 'enum', 'item', 'error', 'universe', 'permission', 'user'],
   backend: {
     loadPath: '/locales/{{lng}}/{{ns}}.json'
   }

@@ -1,0 +1,7 @@
+{
+  "changePasswordTitle": "Password ändern",
+  "oldPassword": "Passwort",
+  "newPassword": "Neues Passwort",
+  "confirmPassword": "Passwort bestätigen",
+  "passwordNotMatching": "Passwörter stimmen nicht überein"
+}
