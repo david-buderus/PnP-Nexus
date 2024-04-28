@@ -17,7 +17,7 @@ export function UserOverview() {
     const [selected, setSelected] = useState<PnPUser[keyof PnPUser][]>([]);
 
     const [openCreationDialog, setOpenCreationDialog] = useState(false);
-    const [opeEditDialog, setOpenEditDialog] = useState(false);
+    const [openEditDialog, setOpenEditDialog] = useState(false);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
     useEffect(() => {
@@ -53,9 +53,9 @@ export function UserOverview() {
                 }
             }} />
             <UserEditDialog
-                key={opeEditDialog ? selected[0] as string : "no-selection"}
-                open={opeEditDialog}
-                user={opeEditDialog ? users.find(user => user.username === selected[0]) : null}
+                key={openEditDialog ? selected[0] as string : "no-selection"}
+                open={openEditDialog}
+                user={openEditDialog ? users.find(user => user.username === selected[0]) : null}
                 onClose={sucessful => {
                     setOpenEditDialog(false);
                     if (sucessful) {

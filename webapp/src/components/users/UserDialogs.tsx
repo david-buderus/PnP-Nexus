@@ -135,49 +135,50 @@ function PermissionManipulation({ authorities, setAuthorities }: PermissionManip
     }, [universes]);
 
     function getUniverseRights(right: "READ" | "WRITE" | "OWNER") {
-        return authorities.filter(auth => auth["permission"] === right).map(auth => universeOptions.find(opt => opt.id === auth["universe"]));
+        return authorities.filter(auth => (auth as GrantedUniverseAuthorityDTO)?.permission === right)
+            .map(auth => universeOptions.find(opt => opt.id === (auth as GrantedUniverseAuthorityDTO).universe));
     }
 
-    const [adminRights, setAdminRights] = useState<boolean>(authorities.find(auth => auth["role"] === "ADMIN") !== undefined);
-    const [universeCreationRights, setUniverseCreationRights] = useState<boolean>(authorities.find(auth => auth["role"] === "UNIVERSE_CREATOR") !== undefined);
+    const [adminRights, setAdminRights] = useState<boolean>(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === "ADMIN") !== undefined);
+    const [universeCreationRights, setUniverseCreationRights] = useState<boolean>(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === "UNIVERSE_CREATOR") !== undefined);
     const [readRights, setReadRights] = useState(getUniverseRights("READ"));
     const [writeRights, setWriteRights] = useState(getUniverseRights("WRITE"));
     const [ownerRights, setOwnerRights] = useState(getUniverseRights("OWNER"));
 
     useEffect(() => {
-        const authorities = [];
+        const newAuthorities = [];
         if (adminRights) {
-            authorities.push({
+            newAuthorities.push({
                 "@type": "Role",
                 "role": "ADMIN"
             });
         }
         if (!adminRights && universeCreationRights) {
-            authorities.push({
+            newAuthorities.push({
                 "@type": "Role",
                 role: "UNIVERSE_CREATOR"
             });
         }
-        readRights.forEach(right => authorities.push({
+        readRights.forEach(right => newAuthorities.push({
             "@type": "UniverseAuthority",
             universe: right.id,
             permission: "READ"
 
         }));
-        writeRights.forEach(right => authorities.push({
+        writeRights.forEach(right => newAuthorities.push({
             "@type": "UniverseAuthority",
             universe: right.id,
             permission: "WRITE"
 
         }));
-        ownerRights.forEach(right => authorities.push({
+        ownerRights.forEach(right => newAuthorities.push({
             "@type": "UniverseAuthority",
             universe: right.id,
             permission: "OWNER"
 
         }));
 
-        setAuthorities(authorities.sort());
+        setAuthorities(newAuthorities);
     }, [adminRights, universeCreationRights, readRights, writeRights, ownerRights]);
 
     return <Stack spacing={2}>
