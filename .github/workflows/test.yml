@@ -103,12 +103,12 @@ jobs:
       - name: Setup profiler
         if: github.event_name != 'pull_request'
         run: npx @teamscale/javascript-instrumenter
-          /server/src/main/resources/static/
+          server/src/main/resources/static/
           --collector localhost:54678
           --in-place
           --include-origin 'webapp/src/**'
 
-      - name: Start Coverage collector
+      - name: Start Coverage Collector
         if: github.event_name != 'pull_request'
         run: npx @teamscale/coverage-collector -p 54678
           -u 'https://pnp-nexus.de/teamscale/'
@@ -116,7 +116,7 @@ jobs:
           --teamscale-partition 'Github Action > WebApp'
           --teamscale-message 'Uploading coverage of the webapp.'
           --teamscale-user 'build'
-          --teamscale-access-token ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }}
+          --teamscale-access-token ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }} &
 
       - name: Setup and execute Gradle 'test' task
         uses: gradle/actions/setup-gradle@v3
