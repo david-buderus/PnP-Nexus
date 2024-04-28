@@ -103,7 +103,7 @@ jobs:
       - name: Setup profiler
         if: github.event_name != 'pull_request'
         run: npx @teamscale/javascript-instrumenter
-          --to /server/src/main/resources/static/
+          /server/src/main/resources/static/
           --collector localhost:54678
           --in-place
           --include-origin 'webapp/src/**'
