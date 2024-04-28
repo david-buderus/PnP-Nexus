@@ -117,7 +117,7 @@ jobs:
           --teamscale-partition 'Github Action > WebApp'
           --teamscale-message 'Uploading coverage of the webapp.'
           --teamscale-user 'build'
-          --teamscale-access-token ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }} &
+          --teamscale-access-token ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }} > output.txt &
           echo "collector_pid=$!" >> $GITHUB_OUTPUT
 
       - name: Setup and execute Gradle 'test' task
@@ -142,7 +142,8 @@ jobs:
 
       - name: Stop Collector
         if: github.event_name != 'pull_request'
-        run: kill ${{ steps.collector.outputs.collector_pid }}
+        run: cat output.txt
+          kill ${{ steps.collector.outputs.collector_pid }}
 
       - name: Test Report
         uses: dorny/test-reporter@v1
