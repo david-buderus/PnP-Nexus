@@ -58,6 +58,13 @@ public class SecurityConfig {
                 )
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
         }
+        if (Boolean.parseBoolean(System.getenv("RUNNING_IN_CI"))) {
+            http.headers(headers ->
+                headers.contentSecurityPolicy(policy ->
+                    policy.policyDirectives(
+                        "default-src * data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval' 'unsafe-dynamic'; script-src * data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src * data: blob: 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src * data: blob: ; style-src * data: blob: 'unsafe-inline'; font-src * data: blob: 'unsafe-inline';"))
+            );
+        }
 
         return http.build();
     }
