@@ -5,6 +5,7 @@
   "confirmPassword": "Passwort bestätigen",
   "passwordNotMatching": "Passwörter stimmen nicht überein",
   "createUser": "Erstelle einen neuen Nutzer",
+  "editUser": "Bearbeite einen Nutzer",
   "adminRights": "Adminrechte",
   "universeCreationRights": "Kann Universen erstellen",
   "universeReadRights": "Lesezugriffe",
