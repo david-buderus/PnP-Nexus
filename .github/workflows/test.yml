@@ -108,7 +108,7 @@ jobs:
       - name: Start Coverage Collector
         if: github.event_name != 'pull_request'
         working-directory: ./webapp
-        run: npm exec -c 'coverage-collector --dump-after-mins 3 --port 54321 --dump-to-folder ../js-profiler-coverage/' & echo $! ../collector.pid
+        run: npm exec -c 'coverage-collector --dump-after-mins 3 --port 54321 --dump-to-folder ../js-profiler-coverage/' & echo $! > ../collector.pid
 
       - name: Setup and execute Gradle 'test' task
         uses: gradle/actions/setup-gradle@v3
