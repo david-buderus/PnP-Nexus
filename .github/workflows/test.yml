@@ -149,7 +149,7 @@ jobs:
           user: 'build'
           accesskey: ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }}
           partition: 'Github Action > Typescript'
-          format: 'SIMPLE_COVERAGE'
+          format: 'SIMPLE'
           message: 'Uploading coverage of the webapp.'
           files: 'js-profiler-coverage/**.simple'
 
