@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: '../server/src/main/resources/static',
+    sourcemap: 'inline',
     rollupOptions: {
       output: {
         manualChunks(id) {

@@ -95,32 +95,20 @@ jobs:
         working-directory: ./webapp
         run: npm run build
 
+      - name: Instrument WebApp
+        if: github.event_name != 'pull_request'
+        working-directory: ./webapp
+        run: npm exec -c "javascript-instrumenter ../server/src/main/resources/static/assets/** --in-place --include-origin 'webapp/src/**' --exclude-origin 'node_modules/**' --collector localhost:54321"
+
       - name: Setup playwright
         uses: gradle/actions/setup-gradle@v3
         with:
           arguments: playwright --args "install --with-deps"
 
-      - name: Setup profiler
-        if: github.event_name != 'pull_request'
-        run: |
-          npx @teamscale/javascript-instrumenter \
-          server/src/main/resources/static/ \
-          --collector localhost:54678 \
-          --in-place \
-          --include-origin 'webapp/src/**'
-
       - name: Start Coverage Collector
-        id: collector
         if: github.event_name != 'pull_request'
-        run: |
-          npx @teamscale/coverage-collector -p 54678 \
-          -u 'https://pnp-nexus.de/teamscale/' \
-          --teamscale-project 'pnp-nexus' \
-          --teamscale-partition 'Github Action > WebApp' \
-          --teamscale-message 'Uploading coverage of the webapp.' \
-          --teamscale-user 'build' \
-          --teamscale-access-token ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }} > output.txt &
-          echo "collector_pid=$!" >> $GITHUB_OUTPUT
+        working-directory: ./webapp
+        run: npm exec -c 'coverage-collector --dump-after-mins 3 --port 54321 --dump-to-folder ../js-profiler-coverage/' & echo $! ../collector.pid
 
       - name: Setup and execute Gradle 'test' task
         uses: gradle/actions/setup-gradle@v3
@@ -129,7 +117,17 @@ jobs:
         env:
           RUNNING_IN_CI: true
 
-      - name: Upload to Teamscale
+      - name: Stop Coverage Collector
+        if: github.event_name != 'pull_request'
+        run: |
+          if [ -f ./collector.pid ]; then
+            kill -SIGINT $(cat ./collector.pid) || echo "Collector was already stopped."
+            sleep 5
+            rm ./collector.pid
+          fi
+
+
+      - name: Upload Backend Coverage to Teamscale
         uses: 'cqse/teamscale-upload-action@v2.8.0'
         if: github.event_name != 'pull_request'
         with:
@@ -142,11 +140,18 @@ jobs:
           message: 'Uploading coverage of the server.'
           files: 'server/build/reports/jacoco/test/jacocoTestReport.xml'
 
-      - name: Stop Collector
+      - name: Upload Fronted Coverage to Teamscale
+        uses: 'cqse/teamscale-upload-action@v2.8.0'
         if: github.event_name != 'pull_request'
-        run: |
-          cat output.txt
-          kill ${{ steps.collector.outputs.collector_pid }}
+        with:
+          server: 'https://pnp-nexus.de/teamscale/'
+          project: 'pnp-nexus'
+          user: 'build'
+          accesskey: ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }}
+          partition: 'Github Action > Typescript'
+          format: 'SIMPLE_COVERAGE'
+          message: 'Uploading coverage of the webapp.'
+          files: 'js-profiler-coverage/**'
 
       - name: Test Report
         uses: dorny/test-reporter@v1

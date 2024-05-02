@@ -20,6 +20,8 @@
     "react-router-dom": "^6.19.0"
   },
   "devDependencies": {
+    "@teamscale/coverage-collector": "0.1.0-beta.8",
+    "@teamscale/javascript-instrumenter": "0.1.0-beta.8",
     "@types/node": "20.3.3",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
