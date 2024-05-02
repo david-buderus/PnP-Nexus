@@ -151,7 +151,7 @@ jobs:
           partition: 'Github Action > Typescript'
           format: 'SIMPLE_COVERAGE'
           message: 'Uploading coverage of the webapp.'
-          files: 'js-profiler-coverage/**'
+          files: 'js-profiler-coverage/**.simple'
 
       - name: Test Report
         uses: dorny/test-reporter@v1
