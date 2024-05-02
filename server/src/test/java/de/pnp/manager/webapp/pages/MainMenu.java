@@ -52,6 +52,14 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the {@link UserOverviewPage}.
+     */
+    public UserOverviewPage openUserOverviewPage() {
+        openMenu("admin-menu", "users-menu");
+        return new UserOverviewPage(page);
+    }
+
+    /**
      * Opens the {@link UserPage}.
      */
     public UserPage openUserPage() {

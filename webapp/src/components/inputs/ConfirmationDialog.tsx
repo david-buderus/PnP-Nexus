@@ -30,10 +30,10 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
             </DialogContent>
         }
         <DialogActions>
-            <Button autoFocus onClick={() => onClose(false)}>
+            <Button data-testid="cancel" autoFocus onClick={() => onClose(false)}>
                 {t('cancel')}
             </Button>
-            <Button onClick={() => onClose(true)}>{t('confirm')}</Button>
+            <Button data-testid="confirm" onClick={() => onClose(true)}>{t('confirm')}</Button>
         </DialogActions>
     </Dialog>;
 }

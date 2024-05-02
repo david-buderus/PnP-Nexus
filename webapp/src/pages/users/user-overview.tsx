@@ -37,13 +37,13 @@ export function UserOverview() {
             ]}
         />
         <Stack spacing={2} direction="row" justifyContent="flex-end">
-            <Button className='btn' onClick={() => setOpenCreationDialog(true)}>
+            <Button className='btn' data-testid="add" onClick={() => setOpenCreationDialog(true)}>
                 {t("add")}
             </Button>
-            <Button className='btn' disabled={selected.length !== 1} onClick={() => setOpenEditDialog(true)}>
+            <Button className='btn' data-testid="edit" disabled={selected.length !== 1} onClick={() => setOpenEditDialog(true)}>
                 {t("edit")}
             </Button>
-            <Button className='btn' disabled={selected.length === 0} onClick={() => setOpenDeleteDialog(true)}>
+            <Button className='btn' data-testid="delete" disabled={selected.length === 0} onClick={() => setOpenDeleteDialog(true)}>
                 {t("delete")}
             </Button>
             <UserCreationDialog open={openCreationDialog} onClose={sucessful => {

@@ -2,7 +2,6 @@ package de.pnp.manager.webapp.users;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.server.ServerTestBase;
@@ -12,7 +11,7 @@ import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.webapp.pages.UserPage;
-import de.pnp.manager.webapp.pages.components.ChangePassword;
+import de.pnp.manager.webapp.pages.components.users.ChangePassword;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,11 +29,6 @@ public class UserPageTest extends ServerTestBase {
     private final static String NEW_EMAIL = "admin@example.com";
     private final static String NEW_PASSWORD = "gLQ@oWEbtJi9E6Wx";
 
-    /**
-     * The test universe.
-     */
-    protected Universe universe;
-
     private UserPage page;
 
     @Autowired
@@ -45,7 +39,6 @@ public class UserPageTest extends ServerTestBase {
 
     @BeforeEach
     void openItemPage() {
-        universe = getUniverse();
         if (userRepository.getUser(USERNAME).isEmpty()) {
             userController.createNewUser(new PnPUserCreation(USERNAME, USERNAME, USERNAME, "", List.of()));
         }

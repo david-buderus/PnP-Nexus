@@ -4,7 +4,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-import de.pnp.manager.webapp.pages.components.ChangePassword;
+import de.pnp.manager.webapp.pages.components.users.ChangePassword;
 
 /**
  * Represents the user page

@@ -155,7 +155,7 @@ function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProp
   if (userPermissions.isAdmin) {
     entries.push(
       {
-        id: "admin.menu", label: t("admin"), link: "/admin", icon: <IoSettingsSharp />, subEntries: [
+        id: "admin-menu", label: t("admin"), link: "/admin", icon: <IoSettingsSharp />, subEntries: [
           { id: "users-menu", label: t("users"), link: "/users", icon: <HiUserCircle /> }
         ]
       }

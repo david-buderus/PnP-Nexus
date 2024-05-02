@@ -1,4 +1,4 @@
-package de.pnp.manager.webapp.pages.components;
+package de.pnp.manager.webapp.pages.components.items;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.AriaRole;

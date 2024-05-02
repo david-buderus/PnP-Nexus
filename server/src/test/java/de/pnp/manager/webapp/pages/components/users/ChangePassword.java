@@ -1,4 +1,4 @@
-package de.pnp.manager.webapp.pages.components;
+package de.pnp.manager.webapp.pages.components.users;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 

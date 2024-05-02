@@ -55,7 +55,7 @@ export function UserCreationDialog({ open, onClose }: UserCreationDialogProps) {
             <Button autoFocus onClick={() => onClose({}, "cancel")}>
                 {t('cancel')}
             </Button>
-            <Button onClick={() => {
+            <Button data-testid="user-create" onClick={() => {
                 USER_API.createUser({
                     ...userCreation,
                     authorities: authorities
@@ -106,10 +106,10 @@ export function UserEditDialog({ user, open, onClose }: UserEditDialogProps) {
             <PermissionManipulation key={orginialAuthorities.toString()} authorities={orginialAuthorities} setAuthorities={setEditAuthorities} />
         </Stack>
         <DialogActions>
-            <Button autoFocus onClick={() => onClose({}, "cancel")}>
+            <Button data-testid="user-cancel" autoFocus onClick={() => onClose({}, "cancel")}>
                 {t('cancel')}
             </Button>
-            <Button onClick={() => {
+            <Button data-testid="user-edit" onClick={() => {
                 USER_API.updateUser(user.username, editUser).then(() => USER_API.updatePermissions(user.username, editAuthorities))
                     .then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));
             }}>{t('edit')}</Button>
@@ -187,12 +187,14 @@ function PermissionManipulation({ authorities, setAuthorities }: PermissionManip
                 checked={adminRights}
                 onChange={event => setAdminRights(event.target.checked)}
                 inputProps={{ 'aria-label': 'controlled' }}
+                data-testid="adminRights"
             />} label={t("user:adminRights")} />
             <FormControlLabel control={<Checkbox
                 checked={universeCreationRights || adminRights}
                 onChange={event => setUniverseCreationRights(event.target.checked)}
                 disabled={adminRights}
                 inputProps={{ 'aria-label': 'controlled' }}
+                data-testid="universeCreationRights"
             />} label={t("user:universeCreationRights")} />
         </FormGroup>
         <Autocomplete
@@ -200,8 +202,10 @@ function PermissionManipulation({ authorities, setAuthorities }: PermissionManip
             multiple
             options={universeOptions}
             value={readRights}
-            onChange={(_, value) =>
-                setReadRights(value)
+            onChange={(_, value) => {
+                console.log(value);
+                setReadRights(value);
+            }
             }
             isOptionEqualToValue={(option, value) =>
                 option?.id === value?.id

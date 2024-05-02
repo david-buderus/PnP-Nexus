@@ -4,7 +4,7 @@ import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.webapp.pages.ItemPage;
 import de.pnp.manager.webapp.pages.MainMenu;
-import de.pnp.manager.webapp.pages.components.ItemCreation.EItemClass;
+import de.pnp.manager.webapp.pages.components.items.ItemCreation.EItemClass;
 import java.util.Collection;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
