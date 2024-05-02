@@ -123,4 +123,9 @@ public class GrantedUniverseAuthority implements GrantedAuthority {
     public String getAuthority() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s_ACCESS_%s", accessRight, universe);
+    }
 }

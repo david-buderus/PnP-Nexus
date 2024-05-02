@@ -1,9 +1,8 @@
 package de.pnp.manager.server.controller.backup;
 
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.component.user.PnPUser;
-import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.server.database.RepositoryBase;
+import java.util.List;
 import org.bson.Document;
 
 /**
@@ -26,16 +25,9 @@ public interface IBackupMigration {
     }
 
     /**
-     * The input is a document that describes a {@link PnPUser}.
+     * The input is a document that describes a repository which contains metadata.
      */
-    default void migrateUsers(Document user) {
-
-    }
-
-    /**
-     * The input is a document that describes a {@link PnPUserDetails}.
-     */
-    default void migrateUserDetails(Document userDetails) {
-
+    default void migrateMetadata(String repositoryName, List<Document> repositoryContent) {
+        // no op
     }
 }

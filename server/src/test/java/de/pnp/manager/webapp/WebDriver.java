@@ -1,5 +1,7 @@
 package de.pnp.manager.webapp;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
@@ -29,10 +31,12 @@ public class WebDriver {
         Page page = browserContext.newPage();
         page.navigate(String.valueOf(baseUrl));
         page.bringToFront();
-        
-        page.locator("id=username").fill(username);
-        page.locator("id=password").fill(password);
-        page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Sign in")).click();
+
+        page.getByTestId("username-field").getByRole(AriaRole.TEXTBOX).fill(username);
+        page.getByTestId("password-field").getByRole(AriaRole.TEXTBOX).fill(password);
+        page.getByTestId("login-button").click();
+
+        assertThat(page.getByTestId("page-base")).isVisible();
 
         return new MainMenu(page);
     }

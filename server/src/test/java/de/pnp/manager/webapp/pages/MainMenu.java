@@ -51,10 +51,40 @@ public class MainMenu extends PageBase {
         return new ItemPage(page);
     }
 
+    /**
+     * Opens the {@link UserOverviewPage}.
+     */
+    public UserOverviewPage openUserOverviewPage() {
+        openMenu("admin-menu", "users-menu");
+        return new UserOverviewPage(page);
+    }
+
+    /**
+     * Opens the {@link UserPage}.
+     */
+    public UserPage openUserPage() {
+        openAppBarMenu("user-menu");
+        return new UserPage(page);
+    }
+
+    /**
+     * Opens the {@link UserPreferencePage}.
+     */
+    public UserPreferencePage openUserPreferencesPage() {
+        openAppBarMenu("preferences-menu");
+        return new UserPreferencePage(page);
+    }
+
     private void openMenu(String menu, String... submenus) {
         page.getByTestId(menu).click();
         for (String submenu : submenus) {
             page.getByTestId(submenu).click();
         }
+    }
+
+    private void openAppBarMenu(String menu) {
+        page.getByTestId("menu-appbar").click();
+        page.getByTestId(menu).click();
+        page.mouse().click(0, 0); // Closes the popup menu
     }
 }

@@ -6,6 +6,7 @@ import static de.pnp.manager.security.SecurityConstants.UNIVERSE_CREATOR_ROLE;
 import de.pnp.manager.EJvmFlag;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -37,10 +38,15 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/v3/api-docs").permitAll() // OpenApi generate needs this
+                .requestMatchers("/login").permitAll()
+                .requestMatchers(HttpMethod.GET, "/locales/**", "/*.ico", "/assets/**", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic(Customizer.withDefaults())
-            .formLogin(Customizer.withDefaults());
+            .formLogin(form -> form.loginPage("/login")
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/")
+                .failureUrl("/login?error=true"));
 
         if (EJvmFlag.DEV_MODE.isEnabled()) {
             http.csrf(AbstractHttpConfigurer::disable);
@@ -51,6 +57,13 @@ public class SecurityConfig {
                     .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
                 )
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+        }
+        if (Boolean.parseBoolean(System.getenv("RUNNING_IN_CI"))) {
+            http.headers(headers ->
+                headers.contentSecurityPolicy(policy ->
+                    policy.policyDirectives(
+                        "default-src * data: blob: filesystem: about: ws: wss: 'unsafe-inline' 'unsafe-eval' 'unsafe-dynamic'; script-src * data: blob: 'unsafe-inline' 'unsafe-eval'; connect-src * data: blob: 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src * data: blob: ; style-src * data: blob: 'unsafe-inline'; font-src * data: blob: 'unsafe-inline';"))
+            );
         }
 
         return http.build();
@@ -69,7 +82,7 @@ public class SecurityConfig {
      */
     @Bean
     static MethodSecurityExpressionHandler expressionHandler() {
-        var expressionHandler = new DefaultMethodSecurityExpressionHandler();
+        DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(new PnPPermissionEvaluator());
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;

@@ -19,10 +19,10 @@ function errorMessage(fieldId: string, errorMap: Map<string, string>, value: str
             helperText: t('error:notInteger')
         };
     }
-    if (errorMap[fieldId]) {
+    if (errorMap.get(fieldId)) {
         return {
             error: true,
-            helperText: errorMap[fieldId]
+            helperText: errorMap.get(fieldId)
         };
     }
     return {};

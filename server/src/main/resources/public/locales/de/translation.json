@@ -11,6 +11,7 @@
   "add": "Hinzufügen",
   "delete": "Löschen",
   "edit": "Bearbeiten",
+  "create": "Erstellen",
   "name": "Name",
   "rarity": "Seltenheit",
   "effect": "Effekt",
@@ -29,6 +30,16 @@
   "resultingPrice": "Resultierender Preis",
   "cancel": "Abbrechen",
   "confirm": "Bestätigen",
+  "save": "Speichern",
   "permission": "Rechte",
-  "displayName": "Anzeigename"
+  "displayName": "Anzeigename",
+  "email": "E-Mail",
+  "username": "Nutzername",
+  "password": "Passwort",
+  "logIn": "Anmelden",
+  "logout": "Abmelden",
+  "wrongPassword": "Der Nutzername oder das Passwort ist falsch",
+  "profile": "Profil",
+  "preferences": "Einstellungen",
+  "language": "Sprache"
 }

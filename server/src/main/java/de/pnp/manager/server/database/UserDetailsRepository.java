@@ -102,6 +102,14 @@ public class UserDetailsRepository implements UserDetailsService {
     }
 
     /**
+     * Checks if the user password is valid.
+     */
+    public boolean isValidPassword(String username, String password) {
+        PnPUserDetails userDetails = loadUserByUsername(username);
+        return passwordEncoder.matches(password, userDetails.getPassword());
+    }
+
+    /**
      * Updates the {@link GrantedUniverseAuthority authorities} of the user.
      */
     public void updateGrantedAuthority(String username, Collection<GrantedAuthority> newAuthorities) {

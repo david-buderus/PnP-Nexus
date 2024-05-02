@@ -45,7 +45,7 @@ public class BackupService {
         return outputStream -> exportController.export(outputStream, universes);
     }
 
-    @PostMapping(path = "import", consumes = "application/zip")
+    @PostMapping(path = "import")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Import a backup to the nexus", operationId = "importBackup")
     public void importBackup(MultipartFile backup) {

@@ -32,6 +32,30 @@
         ]
       }
     },
+    "/api/authentication/password": {
+      "post": {
+        "operationId": "updatePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PasswordChange"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Updates the password of a user",
+        "tags": [
+          "authentication-service"
+        ]
+      }
+    },
     "/api/backup/export": {
       "get": {
         "operationId": "exportBackup",
@@ -340,8 +364,33 @@
       }
     },
     "/api/users": {
+      "delete": {
+        "operationId": "removeUsers",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "usernames",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Delete users",
+        "tags": [
+          "user-service"
+        ]
+      },
       "get": {
-        "operationId": "getDisplayNames",
+        "operationId": "getAllUsers",
         "responses": {
           "200": {
             "content": {
@@ -349,7 +398,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/PnPUser"
                   }
                 }
               }
@@ -357,7 +406,7 @@
             "description": "OK"
           }
         },
-        "summary": "Get all display names",
+        "summary": "Get all users",
         "tags": [
           "user-service"
         ]
@@ -380,6 +429,30 @@
           }
         },
         "summary": "Create a user",
+        "tags": [
+          "user-service"
+        ]
+      }
+    },
+    "/api/users/display-names": {
+      "get": {
+        "operationId": "getDisplayNames",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all display names",
         "tags": [
           "user-service"
         ]
@@ -470,40 +543,6 @@
         ]
       }
     },
-    "/api/users/{username}/password": {
-      "post": {
-        "operationId": "updatePassword",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "username",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PasswordChange"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Updates the password of a user",
-        "tags": [
-          "user-service"
-        ]
-      }
-    },
     "/api/users/{username}/permissions": {
       "get": {
         "operationId": "getPermissions",
@@ -582,6 +621,69 @@
           }
         },
         "summary": "Updates the permissions of a user",
+        "tags": [
+          "user-service"
+        ]
+      }
+    },
+    "/api/users/{username}/preferences": {
+      "get": {
+        "operationId": "getUserPreferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPUserPreference"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Gets the user preferences",
+        "tags": [
+          "user-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateUserPreferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PnPUserPreference"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Updates a user preferences",
         "tags": [
           "user-service"
         ]
@@ -3868,6 +3970,20 @@
             "type": "string"
           },
           "password": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        }
+      },
+      "PnPUserPreference": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "lastSelectedUniverse": {
             "type": "string"
           },
           "username": {

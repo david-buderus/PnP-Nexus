@@ -1,39 +1,32 @@
-import { AuthenticationServiceApi, Universe, UniverseServiceApi, UserServiceApi } from '../api';
+import { AuthenticationServiceApi, PnPUser, PnPUserPreference, Universe, UniverseServiceApi, UserServiceApi } from '../api';
 import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Box, CssBaseline, ThemeProvider, Toolbar, createTheme } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, Toolbar } from '@mui/material';
 import { UserPermissions, extractUserPermissions } from './interfaces/UserPermissions';
-import { API_CONFIGURATION } from './Constants';
+import { API_CONFIGURATION, THEME } from './Constants';
 import { NexusAppBar } from './NexusAppBar';
-import { NexusSidebar } from './NexusSidebar';
+import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
 import { GiAxeSword, GiChestArmor, GiRing, GiShield, GiSwapBag } from 'react-icons/gi';
+import i18n from '../i18n';
+import { IoSettingsSharp } from 'react-icons/io5';
+import { HiUserCircle } from 'react-icons/hi2';
 
-type UniverseContext = { universes: Universe[], activeUniverse: Universe; setActiveUniverse: (activeUniverse: Universe) => void; fetchUniverses: () => void; };
-type UserContext = { userPermissions: UserPermissions; };
+type UniverseContext = { universes: Universe[], activeUniverse: Universe, setActiveUniverse: (activeUniverse: Universe) => void, fetchUniverses: () => void; };
+type UserContext = { userPermissions: UserPermissions, userPreferences: PnPUserPreference, user: PnPUser, refreshUser: () => void; };
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
-const THEME = createTheme({
-  palette: {
-    primary: {
-      main: '#4a148c',
-    },
-    secondary: {
-      main: '#4a148c',
-    },
-  },
-});
-
 function PageBase() {
-  const { t } = useTranslation();
   const [universes, setUniverses] = useState<Universe[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
   const [username, setUsername] = useState<string>(null);
+  const [user, setUser] = useState<PnPUser>(null);
+  const [userPreferences, setUserPreferences] = useState<PnPUserPreference>(null);
   const [userPermissions, setUserPermissions] = useState<UserPermissions>({
     isAdmin: false,
     canCreateUniverses: false,
@@ -50,9 +43,29 @@ function PageBase() {
   const fetchUniverses = () => {
     UNIVERSE_API.getAllUniverses().then(response => {
       setUniverses(response.data);
-      const universe = response.data.find(u => u.name === searchParams.get("universe"));
-      if (universe !== undefined) {
-        setActiveUniverse(universe);
+      const paramUniverse = response.data.find(u => u.name === searchParams.get("universe"));
+      if (paramUniverse !== undefined) {
+        setActiveUniverse(paramUniverse);
+        return;
+      }
+      if (userPreferences) {
+        const prefUniverse = response.data.find(u => u.name === userPreferences.lastSelectedUniverse);
+        if (prefUniverse !== undefined) {
+          setActiveUniverse(prefUniverse);
+        }
+      }
+    });
+  };
+
+  const refreshUser = () => {
+    Promise.all([
+      USER_API.getUser(username).then(response => response.data),
+      USER_API.getUserPreferences(username).then(response => response.data)
+    ]).then(([newUser, newPref]) => {
+      setUser(newUser);
+      setUserPreferences(newPref);
+      if (newPref !== null && newPref.language !== null) {
+        i18n.changeLanguage(newPref.language);
       }
     });
   };
@@ -80,29 +93,76 @@ function PageBase() {
     });
   }, [activeUniverse, username]);
 
+  useEffect(() => {
+    if (username === null) {
+      return;
+    }
+    refreshUser();
+  }, [username]);
+
+  useEffect(() => {
+    if (username === null || userPreferences === null || activeUniverse === null) {
+      return;
+    }
+    if (userPreferences.lastSelectedUniverse === activeUniverse.name) {
+      return;
+    }
+    USER_API.updateUserPreferences(username, {
+      ...userPreferences,
+      lastSelectedUniverse: activeUniverse.name
+    });
+  }, [activeUniverse, userPreferences]);
+
   return <ThemeProvider theme={THEME}>
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex' }} data-testid="page-base">
       <CssBaseline />
       <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
-      <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={[
-        { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
-        {
-          id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [
-            { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
-            { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
-            { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
-            { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
-          ]
-        }
-      ]} />
+      <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={generateSidebarEntries(userPermissions)} />
       <Box component="main" height="100vh" display="flex" flexDirection="column" padding={2}>
         <Toolbar />
         <Box flex={1} overflow="auto">
-          <Outlet context={{ universes: universes, activeUniverse: activeUniverse, setActiveUniverse: setActiveUniverse, fetchUniverses: fetchUniverses, userPermissions: userPermissions }} />
+          <Outlet context={{
+            universes: universes,
+            activeUniverse: activeUniverse,
+            setActiveUniverse: setActiveUniverse,
+            fetchUniverses: fetchUniverses,
+            userPermissions: userPermissions,
+            userPreferences: userPreferences,
+            user: user,
+            refreshUser: refreshUser
+          }} />
         </Box>
       </Box>
     </Box>
   </ThemeProvider>;
+}
+
+function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProps[] {
+  const { t } = useTranslation();
+
+  const entries = [
+    { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
+    {
+      id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [
+        { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
+        { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
+        { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
+        { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
+      ]
+    }
+  ];
+
+  if (userPermissions.isAdmin) {
+    entries.push(
+      {
+        id: "admin-menu", label: t("admin"), link: "/admin", icon: <IoSettingsSharp />, subEntries: [
+          { id: "users-menu", label: t("users"), link: "/users", icon: <HiUserCircle /> }
+        ]
+      }
+    );
+  }
+
+  return entries;
 }
 
 /** Returns context over the currently avaible universes. */

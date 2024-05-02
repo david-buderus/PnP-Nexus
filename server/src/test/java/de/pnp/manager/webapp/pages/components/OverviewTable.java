@@ -1,5 +1,7 @@
 package de.pnp.manager.webapp.pages.components;
 
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Locator.LocatorOptions;
 import com.microsoft.playwright.Page;
@@ -37,7 +39,14 @@ public class OverviewTable {
      * Returns the table row matching the given {@link DatabaseObject}.
      */
     public OverviewTableRows getTableRow(DatabaseObject object) {
-        return new OverviewTableRows(table.locator("//tbody").getByTestId(object.getId().toHexString()));
+        return getTableRow(object.getId().toHexString());
+    }
+
+    /**
+     * Returns the table row matching the given string.
+     */
+    public OverviewTableRows getTableRow(String id) {
+        return new OverviewTableRows(table.locator("//tbody").getByTestId(id));
     }
 
     /**
@@ -49,11 +58,33 @@ public class OverviewTable {
     }
 
     /**
+     * Asserts that the table row with the given id exists.
+     */
+    public void assertThatTableRowExists(String id) {
+        assertThat(getTableRow(id).asLocator()).hasCount(1);
+    }
+
+    /**
+     * Asserts that the table row with the given id does not exist.
+     */
+    public void assertThatTableRowNotExists(String id) {
+        assertThat(getTableRow(id).asLocator()).hasCount(0);
+    }
+
+    /**
+     * Asserts that the table has x entries.
+     */
+    public void assertExactlyEntries(int entries) {
+        assertThat(getAllTableRows().asLocator().first()).hasCount(entries);
+    }
+
+    /**
      * Returns the underlying {@link Locator}.
      */
     public Locator asLocator() {
         return base;
     }
+
 
     /**
      * Represents one or multiple table rows.

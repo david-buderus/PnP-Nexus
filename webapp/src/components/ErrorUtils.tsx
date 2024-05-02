@@ -18,7 +18,7 @@ export function handleValidationError(setError: (errors: Map<string, string>) =>
                 key = keyFormatter(key);
             }
 
-            errorMap[key] = value;
+            errorMap.set(key, value as string);
         });
         setError(errorMap);
     };

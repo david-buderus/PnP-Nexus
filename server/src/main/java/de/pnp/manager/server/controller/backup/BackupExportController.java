@@ -8,8 +8,6 @@ import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.UniverseRepository;
-import de.pnp.manager.server.database.UserDetailsRepository;
-import de.pnp.manager.server.database.UserRepository;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
@@ -62,25 +60,6 @@ public class BackupExportController {
      */
     public static final String METADATA_FILE = "metadata";
 
-    /**
-     * The file name of the file which contains all user data of a backup.
-     */
-    public static final String USER_FILE = "users";
-
-    /**
-     * The key to access the users of a backup.
-     *
-     * @see #USER_FILE
-     */
-    public static final String USER_REPOSITORY = "user";
-
-    /**
-     * The key to access the user details of a backup.
-     *
-     * @see #USER_FILE
-     */
-    public static final String USER_DETAILS_REPOSITORY = "details";
-
     private final MongoClient mongoClient;
     private final MongoConfig mongoConfig;
     private final UniverseRepository universeRepository;
@@ -123,19 +102,21 @@ public class BackupExportController {
         zipOut.write(encode(metadata, codecRegistry, context));
         zipOut.closeEntry();
 
-        Document userData = new Document();
+        for (String repositoryName : mongoClient.getDatabase(METADATA_DATABASE).listCollectionNames()) {
+            if (repositoryName.equals(UniverseRepository.REPOSITORY_NAME)) {
+                continue;
+            }
+            List<Document> repositoryContent = mongoConfig.mongoTemplate(METADATA_DATABASE)
+                .findAll(Document.class, repositoryName);
+            Document repository = new Document();
+            repository.put(REPOSITORY_CONTENT, repositoryContent);
+            repository.put(REPOSITORY_NAME, repositoryName);
 
-        List<Document> userRepositoryContent = mongoConfig.mongoTemplate(METADATA_DATABASE)
-            .findAll(Document.class, UserRepository.REPOSITORY_NAME);
-        userData.put(USER_REPOSITORY, userRepositoryContent);
-        List<Document> userDetailsRepositoryContent = mongoConfig.mongoTemplate(METADATA_DATABASE)
-            .findAll(Document.class, UserDetailsRepository.REPOSITORY_NAME);
-        userData.put(USER_DETAILS_REPOSITORY, userDetailsRepositoryContent);
-
-        ZipEntry userEntry = new ZipEntry(USER_FILE);
-        zipOut.putNextEntry(userEntry);
-        zipOut.write(encode(userData, codecRegistry, context));
-        zipOut.closeEntry();
+            ZipEntry zipEntry = new ZipEntry(repositoryName);
+            zipOut.putNextEntry(zipEntry);
+            zipOut.write(encode(repository, codecRegistry, context));
+            zipOut.closeEntry();
+        }
     }
 
     /**

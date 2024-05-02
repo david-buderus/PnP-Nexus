@@ -3,9 +3,9 @@ package de.pnp.manager.webapp.pages;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Page.GetByRoleOptions;
 import com.microsoft.playwright.options.AriaRole;
-import de.pnp.manager.webapp.pages.components.ItemCreation;
-import de.pnp.manager.webapp.pages.components.ItemEdit;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
+import de.pnp.manager.webapp.pages.components.items.ItemCreation;
+import de.pnp.manager.webapp.pages.components.items.ItemEdit;
 
 /**
  * Represents the item overview page.

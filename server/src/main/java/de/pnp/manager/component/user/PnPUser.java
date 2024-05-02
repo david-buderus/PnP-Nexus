@@ -1,5 +1,6 @@
 package de.pnp.manager.component.user;
 
+import jakarta.validation.constraints.Email;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -13,9 +14,11 @@ public class PnPUser {
 
     @Id
     private final String username;
-    
+
     @Indexed(unique = true)
     private final String displayName;
+
+    @Email
     private final String email;
 
     public PnPUser(String username, String displayName, String email) {

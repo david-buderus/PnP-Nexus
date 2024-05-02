@@ -11,6 +11,7 @@
   "add": "Add",
   "delete": "Delete",
   "edit": "Edit",
+  "create": "Create",
   "name": "Name",
   "rarity": "Rarity",
   "effect": "Effect",
@@ -29,6 +30,16 @@
   "resultingPrice": "Resulting Price",
   "cancel": "Cancel",
   "confirm": "Confirm",
+  "save": "Save",
   "permission": "Permission",
-  "displayName": "Display Name"
+  "displayName": "Display Name",
+  "email": "E-Mail",
+  "username": "Username",
+  "password": "Password",
+  "logIn": "Log In",
+  "logout": "Logout",
+  "wrongPassword": "Username or Password are wrong",
+  "profile": "Profile",
+  "preferences": "Preferences",
+  "language": "Language"
 }

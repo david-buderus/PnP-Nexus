@@ -95,10 +95,20 @@ jobs:
         working-directory: ./webapp
         run: npm run build
 
+      - name: Instrument WebApp
+        if: github.event_name != 'pull_request'
+        working-directory: ./webapp
+        run: npm exec -c "javascript-instrumenter ../server/src/main/resources/static/assets/** --in-place --include-origin 'webapp/src/**' --exclude-origin 'node_modules/**' --collector localhost:54321"
+
       - name: Setup playwright
         uses: gradle/actions/setup-gradle@v3
         with:
           arguments: playwright --args "install --with-deps"
+
+      - name: Start Coverage Collector
+        if: github.event_name != 'pull_request'
+        working-directory: ./webapp
+        run: npm exec -c 'coverage-collector --dump-after-mins 3 --port 54321 --dump-to-folder ../js-profiler-coverage/' & echo $! > ../collector.pid
 
       - name: Setup and execute Gradle 'test' task
         uses: gradle/actions/setup-gradle@v3
@@ -107,7 +117,17 @@ jobs:
         env:
           RUNNING_IN_CI: true
 
-      - name: Upload to Teamscale
+      - name: Stop Coverage Collector
+        if: github.event_name != 'pull_request'
+        run: |
+          if [ -f ./collector.pid ]; then
+            kill -SIGINT $(cat ./collector.pid) || echo "Collector was already stopped."
+            sleep 5
+            rm ./collector.pid
+          fi
+
+
+      - name: Upload Backend Coverage to Teamscale
         uses: 'cqse/teamscale-upload-action@v2.8.0'
         if: github.event_name != 'pull_request'
         with:
@@ -120,6 +140,19 @@ jobs:
           message: 'Uploading coverage of the server.'
           files: 'server/build/reports/jacoco/test/jacocoTestReport.xml'
 
+      - name: Upload Fronted Coverage to Teamscale
+        uses: 'cqse/teamscale-upload-action@v2.8.0'
+        if: github.event_name != 'pull_request'
+        with:
+          server: 'https://pnp-nexus.de/teamscale/'
+          project: 'pnp-nexus'
+          user: 'build'
+          accesskey: ${{ secrets.TEAMSCALE_BUILD_ACCESS_KEY }}
+          partition: 'Github Action > Typescript'
+          format: 'SIMPLE'
+          message: 'Uploading coverage of the webapp.'
+          files: 'js-profiler-coverage/**.simple'
+
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: always()
@@ -128,13 +161,15 @@ jobs:
           path: server/build/test-results/**/*.xml
           reporter: java-junit
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Junit Results
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-report-server
           path: server/build/reports/tests/test
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload Jacoco Reports
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: coverage-report-server
