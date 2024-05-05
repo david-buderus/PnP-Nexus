@@ -46,5 +46,13 @@
   "amount": "Amount",
   "user": "User",
   "users": "Users",
-  "admin": "Admin"
+  "admin": "Admin",
+  "value": "Value",
+  "factor": "Factor",
+  "upgrade": "Upgrade",
+  "upgrades": "Upgrades",
+  "item-type": "Item-Type",
+  "item-types": "Item-Types",
+  "crafting-recipe": "Crafting Recipe",
+  "crafting-recipes": "Crafting Recipes"
 }

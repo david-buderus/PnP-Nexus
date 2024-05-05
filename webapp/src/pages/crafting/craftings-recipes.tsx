@@ -3,7 +3,7 @@ import { CharacterResourceRecipeEntry, CraftingRecipe, CraftingRecipeServiceApi,
 import { API_CONFIGURATION, SomeItem } from "../../components/Constants";
 import { getUniverseContext } from "../../components/PageBase";
 import { useEffect, useMemo, useState } from "react";
-import { OverviewBasePage } from "../../components/OverviewBasePage";
+import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 
 const CRAFTING_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);

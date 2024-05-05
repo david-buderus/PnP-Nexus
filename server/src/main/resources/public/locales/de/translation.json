@@ -46,5 +46,13 @@
   "amount": "Menge",
   "user": "Benutzer",
   "users": "Benutzer",
-  "admin": "Admin"
+  "admin": "Admin",
+  "value": "Wert",
+  "factor": "Faktor",
+  "upgrade": "Verbesserung",
+  "upgrades": "Verbesserungen",
+  "item-type": "Itemtyp",
+  "item-types": "Itemtypen",
+  "crafting-recipe": "Herstellungsrezept",
+  "crafting-recipes": "Herstellungsrezepte"
 }

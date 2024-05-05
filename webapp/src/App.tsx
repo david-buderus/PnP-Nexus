@@ -17,6 +17,7 @@ import { Admin } from './pages/admin';
 import { ItemTypePage } from './pages/items/item-types';
 import { MaterialPage } from './pages/items/materials';
 import { CraftingRecipesPage } from './pages/crafting/craftings-recipes';
+import { UpgradePage } from './pages/items/upgrades';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -42,6 +43,7 @@ class App extends Component {
                         <Route path='/shields' element={< ShieldPage />}></Route>
                         <Route path='/armor' element={< ArmorPage />}></Route>
                         <Route path='/jewellery' element={< JewelleryPage />}></Route>
+                        <Route path='/upgrades' element={< UpgradePage />}></Route>
                         <Route path='/item-types' element={< ItemTypePage />}></Route>
                         <Route path='/materials' element={< MaterialPage />}></Route>
                         <Route path='/crafting-recipes' element={< CraftingRecipesPage />}></Route>

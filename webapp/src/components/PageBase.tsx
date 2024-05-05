@@ -8,7 +8,7 @@ import { NexusAppBar } from './NexusAppBar';
 import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
-import { GiAxeSword, GiChestArmor, GiClayBrick, GiGearHammer, GiRing, GiShield, GiStoneCrafting, GiSwapBag } from 'react-icons/gi';
+import { GiAxeSword, GiChestArmor, GiClayBrick, GiGearHammer, GiMagicAxe, GiRing, GiShield, GiStoneCrafting, GiSwapBag } from 'react-icons/gi';
 import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
@@ -34,7 +34,7 @@ function PageBase() {
     canWriteActiveUniverse: false,
     isActiveUniverseOwner: false
   });
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleDrawerChange = () => {
     setOpen(!open);
@@ -148,6 +148,7 @@ function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProp
         { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
         { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
         { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> },
+        { id: "upgrades-menu", label: t("upgrades"), link: "/upgrades", icon: <GiMagicAxe /> },
         { id: "item-types-menu", label: t("item-types"), link: "/item-types", icon: <GiGearHammer /> },
         { id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick /> }
       ]

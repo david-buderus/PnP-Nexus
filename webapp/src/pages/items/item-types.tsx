@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { ItemType, ItemTypeServiceApi, ItemTypeTypeRestrictionEnum } from "../../api";
 import { API_CONFIGURATION } from "../../components/Constants";
-import { OverviewBasePage } from "../../components/OverviewBasePage";
+import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 
 const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);
 

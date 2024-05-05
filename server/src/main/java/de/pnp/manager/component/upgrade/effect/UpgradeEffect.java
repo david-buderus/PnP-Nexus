@@ -32,7 +32,7 @@ public abstract class UpgradeEffect {
     @JsonProperty
     protected final EUpgradeManipulator upgradeManipulator;
 
-    public UpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
+    protected UpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
         this.description = description;
         this.upgradeManipulator = upgradeManipulator;
     }

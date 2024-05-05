@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { ItemServiceApi, Material, MaterialServiceApi } from "../../api";
 import { API_CONFIGURATION, SomeItem } from "../../components/Constants";
-import { OverviewBasePage } from "../../components/OverviewBasePage";
+import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { useEffect, useState } from "react";
 import { getUniverseContext } from "../../components/PageBase";
 
