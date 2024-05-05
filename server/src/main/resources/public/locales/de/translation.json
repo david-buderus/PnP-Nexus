@@ -19,6 +19,7 @@
   "price": "Preis",
   "note": "Notiz",
   "material": "Material",
+  "materials": "Materialien",
   "tier": "Tier",
   "requirement": "Voraussetzung",
   "upgradeSlots": "Upgrade Slots",
@@ -41,5 +42,9 @@
   "wrongPassword": "Der Nutzername oder das Passwort ist falsch",
   "profile": "Profil",
   "preferences": "Einstellungen",
-  "language": "Sprache"
+  "language": "Sprache",
+  "amount": "Menge",
+  "user": "Benutzer",
+  "users": "Benutzer",
+  "admin": "Admin"
 }

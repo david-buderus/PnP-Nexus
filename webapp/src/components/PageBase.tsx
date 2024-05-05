@@ -8,7 +8,7 @@ import { NexusAppBar } from './NexusAppBar';
 import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
-import { GiAxeSword, GiChestArmor, GiRing, GiShield, GiSwapBag } from 'react-icons/gi';
+import { GiAxeSword, GiChestArmor, GiClayBrick, GiGearHammer, GiRing, GiShield, GiSwapBag } from 'react-icons/gi';
 import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
@@ -118,7 +118,7 @@ function PageBase() {
       <CssBaseline />
       <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
       <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={generateSidebarEntries(userPermissions)} />
-      <Box component="main" height="100vh" display="flex" flexDirection="column" padding={2}>
+      <Box component="main" height="100vh" width="100%" display="flex" flexDirection="column" padding={2}>
         <Toolbar />
         <Box flex={1} overflow="auto">
           <Outlet context={{
@@ -147,7 +147,9 @@ function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProp
         { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
         { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
         { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
-        { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
+        { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> },
+        { id: "item-types-menu", label: t("item-types"), link: "/item-types", icon: <GiGearHammer /> },
+        { id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick /> }
       ]
     }
   ];

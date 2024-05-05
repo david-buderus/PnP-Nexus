@@ -221,7 +221,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   }, [data]);
 
   return (
-    <Paper data-testid="overview-table">
+    <Paper data-testid="overview-table" sx={{ width: "100%" }}>
       <Stack direction="row" justifyContent="flex-end" className="-mb-8">
         <IconButton aria-label="delete" size="medium" className="float align-middle z-40" onClick={event => setSettingsAnchor(event.currentTarget)}>
           <IoSettingsSharp fontSize="inherit" />
@@ -254,7 +254,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
         </Popover>
       </Stack>
       <TableContainer sx={{ maxHeight: 0.8, minHeight: 0.8 }}>
-        <Table sx={{ minWidth: 650 }} stickyHeader size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: "650" }} stickyHeader size="small" aria-label="a dense table">
           <OverviewTableHead
             columns={columns}
             visibleColums={visibleColums}

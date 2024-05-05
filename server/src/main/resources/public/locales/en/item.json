@@ -5,5 +5,9 @@
   "maxStackSize": "Max. Stack Size",
   "confirmDeletionTitle": "Do you want to delete the selected items?",
   "creationTitle": "Create Item",
-  "editTitle": "Edit Item"
+  "editTitle": "Edit Item",
+  "materialCreationTitle": "Create Material",
+  "materialEditTitle": "Edit Material",
+  "materialDeletionTitle": "Do you want to delete the selected materials?",
+  "addItem": "Add another item to the material"
 }

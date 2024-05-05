@@ -19,6 +19,7 @@
   "price": "Price",
   "note": "Note",
   "material": "Material",
+  "materials": "Materials",
   "tier": "Tier",
   "requirement": "Requirement",
   "upgradeSlots": "Upgrade Slots",
@@ -41,5 +42,9 @@
   "wrongPassword": "Username or Password are wrong",
   "profile": "Profile",
   "preferences": "Preferences",
-  "language": "Language"
+  "language": "Language",
+  "amount": "Amount",
+  "user": "User",
+  "users": "Users",
+  "admin": "Admin"
 }

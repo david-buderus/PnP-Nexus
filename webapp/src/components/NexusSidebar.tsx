@@ -145,6 +145,21 @@ function MenuEntry(props: InternalMenuEntryProps) {
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
             <List key={id + "_submenu"} component="div" disablePadding>
+                <ListItemButton
+                    key={id + "_subentry"}
+                    data-testid={id + "_subentry"}
+                    sx={{ pl: 4 }}
+                    component={Link}
+                    to={{
+                        pathname: link,
+                        search: searchParams.toString()
+                    }}
+                >
+                    <ListItemIcon>
+                        {icon}
+                    </ListItemIcon>
+                    <ListItemText primary={label} />
+                </ListItemButton>
                 {subEntries.map(entry =>
                     <ListItemButton
                         key={entry.id}
