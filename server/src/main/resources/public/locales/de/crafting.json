@@ -1,0 +1,12 @@
+{
+  "product": "Produkt",
+  "sideProduct": "Nebenprodukt",
+  "profession": "Beruf",
+  "requirement": "Voraussetzung",
+  "otherCircumstances": "Sonstige Umstände",
+  "resource": "Ressource",
+  "craftingRecipeCreationTitle": "Erstelle ein neues Rezept",
+  "craftingRecipeEditTitle": "Bearbeite ein Rezept",
+  "craftingRecipeDeletionTitle": "Willst du die ausgewählten Rezepte löschen?",
+  "addResource": "Füg eine weitere Resource dem Rezept hinzu"
+}

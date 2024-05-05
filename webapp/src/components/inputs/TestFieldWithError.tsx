@@ -105,7 +105,7 @@ export function NumberFieldWithError(props: {
     tooltip?: string;
 } & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
     const { value, onChange, ...rest } = props;
-    const [stringValue, setStringValue] = useState(Number.isNaN(value) ? "" : value.toString());
+    const [stringValue, setStringValue] = useState(Number.isNaN(value) ? "" : value === undefined ? "" : value.toString());
 
     return <TextFieldWithError
         value={stringValue}

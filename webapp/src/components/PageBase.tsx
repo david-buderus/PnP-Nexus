@@ -8,7 +8,7 @@ import { NexusAppBar } from './NexusAppBar';
 import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
-import { GiAxeSword, GiChestArmor, GiClayBrick, GiGearHammer, GiRing, GiShield, GiSwapBag } from 'react-icons/gi';
+import { GiAxeSword, GiChestArmor, GiClayBrick, GiGearHammer, GiRing, GiShield, GiStoneCrafting, GiSwapBag } from 'react-icons/gi';
 import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
@@ -151,7 +151,8 @@ function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProp
         { id: "item-types-menu", label: t("item-types"), link: "/item-types", icon: <GiGearHammer /> },
         { id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick /> }
       ]
-    }
+    },
+    { id: "crafting-recipes-menu", label: t("crafting-recipes"), link: "/crafting-recipes", icon: <GiStoneCrafting /> }
   ];
 
   if (userPermissions.isAdmin) {

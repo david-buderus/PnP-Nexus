@@ -20,6 +20,8 @@ import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.utils.TestItemBuilder;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.utils.TestSecondaryAttributeBuilder;
+import de.pnp.manager.utils.TestSecondaryAttributeBuilder.TestSecondaryAttributeBuilderFactory;
 import de.pnp.manager.utils.TestUpgradeBuilder;
 import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
@@ -78,6 +80,9 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
 
     @Autowired
     private TestUpgradeBuilderFactory upgradeBuilder;
+
+    @Autowired
+    private TestSecondaryAttributeBuilderFactory secondaryAttributeBuilder;
 
     public RepositoryServiceBaseTest(Service service, Repo repository, Class<Obj> objClass) {
         this.service = service;
@@ -572,5 +577,12 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      */
     protected TestUpgradeBuilder createUpgrade() {
         return upgradeBuilder.createUpgradeBuilder(getUniverseName());
+    }
+
+    /**
+     * A helper method to create {@link TestSecondaryAttributeBuilder}.
+     */
+    protected TestSecondaryAttributeBuilder createSecondaryAttribute() {
+        return secondaryAttributeBuilder.createAttributeBuilder(getUniverseName());
     }
 }

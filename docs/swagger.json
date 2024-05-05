@@ -3515,6 +3515,9 @@
         ]
       },
       "CharacterResourceRecipeEntry": {
+        "required": [
+          "resource"
+        ],
         "type": "object",
         "allOf": [
           {
@@ -3523,17 +3526,12 @@
           {
             "type": "object",
             "properties": {
-              "amountOfRequiredUnits": {
+              "amount": {
                 "type": "number",
                 "format": "float"
               },
               "resource": {
-                "type": "string",
-                "enum": [
-                  "HEALTH",
-                  "MANA",
-                  "MENTAL_HEALTH"
-                ]
+                "$ref": "#/components/schemas/SecondaryAttribute"
               }
             }
           }
@@ -3730,7 +3728,7 @@
       },
       "ItemRecipeEntry": {
         "required": [
-          "item"
+          "resource"
         ],
         "type": "object",
         "allOf": [
@@ -3740,11 +3738,11 @@
           {
             "type": "object",
             "properties": {
-              "amountOfRequiredUnits": {
+              "amount": {
                 "type": "number",
                 "format": "float"
               },
-              "item": {
+              "resource": {
                 "$ref": "#/components/schemas/Item"
               }
             }
@@ -3875,7 +3873,7 @@
       },
       "MaterialRecipeEntry": {
         "required": [
-          "material"
+          "resource"
         ],
         "type": "object",
         "allOf": [
@@ -3885,11 +3883,11 @@
           {
             "type": "object",
             "properties": {
-              "amountOfRequiredUnits": {
+              "amount": {
                 "type": "number",
                 "format": "float"
               },
-              "material": {
+              "resource": {
                 "$ref": "#/components/schemas/Material"
               }
             }

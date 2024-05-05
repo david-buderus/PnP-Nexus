@@ -30,9 +30,9 @@ export function MaterialPage() {
             { fieldId: "name", label: t("name"), fieldType: "STRING" },
             {
                 fieldId: "items", label: t("items"), fieldType: "COMPLEX_LIST",
-                emptyListObject: { amount: 1, item: null },
+                emptyObject: { amount: 1, item: null },
                 newListObjectLabel: t("item:addItem"),
-                listFields: [
+                subFields: [
                     { fieldId: "amount", label: t("amount"), fieldType: "NUMBER" },
                     { fieldId: "item", label: t("item"), fieldType: "DATABASE", dependency: items, dependencyLabel: "name" }
                 ]

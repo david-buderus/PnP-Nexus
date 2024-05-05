@@ -1,8 +1,8 @@
 package de.pnp.manager.server.database.upgrade;
 
 import de.pnp.manager.component.IRecipeEntry.CharacterResourceRecipeEntry;
-import de.pnp.manager.component.IRecipeEntry.ECharacterResource;
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
@@ -33,18 +33,20 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Test
     void testUpgradeLink() {
+        SecondaryAttribute resource = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
         Upgrade upgradeA = createUpgrade().withName("Shine A")
             .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).persist().build();
         Upgrade upgradeB = createUpgrade().withName("Shine B")
             .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).build();
         UpgradeRecipe recipe = new UpgradeRecipe(null, upgradeA, List.of(), "",
-            List.of(new CharacterResourceRecipeEntry(1, ECharacterResource.MANA)));
+            List.of(new CharacterResourceRecipeEntry(1, resource)));
 
         testRepositoryLink(UpgradeRecipe::getUpgrade, upgradeRepository, recipe, upgradeA, upgradeB);
     }
 
     @Test
     void testNecessaryUpgradeLink() {
+        SecondaryAttribute resource = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
         Upgrade result = createUpgrade().withName("Result").persist().build();
         Upgrade upgradeA = createUpgrade().withName("Shine A")
             .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).persist().build();
@@ -52,7 +54,7 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
         Upgrade upgradeB = createUpgrade().withName("Shine B")
             .addEffect(SimpleUpgradeEffect.create("The weapon emits a lot of light")).build();
         UpgradeRecipe recipe = new UpgradeRecipe(null, result, List.of(upgradeA), "",
-            List.of(new CharacterResourceRecipeEntry(100, ECharacterResource.MANA)));
+            List.of(new CharacterResourceRecipeEntry(100, resource)));
 
         testRepositoryCollectionLink(UpgradeRecipe::getRequiredUpgrades, upgradeRepository, recipe, List.of(upgradeA),
             Map.of(upgradeA, upgradeB));
@@ -62,18 +64,20 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     protected UpgradeRecipe createObject() {
         ItemType type = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
+        SecondaryAttribute resource = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
         Upgrade upgrade = createUpgrade().withName("Test").withTarget(type).persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "",
-            List.of(new CharacterResourceRecipeEntry(10, ECharacterResource.HEALTH)));
+            List.of(new CharacterResourceRecipeEntry(10, resource)));
     }
 
     @Override
     protected UpgradeRecipe createSlightlyChangeObject() {
         ItemType type = typeRepository.insert(getUniverseName(),
             new ItemType(null, "Other Test-Type", ETypeRestriction.ITEM));
+        SecondaryAttribute resource = createSecondaryAttribute().withName("Life").isConsumable().persist().build();
         Upgrade upgrade = createUpgrade().withName("Other Test").withTarget(type).persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "Something",
-            List.of(new CharacterResourceRecipeEntry(10, ECharacterResource.MANA)));
+            List.of(new CharacterResourceRecipeEntry(10, resource)));
     }
 
     @Override

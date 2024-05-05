@@ -1,0 +1,12 @@
+{
+  "product": "Produkt",
+  "sideProduct": "By-Product",
+  "profession": "Profession",
+  "requirement": "Requirements",
+  "otherCircumstances": "Other Circumstances",
+  "resource": "Resource",
+  "craftingRecipeCreationTitle": "Create a new recipe",
+  "craftingRecipeEditTitle": "Edit a recipe",
+  "craftingRecipeDeletionTitle": "Do you want to delete the selected recipes?",
+  "addResource": "Add another resource to the recipe"
+}

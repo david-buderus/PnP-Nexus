@@ -2,13 +2,15 @@ package de.pnp.manager.server.database.attributes;
 
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.server.database.RepositoryBase;
+import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import org.springframework.stereotype.Component;
 
 /**
  * Repository for {@link PrimaryAttribute}
  */
 @Component
-public class PrimaryAttributeRepository extends RepositoryBase<PrimaryAttribute> {
+public class PrimaryAttributeRepository extends RepositoryBase<PrimaryAttribute> implements
+    IUniquelyNamedRepository<PrimaryAttribute> {
 
     /**
      * Name of the repository

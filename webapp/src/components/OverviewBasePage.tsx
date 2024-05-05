@@ -3,7 +3,7 @@ import OverviewTable, { Column } from "./OverviewTable";
 import { getUniverseContext, getUserContext } from "./PageBase";
 import { useEffect, useState } from "react";
 import { NoUniverse } from "./NoUniverse";
-import { Autocomplete, Button, Dialog, DialogActions, DialogTitle, Stack } from "@mui/material";
+import { Autocomplete, Button, Dialog, DialogActions, DialogTitle, Stack, Tooltip } from "@mui/material";
 import { ConfirmationDialog } from "./inputs/ConfirmationDialog";
 import { AxiosResponse } from "axios";
 import { handleValidationError } from "./ErrorUtils";
@@ -145,11 +145,11 @@ interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     fieldId: keyof O;
     fullId?: string;
     label: string;
-    fieldType: "STRING" | "NUMBER" | "ENUM" | "DATABASE" | "COMPLEX_LIST";
+    fieldType: "STRING" | "NUMBER" | "ENUM" | "DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST";
     dependency?: D[];
     dependencyLabel?: keyof D;
-    listFields?: DatabaseObjectDialogField<any, any>[];
-    emptyListObject?: any;
+    subFields?: DatabaseObjectDialogField<any, any>[];
+    emptyObject?: any;
     newListObjectLabel?: string;
 }
 
@@ -279,21 +279,45 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 }}
                 isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
                 renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
-                value={databaseObject?.[field.fieldId]}
+                value={databaseObject?.[field.fieldId] ?? null}
                 onChange={(_, value) => setDatabaseObject({
                     ...databaseObject,
                     [field.fieldId]: value
                 })}
                 data-testid={field.fieldId}
             />;
+        case "COMPLEX_ENTRY":
+            return <Stack direction="row" spacing={2} alignItems="flex-start" key={fullId + "-stack"} >
+                {field.subFields!.map(subField => {
+                    const subFullId = fullId + "." + (subField.fieldId as string);
+
+                    return <Field
+                        key={subFullId + "-field"}
+                        field={{
+                            ...subField,
+                            fieldId: subField.fieldId as any,
+                            fullId: subFullId
+                        }}
+                        errors={errors}
+                        databaseObject={databaseObject[field.fieldId]}
+                        setDatabaseObject={obj => {
+                            setDatabaseObject({
+                                ...databaseObject,
+                                [field.fieldId]: obj
+
+                            });
+                        }}
+                    />;
+                })}
+            </Stack>;
         case "COMPLEX_LIST":
             const entries = databaseObject[field.fieldId] as any[];
             return <Stack spacing={2} key={fullId + "-stack"} >
                 {entries.map((value, index) => {
                     const fieldIdPrefix = fullId + "[" + index + "].";
 
-                    return <Stack direction="row" spacing={2} alignItems="center" key={fullId + "-stack-" + index} >
-                        {field.listFields!.map(subField => {
+                    return <Stack direction="row" spacing={2} alignItems="flex-start" key={fullId + "-stack-" + index} >
+                        {field.subFields!.map(subField => {
                             const subFullId = fieldIdPrefix + (subField.fieldId as string);
 
                             return <Field
@@ -321,11 +345,19 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                         }} sx={{ width: 1 / 4, paddingTop: 1.5 }} > <FaMinus size={20} /> </Button>
                     </Stack>;
                 })}
-                <Button fullWidth key={fullId + "-add"} onClick={() => setDatabaseObject({
-                    ...databaseObject,
-                    [field.fieldId]: entries.concat([field.emptyListObject])
-                })} startIcon={<FaPlus />}> {field.newListObjectLabel}  </Button>
-
+                <Tooltip title={errors.get(fullId)}>
+                    <Button
+                        key={fullId + "-add"}
+                        fullWidth
+                        startIcon={<FaPlus />}
+                        color={errors.get(fullId) ? "error" : "primary"}
+                        onClick={() => setDatabaseObject({
+                            ...databaseObject,
+                            [field.fieldId]: entries.concat([field.emptyObject])
+                        })}>
+                        {field.newListObjectLabel}
+                    </Button>
+                </Tooltip>
             </Stack>;
     }
 }

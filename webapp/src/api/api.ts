@@ -227,23 +227,14 @@ export interface CharacterResourceRecipeEntry {
      * @type {number}
      * @memberof CharacterResourceRecipeEntry
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
-     * @type {string}
+     * @type {SecondaryAttribute}
      * @memberof CharacterResourceRecipeEntry
      */
-    'resource'?: CharacterResourceRecipeEntryResourceEnum;
+    'resource': SecondaryAttribute;
 }
-
-export const CharacterResourceRecipeEntryResourceEnum = {
-    Health: 'HEALTH',
-    Mana: 'MANA',
-    MentalHealth: 'MENTAL_HEALTH'
-} as const;
-
-export type CharacterResourceRecipeEntryResourceEnum = typeof CharacterResourceRecipeEntryResourceEnum[keyof typeof CharacterResourceRecipeEntryResourceEnum];
-
 /**
  * 
  * @export
@@ -255,23 +246,14 @@ export interface CharacterResourceRecipeEntryAllOf {
      * @type {number}
      * @memberof CharacterResourceRecipeEntryAllOf
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
-     * @type {string}
+     * @type {SecondaryAttribute}
      * @memberof CharacterResourceRecipeEntryAllOf
      */
-    'resource'?: CharacterResourceRecipeEntryAllOfResourceEnum;
+    'resource'?: SecondaryAttribute;
 }
-
-export const CharacterResourceRecipeEntryAllOfResourceEnum = {
-    Health: 'HEALTH',
-    Mana: 'MANA',
-    MentalHealth: 'MENTAL_HEALTH'
-} as const;
-
-export type CharacterResourceRecipeEntryAllOfResourceEnum = typeof CharacterResourceRecipeEntryAllOfResourceEnum[keyof typeof CharacterResourceRecipeEntryAllOfResourceEnum];
-
 /**
  * 
  * @export
@@ -543,13 +525,13 @@ export interface ItemRecipeEntry {
      * @type {number}
      * @memberof ItemRecipeEntry
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Item}
      * @memberof ItemRecipeEntry
      */
-    'item': Item;
+    'resource': Item;
 }
 /**
  * 
@@ -562,13 +544,13 @@ export interface ItemRecipeEntryAllOf {
      * @type {number}
      * @memberof ItemRecipeEntryAllOf
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Item}
      * @memberof ItemRecipeEntryAllOf
      */
-    'item'?: Item;
+    'resource'?: Item;
 }
 /**
  * 
@@ -807,13 +789,13 @@ export interface MaterialRecipeEntry {
      * @type {number}
      * @memberof MaterialRecipeEntry
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Material}
      * @memberof MaterialRecipeEntry
      */
-    'material': Material;
+    'resource': Material;
 }
 /**
  * 
@@ -826,13 +808,13 @@ export interface MaterialRecipeEntryAllOf {
      * @type {number}
      * @memberof MaterialRecipeEntryAllOf
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Material}
      * @memberof MaterialRecipeEntryAllOf
      */
-    'material'?: Material;
+    'resource'?: Material;
 }
 /**
  * 
