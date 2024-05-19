@@ -8,5 +8,9 @@
   "craftingRecipeCreationTitle": "Erstelle ein neues Rezept",
   "craftingRecipeEditTitle": "Bearbeite ein Rezept",
   "craftingRecipeDeletionTitle": "Willst du die ausgewählten Rezepte löschen?",
-  "addResource": "Füg eine weitere Resource dem Rezept hinzu"
+  "addResource": "Füg eine weitere Resource dem Rezept hinzu",
+  "requiredUpgrades": "Benötigte Verbesserungen",
+  "upgradeRecipeCreationTitle": "Erstelle ein neues Rezept",
+  "upgradeRecipeEditTitle": "Bearbeite ein Rezept",
+  "upgradeRecipeDeletionTitle": "Willst du die ausgewählten Rezepte löschen?"
 }
