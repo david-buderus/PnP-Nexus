@@ -9,25 +9,47 @@ import { NexusSelect } from "../inputs/NexusSelect";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { currencyToHumanReadable } from "../Utils";
 
+/**
+ * A simple interface to describe database objects
+ */
 export interface DatabaseObject {
+    /** The unique identifier of a database object */
     id?: string;
 }
 
+/**
+ * Describes an input field of a propery
+ */
 export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
+    /** The id of the property */
     fieldId: keyof O;
+    /** The full id of the property. This includes the id of the parent object if one exists */
     fullId?: string;
+    /** The label used for the input */
     label: string;
+    /** The tooltip for the input */
     tooltip?: string;
+    /** What kind of field is needed */
     fieldType: "STRING" | "NUMBER" | "BOOLEAN" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "STACK";
+    /** The dependencies needed for the field. Needed for ENUM, DATABASE and MULTI_DATABASE */
     dependency?: D[];
+    /** The label used for the dependency */
     dependencyLabel?: keyof D;
+    /** Fields that needed to describe the property. Needed for COMPLEX_ENTRY, COMPLEX_LIST, STACK */
     subFields?: DatabaseObjectDialogField<any, any>[];
+    /** How a new object looks like this entry. NEEDED for COMPLEX_LIST */
     emptyObject?: any;
+    /** The label of the button to add a new object to the COMPLEX_LIST */
     newListObjectLabel?: string;
+    /** How the field should be aligment */
     aligment?: "row" | "column";
+    /** Only shows the input if the @type is contained in the list */
     visibleForTypes?: string[];
 }
 
+/**
+ * Props needed for the dialog
+ */
 interface DatabaseObjectDialogProps<O extends DatabaseObject> {
     /** If the dialog is open */
     open: boolean;
@@ -47,6 +69,7 @@ interface DatabaseObjectDialogProps<O extends DatabaseObject> {
     actionButtonText: string;
 }
 
+/** A dialog to create or edit any database object */
 export function DatabaseObjectDialog<O extends DatabaseObject>({
     open,
     onClose,
@@ -92,21 +115,25 @@ export function DatabaseObjectDialog<O extends DatabaseObject>({
     </Dialog>;
 }
 
+/** Props needed to create a field */
 interface FieldProps<O extends DatabaseObject, D extends DatabaseObject> {
     /** Entry field of the database object */
     field: DatabaseObjectDialogField<O, D>;
     /** The current errors */
     errors: Map<string, string>;
+    /** The current state of the database object */
     databaseObject: O;
+    /** Callback to manipulate the database object */
     setDatabaseObject: (obj: O) => void;
 }
 
+/** Creates a field */
 function Field<O extends DatabaseObject, D extends DatabaseObject>({
     field,
     errors,
     databaseObject,
     setDatabaseObject
-}: FieldProps<O, D>) {
+}: FieldProps<O, D>): React.JSX.Element {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();
 
@@ -292,6 +319,8 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 databaseObject={databaseObject}
                 setDatabaseObject={setDatabaseObject}
             />;
+        default:
+            return <>Unknown Fieldtype</>;
     }
 }
 

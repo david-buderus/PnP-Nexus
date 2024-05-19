@@ -1,6 +1,6 @@
 
 import { useTranslation } from "react-i18next";
-import { ItemType, ItemTypeServiceApi, Material, Upgrade, UpgradeEffectUpgradeManipulatorEnum, UpgradeServiceApi } from "../../api";
+import { ItemType, ItemTypeServiceApi, Upgrade, UpgradeEffectUpgradeManipulatorEnum, UpgradeServiceApi } from "../../api";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { useEffect, useState } from "react";

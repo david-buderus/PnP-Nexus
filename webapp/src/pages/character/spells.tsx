@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
 
+/** Page to give an overview over all spells */
 export function SpellsPage() {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();

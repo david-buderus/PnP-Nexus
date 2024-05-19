@@ -5,6 +5,7 @@ import { API_CONFIGURATION } from "../../components/Constants";
 
 const ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
 
+/** Page to give an overview over all primary attributes */
 export function PrimaryAttributesPage() {
     const { t } = useTranslation();
 

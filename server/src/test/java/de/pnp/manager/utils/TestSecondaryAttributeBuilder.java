@@ -106,6 +106,9 @@ public class TestSecondaryAttributeBuilder {
         return this;
     }
 
+    /**
+     * Builds the {@link SecondaryAttribute}.
+     */
     public SecondaryAttribute build() {
         Collection<PrimaryAttributeDependency> actualDependencies = dependencies;
         if (dependencies.isEmpty()) {

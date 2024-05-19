@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
 const ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
 
+/** Page to give an overview over all talents */
 export function TalentsPage() {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();

@@ -10,7 +10,7 @@ const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
 const ATTRIBUTE_API = new SecondaryAttributeServiceApi(API_CONFIGURATION);
 
-/** Page to give an overview over all materials */
+/** Page to give an overview over all crafting recipes */
 export function CraftingRecipesPage() {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();

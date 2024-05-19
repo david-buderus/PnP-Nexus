@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
 const SECONDARY_ATTRIBUTE_API = new SecondaryAttributeServiceApi(API_CONFIGURATION);
 
+/** Page to give an overview over all secondary attributes */
 export function SecondaryAttributesPage() {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();
