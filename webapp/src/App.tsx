@@ -16,8 +16,9 @@ import { UserOverview } from './pages/users/user-overview';
 import { Admin } from './pages/admin';
 import { ItemTypePage } from './pages/items/item-types';
 import { MaterialPage } from './pages/items/materials';
-import { CraftingRecipesPage } from './pages/crafting/craftings-recipes';
+import { CraftingRecipesPage } from './pages/crafting/crafting-recipes';
 import { UpgradePage } from './pages/items/upgrades';
+import { UpgradeRecipesPage } from './pages/crafting/upgrade-recipes';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -47,6 +48,7 @@ class App extends Component {
                         <Route path='/item-types' element={< ItemTypePage />}></Route>
                         <Route path='/materials' element={< MaterialPage />}></Route>
                         <Route path='/crafting-recipes' element={< CraftingRecipesPage />}></Route>
+                        <Route path='/upgrade-recipes' element={< UpgradeRecipesPage />}></Route>
                         <Route path='/admin' element={< Admin />}> </Route>
                         <Route path='/users' element={< UserOverview />}> </Route>
                         <Route path='/backup' element={< Backup />}></Route>

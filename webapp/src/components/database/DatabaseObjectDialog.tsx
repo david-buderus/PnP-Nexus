@@ -17,7 +17,7 @@ export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     fieldId: keyof O;
     fullId?: string;
     label: string;
-    fieldType: "STRING" | "NUMBER" | "PRICE" | "ENUM" | "DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "TYPE" | "STACK";
+    fieldType: "STRING" | "NUMBER" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "TYPE" | "STACK";
     dependency?: D[];
     dependencyLabel?: keyof D;
     subFields?: DatabaseObjectDialogField<any, any>[];
@@ -186,6 +186,25 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
                 renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
                 value={databaseObject?.[field.fieldId] ?? null}
+                onChange={(_, value) => setDatabaseObject({
+                    ...databaseObject,
+                    [field.fieldId]: value
+                })}
+                data-testid={field.fieldId}
+                fullWidth
+            />;
+        case "MULTI_DATABASE":
+            return <Autocomplete
+                key={fullId}
+                multiple
+                disablePortal
+                options={field.dependency}
+                getOptionLabel={(option: D) => {
+                    return option?.[field.dependencyLabel] as string;
+                }}
+                isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
+                renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
+                value={databaseObject?.[field.fieldId] as DatabaseObject[] ?? []}
                 onChange={(_, value) => setDatabaseObject({
                     ...databaseObject,
                     [field.fieldId]: value

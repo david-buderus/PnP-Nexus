@@ -69,7 +69,7 @@ export function CraftingRecipesPage() {
             { fieldId: "otherCircumstances", label: t("crafting:otherCircumstances"), fieldType: "STRING" },
             {
                 fieldId: "materials", label: t("materials"), fieldType: "COMPLEX_LIST",
-                emptyObject: { amount: 1, item: null },
+                emptyObject: { amount: 1, resource: null },
                 newListObjectLabel: t("crafting:addResource"),
                 subFields: [
                     { fieldId: "amount", label: t("amount"), fieldType: "NUMBER" },
@@ -91,7 +91,7 @@ export function CraftingRecipesPage() {
             profession: "",
             requirement: "",
             otherCircumstances: "",
-            materials: []
+            materials: [{ amount: 1, resource: null }]
         }}
     />;
 }
@@ -105,7 +105,8 @@ function addTypeAnnotationToRecipe(recipe: CraftingRecipe): CraftingRecipe {
     };
 }
 
-function addTypeAnnotationToEntry<E extends ItemRecipeEntry | MaterialRecipeEntry | CharacterResourceRecipeEntry>(entry: E): E {
+/** Adds the necessary types to the entry */
+export function addTypeAnnotationToEntry<E extends ItemRecipeEntry | MaterialRecipeEntry | CharacterResourceRecipeEntry>(entry: E): E {
     if (entry === undefined || entry === null) {
         return entry;
     }
@@ -136,7 +137,8 @@ function addTypeAnnotationToEntry<E extends ItemRecipeEntry | MaterialRecipeEntr
     return entry;
 }
 
-function recipeEntryToString(entry: ItemRecipeEntry | MaterialRecipeEntry | CharacterResourceRecipeEntry): string {
+/** Conecerts a recipe entry to a human-readable string */
+export function recipeEntryToString(entry: ItemRecipeEntry | MaterialRecipeEntry | CharacterResourceRecipeEntry): string {
     if (!entry) {
         return "";
     }
