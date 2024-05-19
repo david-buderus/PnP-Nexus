@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../../components/PageBase";
-import { PrimaryAttribute, PrimaryAttributeServiceApi, Spell, Talent, TalentServiceApi } from "../../api";
+import { PrimaryAttribute, PrimaryAttributeServiceApi, Talent, TalentServiceApi } from "../../api";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { useEffect, useState } from "react";

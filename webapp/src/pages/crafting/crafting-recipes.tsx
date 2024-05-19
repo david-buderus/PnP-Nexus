@@ -137,7 +137,7 @@ export function addTypeAnnotationToEntry<E extends ItemRecipeEntry | MaterialRec
     return entry;
 }
 
-/** Conecerts a recipe entry to a human-readable string */
+/** Converts a recipe entry to a human-readable string */
 export function recipeEntryToString(entry: ItemRecipeEntry | MaterialRecipeEntry | CharacterResourceRecipeEntry): string {
     if (!entry) {
         return "";
