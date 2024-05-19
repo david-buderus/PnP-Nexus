@@ -34,6 +34,9 @@ export interface OverviewBasePageProps<O extends DatabaseObject> {
     removeObjects: (universe: string, keys: string[]) => Promise<AxiosResponse<void, any>>;
 }
 
+/**
+ *  A page with a overview table and create, edit and delete functionallities.
+ */
 export function OverviewBasePage<O extends DatabaseObject>({
     columns,
     sortingKey,
@@ -132,4 +135,4 @@ export function OverviewBasePage<O extends DatabaseObject>({
             </Stack>
         }
     </Stack>;
-};
+}

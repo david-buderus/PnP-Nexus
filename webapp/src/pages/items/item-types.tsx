@@ -8,6 +8,7 @@ import { getUniverseContext } from "../../components/PageBase";
 const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);
 const EXTENDED_ITEM_TYPE_API = new ExtendedItemTypeServiceApi(API_CONFIGURATION);
 
+/** Page to give an overview over all item types */
 export function ItemTypePage() {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();

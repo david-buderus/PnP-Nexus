@@ -140,7 +140,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
     const fullId = (field.fullId ?? field.fieldId) as string;
 
     if (field.visibleForTypes !== undefined && !field.visibleForTypes.includes(databaseObject["@type"])) {
-        return;
+        return <></>;
     }
 
     switch (field.fieldType) {
