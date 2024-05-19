@@ -62,7 +62,11 @@ export function DatabaseObjectDialog<O extends DatabaseObject>({
     const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
     const [databaseObject, setDatabaseObject] = useState<O>(initalObject);
 
-    return <Dialog open={open} onClose={onClose} fullWidth data-testid="database-object-dialog"
+    return <Dialog
+        open={open}
+        onClose={onClose}
+        fullWidth
+        data-testid="database-object-dialog"
     >
         <DialogTitle>{title}</DialogTitle>
         <Stack spacing={2} padding={2}>
@@ -178,7 +182,6 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
         case "DATABASE":
             return <Autocomplete
                 key={fullId}
-                disablePortal
                 options={field.dependency}
                 getOptionLabel={(option: D) => {
                     return option?.[field.dependencyLabel] as string;
@@ -197,7 +200,6 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
             return <Autocomplete
                 key={fullId}
                 multiple
-                disablePortal
                 options={field.dependency}
                 getOptionLabel={(option: D) => {
                     return option?.[field.dependencyLabel] as string;

@@ -8,6 +8,9 @@
   "shield": "Shield",
   "armor": "Armor",
   "jewellery": "Jewellery",
+  "equipment": "Equipment",
+  "defensive_item": "Defensive Equipment",
+  "handheld": "Held in the hand",
   "add": "Add",
   "delete": "Delete",
   "edit": "Edit",
@@ -54,5 +57,7 @@
   "item-type": "Item-Type",
   "item-types": "Item-Types",
   "crafting-recipe": "Crafting Recipe",
-  "crafting-recipes": "Crafting Recipes"
+  "crafting-recipes": "Crafting Recipes",
+  "upgrade-recipe": "Upgrade Recipe",
+  "upgrade-recipes": "Upgrade Recipes"
 }

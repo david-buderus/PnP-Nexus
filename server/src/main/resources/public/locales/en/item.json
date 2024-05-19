@@ -9,5 +9,10 @@
   "materialCreationTitle": "Create Material",
   "materialEditTitle": "Edit Material",
   "materialDeletionTitle": "Do you want to delete the selected materials?",
-  "addItem": "Add another item to the material"
+  "addItem": "Add another item to the material",
+  "typeRestriction": "Type-Restriction",
+  "broaderVariants": "Broader Variants",
+  "itemTypeCreationTitle": "Create a new item type",
+  "itemTypeEditTitle": "Edit a item type",
+  "itemTypeDeletionTitle": "Do you want to delete the selected item types?"
 }

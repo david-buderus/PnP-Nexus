@@ -62,7 +62,19 @@ export function NexusAppBar(props: NexusAppBarProps) {
                         return option?.displayName;
                     }}
                     isOptionEqualToValue={(option: Universe, value: Universe) => option.name === value.name}
-                    renderInput={(params) => <TextField {...params} className='h-10' variant='standard' size="small" label="Universe" />}
+                    renderInput={(params) => <TextField
+                        {...params}
+                        className='h-10'
+                        variant='standard'
+                        size="small"
+                        label={t("universe")}
+                        sx={{
+                            input: { color: 'white' }
+                        }}
+                        InputLabelProps={{
+                            style: { color: 'white' }
+                        }}
+                    />}
                     onChange={(_, value) => {
                         setActiveUniverse(value);
                     }}

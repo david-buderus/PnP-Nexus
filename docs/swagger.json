@@ -928,6 +928,145 @@
         ]
       }
     },
+    "/api/{universe}/extended-item-types": {
+      "get": {
+        "operationId": "getAllExtendedItemTypes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtendedItemType"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "extended-item-type-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAllExtendedItemTypes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ExtendedItemType"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtendedItemType"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "extended-item-type-service"
+        ]
+      }
+    },
+    "/api/{universe}/extended-item-types/{id}": {
+      "put": {
+        "operationId": "updateExtendedItemType",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtendedItemType"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedItemType"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "extended-item-type-service"
+        ]
+      }
+    },
     "/api/{universe}/item-type-translations": {
       "delete": {
         "operationId": "deleteAllItemTypeTranslations",
@@ -3521,7 +3660,7 @@
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/IRecipeEntry"
+            "$ref": "#/components/schemas/IRecipeEntryObject"
           },
           {
             "type": "object",
@@ -3635,6 +3774,44 @@
           "GODLIKE"
         ]
       },
+      "ExtendedItemType": {
+        "required": [
+          "broaderVariants",
+          "name",
+          "typeRestriction"
+        ],
+        "type": "object",
+        "properties": {
+          "broaderVariants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemType"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "translationId": {
+            "type": "string"
+          },
+          "typeRestriction": {
+            "type": "string",
+            "enum": [
+              "ITEM",
+              "EQUIPMENT",
+              "JEWELLERY",
+              "WEAPON",
+              "DEFENSIVE_ITEM",
+              "SHIELD",
+              "HANDHELD",
+              "ARMOR"
+            ]
+          }
+        }
+      },
       "GrantedUniverseAuthorityDTO": {
         "required": [
           "permission",
@@ -3661,7 +3838,7 @@
       "IGrantedAuthorityDTO": {
         "type": "object"
       },
-      "IRecipeEntry": {
+      "IRecipeEntryObject": {
         "type": "object"
       },
       "Item": {
@@ -3733,7 +3910,7 @@
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/IRecipeEntry"
+            "$ref": "#/components/schemas/IRecipeEntryObject"
           },
           {
             "type": "object",
@@ -3878,7 +4055,7 @@
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/IRecipeEntry"
+            "$ref": "#/components/schemas/IRecipeEntryObject"
           },
           {
             "type": "object",

@@ -9,5 +9,10 @@
   "materialCreationTitle": "Erstelle ein Material",
   "materialEditTitle": "Bearbeite ein Material",
   "materialDeletionTitle": "Willst du die ausgewählten Materialien löschen?",
-  "addItem": "Füge ein weiteres Material-Item hinzu"
+  "addItem": "Füge ein weiteres Material-Item hinzu",
+  "typeRestriction": "Typ-Einschränkungen",
+  "broaderVariants": "Gröbere Varianten",
+  "itemTypeCreationTitle": "Erstelle ein Item Typ",
+  "itemTypeEditTitle": "Bearbeite ein Item Typ",
+  "itemTypeDeletionTitle": "Willst du die ausgewählten Item Typen löschen?"
 }

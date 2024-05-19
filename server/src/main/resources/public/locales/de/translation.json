@@ -8,6 +8,9 @@
   "shield": "Schild",
   "armor": "Rüstung",
   "jewellery": "Schmuck",
+  "equipment": "Ausrüstung",
+  "defensive_item": "Defensive Ausrüstung",
+  "handheld": "In der Hand getragen",
   "add": "Hinzufügen",
   "delete": "Löschen",
   "edit": "Bearbeiten",
@@ -54,5 +57,7 @@
   "item-type": "Itemtyp",
   "item-types": "Itemtypen",
   "crafting-recipe": "Herstellungsrezept",
-  "crafting-recipes": "Herstellungsrezepte"
+  "crafting-recipes": "Herstellungsrezepte",
+  "upgrade-recipe": "Verbesserungsrezept",
+  "upgrade-recipes": "Verbesserungsrezepte"
 }
