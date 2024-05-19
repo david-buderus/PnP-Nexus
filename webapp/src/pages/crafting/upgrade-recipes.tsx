@@ -39,7 +39,7 @@ export function UpgradeRecipesPage() {
             setUpgrades(upgradeResponse.data);
             setItems(itemReponse.data);
             setMaterials(materialsResponse.data);
-            setSecondaryAttributes(attributeResponse.data);
+            setSecondaryAttributes(attributeResponse.data.filter(attribute => attribute.consumable));
         });
     }, [activeUniverse]);
 

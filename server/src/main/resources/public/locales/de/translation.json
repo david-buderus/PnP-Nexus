@@ -59,5 +59,17 @@
   "crafting-recipe": "Herstellungsrezept",
   "crafting-recipes": "Herstellungsrezepte",
   "upgrade-recipe": "Verbesserungsrezept",
-  "upgrade-recipes": "Verbesserungsrezepte"
+  "upgrade-recipes": "Verbesserungsrezepte",
+  "character": "Charakter",
+  "characters": "Charaktere",
+  "spell": "Zauber",
+  "spells": "Zauber",
+  "talent": "Talent",
+  "talents": "Talents",
+  "primary-attribute": "Primäres Attribut",
+  "primary-attributes": "Primäre Attribute",
+  "secondary-attribute": "Sekundäres Attribut",
+  "secondary-attributes": "Sekundäre Attribute",
+  "yes": "Ja",
+  "no": "Nein"
 }

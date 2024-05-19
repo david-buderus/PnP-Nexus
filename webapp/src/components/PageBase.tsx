@@ -8,7 +8,8 @@ import { NexusAppBar } from './NexusAppBar';
 import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
-import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiGearHammer, GiMagicAxe, GiRing, GiShield, GiStoneCrafting, GiSwapBag } from 'react-icons/gi';
+import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiGearHammer, GiHeartInside, GiMagicAxe, GiMuscleUp, GiRing, GiShield, GiSpellBook, GiStoneCrafting, GiSupersonicArrow, GiSwapBag } from 'react-icons/gi';
+import { FaPersonRays } from "react-icons/fa6";
 import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
@@ -156,6 +157,14 @@ function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProp
     {
       id: "crafting-recipes-menu", label: t("crafting-recipes"), link: "/crafting-recipes", icon: <GiStoneCrafting />, subEntries: [
         { id: "upgrade-recipes-menu", label: t("upgrade-recipes"), link: "/upgrade-recipes", icon: <GiBurningBook /> }
+      ]
+    },
+    {
+      id: "characters-menu", label: t("characters"), link: "/characters", icon: <FaPersonRays />, subEntries: [
+        { id: "spells-menu", label: t("spells"), link: "/spells", icon: <GiSpellBook /> },
+        { id: "talents-menu", label: t("talents"), link: "/talents", icon: <GiSupersonicArrow /> },
+        { id: "primary-attributes-menu", label: t("primary-attributes"), link: "/primary-attributes", icon: <GiMuscleUp /> },
+        { id: "secondary-attributes-menu", label: t("secondary-attributes"), link: "/secondary-attributes", icon: <GiHeartInside /> }
       ]
     }
   ];

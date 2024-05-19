@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../PageBase";
 import { useState } from "react";
-import { Autocomplete, Button, Dialog, DialogActions, DialogTitle, Stack, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField, Tooltip } from "@mui/material";
 import { AxiosResponse } from "axios";
 import { handleValidationError } from "../ErrorUtils";
 import { NumberFieldWithError, TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/TestFieldWithError";
@@ -17,7 +17,8 @@ export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     fieldId: keyof O;
     fullId?: string;
     label: string;
-    fieldType: "STRING" | "NUMBER" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "TYPE" | "STACK";
+    tooltip?: string;
+    fieldType: "STRING" | "NUMBER" | "BOOLEAN" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "STACK";
     dependency?: D[];
     dependencyLabel?: keyof D;
     subFields?: DatabaseObjectDialogField<any, any>[];
@@ -121,6 +122,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 key={fullId}
                 fieldId={fullId}
                 label={field.label}
+                tooltip={field.tooltip}
                 value={databaseObject?.[field.fieldId] as string}
                 onChange={value => setDatabaseObject({
                     ...databaseObject,
@@ -134,6 +136,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 key={fullId}
                 fieldId={fullId}
                 label={field.label}
+                tooltip={field.tooltip}
                 value={databaseObject?.[field.fieldId] as number}
                 onChange={value => setDatabaseObject({
                     ...databaseObject,
@@ -142,6 +145,24 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 errorMap={errors}
                 fullWidth
             />;
+        case "BOOLEAN":
+            return <FormGroup key={fullId + "-group"}>
+                <FormControlLabel
+                    key={fullId}
+                    control={
+                        <Tooltip title={field.tooltip} placement="right-start">
+                            <Checkbox
+                                checked={databaseObject?.[field.fieldId] as boolean}
+                                onChange={event => setDatabaseObject({
+                                    ...databaseObject,
+                                    [field.fieldId]: event.target.checked
+                                })}
+                            />
+                        </Tooltip>
+                    }
+                    label={field.label}
+                />
+            </FormGroup>;
         case "PRICE":
             return <Stack direction="row" spacing={2}>
                 <NumberFieldWithError
@@ -150,6 +171,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     errorMap={errors}
                     integerField
                     label={field.label}
+                    tooltip={field.tooltip}
                     value={databaseObject?.[field.fieldId] as number}
                     onChange={value => setDatabaseObject({
                         ...databaseObject,
@@ -168,52 +190,58 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 />
             </Stack>;
         case "ENUM":
-            return <NexusSelect<D>
-                key={fullId}
-                label={field.label}
-                values={field.dependency as any}
-                value={databaseObject?.[field.fieldId] as any}
-                onChange={event => setDatabaseObject({
-                    ...databaseObject,
-                    [field.fieldId]: event.target.value
-                })}
-                fullWidth
-            />;
+            return <Tooltip title={field.tooltip} placement="right-start">
+                <NexusSelect<D>
+                    key={fullId}
+                    label={field.label}
+                    values={field.dependency as any}
+                    value={databaseObject?.[field.fieldId] as any}
+                    onChange={event => setDatabaseObject({
+                        ...databaseObject,
+                        [field.fieldId]: event.target.value
+                    })}
+                    fullWidth
+                />
+            </Tooltip>;
         case "DATABASE":
-            return <Autocomplete
-                key={fullId}
-                options={field.dependency}
-                getOptionLabel={(option: D) => {
-                    return option?.[field.dependencyLabel] as string;
-                }}
-                isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
-                renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
-                value={databaseObject?.[field.fieldId] ?? null}
-                onChange={(_, value) => setDatabaseObject({
-                    ...databaseObject,
-                    [field.fieldId]: value
-                })}
-                data-testid={field.fieldId}
-                fullWidth
-            />;
+            return <Tooltip title={field.tooltip} placement="right-start">
+                <Autocomplete
+                    key={fullId}
+                    options={field.dependency}
+                    getOptionLabel={(option: D) => {
+                        return option?.[field.dependencyLabel] as string;
+                    }}
+                    isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
+                    renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
+                    value={databaseObject?.[field.fieldId] ?? null}
+                    onChange={(_, value) => setDatabaseObject({
+                        ...databaseObject,
+                        [field.fieldId]: value
+                    })}
+                    data-testid={field.fieldId}
+                    fullWidth
+                />
+            </Tooltip>;
         case "MULTI_DATABASE":
-            return <Autocomplete
-                key={fullId}
-                multiple
-                options={field.dependency}
-                getOptionLabel={(option: D) => {
-                    return option?.[field.dependencyLabel] as string;
-                }}
-                isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
-                renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
-                value={databaseObject?.[field.fieldId] as DatabaseObject[] ?? []}
-                onChange={(_, value) => setDatabaseObject({
-                    ...databaseObject,
-                    [field.fieldId]: value
-                })}
-                data-testid={field.fieldId}
-                fullWidth
-            />;
+            return <Tooltip title={field.tooltip} placement="right-start">
+                <Autocomplete
+                    key={fullId}
+                    multiple
+                    options={field.dependency}
+                    getOptionLabel={(option: D) => {
+                        return option?.[field.dependencyLabel] as string;
+                    }}
+                    isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
+                    renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
+                    value={databaseObject?.[field.fieldId] as DatabaseObject[] ?? []}
+                    onChange={(_, value) => setDatabaseObject({
+                        ...databaseObject,
+                        [field.fieldId]: value
+                    })}
+                    data-testid={field.fieldId}
+                    fullWidth
+                />
+            </Tooltip>;
         case "COMPLEX_ENTRY":
             return <Stack direction="row" spacing={2} alignItems="flex-start" key={fullId + "-stack"} >
                 {field.subFields!.map(subField => {

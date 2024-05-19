@@ -59,5 +59,17 @@
   "crafting-recipe": "Crafting Recipe",
   "crafting-recipes": "Crafting Recipes",
   "upgrade-recipe": "Upgrade Recipe",
-  "upgrade-recipes": "Upgrade Recipes"
+  "upgrade-recipes": "Upgrade Recipes",
+  "character": "Character",
+  "characters": "Characters",
+  "spell": "Spell",
+  "spells": "Spells",
+  "talent": "Talent",
+  "talents": "Talents",
+  "primary-attribute": "Primary Attribute",
+  "primary-attributes": "Primary Attributes",
+  "secondary-attribute": "Secondary Attribute",
+  "secondary-attributes": "Secondary Attributes",
+  "yes": "Yes",
+  "no": "No"
 }

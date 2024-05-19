@@ -1,0 +1,20 @@
+{
+  "shortName": "Abbr. Name",
+  "primaryAttributeCreationTitle": "Create a primary attribute",
+  "primaryAttributeEditTitle": "Edit a primary attribute",
+  "primaryAttributeDeletionTitle": "Do you want to delete the selected primary attributes?",
+  "consumableAttribute": "Can be used as a resource",
+  "consumableAttributeTooltip": "Typical attributes which can be used as a resource would be life points or mana",
+  "primaryAttributeDependencies": "Dependencies",
+  "addPrimaryAttribute": "Add another attribute as dependency",
+  "secondaryAttributeCreationTitle": "Create a secondary attribute",
+  "secondaryAttributeEditTitle": "Edit a secondary attribute",
+  "secondaryAttributeDeletionTitle": "Do you want to delete the selected secondary attributes?",
+  "group": "Gruppe",
+  "talentCreationTitle": "Create a talent",
+  "talentEditTitle": "Edit a talent",
+  "talentDeletionTitle": "Do you want to delete the selected talents?",
+  "firstAttribute": "First attribute",
+  "secondAttribute": "Second attribute",
+  "thirdAttribute": "Third attribute"
+}

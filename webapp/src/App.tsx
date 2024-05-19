@@ -19,6 +19,11 @@ import { MaterialPage } from './pages/items/materials';
 import { CraftingRecipesPage } from './pages/crafting/crafting-recipes';
 import { UpgradePage } from './pages/items/upgrades';
 import { UpgradeRecipesPage } from './pages/crafting/upgrade-recipes';
+import { Characters } from './pages/character/characters';
+import { SpellsPage } from './pages/character/spells';
+import { TalentsPage } from './pages/character/talents';
+import { PrimaryAttributesPage } from './pages/character/primary-attributes';
+import { SecondaryAttributesPage } from './pages/character/secondary-attributes';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -49,6 +54,11 @@ class App extends Component {
                         <Route path='/materials' element={< MaterialPage />}></Route>
                         <Route path='/crafting-recipes' element={< CraftingRecipesPage />}></Route>
                         <Route path='/upgrade-recipes' element={< UpgradeRecipesPage />}></Route>
+                        <Route path='/characters' element={<Characters />}></Route>
+                        <Route path='/spells' element={<SpellsPage />}></Route>
+                        <Route path='/talents' element={<TalentsPage />}></Route>
+                        <Route path='/primary-attributes' element={<PrimaryAttributesPage />}></Route>
+                        <Route path='/secondary-attributes' element={<SecondaryAttributesPage />}></Route>
                         <Route path='/admin' element={< Admin />}> </Route>
                         <Route path='/users' element={< UserOverview />}> </Route>
                         <Route path='/backup' element={< Backup />}></Route>
