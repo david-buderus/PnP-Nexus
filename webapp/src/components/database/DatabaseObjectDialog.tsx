@@ -179,6 +179,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     control={
                         <Tooltip title={field.tooltip} placement="right-start">
                             <Checkbox
+                                data-testid={fullId}
                                 checked={databaseObject?.[field.fieldId] as boolean}
                                 onChange={event => setDatabaseObject({
                                     ...databaseObject,
@@ -245,7 +246,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                         ...databaseObject,
                         [field.fieldId]: value
                     })}
-                    data-testid={field.fieldId}
+                    data-testid={fullId}
                     fullWidth
                 />
             </Tooltip>;
@@ -265,7 +266,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                         ...databaseObject,
                         [field.fieldId]: value
                     })}
-                    data-testid={field.fieldId}
+                    data-testid={fullId}
                     fullWidth
                 />
             </Tooltip>;
@@ -410,18 +411,22 @@ function ComplexFieldList<O extends DatabaseObject, D extends DatabaseObject>({
                             }}
                         />;
                     })}
-                    <Button key={fullId + "-sub-" + index} onClick={() => {
-                        setDatabaseObject({
-                            ...databaseObject,
-                            [field.fieldId]: entries.filter((_, i) => i !== index)
-                        });
-                    }} sx={{ width: 1 / 4, paddingTop: 1.5 }} > <FaMinus size={20} /> </Button>
+                    <Button
+                        key={fullId + "-sub-" + index}
+                        data-testid={fullId + "-sub-" + index}
+                        onClick={() => {
+                            setDatabaseObject({
+                                ...databaseObject,
+                                [field.fieldId]: entries.filter((_, i) => i !== index)
+                            });
+                        }} sx={{ width: 1 / 4, paddingTop: 1.5 }} > <FaMinus size={20} /> </Button>
                 </Stack>;
             }
         })}
         <Tooltip title={errors.get(fullId)}>
             <Button
                 key={fullId + "-add"}
+                data-testid={fullId + "-add"}
                 fullWidth
                 startIcon={<FaPlus />}
                 color={errors.get(fullId) ? "error" : "primary"}

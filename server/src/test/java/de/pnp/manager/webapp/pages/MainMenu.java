@@ -52,6 +52,30 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the overview page for spells.
+     */
+    public OverviewBasePage openSpellPage() {
+        openMenu("characters-menu", "spells-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for primary attributes.
+     */
+    public OverviewBasePage openPrimaryAttributePage() {
+        openMenu("characters-menu", "primary-attributes-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for secondary attributes.
+     */
+    public OverviewBasePage openSecondaryAttributePage() {
+        openMenu("characters-menu", "secondary-attributes-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
      * Opens the {@link UserOverviewPage}.
      */
     public UserOverviewPage openUserOverviewPage() {

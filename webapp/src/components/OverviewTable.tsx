@@ -103,6 +103,7 @@ function OverviewTableHead<T>(props: React.PropsWithChildren<TableProps<T>>) {
         {columns.map((column, index) =>
           visibleColums[index] && <TableCell
             key={column.id as string}
+            data-testid={column.id as string}
             align={column.numeric ? 'right' : 'left'}
             sortDirection={orderBy === column.id ? order : false}
           >

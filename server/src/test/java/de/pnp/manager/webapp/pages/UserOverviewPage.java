@@ -22,7 +22,7 @@ public class UserOverviewPage extends PageBase {
     }
 
     /**
-     * Tries to delete all selected items.
+     * Tries to delete all selected users.
      */
     public void deleteSelectedUsers() {
         page.getByTestId("delete").click();
