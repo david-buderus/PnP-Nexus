@@ -60,6 +60,14 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the overview page for talents.
+     */
+    public OverviewBasePage openTalentPage() {
+        openMenu("characters-menu", "talents-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
      * Opens the overview page for primary attributes.
      */
     public OverviewBasePage openPrimaryAttributePage() {

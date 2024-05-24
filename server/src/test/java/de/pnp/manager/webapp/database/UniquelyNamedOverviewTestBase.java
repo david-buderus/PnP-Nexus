@@ -23,7 +23,7 @@ public abstract class UniquelyNamedOverviewTestBase<T extends DatabaseObject & I
     /**
      * Cache for the original edit object.
      */
-    private T originalEditedObject;
+    private T originalModifyObject;
 
     protected UniquelyNamedOverviewTestBase(R repository) {
         this.repository = repository;
@@ -34,11 +34,14 @@ public abstract class UniquelyNamedOverviewTestBase<T extends DatabaseObject & I
      */
     protected abstract String getEditObjectName();
 
-    protected T getOriginalEditedObject() {
-        if (originalEditedObject == null) {
-            originalEditedObject = repository.get(getUniverseName(), getEditObjectName()).orElseThrow();
+    /**
+     * The modified object before it got changed.
+     */
+    protected T getOriginalModifyObject() {
+        if (originalModifyObject == null) {
+            originalModifyObject = repository.get(getUniverseName(), getEditObjectName()).orElseThrow();
         }
-        return originalEditedObject;
+        return originalModifyObject;
     }
 
     @Override
@@ -62,7 +65,12 @@ public abstract class UniquelyNamedOverviewTestBase<T extends DatabaseObject & I
     }
 
     @Override
-    protected ObjectId getEditId() {
-        return getOriginalEditedObject().getId();
+    protected Optional<T> getPersistedObject(ObjectId id) {
+        return repository.get(getUniverseName(), id);
+    }
+
+    @Override
+    protected ObjectId getModifyId() {
+        return getOriginalModifyObject().getId();
     }
 }

@@ -88,7 +88,7 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
         OverviewTable table = page.getTable();
 
         Assertions.assertThat(page.isEditDisabled()).isTrue();
-        table.getTableRow(getEditId().toHexString()).select();
+        table.getTableRow(getModifyId().toHexString()).select();
         Assertions.assertThat(page.isEditDisabled()).isFalse();
 
         DatabaseObjectDialog dialog = page.openEditDialog();
@@ -97,13 +97,34 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
         dialog.fillOut(editedObject);
         dialog.edit();
 
-        assertThat(table.getTableRow(getEditId()).asLocator()).containsText(getChangeIdentifier());
+        assertThat(table.getTableRow(getModifyId()).asLocator()).containsText(getChangeIdentifier());
 
         Optional<T> persistedItem = getPersistedObject(editedObject);
         Assertions.assertThat(persistedItem).isPresent();
         Assertions.assertThat(persistedItem).contains(editedObject);
 
         assertThat(table.getTableRow(persistedItem.get()).asLocator()).hasCount(1);
+    }
+
+    @Test
+    void testDelete() {
+        OverviewTable table = page.getTable();
+        Collection<T> testObjects = getTestObjects();
+
+        Assertions.assertThat(page.isDeleteDisabled()).isTrue();
+        table.getTableRow(getModifyId()).select();
+        Assertions.assertThat(page.isDeleteDisabled()).isFalse();
+
+        page.deleteSelectedObjects();
+
+        if (testObjects.size() > 1) {
+            assertThat(table.getAllTableRows().asLocator().first()).hasCount(1);
+        } else {
+            assertThat(table.getAllTableRows().asLocator()).hasCount(0);
+        }
+        assertThat(table.getTableRow(getModifyId()).asLocator()).hasCount(0);
+
+        Assertions.assertThat(getPersistedObject(getModifyId())).isEmpty();
     }
 
     /**
@@ -159,9 +180,23 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
      */
     protected abstract Optional<T> getPersistedObject(T object);
 
-    protected abstract ObjectId getEditId();
+    /**
+     * Returns the persisted object given the ID.
+     */
+    protected abstract Optional<T> getPersistedObject(ObjectId id);
 
+    /**
+     * ID of the object which will get modified during the tests.
+     */
+    protected abstract ObjectId getModifyId();
+
+    /**
+     * How the modified object should look like after the edit.
+     */
     protected abstract T getEditedObject();
 
+    /**
+     * A text which will be found in the table only after the object got edited.
+     */
     protected abstract String getChangeIdentifier();
 }

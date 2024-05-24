@@ -15,6 +15,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * Tests the spell overview page.
+ */
 @TestServer(EServerTestConfiguration.CHARACTERS)
 @ResourceLock("Characters")
 public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRepository> {
@@ -63,7 +66,7 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
     @Override
     protected Spell getEditedObject() {
         return new Spell(null, "Big Fireball", "D20 Damage", "20 Mana", "",
-            getOriginalEditedObject().getTalents(), 1);
+            getOriginalModifyObject().getTalents(), 1);
     }
 
     @Override

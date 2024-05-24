@@ -50,4 +50,11 @@ public class OverviewBasePage extends PageBase {
     public boolean isEditDisabled() {
         return page.getByTestId("edit").isDisabled();
     }
+
+    /**
+     * Checks if the delete button is disabled.
+     */
+    public boolean isDeleteDisabled() {
+        return page.getByTestId("delete").isDisabled();
+    }
 }
