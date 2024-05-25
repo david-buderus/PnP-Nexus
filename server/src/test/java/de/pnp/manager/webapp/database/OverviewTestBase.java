@@ -110,9 +110,10 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     void testDelete() {
         OverviewTable table = page.getTable();
         Collection<T> testObjects = getTestObjects();
+        ObjectId modifyId = getModifyId();
 
         Assertions.assertThat(page.isDeleteDisabled()).isTrue();
-        table.getTableRow(getModifyId()).select();
+        table.getTableRow(modifyId).select();
         Assertions.assertThat(page.isDeleteDisabled()).isFalse();
 
         page.deleteSelectedObjects();
@@ -122,9 +123,9 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
         } else {
             assertThat(table.getAllTableRows().asLocator()).hasCount(0);
         }
-        assertThat(table.getTableRow(getModifyId()).asLocator()).hasCount(0);
+        assertThat(table.getTableRow(modifyId).asLocator()).hasCount(0);
 
-        Assertions.assertThat(getPersistedObject(getModifyId())).isEmpty();
+        Assertions.assertThat(getPersistedObject(modifyId)).isEmpty();
     }
 
     /**

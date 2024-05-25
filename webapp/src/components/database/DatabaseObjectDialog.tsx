@@ -218,19 +218,19 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 />
             </Stack>;
         case "ENUM":
-            return <Tooltip title={field.tooltip} placement="right-start">
-                <NexusSelect<D>
-                    key={fullId}
-                    label={field.label}
-                    values={field.dependency as any}
-                    value={databaseObject?.[field.fieldId] as any}
-                    onChange={event => setDatabaseObject({
-                        ...databaseObject,
-                        [field.fieldId]: event.target.value
-                    })}
-                    fullWidth
-                />
-            </Tooltip>;
+            return <NexusSelect
+                key={fullId}
+                data-testid={fullId}
+                label={field.label}
+                tooltip={field.tooltip}
+                values={field.dependency as any}
+                value={databaseObject?.[field.fieldId] as any}
+                onChange={event => setDatabaseObject({
+                    ...databaseObject,
+                    [field.fieldId]: event.target.value
+                })}
+                fullWidth
+            />;
         case "DATABASE":
             return <Tooltip title={field.tooltip} placement="right-start">
                 <Autocomplete

@@ -96,7 +96,13 @@ export function OverviewBasePage<O extends DatabaseObject>({
                         setOpenCreationDialog(false);
                     }}
                     onAction={(universe, obj) => createObjects(universe, [obj])}
-                    keyFormatter={key => key.substring(key.indexOf("[0].") + 4)}
+                    keyFormatter={key => {
+                        // Prefix from repository service base
+                        if (key.startsWith("insertAll.objects[0]")) {
+                            return key.substring("insertAll.objects[0]".length);
+                        }
+                        return key;
+                    }}
                     initalObject={emptyObject}
                     fields={fields}
                     title={creationDialogTitle}

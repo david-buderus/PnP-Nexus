@@ -8,12 +8,10 @@ import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Predicate;
 import org.apache.commons.lang3.tuple.Pair;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,24 +20,18 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @TestServer(EServerTestConfiguration.CHARACTERS)
 @ResourceLock("Characters")
-public class TalentPageTest extends OverviewTestBase<Talent> {
-
-    private Talent originalModifiedTalent;
-
-    @Autowired
-    private TalentRepository talentRepository;
+public class TalentPageTest extends RepositoryOverviewTestBase<Talent> {
 
     @Autowired
     private PrimaryAttributeRepository primaryAttributeRepository;
 
-    @Override
-    protected OverviewBasePage openTestPage(MainMenu mainMenu) {
-        return mainMenu.openTalentPage();
+    protected TalentPageTest(@Autowired TalentRepository repository) {
+        super(repository);
     }
 
     @Override
-    protected Collection<Talent> getTestObjects() {
-        return talentRepository.getAll(getUniverseName());
+    protected OverviewBasePage openTestPage(MainMenu mainMenu) {
+        return mainMenu.openTalentPage();
     }
 
     @Override
@@ -76,24 +68,9 @@ public class TalentPageTest extends OverviewTestBase<Talent> {
     }
 
     @Override
-    protected Optional<Talent> getPersistedObject(Talent object) {
-        return talentRepository.getByName(getUniverseName(), object.getName()).stream().findFirst();
-    }
-
-    @Override
-    protected Optional<Talent> getPersistedObject(ObjectId id) {
-        return talentRepository.get(getUniverseName(), id);
-    }
-
-    @Override
-    protected ObjectId getModifyId() {
-        return getOriginalModifiedTalent().getId();
-    }
-
-    @Override
     protected Talent getEditedObject() {
-        return new Talent(null, "Real Fire Magic", "Magic", getOriginalModifiedTalent().getFirstAttribute(),
-            getOriginalModifiedTalent().getSecondAttribute(), getOriginalModifiedTalent().getThirdAttribute());
+        return new Talent(null, "Real Fire Magic", "Magic", getOriginalModifiedObject().getFirstAttribute(),
+            getOriginalModifiedObject().getSecondAttribute(), getOriginalModifiedObject().getThirdAttribute());
     }
 
     @Override
@@ -105,11 +82,8 @@ public class TalentPageTest extends OverviewTestBase<Talent> {
         return primaryAttributeRepository.get(getUniverseName(), "Strength").orElseThrow();
     }
 
-    private Talent getOriginalModifiedTalent() {
-        if (originalModifiedTalent == null) {
-            originalModifiedTalent = talentRepository.getByName(getUniverseName(), "Fire Magic").stream().findFirst()
-                .orElseThrow();
-        }
-        return originalModifiedTalent;
+    @Override
+    protected Predicate<Talent> getOriginalModifiedFilter() {
+        return talent -> "Fire Magic".equals(talent.getName());
     }
 }

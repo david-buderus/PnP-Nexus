@@ -88,6 +88,7 @@ public class DatabaseObjectDialog {
         }
 
         ReflectionUtils.doWithFields(object.getClass(), field -> {
+            field.setAccessible(true);
             Object property = field.get(object);
 
             String id = idPrefix + field.getName();

@@ -52,6 +52,14 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the overview page for item types.
+     */
+    public OverviewBasePage openItemTypePage() {
+        openMenu("items-menu", "item-types-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
      * Opens the overview page for spells.
      */
     public OverviewBasePage openSpellPage() {
