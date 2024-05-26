@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bson.types.ObjectId;
-import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @TestServer(EServerTestConfiguration.BASIC_ITEMS)
 @UiTestServer
-@ResourceLock("BASIC_ITEMS")
 public class ItemTypePageTest extends OverviewTestBase<ExtendedItemType> {
 
     @Autowired
@@ -99,7 +97,7 @@ public class ItemTypePageTest extends OverviewTestBase<ExtendedItemType> {
 
     @Override
     protected ExtendedItemType getEditedObject() {
-        return ExtendedItemType.from(new ItemType(null, "Super Sword", ETypeRestriction.WEAPON), null);
+        return new ExtendedItemType(null, "Super Sword", ETypeRestriction.WEAPON, null, Set.of());
     }
 
     @Override

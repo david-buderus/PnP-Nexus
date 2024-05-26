@@ -96,4 +96,13 @@ public class ExtendedItemType extends ItemType {
     public int hashCode() {
         return Objects.hash(super.hashCode(), getTranslationId(), getBroaderVariants());
     }
+
+    @Override
+    public String toString() {
+        return "ExtendedItemType{" +
+            "name='" + getName() + '\'' +
+            ", typeRestriction=" + getTypeRestriction() +
+            ", broaderVariants=" + broaderVariants +
+            "}";
+    }
 }

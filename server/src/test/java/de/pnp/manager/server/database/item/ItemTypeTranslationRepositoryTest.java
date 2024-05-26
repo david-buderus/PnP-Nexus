@@ -116,6 +116,6 @@ public class ItemTypeTranslationRepositoryTest extends
      */
     protected ItemType asType(String type) {
         return typeRepository.get(getUniverseName(), type)
-            .orElse(typeRepository.insert(getUniverseName(), new ItemType(null, type, ETypeRestriction.ITEM)));
+            .orElseGet(() -> typeRepository.insert(getUniverseName(), new ItemType(null, type, ETypeRestriction.ITEM)));
     }
 }

@@ -8,6 +8,8 @@ import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.universe.Universe;
+import de.pnp.manager.server.ManipulatesMetadata;
+import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
@@ -31,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 /**
  * Tests for {@link BackupExportController} and {@link BackupImportController}.
  */
+@ManipulatesMetadata
 @SpringBootTest
 public class BackupControllerTest {
 
@@ -39,6 +42,9 @@ public class BackupControllerTest {
 
     @Autowired
     private UniverseRepository universeRepository;
+
+    @Autowired
+    private UserController userController;
 
     @Autowired
     private ItemRepository itemRepository;
@@ -66,11 +72,14 @@ public class BackupControllerTest {
         for (Universe universe : universeRepository.getAll()) {
             universeRepository.remove(universe.getName());
         }
+        for (String username : userController.getAllUsernames()) {
+            userController.removeUser(username);
+        }
     }
 
     @Test
     void testExportAndImport(@TempDir Path tempDir) throws IOException {
-        Universe universe = new Universe("test", "Test-Universe");
+        Universe universe = new Universe("backup-controller-test", "Test-Universe");
         String universeName = universe.getName();
         assertThat(universeRepository.insert(universe)).isNotNull();
 

@@ -98,8 +98,8 @@ export function OverviewBasePage<O extends DatabaseObject>({
                     onAction={(universe, obj) => createObjects(universe, [obj])}
                     keyFormatter={key => {
                         // Prefix from repository service base
-                        if (key.startsWith("insertAll.objects[0]")) {
-                            return key.substring("insertAll.objects[0]".length);
+                        if (key.startsWith("insertAll.objects[0].")) {
+                            return key.substring("insertAll.objects[0].".length);
                         }
                         return key;
                     }}

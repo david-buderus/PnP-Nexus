@@ -11,14 +11,12 @@ import de.pnp.manager.webapp.pages.OverviewBasePage;
 import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Tests the secondary attribute overview page.
  */
 @TestServer(EServerTestConfiguration.CHARACTERS)
-@ResourceLock("Characters")
 public class SecondaryAttributePageTest extends
     UniquelyNamedOverviewTestBase<SecondaryAttribute, SecondaryAttributeRepository> {
 

@@ -13,7 +13,7 @@ public class EmptyServerConfigurator extends TestServerConfiguratorBase {
     }
 
     @Override
-    public void configure() {
+    public void configure(String importPrefix) {
         // NO OP
     }
 }

@@ -53,12 +53,21 @@ public class BackupImportController {
      * Imports the backup in the given {@link InputStream}.
      */
     public void importBackup(InputStream inputStream) throws IOException {
+        importBackup(inputStream, null);
+    }
+
+    /**
+     * Imports the backup in the given {@link InputStream}.
+     * <p>
+     * Should only be used by tests.
+     */
+    public void importBackup(InputStream inputStream, String importPrefix) throws IOException {
         File tmpDir = null;
         try {
             tmpDir = Files.createTempDirectory("pnp-nexus-backup").toFile();
 
             writeZipToDir(inputStream, tmpDir);
-            importBackup(tmpDir);
+            importBackup(tmpDir, importPrefix);
         } finally {
             if (tmpDir != null) {
                 FileSystemUtils.deleteRecursively(tmpDir);
@@ -66,7 +75,7 @@ public class BackupImportController {
         }
     }
 
-    private void importBackup(File tmpDir) throws IOException {
+    private void importBackup(File tmpDir, String importPrefix) throws IOException {
         DecoderContext decoderContext = DecoderContext.builder().build();
 
         Document metadata = decode(new File(tmpDir, METADATA_FILE),
@@ -79,7 +88,7 @@ public class BackupImportController {
 
         importMetaData(tmpDir, decoderContext, migrations);
 
-        importUniverses(tmpDir, decoderContext, migrations);
+        importUniverses(tmpDir, decoderContext, migrations, importPrefix);
     }
 
     private void importMetaData(File tmpDir, DecoderContext decoderContext,
@@ -103,11 +112,14 @@ public class BackupImportController {
     }
 
     private void importUniverses(File tmpDir, DecoderContext decoderContext,
-        List<? extends IBackupMigration> migrations)
+        List<? extends IBackupMigration> migrations, String importPrefix)
         throws IOException {
         for (File universeFolder : Objects.requireNonNull(tmpDir.listFiles(File::isDirectory))) {
             Document universeDocument = decode(new File(universeFolder, UNIVERSE_FILE),
                 codecRegistry, decoderContext);
+            if (importPrefix != null) {
+                universeDocument.put(ID_FIELD_NAME, importPrefix + universeDocument.getString(ID_FIELD_NAME));
+            }
             migrations.forEach(migration -> migration.migrateUniverse(universeDocument));
             String universeName = universeDocument.getString(ID_FIELD_NAME);
 

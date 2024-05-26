@@ -85,10 +85,14 @@ public class ExtendedItemTypeController {
                 translationRepository.remove(universe, itemType.getTranslationId());
             }
             return ExtendedItemType.from(updatedItemType, null);
-        } else {
+        } else if (itemType.getTranslationId() != null) {
             ItemTypeTranslation updatedTranslation = translationRepository.update(universe, itemType.asTranslation());
 
             return ExtendedItemType.from(updatedItemType, updatedTranslation);
+        } else {
+            ItemTypeTranslation newTranslation = translationRepository.insert(universe, itemType.asTranslation());
+
+            return ExtendedItemType.from(updatedItemType, newTranslation);
         }
     }
 }

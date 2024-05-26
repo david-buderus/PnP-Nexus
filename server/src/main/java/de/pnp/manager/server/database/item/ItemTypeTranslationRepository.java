@@ -41,7 +41,7 @@ public class ItemTypeTranslationRepository extends RepositoryBase<ItemTypeTransl
      * Returns a {@link Map} of the {@link ItemTypeTranslation} which translates the given {@link ItemType types}.
      */
     public Map<ItemType, ItemTypeTranslation> get(String universe, Collection<ItemType> types) {
-        return get(universe, Query.query(Criteria.where("type").in(types))).stream()
+        return getAll(universe, Query.query(Criteria.where("type").in(types))).stream()
             .collect(Collectors.toMap(ItemTypeTranslation::getType,
                 translation -> translation));
     }

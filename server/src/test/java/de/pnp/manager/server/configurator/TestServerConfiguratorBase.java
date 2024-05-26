@@ -29,18 +29,18 @@ public abstract class TestServerConfiguratorBase {
      * <p>
      * Will be called after the backup has been loaded.
      */
-    public abstract void configure();
+    public abstract void configure(String importPrefix);
 
     /**
      * Loads the backup from the disk if the {@link #backupZip path} is not null.
      */
-    public void loadBackup() {
+    public void loadBackup(String importPrefix) {
         if (backupZip == null) {
             return;
         }
 
         try (FileInputStream inputStream = new FileInputStream(backupZip)) {
-            backupImportController.importBackup(inputStream);
+            backupImportController.importBackup(inputStream, importPrefix);
         } catch (IOException e) {
             fail(e);
         }

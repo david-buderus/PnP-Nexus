@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
+import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.UiTestServer;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @TestServer(EServerTestConfiguration.EMPTY)
 @UiTestServer
+@ManipulatesMetadata
 public class UserPageTest extends ServerTestBase {
 
     private final static String USERNAME = "admin";

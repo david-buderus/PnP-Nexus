@@ -113,21 +113,9 @@ public class DatabaseObjectDialog {
     }
 
     private void fillOutCollection(Collection<?> collection, String id) {
-        if (collection.isEmpty()) {
-            return;
-        }
-        Object probe = collection.stream().findFirst().get();
+        if (locator.getByTestId(id + "-add").isVisible()) {
+            // This means we have a complex list
 
-        if (probe instanceof DatabaseObject) {
-            WebTestUtils.clearAutoComplete(locator.getByTestId(id));
-            for (Object o : collection) {
-                if (o instanceof IUniquelyNamedDataObject named) {
-                    setAutoComplete(id, named.getName());
-                } else if (o instanceof Talent t) {
-                    setAutoComplete(id, t.getName());
-                }
-            }
-        } else {
             // Remove all currently open entries
             locator.getByTestId(Pattern.compile(id + "-sub-\\d+")).all().stream()
                 // We need to remove the last button first, so the data-testids won't change
@@ -138,6 +126,17 @@ public class DatabaseObjectDialog {
             for (int i = 0; i < list.size(); i++) {
                 locator.getByTestId(id + "-add").click();
                 fillOut(list.get(i), id + "[" + i + "].");
+            }
+        } else {
+            // This means it is an autocomplete with multiselect
+
+            WebTestUtils.clearAutoComplete(locator.getByTestId(id));
+            for (Object o : collection) {
+                if (o instanceof IUniquelyNamedDataObject named) {
+                    setAutoComplete(id, named.getName());
+                } else if (o instanceof Talent t) {
+                    setAutoComplete(id, t.getName());
+                }
             }
         }
     }

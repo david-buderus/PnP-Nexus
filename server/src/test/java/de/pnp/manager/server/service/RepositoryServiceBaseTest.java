@@ -16,6 +16,7 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.utils.TestItemBuilder;
@@ -46,6 +47,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+@ManipulatesMetadata
 @AutoConfigureMockMvc
 public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo extends RepositoryBase<Obj>,
     Service extends RepositoryServiceBase<Obj, Repo>> extends UniverseTestBase {

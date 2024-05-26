@@ -42,14 +42,14 @@ public enum EServerTestConfiguration {
     /**
      * Loads the backup and configures the test server.
      */
-    public void setupTestData(ServerTestBase serverTestBase) {
+    public void setupTestData(ServerTestBase serverTestBase, String importPrefix) {
         if (configuratorClass != null) {
             try {
                 TestServerConfiguratorBase configurator = configuratorClass.getConstructor(File.class)
                     .newInstance(backupZip);
                 serverTestBase.getBeanFactory().autowireBean(configurator);
-                configurator.loadBackup();
-                configurator.configure();
+                configurator.loadBackup(importPrefix);
+                configurator.configure(importPrefix);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 fail(e);

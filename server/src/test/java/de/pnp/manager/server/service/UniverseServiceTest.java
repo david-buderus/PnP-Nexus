@@ -15,6 +15,7 @@ import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -42,13 +43,14 @@ import org.springframework.web.server.ResponseStatusException;
  * Tests for {@link UniverseService}.
  */
 @AutoConfigureMockMvc
+@ManipulatesMetadata
 @TestServer(EServerTestConfiguration.EMPTY)
 public class UniverseServiceTest extends ServerTestBase {
 
     private static final String BASE_PATH = "/api/universes";
-    private static final String USER = "test-user";
-    private static final String UNIVERSE_NAME = "example-universe";
-    private static final String OTHER_UNIVERSE_NAME = "other-universe";
+    private static final String USER = "universe-test-user";
+    private static final String UNIVERSE_NAME = "universe-service-example-universe";
+    private static final String OTHER_UNIVERSE_NAME = "universe-service-other-universe";
 
     @Autowired
     private MockMvc mockMvc;
