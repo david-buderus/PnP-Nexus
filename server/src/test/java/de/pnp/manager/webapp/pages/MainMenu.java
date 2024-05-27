@@ -60,6 +60,14 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the overview page for material.
+     */
+    public OverviewBasePage openMaterialPage() {
+        openMenu("items-menu", "materials-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
      * Opens the overview page for spells.
      */
     public OverviewBasePage openSpellPage() {

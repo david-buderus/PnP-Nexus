@@ -5,7 +5,6 @@ import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.ItemTypeTranslation;
 import de.pnp.manager.server.TestServer;
-import de.pnp.manager.server.UiTestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.contoller.ExtendedItemTypeController;
 import de.pnp.manager.server.database.item.ItemTypeRepository;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Base class for testing item type overview pages.
  */
 @TestServer(EServerTestConfiguration.BASIC_ITEMS)
-@UiTestServer
 public class ItemTypePageTest extends OverviewTestBase<ExtendedItemType> {
 
     @Autowired
