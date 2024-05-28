@@ -35,7 +35,7 @@ public sealed interface IRecipeEntry<T> {
     /**
      * An {@link IRecipeEntry} which uses a specific {@link Item}.
      */
-    record ItemRecipeEntry(float amount, @DBRef @NotNull Item resource) implements
+    record ItemRecipeEntry(@Positive float amount, @DBRef @NotNull Item resource) implements
         IRecipeEntry<Item> {
 
     }
@@ -43,7 +43,7 @@ public sealed interface IRecipeEntry<T> {
     /**
      * An {@link IRecipeEntry} which uses a {@link Material}.
      */
-    record MaterialRecipeEntry(float amount, @DBRef @NotNull Material resource) implements
+    record MaterialRecipeEntry(@Positive float amount, @DBRef @NotNull Material resource) implements
         IRecipeEntry<Material> {
 
     }

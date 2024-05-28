@@ -100,7 +100,7 @@ function addTypeAnnotationToRecipe(recipe: CraftingRecipe): CraftingRecipe {
     return {
         ...recipe,
         product: addTypeAnnotationToEntry(recipe.product),
-        sideProduct: recipe.sideProduct.resource === null ? null : addTypeAnnotationToEntry(recipe.sideProduct),
+        sideProduct: recipe.sideProduct === null || recipe.sideProduct.resource === null ? null : addTypeAnnotationToEntry(recipe.sideProduct),
         materials: recipe.materials.map(addTypeAnnotationToEntry)
     };
 }
