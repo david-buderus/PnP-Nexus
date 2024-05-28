@@ -1,5 +1,7 @@
 package de.pnp.manager.webapp.pages.components;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -7,9 +9,11 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.webapp.utils.WebTestUtils;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import org.assertj.core.api.Assertions;
 import org.springframework.util.ReflectionUtils;
@@ -87,11 +91,24 @@ public class DatabaseObjectDialog {
             return;
         }
 
+        getSubTypeAnnotation(object.getClass()).ifPresent(
+            subTypeAnnotation -> {
+                String typePrefix = idPrefix + "@type";
+                if (locator.getByTestId(typePrefix).isVisible()) {
+                    setSelect(typePrefix, subTypeAnnotation);
+                }
+            });
+
         ReflectionUtils.doWithFields(object.getClass(), field -> {
             field.setAccessible(true);
             Object property = field.get(object);
 
             String id = idPrefix + field.getName();
+
+            if (!locator.getByTestId(id).isVisible()) {
+                return;
+            }
+
             if (property instanceof String s) {
                 set(id, s);
             } else if (property instanceof Number n) {
@@ -139,6 +156,25 @@ public class DatabaseObjectDialog {
                 }
             }
         }
+    }
+
+    private Optional<String> getSubTypeAnnotation(Class<?> clazz) {
+        List<JsonSubTypes> subTypes = new ArrayList<>();
+        Class<?> currentClass = clazz;
+        do {
+            subTypes.addAll(List.of(currentClass.getDeclaredAnnotationsByType(JsonSubTypes.class)));
+            currentClass = currentClass.getSuperclass();
+        } while (currentClass != null);
+
+        for (JsonSubTypes subType : subTypes) {
+            for (Type type : subType.value()) {
+                if (clazz.equals(type.value())) {
+                    return Optional.of(type.name());
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 
     /**

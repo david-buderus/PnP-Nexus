@@ -68,6 +68,14 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the overview page for material.
+     */
+    public OverviewBasePage openUpgradePage() {
+        openMenu("items-menu", "upgrades-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
      * Opens the overview page for spells.
      */
     public OverviewBasePage openSpellPage() {

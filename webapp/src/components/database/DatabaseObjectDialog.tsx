@@ -271,7 +271,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 />
             </Tooltip>;
         case "COMPLEX_ENTRY":
-            return <Stack direction="row" spacing={2} alignItems="flex-start" key={fullId + "-stack"} >
+            return <Stack direction="row" spacing={2} alignItems="flex-start" key={fullId} data-testid={fullId} >
                 {field.subFields!.map(subField => {
                     const subFullId = fullId + "." + (subField.fieldId as string);
 
@@ -295,15 +295,18 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                 })}
             </Stack>;
         case "STACK":
+            let idPrefix = fullId.substring(0, fullId.length - field.fieldId.toString().length);
+            if (idPrefix === ".") {
+                idPrefix = "";
+            }
             return <Stack direction="row" spacing={2} alignItems="flex-startline" key={fullId + "-stack"}>
                 {field.subFields!.map(subField => {
-                    const subFullId = fullId + "." + (subField.fieldId as string);
-
                     return <Field
-                        key={subFullId + "-field"}
+                        key={fullId + "." + (subField.fieldId as string) + "-field"}
                         field={{
                             ...subField,
-                            fieldId: subField.fieldId as any
+                            fieldId: subField.fieldId as keyof O,
+                            fullId: idPrefix + (subField.fieldId as string)
                         }}
                         errors={errors}
                         databaseObject={databaseObject}
@@ -334,7 +337,7 @@ function ComplexFieldList<O extends DatabaseObject, D extends DatabaseObject>({
     const fullId = (field.fullId ?? field.fieldId) as string;
     const entries = databaseObject[field.fieldId] as any[];
 
-    return <Stack spacing={2} key={fullId + "-stack"} >
+    return <Stack spacing={2} key={fullId} data-testid={fullId} >
         {entries.map((value, index) => {
             const fieldIdPrefix = fullId + "[" + index + "].";
 
@@ -379,12 +382,17 @@ function ComplexFieldList<O extends DatabaseObject, D extends DatabaseObject>({
                                 });
                             }}
                         />
-                        <Button key={fullId + "-sub-" + index} onClick={() => {
-                            setDatabaseObject({
-                                ...databaseObject,
-                                [field.fieldId]: entries.filter((_, i) => i !== index)
-                            });
-                        }} sx={{ width: 1 / 4, paddingTop: 1.5 }} >
+                        <Button
+                            key={fullId + "-sub-" + index}
+                            data-testid={fullId + "-sub-" + index}
+                            onClick={() => {
+                                setDatabaseObject({
+                                    ...databaseObject,
+                                    [field.fieldId]: entries.filter((_, i) => i !== index)
+                                });
+                            }}
+                            sx={{ width: 1 / 4, paddingTop: 1.5 }}
+                        >
                             <FaMinus size={20} />
                         </Button>
                     </Stack>
