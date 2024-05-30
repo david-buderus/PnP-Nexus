@@ -40,7 +40,8 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
 
     @Override
     protected Comparator<CraftingRecipe> getDefaultSort() {
-        return Comparator.comparing(recipe -> recipe.getProduct().resource().getName());
+        return Comparator.comparing(
+            recipe -> recipe.getProduct().amount() + " " + recipe.getProduct().resource().getName());
     }
 
     @Override

@@ -107,7 +107,10 @@ public class OverviewTable {
 
         OverviewTableRows tableRows = getAllTableRows();
         for (int i = 0; i < sorted.size(); i++) {
-            Assertions.assertThat(tableRows.getRow(i).getDataTestId()).isEqualTo(id.apply(sorted.get(i)));
+            String expected = id.apply(sorted.get(i));
+            String actual = tableRows.getRow(i).getDataTestId();
+            Assertions.assertThat(actual).as("Expected in line %s [%s] but got [%s]", i, expected, actual)
+                .isEqualTo(expected);
         }
     }
 

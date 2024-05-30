@@ -50,6 +50,8 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
 
         OverviewTable table = page.getTable();
 
+        assertThat(table.getAllTableRows().asLocator()).not().hasCount(0);
+
         table.assertIsSorted(objects, getDefaultSort());
 
         for (Pair<String, Comparator<T>> sorter : getSorters()) {

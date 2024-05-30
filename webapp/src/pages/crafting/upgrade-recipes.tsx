@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../../components/PageBase";
-import { ItemServiceApi, MaterialServiceApi, SecondaryAttributeServiceApi, Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi, UpgradeServiceApi } from "../../api";
+import { Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi, UpgradeServiceApi } from "../../api";
 import { useEffect, useState } from "react";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
