@@ -20,7 +20,7 @@ public abstract class TestServerConfiguratorBase {
     @Nullable
     private final File backupZip;
 
-    public TestServerConfiguratorBase(@Nullable File backupZip) {
+    protected TestServerConfiguratorBase(@Nullable File backupZip) {
         this.backupZip = backupZip;
     }
 

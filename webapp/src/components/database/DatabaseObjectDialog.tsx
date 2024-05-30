@@ -294,7 +294,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     />;
                 })}
             </Stack>;
-        case "STACK":
+        case "STACK": {
             let idPrefix = fullId.substring(0, fullId.length - field.fieldId.toString().length);
             if (idPrefix === ".") {
                 idPrefix = "";
@@ -316,6 +316,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     />;
                 })}
             </Stack>;
+        }
         case "COMPLEX_LIST":
             return <ComplexFieldList
                 field={field}

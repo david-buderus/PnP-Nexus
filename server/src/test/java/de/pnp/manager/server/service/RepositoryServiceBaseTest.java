@@ -86,7 +86,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     @Autowired
     private TestSecondaryAttributeBuilderFactory secondaryAttributeBuilder;
 
-    public RepositoryServiceBaseTest(Service service, Repo repository, Class<Obj> objClass) {
+    protected RepositoryServiceBaseTest(Service service, Repo repository, Class<Obj> objClass) {
         this.service = service;
         this.objClass = objClass;
         this.repository = repository;

@@ -111,6 +111,11 @@ public abstract class ServerTestBase {
         return universeRepository.get(getUniverseName()).orElse(null);
     }
 
+    /**
+     * Creates a universe with the given name and displayname.
+     * <p>
+     * Automatically adds a prefix to prevent collision with other tests.
+     */
     protected Universe createUniverse(String name, String displayName) {
         return universeRepository.insert(new Universe(importPrefix + name, displayName));
     }
