@@ -1,5 +1,6 @@
 package de.pnp.manager.component.upgrade;
 
+import com.google.common.base.MoreObjects;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.equipable.EquipableItem;
@@ -103,5 +104,16 @@ public class Upgrade extends DatabaseObject {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getTarget(), getSlots(), getVendorPrice(), getEffects());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("name", name)
+            .add("target", target)
+            .add("slots", slots)
+            .add("vendorPrice", vendorPrice)
+            .add("effects", effects)
+            .toString();
     }
 }
