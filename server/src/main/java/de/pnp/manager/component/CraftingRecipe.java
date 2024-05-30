@@ -1,6 +1,6 @@
 package de.pnp.manager.component;
 
-import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.IResourceUsage.ItemUsage;
 import de.pnp.manager.server.database.CraftingRecipeRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -40,24 +40,24 @@ public class CraftingRecipe extends DatabaseObject {
      */
     @NotNull
     @Valid
-    private final ItemRecipeEntry product;
+    private final IResourceUsage.ItemUsage product;
 
     /**
      * The side-product of this {@link CraftingRecipe}
      */
     @Nullable
     @Valid
-    private final ItemRecipeEntry sideProduct;
+    private final IResourceUsage.ItemUsage sideProduct;
 
     /**
      * The materials needed to use this {@link CraftingRecipe}
      */
     @NotEmpty
-    private final Collection<@Valid IRecipeEntry<?>> materials;
+    private final Collection<@Valid IResourceUsage<?>> materials;
 
     public CraftingRecipe(ObjectId id, String profession, String requirement,
-        String otherCircumstances, ItemRecipeEntry product, @Nullable ItemRecipeEntry sideProduct,
-        Collection<IRecipeEntry<?>> materials) {
+        String otherCircumstances, ItemUsage product, @Nullable IResourceUsage.ItemUsage sideProduct,
+        Collection<IResourceUsage<?>> materials) {
         super(id);
         this.profession = profession;
         this.requirement = requirement;
@@ -80,16 +80,16 @@ public class CraftingRecipe extends DatabaseObject {
         return otherCircumstances;
     }
 
-    public ItemRecipeEntry getProduct() {
+    public ItemUsage getProduct() {
         return product;
     }
 
     @Nullable
-    public ItemRecipeEntry getSideProduct() {
+    public IResourceUsage.ItemUsage getSideProduct() {
         return sideProduct;
     }
 
-    public Collection<IRecipeEntry<?>> getMaterials() {
+    public Collection<IResourceUsage<?>> getMaterials() {
         return materials;
     }
 

@@ -1,14 +1,13 @@
 import { useTranslation } from "react-i18next";
-import { CharacterResourceRecipeEntry, CraftingRecipe, CraftingRecipeServiceApi, Item, ItemRecipeEntry, ItemServiceApi, Material, MaterialRecipeEntry, MaterialServiceApi, SecondaryAttribute, SecondaryAttributeServiceApi } from "../../api";
+import { CraftingRecipe, CraftingRecipeServiceApi, ItemServiceApi } from "../../api";
 import { API_CONFIGURATION, SomeItem } from "../../components/Constants";
 import { getUniverseContext } from "../../components/PageBase";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
+import { IResourceUsage, addTypeAnnotationToUsage, fetchAllResources, resourceUsageToString } from "../../components/database/ResourceUsageUtils";
 
 const CRAFTING_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
-const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
-const ATTRIBUTE_API = new SecondaryAttributeServiceApi(API_CONFIGURATION);
 
 /** Page to give an overview over all crafting recipes */
 export function CraftingRecipesPage() {
@@ -16,36 +15,24 @@ export function CraftingRecipesPage() {
     const { activeUniverse } = getUniverseContext();
 
     const [items, setItems] = useState<SomeItem[]>([]);
-    const [materials, setMaterials] = useState<Material[]>([]);
-    const [secondaryAttributes, setSecondaryAttributes] = useState<SecondaryAttribute[]>([]);
-
-    const resources: (CharacterResourceRecipeEntry | ItemRecipeEntry | MaterialRecipeEntry)[] = useMemo(() => {
-        return [].concat(items).concat(materials).concat(secondaryAttributes);
-    }, [items, materials, secondaryAttributes]);
 
     useEffect(() => {
         if (!activeUniverse) {
             return;
         }
-        Promise.all([
-            ITEM_API.getAllItems(activeUniverse.name),
-            MATERIAL_API.getAllMaterials(activeUniverse.name),
-            ATTRIBUTE_API.getAllSecondaryAttributes(activeUniverse.name)
-        ]).then(([itemReponse, materialsResponse, attributeResponse]) => {
-            setItems(itemReponse.data);
-            setMaterials(materialsResponse.data);
-            setSecondaryAttributes(attributeResponse.data.filter(attribute => attribute.consumable));
-        });
+        ITEM_API.getAllItems(activeUniverse.name).then(response => setItems(response.data));
     }, [activeUniverse]);
+
+    const resources: IResourceUsage[] = fetchAllResources(activeUniverse);
 
     return <OverviewBasePage<CraftingRecipe>
         columns={[
-            { label: t("crafting:product"), id: "product", getter: recipe => recipeEntryToString(recipe.product) },
-            { label: t("crafting:sideProduct"), id: "sideProduct", getter: recipe => recipeEntryToString(recipe.sideProduct) },
+            { label: t("crafting:product"), id: "product", getter: recipe => resourceUsageToString(recipe.product) },
+            { label: t("crafting:sideProduct"), id: "sideProduct", getter: recipe => resourceUsageToString(recipe.sideProduct) },
             { label: t("crafting:profession"), id: "profession", getter: recipe => recipe.profession },
             { label: t("crafting:requirement"), id: "requirement", getter: recipe => recipe.requirement },
             { label: t("crafting:otherCircumstances"), id: "otherCircumstances", getter: recipe => recipe.otherCircumstances },
-            { label: t("materials"), id: "materials", getter: recipe => recipe.materials.map(recipeEntryToString).join(", ") }
+            { label: t("materials"), id: "materials", getter: recipe => recipe.materials.map(resourceUsageToString).join(", ") }
         ]}
         fields={[
             {
@@ -99,48 +86,8 @@ export function CraftingRecipesPage() {
 function addTypeAnnotationToRecipe(recipe: CraftingRecipe): CraftingRecipe {
     return {
         ...recipe,
-        product: addTypeAnnotationToEntry(recipe.product),
-        sideProduct: recipe.sideProduct === null || recipe.sideProduct.resource === null ? null : addTypeAnnotationToEntry(recipe.sideProduct),
-        materials: recipe.materials.map(addTypeAnnotationToEntry)
+        product: addTypeAnnotationToUsage(recipe.product),
+        sideProduct: recipe.sideProduct === null || recipe.sideProduct.resource === null ? null : addTypeAnnotationToUsage(recipe.sideProduct),
+        materials: recipe.materials.map(addTypeAnnotationToUsage)
     };
-}
-
-/** Adds the necessary types to the entry */
-export function addTypeAnnotationToEntry<E extends ItemRecipeEntry | MaterialRecipeEntry | CharacterResourceRecipeEntry>(entry: E): E {
-    if (entry === undefined || entry === null) {
-        return entry;
-    }
-    if (entry.resource === undefined || entry.resource === null) {
-        return {
-            ...entry,
-            "@type": "ItemRecipeEntry"
-        };
-    }
-    if ((entry.resource as Item).type !== undefined) {
-        return {
-            ...entry,
-            "@type": "ItemRecipeEntry"
-        };
-    }
-    if ((entry.resource as Material).items !== undefined) {
-        return {
-            ...entry,
-            "@type": "MaterialRecipeEntry"
-        };
-    }
-    if ((entry.resource as SecondaryAttribute).consumable !== undefined) {
-        return {
-            ...entry,
-            "@type": "CharacterResourceRecipeEntry"
-        };
-    }
-    return entry;
-}
-
-/** Converts a recipe entry to a human-readable string */
-export function recipeEntryToString(entry: ItemRecipeEntry | MaterialRecipeEntry | CharacterResourceRecipeEntry): string {
-    if (!entry) {
-        return "";
-    }
-    return entry.amount + " " + entry.resource.name;
 }

@@ -73,7 +73,7 @@ export function OverviewBasePage<O extends DatabaseObject>({
         return <NoUniverse />;
     }
 
-    return <Stack spacing={2} padding={2}>
+    return <div>
         <OverviewTable id='id' sortBy={sortingKey} data={databaseObjects} columns={columns} selectedState={[selected, setSelected]} />
         {
             userPermissions.canWriteActiveUniverse &&
@@ -140,5 +140,5 @@ export function OverviewBasePage<O extends DatabaseObject>({
                 />
             </Stack>
         }
-    </Stack>;
+    </div>;
 }

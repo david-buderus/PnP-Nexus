@@ -1,7 +1,7 @@
 package de.pnp.manager.component.upgrade;
 
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.component.IRecipeEntry;
+import de.pnp.manager.component.IResourceUsage;
 import de.pnp.manager.server.database.upgrade.UpgradeRecipeRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -42,10 +42,10 @@ public class UpgradeRecipe extends DatabaseObject {
      * The materials needed to use this {@link UpgradeRecipe}
      */
     @NotEmpty
-    private final Collection<@Valid IRecipeEntry<?>> materials;
+    private final Collection<@Valid IResourceUsage<?>> materials;
 
     public UpgradeRecipe(ObjectId id, Upgrade upgrade, Collection<Upgrade> requiredUpgrades, String requirement,
-        Collection<IRecipeEntry<?>> materials) {
+        Collection<IResourceUsage<?>> materials) {
         super(id);
         this.upgrade = upgrade;
         this.requiredUpgrades = requiredUpgrades;
@@ -65,7 +65,7 @@ public class UpgradeRecipe extends DatabaseObject {
         return requirement;
     }
 
-    public Collection<IRecipeEntry<?>> getMaterials() {
+    public Collection<IResourceUsage<?>> getMaterials() {
         return materials;
     }
 

@@ -1,6 +1,6 @@
 package de.pnp.manager.webapp.database;
 
-import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
+import de.pnp.manager.component.IResourceUsage.ItemUsage;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
 import de.pnp.manager.server.TestServer;
@@ -54,7 +54,7 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
 
     @Override
     protected UpgradeRecipe getWrongObject() {
-        return new UpgradeRecipe(null, null, List.of(), "", List.of(new ItemRecipeEntry(-1, null)));
+        return new UpgradeRecipe(null, null, List.of(), "", List.of(new ItemUsage(-1, null)));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
     @Override
     protected UpgradeRecipe getCorrectObject() {
         return new UpgradeRecipe(null, getUpgrade("Silver Coating"), List.of(), "",
-            List.of(new ItemRecipeEntry(0.2f, itemRepository.get(getUniverseName(), "Silver Ingot").orElseThrow())));
+            List.of(new ItemUsage(0.2f, itemRepository.get(getUniverseName(), "Silver Ingot").orElseThrow())));
     }
 
     @Override

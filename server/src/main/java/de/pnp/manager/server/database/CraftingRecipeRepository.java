@@ -12,7 +12,7 @@ public class CraftingRecipeRepository extends RepositoryBase<CraftingRecipe> {
     /**
      * Name of the repository
      */
-    public static final String REPOSITORY_NAME = "fabrication";
+    public static final String REPOSITORY_NAME = "crafting-recipe";
 
     public CraftingRecipeRepository() {
         super(CraftingRecipe.class, REPOSITORY_NAME);

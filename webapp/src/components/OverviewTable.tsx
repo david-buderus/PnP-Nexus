@@ -222,7 +222,7 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
   }, [data]);
 
   return (
-    <Paper data-testid="overview-table" sx={{ width: "100%" }}>
+    <Paper data-testid="overview-table" sx={{ width: "100%" }} elevation={3}>
       <Stack direction="row" justifyContent="flex-end" className="-mb-8">
         <IconButton aria-label="delete" size="medium" className="float align-middle z-40" onClick={event => setSettingsAnchor(event.currentTarget)}>
           <IoSettingsSharp fontSize="inherit" />

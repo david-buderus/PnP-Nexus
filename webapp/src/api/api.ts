@@ -219,38 +219,38 @@ export interface ArmorAllOf {
 /**
  * 
  * @export
- * @interface CharacterResourceRecipeEntry
+ * @interface CharacterResourceUsage
  */
-export interface CharacterResourceRecipeEntry {
+export interface CharacterResourceUsage {
     /**
      * 
      * @type {number}
-     * @memberof CharacterResourceRecipeEntry
+     * @memberof CharacterResourceUsage
      */
     'amount'?: number;
     /**
      * 
      * @type {SecondaryAttribute}
-     * @memberof CharacterResourceRecipeEntry
+     * @memberof CharacterResourceUsage
      */
     'resource': SecondaryAttribute;
 }
 /**
  * 
  * @export
- * @interface CharacterResourceRecipeEntryAllOf
+ * @interface CharacterResourceUsageAllOf
  */
-export interface CharacterResourceRecipeEntryAllOf {
+export interface CharacterResourceUsageAllOf {
     /**
      * 
      * @type {number}
-     * @memberof CharacterResourceRecipeEntryAllOf
+     * @memberof CharacterResourceUsageAllOf
      */
     'amount'?: number;
     /**
      * 
      * @type {SecondaryAttribute}
-     * @memberof CharacterResourceRecipeEntryAllOf
+     * @memberof CharacterResourceUsageAllOf
      */
     'resource'?: SecondaryAttribute;
 }
@@ -280,10 +280,10 @@ export interface CraftingRecipe {
     'otherCircumstances': string;
     /**
      * 
-     * @type {ItemRecipeEntry}
+     * @type {ItemUsage}
      * @memberof CraftingRecipe
      */
-    'product': ItemRecipeEntry;
+    'product': ItemUsage;
     /**
      * 
      * @type {string}
@@ -298,16 +298,16 @@ export interface CraftingRecipe {
     'requirement': string;
     /**
      * 
-     * @type {ItemRecipeEntry}
+     * @type {ItemUsage}
      * @memberof CraftingRecipe
      */
-    'sideProduct'?: ItemRecipeEntry;
+    'sideProduct'?: ItemUsage;
 }
 /**
  * @type CraftingRecipeMaterialsInner
  * @export
  */
-export type CraftingRecipeMaterialsInner = CharacterResourceRecipeEntry | ItemRecipeEntry | MaterialRecipeEntry;
+export type CraftingRecipeMaterialsInner = CharacterResourceUsage | ItemUsage | MaterialUsage;
 
 /**
  * 
@@ -568,44 +568,6 @@ export interface Item {
 /**
  * 
  * @export
- * @interface ItemRecipeEntry
- */
-export interface ItemRecipeEntry {
-    /**
-     * 
-     * @type {number}
-     * @memberof ItemRecipeEntry
-     */
-    'amount'?: number;
-    /**
-     * 
-     * @type {Item}
-     * @memberof ItemRecipeEntry
-     */
-    'resource': Item;
-}
-/**
- * 
- * @export
- * @interface ItemRecipeEntryAllOf
- */
-export interface ItemRecipeEntryAllOf {
-    /**
-     * 
-     * @type {number}
-     * @memberof ItemRecipeEntryAllOf
-     */
-    'amount'?: number;
-    /**
-     * 
-     * @type {Item}
-     * @memberof ItemRecipeEntryAllOf
-     */
-    'resource'?: Item;
-}
-/**
- * 
- * @export
  * @interface ItemType
  */
 export interface ItemType {
@@ -666,6 +628,44 @@ export interface ItemTypeTranslation {
      * @memberof ItemTypeTranslation
      */
     'type': ItemType;
+}
+/**
+ * 
+ * @export
+ * @interface ItemUsage
+ */
+export interface ItemUsage {
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemUsage
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {Item}
+     * @memberof ItemUsage
+     */
+    'resource': Item;
+}
+/**
+ * 
+ * @export
+ * @interface ItemUsageAllOf
+ */
+export interface ItemUsageAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemUsageAllOf
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {Item}
+     * @memberof ItemUsageAllOf
+     */
+    'resource'?: Item;
 }
 /**
  * 
@@ -832,38 +832,38 @@ export interface MaterialItem {
 /**
  * 
  * @export
- * @interface MaterialRecipeEntry
+ * @interface MaterialUsage
  */
-export interface MaterialRecipeEntry {
+export interface MaterialUsage {
     /**
      * 
      * @type {number}
-     * @memberof MaterialRecipeEntry
+     * @memberof MaterialUsage
      */
     'amount'?: number;
     /**
      * 
      * @type {Material}
-     * @memberof MaterialRecipeEntry
+     * @memberof MaterialUsage
      */
     'resource': Material;
 }
 /**
  * 
  * @export
- * @interface MaterialRecipeEntryAllOf
+ * @interface MaterialUsageAllOf
  */
-export interface MaterialRecipeEntryAllOf {
+export interface MaterialUsageAllOf {
     /**
      * 
      * @type {number}
-     * @memberof MaterialRecipeEntryAllOf
+     * @memberof MaterialUsageAllOf
      */
     'amount'?: number;
     /**
      * 
      * @type {Material}
-     * @memberof MaterialRecipeEntryAllOf
+     * @memberof MaterialUsageAllOf
      */
     'resource'?: Material;
 }
@@ -1334,13 +1334,19 @@ export interface Spell {
      * @type {string}
      * @memberof Spell
      */
-    'castTime': string;
+    'additionalCost': string;
     /**
      * 
      * @type {string}
      * @memberof Spell
      */
-    'cost': string;
+    'castTime': string;
+    /**
+     * 
+     * @type {Array<CraftingRecipeMaterialsInner>}
+     * @memberof Spell
+     */
+    'cost': Array<CraftingRecipeMaterialsInner>;
     /**
      * 
      * @type {string}

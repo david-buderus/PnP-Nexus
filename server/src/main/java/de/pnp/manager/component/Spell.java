@@ -39,7 +39,13 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
      * The cost to cast this spell.
      */
     @NotNull
-    private final String cost;
+    private final List<IResourceUsage<?>> cost;
+
+    /**
+     * The additional cost to cast this spell.
+     */
+    @NotNull
+    private final String additionalCost;
 
     /**
      * The time needed to cast this spell.
@@ -61,12 +67,14 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
     @PositiveOrZero
     private final int tier;
 
-    public Spell(ObjectId id, String name, String effect, String cost, String castTime,
+    public Spell(ObjectId id, String name, String effect, List<IResourceUsage<?>> cost, String additionalCost,
+        String castTime,
         List<Talent> talents, int tier) {
         super(id);
         this.name = name;
         this.effect = effect;
         this.cost = cost;
+        this.additionalCost = additionalCost;
         this.castTime = castTime;
         this.talents = Collections.unmodifiableList(talents);
         this.tier = tier;
@@ -80,8 +88,12 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
         return effect;
     }
 
-    public String getCost() {
+    public List<IResourceUsage<?>> getCost() {
         return cost;
+    }
+
+    public String getAdditionalCost() {
+        return additionalCost;
     }
 
     public String getCastTime() {
@@ -106,15 +118,16 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
         }
         Spell spell = (Spell) o;
         return getTier() == spell.getTier() && Objects.equals(getName(), spell.getName())
-            && Objects.equals(getEffect(), spell.getEffect()) && Objects.equals(getCost(),
-            spell.getCost())
+            && Objects.equals(getEffect(), spell.getEffect()) && Objects.equals(getCost(), spell.getCost())
+            && Objects.equals(getAdditionalCost(),
+            spell.getAdditionalCost())
             && Objects.equals(getCastTime(), spell.getCastTime()) && Objects.equals(
             getTalents(), spell.getTalents());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getEffect(), getCost(), getCastTime(), getTalents(),
+        return Objects.hash(getName(), getEffect(), getCost(), getAdditionalCost(), getCastTime(), getTalents(),
             getTier());
     }
 }
