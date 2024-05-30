@@ -114,7 +114,7 @@ public class TestUpgradeBuilder extends TestBuilderBase {
      */
     public Upgrade build() {
         if (effects.isEmpty()) {
-            effects.add(SimpleUpgradeEffect.create("default effect"));
+            effects.add(new SimpleUpgradeEffect("default effect"));
         }
         Upgrade upgrade = new Upgrade(null, name, type, slots, vendorPrice, effects);
         if (shouldGetPersisted) {

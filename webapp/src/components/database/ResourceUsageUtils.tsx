@@ -43,7 +43,7 @@ export function addTypeAnnotationToUsage<E extends IResourceUsage>(usage: E): E 
 
 /** Converts a recipe entry to a human-readable string */
 export function resourceUsageToString(usage: IResourceUsage): string {
-    if (!usage) {
+    if (!usage || usage.resource === null) {
         return "";
     }
     return usage.amount + " " + usage.resource.name;

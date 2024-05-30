@@ -26,57 +26,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError } from './base';
 /**
  * 
  * @export
- * @interface AdditiveUpgradeEffect
- */
-export interface AdditiveUpgradeEffect {
-    /**
-     * 
-     * @type {string}
-     * @memberof AdditiveUpgradeEffect
-     */
-    'description': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof AdditiveUpgradeEffect
-     */
-    'upgradeManipulator': AdditiveUpgradeEffectUpgradeManipulatorEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof AdditiveUpgradeEffect
-     */
-    'value'?: number;
-}
-
-export const AdditiveUpgradeEffectUpgradeManipulatorEnum = {
-    None: 'NONE',
-    Slots: 'SLOTS',
-    Damage: 'DAMAGE',
-    Hit: 'HIT',
-    Initiative: 'INITIATIVE',
-    Armor: 'ARMOR',
-    Weight: 'WEIGHT'
-} as const;
-
-export type AdditiveUpgradeEffectUpgradeManipulatorEnum = typeof AdditiveUpgradeEffectUpgradeManipulatorEnum[keyof typeof AdditiveUpgradeEffectUpgradeManipulatorEnum];
-
-/**
- * 
- * @export
- * @interface AdditiveUpgradeEffectAllOf
- */
-export interface AdditiveUpgradeEffectAllOf {
-    /**
-     * 
-     * @type {number}
-     * @memberof AdditiveUpgradeEffectAllOf
-     */
-    'value'?: number;
-}
-/**
- * 
- * @export
  * @interface Armor
  */
 export interface Armor {
@@ -375,6 +324,87 @@ export const ERarity = {
 } as const;
 
 export type ERarity = typeof ERarity[keyof typeof ERarity];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const EUpgradeEffectCalculation = {
+    Additive: 'ADDITIVE',
+    Multiplicative: 'MULTIPLICATIVE'
+} as const;
+
+export type EUpgradeEffectCalculation = typeof EUpgradeEffectCalculation[keyof typeof EUpgradeEffectCalculation];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const EUpgradeEquipmentManipulator = {
+    None: 'NONE',
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT'
+} as const;
+
+export type EUpgradeEquipmentManipulator = typeof EUpgradeEquipmentManipulator[keyof typeof EUpgradeEquipmentManipulator];
+
+
+/**
+ * 
+ * @export
+ * @interface EquipmentUpgradeEffect
+ */
+export interface EquipmentUpgradeEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof EquipmentUpgradeEffect
+     */
+    'description': string;
+    /**
+     * 
+     * @type {EUpgradeEffectCalculation}
+     * @memberof EquipmentUpgradeEffect
+     */
+    'calculation': EUpgradeEffectCalculation;
+    /**
+     * 
+     * @type {EUpgradeEquipmentManipulator}
+     * @memberof EquipmentUpgradeEffect
+     */
+    'upgradeManipulator': EUpgradeEquipmentManipulator;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface EquipmentUpgradeEffectAllOf
+ */
+export interface EquipmentUpgradeEffectAllOf {
+    /**
+     * 
+     * @type {EUpgradeEffectCalculation}
+     * @memberof EquipmentUpgradeEffectAllOf
+     */
+    'calculation'?: EUpgradeEffectCalculation;
+    /**
+     * 
+     * @type {EUpgradeEquipmentManipulator}
+     * @memberof EquipmentUpgradeEffectAllOf
+     */
+    'upgradeManipulator'?: EUpgradeEquipmentManipulator;
+}
 
 
 /**
@@ -870,57 +900,6 @@ export interface MaterialUsageAllOf {
 /**
  * 
  * @export
- * @interface MultiplicativeUpgradeEffect
- */
-export interface MultiplicativeUpgradeEffect {
-    /**
-     * 
-     * @type {string}
-     * @memberof MultiplicativeUpgradeEffect
-     */
-    'description': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof MultiplicativeUpgradeEffect
-     */
-    'upgradeManipulator': MultiplicativeUpgradeEffectUpgradeManipulatorEnum;
-    /**
-     * 
-     * @type {number}
-     * @memberof MultiplicativeUpgradeEffect
-     */
-    'factor'?: number;
-}
-
-export const MultiplicativeUpgradeEffectUpgradeManipulatorEnum = {
-    None: 'NONE',
-    Slots: 'SLOTS',
-    Damage: 'DAMAGE',
-    Hit: 'HIT',
-    Initiative: 'INITIATIVE',
-    Armor: 'ARMOR',
-    Weight: 'WEIGHT'
-} as const;
-
-export type MultiplicativeUpgradeEffectUpgradeManipulatorEnum = typeof MultiplicativeUpgradeEffectUpgradeManipulatorEnum[keyof typeof MultiplicativeUpgradeEffectUpgradeManipulatorEnum];
-
-/**
- * 
- * @export
- * @interface MultiplicativeUpgradeEffectAllOf
- */
-export interface MultiplicativeUpgradeEffectAllOf {
-    /**
-     * 
-     * @type {number}
-     * @memberof MultiplicativeUpgradeEffectAllOf
-     */
-    'factor'?: number;
-}
-/**
- * 
- * @export
  * @interface PasswordChange
  */
 export interface PasswordChange {
@@ -1303,26 +1282,7 @@ export interface SimpleUpgradeEffect {
      * @memberof SimpleUpgradeEffect
      */
     'description': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof SimpleUpgradeEffect
-     */
-    'upgradeManipulator': SimpleUpgradeEffectUpgradeManipulatorEnum;
 }
-
-export const SimpleUpgradeEffectUpgradeManipulatorEnum = {
-    None: 'NONE',
-    Slots: 'SLOTS',
-    Damage: 'DAMAGE',
-    Hit: 'HIT',
-    Initiative: 'INITIATIVE',
-    Armor: 'ARMOR',
-    Weight: 'WEIGHT'
-} as const;
-
-export type SimpleUpgradeEffectUpgradeManipulatorEnum = typeof SimpleUpgradeEffectUpgradeManipulatorEnum[keyof typeof SimpleUpgradeEffectUpgradeManipulatorEnum];
-
 /**
  * 
  * @export
@@ -1532,31 +1492,12 @@ export interface UpgradeEffect {
      * @memberof UpgradeEffect
      */
     'description': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpgradeEffect
-     */
-    'upgradeManipulator': UpgradeEffectUpgradeManipulatorEnum;
 }
-
-export const UpgradeEffectUpgradeManipulatorEnum = {
-    None: 'NONE',
-    Slots: 'SLOTS',
-    Damage: 'DAMAGE',
-    Hit: 'HIT',
-    Initiative: 'INITIATIVE',
-    Armor: 'ARMOR',
-    Weight: 'WEIGHT'
-} as const;
-
-export type UpgradeEffectUpgradeManipulatorEnum = typeof UpgradeEffectUpgradeManipulatorEnum[keyof typeof UpgradeEffectUpgradeManipulatorEnum];
-
 /**
  * @type UpgradeEffectsInner
  * @export
  */
-export type UpgradeEffectsInner = AdditiveUpgradeEffect | MultiplicativeUpgradeEffect | SimpleUpgradeEffect;
+export type UpgradeEffectsInner = EquipmentUpgradeEffect | SimpleUpgradeEffect;
 
 /**
  * 

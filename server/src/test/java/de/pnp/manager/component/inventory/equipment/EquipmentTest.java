@@ -7,9 +7,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
-import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
-import de.pnp.manager.component.upgrade.effect.MultiplicativeUpgradeEffect;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -24,22 +24,22 @@ class EquipmentTest {
     @Test
     void testAddUpgrades() {
         Equipment<EquipableItem> equipment = new Equipment<>(1, TEST_ITEM);
-        Upgrade upgradeA = createUpgrade().withSlots(1).addEffect(SimpleUpgradeEffect.create("Description")).build();
+        Upgrade upgradeA = createUpgrade().withSlots(1).addEffect(new SimpleUpgradeEffect("Description")).build();
         equipment.addUpgrade(upgradeA);
         assertThat(equipment.getUpgrades()).containsExactly(upgradeA);
 
-        Upgrade upgradeB = createUpgrade().withSlots(2).addEffect(SimpleUpgradeEffect.create("Description")).build();
+        Upgrade upgradeB = createUpgrade().withSlots(2).addEffect(new SimpleUpgradeEffect("Description")).build();
         assertThatThrownBy(() -> equipment.addUpgrade(upgradeB), "The equipment can not contain so many upgrades.");
     }
 
     @Test
     void testSetUpgrades() {
         Equipment<EquipableItem> equipment = new Equipment<>(1, TEST_ITEM);
-        Upgrade upgradeA = createUpgrade().withSlots(1).addEffect(SimpleUpgradeEffect.create("Description")).build();
+        Upgrade upgradeA = createUpgrade().withSlots(1).addEffect(new SimpleUpgradeEffect("Description")).build();
         equipment.setUpgrades(List.of(upgradeA, upgradeA));
         assertThat(equipment.getUpgrades()).containsExactly(upgradeA, upgradeA);
 
-        Upgrade upgradeB = createUpgrade().withSlots(2).addEffect(SimpleUpgradeEffect.create("Description")).build();
+        Upgrade upgradeB = createUpgrade().withSlots(2).addEffect(new SimpleUpgradeEffect("Description")).build();
         assertThatThrownBy(() -> equipment.setUpgrades(List.of(upgradeA, upgradeB)),
             "The equipment can not contain so many upgrades.");
     }
@@ -51,7 +51,8 @@ class EquipmentTest {
         assertThat(equipment.getUpgradeSlots()).isEqualTo(2);
 
         equipment.addUpgrade(
-            createUpgrade().withSlots(1).addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.SLOTS, 2))
+            createUpgrade().withSlots(1).addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
+                    EUpgradeEffectCalculation.ADDITIVE))
                 .build());
         assertThat(equipment.getUpgradeSlots()).isEqualTo(4);
         assertThat(equipment.getRemainingUpgradeSlots()).isEqualTo(3);
@@ -62,13 +63,17 @@ class EquipmentTest {
         Equipment<EquipableItem> equipment = new Equipment<>(1, TEST_ITEM);
 
         equipment.addUpgrade(
-            createUpgrade().withSlots(0).addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.SLOTS, 2))
+            createUpgrade().withSlots(0).addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
+                    EUpgradeEffectCalculation.ADDITIVE))
                 .build());
         equipment.addUpgrade(
-            createUpgrade().withSlots(0).addEffect(new MultiplicativeUpgradeEffect("", EUpgradeManipulator.SLOTS, 2))
+            createUpgrade().withSlots(0)
+                .addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
+                    EUpgradeEffectCalculation.MULTIPLICATIVE))
                 .build());
         equipment.addUpgrade(
-            createUpgrade().withSlots(0).addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.SLOTS, 2))
+            createUpgrade().withSlots(0).addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
+                    EUpgradeEffectCalculation.ADDITIVE))
                 .build());
 
         assertThat(equipment.getUpgradeSlots()).isEqualTo(12);

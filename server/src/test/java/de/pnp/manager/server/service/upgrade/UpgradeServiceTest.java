@@ -1,9 +1,9 @@
 package de.pnp.manager.server.service.upgrade;
 
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
-import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
-import de.pnp.manager.component.upgrade.effect.MultiplicativeUpgradeEffect;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
 import de.pnp.manager.server.service.RepositoryServiceBaseTest;
@@ -22,10 +22,12 @@ public class UpgradeServiceTest extends RepositoryServiceBaseTest<Upgrade, Upgra
     @Override
     protected List<Upgrade> createObjects() {
         return List.of(createUpgrade().withName("A")
-                .addEffect(new AdditiveUpgradeEffect("More Damage", EUpgradeManipulator.DAMAGE, 2)).build(),
+                .addEffect(new EquipmentUpgradeEffect("More Damage", 2, EUpgradeEquipmentManipulator.DAMAGE,
+                    EUpgradeEffectCalculation.ADDITIVE)).build(),
             createUpgrade().withName("B")
-                .addEffect(SimpleUpgradeEffect.create("Nothing")).build(),
+                .addEffect(new SimpleUpgradeEffect("Nothing")).build(),
             createUpgrade().withName("C")
-                .addEffect(new MultiplicativeUpgradeEffect("Wall", EUpgradeManipulator.ARMOR, 10)).build());
+                .addEffect(new EquipmentUpgradeEffect("Wall", 10, EUpgradeEquipmentManipulator.ARMOR,
+                    EUpgradeEffectCalculation.MULTIPLICATIVE)).build());
     }
 }

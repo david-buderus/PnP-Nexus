@@ -4,7 +4,7 @@ import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipmen
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IOffensiveItem;
-import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 
 /**
  * Represents an {@link IOffensiveItem} that can be held and used.
@@ -29,17 +29,17 @@ public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> impleme
      * {@link #getUpgrades() upgrades}.
      */
     public int getMaxDamage() {
-        return Math.max(0, applyUpgradeEffects(EUpgradeManipulator.DAMAGE, getItem().getDamage()));
+        return Math.max(0, applyUpgradeEffects(EUpgradeEquipmentManipulator.DAMAGE, getItem().getDamage()));
     }
 
     @Override
     public int getHit() {
-        return applyUpgradeEffects(EUpgradeManipulator.HIT, getItem().getHit());
+        return applyUpgradeEffects(EUpgradeEquipmentManipulator.HIT, getItem().getHit());
     }
 
     @Override
     public float getInitiative() {
-        return applyUpgradeEffects(EUpgradeManipulator.INITIATIVE, getItem().getInitiative());
+        return applyUpgradeEffects(EUpgradeEquipmentManipulator.INITIATIVE, getItem().getInitiative());
     }
 
     @Override
