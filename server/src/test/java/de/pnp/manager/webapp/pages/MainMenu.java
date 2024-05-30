@@ -79,7 +79,15 @@ public class MainMenu extends PageBase {
      * Opens the overview page for crafting recipes.
      */
     public OverviewBasePage openCraftingRecipePage() {
-        openMenu("items-menu", "crafting-recipes-menu");
+        openMenu("crafting-recipes-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for upgrade recipes.
+     */
+    public OverviewBasePage openUpgradeRecipePage() {
+        openMenu("crafting-recipes-menu", "upgrade-recipes-menu");
         return new OverviewBasePage(page);
     }
 

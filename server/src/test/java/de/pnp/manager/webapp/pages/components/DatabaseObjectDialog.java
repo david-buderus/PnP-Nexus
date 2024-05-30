@@ -8,6 +8,7 @@ import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.Talent;
+import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.webapp.utils.WebTestUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -123,6 +124,8 @@ public class DatabaseObjectDialog {
                 setAutoComplete(id, named.getName());
             } else if (property instanceof Talent t) {
                 setAutoComplete(id, t.getName());
+            } else if (property instanceof Upgrade u) {
+                setAutoComplete(id, u.getName());
             } else {
                 fillOut(property, id + ".");
             }
@@ -153,6 +156,8 @@ public class DatabaseObjectDialog {
                     setAutoComplete(id, named.getName());
                 } else if (o instanceof Talent t) {
                     setAutoComplete(id, t.getName());
+                } else if (o instanceof Upgrade u) {
+                    setAutoComplete(id, u.getName());
                 }
             }
         }

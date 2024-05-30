@@ -3,7 +3,7 @@ import OverviewTable, { Column } from '../../components/OverviewTable';
 import { getUniverseContext, getUserContext } from '../../components/PageBase';
 import { useEffect, useState } from 'react';
 import { ItemServiceApi, ItemType, ItemTypeServiceApi, Material, MaterialServiceApi, Universe } from '../../api';
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ItemCreationDialog } from '../../components/items/ItemCreationDialog';
 import { ItemEditDialog } from '../../components/items/ItemEditDialog';
@@ -92,18 +92,16 @@ export function ItemBasePage<I extends SomeItem>(props: ItemBasePageProps<I>) {
         </OverviewTable>
         {
             userPermissions.canWriteActiveUniverse &&
-            <div className='w-full pt-2'>
-                <div className='float-right'>
-                    <Button className='btn' onClick={() => setOpenItemCreationDialog(true)}>
-                        {t("add")}
-                    </Button>
-                    <Button className='btn' disabled={selected.length !== 1} onClick={() => setOpenItemEditDialog(true)}>
-                        {t("edit")}
-                    </Button>
-                    <Button className='btn' disabled={selected.length === 0} onClick={() => setOpenDeleteDialog(true)}>
-                        {t("delete")}
-                    </Button>
-                </div>
+            <Stack spacing={2} direction="row" justifyContent="flex-end">
+                <Button className='btn' onClick={() => setOpenItemCreationDialog(true)}>
+                    {t("add")}
+                </Button>
+                <Button className='btn' disabled={selected.length !== 1} onClick={() => setOpenItemEditDialog(true)}>
+                    {t("edit")}
+                </Button>
+                <Button className='btn' disabled={selected.length === 0} onClick={() => setOpenDeleteDialog(true)}>
+                    {t("delete")}
+                </Button>
                 <ItemCreationDialog
                     open={openItemCreationDialog}
                     onClose={(event, reason) => {
@@ -144,7 +142,7 @@ export function ItemBasePage<I extends SomeItem>(props: ItemBasePageProps<I>) {
                         });
                     }}
                 />
-            </div>
+            </Stack>
         }
     </div>;
 }
