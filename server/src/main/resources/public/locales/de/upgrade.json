@@ -1,0 +1,20 @@
+{
+  "effects": "Effekt",
+  "target": "Ziel",
+  "necessary-slots": "Benötigte Verbesserungslots",
+  "upgradeCreationTitle": "Erstelle eine Verbesserung",
+  "upgradeEditTitle": "Bearbeite eine Verbesserung",
+  "upgradeDeletionTitle": "Willst du die ausgewählten Verbesserungen löschen?",
+  "effectType": "Effekttyp",
+  "simpleEffect": "Simpel",
+  "additiveEffect": "Additiv",
+  "multiplicativeEffect": "Multiplikativ",
+  "upgradeManipulator": "Verändert",
+  "none": "Nichts",
+  "slots": "Verbesserungslots",
+  "damage": "Schaden",
+  "hit": "Treffer",
+  "initiative": "Initiative",
+  "armor": "Rüstung",
+  "weight": "Gewicht"
+}

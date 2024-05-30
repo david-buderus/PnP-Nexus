@@ -39,7 +39,8 @@ class CraftingRecipeRepositoryTest extends
         CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
             new ItemRecipeEntry(1, resultOld), null, List.of(new ItemRecipeEntry(2, materialItem)));
 
-        testRepositoryLink(recipe -> recipe.getProduct().item(), itemRepository, craftingRecipe, resultOld, resultNew);
+        testRepositoryLink(recipe -> recipe.getProduct().resource(), itemRepository, craftingRecipe, resultOld,
+            resultNew);
     }
 
 

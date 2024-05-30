@@ -9,12 +9,12 @@ import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.UiTestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.contoller.UserController;
-import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.webapp.pages.UserOverviewPage;
@@ -34,11 +34,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
  */
 @TestServer(EServerTestConfiguration.EMPTY)
 @UiTestServer
+@ManipulatesMetadata
 public class UserOverviewPageTest extends ServerTestBase {
 
     private final static String ADMIN_USERNAME = "admin";
 
-    private final static String USER_USERNAME = "user";
+    private final static String USER_USERNAME = "overview-test-user";
     private final static String USER_DISPLAYNAME = "Example User";
     private final static String USER_EMAIL = "user@example.com";
     private final static String USER_PASSWORD = "gLQ@oWEbtJi9E6Wx";
@@ -63,12 +64,9 @@ public class UserOverviewPageTest extends ServerTestBase {
     @Autowired
     private UserController userController;
 
-    @Autowired
-    private UniverseRepository universeRepository;
-
     @BeforeEach
     void openUserOverviewPage() {
-        universe = universeRepository.insert(new Universe("users-test", "Test Universe"));
+        universe = createUniverse("users-test", "Test Universe");
         if (userRepository.getUser(ADMIN_USERNAME).isEmpty()) {
             userController.createNewUser(
                 new PnPUserCreation(ADMIN_USERNAME, ADMIN_USERNAME, ADMIN_USERNAME, "",

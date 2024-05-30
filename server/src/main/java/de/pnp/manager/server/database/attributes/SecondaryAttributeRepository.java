@@ -2,13 +2,15 @@ package de.pnp.manager.server.database.attributes;
 
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.server.database.RepositoryBase;
+import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import org.springframework.stereotype.Component;
 
 /**
  * Repository for {@link SecondaryAttribute}
  */
 @Component
-public class SecondaryAttributeRepository extends RepositoryBase<SecondaryAttribute> {
+public class SecondaryAttributeRepository extends RepositoryBase<SecondaryAttribute> implements
+    IUniquelyNamedRepository<SecondaryAttribute> {
 
     /**
      * Name of the repository

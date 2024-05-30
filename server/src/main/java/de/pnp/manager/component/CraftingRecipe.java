@@ -53,11 +53,11 @@ public class CraftingRecipe extends DatabaseObject {
      * The materials needed to use this {@link CraftingRecipe}
      */
     @NotEmpty
-    private final Collection<@Valid IRecipeEntry> materials;
+    private final Collection<@Valid IRecipeEntry<?>> materials;
 
     public CraftingRecipe(ObjectId id, String profession, String requirement,
         String otherCircumstances, ItemRecipeEntry product, @Nullable ItemRecipeEntry sideProduct,
-        Collection<IRecipeEntry> materials) {
+        Collection<IRecipeEntry<?>> materials) {
         super(id);
         this.profession = profession;
         this.requirement = requirement;
@@ -89,7 +89,7 @@ public class CraftingRecipe extends DatabaseObject {
         return sideProduct;
     }
 
-    public Collection<IRecipeEntry> getMaterials() {
+    public Collection<IRecipeEntry<?>> getMaterials() {
         return materials;
     }
 

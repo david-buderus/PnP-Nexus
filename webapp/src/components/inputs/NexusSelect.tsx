@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps } from "@mui/material";
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps, Tooltip } from "@mui/material";
 import { ERarity } from "../../api";
 import { useTranslation } from "react-i18next";
 
@@ -16,25 +16,29 @@ interface NexusSelectProps<Value> extends SelectProps<Value> {
         content: Value;
         label: string;
     }[];
+    /** tooltip text */
+    tooltip?: string;
 }
 
 /** A custom select with helpertext and error support */
 export function NexusSelect<Value>(props: NexusSelectProps<Value>) {
-    const { error, helperText, label, fullWidth, value, values, ...rest } = props;
+    const { error, helperText, label, tooltip, fullWidth, value, values, ...rest } = props;
 
     return <FormControl fullWidth={fullWidth}>
         <InputLabel error={error}>{label}</InputLabel>
-        <Select
-            {...rest}
-            fullWidth={fullWidth}
-            value={value ?? ''}
-            label={label}
-            error={error}
-        >
-            {
-                values.map(v => <MenuItem key={v.key} value={v.content.toString()}> {v.label} </MenuItem>)
-            }
-        </Select>
+        <Tooltip title={tooltip} placement="right-start">
+            <Select
+                {...rest}
+                fullWidth={fullWidth}
+                value={value ?? ''}
+                label={label}
+                error={error}
+            >
+                {
+                    values.map(v => <MenuItem key={v.key} value={v.content.toString()}> {v.label} </MenuItem>)
+                }
+            </Select>
+        </Tooltip>
         {helperText !== undefined && <FormHelperText error={error}>{helperText}</FormHelperText>}
     </FormControl>;
 }

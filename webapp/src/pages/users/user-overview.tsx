@@ -71,7 +71,7 @@ export function UserOverview() {
                         return;
                     }
                     USER_API.removeUsers(selected).then(sucessful => {
-                        if (sucessful) {
+                        if (sucessful.status < 400) {
                             USER_API.getAllUsers().then(response => setUsers(response.data));
                         }
                     });

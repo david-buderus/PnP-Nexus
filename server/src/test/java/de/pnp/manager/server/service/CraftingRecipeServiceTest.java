@@ -2,9 +2,9 @@ package de.pnp.manager.server.service;
 
 import de.pnp.manager.component.CraftingRecipe;
 import de.pnp.manager.component.IRecipeEntry.CharacterResourceRecipeEntry;
-import de.pnp.manager.component.IRecipeEntry.ECharacterResource;
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
 import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
+import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.Material.MaterialItem;
@@ -32,6 +32,7 @@ public class CraftingRecipeServiceTest extends
         Item ironIngot = createItem().withName("Iron Ingot").persist().buildItem();
         Material iron = materialRepository.insert(getUniverseName(), new Material(null, "Iron",
             List.of(new MaterialItem(1, ironIngot))));
+        SecondaryAttribute health = createSecondaryAttribute().withName("Health").isConsumable().persist().build();
 
         return List.of(
             new CraftingRecipe(null, "Smith", "Crafting: 4", "Furnace",
@@ -39,7 +40,7 @@ public class CraftingRecipeServiceTest extends
                 List.of(new ItemRecipeEntry(2, createItem().withName("Iron Ore").persist().buildItem()))),
             new CraftingRecipe(null, "", "", "",
                 new ItemRecipeEntry(1, createItem().withName("Blood").persist().buildItem()), null,
-                List.of(new CharacterResourceRecipeEntry(10, ECharacterResource.HEALTH))),
+                List.of(new CharacterResourceRecipeEntry(10, health))),
             new CraftingRecipe(null, "", "", "",
                 new ItemRecipeEntry(2, createItem().withName("Steel Ingot").persist().buildItem()),
                 new ItemRecipeEntry(1, createItem().withName("Slag").persist().buildItem()),

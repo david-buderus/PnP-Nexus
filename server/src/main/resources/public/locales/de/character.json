@@ -1,0 +1,20 @@
+{
+  "shortName": "Abk. Name",
+  "primaryAttributeCreationTitle": "Erstelle ein primäres Attribut",
+  "primaryAttributeEditTitle": "Bearbeite ein primäres Attribut",
+  "primaryAttributeDeletionTitle": "Willst du die ausgewählten primäre Attribute löschen?",
+  "consumableAttribute": "Kann als Resource genutzt werden",
+  "consumableAttributeTooltip": "Typische Attribute, welche als Resource genutzt werden können, sind Lebenspunkte oder Mana",
+  "primaryAttributeDependencies": "Abhängigkeiten",
+  "addPrimaryAttribute": "Füge ein weiteres Attribut als Abhängigkeit hinzu",
+  "secondaryAttributeCreationTitle": "Erstelle ein sekundäres Attribut",
+  "secondaryAttributeEditTitle": "Bearbeite ein sekundäres Attribut",
+  "secondaryAttributeDeletionTitle": "Willst du die ausgewählten sekundäre Attribute löschen?",
+  "group": "Gruppe",
+  "talentCreationTitle": "Erstelle ein Talent",
+  "talentEditTitle": "Bearbeite ein Talent",
+  "talentDeletionTitle": "Willst du die ausgewählten Talente löschen?",
+  "firstAttribute": "Erstes Attribut",
+  "secondAttribute": "Zweites Attribut",
+  "thirdAttribute": "Drittes Attribut"
+}

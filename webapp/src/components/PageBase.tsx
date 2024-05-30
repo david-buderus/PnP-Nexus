@@ -8,7 +8,8 @@ import { NexusAppBar } from './NexusAppBar';
 import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
-import { GiAxeSword, GiChestArmor, GiRing, GiShield, GiSwapBag } from 'react-icons/gi';
+import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiGearHammer, GiHeartInside, GiMagicAxe, GiMuscleUp, GiRing, GiShield, GiSpellBook, GiStoneCrafting, GiSupersonicArrow, GiSwapBag } from 'react-icons/gi';
+import { FaPersonRays } from "react-icons/fa6";
 import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
@@ -34,7 +35,7 @@ function PageBase() {
     canWriteActiveUniverse: false,
     isActiveUniverseOwner: false
   });
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const handleDrawerChange = () => {
     setOpen(!open);
@@ -118,7 +119,7 @@ function PageBase() {
       <CssBaseline />
       <NexusAppBar universes={universes} activeUniverse={activeUniverse} setActiveUniverse={setActiveUniverse} />
       <NexusSidebar collapsed={open} handleDrawerChange={handleDrawerChange} entries={generateSidebarEntries(userPermissions)} />
-      <Box component="main" height="100vh" display="flex" flexDirection="column" padding={2}>
+      <Box component="main" height="100vh" width="100%" display="flex" flexDirection="column" padding={2}>
         <Toolbar />
         <Box flex={1} overflow="auto">
           <Outlet context={{
@@ -147,7 +148,23 @@ function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProp
         { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
         { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
         { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
-        { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> }
+        { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> },
+        { id: "upgrades-menu", label: t("upgrades"), link: "/upgrades", icon: <GiMagicAxe /> },
+        { id: "item-types-menu", label: t("item-types"), link: "/item-types", icon: <GiGearHammer /> },
+        { id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick /> }
+      ]
+    },
+    {
+      id: "crafting-recipes-menu", label: t("crafting-recipes"), link: "/crafting-recipes", icon: <GiStoneCrafting />, subEntries: [
+        { id: "upgrade-recipes-menu", label: t("upgrade-recipes"), link: "/upgrade-recipes", icon: <GiBurningBook /> }
+      ]
+    },
+    {
+      id: "characters-menu", label: t("characters"), link: "/characters", icon: <FaPersonRays />, subEntries: [
+        { id: "spells-menu", label: t("spells"), link: "/spells", icon: <GiSpellBook /> },
+        { id: "talents-menu", label: t("talents"), link: "/talents", icon: <GiSupersonicArrow /> },
+        { id: "primary-attributes-menu", label: t("primary-attributes"), link: "/primary-attributes", icon: <GiMuscleUp /> },
+        { id: "secondary-attributes-menu", label: t("secondary-attributes"), link: "/secondary-attributes", icon: <GiHeartInside /> }
       ]
     }
   ];

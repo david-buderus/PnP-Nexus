@@ -2,9 +2,11 @@ package de.pnp.manager.component;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
+import de.pnp.manager.validation.IsConsumable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -18,44 +20,40 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
     @JsonSubTypes.Type(value = IRecipeEntry.CharacterResourceRecipeEntry.class, name = "CharacterResourceRecipeEntry")
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-public sealed interface IRecipeEntry {
+public sealed interface IRecipeEntry<T> {
 
     /**
      * The amount needed for this {@link IRecipeEntry}.
      */
-    float amountOfRequiredUnits();
+    float amount();
 
+    /**
+     * The resource needed for this {@link IRecipeEntry}.
+     */
+    T resource();
 
     /**
      * An {@link IRecipeEntry} which uses a specific {@link Item}.
      */
-    record ItemRecipeEntry(@Positive float amountOfRequiredUnits, @DBRef @NotNull Item item) implements
-        IRecipeEntry {
+    record ItemRecipeEntry(@Positive float amount, @DBRef @NotNull Item resource) implements
+        IRecipeEntry<Item> {
 
     }
 
     /**
      * An {@link IRecipeEntry} which uses a {@link Material}.
      */
-    record MaterialRecipeEntry(@Positive float amountOfRequiredUnits,
-                               @DBRef @NotNull Material material) implements
-        IRecipeEntry {
+    record MaterialRecipeEntry(@Positive float amount, @DBRef @NotNull Material resource) implements
+        IRecipeEntry<Material> {
 
     }
 
     /**
-     * An {@link IRecipeEntry} which uses a {@link ECharacterResource} of a player.
+     * An {@link IRecipeEntry} which uses a {@link SecondaryAttribute} of a player.
      */
-    record CharacterResourceRecipeEntry(@Positive float amountOfRequiredUnits,
-                                        ECharacterResource resource) implements
-        IRecipeEntry {
+    record CharacterResourceRecipeEntry(@Positive float amount,
+                                        @DBRef @NotNull @IsConsumable SecondaryAttribute resource) implements
+        IRecipeEntry<SecondaryAttribute> {
 
-    }
-
-    /**
-     * The different character resources which can be used to craft something.
-     */
-    enum ECharacterResource {
-        HEALTH, MANA, MENTAL_HEALTH
     }
 }

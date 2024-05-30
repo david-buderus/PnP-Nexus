@@ -27,10 +27,10 @@ public class ItemPageTest extends ItemPageTestBase {
     @Override
     protected Pair<EItemClass, Item> getTestItem() {
         return ImmutablePair.of(EItemClass.ITEM,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Silver Ore").withType("Material")
+            itemBuilder.createItemBuilder(universe.getName()).withName("Gold Ore").withType("Material")
                 .withSubtype("Ore")
-                .withEffect("It is shiny").withDescription("It is silver ore").withRarity(ERarity.UNCOMMON).withTier(2)
-                .withRequirement("None").withVendorPrice(10000).withMinimumStackSize(10).withMaximumStackSize(50)
+                .withEffect("It is shiny").withDescription("It is gold ore").withRarity(ERarity.UNCOMMON).withTier(2)
+                .withRequirement("None").withVendorPrice(1000000).withMinimumStackSize(10).withMaximumStackSize(50)
                 .withNote("Some text").buildItem());
     }
 }

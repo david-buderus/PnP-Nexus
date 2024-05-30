@@ -7,6 +7,12 @@ import com.microsoft.playwright.Locator.LocatorOptions;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.DatabaseObject;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Function;
+import org.assertj.core.api.Assertions;
+import org.bson.types.ObjectId;
 
 /**
  * Represents the OverviewTable component.
@@ -50,10 +56,25 @@ public class OverviewTable {
     }
 
     /**
+     * Returns the table row matching the given id.
+     */
+    public OverviewTableRows getTableRow(ObjectId id) {
+        return getTableRow(id.toHexString());
+    }
+
+    /**
      * Clicks the sorting button of the table column with the given label.
      */
-    public void clickSortBy(String label) {
+    public void clickSortByLabel(String label) {
         table.locator("//thead").locator("//th", new LocatorOptions().setHasText(label)).getByRole(AriaRole.BUTTON)
+            .click();
+    }
+
+    /**
+     * Clicks the sorting button of the table column with the given test-id.
+     */
+    public void clickSortBy(String testId) {
+        table.locator("//thead").getByTestId(testId).getByRole(AriaRole.BUTTON)
             .click();
     }
 
@@ -76,6 +97,25 @@ public class OverviewTable {
      */
     public void assertExactlyEntries(int entries) {
         assertThat(getAllTableRows().asLocator().first()).hasCount(entries);
+    }
+
+    /**
+     * Asserts that the table is sorted
+     */
+    public <T> void assertIsSorted(Collection<T> objects, Comparator<T> comparator, Function<T, String> id) {
+        List<T> sorted = objects.stream().sorted(comparator).toList();
+
+        OverviewTableRows tableRows = getAllTableRows();
+        for (int i = 0; i < sorted.size(); i++) {
+            Assertions.assertThat(tableRows.getRow(i).getDataTestId()).isEqualTo(id.apply(sorted.get(i)));
+        }
+    }
+
+    /**
+     * Asserts that the table is sorted
+     */
+    public <T extends DatabaseObject> void assertIsSorted(Collection<T> objects, Comparator<T> comparator) {
+        assertIsSorted(objects, comparator, object -> object.getId().toHexString());
     }
 
     /**
@@ -116,6 +156,13 @@ public class OverviewTable {
          */
         public OverviewTableRows getRow(int i) {
             return new OverviewTableRows(row.nth(i));
+        }
+
+        /**
+         * Returns the associated data testid;
+         */
+        public String getDataTestId() {
+            return row.getAttribute("data-testid");
         }
 
         /**

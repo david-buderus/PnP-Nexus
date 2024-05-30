@@ -30,9 +30,9 @@ public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBas
     }
 
     @Override
-    public void configure() {
-        if (!universeRepository.exists(UNIVERSE_NAME)) {
-            universeRepository.insert(new Universe(UNIVERSE_NAME, UNIVERSE_DISPLAY_NAME));
+    public void configure(String importPrefix) {
+        if (!universeRepository.exists(importPrefix + UNIVERSE_NAME)) {
+            universeRepository.insert(new Universe(importPrefix + UNIVERSE_NAME, UNIVERSE_DISPLAY_NAME));
         }
     }
 }

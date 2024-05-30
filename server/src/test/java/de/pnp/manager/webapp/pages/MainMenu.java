@@ -52,6 +52,78 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the overview page for item types.
+     */
+    public OverviewBasePage openItemTypePage() {
+        openMenu("items-menu", "item-types-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for material.
+     */
+    public OverviewBasePage openMaterialPage() {
+        openMenu("items-menu", "materials-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for material.
+     */
+    public OverviewBasePage openUpgradePage() {
+        openMenu("items-menu", "upgrades-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for crafting recipes.
+     */
+    public OverviewBasePage openCraftingRecipePage() {
+        openMenu("crafting-recipes-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for upgrade recipes.
+     */
+    public OverviewBasePage openUpgradeRecipePage() {
+        openMenu("crafting-recipes-menu", "upgrade-recipes-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for spells.
+     */
+    public OverviewBasePage openSpellPage() {
+        openMenu("characters-menu", "spells-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for talents.
+     */
+    public OverviewBasePage openTalentPage() {
+        openMenu("characters-menu", "talents-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for primary attributes.
+     */
+    public OverviewBasePage openPrimaryAttributePage() {
+        openMenu("characters-menu", "primary-attributes-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
+     * Opens the overview page for secondary attributes.
+     */
+    public OverviewBasePage openSecondaryAttributePage() {
+        openMenu("characters-menu", "secondary-attributes-menu");
+        return new OverviewBasePage(page);
+    }
+
+    /**
      * Opens the {@link UserOverviewPage}.
      */
     public UserOverviewPage openUserOverviewPage() {

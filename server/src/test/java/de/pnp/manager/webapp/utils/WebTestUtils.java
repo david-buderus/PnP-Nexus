@@ -28,6 +28,13 @@ public abstract class WebTestUtils {
     }
 
     /**
+     * Clears the given auto complete.
+     */
+    public static void clearAutoComplete(Locator autocomplete) {
+        autocomplete.getByRole(AriaRole.BUTTON).all().forEach(Locator::click);
+    }
+
+    /**
      * Selects the given value in a combobox.
      */
     public static void select(Locator select, String value) {

@@ -17,6 +17,7 @@ import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -42,6 +43,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Tests for {@link UserService}.
  */
 @AutoConfigureMockMvc
+@ManipulatesMetadata
 @TestServer(EServerTestConfiguration.EMPTY)
 public class UserServiceTest extends ServerTestBase {
 

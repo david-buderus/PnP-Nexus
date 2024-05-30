@@ -227,23 +227,14 @@ export interface CharacterResourceRecipeEntry {
      * @type {number}
      * @memberof CharacterResourceRecipeEntry
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
-     * @type {string}
+     * @type {SecondaryAttribute}
      * @memberof CharacterResourceRecipeEntry
      */
-    'resource'?: CharacterResourceRecipeEntryResourceEnum;
+    'resource': SecondaryAttribute;
 }
-
-export const CharacterResourceRecipeEntryResourceEnum = {
-    Health: 'HEALTH',
-    Mana: 'MANA',
-    MentalHealth: 'MENTAL_HEALTH'
-} as const;
-
-export type CharacterResourceRecipeEntryResourceEnum = typeof CharacterResourceRecipeEntryResourceEnum[keyof typeof CharacterResourceRecipeEntryResourceEnum];
-
 /**
  * 
  * @export
@@ -255,23 +246,14 @@ export interface CharacterResourceRecipeEntryAllOf {
      * @type {number}
      * @memberof CharacterResourceRecipeEntryAllOf
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
-     * @type {string}
+     * @type {SecondaryAttribute}
      * @memberof CharacterResourceRecipeEntryAllOf
      */
-    'resource'?: CharacterResourceRecipeEntryAllOfResourceEnum;
+    'resource'?: SecondaryAttribute;
 }
-
-export const CharacterResourceRecipeEntryAllOfResourceEnum = {
-    Health: 'HEALTH',
-    Mana: 'MANA',
-    MentalHealth: 'MENTAL_HEALTH'
-} as const;
-
-export type CharacterResourceRecipeEntryAllOfResourceEnum = typeof CharacterResourceRecipeEntryAllOfResourceEnum[keyof typeof CharacterResourceRecipeEntryAllOfResourceEnum];
-
 /**
  * 
  * @export
@@ -394,6 +376,57 @@ export const ERarity = {
 
 export type ERarity = typeof ERarity[keyof typeof ERarity];
 
+
+/**
+ * 
+ * @export
+ * @interface ExtendedItemType
+ */
+export interface ExtendedItemType {
+    /**
+     * 
+     * @type {Array<ItemType>}
+     * @memberof ExtendedItemType
+     */
+    'broaderVariants': Array<ItemType>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExtendedItemType
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExtendedItemType
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExtendedItemType
+     */
+    'translationId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ExtendedItemType
+     */
+    'typeRestriction': ExtendedItemTypeTypeRestrictionEnum;
+}
+
+export const ExtendedItemTypeTypeRestrictionEnum = {
+    Item: 'ITEM',
+    Equipment: 'EQUIPMENT',
+    Jewellery: 'JEWELLERY',
+    Weapon: 'WEAPON',
+    DefensiveItem: 'DEFENSIVE_ITEM',
+    Shield: 'SHIELD',
+    Handheld: 'HANDHELD',
+    Armor: 'ARMOR'
+} as const;
+
+export type ExtendedItemTypeTypeRestrictionEnum = typeof ExtendedItemTypeTypeRestrictionEnum[keyof typeof ExtendedItemTypeTypeRestrictionEnum];
 
 /**
  * @type GetAllItems200ResponseInner
@@ -543,13 +576,13 @@ export interface ItemRecipeEntry {
      * @type {number}
      * @memberof ItemRecipeEntry
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Item}
      * @memberof ItemRecipeEntry
      */
-    'item': Item;
+    'resource': Item;
 }
 /**
  * 
@@ -562,13 +595,13 @@ export interface ItemRecipeEntryAllOf {
      * @type {number}
      * @memberof ItemRecipeEntryAllOf
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Item}
      * @memberof ItemRecipeEntryAllOf
      */
-    'item'?: Item;
+    'resource'?: Item;
 }
 /**
  * 
@@ -807,13 +840,13 @@ export interface MaterialRecipeEntry {
      * @type {number}
      * @memberof MaterialRecipeEntry
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Material}
      * @memberof MaterialRecipeEntry
      */
-    'material': Material;
+    'resource': Material;
 }
 /**
  * 
@@ -826,13 +859,13 @@ export interface MaterialRecipeEntryAllOf {
      * @type {number}
      * @memberof MaterialRecipeEntryAllOf
      */
-    'amountOfRequiredUnits'?: number;
+    'amount'?: number;
     /**
      * 
      * @type {Material}
      * @memberof MaterialRecipeEntryAllOf
      */
-    'material'?: Material;
+    'resource'?: Material;
 }
 /**
  * 
@@ -2578,6 +2611,278 @@ export class CraftingRecipeServiceApi extends BaseAPI {
      */
     public updateCraftingRecipe(universe: string, id: string, craftingRecipe: CraftingRecipe, options?: AxiosRequestConfig) {
         return CraftingRecipeServiceApiFp(this.configuration).updateCraftingRecipe(universe, id, craftingRecipe, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * ExtendedItemTypeServiceApi - axios parameter creator
+ * @export
+ */
+export const ExtendedItemTypeServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllExtendedItemTypes: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAllExtendedItemTypes', 'universe', universe)
+            const localVarPath = `/api/{universe}/extended-item-types`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ExtendedItemType>} extendedItemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllExtendedItemTypes: async (universe: string, extendedItemType: Array<ExtendedItemType>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAllExtendedItemTypes', 'universe', universe)
+            // verify required parameter 'extendedItemType' is not null or undefined
+            assertParamExists('insertAllExtendedItemTypes', 'extendedItemType', extendedItemType)
+            const localVarPath = `/api/{universe}/extended-item-types`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(extendedItemType, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ExtendedItemType} extendedItemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateExtendedItemType: async (universe: string, id: string, extendedItemType: ExtendedItemType, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('updateExtendedItemType', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateExtendedItemType', 'id', id)
+            // verify required parameter 'extendedItemType' is not null or undefined
+            assertParamExists('updateExtendedItemType', 'extendedItemType', extendedItemType)
+            const localVarPath = `/api/{universe}/extended-item-types/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(extendedItemType, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ExtendedItemTypeServiceApi - functional programming interface
+ * @export
+ */
+export const ExtendedItemTypeServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ExtendedItemTypeServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllExtendedItemTypes(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ExtendedItemType>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllExtendedItemTypes(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ExtendedItemType>} extendedItemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAllExtendedItemTypes(universe: string, extendedItemType: Array<ExtendedItemType>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ExtendedItemType>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAllExtendedItemTypes(universe, extendedItemType, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ExtendedItemType} extendedItemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateExtendedItemType(universe: string, id: string, extendedItemType: ExtendedItemType, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExtendedItemType>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateExtendedItemType(universe, id, extendedItemType, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * ExtendedItemTypeServiceApi - factory interface
+ * @export
+ */
+export const ExtendedItemTypeServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ExtendedItemTypeServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllExtendedItemTypes(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<ExtendedItemType>> {
+            return localVarFp.getAllExtendedItemTypes(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<ExtendedItemType>} extendedItemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllExtendedItemTypes(universe: string, extendedItemType: Array<ExtendedItemType>, options?: any): AxiosPromise<Array<ExtendedItemType>> {
+            return localVarFp.insertAllExtendedItemTypes(universe, extendedItemType, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {ExtendedItemType} extendedItemType 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateExtendedItemType(universe: string, id: string, extendedItemType: ExtendedItemType, options?: any): AxiosPromise<ExtendedItemType> {
+            return localVarFp.updateExtendedItemType(universe, id, extendedItemType, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ExtendedItemTypeServiceApi - object-oriented interface
+ * @export
+ * @class ExtendedItemTypeServiceApi
+ * @extends {BaseAPI}
+ */
+export class ExtendedItemTypeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExtendedItemTypeServiceApi
+     */
+    public getAllExtendedItemTypes(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return ExtendedItemTypeServiceApiFp(this.configuration).getAllExtendedItemTypes(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<ExtendedItemType>} extendedItemType 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExtendedItemTypeServiceApi
+     */
+    public insertAllExtendedItemTypes(universe: string, extendedItemType: Array<ExtendedItemType>, options?: AxiosRequestConfig) {
+        return ExtendedItemTypeServiceApiFp(this.configuration).insertAllExtendedItemTypes(universe, extendedItemType, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {ExtendedItemType} extendedItemType 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExtendedItemTypeServiceApi
+     */
+    public updateExtendedItemType(universe: string, id: string, extendedItemType: ExtendedItemType, options?: AxiosRequestConfig) {
+        return ExtendedItemTypeServiceApiFp(this.configuration).updateExtendedItemType(universe, id, extendedItemType, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

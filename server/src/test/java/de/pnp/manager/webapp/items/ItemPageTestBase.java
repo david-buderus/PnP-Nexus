@@ -14,19 +14,16 @@ import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.webapp.pages.ItemPage;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
-import de.pnp.manager.webapp.pages.components.OverviewTable.OverviewTableRows;
 import de.pnp.manager.webapp.pages.components.items.ItemCreation;
 import de.pnp.manager.webapp.pages.components.items.ItemCreation.EItemClass;
 import de.pnp.manager.webapp.pages.components.items.ItemEdit;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -34,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @TestServer(EServerTestConfiguration.BASIC_ITEMS)
 @UiTestServer
-@ResourceLock("BASIC_ITEMS")
 public abstract class ItemPageTestBase extends ServerTestBase {
 
     /**
@@ -74,10 +70,10 @@ public abstract class ItemPageTestBase extends ServerTestBase {
 
         assertSorting(table, items, Comparator.comparing(Item::getName));
 
-        table.clickSortBy("Name");
+        table.clickSortByLabel("Name");
         assertSorting(table, items, Comparator.comparing(Item::getName).reversed());
 
-        table.clickSortBy("Subtype");
+        table.clickSortByLabel("Subtype");
         assertSorting(table, items, Comparator.comparing(item -> item.getSubtype().getName()));
     }
 
@@ -170,12 +166,7 @@ public abstract class ItemPageTestBase extends ServerTestBase {
      * Assert the sorting of the table.
      */
     protected static void assertSorting(OverviewTable table, Collection<Item> items, Comparator<Item> comparator) {
-        List<Item> sorted = items.stream().sorted(comparator).toList();
-
-        OverviewTableRows tableRows = table.getAllTableRows();
-        for (int i = 0; i < sorted.size(); i++) {
-            assertThat(tableRows.getRow(i).getAllTableCells().nth(1)).hasText(sorted.get(i).getName());
-        }
+        table.assertIsSorted(items, comparator, item -> item.getId().toHexString());
     }
 
     /**

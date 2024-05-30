@@ -99,7 +99,7 @@ export function UserEditDialog({ user, open, onClose }: UserEditDialogProps) {
                 ...editUser,
                 displayName: value
             })} errorMap={errors} />
-            <TextFieldWithError fieldId="email" label={t("email")} value={editUser?.email} onChange={value => setEditUser({
+            <TextFieldWithError fieldId="email" label={t("email")} value={editUser?.email ?? ""} onChange={value => setEditUser({
                 ...editUser,
                 email: value
             })} errorMap={errors} />
@@ -136,7 +136,7 @@ function PermissionManipulation({ authorities, setAuthorities }: PermissionManip
 
     function getUniverseRights(right: "READ" | "WRITE" | "OWNER") {
         return authorities.filter(auth => (auth as GrantedUniverseAuthorityDTO)?.permission === right)
-            .map(auth => universeOptions.find(opt => opt.id === (auth as GrantedUniverseAuthorityDTO).universe));
+            .map(auth => universeOptions.find(opt => opt.id === (auth as GrantedUniverseAuthorityDTO).universe)).filter(auth => auth !== undefined);
     }
 
     const [adminRights, setAdminRights] = useState<boolean>(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === "ADMIN") !== undefined);
@@ -203,7 +203,6 @@ function PermissionManipulation({ authorities, setAuthorities }: PermissionManip
             options={universeOptions}
             value={readRights}
             onChange={(_, value) => {
-                console.log(value);
                 setReadRights(value);
             }
             }

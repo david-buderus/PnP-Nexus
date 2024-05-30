@@ -1,4 +1,4 @@
-import { CSSObject, Collapse, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, styled } from "@mui/material";
+import { Button, CSSObject, Collapse, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, styled } from "@mui/material";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { MdOutlineExpandLess, MdOutlineExpandMore } from "react-icons/md";
@@ -145,6 +145,21 @@ function MenuEntry(props: InternalMenuEntryProps) {
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
             <List key={id + "_submenu"} component="div" disablePadding>
+                <ListItemButton
+                    key={id + "_subentry"}
+                    data-testid={id + "_subentry"}
+                    sx={{ pl: 4 }}
+                    component={Link}
+                    to={{
+                        pathname: link,
+                        search: searchParams.toString()
+                    }}
+                >
+                    <ListItemIcon>
+                        {icon}
+                    </ListItemIcon>
+                    <ListItemText primary={label} />
+                </ListItemButton>
                 {subEntries.map(entry =>
                     <ListItemButton
                         key={entry.id}
@@ -174,13 +189,21 @@ export function NexusSidebar(props: NexusSidebarProps) {
 
     return <CustomDrawer variant="permanent" open={collapsed}>
         <DrawerHeader />
-        <IconButton key="collapse_button" onClick={handleDrawerChange} >
-            {collapsed ? <FiArrowLeftCircle /> : <FiArrowRightCircle />}
-        </IconButton>
         <List key="entries">
             {entries.map(entry =>
                 <MenuEntry key={"entry_" + entry.id} {...entry} searchParams={searchParams} />
             )}
+        </List>
+
+        <List style={{ marginTop: `auto` }} >
+            <ListItemButton
+                key="collapse_button"
+                component={Button}
+                onClick={handleDrawerChange}
+                startIcon={collapsed ? <FiArrowLeftCircle /> : <FiArrowRightCircle />}
+            >
+                {collapsed ? "Collapse" : ""}
+            </ListItemButton>
         </List>
     </CustomDrawer>;
 }

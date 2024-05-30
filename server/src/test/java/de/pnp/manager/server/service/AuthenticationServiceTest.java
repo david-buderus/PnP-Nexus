@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.component.user.PnPUserCreation;
+import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -28,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Tests for {@link AuthenticationService}.
  */
 @AutoConfigureMockMvc
+@ManipulatesMetadata
 @TestServer(EServerTestConfiguration.EMPTY)
 public class AuthenticationServiceTest extends ServerTestBase {
 

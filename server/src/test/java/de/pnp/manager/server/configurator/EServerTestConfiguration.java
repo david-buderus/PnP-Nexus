@@ -15,7 +15,8 @@ public enum EServerTestConfiguration {
 
     EMPTY(EmptyServerConfigurator.class, null, null),
     SIMPLE_UNIVERSE(SimpleUniverseServerConfiguration.class, null, SimpleUniverseServerConfiguration.UNIVERSE_NAME),
-    BASIC_ITEMS(EmptyServerConfigurator.class, "backups/BasicItems.zip", "example-universe");
+    BASIC_ITEMS(EmptyServerConfigurator.class, "backups/BasicItems.zip", "example-universe"),
+    CHARACTERS(EmptyServerConfigurator.class, "backups/Characters.zip", "character-universe");
 
     private final Class<? extends TestServerConfiguratorBase> configuratorClass;
     private final File backupZip;
@@ -41,14 +42,14 @@ public enum EServerTestConfiguration {
     /**
      * Loads the backup and configures the test server.
      */
-    public void setupTestData(ServerTestBase serverTestBase) {
+    public void setupTestData(ServerTestBase serverTestBase, String importPrefix) {
         if (configuratorClass != null) {
             try {
                 TestServerConfiguratorBase configurator = configuratorClass.getConstructor(File.class)
                     .newInstance(backupZip);
                 serverTestBase.getBeanFactory().autowireBean(configurator);
-                configurator.loadBackup();
-                configurator.configure();
+                configurator.loadBackup(importPrefix);
+                configurator.configure(importPrefix);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
                 fail(e);

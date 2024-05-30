@@ -6,9 +6,11 @@ import de.pnp.manager.server.database.RepositoryBase;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,15 @@ public class ItemTypeTranslationRepository extends RepositoryBase<ItemTypeTransl
      */
     public Optional<ItemTypeTranslation> get(String universe, ItemType type) {
         return get(universe, Query.query(Criteria.where("type").is(type)));
+    }
+
+    /**
+     * Returns a {@link Map} of the {@link ItemTypeTranslation} which translates the given {@link ItemType types}.
+     */
+    public Map<ItemType, ItemTypeTranslation> get(String universe, Collection<ItemType> types) {
+        return getAll(universe, Query.query(Criteria.where("type").in(types))).stream()
+            .collect(Collectors.toMap(ItemTypeTranslation::getType,
+                translation -> translation));
     }
 
     /**

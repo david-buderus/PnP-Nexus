@@ -1,12 +1,13 @@
 package de.pnp.manager.server.service.upgrade;
 
 import de.pnp.manager.component.IRecipeEntry.CharacterResourceRecipeEntry;
-import de.pnp.manager.component.IRecipeEntry.ECharacterResource;
 import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
 import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
+import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
 import de.pnp.manager.server.database.MaterialRepository;
+import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
 import de.pnp.manager.server.database.upgrade.UpgradeRecipeRepository;
 import de.pnp.manager.server.service.RepositoryServiceBaseTest;
 import java.util.List;
@@ -21,12 +22,18 @@ class UpgradeRecipeServiceTest extends
     @Autowired
     private MaterialRepository materialRepository;
 
-    public UpgradeRecipeServiceTest(@Autowired UpgradeRecipeService upgradeRecipeService, @Autowired UpgradeRecipeRepository repository) {
+    @Autowired
+    private SecondaryAttributeRepository attributeRepository;
+
+    public UpgradeRecipeServiceTest(@Autowired UpgradeRecipeService upgradeRecipeService,
+        @Autowired UpgradeRecipeRepository repository) {
         super(upgradeRecipeService, repository, UpgradeRecipe.class);
     }
 
     @Override
     protected List<UpgradeRecipe> createObjects() {
+        SecondaryAttribute mentalHealth = createSecondaryAttribute().withName("Mental Health").isConsumable().persist()
+            .build();
         Material material = materialRepository.insert(getUniverseName(), new Material(null, "Mat", List.of()));
         return List.of(new UpgradeRecipe(null, createUpgrade().withName("A").persist().build(), List.of(), "",
                 List.of(new ItemRecipeEntry(7, createItem().persist().buildItem()))),
@@ -34,6 +41,6 @@ class UpgradeRecipeServiceTest extends
                 List.of(createUpgrade().withName("B2").persist().build()), "",
                 List.of(new MaterialRecipeEntry(2, material))),
             new UpgradeRecipe(null, createUpgrade().withName("C").persist().build(), List.of(), "",
-                List.of(new CharacterResourceRecipeEntry(100, ECharacterResource.MENTAL_HEALTH))));
+                List.of(new CharacterResourceRecipeEntry(100, mentalHealth))));
     }
 }

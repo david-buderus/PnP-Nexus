@@ -16,10 +16,13 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;
+import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.utils.TestItemBuilder;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.utils.TestSecondaryAttributeBuilder;
+import de.pnp.manager.utils.TestSecondaryAttributeBuilder.TestSecondaryAttributeBuilderFactory;
 import de.pnp.manager.utils.TestUpgradeBuilder;
 import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
@@ -44,6 +47,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+@ManipulatesMetadata
 @AutoConfigureMockMvc
 public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo extends RepositoryBase<Obj>,
     Service extends RepositoryServiceBase<Obj, Repo>> extends UniverseTestBase {
@@ -79,7 +83,10 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     @Autowired
     private TestUpgradeBuilderFactory upgradeBuilder;
 
-    public RepositoryServiceBaseTest(Service service, Repo repository, Class<Obj> objClass) {
+    @Autowired
+    private TestSecondaryAttributeBuilderFactory secondaryAttributeBuilder;
+
+    protected RepositoryServiceBaseTest(Service service, Repo repository, Class<Obj> objClass) {
         this.service = service;
         this.objClass = objClass;
         this.repository = repository;
@@ -572,5 +579,12 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      */
     protected TestUpgradeBuilder createUpgrade() {
         return upgradeBuilder.createUpgradeBuilder(getUniverseName());
+    }
+
+    /**
+     * A helper method to create {@link TestSecondaryAttributeBuilder}.
+     */
+    protected TestSecondaryAttributeBuilder createSecondaryAttribute() {
+        return secondaryAttributeBuilder.createAttributeBuilder(getUniverseName());
     }
 }

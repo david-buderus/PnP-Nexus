@@ -1,0 +1,20 @@
+{
+  "effects": "Effect",
+  "target": "Target",
+  "necessary-slots": "Necessary Upgrade-Slots",
+  "upgradeCreationTitle": "Create an upgrade",
+  "upgradeEditTitle": "Edit an upgrade",
+  "upgradeDeletionTitle": "Do you want to delete the selected upgrades?",
+  "effectType": "Effect-Type",
+  "simpleEffect": "Simple",
+  "additiveEffect": "Additive",
+  "multiplicativeEffect": "Multiplicative",
+  "upgradeManipulator": "Changes",
+  "none": "Nothing",
+  "slots": "Upgrade-Slots",
+  "damage": "Damage",
+  "hit": "Hit",
+  "initiative": "Initiative",
+  "armor": "Armor",
+  "weight": "Weight"
+}
