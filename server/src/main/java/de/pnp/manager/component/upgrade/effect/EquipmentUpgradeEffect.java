@@ -2,6 +2,7 @@ package de.pnp.manager.component.upgrade.effect;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * An effect which directly changes the stats of the given equipment.
@@ -51,5 +52,26 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
 
     public EUpgradeEffectCalculation getCalculation() {
         return calculation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        EquipmentUpgradeEffect that = (EquipmentUpgradeEffect) o;
+        return Float.compare(that.value, value) == 0 && upgradeManipulator == that.upgradeManipulator
+            && getCalculation() == that.getCalculation();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), value, upgradeManipulator, getCalculation());
     }
 }
