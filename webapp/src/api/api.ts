@@ -383,6 +383,12 @@ export interface EquipmentUpgradeEffect {
      * @memberof EquipmentUpgradeEffect
      */
     'upgradeManipulator': EUpgradeEquipmentManipulator;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentUpgradeEffect
+     */
+    'value': number;
 }
 
 
@@ -404,6 +410,12 @@ export interface EquipmentUpgradeEffectAllOf {
      * @memberof EquipmentUpgradeEffectAllOf
      */
     'upgradeManipulator'?: EUpgradeEquipmentManipulator;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentUpgradeEffectAllOf
+     */
+    'value'?: number;
 }
 
 

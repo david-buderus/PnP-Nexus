@@ -3776,7 +3776,8 @@
         "required": [
           "calculation",
           "description",
-          "upgradeManipulator"
+          "upgradeManipulator",
+          "value"
         ],
         "type": "object",
         "allOf": [
@@ -3791,6 +3792,10 @@
               },
               "upgradeManipulator": {
                 "$ref": "#/components/schemas/EUpgradeEquipmentManipulator"
+              },
+              "value": {
+                "type": "number",
+                "format": "float"
               }
             }
           }
