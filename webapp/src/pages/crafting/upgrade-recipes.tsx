@@ -1,16 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../../components/PageBase";
-import { CharacterResourceRecipeEntry, ItemRecipeEntry, ItemServiceApi, Material, MaterialRecipeEntry, MaterialServiceApi, SecondaryAttribute, SecondaryAttributeServiceApi, Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi, UpgradeServiceApi } from "../../api";
-import { useEffect, useMemo, useState } from "react";
-import { API_CONFIGURATION, SomeItem } from "../../components/Constants";
+import { ItemServiceApi, MaterialServiceApi, SecondaryAttributeServiceApi, Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi, UpgradeServiceApi } from "../../api";
+import { useEffect, useState } from "react";
+import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
-import { addTypeAnnotationToEntry, recipeEntryToString } from "./crafting-recipes";
+import { IResourceUsage, addTypeAnnotationToUsage, fetchAllResources, resourceUsageToString } from "../../components/database/ResourceUsageUtils";
 
 const UPGRADE_RECIPE_API = new UpgradeRecipeServiceApi(API_CONFIGURATION);
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
-const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
-const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
-const ATTRIBUTE_API = new SecondaryAttributeServiceApi(API_CONFIGURATION);
 
 /** Page to give an overview over all upgrade recipies */
 export function UpgradeRecipesPage() {
@@ -18,29 +15,13 @@ export function UpgradeRecipesPage() {
     const { activeUniverse } = getUniverseContext();
 
     const [upgrades, setUpgrades] = useState<Upgrade[]>([]);
-    const [items, setItems] = useState<SomeItem[]>([]);
-    const [materials, setMaterials] = useState<Material[]>([]);
-    const [secondaryAttributes, setSecondaryAttributes] = useState<SecondaryAttribute[]>([]);
-
-    const resources: (CharacterResourceRecipeEntry | ItemRecipeEntry | MaterialRecipeEntry)[] = useMemo(() => {
-        return [].concat(items).concat(materials).concat(secondaryAttributes);
-    }, [items, materials, secondaryAttributes]);
+    const resources: IResourceUsage[] = fetchAllResources(activeUniverse);
 
     useEffect(() => {
         if (!activeUniverse) {
             return;
         }
-        Promise.all([
-            UPGRADE_API.getAllUpgrades(activeUniverse.name),
-            ITEM_API.getAllItems(activeUniverse.name),
-            MATERIAL_API.getAllMaterials(activeUniverse.name),
-            ATTRIBUTE_API.getAllSecondaryAttributes(activeUniverse.name)
-        ]).then(([upgradeResponse, itemReponse, materialsResponse, attributeResponse]) => {
-            setUpgrades(upgradeResponse.data);
-            setItems(itemReponse.data);
-            setMaterials(materialsResponse.data);
-            setSecondaryAttributes(attributeResponse.data.filter(attribute => attribute.consumable));
-        });
+        UPGRADE_API.getAllUpgrades(activeUniverse.name).then(response => setUpgrades(response.data));
     }, [activeUniverse]);
 
     return <OverviewBasePage<UpgradeRecipe>
@@ -48,7 +29,7 @@ export function UpgradeRecipesPage() {
             { label: t("upgrade"), id: "upgrade", getter: recipe => recipe.upgrade.name },
             { label: t("crafting:requirement"), id: "requirement", getter: recipe => recipe.requirement },
             { label: t("crafting:requiredUpgrades"), id: "requiredUpgrades", getter: recipe => recipe.requiredUpgrades.map(upgrade => upgrade.name).join(", ") },
-            { label: t("materials"), id: "materials", getter: recipe => recipe.materials.map(recipeEntryToString).join(", ") }
+            { label: t("materials"), id: "materials", getter: recipe => recipe.materials.map(resourceUsageToString).join(", ") }
         ]}
         fields={[
             { fieldId: "upgrade", label: t("upgrade"), fieldType: "DATABASE", dependency: upgrades, dependencyLabel: "name" },
@@ -84,6 +65,6 @@ export function UpgradeRecipesPage() {
 function addTypeAnnotationToRecipe(recipe: UpgradeRecipe): UpgradeRecipe {
     return {
         ...recipe,
-        materials: recipe.materials.map(addTypeAnnotationToEntry)
+        materials: recipe.materials.map(addTypeAnnotationToUsage)
     };
 }

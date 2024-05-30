@@ -3653,14 +3653,14 @@
           }
         ]
       },
-      "CharacterResourceRecipeEntry": {
+      "CharacterResourceUsage": {
         "required": [
           "resource"
         ],
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/IRecipeEntryObject"
+            "$ref": "#/components/schemas/IResourceUsageObject"
           },
           {
             "type": "object",
@@ -3694,13 +3694,13 @@
             "items": {
               "oneOf": [
                 {
-                  "$ref": "#/components/schemas/CharacterResourceRecipeEntry"
+                  "$ref": "#/components/schemas/CharacterResourceUsage"
                 },
                 {
-                  "$ref": "#/components/schemas/ItemRecipeEntry"
+                  "$ref": "#/components/schemas/ItemUsage"
                 },
                 {
-                  "$ref": "#/components/schemas/MaterialRecipeEntry"
+                  "$ref": "#/components/schemas/MaterialUsage"
                 }
               ]
             }
@@ -3709,7 +3709,7 @@
             "type": "string"
           },
           "product": {
-            "$ref": "#/components/schemas/ItemRecipeEntry"
+            "$ref": "#/components/schemas/ItemUsage"
           },
           "profession": {
             "type": "string"
@@ -3718,7 +3718,7 @@
             "type": "string"
           },
           "sideProduct": {
-            "$ref": "#/components/schemas/ItemRecipeEntry"
+            "$ref": "#/components/schemas/ItemUsage"
           }
         }
       },
@@ -3838,7 +3838,7 @@
       "IGrantedAuthorityDTO": {
         "type": "object"
       },
-      "IRecipeEntryObject": {
+      "IResourceUsageObject": {
         "type": "object"
       },
       "Item": {
@@ -3903,29 +3903,6 @@
           }
         }
       },
-      "ItemRecipeEntry": {
-        "required": [
-          "resource"
-        ],
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IRecipeEntryObject"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "amount": {
-                "type": "number",
-                "format": "float"
-              },
-              "resource": {
-                "$ref": "#/components/schemas/Item"
-              }
-            }
-          }
-        ]
-      },
       "ItemType": {
         "required": [
           "name",
@@ -3975,6 +3952,29 @@
             "$ref": "#/components/schemas/ItemType"
           }
         }
+      },
+      "ItemUsage": {
+        "required": [
+          "resource"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IResourceUsageObject"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "number",
+                "format": "float"
+              },
+              "resource": {
+                "$ref": "#/components/schemas/Item"
+              }
+            }
+          }
+        ]
       },
       "Jewellery": {
         "required": [
@@ -4048,14 +4048,14 @@
           }
         }
       },
-      "MaterialRecipeEntry": {
+      "MaterialUsage": {
         "required": [
           "resource"
         ],
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/IRecipeEntryObject"
+            "$ref": "#/components/schemas/IResourceUsageObject"
           },
           {
             "type": "object",
@@ -4313,6 +4313,7 @@
       },
       "Spell": {
         "required": [
+          "additionalCost",
           "castTime",
           "cost",
           "effect",
@@ -4322,11 +4323,27 @@
         ],
         "type": "object",
         "properties": {
+          "additionalCost": {
+            "type": "string"
+          },
           "castTime": {
             "type": "string"
           },
           "cost": {
-            "type": "string"
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/CharacterResourceUsage"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemUsage"
+                },
+                {
+                  "$ref": "#/components/schemas/MaterialUsage"
+                }
+              ]
+            }
           },
           "effect": {
             "type": "string"
@@ -4514,13 +4531,13 @@
             "items": {
               "oneOf": [
                 {
-                  "$ref": "#/components/schemas/CharacterResourceRecipeEntry"
+                  "$ref": "#/components/schemas/CharacterResourceUsage"
                 },
                 {
-                  "$ref": "#/components/schemas/ItemRecipeEntry"
+                  "$ref": "#/components/schemas/ItemUsage"
                 },
                 {
-                  "$ref": "#/components/schemas/MaterialRecipeEntry"
+                  "$ref": "#/components/schemas/MaterialUsage"
                 }
               ]
             }

@@ -1,8 +1,8 @@
 package de.pnp.manager.webapp.database;
 
 import de.pnp.manager.component.CraftingRecipe;
-import de.pnp.manager.component.IRecipeEntry.ItemRecipeEntry;
-import de.pnp.manager.component.IRecipeEntry.MaterialRecipeEntry;
+import de.pnp.manager.component.IResourceUsage.ItemUsage;
+import de.pnp.manager.component.IResourceUsage.MaterialUsage;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -51,7 +51,7 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
 
     @Override
     protected CraftingRecipe getWrongObject() {
-        return new CraftingRecipe(null, "", "", "", new ItemRecipeEntry(-1, null), null, List.of());
+        return new CraftingRecipe(null, "", "", "", new ItemUsage(-1, null), null, List.of());
     }
 
     @Override
@@ -61,9 +61,9 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
 
     @Override
     protected CraftingRecipe getCorrectObject() {
-        return new CraftingRecipe(null, "Smith", "Forge", "", new ItemRecipeEntry(1, getItem("Iron Sword")), null,
-            List.of(new MaterialRecipeEntry(1, materialRepository.get(getUniverseName(), "Iron").orElseThrow()),
-                new ItemRecipeEntry(1, getItem("Iron Ingot"))));
+        return new CraftingRecipe(null, "Smith", "Forge", "", new ItemUsage(1, getItem("Iron Sword")), null,
+            List.of(new MaterialUsage(1, materialRepository.get(getUniverseName(), "Iron").orElseThrow()),
+                new ItemUsage(1, getItem("Iron Ingot"))));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
     protected CraftingRecipe getEditedObject() {
         CraftingRecipe original = getOriginalModifiedObject();
         return new CraftingRecipe(null, "Smith", "Example", "Something", original.getProduct(),
-            original.getSideProduct(), List.of(new ItemRecipeEntry(1, getItem("Iron Ring"))));
+            original.getSideProduct(), List.of(new ItemUsage(1, getItem("Iron Ring"))));
     }
 
     @Override

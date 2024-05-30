@@ -1,11 +1,14 @@
 package de.pnp.manager.webapp.database;
 
+import de.pnp.manager.component.IResourceUsage;
+import de.pnp.manager.component.IResourceUsage.CharacterResourceUsage;
 import de.pnp.manager.component.Spell;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
+import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
 import java.util.Comparator;
@@ -22,6 +25,9 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
 
     @Autowired
     private TalentRepository talentRepository;
+
+    @Autowired
+    private SecondaryAttributeRepository secondaryAttributeRepository;
 
     protected SpellPageTest(@Autowired SpellRepository repository) {
         super(repository);
@@ -46,7 +52,7 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
 
     @Override
     protected Spell getWrongObject() {
-        return new Spell(null, "", "", "", "",
+        return new Spell(null, "", "", null, "", "",
             talentRepository.getByName(getUniverseName(), "Fire Magic").stream().toList(), -1);
     }
 
@@ -57,18 +63,23 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
 
     @Override
     protected Spell getCorrectObject() {
-        return new Spell(null, "Burn", "Burns the target", "3 Mana", "",
+        return new Spell(null, "Burn", "Burns the target", manaCost(3), "", "",
             talentRepository.getByName(getUniverseName(), "Fire Magic").stream().toList(), 1);
     }
 
     @Override
     protected Spell getEditedObject() {
-        return new Spell(null, "Big Fireball", "D20 Damage", "20 Mana", "",
+        return new Spell(null, "Big Fireball", "D20 Damage", manaCost(20), "", "",
             getOriginalModifyObject().getTalents(), 1);
     }
 
     @Override
     protected String getChangeIdentifier() {
         return "D20 Damage";
+    }
+
+    private List<IResourceUsage<?>> manaCost(int mana) {
+        return List.of(new CharacterResourceUsage(mana,
+            secondaryAttributeRepository.get(getUniverseName(), "Mana").orElseThrow()));
     }
 }
