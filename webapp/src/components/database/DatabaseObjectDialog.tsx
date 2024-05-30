@@ -230,6 +230,8 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     [field.fieldId]: event.target.value
                 })}
                 fullWidth
+                error={errors.has(fullId)}
+                helperText={errors.get(fullId)}
             />;
         case "DATABASE":
             return <Tooltip title={field.tooltip} placement="right-start">
@@ -259,7 +261,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     getOptionLabel={(option: D) => {
                         return option?.[field.dependencyLabel] as string;
                     }}
-                    isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
+                    isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option?.id === value?.id}
                     renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
                     value={databaseObject?.[field.fieldId] as DatabaseObject[] ?? []}
                     onChange={(_, value) => setDatabaseObject({

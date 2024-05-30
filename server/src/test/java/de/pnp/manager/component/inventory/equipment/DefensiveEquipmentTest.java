@@ -5,9 +5,9 @@ import static de.pnp.manager.utils.TestUpgradeBuilder.createUpgrade;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.item.equipable.Shield;
-import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
-import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
-import de.pnp.manager.component.upgrade.effect.MultiplicativeUpgradeEffect;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -25,7 +25,9 @@ class DefensiveEquipmentTest {
         assertThat(defensiveEquipment.getMaxArmor()).isEqualTo(5);
 
         defensiveEquipment.addUpgrade(
-            createUpgrade().addEffect(new MultiplicativeUpgradeEffect("", EUpgradeManipulator.ARMOR, 2)).build());
+            createUpgrade().addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.ARMOR,
+                    EUpgradeEffectCalculation.MULTIPLICATIVE))
+                .build());
         assertThat(defensiveEquipment.getArmor()).isEqualTo(10);
         assertThat(defensiveEquipment.getMaxArmor()).isEqualTo(10);
 
@@ -53,7 +55,9 @@ class DefensiveEquipmentTest {
         assertThat(defensiveEquipment.getHit()).isEqualTo(2);
 
         defensiveEquipment.addUpgrade(
-            createUpgrade().addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.HIT, 1)).build());
+            createUpgrade().addEffect(
+                    new EquipmentUpgradeEffect("", 1, EUpgradeEquipmentManipulator.HIT, EUpgradeEffectCalculation.ADDITIVE))
+                .build());
         assertThat(defensiveEquipment.getHit()).isEqualTo(3);
 
         // Check no other stat got changed due to the upgrade
@@ -68,7 +72,9 @@ class DefensiveEquipmentTest {
         assertThat(defensiveEquipment.getInitiative()).isEqualTo(1);
 
         defensiveEquipment.addUpgrade(
-            createUpgrade().addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.INITIATIVE, 0.5F)).build());
+            createUpgrade().addEffect(new EquipmentUpgradeEffect("", 0.5F, EUpgradeEquipmentManipulator.INITIATIVE,
+                    EUpgradeEffectCalculation.ADDITIVE))
+                .build());
         assertThat(defensiveEquipment.getInitiative()).isEqualTo(1.5F);
 
         // Check no other stat got changed due to the upgrade
@@ -83,7 +89,8 @@ class DefensiveEquipmentTest {
         assertThat(defensiveEquipment.getWeight()).isEqualTo(3);
 
         defensiveEquipment.addUpgrade(
-            createUpgrade().addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.WEIGHT, 2)).build());
+            createUpgrade().addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.WEIGHT,
+                EUpgradeEffectCalculation.ADDITIVE)).build());
         assertThat(defensiveEquipment.getWeight()).isEqualTo(5);
 
         // Check no other stat got changed due to the upgrade
@@ -98,11 +105,13 @@ class DefensiveEquipmentTest {
         assertThat(defensiveEquipment.getArmor()).isEqualTo(5);
 
         defensiveEquipment.addUpgrade(
-            createUpgrade().addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.ARMOR, -3)).build());
+            createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.ARMOR,
+                EUpgradeEffectCalculation.ADDITIVE)).build());
         assertThat(defensiveEquipment.getArmor()).isEqualTo(2);
 
         defensiveEquipment.addUpgrade(
-            createUpgrade().addEffect(new AdditiveUpgradeEffect("", EUpgradeManipulator.ARMOR, -3)).build());
+            createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.ARMOR,
+                EUpgradeEffectCalculation.ADDITIVE)).build());
         assertThat(defensiveEquipment.getArmor()).isEqualTo(0);
     }
 }

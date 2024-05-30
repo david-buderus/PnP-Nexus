@@ -2,8 +2,9 @@ package de.pnp.manager.webapp.database;
 
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.AdditiveUpgradeEffect;
-import de.pnp.manager.component.upgrade.effect.EUpgradeManipulator;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
+import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -59,8 +60,9 @@ public class UpgradePageTest extends RepositoryOverviewTestBase<Upgrade> {
     @Override
     protected Upgrade getCorrectObject() {
         return new Upgrade(null, "Shine 100", getItemType("Weapon"), 1, 10,
-            List.of(new AdditiveUpgradeEffect("+100 Damage", EUpgradeManipulator.DAMAGE, 1),
-                new SimpleUpgradeEffect("It shines", EUpgradeManipulator.NONE)));
+            List.of(new EquipmentUpgradeEffect("+100 Damage", 1, EUpgradeEquipmentManipulator.DAMAGE,
+                    EUpgradeEffectCalculation.ADDITIVE),
+                new SimpleUpgradeEffect("It shines")));
     }
 
     @Override

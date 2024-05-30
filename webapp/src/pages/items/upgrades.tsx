@@ -1,6 +1,6 @@
 
 import { useTranslation } from "react-i18next";
-import { ItemType, ItemTypeServiceApi, Upgrade, UpgradeEffectUpgradeManipulatorEnum, UpgradeServiceApi } from "../../api";
+import { EUpgradeEffectCalculation, EUpgradeEquipmentManipulator, ItemType, ItemTypeServiceApi, Upgrade, UpgradeServiceApi } from "../../api";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { useEffect, useState } from "react";
@@ -38,29 +38,33 @@ export function UpgradePage() {
             { fieldId: "vendorPrice", label: t("price"), fieldType: "PRICE" },
             {
                 fieldId: "effects", label: t("upgrade:effects"), fieldType: "COMPLEX_LIST", aligment: "column",
-                emptyObject: { "@type": "SimpleUpgradeEffect", description: "", upgradeManipulator: UpgradeEffectUpgradeManipulatorEnum.None },
+                emptyObject: { "@type": "SimpleUpgradeEffect", description: "" },
                 newListObjectLabel: t("upgrade:addEffect"),
                 subFields: [
                     {
                         fieldId: "@type", label: t("upgrade:effectType"), fieldType: "ENUM", dependency: [
                             { key: "SimpleUpgradeEffect", content: "SimpleUpgradeEffect", label: t("upgrade:simpleEffect") },
-                            { key: "AdditiveUpgradeEffect", content: "AdditiveUpgradeEffect", label: t("upgrade:additiveEffect") },
-                            { key: "MultiplicativeUpgradeEffect", content: "MultiplicativeUpgradeEffect", label: t("upgrade:multiplicativeEffect") },
+                            { key: "EquipmentUpgradeEffect", content: "EquipmentUpgradeEffect", label: t("upgrade:equipmentEffect") }
                         ]
                     },
                     {
+                        fieldId: "upgradeManipulator", label: t("upgrade:upgradeManipulator"), fieldType: "ENUM",
+                        visibleForTypes: ["EquipmentUpgradeEffect"],
+                        dependency: Object.values(EUpgradeEquipmentManipulator).map(manipulator => {
+                            return { key: manipulator, content: manipulator, label: t("upgrade:" + manipulator.toLowerCase()) };
+                        })
+                    },
+                    {
                         fieldId: "effect-row", label: "", fieldType: "STACK", subFields: [
-                            { fieldId: "value", label: t("value"), fieldType: "NUMBER", visibleForTypes: ["AdditiveUpgradeEffect"] },
-                            { fieldId: "factor", label: t("factor"), fieldType: "NUMBER", visibleForTypes: ["MultiplicativeUpgradeEffect"] },
                             {
-                                fieldId: "upgradeManipulator", label: t("upgrade:upgradeManipulator"), fieldType: "ENUM",
-                                visibleForTypes: ["AdditiveUpgradeEffect", "MultiplicativeUpgradeEffect"],
-                                dependency: Object.values(UpgradeEffectUpgradeManipulatorEnum).map(manipulator => {
+                                fieldId: "calculation", label: t("upgrade:calculation"), fieldType: "ENUM",
+                                dependency: Object.values(EUpgradeEffectCalculation).map(manipulator => {
                                     return { key: manipulator, content: manipulator, label: t("upgrade:" + manipulator.toLowerCase()) };
                                 })
-                            }
+                            },
+                            { fieldId: "value", label: t("value"), fieldType: "NUMBER" }
                         ],
-                        visibleForTypes: ["AdditiveUpgradeEffect", "MultiplicativeUpgradeEffect"]
+                        visibleForTypes: ["EquipmentUpgradeEffect"]
                     },
                     { fieldId: "description", label: t("description"), fieldType: "STRING" }
                 ]

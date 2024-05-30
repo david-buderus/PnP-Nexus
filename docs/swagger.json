@@ -3586,27 +3586,6 @@
   },
   "components": {
     "schemas": {
-      "AdditiveUpgradeEffect": {
-        "required": [
-          "description",
-          "upgradeManipulator"
-        ],
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/UpgradeEffect"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "value": {
-                "type": "number",
-                "format": "float"
-              }
-            }
-          }
-        ]
-      },
       "Armor": {
         "required": [
           "armor",
@@ -3772,6 +3751,54 @@
           "EPIC",
           "LEGENDARY",
           "GODLIKE"
+        ]
+      },
+      "EUpgradeEffectCalculation": {
+        "type": "string",
+        "enum": [
+          "ADDITIVE",
+          "MULTIPLICATIVE"
+        ]
+      },
+      "EUpgradeEquipmentManipulator": {
+        "type": "string",
+        "enum": [
+          "NONE",
+          "SLOTS",
+          "DAMAGE",
+          "HIT",
+          "INITIATIVE",
+          "ARMOR",
+          "WEIGHT"
+        ]
+      },
+      "EquipmentUpgradeEffect": {
+        "required": [
+          "calculation",
+          "description",
+          "upgradeManipulator",
+          "value"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/UpgradeEffect"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "calculation": {
+                "$ref": "#/components/schemas/EUpgradeEffectCalculation"
+              },
+              "upgradeManipulator": {
+                "$ref": "#/components/schemas/EUpgradeEquipmentManipulator"
+              },
+              "value": {
+                "type": "number",
+                "format": "float"
+              }
+            }
+          }
         ]
       },
       "ExtendedItemType": {
@@ -4071,27 +4098,6 @@
           }
         ]
       },
-      "MultiplicativeUpgradeEffect": {
-        "required": [
-          "description",
-          "upgradeManipulator"
-        ],
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/UpgradeEffect"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "factor": {
-                "type": "number",
-                "format": "float"
-              }
-            }
-          }
-        ]
-      },
       "PasswordChange": {
         "type": "object",
         "properties": {
@@ -4301,8 +4307,7 @@
       },
       "SimpleUpgradeEffect": {
         "required": [
-          "description",
-          "upgradeManipulator"
+          "description"
         ],
         "type": "object",
         "allOf": [
@@ -4460,10 +4465,7 @@
             "items": {
               "oneOf": [
                 {
-                  "$ref": "#/components/schemas/AdditiveUpgradeEffect"
-                },
-                {
-                  "$ref": "#/components/schemas/MultiplicativeUpgradeEffect"
+                  "$ref": "#/components/schemas/EquipmentUpgradeEffect"
                 },
                 {
                   "$ref": "#/components/schemas/SimpleUpgradeEffect"
@@ -4492,25 +4494,12 @@
       },
       "UpgradeEffect": {
         "required": [
-          "description",
-          "upgradeManipulator"
+          "description"
         ],
         "type": "object",
         "properties": {
           "description": {
             "type": "string"
-          },
-          "upgradeManipulator": {
-            "type": "string",
-            "enum": [
-              "NONE",
-              "SLOTS",
-              "DAMAGE",
-              "HIT",
-              "INITIATIVE",
-              "ARMOR",
-              "WEIGHT"
-            ]
           }
         }
       },

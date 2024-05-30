@@ -5,10 +5,10 @@
   "upgradeCreationTitle": "Create an upgrade",
   "upgradeEditTitle": "Edit an upgrade",
   "upgradeDeletionTitle": "Do you want to delete the selected upgrades?",
+  "addEffect": "Add another effect",
   "effectType": "Effect-Type",
   "simpleEffect": "Simple",
-  "additiveEffect": "Additive",
-  "multiplicativeEffect": "Multiplicative",
+  "equipmentEffect": "Equipment",
   "upgradeManipulator": "Changes",
   "none": "Nothing",
   "slots": "Upgrade-Slots",
@@ -16,5 +16,8 @@
   "hit": "Hit",
   "initiative": "Initiative",
   "armor": "Armor",
-  "weight": "Weight"
+  "weight": "Weight",
+  "calculation": "Calculation",
+  "additive": "Addition",
+  "multiplicative": "Multiplication"
 }

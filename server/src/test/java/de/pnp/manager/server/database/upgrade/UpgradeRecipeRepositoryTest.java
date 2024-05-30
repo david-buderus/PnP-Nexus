@@ -35,9 +35,9 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
     void testUpgradeLink() {
         SecondaryAttribute resource = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
         Upgrade upgradeA = createUpgrade().withName("Shine A")
-            .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).persist().build();
+            .addEffect(new SimpleUpgradeEffect("The weapon emits light")).persist().build();
         Upgrade upgradeB = createUpgrade().withName("Shine B")
-            .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).build();
+            .addEffect(new SimpleUpgradeEffect("The weapon emits light")).build();
         UpgradeRecipe recipe = new UpgradeRecipe(null, upgradeA, List.of(), "",
             List.of(new CharacterResourceUsage(1, resource)));
 
@@ -49,10 +49,10 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
         SecondaryAttribute resource = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
         Upgrade result = createUpgrade().withName("Result").persist().build();
         Upgrade upgradeA = createUpgrade().withName("Shine A")
-            .addEffect(SimpleUpgradeEffect.create("The weapon emits light")).persist().build();
+            .addEffect(new SimpleUpgradeEffect("The weapon emits light")).persist().build();
 
         Upgrade upgradeB = createUpgrade().withName("Shine B")
-            .addEffect(SimpleUpgradeEffect.create("The weapon emits a lot of light")).build();
+            .addEffect(new SimpleUpgradeEffect("The weapon emits a lot of light")).build();
         UpgradeRecipe recipe = new UpgradeRecipe(null, result, List.of(upgradeA), "",
             List.of(new CharacterResourceUsage(100, resource)));
 

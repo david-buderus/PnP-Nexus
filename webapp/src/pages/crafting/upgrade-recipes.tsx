@@ -26,9 +26,9 @@ export function UpgradeRecipesPage() {
 
     return <OverviewBasePage<UpgradeRecipe>
         columns={[
-            { label: t("upgrade"), id: "upgrade", getter: recipe => recipe.upgrade.name },
+            { label: t("upgrade"), id: "upgrade", getter: recipe => recipe.upgrade?.name },
             { label: t("crafting:requirement"), id: "requirement", getter: recipe => recipe.requirement },
-            { label: t("crafting:requiredUpgrades"), id: "requiredUpgrades", getter: recipe => recipe.requiredUpgrades.map(upgrade => upgrade.name).join(", ") },
+            { label: t("crafting:requiredUpgrades"), id: "requiredUpgrades", getter: recipe => recipe.requiredUpgrades.map(upgrade => upgrade?.name).join(", ") },
             { label: t("materials"), id: "materials", getter: recipe => recipe.materials.map(resourceUsageToString).join(", ") }
         ]}
         fields={[

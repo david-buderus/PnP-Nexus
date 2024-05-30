@@ -1,24 +1,22 @@
 package de.pnp.manager.component.upgrade.effect;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.google.common.base.MoreObjects;
+
 /**
  * A simple {@link UpgradeEffect} which only has a description.
  */
 public class SimpleUpgradeEffect extends UpgradeEffect {
 
-    /**
-     * Returns a new {@link SimpleUpgradeEffect} with the given description and the
-     * {@link EUpgradeManipulator}.{@link EUpgradeManipulator#NONE NONE}.
-     */
-    public static SimpleUpgradeEffect create(String description) {
-        return new SimpleUpgradeEffect(description, EUpgradeManipulator.NONE);
-    }
-
-    public SimpleUpgradeEffect(String description, EUpgradeManipulator upgradeManipulator) {
-        super(description, upgradeManipulator);
+    @JsonCreator
+    public SimpleUpgradeEffect(String description) {
+        super(description);
     }
 
     @Override
-    protected float apply(float value) {
-        return value;
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+            .add("description", description)
+            .toString();
     }
 }

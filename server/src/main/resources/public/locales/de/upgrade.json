@@ -5,10 +5,10 @@
   "upgradeCreationTitle": "Erstelle eine Verbesserung",
   "upgradeEditTitle": "Bearbeite eine Verbesserung",
   "upgradeDeletionTitle": "Willst du die ausgewählten Verbesserungen löschen?",
+  "addEffect": "Füg einen weiteren Effekt hinzu",
   "effectType": "Effekttyp",
   "simpleEffect": "Simpel",
-  "additiveEffect": "Additiv",
-  "multiplicativeEffect": "Multiplikativ",
+  "equipmentEffect": "Ausrüstung",
   "upgradeManipulator": "Verändert",
   "none": "Nichts",
   "slots": "Verbesserungslots",
@@ -16,5 +16,8 @@
   "hit": "Treffer",
   "initiative": "Initiative",
   "armor": "Rüstung",
-  "weight": "Gewicht"
+  "weight": "Gewicht",
+  "calculation": "Berechnung",
+  "additive": "Addieren",
+  "multiplicative": "Multiplizieren"
 }
