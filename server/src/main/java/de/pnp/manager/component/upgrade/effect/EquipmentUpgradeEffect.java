@@ -2,6 +2,7 @@ package de.pnp.manager.component.upgrade.effect;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import de.pnp.manager.component.ECalculation;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -29,10 +30,10 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
      */
     @NotNull
     @JsonProperty
-    private final EUpgradeEffectCalculation calculation;
+    private final ECalculation calculation;
 
     public EquipmentUpgradeEffect(String description, float value, EUpgradeEquipmentManipulator upgradeManipulator,
-        EUpgradeEffectCalculation calculation) {
+        ECalculation calculation) {
         super(description);
         this.value = value;
         this.upgradeManipulator = upgradeManipulator;
@@ -53,7 +54,7 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
         };
     }
 
-    public EUpgradeEffectCalculation getCalculation() {
+    public ECalculation getCalculation() {
         return calculation;
     }
 

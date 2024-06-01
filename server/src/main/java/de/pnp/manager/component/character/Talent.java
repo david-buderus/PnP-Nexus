@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * A talent of a {@link Character}.
+ * A talent of a {@link PnPCharacter}.
  */
 @Document(TalentRepository.REPOSITORY_NAME)
 public class Talent extends DatabaseObject {

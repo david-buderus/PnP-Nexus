@@ -9,7 +9,7 @@ import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistent
 import com.mongodb.client.MongoClient;
 import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
-import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.universe.UniverseRepository;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

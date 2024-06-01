@@ -5,9 +5,9 @@ import static de.pnp.manager.utils.TestUpgradeBuilder.createUpgrade;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
@@ -52,7 +52,7 @@ class EquipmentTest {
 
         equipment.addUpgrade(
             createUpgrade().withSlots(1).addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
-                    EUpgradeEffectCalculation.ADDITIVE))
+                    ECalculation.ADDITIVE))
                 .build());
         assertThat(equipment.getUpgradeSlots()).isEqualTo(4);
         assertThat(equipment.getRemainingUpgradeSlots()).isEqualTo(3);
@@ -64,16 +64,16 @@ class EquipmentTest {
 
         equipment.addUpgrade(
             createUpgrade().withSlots(0).addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
-                    EUpgradeEffectCalculation.ADDITIVE))
+                    ECalculation.ADDITIVE))
                 .build());
         equipment.addUpgrade(
             createUpgrade().withSlots(0)
                 .addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
-                    EUpgradeEffectCalculation.MULTIPLICATIVE))
+                    ECalculation.MULTIPLICATIVE))
                 .build());
         equipment.addUpgrade(
             createUpgrade().withSlots(0).addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.SLOTS,
-                    EUpgradeEffectCalculation.ADDITIVE))
+                    ECalculation.ADDITIVE))
                 .build());
 
         assertThat(equipment.getUpgradeSlots()).isEqualTo(12);

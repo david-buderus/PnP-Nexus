@@ -2,14 +2,14 @@ package de.pnp.manager.component.attributes;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
-import de.pnp.manager.component.character.Character;
+import de.pnp.manager.component.character.PnPCharacter;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 /**
- * A primary attribute of a {@link Character}.
+ * A primary attribute of a {@link PnPCharacter}.
  */
 public class PrimaryAttribute extends DatabaseObject implements IUniquelyNamedDataObject {
 

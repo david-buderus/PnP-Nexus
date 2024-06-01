@@ -1,18 +1,15 @@
 package de.pnp.manager.component.inventory.equipment;
 
-import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipment;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
-import de.pnp.manager.component.item.interfaces.IHandheldItem;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 
 /**
  * Represents an {@link IDefensiveItem} that can be held and used.
  */
-public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> implements
-    IHandheldEquipment {
+public abstract class DefensiveEquipment<I extends IDefensiveItem> extends DamageableEquipment<I> {
 
-    public DefensiveEquipment(float stackSize, IDefensiveItem item, int wear) {
+    protected DefensiveEquipment(float stackSize, I item, int wear) {
         super(stackSize, item, wear);
     }
 
@@ -40,22 +37,6 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
     public int getWeight() {
         return Math.round(
             applyUpgradeEffects(EUpgradeEquipmentManipulator.WEIGHT, getItem().getWeight()) * getRelativeDurability());
-    }
-
-    @Override
-    public int getHit() {
-        if (getItem() instanceof IHandheldItem handHoldItem) {
-            return applyUpgradeEffects(EUpgradeEquipmentManipulator.HIT, handHoldItem.getHit());
-        }
-        throw new AssertionError("Only HandholdItems have hit.");
-    }
-
-    @Override
-    public float getInitiative() {
-        if (getItem() instanceof IHandheldItem handHoldItem) {
-            return applyUpgradeEffects(EUpgradeEquipmentManipulator.INITIATIVE, handHoldItem.getInitiative());
-        }
-        throw new AssertionError("Only HandholdItems have initiative.");
     }
 
     @Override

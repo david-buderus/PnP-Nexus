@@ -1,11 +1,51 @@
 package de.pnp.manager.component.character;
 
-import de.pnp.manager.component.character.traits.CharacterTrait;
-import java.util.Set;
+import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.IUniquelyNamedDataObject;
+import de.pnp.manager.component.character.traits.ICharacterTrait;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.util.List;
+import org.bson.types.ObjectId;
 
-public class Nation {
+public class Nation extends DatabaseObject implements IUniquelyNamedDataObject {
 
-    private String name;
-    private Set<Race> races;
-    private Set<CharacterTrait> traits;
+    @NotBlank
+    private final String name;
+
+    @NotBlank
+    private final String description;
+
+    @NotNull
+    private final List<@Valid ICharacterTrait> advantageTraits;
+
+    @NotNull
+    private final List<@Valid ICharacterTrait> disadvantageTraits;
+
+    public Nation(ObjectId id, String name, String description, List<ICharacterTrait> advantageTraits,
+        List<ICharacterTrait> disadvantageTraits) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.advantageTraits = advantageTraits;
+        this.disadvantageTraits = disadvantageTraits;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<ICharacterTrait> getAdvantageTraits() {
+        return advantageTraits;
+    }
+
+    public List<ICharacterTrait> getDisadvantageTraits() {
+        return disadvantageTraits;
+    }
 }

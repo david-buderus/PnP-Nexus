@@ -1,4 +1,4 @@
-import { AuthenticationServiceApi, PnPUser, PnPUserPreference, Universe, UniverseServiceApi, UserServiceApi } from '../api';
+import { AuthenticationServiceApi, CurrencySettings, PnPUser, PnPUserPreference, Universe, UniverseServiceApi, UniverseSettingsServiceApi, UserServiceApi } from '../api';
 import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Box, CssBaseline, ThemeProvider, Toolbar } from '@mui/material';
@@ -14,10 +14,11 @@ import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
 
-type UniverseContext = { universes: Universe[], activeUniverse: Universe, setActiveUniverse: (activeUniverse: Universe) => void, fetchUniverses: () => void; };
+type UniverseContext = { universes: Universe[], activeUniverse: Universe, setActiveUniverse: (activeUniverse: Universe) => void, fetchUniverses: () => void, currencySettings: CurrencySettings; };
 type UserContext = { userPermissions: UserPermissions, userPreferences: PnPUserPreference, user: PnPUser, refreshUser: () => void; };
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
+const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
 const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
@@ -25,6 +26,7 @@ function PageBase() {
   const [universes, setUniverses] = useState<Universe[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
+  const [currencySettings, setCurrencySettings] = useState<CurrencySettings>(null);
   const [username, setUsername] = useState<string>(null);
   const [user, setUser] = useState<PnPUser>(null);
   const [userPreferences, setUserPreferences] = useState<PnPUserPreference>(null);
@@ -79,10 +81,12 @@ function PageBase() {
   }, []);
 
   useEffect(() => {
-    if (activeUniverse) {
-      searchParams.set("universe", activeUniverse.name);
-      setSearchParams(searchParams);
+    if (!activeUniverse) {
+      return;
     }
+    searchParams.set("universe", activeUniverse.name);
+    setSearchParams(searchParams);
+    SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
   }, [activeUniverse]);
 
   useEffect(() => {
@@ -127,6 +131,7 @@ function PageBase() {
             activeUniverse: activeUniverse,
             setActiveUniverse: setActiveUniverse,
             fetchUniverses: fetchUniverses,
+            currencySettings: currencySettings,
             userPermissions: userPermissions,
             userPreferences: userPreferences,
             user: user,

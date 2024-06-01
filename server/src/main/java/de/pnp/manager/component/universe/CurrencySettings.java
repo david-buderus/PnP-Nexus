@@ -10,7 +10,12 @@ import java.util.Objects;
 /**
  * Defines how the vendor prices are displayed to the user.
  */
-public class CurrencyCalculation {
+public class CurrencySettings extends SettingsBase {
+
+    /**
+     * The default settings
+     */
+    public static final CurrencySettings DEFAULT = new CurrencySettings("Currency", "C", List.of());
 
     @NotBlank
     private final String baseCurrency;
@@ -21,7 +26,7 @@ public class CurrencyCalculation {
     @NotNull
     private final List<@Valid CurrencyCalculationEntry> calculationEntries;
 
-    public CurrencyCalculation(String baseCurrency, String baseCurrencyShortForm,
+    public CurrencySettings(String baseCurrency, String baseCurrencyShortForm,
         List<CurrencyCalculationEntry> calculationEntries) {
         this.baseCurrency = baseCurrency;
         this.baseCurrencyShortForm = baseCurrencyShortForm;
@@ -48,7 +53,7 @@ public class CurrencyCalculation {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CurrencyCalculation that = (CurrencyCalculation) o;
+        CurrencySettings that = (CurrencySettings) o;
         return getBaseCurrency().equals(that.getBaseCurrency()) && getBaseCurrencyShortForm().equals(
             that.getBaseCurrencyShortForm()) && getCalculationEntries().equals(that.getCalculationEntries());
     }

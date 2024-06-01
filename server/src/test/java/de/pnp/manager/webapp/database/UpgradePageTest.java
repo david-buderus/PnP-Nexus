@@ -1,8 +1,8 @@
 package de.pnp.manager.webapp.database;
 
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
@@ -61,7 +61,7 @@ public class UpgradePageTest extends RepositoryOverviewTestBase<Upgrade> {
     protected Upgrade getCorrectObject() {
         return new Upgrade(null, "Shine 100", getItemType("Weapon"), 1, 10,
             List.of(new EquipmentUpgradeEffect("+100 Damage", 1, EUpgradeEquipmentManipulator.DAMAGE,
-                    EUpgradeEffectCalculation.ADDITIVE),
+                    ECalculation.ADDITIVE),
                 new SimpleUpgradeEffect("It shines")));
     }
 

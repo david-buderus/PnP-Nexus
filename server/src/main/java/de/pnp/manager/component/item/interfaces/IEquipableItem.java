@@ -5,5 +5,8 @@ package de.pnp.manager.component.item.interfaces;
  */
 public interface IEquipableItem extends IItem {
 
+    /**
+     * The number of upgrade slots of the underlying item.
+     */
     int getUpgradeSlots();
 }

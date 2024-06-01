@@ -115,6 +115,195 @@
         ]
       }
     },
+    "/api/universe-settings/{universe}/character": {
+      "get": {
+        "operationId": "getCharacterSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateCharacterSettings_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CharacterSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
+    "/api/universe-settings/{universe}/currency": {
+      "get": {
+        "operationId": "getCurrencySettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencySettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateCharacterSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrencySettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
+    "/api/universe-settings/{universe}/item": {
+      "get": {
+        "operationId": "getItemSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateItemSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
     "/api/universes": {
       "get": {
         "operationId": "getAllUniverses",
@@ -3632,6 +3821,21 @@
           }
         ]
       },
+      "ArmorDefinition": {
+        "required": [
+          "name",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          }
+        }
+      },
       "CharacterResourceUsage": {
         "required": [
           "resource"
@@ -3654,6 +3858,31 @@
             }
           }
         ]
+      },
+      "CharacterSettings": {
+        "required": [
+          "armorDefinitions",
+          "jewelleryDefinitions"
+        ],
+        "type": "object",
+        "properties": {
+          "armorDefinitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArmorDefinition"
+            }
+          },
+          "jewelleryDefinitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArmorDefinition"
+            }
+          },
+          "numberOfHandheld": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "CraftingRecipe": {
         "required": [
@@ -3701,7 +3930,26 @@
           }
         }
       },
-      "CurrencyCalculation": {
+      "CurrencyCalculationEntry": {
+        "required": [
+          "currency",
+          "currencyShortForm"
+        ],
+        "type": "object",
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "currencyShortForm": {
+            "type": "string"
+          },
+          "factor": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CurrencySettings": {
         "required": [
           "baseCurrency",
           "baseCurrencyShortForm",
@@ -3723,24 +3971,12 @@
           }
         }
       },
-      "CurrencyCalculationEntry": {
-        "required": [
-          "currency",
-          "currencyShortForm"
-        ],
-        "type": "object",
-        "properties": {
-          "currency": {
-            "type": "string"
-          },
-          "currencyShortForm": {
-            "type": "string"
-          },
-          "factor": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
+      "ECalculation": {
+        "type": "string",
+        "enum": [
+          "ADDITIVE",
+          "MULTIPLICATIVE"
+        ]
       },
       "ERarity": {
         "type": "string",
@@ -3751,13 +3987,6 @@
           "EPIC",
           "LEGENDARY",
           "GODLIKE"
-        ]
-      },
-      "EUpgradeEffectCalculation": {
-        "type": "string",
-        "enum": [
-          "ADDITIVE",
-          "MULTIPLICATIVE"
         ]
       },
       "EUpgradeEquipmentManipulator": {
@@ -3788,7 +4017,7 @@
             "type": "object",
             "properties": {
               "calculation": {
-                "$ref": "#/components/schemas/EUpgradeEffectCalculation"
+                "$ref": "#/components/schemas/ECalculation"
               },
               "upgradeManipulator": {
                 "$ref": "#/components/schemas/EUpgradeEquipmentManipulator"
@@ -3925,6 +4154,18 @@
             "$ref": "#/components/schemas/ItemType"
           },
           "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ItemSettings": {
+        "required": [
+          "wearFactor"
+        ],
+        "type": "object",
+        "properties": {
+          "wearFactor": {
             "type": "integer",
             "format": "int32"
           }
@@ -4409,7 +4650,6 @@
           "description",
           "displayName",
           "name",
-          "settings",
           "shortDescription"
         ],
         "type": "object",
@@ -4426,27 +4666,8 @@
             "pattern": "[a-z][a-z-]+[a-z]",
             "type": "string"
           },
-          "settings": {
-            "$ref": "#/components/schemas/UniverseSettings"
-          },
           "shortDescription": {
             "type": "string"
-          }
-        }
-      },
-      "UniverseSettings": {
-        "required": [
-          "currencyCalculation",
-          "wearFactor"
-        ],
-        "type": "object",
-        "properties": {
-          "currencyCalculation": {
-            "$ref": "#/components/schemas/CurrencyCalculation"
-          },
-          "wearFactor": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },

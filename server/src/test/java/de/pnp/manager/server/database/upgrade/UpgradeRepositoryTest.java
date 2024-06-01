@@ -1,9 +1,9 @@
 package de.pnp.manager.server.database.upgrade;
 
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
@@ -57,9 +57,9 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
             new Upgrade(null, "Shine", type, 1, 10,
                 List.of(
                     new EquipmentUpgradeEffect("The weapon emits light", 2, EUpgradeEquipmentManipulator.HIT,
-                        EUpgradeEffectCalculation.MULTIPLICATIVE))),
+                        ECalculation.MULTIPLICATIVE))),
             new Upgrade(null, "Fire", type, 2, 70,
                 List.of(new EquipmentUpgradeEffect("The item is on fire", 1, EUpgradeEquipmentManipulator.DAMAGE,
-                    EUpgradeEffectCalculation.ADDITIVE))));
+                    ECalculation.ADDITIVE))));
     }
 }

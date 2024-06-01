@@ -7,7 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
-import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.universe.UniverseRepository;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;

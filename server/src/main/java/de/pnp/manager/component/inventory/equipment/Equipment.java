@@ -1,14 +1,16 @@
 package de.pnp.manager.component.inventory.equipment;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.base.Preconditions;
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IEquipment;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,11 +24,18 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
     /**
      * The {@link Upgrade upgrades} of the {@link EquipableItem}.
      */
+    @NotNull
     private Collection<Upgrade> upgrades;
 
     public Equipment(float amount, E item) {
         super(amount, item);
         upgrades = new ArrayList<>();
+    }
+
+    @JsonCreator
+    public Equipment(float stackSize, E item, Collection<Upgrade> upgrades) {
+        super(stackSize, item);
+        this.upgrades = upgrades;
     }
 
     /**
@@ -87,10 +96,10 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
             .filter(EquipmentUpgradeEffect.class::isInstance).map(EquipmentUpgradeEffect.class::cast)
             .toList();
         List<EquipmentUpgradeEffect> additiveEffects = upgradeEffects.stream()
-            .filter(effect -> effect.getCalculation() == EUpgradeEffectCalculation.ADDITIVE)
+            .filter(effect -> effect.getCalculation() == ECalculation.ADDITIVE)
             .toList();
         List<EquipmentUpgradeEffect> multiplicativeEffects = upgradeEffects.stream()
-            .filter(effect -> effect.getCalculation() == EUpgradeEffectCalculation.MULTIPLICATIVE)
+            .filter(effect -> effect.getCalculation() == ECalculation.MULTIPLICATIVE)
             .toList();
 
         for (EquipmentUpgradeEffect effect : additiveEffects) {

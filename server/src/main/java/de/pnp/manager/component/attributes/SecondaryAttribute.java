@@ -2,7 +2,7 @@ package de.pnp.manager.component.attributes;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
-import de.pnp.manager.component.character.Character;
+import de.pnp.manager.component.character.PnPCharacter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
- * A secondary attribute of a {@link Character}.
+ * A secondary attribute of a {@link PnPCharacter}.
  */
 public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamedDataObject {
 

@@ -1,8 +1,7 @@
 package de.pnp.manager.component.universe;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import de.pnp.manager.server.database.UniverseRepository;
-import jakarta.validation.Valid;
+import de.pnp.manager.server.database.universe.UniverseRepository;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -41,26 +40,17 @@ public class Universe {
     @NotNull
     private final String description;
 
-    /**
-     * The settings of the {@link Universe}
-     */
-    @Valid
-    @NotNull
-    private final UniverseSettings settings;
-
     public Universe(String name, String displayName) {
-        this(name, displayName, "", "", UniverseSettings.DEFAULT);
+        this(name, displayName, "", "");
     }
 
     @PersistenceCreator
     @JsonCreator
-    public Universe(String name, String displayName, String shortDescription, String description,
-        UniverseSettings settings) {
+    public Universe(String name, String displayName, String shortDescription, String description) {
         this.name = name;
         this.displayName = displayName;
         this.shortDescription = shortDescription;
         this.description = description;
-        this.settings = settings;
     }
 
     public String getName() {
@@ -79,10 +69,6 @@ public class Universe {
         return description;
     }
 
-    public UniverseSettings getSettings() {
-        return settings;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -94,12 +80,11 @@ public class Universe {
         Universe universe = (Universe) o;
         return getName().equals(universe.getName()) && getDisplayName().equals(universe.getDisplayName())
             && getShortDescription().equals(universe.getShortDescription()) && getDescription().equals(
-            universe.getDescription())
-            && getSettings().equals(universe.getSettings());
+            universe.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDisplayName(), getShortDescription(), getDescription(), getSettings());
+        return Objects.hash(getName(), getDisplayName(), getShortDescription(), getDescription());
     }
 }

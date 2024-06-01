@@ -6,7 +6,7 @@ import { ItemBasePage } from '../../components/items/ItemBasePage';
 
 const ItemPage = () => {
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
+    const { currencySettings } = getUniverseContext();
 
     return <ItemBasePage itemClass={'Item'} columns={[
         { label: t("name"), id: "name", getter: item => item.name },
@@ -17,7 +17,7 @@ const ItemPage = () => {
         { label: t("effect"), id: "effect", getter: item => item.effect },
         { label: t("description"), id: "description", getter: item => item.description },
         { label: t("requirement"), id: "requirement", getter: item => item.requirement },
-        { label: t("price"), id: "vendorPrice", getter: item => currencyToHumanReadable(activeUniverse, item.vendorPrice) },
+        { label: t("price"), id: "vendorPrice", getter: item => currencyToHumanReadable(currencySettings, item.vendorPrice) },
         { label: t("item:minStackSize"), id: "minimumStackSize", getter: item => item.minimumStackSize, numeric: true, defaultVisible: false },
         { label: t("item:maxStackSize"), id: "maximumStackSize", getter: item => item.maximumStackSize, numeric: true, defaultVisible: false },
         { label: t("note"), id: "note", getter: item => item.note, defaultVisible: false }

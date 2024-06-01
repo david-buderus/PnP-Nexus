@@ -19,8 +19,9 @@ import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
-import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
+import de.pnp.manager.server.database.universe.UniverseRepository;
+import de.pnp.manager.server.service.universe.UniverseService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -311,7 +312,7 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
 
         Universe changedUniverse = new Universe(exampleUniverse.getName(), "Other Title",
-            "", "", exampleUniverse.getSettings());
+            "", "");
         Universe oldUniverse = update(changedUniverse);
         assertThat(oldUniverse).isEqualTo(exampleUniverse);
         assertThat(getOne(exampleUniverse.getName())).isEqualTo(changedUniverse);

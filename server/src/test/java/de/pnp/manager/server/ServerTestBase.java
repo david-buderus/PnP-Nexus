@@ -15,7 +15,7 @@ import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.contoller.UserController;
-import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.universe.UniverseRepository;
 import de.pnp.manager.utils.TestUtils;
 import de.pnp.manager.webapp.WebDriver;
 import java.lang.annotation.Annotation;

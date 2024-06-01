@@ -4,8 +4,8 @@ import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 import static de.pnp.manager.utils.TestUpgradeBuilder.createUpgrade;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.item.equipable.Weapon;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ class WeaponEquipmentTest {
 
         weapon.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.DAMAGE,
-                    EUpgradeEffectCalculation.MULTIPLICATIVE))
+                    ECalculation.MULTIPLICATIVE))
                 .build());
         assertThat(weapon.getDamage()).isEqualTo(10);
         assertThat(weapon.getMaxDamage()).isEqualTo(10);
@@ -55,7 +55,7 @@ class WeaponEquipmentTest {
 
         weapon.addUpgrade(
             createUpgrade().addEffect(
-                    new EquipmentUpgradeEffect("", 1, EUpgradeEquipmentManipulator.HIT, EUpgradeEffectCalculation.ADDITIVE))
+                    new EquipmentUpgradeEffect("", 1, EUpgradeEquipmentManipulator.HIT, ECalculation.ADDITIVE))
                 .build());
         assertThat(weapon.getHit()).isEqualTo(3);
 
@@ -71,7 +71,7 @@ class WeaponEquipmentTest {
 
         weapon.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", 0.5F, EUpgradeEquipmentManipulator.INITIATIVE,
-                    EUpgradeEffectCalculation.ADDITIVE))
+                    ECalculation.ADDITIVE))
                 .build());
         assertThat(weapon.getInitiative()).isEqualTo(1.5F);
 
@@ -87,12 +87,12 @@ class WeaponEquipmentTest {
 
         weapon.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.DAMAGE,
-                EUpgradeEffectCalculation.ADDITIVE)).build());
+                ECalculation.ADDITIVE)).build());
         assertThat(weapon.getDamage()).isEqualTo(2);
 
         weapon.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.DAMAGE,
-                EUpgradeEffectCalculation.ADDITIVE)).build());
+                ECalculation.ADDITIVE)).build());
         assertThat(weapon.getDamage()).isEqualTo(0);
     }
 }

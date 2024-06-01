@@ -1,11 +1,11 @@
-package de.pnp.manager.server.database;
+package de.pnp.manager.server.database.universe;
 
 import com.google.common.base.Preconditions;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.component.universe.UniverseSettings;
-import de.pnp.manager.exception.UniverseNotFoundException;
+import de.pnp.manager.server.database.DatabaseConstants;
+import de.pnp.manager.server.database.MongoConfig;
 import java.util.Collection;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,16 +84,5 @@ public class UniverseRepository {
         }
         mongoClient.getDatabase(DatabaseConstants.UNIVERSE_PREFIX + universe).drop();
         return true;
-    }
-
-    /**
-     * Returns the {@link UniverseSettings} of the given universe.
-     */
-    public UniverseSettings getSetting(String universe) {
-        Optional<Universe> optUniverse = get(universe);
-        if (optUniverse.isEmpty()) {
-            throw new UniverseNotFoundException(universe);
-        }
-        return optUniverse.get().getSettings();
     }
 }

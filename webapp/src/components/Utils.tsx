@@ -1,4 +1,4 @@
-import { Universe } from "../api";
+import { CurrencySettings, Universe } from "../api";
 
 /** Helper class to calculate human readable currency */
 interface CurrencyCalculationStep {
@@ -13,26 +13,24 @@ interface CurrencyCalculationStep {
  * 
  * For example as 2G 11S 9K
  */
-export function currencyToHumanReadable(universe: Universe, amount: number): string {
+export function currencyToHumanReadable(currencySettings: CurrencySettings, amount: number): string {
     if (Number.isNaN(amount)) {
         return "";
     }
-    if (universe === null) {
+    if (currencySettings === null) {
         return amount.toString();
     }
 
-    const currencyCalculation = universe.settings.currencyCalculation;
-
     if (amount <= 0) {
-        return "0" + currencyCalculation.baseCurrencyShortForm;
+        return "0" + currencySettings.baseCurrencyShortForm;
     }
-    if (currencyCalculation.calculationEntries.length === 0) {
-        return amount + currencyCalculation.baseCurrencyShortForm;
+    if (currencySettings.calculationEntries.length === 0) {
+        return amount + currencySettings.baseCurrencyShortForm;
     }
 
-    const calcuationSteps: CurrencyCalculationStep[] = [{ shortForm: currencyCalculation.baseCurrencyShortForm, factor: 1 }];
+    const calcuationSteps: CurrencyCalculationStep[] = [{ shortForm: currencySettings.baseCurrencyShortForm, factor: 1 }];
 
-    for (const entry of currencyCalculation.calculationEntries) {
+    for (const entry of currencySettings.calculationEntries) {
         calcuationSteps.unshift({
             shortForm: entry.currencyShortForm,
             factor: calcuationSteps[0].factor * (entry.factor ?? 1)

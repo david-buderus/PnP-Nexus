@@ -1,6 +1,6 @@
 
 import { useTranslation } from "react-i18next";
-import { EUpgradeEffectCalculation, EUpgradeEquipmentManipulator, ItemType, ItemTypeServiceApi, Upgrade, UpgradeServiceApi } from "../../api";
+import { ECalculation, EUpgradeEquipmentManipulator, ItemType, ItemTypeServiceApi, Upgrade, UpgradeServiceApi } from "../../api";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 /** Page to give an overview over all upgrades */
 export function UpgradePage() {
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
+    const { activeUniverse, currencySettings } = getUniverseContext();
 
     const [itemTypes, setItemTypes] = useState<ItemType[]>([]);
 
@@ -29,7 +29,7 @@ export function UpgradePage() {
             { label: t("upgrade:effects"), id: "effects", getter: upgrade => upgrade.effects.map(effect => effect.description).join(", ") },
             { label: t("upgrade:target"), id: "target", getter: upgrade => upgrade.target.name },
             { label: t("upgrade:necessary-slots"), id: "slots", getter: upgrade => upgrade.slots, numeric: true },
-            { label: t("price"), id: "vendorPrice", getter: upgrade => currencyToHumanReadable(activeUniverse, upgrade.vendorPrice) },
+            { label: t("price"), id: "vendorPrice", getter: upgrade => currencyToHumanReadable(currencySettings, upgrade.vendorPrice) },
         ]}
         fields={[
             { fieldId: "name", label: t("name"), fieldType: "STRING" },
@@ -58,7 +58,7 @@ export function UpgradePage() {
                         fieldId: "effect-row", label: "", fieldType: "STACK", subFields: [
                             {
                                 fieldId: "calculation", label: t("upgrade:calculation"), fieldType: "ENUM",
-                                dependency: Object.values(EUpgradeEffectCalculation).map(manipulator => {
+                                dependency: Object.values(ECalculation).map(manipulator => {
                                     return { key: manipulator, content: manipulator, label: t("upgrade:" + manipulator.toLowerCase()) };
                                 })
                             },

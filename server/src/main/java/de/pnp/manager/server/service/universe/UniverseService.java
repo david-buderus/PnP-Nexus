@@ -1,4 +1,4 @@
-package de.pnp.manager.server.service;
+package de.pnp.manager.server.service.universe;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -10,8 +10,8 @@ import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
 import de.pnp.manager.server.contoller.UserController;
-import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.UserDetailsRepository;
+import de.pnp.manager.server.database.universe.UniverseRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.Collection;

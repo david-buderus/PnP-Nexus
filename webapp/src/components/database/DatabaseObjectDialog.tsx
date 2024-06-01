@@ -135,7 +135,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
     setDatabaseObject
 }: FieldProps<O, D>): React.JSX.Element {
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
+    const { currencySettings } = getUniverseContext();
 
     const fullId = (field.fullId ?? field.fieldId) as string;
 
@@ -212,7 +212,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     label={t("resultingPrice")}
                     data-testid="resultingPrice"
                     variant="outlined"
-                    value={currencyToHumanReadable(activeUniverse, Number(databaseObject?.[field.fieldId]))}
+                    value={currencyToHumanReadable(currencySettings, Number(databaseObject?.[field.fieldId]))}
                     InputProps={{ readOnly: true }}
                     fullWidth
                 />

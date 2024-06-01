@@ -133,7 +133,7 @@ interface ItemManipulationProps {
 export function ItemManipulation(props: ItemManipulationProps) {
     const { itemTypes, materials, itemClass, errors, item, setItem } = props;
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
+    const { currencySettings } = getUniverseContext();
 
     const [name, setName] = useState<string>(item?.name ?? "");
     const [type, setType] = useState<ItemType>(item?.type ?? null);
@@ -249,7 +249,7 @@ export function ItemManipulation(props: ItemManipulationProps) {
         <TextFieldWithError fieldId="requirement" errorMap={errors} label={t("requirement")} multiline rows={2} value={requirement} onChange={setRequirement} />
         <Stack direction="row" spacing={2}>
             <TextFieldWithError fieldId="vendorPrice" errorMap={errors} integerField label={t("price")} value={price} onChange={setPrice} fullWidth />
-            <TextField label={t("resultingPrice")} data-testid="resultingPrice" variant="outlined" value={currencyToHumanReadable(activeUniverse, Number(price))} InputProps={{ readOnly: true }} fullWidth />
+            <TextField label={t("resultingPrice")} data-testid="resultingPrice" variant="outlined" value={currencyToHumanReadable(currencySettings, Number(price))} InputProps={{ readOnly: true }} fullWidth />
         </Stack>
         {itemClass === "Item" && <Stack direction="row" spacing={2}>
             <TextFieldWithError fieldId="minimumStackSize" errorMap={errors} integerField label={t("item:minStackSize")} value={minStackSize} onChange={setMinStackSize} fullWidth />
