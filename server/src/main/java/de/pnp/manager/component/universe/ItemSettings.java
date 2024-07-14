@@ -1,5 +1,6 @@
 package de.pnp.manager.component.universe;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -16,6 +17,7 @@ public class ItemSettings extends SettingsBase {
     @NotNull
     private final int wearFactor;
 
+    @JsonCreator
     public ItemSettings(int wearFactor) {
         this.wearFactor = wearFactor;
     }

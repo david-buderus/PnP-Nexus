@@ -1,27 +1,19 @@
 import { useTranslation } from "react-i18next";
-import { CraftingRecipe, CraftingRecipeServiceApi, ItemServiceApi } from "../../api";
+import { CraftingRecipe, CraftingRecipeServiceApi } from "../../api";
 import { API_CONFIGURATION, SomeItem } from "../../components/Constants";
 import { getUniverseContext } from "../../components/PageBase";
-import { useEffect, useState } from "react";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { IResourceUsage, addTypeAnnotationToUsage, fetchAllResources, resourceUsageToString } from "../../components/database/ResourceUsageUtils";
+import { fetchAllItems } from "../../components/Database";
 
 const CRAFTING_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
-const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 
 /** Page to give an overview over all crafting recipes */
 export function CraftingRecipesPage() {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();
 
-    const [items, setItems] = useState<SomeItem[]>([]);
-
-    useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
-        ITEM_API.getAllItems(activeUniverse.name).then(response => setItems(response.data));
-    }, [activeUniverse]);
+    const [items] = fetchAllItems();
 
     const resources: IResourceUsage[] = fetchAllResources(activeUniverse);
 

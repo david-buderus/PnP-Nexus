@@ -1,5 +1,6 @@
 package de.pnp.manager.component.universe;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +16,7 @@ public class CurrencySettings extends SettingsBase {
     /**
      * The default settings
      */
-    public static final CurrencySettings DEFAULT = new CurrencySettings("Currency", "C", List.of());
+    public static final CurrencySettings DEFAULT = new CurrencySettings("", "", List.of());
 
     @NotBlank
     private final String baseCurrency;
@@ -26,6 +27,7 @@ public class CurrencySettings extends SettingsBase {
     @NotNull
     private final List<@Valid CurrencyCalculationEntry> calculationEntries;
 
+    @JsonCreator
     public CurrencySettings(String baseCurrency, String baseCurrencyShortForm,
         List<CurrencyCalculationEntry> calculationEntries) {
         this.baseCurrency = baseCurrency;

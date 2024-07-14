@@ -14,7 +14,7 @@ import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
 
-type UniverseContext = { universes: Universe[], activeUniverse: Universe, setActiveUniverse: (activeUniverse: Universe) => void, fetchUniverses: () => void, currencySettings: CurrencySettings; };
+type UniverseContext = { universes: Universe[], activeUniverse: Universe, setActiveUniverse: (activeUniverse: Universe) => void, fetchUniverses: () => Promise<void>, currencySettings: CurrencySettings; };
 type UserContext = { userPermissions: UserPermissions, userPreferences: PnPUserPreference, user: PnPUser, refreshUser: () => void; };
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
@@ -43,22 +43,22 @@ function PageBase() {
     setOpen(!open);
   };
 
-  const fetchUniverses = () => {
-    UNIVERSE_API.getAllUniverses().then(response => {
-      setUniverses(response.data);
-      const paramUniverse = response.data.find(u => u.name === searchParams.get("universe"));
-      if (paramUniverse !== undefined) {
-        setActiveUniverse(paramUniverse);
-        return;
+  async function fetchUniverses(): Promise<void> {
+    const response = await UNIVERSE_API.getAllUniverses();
+    setUniverses(response.data);
+    const paramUniverse = response.data.find(u => u.name === searchParams.get("universe"));
+    if (paramUniverse !== undefined) {
+      setActiveUniverse(paramUniverse);
+      return;
+    }
+    // If no universe is selected, select the previous selected universe of the user
+    if (userPreferences) {
+      const prefUniverse = response.data.find(u => u.name === userPreferences.lastSelectedUniverse);
+      if (prefUniverse !== undefined) {
+        setActiveUniverse(prefUniverse);
       }
-      if (userPreferences) {
-        const prefUniverse = response.data.find(u => u.name === userPreferences.lastSelectedUniverse);
-        if (prefUniverse !== undefined) {
-          setActiveUniverse(prefUniverse);
-        }
-      }
-    });
-  };
+    }
+  }
 
   const refreshUser = () => {
     Promise.all([

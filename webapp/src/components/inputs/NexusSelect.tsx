@@ -71,3 +71,44 @@ export function RaritySelect(props: React.PropsWithChildren<RaritySelectProps>) 
         {...rest}
     />;
 }
+
+/** Props needed for the select */
+interface LanguageSelectProps {
+    /** The default value */
+    language: string;
+    /** On change handler */
+    onChange: (language: string) => void;
+    /** helper text */
+    helperText?: string;
+    /** indicates whether the selection is an error case */
+    error?: boolean;
+    /** if it fills the full width */
+    fullWidth?: boolean;
+}
+
+/** A select for languages */
+export function LanguageSelect(props: React.PropsWithChildren<LanguageSelectProps>) {
+    const { t } = useTranslation();
+    const { language, onChange, error, ...rest } = props;
+
+    return <NexusSelect
+        data-testid="language"
+        label={t("language")}
+        values={[
+            {
+                key: "de",
+                content: "de",
+                label: "Deutsch"
+            },
+            {
+                key: "en",
+                content: "en",
+                label: "English"
+            }
+        ]}
+        value={language}
+        onChange={event => onChange(event.target.value)}
+        sx={{ minWidth: 300 }}
+        {...rest}
+    />;
+}

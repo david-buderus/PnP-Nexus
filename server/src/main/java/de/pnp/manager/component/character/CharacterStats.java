@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.stats.Stat;
+import de.pnp.manager.component.math.IExpressionVariable;
+import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import jakarta.validation.constraints.NotEmpty;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * The stats of a {@link PnPCharacter}.
@@ -44,11 +47,15 @@ public class CharacterStats {
     }
 
     public void recalculateSecondaryStats() {
+        Map<IExpressionVariable, Double> primaryAttributeVariables = primaryStats.entrySet().stream()
+            .collect(
+                Collectors.toMap(e -> new PrimaryAttributeVariable(e.getKey()), e -> (double) e.getValue().getValue()));
+
         for (Entry<SecondaryAttribute, Stat> entry : secondaryStats.entrySet()) {
             SecondaryAttribute attribute = entry.getKey();
-            secondaryStats.put(attribute, new Stat((int) Math.round(attribute.getPrimaryAttributeDependencies().stream()
-                .mapToDouble(dependency -> dependency.factor() * getStat(dependency.primaryAttribute())).sum()),
-                entry.getValue().getFlatModifier()));
+            secondaryStats.put(attribute,
+                new Stat((int) Math.round(attribute.getCalculationFormula().calculate(primaryAttributeVariables)),
+                    entry.getValue().getFlatModifier()));
         }
     }
 }

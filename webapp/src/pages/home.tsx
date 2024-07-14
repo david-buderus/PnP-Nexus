@@ -12,8 +12,6 @@ function Home() {
     const { universes, setActiveUniverse, fetchUniverses } = getUniverseContext();
     const { userPermissions } = getUserContext();
 
-    const [openUniverseCreationDialog, setOpenUniverseCreationDialog] = useState(false);
-
     if (universes.length === 0 && !userPermissions.canCreateUniverses) {
         return <Grid
             container
@@ -70,7 +68,12 @@ function Home() {
             )}
             {userPermissions.canCreateUniverses && <Grid item>
                 <Card >
-                    <CardActionArea sx={{ width: 250, height: 250 }} onClick={() => setOpenUniverseCreationDialog(true)}>
+                    <CardActionArea sx={{ width: 250, height: 250 }}
+                        component={Link}
+                        to={{
+                            pathname: "/universe-creation",
+                            search: searchParams.toString()
+                        }}>
                         <CardContent>
                             <Grid
                                 container
@@ -88,13 +91,6 @@ function Home() {
                 </Card>
             </Grid>}
         </Grid>
-        <UniverseCreationDialog open={openUniverseCreationDialog} onClose={(event, reason) => {
-            if (reason === "successful") {
-                fetchUniverses();
-            }
-            setOpenUniverseCreationDialog(false);
-        }}
-        />
     </Box>;
 }
 

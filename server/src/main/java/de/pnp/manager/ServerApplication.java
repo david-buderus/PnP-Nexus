@@ -1,6 +1,7 @@
 package de.pnp.manager;
 
 import de.pnp.manager.server.service.RepositoryServiceBase;
+import de.pnp.manager.server.service.RewriteOperationId;
 import org.jetbrains.annotations.NotNull;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.boot.SpringApplication;
@@ -76,7 +77,8 @@ public class ServerApplication implements WebMvcConfigurer {
     public OperationCustomizer operationIdCustomizer() {
         return (operation, handlerMethod) -> {
             Class<?> clazz = handlerMethod.getBeanType();
-            if (RepositoryServiceBase.class.isAssignableFrom(clazz)) {
+            if (RepositoryServiceBase.class.isAssignableFrom(clazz)
+                && handlerMethod.getMethodAnnotation(RewriteOperationId.class) != null) {
                 String name = clazz.getSimpleName();
                 String content = name.substring(0, name.length() - "Service".length());
                 String id = operation.getOperationId();

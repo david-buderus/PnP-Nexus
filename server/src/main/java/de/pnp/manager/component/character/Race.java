@@ -8,11 +8,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 public class Race extends DatabaseObject implements IUniquelyNamedDataObject {
 
     @NotBlank
+    @Indexed(unique = true)
     private final String name;
 
     @NotBlank

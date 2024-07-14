@@ -22,15 +22,7 @@ function createEmptyUniverse(): Universe {
         name: "",
         displayName: "",
         shortDescription: "",
-        description: "",
-        settings: {
-            wearFactor: 0,
-            currencyCalculation: {
-                baseCurrency: "",
-                baseCurrencyShortForm: "",
-                calculationEntries: []
-            }
-        }
+        description: ""
     };
 }
 

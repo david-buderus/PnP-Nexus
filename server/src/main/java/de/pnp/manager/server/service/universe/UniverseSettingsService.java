@@ -24,20 +24,20 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Validated
-@RequestMapping("/api/universe-settings")
+@RequestMapping("/api/{universe}/universe-settings")
 public class UniverseSettingsService {
 
     @Autowired
     private UniverseSettingsRepository settingsRepository;
 
-    @GetMapping("{universe}/character")
+    @GetMapping("character")
     @UniverseRead
     @Operation(summary = "Get the settings", operationId = "getCharacterSettings")
     public CharacterSettings getCharacterSettings(@PathVariable String universe) {
         return settingsRepository.getSettings(universe, CharacterSettings.class);
     }
 
-    @PutMapping("{universe}/character")
+    @PutMapping("character")
     @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Update the settings", operationId = "updateCharacterSettings")
@@ -45,29 +45,29 @@ public class UniverseSettingsService {
         settingsRepository.setSettings(universe, settings);
     }
 
-    @GetMapping("{universe}/currency")
+    @GetMapping("currency")
     @UniverseRead
     @Operation(summary = "Get the settings", operationId = "getCurrencySettings")
     public CurrencySettings getCurrencySettings(@PathVariable String universe) {
         return settingsRepository.getSettings(universe, CurrencySettings.class);
     }
 
-    @PutMapping("{universe}/currency")
+    @PutMapping("currency")
     @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Update the settings", operationId = "updateCharacterSettings")
+    @Operation(summary = "Update the settings", operationId = "updateCurrencySettings")
     public void updateCurrencySettings(@PathVariable String universe, @Valid @RequestBody CurrencySettings settings) {
         settingsRepository.setSettings(universe, settings);
     }
 
-    @GetMapping("{universe}/item")
+    @GetMapping("item")
     @UniverseRead
     @Operation(summary = "Get the settings", operationId = "getItemSettings")
     public ItemSettings getItemSettings(@PathVariable String universe) {
         return settingsRepository.getSettings(universe, ItemSettings.class);
     }
 
-    @PutMapping("{universe}/item")
+    @PutMapping("item")
     @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Update the settings", operationId = "updateItemSettings")

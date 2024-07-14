@@ -19,7 +19,7 @@ function errorMessage(fieldId: string, errorMap: Map<string, string>, value: str
             helperText: t('error:notInteger')
         };
     }
-    if (errorMap.get(fieldId)) {
+    if (errorMap?.get(fieldId)) {
         return {
             error: true,
             helperText: errorMap.get(fieldId)
@@ -39,7 +39,7 @@ export function TextFieldWithError(props: {
     /** On change hook for the value. */
     onChange: (value: string) => void;
     /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
-    errorMap: Map<string, string>,
+    errorMap?: Map<string, string>,
     /** If the textfield is a number field. */
     numberField?: boolean,
     /** If the textfield is an integer field. */
@@ -98,7 +98,7 @@ export function NumberFieldWithError(props: {
     /** On change hook for the value. */
     onChange: (value: number) => void;
     /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
-    errorMap: Map<string, string>,
+    errorMap?: Map<string, string>,
     /** If the textfield is an integer field. */
     integerField?: boolean;
     /** Tooltip for the textfield. */

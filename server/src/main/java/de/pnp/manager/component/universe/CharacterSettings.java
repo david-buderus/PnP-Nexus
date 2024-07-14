@@ -1,5 +1,6 @@
 package de.pnp.manager.component.universe;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.character.PnPCharacter;
 import de.pnp.manager.component.item.ItemType;
 import jakarta.validation.constraints.NotBlank;
@@ -18,19 +19,47 @@ public final class CharacterSettings extends SettingsBase {
     /**
      * The default settings
      */
-    public static final CharacterSettings DEFAULT = new CharacterSettings(2, List.of(), List.of());
-    private final @PositiveOrZero int numberOfHandheld;
-    private final @NotNull List<ArmorDefinition> armorDefinitions;
-    private final @NotNull List<ArmorDefinition> jewelleryDefinitions;
+    public static final CharacterSettings DEFAULT = new CharacterSettings(2, 12, 50, 2, List.of(), List.of());
 
-    public CharacterSettings(
-        @PositiveOrZero int numberOfHandheld,
-        @NotNull List<ArmorDefinition> armorDefinitions,
-        @NotNull List<ArmorDefinition> jewelleryDefinitions
-    ) {
+    @PositiveOrZero
+    private final int minPrimaryAttributeValue;
+
+    @Positive
+    private final int maxPrimaryAttributeValue;
+
+    @Positive
+    private final int maxPrimaryAttributeSum;
+
+    @PositiveOrZero
+    private final int numberOfHandheld;
+
+    @NotNull
+    private final List<ArmorDefinition> armorDefinitions;
+
+    @NotNull
+    private final List<JewelleryDefinition> jewelleryDefinitions;
+
+    @JsonCreator
+    public CharacterSettings(int minPrimaryAttributeValue, int maxPrimaryAttributeValue, int maxPrimaryAttributeSum,
+        int numberOfHandheld, List<ArmorDefinition> armorDefinitions, List<JewelleryDefinition> jewelleryDefinitions) {
+        this.minPrimaryAttributeValue = minPrimaryAttributeValue;
+        this.maxPrimaryAttributeValue = maxPrimaryAttributeValue;
+        this.maxPrimaryAttributeSum = maxPrimaryAttributeSum;
         this.numberOfHandheld = numberOfHandheld;
         this.armorDefinitions = armorDefinitions;
         this.jewelleryDefinitions = jewelleryDefinitions;
+    }
+
+    public int getMinPrimaryAttributeValue() {
+        return minPrimaryAttributeValue;
+    }
+
+    public int getMaxPrimaryAttributeValue() {
+        return maxPrimaryAttributeValue;
+    }
+
+    public int getMaxPrimaryAttributeSum() {
+        return maxPrimaryAttributeSum;
     }
 
     public int getNumberOfHandheld() {
@@ -41,7 +70,7 @@ public final class CharacterSettings extends SettingsBase {
         return armorDefinitions;
     }
 
-    public List<ArmorDefinition> getJewelleryDefinitions() {
+    public List<JewelleryDefinition> getJewelleryDefinitions() {
         return jewelleryDefinitions;
     }
 

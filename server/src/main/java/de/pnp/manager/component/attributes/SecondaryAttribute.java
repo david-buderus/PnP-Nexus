@@ -3,15 +3,12 @@ package de.pnp.manager.component.attributes;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.PnPCharacter;
-import jakarta.validation.Valid;
+import de.pnp.manager.component.math.BinaryExpressionTree;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
  * A secondary attribute of a {@link PnPCharacter}.
@@ -30,15 +27,15 @@ public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamed
     @NotNull
     private final boolean consumable;
 
-    @NotEmpty
-    private final Collection<@Valid PrimaryAttributeDependency> primaryAttributeDependencies;
+    @NotNull(message = "{expression.invalid}")
+    private final BinaryExpressionTree calculationFormula;
 
     public SecondaryAttribute(ObjectId id, String name, boolean consumable,
-        Collection<PrimaryAttributeDependency> primaryAttributeDependencies) {
+        BinaryExpressionTree calculationFormula) {
         super(id);
         this.name = name;
         this.consumable = consumable;
-        this.primaryAttributeDependencies = primaryAttributeDependencies;
+        this.calculationFormula = calculationFormula;
     }
 
     @Override
@@ -50,8 +47,8 @@ public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamed
         return consumable;
     }
 
-    public Collection<PrimaryAttributeDependency> getPrimaryAttributeDependencies() {
-        return primaryAttributeDependencies;
+    public BinaryExpressionTree getCalculationFormula() {
+        return calculationFormula;
     }
 
     @Override
@@ -64,18 +61,11 @@ public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamed
         }
         SecondaryAttribute that = (SecondaryAttribute) o;
         return isConsumable() == that.isConsumable() && Objects.equals(getName(), that.getName())
-            && Objects.equals(getPrimaryAttributeDependencies(), that.getPrimaryAttributeDependencies());
+            && Objects.equals(getCalculationFormula(), that.getCalculationFormula());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), isConsumable(), getPrimaryAttributeDependencies());
-    }
-
-    /**
-     * Dependencies of a {@link SecondaryAttribute} to a {@link PrimaryAttribute}.
-     */
-    public record PrimaryAttributeDependency(double factor, @DBRef @NotNull PrimaryAttribute primaryAttribute) {
-
+        return Objects.hash(getName(), isConsumable(), getCalculationFormula());
     }
 }

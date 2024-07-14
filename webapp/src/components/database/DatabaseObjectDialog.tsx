@@ -116,7 +116,7 @@ export function DatabaseObjectDialog<O extends DatabaseObject>({
 }
 
 /** Props needed to create a field */
-interface FieldProps<O extends DatabaseObject, D extends DatabaseObject> {
+interface FieldProps<O, D> {
     /** Entry field of the database object */
     field: DatabaseObjectDialogField<O, D>;
     /** The current errors */
@@ -128,7 +128,7 @@ interface FieldProps<O extends DatabaseObject, D extends DatabaseObject> {
 }
 
 /** Creates a field */
-function Field<O extends DatabaseObject, D extends DatabaseObject>({
+export function Field<O, D>({
     field,
     errors,
     databaseObject,
@@ -243,7 +243,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     }}
                     isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
                     renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
-                    value={databaseObject?.[field.fieldId] ?? null}
+                    value={databaseObject?.[field.fieldId] as D ?? null}
                     onChange={(_, value) => setDatabaseObject({
                         ...databaseObject,
                         [field.fieldId]: value
@@ -263,7 +263,7 @@ function Field<O extends DatabaseObject, D extends DatabaseObject>({
                     }}
                     isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option?.id === value?.id}
                     renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
-                    value={databaseObject?.[field.fieldId] as DatabaseObject[] ?? []}
+                    value={databaseObject?.[field.fieldId] as D[] ?? []}
                     onChange={(_, value) => setDatabaseObject({
                         ...databaseObject,
                         [field.fieldId]: value

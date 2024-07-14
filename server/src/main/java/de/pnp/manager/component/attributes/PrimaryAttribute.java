@@ -25,6 +25,7 @@ public class PrimaryAttribute extends DatabaseObject implements IUniquelyNamedDa
     /**
      * The human-readable short name of this attribute.
      */
+    @Indexed(unique = true)
     @NotBlank
     private final String shortName;
 

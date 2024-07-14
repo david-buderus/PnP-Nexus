@@ -44,6 +44,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @GetMapping
     @UniverseRead
+    @RewriteOperationId
     @Operation(summary = "Get all objects from the database", operationId = "getAll")
     public Collection<Obj> getAll(@PathVariable String universe, @RequestParam(required = false) List<ObjectId> ids) {
         if (ids == null || ids.isEmpty()) {
@@ -54,6 +55,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @PostMapping
     @UniverseWrite
+    @RewriteOperationId
     @Operation(summary = "Inserts the objects into the database", operationId = "insertAll")
     public Collection<Obj> insertAll(@PathVariable String universe, @RequestBody List<@Valid Obj> objects) {
         return repository.insertAll(universe, objects);
@@ -62,6 +64,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @DeleteMapping
     @UniverseWrite
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @RewriteOperationId
     @Operation(summary = "Deletes all objects with the given ids from the database", operationId = "deleteAll")
     public void deleteAll(@PathVariable String universe, @RequestParam List<ObjectId> ids) {
         if (!repository.removeAll(universe, ids)) {
@@ -71,6 +74,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @GetMapping("{id}")
     @UniverseRead
+    @RewriteOperationId
     @Operation(summary = "Get an object from the database", operationId = "get")
     public Obj get(@PathVariable String universe, @PathVariable ObjectId id) {
         return repository.get(universe, id)
@@ -79,6 +83,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
 
     @PutMapping("{id}")
     @UniverseWrite
+    @RewriteOperationId
     @Operation(summary = "Updates an object in the database", operationId = "update")
     public Obj update(@PathVariable String universe, @PathVariable ObjectId id, @RequestBody @Valid Obj object) {
         if (object.getId() != null && !Objects.equals(id, object.getId())) {
@@ -90,6 +95,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @DeleteMapping("{id}")
     @UniverseWrite
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @RewriteOperationId
     @Operation(summary = "Deletes an object from the database", operationId = "delete")
     public void delete(@PathVariable String universe, @PathVariable ObjectId id) {
         if (!repository.remove(universe, id)) {

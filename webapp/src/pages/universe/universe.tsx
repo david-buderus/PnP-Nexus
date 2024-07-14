@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { getUniverseContext, getUserContext } from '../components/PageBase';
+import { getUniverseContext, getUserContext } from '../../components/PageBase';
 import { Autocomplete, Button, Dialog, DialogActions, DialogTitle, Grid, Paper, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { UniverseServiceApi, UserServiceApi, UserUniversePermissionDTO } from '../api';
-import { API_CONFIGURATION } from '../components/Constants';
-import OverviewTable from '../components/OverviewTable';
-import { ConfirmationDialog } from '../components/inputs/ConfirmationDialog';
-import { handleValidationError } from '../components/ErrorUtils';
-import { TextFieldWithErrorForAutoComplete } from '../components/inputs/TestFieldWithError';
-import { NexusSelect } from '../components/inputs/NexusSelect';
+import { UniverseServiceApi, UserServiceApi, UserUniversePermissionDTO } from '../../api';
+import { API_CONFIGURATION } from '../../components/Constants';
+import OverviewTable from '../../components/OverviewTable';
+import { ConfirmationDialog } from '../../components/inputs/ConfirmationDialog';
+import { handleValidationError } from '../../components/ErrorUtils';
+import { TextFieldWithErrorForAutoComplete } from '../../components/inputs/TestFieldWithError';
+import { NexusSelect } from '../../components/inputs/NexusSelect';
 import { useNavigate } from 'react-router-dom';
-import { UniverseEditDialog } from '../components/universes/UniverseEditDialog';
-import { NoUniverse } from '../components/NoUniverse';
+import { UniverseEditDialog } from '../../components/universes/UniverseEditDialog';
+import { NoUniverse } from '../../components/NoUniverse';
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
@@ -67,7 +67,7 @@ function PermissionCreationDialog(props: PermissionCreationDialogProps) {
 }
 
 function Universe() {
-  const { activeUniverse, fetchUniverses, setActiveUniverse } = getUniverseContext();
+  const { activeUniverse, fetchUniverses, setActiveUniverse, currencySettings } = getUniverseContext();
   const { userPermissions } = getUserContext();
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -79,6 +79,8 @@ function Universe() {
   const [openPermissionDeleteDialog, setOpenPermissionDeleteDialog] = useState(false);
   const [openDeleteUniverseDialog, setOpenDeleteUniverseDialog] = useState(false);
   const [openEditUniverseDialog, setOpenEditUniverseDialog] = useState(false);
+
+  const wearFactor = 0;
 
   const fetchPermissions = () => {
     if (!activeUniverse) {
@@ -96,9 +98,6 @@ function Universe() {
   if (activeUniverse === null) {
     return <NoUniverse />;
   }
-
-  const settings = activeUniverse.settings;
-  const currency = settings.currencyCalculation;
 
   return <Grid container spacing={2}>
     <Grid item>
@@ -157,9 +156,9 @@ function Universe() {
         <Typography gutterBottom variant="h6" component="div" align='left'>
           {t("universe:wearFactor")}
         </Typography>
-        {settings.wearFactor > 0 ?
+        {wearFactor > 0 ?
           <Typography gutterBottom variant="body2" component="div" align='left'>
-            {t("universe:wearFactorDescription", { "wearFactor": settings.wearFactor })}
+            {t("universe:wearFactorDescription", { "wearFactor": wearFactor })}
           </Typography>
           :
           <Typography gutterBottom variant="body2" component="div" align='left'>
@@ -171,12 +170,12 @@ function Universe() {
           {t("universe:currency")}
         </Typography>
         <Typography gutterBottom variant="body2" component="div" align='left'>
-          {t("universe:baseCurrencyDescription", { "currency": currency.baseCurrency, "shortForm": currency.baseCurrencyShortForm })}
-          {currency.calculationEntries.map((entry, index) => " " + t("universe:calculationCurrencyDescription", {
+          {t("universe:baseCurrencyDescription", { "currency": currencySettings?.baseCurrency, "shortForm": currencySettings?.baseCurrencyShortForm })}
+          {currencySettings?.calculationEntries.map((entry, index) => " " + t("universe:calculationCurrencyDescription", {
             "factor": entry.factor,
             "currency": entry.currency,
             "shortForm": entry.currencyShortForm,
-            "prevCurrency": index === 0 ? currency.baseCurrency : currency.calculationEntries[index - 1].currency
+            "prevCurrency": index === 0 ? currencySettings.baseCurrency : currencySettings.calculationEntries[index - 1].currency
           }))}
         </Typography>
       </Paper>

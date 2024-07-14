@@ -2,7 +2,7 @@ package de.pnp.manager.server.database.attributes;
 
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
-import de.pnp.manager.component.attributes.SecondaryAttribute.PrimaryAttributeDependency;
+import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.server.database.RepositoryTestBase;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +25,15 @@ class SecondaryAttributeRepositoryTest extends RepositoryTestBase<SecondaryAttri
     void testPrimaryAttributeLink() {
         PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseName(),
             new PrimaryAttribute(null, "Strength", "ST"));
-        SecondaryAttribute power = new SecondaryAttribute(null, "Power", false,
-            List.of(new PrimaryAttributeDependency(10, strength)));
+        SecondaryAttribute power = createSecondaryAttribute().withName("Power").addDependency(strength)
+            .withFormula("10 * ST").build();
+
         PrimaryAttribute changedStrength = new PrimaryAttribute(null, "Strength", "STR");
 
         testRepositoryCollectionLink(
-            secondaryAttribute -> secondaryAttribute.getPrimaryAttributeDependencies().stream()
-                .map(PrimaryAttributeDependency::primaryAttribute).toList(),
+            secondaryAttribute -> secondaryAttribute.getCalculationFormula().getVariables().stream()
+                .filter(PrimaryAttributeVariable.class::isInstance)
+                .map(variable -> ((PrimaryAttributeVariable) variable).attribute()).toList(),
             primaryAttributeRepository, power, List.of(strength), Map.of(strength, changedStrength));
     }
 
@@ -39,14 +41,15 @@ class SecondaryAttributeRepositoryTest extends RepositoryTestBase<SecondaryAttri
     protected SecondaryAttribute createObject() {
         PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseName(),
             new PrimaryAttribute(null, "Strength", "STR"));
-        return new SecondaryAttribute(null, "Power", false, List.of(new PrimaryAttributeDependency(10, strength)));
+        return createSecondaryAttribute().withName("Power").addDependency(strength).withFormula("10 * ST").build();
     }
 
     @Override
     protected SecondaryAttribute createSlightlyChangeObject() {
         PrimaryAttribute endurance = primaryAttributeRepository.insert(getUniverseName(),
             new PrimaryAttribute(null, "Endurance", "END"));
-        return new SecondaryAttribute(null, "Power", true, List.of(new PrimaryAttributeDependency(3, endurance)));
+        return createSecondaryAttribute().withName("Power").isConsumable().addDependency(endurance)
+            .withFormula("3 * END").build();
     }
 
     @Override
@@ -54,7 +57,8 @@ class SecondaryAttributeRepositoryTest extends RepositoryTestBase<SecondaryAttri
         PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseName(),
             new PrimaryAttribute(null, "Strength", "STR"));
         return List.of(
-            new SecondaryAttribute(null, "Power", false, List.of(new PrimaryAttributeDependency(2, strength))),
-            new SecondaryAttribute(null, "Health", true, List.of(new PrimaryAttributeDependency(10, strength))));
+            createSecondaryAttribute().withName("Power").addDependency(strength).withFormula("2 * STR").build(),
+            createSecondaryAttribute().withName("Health").isConsumable().addDependency(strength).withFormula("10 * STR")
+                .build());
     }
 }

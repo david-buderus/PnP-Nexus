@@ -75,6 +75,13 @@ public class ExtendedItemTypeController {
     }
 
     /**
+     * Inserts the given {@link ExtendedItemType} into the universe.
+     */
+    public ExtendedItemType insert(String universe, ExtendedItemType itemType) {
+        return insertAll(universe, List.of(itemType)).stream().findFirst().orElseThrow();
+    }
+
+    /**
      * Updates the given {@link ExtendedItemType}
      */
     public ExtendedItemType update(String universe, ExtendedItemType itemType) {

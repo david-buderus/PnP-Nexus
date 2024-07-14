@@ -1,5 +1,5 @@
 import { Button, Checkbox, FormControlLabel, Stack, Tooltip, Typography } from "@mui/material";
-import { CurrencyCalculation, CurrencyCalculationEntry, Universe, UniverseSettings } from "../../api";
+import { Universe } from "../../api";
 import { useState } from "react";
 import { NumberFieldWithError, TextFieldWithError } from "../inputs/TestFieldWithError";
 import { useTranslation } from "react-i18next";
@@ -20,13 +20,6 @@ export function UniverseManipulation(props: UniverseManipulationProps) {
     const { universe, setUniverse, errors } = props;
     const { t } = useTranslation();
 
-    function setSettings(settings: UniverseSettings) {
-        setUniverse({
-            ...universe,
-            settings: settings
-        });
-    }
-
     return <Stack spacing={2}>
         <TextFieldWithError fieldId="displayName" errorMap={errors} value={universe.displayName} onChange={value => {
             setUniverse({
@@ -46,7 +39,6 @@ export function UniverseManipulation(props: UniverseManipulationProps) {
                 description: value
             });
         }} label={t("description")} fullWidth multiline rows={10} />
-        <UniverseSettingsManipulation settings={universe.settings} setSettings={setSettings} errors={errors} />
     </Stack>;
 }
 

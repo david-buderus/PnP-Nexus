@@ -1,5 +1,6 @@
 package de.pnp.manager.server.database.universe;
 
+import com.google.common.annotations.VisibleForTesting;
 import de.pnp.manager.component.universe.CharacterSettings;
 import de.pnp.manager.component.universe.CurrencySettings;
 import de.pnp.manager.component.universe.ItemSettings;
@@ -23,7 +24,8 @@ public class UniverseSettingsRepository {
      */
     public static final String REPOSITORY_NAME = "universe-settings";
 
-    private static final Map<Class<? extends SettingsBase>, SettingsBase> DEFAULT_SETTINGS = Map.of(
+    @VisibleForTesting
+    static final Map<Class<? extends SettingsBase>, SettingsBase> DEFAULT_SETTINGS = Map.of(
         CharacterSettings.class, CharacterSettings.DEFAULT,
         CurrencySettings.class, CurrencySettings.DEFAULT,
         ItemSettings.class, ItemSettings.DEFAULT

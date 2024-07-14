@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/home';
 import About from './pages/about';
 import PageBase from './components/PageBase';
-import Universe from './pages/universe';
+import Universe from './pages/universe/universe';
 import ItemPage from './pages/items/items';
 import WeaponPage from './pages/items/weapons';
 import ShieldPage from './pages/items/shields';
@@ -24,6 +24,7 @@ import { SpellsPage } from './pages/character/spells';
 import { TalentsPage } from './pages/character/talents';
 import { PrimaryAttributesPage } from './pages/character/primary-attributes';
 import { SecondaryAttributesPage } from './pages/character/secondary-attributes';
+import { UniverseCreation } from './pages/universe/universe-creation';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -43,6 +44,7 @@ class App extends Component {
                         <Route path='/user' element={< UserProfile />}> </Route>
                         <Route path='/preferences' element={< UserPreferences />}> </Route>
                         <Route path='/universe' element={< Universe />}></Route>
+                        <Route path='/universe-creation' element={< UniverseCreation />}></Route>
                         <Route path='/about' element={< About />}></Route>
                         <Route path='/items' element={< ItemPage />}></Route>
                         <Route path='/weapons' element={< WeaponPage />}></Route>

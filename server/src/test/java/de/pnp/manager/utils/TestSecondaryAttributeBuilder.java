@@ -1,13 +1,16 @@
 package de.pnp.manager.utils;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
-import de.pnp.manager.component.attributes.SecondaryAttribute.PrimaryAttributeDependency;
+import de.pnp.manager.component.math.BinaryExpressionTree;
+import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
+import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,7 +54,9 @@ public class TestSecondaryAttributeBuilder {
 
     private boolean consumable;
 
-    private final Collection<PrimaryAttributeDependency> dependencies;
+    private String formula;
+
+    private final Set<PrimaryAttribute> dependencies;
 
     private boolean shouldGetPersisted;
 
@@ -63,7 +68,8 @@ public class TestSecondaryAttributeBuilder {
 
         name = "Sec Attribute";
         consumable = false;
-        dependencies = new ArrayList<>();
+        formula = "10";
+        dependencies = new HashSet<>();
     }
 
     /**
@@ -83,18 +89,26 @@ public class TestSecondaryAttributeBuilder {
     }
 
     /**
-     * @see SecondaryAttribute#getPrimaryAttributeDependencies()
+     * @see SecondaryAttribute#getCalculationFormula()
      */
-    public TestSecondaryAttributeBuilder addDependency(float factor, PrimaryAttribute primaryAttribute) {
-        this.dependencies.add(new PrimaryAttributeDependency(factor, primaryAttribute));
+    public TestSecondaryAttributeBuilder addDependency(PrimaryAttribute primaryAttribute) {
+        this.dependencies.add(primaryAttribute);
         return this;
     }
 
     /**
-     * @see SecondaryAttribute#getPrimaryAttributeDependencies()
+     * @see SecondaryAttribute#getCalculationFormula()
      */
-    public TestSecondaryAttributeBuilder addDependency(float factor, String primaryAttribute) {
-        this.dependencies.add(new PrimaryAttributeDependency(factor, getPrimaryAttribute(primaryAttribute)));
+    public TestSecondaryAttributeBuilder addDependency(String primaryAttribute) {
+        this.dependencies.add(getPrimaryAttribute(primaryAttribute));
+        return this;
+    }
+
+    /**
+     * @see SecondaryAttribute#getCalculationFormula()
+     */
+    public TestSecondaryAttributeBuilder withFormula(String formula) {
+        this.formula = formula;
         return this;
     }
 
@@ -110,11 +124,15 @@ public class TestSecondaryAttributeBuilder {
      * Builds the {@link SecondaryAttribute}.
      */
     public SecondaryAttribute build() {
-        Collection<PrimaryAttributeDependency> actualDependencies = dependencies;
-        if (dependencies.isEmpty()) {
-            actualDependencies = List.of(new PrimaryAttributeDependency(1, getPrimaryAttribute("Example Attribute")));
+        BinaryExpressionTree tree;
+        try {
+            tree = BinaryExpressionTree.from(formula,
+                dependencies.stream().map(PrimaryAttributeVariable::new).collect(Collectors.toSet()));
+        } catch (IllegalFormulaException e) {
+            return fail(e);
         }
-        SecondaryAttribute attribute = new SecondaryAttribute(null, name, consumable, actualDependencies);
+
+        SecondaryAttribute attribute = new SecondaryAttribute(null, name, consumable, tree);
         if (shouldGetPersisted) {
             return secondaryAttributeRepository.insert(universe, attribute);
         }

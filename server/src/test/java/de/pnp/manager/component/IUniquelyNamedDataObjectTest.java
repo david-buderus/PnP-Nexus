@@ -3,14 +3,10 @@ package de.pnp.manager.component;
 import static de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository.NAME_ATTRIBUTE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
-import java.io.IOException;
+import de.pnp.manager.utils.TestUtils;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,23 +33,8 @@ class IUniquelyNamedDataObjectTest {
     }
 
     private static Stream<Arguments> provideIUniquelyNamedDataObjectClasses() {
-        Set<Class<?>> subTypes;
-
-        try {
-            subTypes = ClassPath.from(ClassLoader.getSystemClassLoader())
-                .getAllClasses()
-                .stream()
-                .filter(clazz -> clazz.getPackageName().startsWith("de.pnp.manager"))
-                .map(ClassInfo::load)
-                .filter(IUniquelyNamedDataObjectTest::implementsIUniquelyNamedDataObject)
-                .collect(Collectors.toSet());
-        } catch (IOException e) {
-            throw new AssertionError(e);
-        }
-
-        // soundness check
-        assertThat(subTypes).isNotEmpty();
-        return subTypes.stream().map(clazz -> Arguments.of(Named.of(clazz.getSimpleName(), clazz)));
+        return TestUtils.getAllClasses(IUniquelyNamedDataObjectTest::implementsIUniquelyNamedDataObject).stream()
+            .map(clazz -> Arguments.of(Named.of(clazz.getSimpleName(), clazz)));
     }
 
     private static Field getDeclaredField(Class<?> clazz, String name) {

@@ -236,10 +236,28 @@ export interface CharacterSettings {
     'armorDefinitions': Array<ArmorDefinition>;
     /**
      * 
-     * @type {Array<ArmorDefinition>}
+     * @type {Array<JewelleryDefinition>}
      * @memberof CharacterSettings
      */
-    'jewelleryDefinitions': Array<ArmorDefinition>;
+    'jewelleryDefinitions': Array<JewelleryDefinition>;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterSettings
+     */
+    'maxPrimaryAttributeSum'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterSettings
+     */
+    'maxPrimaryAttributeValue'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterSettings
+     */
+    'minPrimaryAttributeValue'?: number;
     /**
      * 
      * @type {number}
@@ -883,6 +901,31 @@ export interface JewelleryAllOf {
      * @memberof JewelleryAllOf
      */
     'upgradeSlots'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface JewelleryDefinition
+ */
+export interface JewelleryDefinition {
+    /**
+     * 
+     * @type {number}
+     * @memberof JewelleryDefinition
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof JewelleryDefinition
+     */
+    'name': string;
+    /**
+     * 
+     * @type {ItemType}
+     * @memberof JewelleryDefinition
+     */
+    'type': ItemType;
 }
 /**
  * 
@@ -5171,6 +5214,46 @@ export const PrimaryAttributeServiceApiAxiosParamCreator = function (configurati
         },
         /**
          * 
+         * @summary Sets all primary attributes of the universe
+         * @param {string} universe 
+         * @param {Array<PrimaryAttribute>} primaryAttribute 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setAllPrimaryAttributes: async (universe: string, primaryAttribute: Array<PrimaryAttribute>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('setAllPrimaryAttributes', 'universe', universe)
+            // verify required parameter 'primaryAttribute' is not null or undefined
+            assertParamExists('setAllPrimaryAttributes', 'primaryAttribute', primaryAttribute)
+            const localVarPath = `/{universe}/primary-attributes`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(primaryAttribute, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
@@ -5285,6 +5368,18 @@ export const PrimaryAttributeServiceApiFp = function(configuration?: Configurati
         },
         /**
          * 
+         * @summary Sets all primary attributes of the universe
+         * @param {string} universe 
+         * @param {Array<PrimaryAttribute>} primaryAttribute 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async setAllPrimaryAttributes(universe: string, primaryAttribute: Array<PrimaryAttribute>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setAllPrimaryAttributes(universe, primaryAttribute, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
@@ -5360,6 +5455,17 @@ export const PrimaryAttributeServiceApiFactory = function (configuration?: Confi
          */
         insertAllPrimaryAttributes(universe: string, primaryAttribute: Array<PrimaryAttribute>, options?: any): AxiosPromise<Array<PrimaryAttribute>> {
             return localVarFp.insertAllPrimaryAttributes(universe, primaryAttribute, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Sets all primary attributes of the universe
+         * @param {string} universe 
+         * @param {Array<PrimaryAttribute>} primaryAttribute 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setAllPrimaryAttributes(universe: string, primaryAttribute: Array<PrimaryAttribute>, options?: any): AxiosPromise<void> {
+            return localVarFp.setAllPrimaryAttributes(universe, primaryAttribute, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -5446,6 +5552,19 @@ export class PrimaryAttributeServiceApi extends BaseAPI {
      */
     public insertAllPrimaryAttributes(universe: string, primaryAttribute: Array<PrimaryAttribute>, options?: AxiosRequestConfig) {
         return PrimaryAttributeServiceApiFp(this.configuration).insertAllPrimaryAttributes(universe, primaryAttribute, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Sets all primary attributes of the universe
+     * @param {string} universe 
+     * @param {Array<PrimaryAttribute>} primaryAttribute 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PrimaryAttributeServiceApi
+     */
+    public setAllPrimaryAttributes(universe: string, primaryAttribute: Array<PrimaryAttribute>, options?: AxiosRequestConfig) {
+        return PrimaryAttributeServiceApiFp(this.configuration).setAllPrimaryAttributes(universe, primaryAttribute, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6956,6 +7075,352 @@ export class TalentServiceApi extends BaseAPI {
 
 
 /**
+ * UniverseCreationServiceApi - axios parameter creator
+ * @export
+ */
+export const UniverseCreationServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Creates the basic item types most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createDefaultItemTypes: async (universe: string, language: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('createDefaultItemTypes', 'universe', universe)
+            // verify required parameter 'language' is not null or undefined
+            assertParamExists('createDefaultItemTypes', 'language', language)
+            const localVarPath = `/api/{universe}/universe-creation/equipment-types`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Creates a few basic materials most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createDefaultMaterials: async (universe: string, language: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('createDefaultMaterials', 'universe', universe)
+            // verify required parameter 'language' is not null or undefined
+            assertParamExists('createDefaultMaterials', 'language', language)
+            const localVarPath = `/api/{universe}/universe-creation/materials`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Gets the basic armor definitions most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDefaultArmorDefinitions: async (universe: string, language: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getDefaultArmorDefinitions', 'universe', universe)
+            // verify required parameter 'language' is not null or undefined
+            assertParamExists('getDefaultArmorDefinitions', 'language', language)
+            const localVarPath = `/api/{universe}/universe-creation/equipment-types/armor-definitions`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Gets the basic armor definitions most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDefaultJewelleryDefinitions: async (universe: string, language: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getDefaultJewelleryDefinitions', 'universe', universe)
+            // verify required parameter 'language' is not null or undefined
+            assertParamExists('getDefaultJewelleryDefinitions', 'language', language)
+            const localVarPath = `/api/{universe}/universe-creation/equipment-types/jewellery-definitions`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (language !== undefined) {
+                localVarQueryParameter['language'] = language;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UniverseCreationServiceApi - functional programming interface
+ * @export
+ */
+export const UniverseCreationServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UniverseCreationServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates the basic item types most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createDefaultItemTypes(universe: string, language: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createDefaultItemTypes(universe, language, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Creates a few basic materials most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createDefaultMaterials(universe: string, language: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createDefaultMaterials(universe, language, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Gets the basic armor definitions most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDefaultArmorDefinitions(universe: string, language: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ArmorDefinition>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDefaultArmorDefinitions(universe, language, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Gets the basic armor definitions most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDefaultJewelleryDefinitions(universe: string, language: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<JewelleryDefinition>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDefaultJewelleryDefinitions(universe, language, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * UniverseCreationServiceApi - factory interface
+ * @export
+ */
+export const UniverseCreationServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UniverseCreationServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates the basic item types most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createDefaultItemTypes(universe: string, language: string, options?: any): AxiosPromise<void> {
+            return localVarFp.createDefaultItemTypes(universe, language, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates a few basic materials most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createDefaultMaterials(universe: string, language: string, options?: any): AxiosPromise<void> {
+            return localVarFp.createDefaultMaterials(universe, language, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Gets the basic armor definitions most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDefaultArmorDefinitions(universe: string, language: string, options?: any): AxiosPromise<Array<ArmorDefinition>> {
+            return localVarFp.getDefaultArmorDefinitions(universe, language, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Gets the basic armor definitions most universes need
+         * @param {string} universe 
+         * @param {string} language 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDefaultJewelleryDefinitions(universe: string, language: string, options?: any): AxiosPromise<Array<JewelleryDefinition>> {
+            return localVarFp.getDefaultJewelleryDefinitions(universe, language, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UniverseCreationServiceApi - object-oriented interface
+ * @export
+ * @class UniverseCreationServiceApi
+ * @extends {BaseAPI}
+ */
+export class UniverseCreationServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Creates the basic item types most universes need
+     * @param {string} universe 
+     * @param {string} language 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseCreationServiceApi
+     */
+    public createDefaultItemTypes(universe: string, language: string, options?: AxiosRequestConfig) {
+        return UniverseCreationServiceApiFp(this.configuration).createDefaultItemTypes(universe, language, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates a few basic materials most universes need
+     * @param {string} universe 
+     * @param {string} language 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseCreationServiceApi
+     */
+    public createDefaultMaterials(universe: string, language: string, options?: AxiosRequestConfig) {
+        return UniverseCreationServiceApiFp(this.configuration).createDefaultMaterials(universe, language, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Gets the basic armor definitions most universes need
+     * @param {string} universe 
+     * @param {string} language 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseCreationServiceApi
+     */
+    public getDefaultArmorDefinitions(universe: string, language: string, options?: AxiosRequestConfig) {
+        return UniverseCreationServiceApiFp(this.configuration).getDefaultArmorDefinitions(universe, language, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Gets the basic armor definitions most universes need
+     * @param {string} universe 
+     * @param {string} language 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseCreationServiceApi
+     */
+    public getDefaultJewelleryDefinitions(universe: string, language: string, options?: AxiosRequestConfig) {
+        return UniverseCreationServiceApiFp(this.configuration).getDefaultJewelleryDefinitions(universe, language, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
  * UniverseServiceApi - axios parameter creator
  * @export
  */
@@ -7577,7 +8042,7 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
         getCharacterSettings: async (universe: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getCharacterSettings', 'universe', universe)
-            const localVarPath = `/api/universe-settings/{universe}/character`
+            const localVarPath = `/api/{universe}/universe-settings/character`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7611,7 +8076,7 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
         getCurrencySettings: async (universe: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getCurrencySettings', 'universe', universe)
-            const localVarPath = `/api/universe-settings/{universe}/currency`
+            const localVarPath = `/api/{universe}/universe-settings/currency`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7645,7 +8110,7 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
         getItemSettings: async (universe: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getItemSettings', 'universe', universe)
-            const localVarPath = `/api/universe-settings/{universe}/item`
+            const localVarPath = `/api/{universe}/universe-settings/item`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7673,56 +8138,16 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
          * 
          * @summary Update the settings
          * @param {string} universe 
-         * @param {CurrencySettings} currencySettings 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        updateCharacterSettings: async (universe: string, currencySettings: CurrencySettings, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'universe' is not null or undefined
-            assertParamExists('updateCharacterSettings', 'universe', universe)
-            // verify required parameter 'currencySettings' is not null or undefined
-            assertParamExists('updateCharacterSettings', 'currencySettings', currencySettings)
-            const localVarPath = `/api/universe-settings/{universe}/currency`
-                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(currencySettings, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Update the settings
-         * @param {string} universe 
          * @param {CharacterSettings} characterSettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCharacterSettings1: async (universe: string, characterSettings: CharacterSettings, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateCharacterSettings: async (universe: string, characterSettings: CharacterSettings, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
-            assertParamExists('updateCharacterSettings1', 'universe', universe)
+            assertParamExists('updateCharacterSettings', 'universe', universe)
             // verify required parameter 'characterSettings' is not null or undefined
-            assertParamExists('updateCharacterSettings1', 'characterSettings', characterSettings)
-            const localVarPath = `/api/universe-settings/{universe}/character`
+            assertParamExists('updateCharacterSettings', 'characterSettings', characterSettings)
+            const localVarPath = `/api/{universe}/universe-settings/character`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7753,6 +8178,46 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
          * 
          * @summary Update the settings
          * @param {string} universe 
+         * @param {CurrencySettings} currencySettings 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCurrencySettings: async (universe: string, currencySettings: CurrencySettings, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('updateCurrencySettings', 'universe', universe)
+            // verify required parameter 'currencySettings' is not null or undefined
+            assertParamExists('updateCurrencySettings', 'currencySettings', currencySettings)
+            const localVarPath = `/api/{universe}/universe-settings/currency`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(currencySettings, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update the settings
+         * @param {string} universe 
          * @param {ItemSettings} itemSettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7762,7 +8227,7 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
             assertParamExists('updateItemSettings', 'universe', universe)
             // verify required parameter 'itemSettings' is not null or undefined
             assertParamExists('updateItemSettings', 'itemSettings', itemSettings)
-            const localVarPath = `/api/universe-settings/{universe}/item`
+            const localVarPath = `/api/{universe}/universe-settings/item`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7836,24 +8301,24 @@ export const UniverseSettingsServiceApiFp = function(configuration?: Configurati
          * 
          * @summary Update the settings
          * @param {string} universe 
-         * @param {CurrencySettings} currencySettings 
+         * @param {CharacterSettings} characterSettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateCharacterSettings(universe: string, currencySettings: CurrencySettings, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCharacterSettings(universe, currencySettings, options);
+        async updateCharacterSettings(universe: string, characterSettings: CharacterSettings, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCharacterSettings(universe, characterSettings, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Update the settings
          * @param {string} universe 
-         * @param {CharacterSettings} characterSettings 
+         * @param {CurrencySettings} currencySettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateCharacterSettings1(universe: string, characterSettings: CharacterSettings, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCharacterSettings1(universe, characterSettings, options);
+        async updateCurrencySettings(universe: string, currencySettings: CurrencySettings, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCurrencySettings(universe, currencySettings, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -7912,23 +8377,23 @@ export const UniverseSettingsServiceApiFactory = function (configuration?: Confi
          * 
          * @summary Update the settings
          * @param {string} universe 
-         * @param {CurrencySettings} currencySettings 
+         * @param {CharacterSettings} characterSettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCharacterSettings(universe: string, currencySettings: CurrencySettings, options?: any): AxiosPromise<void> {
-            return localVarFp.updateCharacterSettings(universe, currencySettings, options).then((request) => request(axios, basePath));
+        updateCharacterSettings(universe: string, characterSettings: CharacterSettings, options?: any): AxiosPromise<void> {
+            return localVarFp.updateCharacterSettings(universe, characterSettings, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Update the settings
          * @param {string} universe 
-         * @param {CharacterSettings} characterSettings 
+         * @param {CurrencySettings} currencySettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCharacterSettings1(universe: string, characterSettings: CharacterSettings, options?: any): AxiosPromise<void> {
-            return localVarFp.updateCharacterSettings1(universe, characterSettings, options).then((request) => request(axios, basePath));
+        updateCurrencySettings(universe: string, currencySettings: CurrencySettings, options?: any): AxiosPromise<void> {
+            return localVarFp.updateCurrencySettings(universe, currencySettings, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7991,26 +8456,26 @@ export class UniverseSettingsServiceApi extends BaseAPI {
      * 
      * @summary Update the settings
      * @param {string} universe 
-     * @param {CurrencySettings} currencySettings 
+     * @param {CharacterSettings} characterSettings 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UniverseSettingsServiceApi
      */
-    public updateCharacterSettings(universe: string, currencySettings: CurrencySettings, options?: AxiosRequestConfig) {
-        return UniverseSettingsServiceApiFp(this.configuration).updateCharacterSettings(universe, currencySettings, options).then((request) => request(this.axios, this.basePath));
+    public updateCharacterSettings(universe: string, characterSettings: CharacterSettings, options?: AxiosRequestConfig) {
+        return UniverseSettingsServiceApiFp(this.configuration).updateCharacterSettings(universe, characterSettings, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Update the settings
      * @param {string} universe 
-     * @param {CharacterSettings} characterSettings 
+     * @param {CurrencySettings} currencySettings 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UniverseSettingsServiceApi
      */
-    public updateCharacterSettings1(universe: string, characterSettings: CharacterSettings, options?: AxiosRequestConfig) {
-        return UniverseSettingsServiceApiFp(this.configuration).updateCharacterSettings1(universe, characterSettings, options).then((request) => request(this.axios, this.basePath));
+    public updateCurrencySettings(universe: string, currencySettings: CurrencySettings, options?: AxiosRequestConfig) {
+        return UniverseSettingsServiceApiFp(this.configuration).updateCurrencySettings(universe, currencySettings, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

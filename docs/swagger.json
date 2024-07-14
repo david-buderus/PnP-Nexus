@@ -115,195 +115,6 @@
         ]
       }
     },
-    "/api/universe-settings/{universe}/character": {
-      "get": {
-        "operationId": "getCharacterSettings",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/CharacterSettings"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get the settings",
-        "tags": [
-          "universe-settings-service"
-        ]
-      },
-      "put": {
-        "operationId": "updateCharacterSettings_1",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CharacterSettings"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Update the settings",
-        "tags": [
-          "universe-settings-service"
-        ]
-      }
-    },
-    "/api/universe-settings/{universe}/currency": {
-      "get": {
-        "operationId": "getCurrencySettings",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/CurrencySettings"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get the settings",
-        "tags": [
-          "universe-settings-service"
-        ]
-      },
-      "put": {
-        "operationId": "updateCharacterSettings",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CurrencySettings"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Update the settings",
-        "tags": [
-          "universe-settings-service"
-        ]
-      }
-    },
-    "/api/universe-settings/{universe}/item": {
-      "get": {
-        "operationId": "getItemSettings",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemSettings"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get the settings",
-        "tags": [
-          "universe-settings-service"
-        ]
-      },
-      "put": {
-        "operationId": "updateItemSettings",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemSettings"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Update the settings",
-        "tags": [
-          "universe-settings-service"
-        ]
-      }
-    },
     "/api/universes": {
       "get": {
         "operationId": "getAllUniverses",
@@ -2786,6 +2597,343 @@
         ]
       }
     },
+    "/api/{universe}/universe-creation/equipment-types": {
+      "post": {
+        "operationId": "createDefaultItemTypes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "language",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "Creates the basic item types most universes need",
+        "tags": [
+          "universe-creation-service"
+        ]
+      }
+    },
+    "/api/{universe}/universe-creation/equipment-types/armor-definitions": {
+      "get": {
+        "operationId": "getDefaultArmorDefinitions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "language",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArmorDefinition"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Gets the basic armor definitions most universes need",
+        "tags": [
+          "universe-creation-service"
+        ]
+      }
+    },
+    "/api/{universe}/universe-creation/equipment-types/jewellery-definitions": {
+      "get": {
+        "operationId": "getDefaultJewelleryDefinitions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "language",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JewelleryDefinition"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Gets the basic armor definitions most universes need",
+        "tags": [
+          "universe-creation-service"
+        ]
+      }
+    },
+    "/api/{universe}/universe-creation/materials": {
+      "post": {
+        "operationId": "createDefaultMaterials",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "language",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "Creates a few basic materials most universes need",
+        "tags": [
+          "universe-creation-service"
+        ]
+      }
+    },
+    "/api/{universe}/universe-settings/character": {
+      "get": {
+        "operationId": "getCharacterSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateCharacterSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CharacterSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
+    "/api/{universe}/universe-settings/currency": {
+      "get": {
+        "operationId": "getCurrencySettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrencySettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateCurrencySettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrencySettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
+    "/api/{universe}/universe-settings/item": {
+      "get": {
+        "operationId": "getItemSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateItemSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
     "/api/{universe}/upgrade-recipes": {
       "delete": {
         "operationId": "deleteAllUpgradeRecipes",
@@ -3415,6 +3563,41 @@
         "tags": [
           "primary-attribute-service"
         ]
+      },
+      "put": {
+        "operationId": "setAllPrimaryAttributes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PrimaryAttribute"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "Sets all primary attributes of the universe",
+        "tags": [
+          "primary-attribute-service"
+        ]
       }
     },
     "/{universe}/primary-attributes/{id}": {
@@ -3875,8 +4058,20 @@
           "jewelleryDefinitions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ArmorDefinition"
+              "$ref": "#/components/schemas/JewelleryDefinition"
             }
+          },
+          "maxPrimaryAttributeSum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxPrimaryAttributeValue": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minPrimaryAttributeValue": {
+            "type": "integer",
+            "format": "int32"
           },
           "numberOfHandheld": {
             "type": "integer",
@@ -4279,6 +4474,25 @@
             }
           }
         ]
+      },
+      "JewelleryDefinition": {
+        "required": [
+          "name",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ItemType"
+          }
+        }
       },
       "Material": {
         "required": [
