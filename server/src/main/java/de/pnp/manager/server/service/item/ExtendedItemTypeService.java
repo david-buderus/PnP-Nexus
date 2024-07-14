@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
  * Service to access {@link ItemTypeRepository}.
  */
 @RestController
+@Validated
 @RequestMapping("api/{universe}/extended-item-types")
 public class ExtendedItemTypeService {
 
@@ -46,19 +48,19 @@ public class ExtendedItemTypeService {
     @UniverseWrite
     @Operation(summary = "Inserts the objects into the database", operationId = "insertAllExtendedItemTypes")
     public Collection<ExtendedItemType> insertAll(@PathVariable String universe,
-        @RequestBody List<@Valid ExtendedItemType> itemTypes) {
-        return itemTypeController.insertAll(universe, itemTypes);
+        @RequestBody List<@Valid ExtendedItemType> objects) {
+        return itemTypeController.insertAll(universe, objects);
     }
 
     @PutMapping("{id}")
     @UniverseWrite
     @Operation(summary = "Updates an object in the database", operationId = "updateExtendedItemType")
     public ExtendedItemType update(@PathVariable String universe, @PathVariable ObjectId id,
-        @RequestBody @Valid ExtendedItemType itemType) {
-        if (itemType.getId() != null && !Objects.equals(id, itemType.getId())) {
+        @RequestBody @Valid ExtendedItemType object) {
+        if (object.getId() != null && !Objects.equals(id, object.getId())) {
             throw new ResponseStatusException(BAD_REQUEST, "The id of the object does not match.");
         }
-        return itemTypeController.update(universe, itemType);
+        return itemTypeController.update(universe, object);
     }
 
 }

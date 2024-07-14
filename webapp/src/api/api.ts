@@ -187,6 +187,25 @@ export interface ArmorDefinition {
 /**
  * 
  * @export
+ * @interface BinaryExpressionTree
+ */
+export interface BinaryExpressionTree {
+    /**
+     * 
+     * @type {BinaryExpressionTreeRoot}
+     * @memberof BinaryExpressionTree
+     */
+    'root': BinaryExpressionTreeRoot;
+}
+/**
+ * @type BinaryExpressionTreeRoot
+ * @export
+ */
+export type BinaryExpressionTreeRoot = ConstantNode | NegateInnerNode | TwoParameterInnerNode | VariableNode;
+
+/**
+ * 
+ * @export
  * @interface CharacterResourceUsage
  */
 export interface CharacterResourceUsage {
@@ -264,6 +283,32 @@ export interface CharacterSettings {
      * @memberof CharacterSettings
      */
     'numberOfHandheld'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ConstantNode
+ */
+export interface ConstantNode {
+    /**
+     * 
+     * @type {number}
+     * @memberof ConstantNode
+     */
+    'constant'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ConstantNodeAllOf
+ */
+export interface ConstantNodeAllOf {
+    /**
+     * 
+     * @type {number}
+     * @memberof ConstantNodeAllOf
+     */
+    'constant'?: number;
 }
 /**
  * 
@@ -1012,6 +1057,32 @@ export interface MaterialUsageAllOf {
 /**
  * 
  * @export
+ * @interface NegateInnerNode
+ */
+export interface NegateInnerNode {
+    /**
+     * 
+     * @type {object}
+     * @memberof NegateInnerNode
+     */
+    'child'?: object;
+}
+/**
+ * 
+ * @export
+ * @interface NegateInnerNodeAllOf
+ */
+export interface NegateInnerNodeAllOf {
+    /**
+     * 
+     * @type {object}
+     * @memberof NegateInnerNodeAllOf
+     */
+    'child'?: object;
+}
+/**
+ * 
+ * @export
  * @interface PasswordChange
  */
 export interface PasswordChange {
@@ -1143,25 +1214,6 @@ export interface PrimaryAttribute {
 /**
  * 
  * @export
- * @interface PrimaryAttributeDependency
- */
-export interface PrimaryAttributeDependency {
-    /**
-     * 
-     * @type {number}
-     * @memberof PrimaryAttributeDependency
-     */
-    'factor'?: number;
-    /**
-     * 
-     * @type {PrimaryAttribute}
-     * @memberof PrimaryAttributeDependency
-     */
-    'primaryAttribute': PrimaryAttribute;
-}
-/**
- * 
- * @export
  * @interface RoleAuthorityDTO
  */
 export interface RoleAuthorityDTO {
@@ -1193,6 +1245,12 @@ export interface RoleAuthorityDTOAllOf {
 export interface SecondaryAttribute {
     /**
      * 
+     * @type {BinaryExpressionTree}
+     * @memberof SecondaryAttribute
+     */
+    'calculationFormula': BinaryExpressionTree;
+    /**
+     * 
      * @type {boolean}
      * @memberof SecondaryAttribute
      */
@@ -1209,12 +1267,37 @@ export interface SecondaryAttribute {
      * @memberof SecondaryAttribute
      */
     'name': string;
+}
+/**
+ * 
+ * @export
+ * @interface SecondaryAttributeDTO
+ */
+export interface SecondaryAttributeDTO {
     /**
      * 
-     * @type {Array<PrimaryAttributeDependency>}
-     * @memberof SecondaryAttribute
+     * @type {string}
+     * @memberof SecondaryAttributeDTO
      */
-    'primaryAttributeDependencies': Array<PrimaryAttributeDependency>;
+    'calculationFormula': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SecondaryAttributeDTO
+     */
+    'consumable': boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof SecondaryAttributeDTO
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SecondaryAttributeDTO
+     */
+    'name': string;
 }
 /**
  * 
@@ -1496,6 +1579,82 @@ export interface Talent {
 /**
  * 
  * @export
+ * @interface TwoParameterInnerNode
+ */
+export interface TwoParameterInnerNode {
+    /**
+     * 
+     * @type {object}
+     * @memberof TwoParameterInnerNode
+     */
+    'left'?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof TwoParameterInnerNode
+     */
+    'operator'?: TwoParameterInnerNodeOperatorEnum;
+    /**
+     * 
+     * @type {object}
+     * @memberof TwoParameterInnerNode
+     */
+    'right'?: object;
+}
+
+export const TwoParameterInnerNodeOperatorEnum = {
+    Add: 'ADD',
+    Sub: 'SUB',
+    Multiply: 'MULTIPLY',
+    Divide: 'DIVIDE',
+    Negate: 'NEGATE',
+    OpeningBracket: 'OPENING_BRACKET',
+    ClosingBracket: 'CLOSING_BRACKET'
+} as const;
+
+export type TwoParameterInnerNodeOperatorEnum = typeof TwoParameterInnerNodeOperatorEnum[keyof typeof TwoParameterInnerNodeOperatorEnum];
+
+/**
+ * 
+ * @export
+ * @interface TwoParameterInnerNodeAllOf
+ */
+export interface TwoParameterInnerNodeAllOf {
+    /**
+     * 
+     * @type {object}
+     * @memberof TwoParameterInnerNodeAllOf
+     */
+    'left'?: object;
+    /**
+     * 
+     * @type {string}
+     * @memberof TwoParameterInnerNodeAllOf
+     */
+    'operator'?: TwoParameterInnerNodeAllOfOperatorEnum;
+    /**
+     * 
+     * @type {object}
+     * @memberof TwoParameterInnerNodeAllOf
+     */
+    'right'?: object;
+}
+
+export const TwoParameterInnerNodeAllOfOperatorEnum = {
+    Add: 'ADD',
+    Sub: 'SUB',
+    Multiply: 'MULTIPLY',
+    Divide: 'DIVIDE',
+    Negate: 'NEGATE',
+    OpeningBracket: 'OPENING_BRACKET',
+    ClosingBracket: 'CLOSING_BRACKET'
+} as const;
+
+export type TwoParameterInnerNodeAllOfOperatorEnum = typeof TwoParameterInnerNodeAllOfOperatorEnum[keyof typeof TwoParameterInnerNodeAllOfOperatorEnum];
+
+/**
+ * 
+ * @export
  * @interface Universe
  */
 export interface Universe {
@@ -1641,6 +1800,32 @@ export interface UserUniversePermissionDTO {
      * @memberof UserUniversePermissionDTO
      */
     'dto': GrantedUniverseAuthorityDTO;
+}
+/**
+ * 
+ * @export
+ * @interface VariableNode
+ */
+export interface VariableNode {
+    /**
+     * 
+     * @type {object}
+     * @memberof VariableNode
+     */
+    'variable'?: object;
+}
+/**
+ * 
+ * @export
+ * @interface VariableNodeAllOf
+ */
+export interface VariableNodeAllOf {
+    /**
+     * 
+     * @type {object}
+     * @memberof VariableNodeAllOf
+     */
+    'variable'?: object;
 }
 /**
  * 
@@ -2148,6 +2333,189 @@ export class BackupServiceApi extends BaseAPI {
      */
     public importBackup(backup: File, options?: AxiosRequestConfig) {
         return BackupServiceApiFp(this.configuration).importBackup(backup, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * BinaryExpressionTreeServiceApi - axios parameter creator
+ * @export
+ */
+export const BinaryExpressionTreeServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Creates an expression for secondary attributes
+         * @param {string} universe 
+         * @param {string} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createExpressionForSecondaryAttributes: async (universe: string, body: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('createExpressionForSecondaryAttributes', 'universe', universe)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('createExpressionForSecondaryAttributes', 'body', body)
+            const localVarPath = `/api/expressions/secondary-attributes/{universe}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Returns human readable strings for the given expressions
+         * @param {Array<BinaryExpressionTree>} binaryExpressionTree 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        toHumanReadableFormat: async (binaryExpressionTree: Array<BinaryExpressionTree>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'binaryExpressionTree' is not null or undefined
+            assertParamExists('toHumanReadableFormat', 'binaryExpressionTree', binaryExpressionTree)
+            const localVarPath = `/api/expressions/human-readable`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(binaryExpressionTree, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * BinaryExpressionTreeServiceApi - functional programming interface
+ * @export
+ */
+export const BinaryExpressionTreeServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BinaryExpressionTreeServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates an expression for secondary attributes
+         * @param {string} universe 
+         * @param {string} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createExpressionForSecondaryAttributes(universe: string, body: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BinaryExpressionTree>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createExpressionForSecondaryAttributes(universe, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Returns human readable strings for the given expressions
+         * @param {Array<BinaryExpressionTree>} binaryExpressionTree 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async toHumanReadableFormat(binaryExpressionTree: Array<BinaryExpressionTree>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.toHumanReadableFormat(binaryExpressionTree, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * BinaryExpressionTreeServiceApi - factory interface
+ * @export
+ */
+export const BinaryExpressionTreeServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BinaryExpressionTreeServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates an expression for secondary attributes
+         * @param {string} universe 
+         * @param {string} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createExpressionForSecondaryAttributes(universe: string, body: string, options?: any): AxiosPromise<BinaryExpressionTree> {
+            return localVarFp.createExpressionForSecondaryAttributes(universe, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Returns human readable strings for the given expressions
+         * @param {Array<BinaryExpressionTree>} binaryExpressionTree 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        toHumanReadableFormat(binaryExpressionTree: Array<BinaryExpressionTree>, options?: any): AxiosPromise<Array<string>> {
+            return localVarFp.toHumanReadableFormat(binaryExpressionTree, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * BinaryExpressionTreeServiceApi - object-oriented interface
+ * @export
+ * @class BinaryExpressionTreeServiceApi
+ * @extends {BaseAPI}
+ */
+export class BinaryExpressionTreeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Creates an expression for secondary attributes
+     * @param {string} universe 
+     * @param {string} body 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BinaryExpressionTreeServiceApi
+     */
+    public createExpressionForSecondaryAttributes(universe: string, body: string, options?: AxiosRequestConfig) {
+        return BinaryExpressionTreeServiceApiFp(this.configuration).createExpressionForSecondaryAttributes(universe, body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Returns human readable strings for the given expressions
+     * @param {Array<BinaryExpressionTree>} binaryExpressionTree 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BinaryExpressionTreeServiceApi
+     */
+    public toHumanReadableFormat(binaryExpressionTree: Array<BinaryExpressionTree>, options?: AxiosRequestConfig) {
+        return BinaryExpressionTreeServiceApiFp(this.configuration).toHumanReadableFormat(binaryExpressionTree, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -6076,6 +6444,345 @@ export class SecondaryAttributeServiceApi extends BaseAPI {
      */
     public updateSecondaryAttribute(universe: string, id: string, secondaryAttribute: SecondaryAttribute, options?: AxiosRequestConfig) {
         return SecondaryAttributeServiceApiFp(this.configuration).updateSecondaryAttribute(universe, id, secondaryAttribute, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * SimpleSecondaryAttributeServiceApi - axios parameter creator
+ * @export
+ */
+export const SimpleSecondaryAttributeServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllSimpleSecondaryAttributes: async (universe: string, ids?: Array<string>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAllSimpleSecondaryAttributes', 'universe', universe)
+            const localVarPath = `/api/{universe}/simple-secondary-attributes`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all supported variables
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllSupportedVariables: async (universe: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAllSupportedVariables', 'universe', universe)
+            const localVarPath = `/api/{universe}/simple-secondary-attributes/supported-variables`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllSimpleSecondaryAttributes: async (universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAllSimpleSecondaryAttributes', 'universe', universe)
+            // verify required parameter 'secondaryAttributeDTO' is not null or undefined
+            assertParamExists('insertAllSimpleSecondaryAttributes', 'secondaryAttributeDTO', secondaryAttributeDTO)
+            const localVarPath = `/api/{universe}/simple-secondary-attributes`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(secondaryAttributeDTO, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {SecondaryAttributeDTO} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateSimpleSecondaryAttribute: async (universe: string, id: string, secondaryAttributeDTO: SecondaryAttributeDTO, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('updateSimpleSecondaryAttribute', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateSimpleSecondaryAttribute', 'id', id)
+            // verify required parameter 'secondaryAttributeDTO' is not null or undefined
+            assertParamExists('updateSimpleSecondaryAttribute', 'secondaryAttributeDTO', secondaryAttributeDTO)
+            const localVarPath = `/api/{universe}/simple-secondary-attributes/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(secondaryAttributeDTO, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * SimpleSecondaryAttributeServiceApi - functional programming interface
+ * @export
+ */
+export const SimpleSecondaryAttributeServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = SimpleSecondaryAttributeServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllSimpleSecondaryAttributes(universe: string, ids?: Array<string>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SecondaryAttributeDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllSimpleSecondaryAttributes(universe, ids, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Get all supported variables
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllSupportedVariables(universe: string, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllSupportedVariables(universe, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SecondaryAttributeDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {SecondaryAttributeDTO} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateSimpleSecondaryAttribute(universe: string, id: string, secondaryAttributeDTO: SecondaryAttributeDTO, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SecondaryAttributeDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateSimpleSecondaryAttribute(universe, id, secondaryAttributeDTO, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+    }
+};
+
+/**
+ * SimpleSecondaryAttributeServiceApi - factory interface
+ * @export
+ */
+export const SimpleSecondaryAttributeServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = SimpleSecondaryAttributeServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllSimpleSecondaryAttributes(universe: string, ids?: Array<string>, options?: any): AxiosPromise<Array<SecondaryAttributeDTO>> {
+            return localVarFp.getAllSimpleSecondaryAttributes(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all supported variables
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllSupportedVariables(universe: string, options?: any): AxiosPromise<Array<string>> {
+            return localVarFp.getAllSupportedVariables(universe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: any): AxiosPromise<Array<SecondaryAttributeDTO>> {
+            return localVarFp.insertAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {SecondaryAttributeDTO} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateSimpleSecondaryAttribute(universe: string, id: string, secondaryAttributeDTO: SecondaryAttributeDTO, options?: any): AxiosPromise<SecondaryAttributeDTO> {
+            return localVarFp.updateSimpleSecondaryAttribute(universe, id, secondaryAttributeDTO, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * SimpleSecondaryAttributeServiceApi - object-oriented interface
+ * @export
+ * @class SimpleSecondaryAttributeServiceApi
+ * @extends {BaseAPI}
+ */
+export class SimpleSecondaryAttributeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SimpleSecondaryAttributeServiceApi
+     */
+    public getAllSimpleSecondaryAttributes(universe: string, ids?: Array<string>, options?: AxiosRequestConfig) {
+        return SimpleSecondaryAttributeServiceApiFp(this.configuration).getAllSimpleSecondaryAttributes(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all supported variables
+     * @param {string} universe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SimpleSecondaryAttributeServiceApi
+     */
+    public getAllSupportedVariables(universe: string, options?: AxiosRequestConfig) {
+        return SimpleSecondaryAttributeServiceApiFp(this.configuration).getAllSupportedVariables(universe, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SimpleSecondaryAttributeServiceApi
+     */
+    public insertAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: AxiosRequestConfig) {
+        return SimpleSecondaryAttributeServiceApiFp(this.configuration).insertAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {SecondaryAttributeDTO} secondaryAttributeDTO 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SimpleSecondaryAttributeServiceApi
+     */
+    public updateSimpleSecondaryAttribute(universe: string, id: string, secondaryAttributeDTO: SecondaryAttributeDTO, options?: AxiosRequestConfig) {
+        return SimpleSecondaryAttributeServiceApiFp(this.configuration).updateSimpleSecondaryAttribute(universe, id, secondaryAttributeDTO, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

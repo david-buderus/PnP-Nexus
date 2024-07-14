@@ -42,7 +42,15 @@ public class BinaryExpressionTree {
         return root.getVariables();
     }
 
+
+    /**
+     * Returns the underlying formula as a human-readable string.
+     */
     public String asHumanReadableString() {
+        if (root == null) {
+            return "";
+        }
+
         StringBuilder expression = new StringBuilder();
         root.buildHumanReadableString(expression);
         return expression.toString();

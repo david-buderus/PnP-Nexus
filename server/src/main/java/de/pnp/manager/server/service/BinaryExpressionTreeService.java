@@ -1,5 +1,7 @@
 package de.pnp.manager.server.service;
 
+import static de.pnp.manager.server.contoller.SecondaryAttributeDTOController.ALLOWED_STRING_VARIABLES;
+
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
@@ -7,6 +9,7 @@ import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
 import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -27,15 +30,13 @@ import org.springframework.web.server.ResponseStatusException;
  */
 @RestController
 @Validated
-@RequestMapping("/api/{universe}/expressions")
+@RequestMapping("/api/expressions")
 public class BinaryExpressionTreeService {
-
-    private static final Set<String> ALLOWED_STRING_VARIABLES = Set.of("LVL");
 
     @Autowired
     private PrimaryAttributeRepository primaryAttributeRepository;
 
-    @PostMapping("secondary-attributes")
+    @PostMapping("secondary-attributes/{universe}")
     @Operation(summary = "Creates an expression for secondary attributes", operationId = "createExpressionForSecondaryAttributes")
     public BinaryExpressionTree createExpressionForSecondaryAttributes(@PathVariable String universe,
         @RequestBody String formula) {
@@ -56,9 +57,15 @@ public class BinaryExpressionTreeService {
     }
 
     @PostMapping("human-readable")
-    @Operation(summary = "Creates an expression for secondary attributes", operationId = "toHumanReadableFormat")
-    public List<String> toHumanReadableFormat(@RequestBody List<BinaryExpressionTree> expressions) {
-        return expressions.stream().map(BinaryExpressionTree::asHumanReadableString).toList();
+    @Operation(summary = "Returns human readable strings for the given expressions", operationId = "toHumanReadableFormat")
+    public List<String> toHumanReadableFormat(@RequestBody List<@Valid BinaryExpressionTree> expressions) {
+        return expressions.stream().map(expression -> {
+            if (expression != null) {
+                return expression.asHumanReadableString();
+            } else {
+                return "";
+            }
+        }).toList();
     }
 
     private Set<IExpressionVariable> getPrimaryAttributeVariables(String universe) {

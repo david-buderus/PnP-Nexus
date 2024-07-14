@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from "../PageBase";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField, Tooltip } from "@mui/material";
 import { AxiosResponse } from "axios";
 import { handleValidationError } from "../ErrorUtils";
@@ -28,7 +28,7 @@ export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     /** The label used for the input */
     label: string;
     /** The tooltip for the input */
-    tooltip?: string;
+    tooltip?: ReactNode;
     /** What kind of field is needed */
     fieldType: "STRING" | "NUMBER" | "BOOLEAN" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "STACK";
     /** The dependencies needed for the field. Needed for ENUM, DATABASE and MULTI_DATABASE */

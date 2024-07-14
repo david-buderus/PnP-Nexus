@@ -46,7 +46,7 @@ public class SecondaryAttributePageTest extends
 
     @Override
     protected SecondaryAttribute getWrongObject() {
-        return new SecondaryAttribute(null, "", false, createDependencies("0.5 * UK"));
+        return new SecondaryAttribute(null, "", false, createDependencies(""));
     }
 
     @Override

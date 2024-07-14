@@ -1,6 +1,7 @@
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectProps, Tooltip } from "@mui/material";
 import { ERarity } from "../../api";
 import { useTranslation } from "react-i18next";
+import { ReactNode } from "react";
 
 /** Props needed for the select */
 interface NexusSelectProps<Value> extends SelectProps<Value> {
@@ -17,7 +18,7 @@ interface NexusSelectProps<Value> extends SelectProps<Value> {
         label: string;
     }[];
     /** tooltip text */
-    tooltip?: string;
+    tooltip?: ReactNode;
 }
 
 /** A custom select with helpertext and error support */

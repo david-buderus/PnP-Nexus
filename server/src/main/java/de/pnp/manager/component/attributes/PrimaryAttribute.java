@@ -4,6 +4,7 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.PnPCharacter;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -26,7 +27,7 @@ public class PrimaryAttribute extends DatabaseObject implements IUniquelyNamedDa
      * The human-readable short name of this attribute.
      */
     @Indexed(unique = true)
-    @NotBlank
+    @Pattern(regexp = "(?!LVL)[A-Z]+", message = "{character.primary.shortName}")
     private final String shortName;
 
     public PrimaryAttribute(ObjectId id, String name, String shortName) {

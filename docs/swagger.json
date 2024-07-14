@@ -115,6 +115,84 @@
         ]
       }
     },
+    "/api/expressions/human-readable": {
+      "post": {
+        "operationId": "toHumanReadableFormat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BinaryExpressionTree"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Returns human readable strings for the given expressions",
+        "tags": [
+          "binary-expression-tree-service"
+        ]
+      }
+    },
+    "/api/expressions/secondary-attributes/{universe}": {
+      "post": {
+        "operationId": "createExpressionForSecondaryAttributes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BinaryExpressionTree"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Creates an expression for secondary attributes",
+        "tags": [
+          "binary-expression-tree-service"
+        ]
+      }
+    },
     "/api/universes": {
       "get": {
         "operationId": "getAllUniverses",
@@ -2119,6 +2197,179 @@
         ]
       }
     },
+    "/api/{universe}/simple-secondary-attributes": {
+      "get": {
+        "operationId": "getAllSimpleSecondaryAttributes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SecondaryAttributeDTO"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "simple-secondary-attribute-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAllSimpleSecondaryAttributes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SecondaryAttributeDTO"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SecondaryAttributeDTO"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "simple-secondary-attribute-service"
+        ]
+      }
+    },
+    "/api/{universe}/simple-secondary-attributes/supported-variables": {
+      "get": {
+        "operationId": "getAllSupportedVariables",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all supported variables",
+        "tags": [
+          "simple-secondary-attribute-service"
+        ]
+      }
+    },
+    "/api/{universe}/simple-secondary-attributes/{id}": {
+      "put": {
+        "operationId": "updateSimpleSecondaryAttribute",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SecondaryAttributeDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SecondaryAttributeDTO"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "simple-secondary-attribute-service"
+        ]
+      }
+    },
     "/api/{universe}/spells": {
       "delete": {
         "operationId": "deleteAllSpells",
@@ -4019,6 +4270,30 @@
           }
         }
       },
+      "BinaryExpressionTree": {
+        "required": [
+          "root"
+        ],
+        "type": "object",
+        "properties": {
+          "root": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ConstantNode"
+              },
+              {
+                "$ref": "#/components/schemas/NegateInnerNode"
+              },
+              {
+                "$ref": "#/components/schemas/TwoParameterInnerNode"
+              },
+              {
+                "$ref": "#/components/schemas/VariableNode"
+              }
+            ]
+          }
+        }
+      },
       "CharacterResourceUsage": {
         "required": [
           "resource"
@@ -4078,6 +4353,23 @@
             "format": "int32"
           }
         }
+      },
+      "ConstantNode": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IBinaryExpressionTreeNode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "constant": {
+                "type": "number",
+                "format": "double"
+              }
+            }
+          }
+        ]
       },
       "CraftingRecipe": {
         "required": [
@@ -4285,6 +4577,12 @@
             }
           }
         ]
+      },
+      "IBinaryExpressionTreeNode": {
+        "type": "object"
+      },
+      "IExpressionVariable": {
+        "type": "object"
       },
       "IGrantedAuthorityDTO": {
         "type": "object"
@@ -4553,6 +4851,22 @@
           }
         ]
       },
+      "NegateInnerNode": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IBinaryExpressionTreeNode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "child": {
+                "$ref": "#/components/schemas/IBinaryExpressionTreeNode"
+              }
+            }
+          }
+        ]
+      },
       "PasswordChange": {
         "type": "object",
         "properties": {
@@ -4645,21 +4959,6 @@
           }
         }
       },
-      "PrimaryAttributeDependency": {
-        "required": [
-          "primaryAttribute"
-        ],
-        "type": "object",
-        "properties": {
-          "factor": {
-            "type": "number",
-            "format": "double"
-          },
-          "primaryAttribute": {
-            "$ref": "#/components/schemas/PrimaryAttribute"
-          }
-        }
-      },
       "RoleAuthorityDTO": {
         "required": [
           "role"
@@ -4681,12 +4980,15 @@
       },
       "SecondaryAttribute": {
         "required": [
+          "calculationFormula",
           "consumable",
-          "name",
-          "primaryAttributeDependencies"
+          "name"
         ],
         "type": "object",
         "properties": {
+          "calculationFormula": {
+            "$ref": "#/components/schemas/BinaryExpressionTree"
+          },
           "consumable": {
             "type": "boolean"
           },
@@ -4695,12 +4997,28 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "SecondaryAttributeDTO": {
+        "required": [
+          "calculationFormula",
+          "consumable",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "calculationFormula": {
+            "type": "string"
           },
-          "primaryAttributeDependencies": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PrimaryAttributeDependency"
-            }
+          "consumable": {
+            "type": "boolean"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -4859,6 +5177,37 @@
           }
         }
       },
+      "TwoParameterInnerNode": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IBinaryExpressionTreeNode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "left": {
+                "$ref": "#/components/schemas/IBinaryExpressionTreeNode"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "ADD",
+                  "SUB",
+                  "MULTIPLY",
+                  "DIVIDE",
+                  "NEGATE",
+                  "OPENING_BRACKET",
+                  "CLOSING_BRACKET"
+                ]
+              },
+              "right": {
+                "$ref": "#/components/schemas/IBinaryExpressionTreeNode"
+              }
+            }
+          }
+        ]
+      },
       "Universe": {
         "required": [
           "description",
@@ -4994,6 +5343,22 @@
             "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
           }
         }
+      },
+      "VariableNode": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IBinaryExpressionTreeNode"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "variable": {
+                "$ref": "#/components/schemas/IExpressionVariable"
+              }
+            }
+          }
+        ]
       },
       "Weapon": {
         "required": [

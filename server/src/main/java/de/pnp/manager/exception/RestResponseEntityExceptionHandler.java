@@ -11,7 +11,9 @@ import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,18 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         }
 
         return handleExceptionInternal(ex, response, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    /**
+     * Handles {@link InvalidRequestBodyException}.
+     */
+    @ExceptionHandler(InvalidRequestBodyException.class)
+    protected ResponseEntity<Object> handleInvalidRequestBodyException(InvalidRequestBodyException ex,
+        WebRequest request) {
+        ResourceBundle bundle = ResourceBundle.getBundle("messages", request.getLocale());
+        return handleExceptionInternal(ex, ex.getViolations().entrySet().stream()
+                .collect(Collectors.toMap(Entry::getKey, entry -> bundle.getString(entry.getValue()))), new HttpHeaders(),
+            HttpStatus.BAD_REQUEST, request);
     }
 
     /**

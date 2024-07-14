@@ -1,7 +1,7 @@
 import { Tooltip } from "@mui/material";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { TFunction } from "i18next";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 function errorMessage(fieldId: string, errorMap: Map<string, string>, value: string, numberField: boolean, integerField: boolean, t: TFunction<"translation", undefined>) {
@@ -45,7 +45,7 @@ export function TextFieldWithError(props: {
     /** If the textfield is an integer field. */
     integerField?: boolean;
     /** Tooltip for the textfield. */
-    tooltip?: string;
+    tooltip?: ReactNode;
 } & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
     const { fieldId, value, onChange, errorMap, numberField, integerField, tooltip, ...rest } = props;
 
@@ -102,7 +102,7 @@ export function NumberFieldWithError(props: {
     /** If the textfield is an integer field. */
     integerField?: boolean;
     /** Tooltip for the textfield. */
-    tooltip?: string;
+    tooltip?: ReactNode;
 } & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
     const { value, onChange, ...rest } = props;
     const [stringValue, setStringValue] = useState(Number.isNaN(value) ? "" : value === undefined ? "" : value.toString());
