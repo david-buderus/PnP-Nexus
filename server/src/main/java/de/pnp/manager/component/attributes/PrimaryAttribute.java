@@ -4,6 +4,7 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.PnPCharacter;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.util.Objects;
 import org.bson.types.ObjectId;
@@ -27,6 +28,7 @@ public class PrimaryAttribute extends DatabaseObject implements IUniquelyNamedDa
      * The human-readable short name of this attribute.
      */
     @Indexed(unique = true)
+    @NotNull
     @Pattern(regexp = "(?!LVL)[A-Z]+", message = "{character.primary.shortName}")
     private final String shortName;
 

@@ -4955,6 +4955,7 @@
             "type": "string"
           },
           "shortName": {
+            "pattern": "(?!LVL)[A-Z]+",
             "type": "string"
           }
         }

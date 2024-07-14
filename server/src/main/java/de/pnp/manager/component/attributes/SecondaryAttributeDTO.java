@@ -15,7 +15,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
  * @param name The human-readable name of this attribute.
  */
 public record SecondaryAttributeDTO(@Id ObjectId id, @Indexed(unique = true) @NotBlank String name,
-                                    @NotNull boolean consumable, @IsValidExpression String calculationFormula) {
+                                    @NotNull boolean consumable,
+                                    @NotNull @IsValidExpression String calculationFormula) {
 
     @Override
     public boolean equals(Object o) {
