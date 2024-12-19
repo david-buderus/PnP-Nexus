@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.Map;
 import java.util.Objects;
@@ -31,6 +32,10 @@ public class BinaryExpressionTree {
      * Calculates the result of the tree with the given constants.
      */
     public double calculate(Map<IExpressionVariable, Double> constants) {
+        if (root == null) {
+            return Double.NaN;
+        }
+
         return root.calculate(constants);
     }
 
@@ -39,6 +44,10 @@ public class BinaryExpressionTree {
      */
     @JsonIgnore
     public Set<IExpressionVariable> getVariables() {
+        if (root == null) {
+            return Collections.emptySet();
+        }
+
         return root.getVariables();
     }
 
@@ -54,6 +63,13 @@ public class BinaryExpressionTree {
         StringBuilder expression = new StringBuilder();
         root.buildHumanReadableString(expression);
         return expression.toString();
+    }
+
+    /**
+     * Returns if the tree contains any formula.
+     */
+    public boolean isEmpty() {
+        return root == null;
     }
 
     @Override

@@ -2,6 +2,7 @@ package de.pnp.manager.server.service.attributes;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
+import com.google.common.collect.Sets;
 import de.pnp.manager.component.attributes.SecondaryAttributeDTO;
 import de.pnp.manager.security.UniverseRead;
 import de.pnp.manager.security.UniverseWrite;
@@ -12,6 +13,8 @@ import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +38,9 @@ public class SimpleSecondaryAttributeService {
 
     @Autowired
     private SecondaryAttributeDTOController attributeController;
+
+    @Autowired
+    private SecondaryAttributeRepository repository;
 
     @GetMapping
     @UniverseRead
@@ -61,6 +67,26 @@ public class SimpleSecondaryAttributeService {
             throw new ResponseStatusException(BAD_REQUEST, "The id of the object does not match.");
         }
         return attributeController.update(universe, object);
+    }
+
+    @PutMapping
+    @UniverseWrite
+    @Operation(summary = "Sets all secondary attributes of the universe", operationId = "setAllSimpleSecondaryAttributes")
+    public void setAll(@PathVariable String universe, @RequestBody List<@Valid SecondaryAttributeDTO> attributes) {
+        Set<ObjectId> newIds = attributes.stream().map(SecondaryAttributeDTO::id).filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+        Set<ObjectId> toRemove = Sets.difference(
+            attributeController.getAll(universe).stream().map(SecondaryAttributeDTO::id).collect(Collectors.toSet()),
+            newIds);
+        List<SecondaryAttributeDTO> toUpdate = attributes.stream().filter(SecondaryAttributeDTO::isPersisted)
+            .toList();
+        List<SecondaryAttributeDTO> toInsert = attributes.stream().filter(attribute -> !attribute.isPersisted())
+            .toList();
+
+        repository.removeAll(universe, toRemove);
+        toUpdate.forEach(attribute -> attributeController.update(universe, attribute));
+        attributeController.insertAll(universe, toInsert);
     }
 
     @GetMapping("supported-variables")

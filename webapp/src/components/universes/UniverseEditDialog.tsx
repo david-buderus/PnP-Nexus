@@ -4,7 +4,7 @@ import { Universe, UniverseServiceApi } from "../../api";
 import { Button, Dialog, DialogActions, DialogTitle, Box } from "@mui/material";
 import { API_CONFIGURATION } from "../Constants";
 import { UniverseManipulation } from "./UniverseManipulation";
-import { handleValidationError } from "../ErrorUtils";
+import { handleValidationErrors } from "../ErrorUtils";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 
@@ -41,7 +41,7 @@ export function UniverseEditDialog(props: UniverseEditDialogProps) {
                 {t('cancel')}
             </Button>
             <Button onClick={() => {
-                UNIVERSE_API.updateUniverse(universe.name, universe).then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));
+                UNIVERSE_API.updateUniverse(universe.name, universe).then(() => onClose({}, "successful")).catch(handleValidationErrors(setErrors));
             }}>{t('edit')}</Button>
         </DialogActions>
     </Dialog>;

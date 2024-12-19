@@ -2,10 +2,10 @@ import { Button, Dialog, DialogTitle, FormControl, MenuItem, Select, Stack } fro
 import { useTranslation } from "react-i18next";
 import { ItemServiceApi, ItemType, Material } from "../../api";
 import { useState } from "react";
-import { getUniverseContext } from "../PageBase";
+import { getUniverseContext } from '../PageBase';
 import { ItemManipulation } from "./ItemManipulation";
 import { API_CONFIGURATION, ItemClass, SomeItem } from "../Constants";
-import { handleValidationError } from "../ErrorUtils";
+import { handleValidationErrors } from "../ErrorUtils";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 
@@ -56,7 +56,7 @@ export function ItemCreationDialog(props: ItemCreationDialogProps) {
                 <div className='float-right'>
                     <Button variant="contained" data-testid="item-add" color="success" onClick={() => {
                         ITEM_API.insertAllItems(activeUniverse.name, [item]).then(() => onClose({}, "succesful"))
-                            .catch(handleValidationError(setErrors, key => key.substring(key.lastIndexOf(".") + 1)));
+                            .catch(handleValidationErrors(setErrors, key => key.substring(key.lastIndexOf(".") + 1)));
                     }}>
                         {t("add")}
                     </Button>

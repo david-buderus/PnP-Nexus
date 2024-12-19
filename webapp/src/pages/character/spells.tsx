@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { getUniverseContext } from "../../components/PageBase";
+import { getUniverseContext } from '../../components/PageBase';
 import { Spell, SpellServiceApi, Talent, TalentServiceApi } from "../../api";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { API_CONFIGURATION } from "../../components/Constants";
@@ -28,7 +28,7 @@ export function SpellsPage() {
         columns={[
             { label: t("name"), id: "name", getter: spell => spell.name },
             { label: t("effect"), id: "effect", getter: spell => spell.effect },
-            { label: t("cost"), id: "cost", getter: spell => spell.cost.map(resourceUsageToString).join(", ") },
+            { label: t("spell:cost"), id: "cost", getter: spell => spell.cost.map(resourceUsageToString).join(", ") },
             { label: t("spell:additionalCost"), id: "cost", getter: spell => spell.additionalCost },
             { label: t("spell:castTime"), id: "castTime", getter: spell => spell.castTime },
             { label: t("talents"), id: "talents", getter: spell => spell.talents.map(talent => talent.name).join(", ") },
@@ -42,7 +42,7 @@ export function SpellsPage() {
             { fieldId: "tier", label: t("tier"), fieldType: "NUMBER" },
             { fieldId: "additionalCost", label: t("spell:additionalCost"), fieldType: "STRING" },
             {
-                fieldId: "cost", label: t("cost"), fieldType: "COMPLEX_LIST",
+                fieldId: "cost", label: t("spell:cost"), fieldType: "COMPLEX_LIST",
                 emptyObject: { amount: 1, resource: null },
                 newListObjectLabel: t("spell:addCost"),
                 subFields: [

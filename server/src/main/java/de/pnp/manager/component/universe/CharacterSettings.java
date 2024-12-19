@@ -3,6 +3,7 @@ package de.pnp.manager.component.universe;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.character.PnPCharacter;
 import de.pnp.manager.component.item.ItemType;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -34,10 +35,10 @@ public final class CharacterSettings extends SettingsBase {
     private final int numberOfHandheld;
 
     @NotNull
-    private final List<ArmorDefinition> armorDefinitions;
+    private final List<@Valid ArmorDefinition> armorDefinitions;
 
     @NotNull
-    private final List<JewelleryDefinition> jewelleryDefinitions;
+    private final List<@Valid JewelleryDefinition> jewelleryDefinitions;
 
     @JsonCreator
     public CharacterSettings(int minPrimaryAttributeValue, int maxPrimaryAttributeValue, int maxPrimaryAttributeSum,
@@ -82,7 +83,7 @@ public final class CharacterSettings extends SettingsBase {
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
-        var that = (CharacterSettings) obj;
+        CharacterSettings that = (CharacterSettings) obj;
         return this.numberOfHandheld == that.numberOfHandheld &&
             Objects.equals(this.armorDefinitions, that.armorDefinitions) &&
             Objects.equals(this.jewelleryDefinitions, that.jewelleryDefinitions);

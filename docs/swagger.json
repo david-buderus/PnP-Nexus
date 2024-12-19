@@ -152,6 +152,41 @@
         ]
       }
     },
+    "/api/expressions/result": {
+      "post": {
+        "operationId": "calculateResults",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalculationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Calculates the results for the given formulas",
+        "tags": [
+          "binary-expression-tree-service"
+        ]
+      }
+    },
     "/api/expressions/secondary-attributes/{universe}": {
       "post": {
         "operationId": "createExpressionForSecondaryAttributes",
@@ -2285,6 +2320,41 @@
         "tags": [
           "simple-secondary-attribute-service"
         ]
+      },
+      "put": {
+        "operationId": "setAllSimpleSecondaryAttributes",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SecondaryAttributeDTO"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "Sets all secondary attributes of the universe",
+        "tags": [
+          "simple-secondary-attribute-service"
+        ]
       }
     },
     "/api/{universe}/simple-secondary-attributes/supported-variables": {
@@ -2987,6 +3057,53 @@
         ],
         "responses": {
           "200": {
+            "description": "OK"
+          }
+        },
+        "summary": "Creates a few basic materials most universes need",
+        "tags": [
+          "universe-creation-service"
+        ]
+      }
+    },
+    "/api/{universe}/universe-creation/secondary-attribute-info": {
+      "post": {
+        "operationId": "getSecondaryAttributeInfo",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SecondaryAttributeDTO"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SecondaryAttributeInfo"
+                  }
+                }
+              }
+            },
             "description": "OK"
           }
         },
@@ -4276,6 +4393,9 @@
         ],
         "type": "object",
         "properties": {
+          "empty": {
+            "type": "boolean"
+          },
           "root": {
             "oneOf": [
               {
@@ -4291,6 +4411,24 @@
                 "$ref": "#/components/schemas/VariableNode"
               }
             ]
+          }
+        }
+      },
+      "CalculationRequest": {
+        "type": "object",
+        "properties": {
+          "constants": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "formulas": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -5020,6 +5158,26 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "SecondaryAttributeInfo": {
+        "type": "object",
+        "properties": {
+          "average": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "max": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "min": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notPrecise": {
+            "type": "boolean"
           }
         }
       },

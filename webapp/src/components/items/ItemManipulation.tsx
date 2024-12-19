@@ -3,7 +3,7 @@ import { ERarity, ItemType, Material } from "../../api";
 import { useEffect, useState } from "react";
 import { RaritySelect } from "../inputs/NexusSelect";
 import { useTranslation } from "react-i18next";
-import { getUniverseContext } from "../PageBase";
+import { getUniverseContext } from '../PageBase';
 import { currencyToHumanReadable } from "../Utils";
 import { ItemClass, SomeItem } from "../Constants";
 import { TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/TestFieldWithError";

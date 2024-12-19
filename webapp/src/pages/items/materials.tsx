@@ -3,7 +3,7 @@ import { ItemServiceApi, Material, MaterialServiceApi } from "../../api";
 import { API_CONFIGURATION, SomeItem } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { useEffect, useState } from "react";
-import { getUniverseContext } from "../../components/PageBase";
+import { getUniverseContext } from '../../components/PageBase';
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);

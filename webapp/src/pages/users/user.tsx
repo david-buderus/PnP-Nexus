@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { getUserContext } from "../../components/PageBase";
+import { getUserContext } from '../../components/PageBase';
 import { Button, Dialog, DialogActions, DialogTitle, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { TextFieldWithError } from "../../components/inputs/TestFieldWithError";
 import { NexusSelect } from "../../components/inputs/NexusSelect";
 import { AuthenticationServiceApi, PnPUser, PnPUserPreference, UserServiceApi } from "../../api";
 import { API_CONFIGURATION } from "../../components/Constants";
-import { handleValidationError } from "../../components/ErrorUtils";
+import { handleValidationErrors } from "../../components/ErrorUtils";
 import { AxiosResponse } from "axios";
 import { ConfirmationDialog } from "../../components/inputs/ConfirmationDialog";
 
@@ -169,7 +169,7 @@ function ControlButtons({
             onSave().then(() => {
                 refreshUser();
                 setEditMode(false);
-            }).catch(handleValidationError(setErrors));
+            }).catch(handleValidationErrors(setErrors));
         }} data-testid="save"> {t("save")}</Button>
     </Stack>;
 }
@@ -235,7 +235,7 @@ function ChangePasswordDialog({
                 AUTH_API.updatePassword({
                     oldPassword: oldPassword,
                     newPassword: newPassword
-                }).then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));
+                }).then(() => onClose({}, "successful")).catch(handleValidationErrors(setErrors));
             }} data-testid="save-password">{t('save')}</Button>
         </DialogActions>
     </Dialog>;

@@ -2,10 +2,10 @@ import { Button, Dialog, DialogTitle, Stack } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { ItemServiceApi, ItemType, Material } from "../../api";
 import { useState } from "react";
-import { getUniverseContext } from "../PageBase";
+import { getUniverseContext } from '../PageBase';
 import { ItemManipulation } from "./ItemManipulation";
 import { API_CONFIGURATION, ItemClass, SomeItem } from "../Constants";
-import { handleValidationError } from "../ErrorUtils";
+import { handleValidationErrors } from "../ErrorUtils";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 
@@ -47,7 +47,7 @@ export function ItemEditDialog(props: ItemCreationDialogProps) {
             <div className='w-full pt-2'>
                 <div className='float-right'>
                     <Button variant="contained" data-testid="item-edit" color="success" onClick={() => {
-                        ITEM_API.updateItem(activeUniverse.name, item.id, item).then(() => onClose({}, "succesful")).catch(handleValidationError(setErrors));
+                        ITEM_API.updateItem(activeUniverse.name, item.id, item).then(() => onClose({}, "succesful")).catch(handleValidationErrors(setErrors));
                     }}>
                         {t("edit")}
                     </Button>

@@ -65,26 +65,8 @@ public class SecondaryAttributeDTOController {
      * Inserts the given {@link SecondaryAttributeDTO} into the universe.
      */
     public Collection<SecondaryAttributeDTO> insertAll(String universe,
-        Collection<SecondaryAttributeDTO> attributes) {
-        Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
-
-        List<SecondaryAttribute> secondaryAttributes = attributes.stream().map(
-            dto -> new SecondaryAttribute(dto.id(), dto.name(), dto.consumable(),
-                createExpression(dto.calculationFormula(), attributeVariables))).toList();
-
-        Map<String, String> violations = new HashMap<>();
-
-        for (int i = 0; i < secondaryAttributes.size(); i++) {
-            if (checkUsedVariables(secondaryAttributes.get(i))) {
-                violations.put("insertAll.objects[" + i + "].calculationFormula", "expression.unknownVariable");
-            }
-        }
-
-        if (!violations.isEmpty()) {
-            throw new InvalidRequestBodyException(violations);
-        }
-
-        return secondaryAttributeRepository.insertAll(universe, secondaryAttributes).stream()
+        List<SecondaryAttributeDTO> attributes) {
+        return secondaryAttributeRepository.insertAll(universe, convert(universe, attributes)).stream()
             .map(SecondaryAttributeDTO::from).toList();
     }
 
@@ -119,6 +101,49 @@ public class SecondaryAttributeDTOController {
             ALLOWED_STRING_VARIABLES.stream()).toList();
     }
 
+    /**
+     * Converts the {@link SecondaryAttributeDTO} to {@link SecondaryAttribute}.
+     */
+    public List<SecondaryAttribute> convert(String universe, List<SecondaryAttributeDTO> attributeDTOS) {
+        Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
+
+        List<SecondaryAttribute> secondaryAttributes = attributeDTOS.stream().map(
+            dto -> new SecondaryAttribute(dto.id(), dto.name(), dto.consumable(),
+                createExpression(dto.calculationFormula(), attributeVariables))).toList();
+
+        Map<String, String> violations = new HashMap<>();
+
+        for (int i = 0; i < secondaryAttributes.size(); i++) {
+            if (checkUsedVariables(secondaryAttributes.get(i))) {
+                violations.put("insertAll.objects[" + i + "].calculationFormula", "expression.unknownVariable");
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new InvalidRequestBodyException(violations);
+        }
+
+        return secondaryAttributes;
+    }
+
+    /**
+     * Converts the {@link SecondaryAttributeDTO} to {@link SecondaryAttribute} without any soundness checks.
+     * <p>
+     * Contains {@link null} for DTOs which can not be converted.
+     */
+    public List<@Nullable SecondaryAttribute> convertRaw(String universe, List<SecondaryAttributeDTO> attributeDTOS) {
+        Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
+
+        return attributeDTOS.stream().map(
+            dto -> {
+                try {
+                    return new SecondaryAttribute(dto.id(), dto.name(), dto.consumable(),
+                        BinaryExpressionTree.from(dto.calculationFormula(), attributeVariables));
+                } catch (IllegalFormulaException e) {
+                    return null;
+                }
+            }).toList();
+    }
 
     private static boolean checkUsedVariables(SecondaryAttribute secondaryAttribute) {
         return secondaryAttribute.getCalculationFormula().getVariables().stream()

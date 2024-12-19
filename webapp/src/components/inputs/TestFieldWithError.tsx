@@ -51,9 +51,10 @@ export function TextFieldWithError(props: {
 
     const { t } = useTranslation();
 
-    return <Tooltip title={tooltip} placement="right-start">
+    return <Tooltip title={tooltip} placement="right-start" key={fieldId + "-tooltip"}>
         <TextField
             {...errorMessage(fieldId, errorMap, value, numberField, integerField, t)}
+            key={fieldId}
             id={fieldId}
             data-testid={fieldId}
             variant="outlined"
@@ -81,6 +82,7 @@ export function TextFieldWithErrorForAutoComplete(props: {
 
     return <TextField
         {...errorMessage(fieldId, errorMap, null, false, false, t)}
+        key={fieldId}
         id={fieldId}
         variant="outlined"
         {...rest}

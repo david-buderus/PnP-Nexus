@@ -192,6 +192,12 @@ export interface ArmorDefinition {
 export interface BinaryExpressionTree {
     /**
      * 
+     * @type {boolean}
+     * @memberof BinaryExpressionTree
+     */
+    'empty'?: boolean;
+    /**
+     * 
      * @type {BinaryExpressionTreeRoot}
      * @memberof BinaryExpressionTree
      */
@@ -203,6 +209,25 @@ export interface BinaryExpressionTree {
  */
 export type BinaryExpressionTreeRoot = ConstantNode | NegateInnerNode | TwoParameterInnerNode | VariableNode;
 
+/**
+ * 
+ * @export
+ * @interface CalculationRequest
+ */
+export interface CalculationRequest {
+    /**
+     * 
+     * @type {{ [key: string]: number; }}
+     * @memberof CalculationRequest
+     */
+    'constants'?: { [key: string]: number; };
+    /**
+     * 
+     * @type {Array<string>}
+     * @memberof CalculationRequest
+     */
+    'formulas'?: Array<string>;
+}
 /**
  * 
  * @export
@@ -1302,6 +1327,37 @@ export interface SecondaryAttributeDTO {
 /**
  * 
  * @export
+ * @interface SecondaryAttributeInfo
+ */
+export interface SecondaryAttributeInfo {
+    /**
+     * 
+     * @type {number}
+     * @memberof SecondaryAttributeInfo
+     */
+    'average'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof SecondaryAttributeInfo
+     */
+    'max'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof SecondaryAttributeInfo
+     */
+    'min'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof SecondaryAttributeInfo
+     */
+    'notPrecise'?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface Shield
  */
 export interface Shield {
@@ -2345,6 +2401,42 @@ export const BinaryExpressionTreeServiceApiAxiosParamCreator = function (configu
     return {
         /**
          * 
+         * @summary Calculates the results for the given formulas
+         * @param {CalculationRequest} calculationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calculateResults: async (calculationRequest: CalculationRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'calculationRequest' is not null or undefined
+            assertParamExists('calculateResults', 'calculationRequest', calculationRequest)
+            const localVarPath = `/api/expressions/result`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(calculationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Creates an expression for secondary attributes
          * @param {string} universe 
          * @param {string} body 
@@ -2431,6 +2523,17 @@ export const BinaryExpressionTreeServiceApiFp = function(configuration?: Configu
     return {
         /**
          * 
+         * @summary Calculates the results for the given formulas
+         * @param {CalculationRequest} calculationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async calculateResults(calculationRequest: CalculationRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<number>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.calculateResults(calculationRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Creates an expression for secondary attributes
          * @param {string} universe 
          * @param {string} body 
@@ -2464,6 +2567,16 @@ export const BinaryExpressionTreeServiceApiFactory = function (configuration?: C
     return {
         /**
          * 
+         * @summary Calculates the results for the given formulas
+         * @param {CalculationRequest} calculationRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        calculateResults(calculationRequest: CalculationRequest, options?: any): AxiosPromise<Array<number>> {
+            return localVarFp.calculateResults(calculationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Creates an expression for secondary attributes
          * @param {string} universe 
          * @param {string} body 
@@ -2493,6 +2606,18 @@ export const BinaryExpressionTreeServiceApiFactory = function (configuration?: C
  * @extends {BaseAPI}
  */
 export class BinaryExpressionTreeServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Calculates the results for the given formulas
+     * @param {CalculationRequest} calculationRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BinaryExpressionTreeServiceApi
+     */
+    public calculateResults(calculationRequest: CalculationRequest, options?: AxiosRequestConfig) {
+        return BinaryExpressionTreeServiceApiFp(this.configuration).calculateResults(calculationRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Creates an expression for secondary attributes
@@ -6569,6 +6694,46 @@ export const SimpleSecondaryAttributeServiceApiAxiosParamCreator = function (con
         },
         /**
          * 
+         * @summary Sets all secondary attributes of the universe
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setAllSimpleSecondaryAttributes: async (universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('setAllSimpleSecondaryAttributes', 'universe', universe)
+            // verify required parameter 'secondaryAttributeDTO' is not null or undefined
+            assertParamExists('setAllSimpleSecondaryAttributes', 'secondaryAttributeDTO', secondaryAttributeDTO)
+            const localVarPath = `/api/{universe}/simple-secondary-attributes`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(secondaryAttributeDTO, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
@@ -6658,6 +6823,18 @@ export const SimpleSecondaryAttributeServiceApiFp = function(configuration?: Con
         },
         /**
          * 
+         * @summary Sets all secondary attributes of the universe
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async setAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
@@ -6710,6 +6887,17 @@ export const SimpleSecondaryAttributeServiceApiFactory = function (configuration
          */
         insertAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: any): AxiosPromise<Array<SecondaryAttributeDTO>> {
             return localVarFp.insertAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Sets all secondary attributes of the universe
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: any): AxiosPromise<void> {
+            return localVarFp.setAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6769,6 +6957,19 @@ export class SimpleSecondaryAttributeServiceApi extends BaseAPI {
      */
     public insertAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: AxiosRequestConfig) {
         return SimpleSecondaryAttributeServiceApiFp(this.configuration).insertAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Sets all secondary attributes of the universe
+     * @param {string} universe 
+     * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof SimpleSecondaryAttributeServiceApi
+     */
+    public setAllSimpleSecondaryAttributes(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: AxiosRequestConfig) {
+        return SimpleSecondaryAttributeServiceApiFp(this.configuration).setAllSimpleSecondaryAttributes(universe, secondaryAttributeDTO, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7951,6 +8152,46 @@ export const UniverseCreationServiceApiAxiosParamCreator = function (configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Creates a few basic materials most universes need
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSecondaryAttributeInfo: async (universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getSecondaryAttributeInfo', 'universe', universe)
+            // verify required parameter 'secondaryAttributeDTO' is not null or undefined
+            assertParamExists('getSecondaryAttributeInfo', 'secondaryAttributeDTO', secondaryAttributeDTO)
+            const localVarPath = `/api/{universe}/universe-creation/secondary-attribute-info`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(secondaryAttributeDTO, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -8009,6 +8250,18 @@ export const UniverseCreationServiceApiFp = function(configuration?: Configurati
             const localVarAxiosArgs = await localVarAxiosParamCreator.getDefaultJewelleryDefinitions(universe, language, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
+        /**
+         * 
+         * @summary Creates a few basic materials most universes need
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getSecondaryAttributeInfo(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SecondaryAttributeInfo>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getSecondaryAttributeInfo(universe, secondaryAttributeDTO, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
     }
 };
 
@@ -8062,6 +8315,17 @@ export const UniverseCreationServiceApiFactory = function (configuration?: Confi
          */
         getDefaultJewelleryDefinitions(universe: string, language: string, options?: any): AxiosPromise<Array<JewelleryDefinition>> {
             return localVarFp.getDefaultJewelleryDefinitions(universe, language, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates a few basic materials most universes need
+         * @param {string} universe 
+         * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getSecondaryAttributeInfo(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: any): AxiosPromise<Array<SecondaryAttributeInfo>> {
+            return localVarFp.getSecondaryAttributeInfo(universe, secondaryAttributeDTO, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -8123,6 +8387,19 @@ export class UniverseCreationServiceApi extends BaseAPI {
      */
     public getDefaultJewelleryDefinitions(universe: string, language: string, options?: AxiosRequestConfig) {
         return UniverseCreationServiceApiFp(this.configuration).getDefaultJewelleryDefinitions(universe, language, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates a few basic materials most universes need
+     * @param {string} universe 
+     * @param {Array<SecondaryAttributeDTO>} secondaryAttributeDTO 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseCreationServiceApi
+     */
+    public getSecondaryAttributeInfo(universe: string, secondaryAttributeDTO: Array<SecondaryAttributeDTO>, options?: AxiosRequestConfig) {
+        return UniverseCreationServiceApiFp(this.configuration).getSecondaryAttributeInfo(universe, secondaryAttributeDTO, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -1,13 +1,26 @@
 import axios, { AxiosError } from "axios";
 
+export function handleNetworkErrors(): (err: Error | AxiosError) => void {
+    return err => {
+        if (!axios.isAxiosError(err)) {
+            return;
+        }
+        if (err.response.status === 401) {
+            location.reload();
+        }
+
+    };
+}
+
 
 /** Handles api errors and returns the resulting error map. */
-export function handleValidationError(setError: (errors: Map<string, string>) => void, keyFormatter?: (key: string) => string): (err: Error | AxiosError) => void {
+export function handleValidationErrors(setError: (errors: Map<string, string>) => void, keyFormatter?: (key: string) => string): (err: Error | AxiosError) => void {
     return err => {
         if (!axios.isAxiosError(err)) {
             return;
         }
         if (err.response.status !== 400) {
+            handleNetworkErrors()(err);
             return;
         }
         const errorMap = new Map<string, string>();

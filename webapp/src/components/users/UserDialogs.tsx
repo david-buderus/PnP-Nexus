@@ -1,10 +1,10 @@
 import { useTranslation } from "react-i18next";
-import { getUniverseContext } from "../PageBase";
+import { getUniverseContext } from '../PageBase';
 import { useEffect, useMemo, useState } from "react";
 import { GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, RoleAuthorityDTO, UserServiceApi } from "../../api";
 import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField } from "@mui/material";
 import { TextFieldWithError } from "../inputs/TestFieldWithError";
-import { handleValidationError } from "../ErrorUtils";
+import { handleValidationErrors } from "../ErrorUtils";
 import { API_CONFIGURATION } from "../Constants";
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);
@@ -59,7 +59,7 @@ export function UserCreationDialog({ open, onClose }: UserCreationDialogProps) {
                 USER_API.createUser({
                     ...userCreation,
                     authorities: authorities
-                }).then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));
+                }).then(() => onClose({}, "successful")).catch(handleValidationErrors(setErrors));
             }}>{t('create')}</Button>
         </DialogActions>
     </Dialog>;
@@ -111,7 +111,7 @@ export function UserEditDialog({ user, open, onClose }: UserEditDialogProps) {
             </Button>
             <Button data-testid="user-edit" onClick={() => {
                 USER_API.updateUser(user.username, editUser).then(() => USER_API.updatePermissions(user.username, editAuthorities))
-                    .then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));
+                    .then(() => onClose({}, "successful")).catch(handleValidationErrors(setErrors));
             }}>{t('edit')}</Button>
         </DialogActions>
     </Dialog>;

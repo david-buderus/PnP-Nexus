@@ -6,7 +6,7 @@ import { UniverseServiceApi, UserServiceApi, UserUniversePermissionDTO } from '.
 import { API_CONFIGURATION } from '../../components/Constants';
 import OverviewTable from '../../components/OverviewTable';
 import { ConfirmationDialog } from '../../components/inputs/ConfirmationDialog';
-import { handleValidationError } from '../../components/ErrorUtils';
+import { handleValidationErrors } from '../../components/ErrorUtils';
 import { TextFieldWithErrorForAutoComplete } from '../../components/inputs/TestFieldWithError';
 import { NexusSelect } from '../../components/inputs/NexusSelect';
 import { useNavigate } from 'react-router-dom';
@@ -60,7 +60,7 @@ function PermissionCreationDialog(props: PermissionCreationDialogProps) {
         {t('cancel')}
       </Button>
       <Button onClick={() => {
-        UNIVERSE_API.addUniversePermission(activeUniverse.name, name, permission).then(() => onClose({}, "successful")).catch(handleValidationError(setErrors));
+        UNIVERSE_API.addUniversePermission(activeUniverse.name, name, permission).then(() => onClose({}, "successful")).catch(handleValidationErrors(setErrors));
       }}>{t('add')}</Button>
     </DialogActions>
   </Dialog>;

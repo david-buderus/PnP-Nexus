@@ -57,5 +57,9 @@
   "jewelleryImportTitle": "Importiere empfohlene Schmuckdefinitionen",
   "jewelleryImportExplanation": "Das importieren von den empfohlenen Definitionen funktioniert nur, wenn die Ausrüstung-Item-Typen importiert wurden.",
   "importMissingRequirements": "Es wurden nicht die benötigten Item-Typen vorher importiert oder sie wurden mit einer anderen Sprache importiert.",
-  "importDefaults": "Importieren"
+  "importDefaults": "Importieren",
+  "secondaryAttributeExplanation": "",
+  "secondaryAttributeExplanationTooltip": "",
+  "getSecondaryAttributeInfos": "",
+  "secondaryAttributeTesting": ""
 }

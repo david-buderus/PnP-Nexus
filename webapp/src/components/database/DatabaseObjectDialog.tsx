@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { getUniverseContext } from "../PageBase";
+import { getUniverseContext } from '../PageBase';
 import { ReactNode, useState } from "react";
 import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField, Tooltip } from "@mui/material";
 import { AxiosResponse } from "axios";
-import { handleValidationError } from "../ErrorUtils";
+import { handleValidationErrors } from "../ErrorUtils";
 import { NumberFieldWithError, TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/TestFieldWithError";
 import { NexusSelect } from "../inputs/NexusSelect";
 import { FaMinus, FaPlus } from "react-icons/fa";
@@ -109,7 +109,7 @@ export function DatabaseObjectDialog<O extends DatabaseObject>({
                 {t('cancel')}
             </Button>
             <Button data-testid="dialog-action" onClick={() => {
-                onAction(activeUniverse.name, databaseObject).then(() => onClose({}, "successful")).catch(handleValidationError(setErrors, keyFormatter));
+                onAction(activeUniverse.name, databaseObject).then(() => onClose({}, "successful")).catch(handleValidationErrors(setErrors, keyFormatter));
             }}>{actionButtonText}</Button>
         </DialogActions>
     </Dialog>;

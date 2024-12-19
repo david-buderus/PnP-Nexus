@@ -1,5 +1,6 @@
 package de.pnp.manager.component.attributes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.validation.IsValidExpression;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +18,14 @@ import org.springframework.data.mongodb.core.index.Indexed;
 public record SecondaryAttributeDTO(@Id ObjectId id, @Indexed(unique = true) @NotBlank String name,
                                     @NotNull boolean consumable,
                                     @NotNull @IsValidExpression String calculationFormula) {
+
+    /**
+     * Checks whether this object is already persisted in a database.
+     */
+    @JsonIgnore
+    public boolean isPersisted() {
+        return id != null;
+    }
 
     @Override
     public boolean equals(Object o) {

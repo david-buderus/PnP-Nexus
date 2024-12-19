@@ -2,6 +2,7 @@ package de.pnp.manager.server.service;
 
 import static de.pnp.manager.server.contoller.SecondaryAttributeDTOController.ALLOWED_STRING_VARIABLES;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
@@ -11,9 +12,12 @@ import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -56,6 +60,23 @@ public class BinaryExpressionTreeService {
         return tree;
     }
 
+    @PostMapping("result")
+    @Operation(summary = "Calculates the results for the given formulas", operationId = "calculateResults")
+    public List<Double> calculateResults(@RequestBody CalculationRequest request) {
+        Map<IExpressionVariable, Double> variableConstants = request.getVariableConstants();
+
+        return request.formulas.stream().map(formula -> {
+            if (StringUtils.isBlank(formula)) {
+                return Double.NaN;
+            }
+            try {
+                return BinaryExpressionTree.from(formula, Set.of()).calculate(variableConstants);
+            } catch (IllegalFormulaException e) {
+                return Double.NaN;
+            }
+        }).toList();
+    }
+
     @PostMapping("human-readable")
     @Operation(summary = "Returns human readable strings for the given expressions", operationId = "toHumanReadableFormat")
     public List<String> toHumanReadableFormat(@RequestBody List<@Valid BinaryExpressionTree> expressions) {
@@ -77,5 +98,20 @@ public class BinaryExpressionTreeService {
         ResourceBundle bundle = ResourceBundle.getBundle("messages", LocaleContextHolder.getLocale());
         String errorMessage = bundle.getString(messageKey);
         return new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+
+    /**
+     * A wrapper for a calculation request.
+     */
+    public record CalculationRequest(List<String> formulas, Map<String, Double> constants) {
+
+        /**
+         * Returns {@link #constants} as {@link IExpressionVariable}
+         */
+        @JsonIgnore
+        public Map<IExpressionVariable, Double> getVariableConstants() {
+            return constants.entrySet().stream().collect(Collectors.toMap(e -> new StringVariable(e.getKey()),
+                Entry::getValue));
+        }
     }
 }

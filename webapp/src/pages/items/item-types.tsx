@@ -3,7 +3,7 @@ import { ExtendedItemType, ExtendedItemTypeServiceApi, ItemType, ItemTypeService
 import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { useEffect, useState } from "react";
-import { getUniverseContext } from "../../components/PageBase";
+import { getUniverseContext } from '../../components/PageBase';
 
 const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);
 const EXTENDED_ITEM_TYPE_API = new ExtendedItemTypeServiceApi(API_CONFIGURATION);

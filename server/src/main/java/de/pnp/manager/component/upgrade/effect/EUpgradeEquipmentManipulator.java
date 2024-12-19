@@ -7,5 +7,5 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(enumAsRef = true)
 public enum EUpgradeEquipmentManipulator {
-    NONE, SLOTS, DAMAGE, HIT, INITIATIVE, ARMOR, WEIGHT
+    SLOTS, DAMAGE, HIT, INITIATIVE, ARMOR, WEIGHT
 }

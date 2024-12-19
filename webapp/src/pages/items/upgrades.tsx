@@ -4,7 +4,7 @@ import { ECalculation, EUpgradeEquipmentManipulator, ItemType, ItemTypeServiceAp
 import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { useEffect, useState } from "react";
-import { getUniverseContext } from "../../components/PageBase";
+import { getUniverseContext } from '../../components/PageBase';
 import { currencyToHumanReadable } from "../../components/Utils";
 
 const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);

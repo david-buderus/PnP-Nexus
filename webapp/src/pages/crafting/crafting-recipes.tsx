@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { CraftingRecipe, CraftingRecipeServiceApi } from "../../api";
 import { API_CONFIGURATION, SomeItem } from "../../components/Constants";
-import { getUniverseContext } from "../../components/PageBase";
+import { getUniverseContext } from '../../components/PageBase';
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { IResourceUsage, addTypeAnnotationToUsage, fetchAllResources, resourceUsageToString } from "../../components/database/ResourceUsageUtils";
 import { fetchAllItems } from "../../components/Database";

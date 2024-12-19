@@ -1,11 +1,9 @@
 import { useTranslation } from "react-i18next";
-import { getUniverseContext } from "../../components/PageBase";
+import { getUniverseContext } from '../../components/PageBase';
 import { SecondaryAttributeDTO, SecondaryAttributeServiceApi, SimpleSecondaryAttributeServiceApi } from "../../api";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { API_CONFIGURATION } from "../../components/Constants";
-import { fetchAllPrimaryAttributes } from "../../components/Database";
 import { useEffect, useState } from "react";
-import { List, ListItem } from "@mui/material";
 
 const SECONDARY_ATTRIBUTE_API = new SecondaryAttributeServiceApi(API_CONFIGURATION);
 const SIMPLE_SECONDARY_ATTRIBUTE_API = new SimpleSecondaryAttributeServiceApi(API_CONFIGURATION);
