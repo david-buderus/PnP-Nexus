@@ -1,7 +1,7 @@
 import { Button, Checkbox, FormControlLabel, Stack, Tooltip, Typography } from "@mui/material";
 import { Universe } from "../../api";
 import { useState } from "react";
-import { NumberFieldWithError, TextFieldWithError } from "../inputs/TestFieldWithError";
+import { NumberFieldWithError, TextFieldWithError } from "../inputs/InputFields";
 import { useTranslation } from "react-i18next";
 import { FaMinus, FaPlus } from "react-icons/fa";
 

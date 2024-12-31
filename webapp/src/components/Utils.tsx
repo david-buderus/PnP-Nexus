@@ -1,4 +1,4 @@
-import { CurrencySettings, Talent, Universe } from "../api";
+import { CurrencySettings, Dice, SingleDice, Talent, Universe } from "../api";
 
 /** Helper class to calculate human readable currency */
 interface CurrencyCalculationStep {
@@ -124,4 +124,21 @@ export function numberFormatter(num: number): string {
         minimumFractionDigits: 0,
         maximumFractionDigits: 2,
     }).format(num);
+}
+
+/**
+ * Formats the dice into a human readable form.
+ */
+export function diceFormatter(dice?: Dice): string {
+    if (!dice || !dice.dices) {
+        return "";
+    }
+
+    return dice.dices.map(d => {
+        if (d.numberOfThrows === 1) {
+            return "D" + d.dice;
+        } else {
+            return d.numberOfThrows + " D" + d.dice;
+        }
+    }).join(" + ");
 }

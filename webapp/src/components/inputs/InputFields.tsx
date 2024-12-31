@@ -3,6 +3,8 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { TFunction } from "i18next";
 import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Dice } from "../../api";
+import { diceFormatter } from "../Utils";
 
 function errorMessage(fieldId: string, errorMap: Map<string, string>, value: string, numberField: boolean, integerField: boolean, t: TFunction<"translation", undefined>) {
     const n = Number(value);
@@ -118,4 +120,98 @@ export function NumberFieldWithError(props: {
         numberField
         {...rest}
     />;
+}
+
+export function StringSetField(props: {
+    /** The id of the field which gets tested. Used as data-testid. */
+    fieldId: string,
+    /** The current value of the text field. */
+    value: Set<string>,
+    /** On change hook for the value. */
+    onChange: (value: Set<string>) => void;
+    /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
+    errorMap?: Map<string, string>,
+    /** Tooltip for the textfield. */
+    tooltip?: ReactNode;
+} & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
+    const { value, onChange, ...rest } = props;
+    const [stringValue, setStringValue] = useState(value === undefined ? "" : Array.from(value).join(", "));
+
+    return <TextFieldWithError
+        value={stringValue}
+        onChange={newValue => {
+            setStringValue(newValue);
+            onChange(new Set(newValue.split(",").map(s => s.trim()).filter(s => s)));
+        }}
+        {...rest}
+    />;
+}
+
+/**
+ * A textfield where the string gets parsed into a dice.
+ * 
+ * The value is null if the string is not a valid dice.
+ */
+export function DiceField(props: {
+    /** The id of the field which gets tested. Used as data-testid. */
+    fieldId: string,
+    /** The current value of the text field. */
+    value: Dice,
+    /** On change hook for the value. */
+    onChange: (value: Dice) => void;
+    /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
+    errorMap?: Map<string, string>,
+    /** Tooltip for the textfield. */
+    tooltip?: ReactNode;
+} & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
+    const { value, onChange, ...rest } = props;
+    const [stringValue, setStringValue] = useState(value === undefined ? "" : diceFormatter(value));
+    const [validDice, setValidDice] = useState(true);
+
+    return <TextFieldWithError
+        value={stringValue}
+        onChange={newValue => {
+            setStringValue(newValue);
+
+            const newDice = parseDice(newValue);
+            onChange(newDice);
+            setValidDice(newDice !== null);
+        }}
+        {...rest}
+        {...diceError(validDice)}
+    />;
+}
+
+function diceError(validDice: boolean) {
+    const { t } = useTranslation();
+
+    if (validDice) {
+        return {};
+    }
+    return {
+        helperText: t("error:notDice"),
+        error: true
+    };
+}
+
+const IS_DICE = /^\s*([1-9][0-9]*)?\s*D[1-9][0-9]*(\s*\+\s*([1-9][0-9]*)?\s*D[1-9][0-9]*)*\s*$/;
+
+function parseDice(s: string): Dice {
+    if (!s) {
+        return {
+            dices: []
+        };
+    }
+    if (!IS_DICE.test(s)) {
+        return null;
+    }
+
+    return {
+        dices: s.split("+").map(d => d.split("D").map(d => d.trim())).map(d => {
+            return {
+                numberOfThrows: d[0] ? Number(d[0]) : 1,
+                dice: Number(d[1])
+            };
+        })
+    };
 }

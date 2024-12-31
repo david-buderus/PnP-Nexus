@@ -14,7 +14,6 @@ import { UserProfile, UserPreferences } from './pages/users/user';
 import { Backup } from './pages/backup';
 import { UserOverview } from './pages/users/user-overview';
 import { Admin } from './pages/admin';
-import { ItemTypePage } from './pages/items/item-types';
 import { MaterialPage } from './pages/items/materials';
 import { CraftingRecipesPage } from './pages/crafting/crafting-recipes';
 import { UpgradePage } from './pages/items/upgrades';
@@ -52,7 +51,6 @@ class App extends Component {
                         <Route path='/armor' element={< ArmorPage />}></Route>
                         <Route path='/jewellery' element={< JewelleryPage />}></Route>
                         <Route path='/upgrades' element={< UpgradePage />}></Route>
-                        <Route path='/item-types' element={< ItemTypePage />}></Route>
                         <Route path='/materials' element={< MaterialPage />}></Route>
                         <Route path='/crafting-recipes' element={< CraftingRecipesPage />}></Route>
                         <Route path='/upgrade-recipes' element={< UpgradeRecipesPage />}></Route>

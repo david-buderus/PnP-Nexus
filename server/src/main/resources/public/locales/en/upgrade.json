@@ -1,6 +1,6 @@
 {
   "effects": "Effect",
-  "target": "Target",
+  "restriction": "Restriction",
   "necessary-slots": "Necessary Upgrade-Slots",
   "upgradeCreationTitle": "Create an upgrade",
   "upgradeEditTitle": "Edit an upgrade",

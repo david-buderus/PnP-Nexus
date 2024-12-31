@@ -7,7 +7,7 @@ import { API_CONFIGURATION } from '../../components/Constants';
 import OverviewTable from '../../components/OverviewTable';
 import { ConfirmationDialog } from '../../components/inputs/ConfirmationDialog';
 import { handleValidationErrors } from '../../components/ErrorUtils';
-import { TextFieldWithErrorForAutoComplete } from '../../components/inputs/TestFieldWithError';
+import { TextFieldWithErrorForAutoComplete } from '../../components/inputs/InputFields';
 import { NexusSelect } from '../../components/inputs/NexusSelect';
 import { useNavigate } from 'react-router-dom';
 import { UniverseEditDialog } from '../../components/universes/UniverseEditDialog';

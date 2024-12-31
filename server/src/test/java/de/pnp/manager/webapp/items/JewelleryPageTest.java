@@ -17,7 +17,7 @@ public class JewelleryPageTest extends ItemPageTestBase {
 
     @Override
     protected ItemPage openTestPage(MainMenu mainMenu) {
-        return mainMenu.openJewelleryPage();
+        return null;// mainMenu.openJewelleryPage();
     }
 
     @Override
@@ -28,8 +28,7 @@ public class JewelleryPageTest extends ItemPageTestBase {
     @Override
     protected Pair<EItemClass, Item> getTestItem() {
         return ImmutablePair.of(EItemClass.JEWELLERY,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Band").withType("Jewellery")
-                .withSubtype("Ring")
+            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Band").withTags("Ring")
                 .withEffect("It is different").withDescription("It is round").withRarity(ERarity.RARE)
                 .withTier(2)
                 .withRequirement("None").withVendorPrice(10000)

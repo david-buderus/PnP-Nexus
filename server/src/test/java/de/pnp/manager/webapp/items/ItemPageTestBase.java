@@ -72,9 +72,6 @@ public abstract class ItemPageTestBase extends ServerTestBase {
 
         table.clickSortByLabel("Name");
         assertSorting(table, items, Comparator.comparing(Item::getName).reversed());
-
-        table.clickSortByLabel("Subtype");
-        assertSorting(table, items, Comparator.comparing(item -> item.getSubtype().getName()));
     }
 
     @Test

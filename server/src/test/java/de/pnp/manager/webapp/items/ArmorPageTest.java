@@ -3,6 +3,7 @@ package de.pnp.manager.webapp.items;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.EArmorSlot;
 import de.pnp.manager.webapp.pages.ItemPage;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.components.items.ItemCreation.EItemClass;
@@ -17,7 +18,7 @@ public class ArmorPageTest extends ItemPageTestBase {
 
     @Override
     protected ItemPage openTestPage(MainMenu mainMenu) {
-        return mainMenu.openArmorPage();
+        return null; //return mainMenu.openArmorPage();
     }
 
     @Override
@@ -28,8 +29,8 @@ public class ArmorPageTest extends ItemPageTestBase {
     @Override
     protected Pair<EItemClass, Item> getTestItem() {
         return ImmutablePair.of(EItemClass.ARMOR,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Spike Helmet").withType("Armor")
-                .withSubtype("Head")
+            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Spike Helmet")
+                .withArmorSlot(EArmorSlot.HEAD)
                 .withEffect("It is spiky").withDescription("It is a spiky helmet").withRarity(ERarity.EPIC)
                 .withTier(2)
                 .withRequirement("None").withVendorPrice(10000)

@@ -1,13 +1,13 @@
 import { getUserContext } from '../PageBase';
 import { getUniverseContext } from '../PageBase';
 import { Alert, Button, Dialog, DialogActions, DialogTitle, Link, Stack, Typography } from "@mui/material";
-import { NumberFieldWithError } from "../inputs/TestFieldWithError";
+import { NumberFieldWithError } from "../inputs/InputFields";
 import { useEffect, useState } from "react";
-import { ArmorDefinition, CharacterSettings, JewelleryDefinition, UniverseCreationServiceApi, UniverseSettingsServiceApi } from "../../api";
+import { CharacterSettings, JewelleryDefinition, UniverseCreationServiceApi, UniverseSettingsServiceApi } from "../../api";
 import { useTranslation } from "react-i18next";
 import { handleValidationErrors } from "../ErrorUtils";
 import { numberFormatter, percentageFormatter, probabilityForSuccesfulThrows } from "../Utils";
-import { fetchAllItemTypes, fetchAllPrimaryAttributes } from "../Database";
+import { fetchAllPrimaryAttributes } from "../Database";
 import { Field } from "../database/DatabaseObjectDialog";
 import { SettingsProps } from "./SettingsProps";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
@@ -27,14 +27,10 @@ export function CharacterSettingsDialogContent({ onSave }: SettingsProps) {
         maxPrimaryAttributeValue: 12,
         maxPrimaryAttributeSum: 50,
         numberOfHandheld: 2,
-        armorDefinitions: [{
-            "name": "",
-            "type": null
-        }],
         jewelleryDefinitions: [{
             "amount": 1,
             "name": "",
-            "type": null
+            "tag": ""
         }]
     });
     const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
@@ -42,7 +38,6 @@ export function CharacterSettingsDialogContent({ onSave }: SettingsProps) {
     const [openJewelleryImport, setOpenJewelleryImport] = useState(false);
 
     const [primaryAttributes] = fetchAllPrimaryAttributes();
-    const [itemTypes] = fetchAllItemTypes();
 
     useEffect(() => {
         if (!activeUniverse) {
@@ -122,49 +117,6 @@ export function CharacterSettingsDialogContent({ onSave }: SettingsProps) {
             <Stack direction="row" justifyContent="center" spacing={10}>
                 <Stack spacing={2} width="40%">
                     <Typography gutterBottom variant="h5" component="div" align='center'>
-                        {t('universe:armorDefinitions')}
-                    </Typography>
-                    <Typography gutterBottom paragraph variant="body2" component="div" align='left'>
-                        {t("universe:armorDefinitionsExplanation")}{" "}
-                        <Link
-                            component="button"
-                            onClick={() => openDialog(
-                                close => <ImportDefaultsDialogContent<ArmorDefinition>
-                                    title={t("universe:armorImportTitle")}
-                                    explanation={t("universe:armorImportExplanation")}
-                                    onClose={definitions => {
-                                        close({}, "successful");
-                                        if (definitions === null) {
-                                            return;
-                                        }
-                                        setSettings({
-                                            ...settings,
-                                            armorDefinitions: definitions
-                                        });
-                                    }}
-                                    importFunction={(universe: string, language: string) => UNIVERSE_CREATION_API.getDefaultArmorDefinitions(universe, language)} />
-                            )}
-                        >
-                            {t("universe:importDefaultArmorDefinitions")}
-                        </Link>
-                    </Typography>
-                    <Field<CharacterSettings, ArmorDefinition>
-                        field={{
-                            fieldId: "armorDefinitions",
-                            label: "",
-                            fieldType: "COMPLEX_LIST",
-                            emptyObject: { amount: 1, item: null },
-                            subFields: [
-                                { fieldId: "name", label: t("name"), fieldType: "STRING" },
-                                { fieldId: "type", label: t("item-type"), fieldType: "DATABASE", dependency: itemTypes, dependencyLabel: "name" }
-                            ]
-                        }}
-                        errors={errors}
-                        databaseObject={settings}
-                        setDatabaseObject={setSettings} />
-                </Stack>
-                <Stack spacing={2} width="40%">
-                    <Typography gutterBottom variant="h5" component="div" align='center'>
                         {t('universe:jewelleryDefinitions')}
                     </Typography>
                     <Typography gutterBottom paragraph variant="body2" component="div" align='left'>
@@ -185,7 +137,7 @@ export function CharacterSettingsDialogContent({ onSave }: SettingsProps) {
                             subFields: [
                                 { fieldId: "amount", label: t("amount"), fieldType: "NUMBER" },
                                 { fieldId: "name", label: t("name"), fieldType: "STRING" },
-                                { fieldId: "type", label: t("item-type"), fieldType: "DATABASE", dependency: itemTypes, dependencyLabel: "name" }
+                                { fieldId: "tag", label: t("tag"), fieldType: "STRING" }
                             ]
                         }}
                         errors={errors}
@@ -202,21 +154,6 @@ export function CharacterSettingsDialogContent({ onSave }: SettingsProps) {
                 }}>{t('save')}</Button>
             </Stack>
         </Stack>
-        <ImportDefaultsDialog<ArmorDefinition>
-            title={t("universe:armorImportTitle")}
-            explanation={t("universe:armorImportExplanation")}
-            open={openArmorImport}
-            onClose={definitions => {
-                setOpenArmorImport(false);
-                if (definitions === null) {
-                    return;
-                }
-                setSettings({
-                    ...settings,
-                    armorDefinitions: definitions
-                });
-            }}
-            importFunction={(universe: string, language: string) => UNIVERSE_CREATION_API.getDefaultArmorDefinitions(universe, language)} />
         <ImportDefaultsDialog<JewelleryDefinition>
             title={t("universe:jewelleryImportTitle")}
             explanation={t("universe:jewelleryImportExplanation")}

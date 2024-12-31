@@ -1,6 +1,6 @@
 {
   "effects": "Effekt",
-  "target": "Ziel",
+  "restriction": "Einschränkung",
   "necessary-slots": "Benötigte Verbesserungslots",
   "upgradeCreationTitle": "Erstelle eine Verbesserung",
   "upgradeEditTitle": "Bearbeite eine Verbesserung",

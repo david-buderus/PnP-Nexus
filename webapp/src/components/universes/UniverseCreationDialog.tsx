@@ -4,7 +4,7 @@ import { Universe, UniverseServiceApi } from "../../api";
 import { Button, Dialog, DialogActions, DialogTitle, Stack } from "@mui/material";
 import { API_CONFIGURATION } from "../Constants";
 import { UniverseManipulation } from "./UniverseManipulation";
-import { TextFieldWithError } from "../inputs/TestFieldWithError";
+import { TextFieldWithError } from "../inputs/InputFields";
 import { handleValidationErrors } from "../ErrorUtils";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);

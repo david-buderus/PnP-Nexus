@@ -23,7 +23,7 @@ class ItemStackControllerTest extends UniverseTestBase {
 
     @Test
     void testApplyWearByUsage() {
-        updateUniverseSettings(new ItemSettings(10));
+        updateUniverseSettings(new ItemSettings(10, false, false));
 
         WeaponEquipment equipment = new WeaponEquipment(1,
             itemBuilder.createItemBuilder(getUniverseName()).withDamage(3).buildWeapon(), 0);
@@ -40,7 +40,7 @@ class ItemStackControllerTest extends UniverseTestBase {
 
     @Test
     void testUniverseWithoutWear() {
-        updateUniverseSettings(new ItemSettings(-1));
+        updateUniverseSettings(new ItemSettings(-1, false, false));
 
         ArmorEquipment equipment = new ArmorEquipment(1,
             itemBuilder.createItemBuilder(getUniverseName()).withArmor(3).buildArmor(), 0);

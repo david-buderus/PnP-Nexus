@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { getUniverseContext, getUserContext } from '../../components/PageBase';
 import { Alert, Button, Dialog, DialogActions, DialogTitle, Stack, Typography } from "@mui/material";
-import { TextFieldWithError } from "../../components/inputs/TestFieldWithError";
+import { TextFieldWithError } from "../../components/inputs/InputFields";
 import { useEffect, useState } from "react";
 import { PrimaryAttribute, PrimaryAttributeServiceApi, Universe, UniverseCreationServiceApi, UniverseServiceApi } from "../../api";
 import { useTranslation } from "react-i18next";
@@ -128,10 +128,6 @@ function ImportDefaultsStep({ onSave: nextStep }: SettingsProps) {
             <Typography gutterBottom variant="body2" component="div" align='left' sx={{ width: 3 / 4 }}>
                 {t("universe:defaultItemTypesExplanation")}
             </Typography>
-            <Button color="success" variant="outlined" disabled={importedEquipmentTypes || language === null} sx={{ minWidth: 300 }} onClick={() => {
-                setImportedEquipmentTypes(true);
-                UNIVERSE_CREATION_API.createDefaultItemTypes(activeUniverse.name, language);
-            }}>{importedEquipmentTypes ? t('universe:successfullyImported') : t('universe:importEquipmentTypes')}</Button>
             <Typography gutterBottom variant="body2" component="div" align='left' sx={{ width: 3 / 4 }}>
                 {t("universe:defaultMaterialsExplanation")}
             </Typography>

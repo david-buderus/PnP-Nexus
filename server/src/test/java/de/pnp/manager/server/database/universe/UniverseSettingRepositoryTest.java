@@ -26,7 +26,7 @@ class UniverseSettingRepositoryTest extends UniverseTestBase {
     @Test
     void testInsert() {
         CharacterSettings settings = new CharacterSettings(2, 12,
-            50, 7, List.of(), List.of());
+            50, 7, List.of());
 
         settingsRepository.setSettings(getUniverseName(), settings);
 

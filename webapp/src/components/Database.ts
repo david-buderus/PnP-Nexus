@@ -1,11 +1,11 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { useState, useEffect } from "react";
 import { getUniverseContext } from './PageBase';
-import { Item, ItemServiceApi, ItemType, ItemTypeServiceApi, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttributeDTO, SimpleSecondaryAttributeServiceApi } from "../api";
+import { Item, ItemServiceApi, Material, MaterialServiceApi, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttributeDTO, SimpleSecondaryAttributeServiceApi } from "../api";
 import { API_CONFIGURATION } from "./Constants";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
-const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);
+const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
 const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
 const SIMPLE_SECONDARY_ATTRIBUTE_API = new SimpleSecondaryAttributeServiceApi(API_CONFIGURATION);
 
@@ -37,10 +37,10 @@ export function fetchAllItems(): [Item[], () => void] {
 }
 
 /**
- * Fetches all item types.
+ * Fetches all materials.
  */
-export function fetchAllItemTypes(): [ItemType[], () => void] {
-    return fetchAll(universe => ITEM_TYPE_API.getAllItemTypes(universe));
+export function fetchAllMaterials(): [Material[], () => void] {
+    return fetchAll(universe => MATERIAL_API.getAllMaterials(universe));
 }
 
 /**

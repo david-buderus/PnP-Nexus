@@ -1,6 +1,6 @@
 import { getUniverseContext } from '../PageBase';
 import { Button, Stack, TextField, Typography } from "@mui/material";
-import { NumberFieldWithError, TextFieldWithError } from "../inputs/TestFieldWithError";
+import { NumberFieldWithError, TextFieldWithError } from "../inputs/InputFields";
 import { useEffect, useState } from "react";
 import { CurrencyCalculationEntry, CurrencySettings, UniverseSettingsServiceApi } from "../../api";
 import { useTranslation } from "react-i18next";

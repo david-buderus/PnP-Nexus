@@ -82,7 +82,7 @@ public class BinaryExpressionTreeService {
     public List<String> toHumanReadableFormat(@RequestBody List<@Valid BinaryExpressionTree> expressions) {
         return expressions.stream().map(expression -> {
             if (expression != null) {
-                return expression.asHumanReadableString();
+                return expression.toHumanReadableString();
             } else {
                 return "";
             }

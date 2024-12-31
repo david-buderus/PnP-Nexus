@@ -23,7 +23,7 @@ export interface OverviewBasePageProps<O extends DatabaseObject> {
     /** Deletion dialog title */
     deletionDialogTitle: string;
     /** An empty object */
-    emptyObject: O,
+    emptyObject: O & { "@type"?: string; },
     /** Fetches the database objects */
     fetchObjects: (universe: string) => Promise<AxiosResponse<O[], any>>;
     /** Edit the database objects */

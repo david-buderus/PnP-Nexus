@@ -5,10 +5,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttributeDTO;
 import de.pnp.manager.component.item.ERarity;
-import de.pnp.manager.component.item.ExtendedItemType;
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.Material.MaterialItem;
 import de.pnp.manager.component.math.BinaryExpressionTree;
@@ -16,16 +13,13 @@ import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
 import de.pnp.manager.component.universe.CharacterSettings;
-import de.pnp.manager.component.universe.CharacterSettings.ArmorDefinition;
 import de.pnp.manager.component.universe.CharacterSettings.JewelleryDefinition;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.security.UniverseOwner;
-import de.pnp.manager.server.contoller.ExtendedItemTypeController;
 import de.pnp.manager.server.contoller.SecondaryAttributeDTOController;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
-import de.pnp.manager.server.database.item.ItemTypeRepository;
 import de.pnp.manager.server.database.universe.UniverseSettingsRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import java.util.ArrayList;
@@ -65,16 +59,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class UniverseCreationService {
 
     @Autowired
-    private ExtendedItemTypeController itemTypeController;
-
-    @Autowired
     private ItemRepository itemRepository;
 
     @Autowired
     private MaterialRepository materialRepository;
-
-    @Autowired
-    private ItemTypeRepository itemTypeRepository;
 
     @Autowired
     private PrimaryAttributeRepository primaryAttributeRepository;
@@ -85,82 +73,6 @@ public class UniverseCreationService {
     @Autowired
     private SecondaryAttributeDTOController secondaryAttributeController;
 
-    @PostMapping("equipment-types")
-    @UniverseOwner
-    @Operation(summary = "Creates the basic item types most universes need", operationId = "createDefaultItemTypes")
-    public void createDefaultEquipmentTypes(@PathVariable String universe, @RequestParam String language) {
-        ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", new Locale(language));
-
-        ExtendedItemType equipment = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("equipment"), ETypeRestriction.EQUIPMENT, null,
-                List.of())
-        );
-        ExtendedItemType jewellery = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("jewellery"), ETypeRestriction.JEWELLERY, null,
-                List.of(equipment))
-        );
-        ExtendedItemType defensivItem = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("defensive_item"), ETypeRestriction.DEFENSIVE_ITEM,
-                null,
-                List.of(equipment))
-        );
-        ExtendedItemType handheld = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("handheld_item"), ETypeRestriction.HANDHELD, null,
-                List.of(equipment))
-        );
-        ExtendedItemType armor = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("armor"), ETypeRestriction.ARMOR, null,
-                List.of(defensivItem)));
-        itemTypeController.insertAll(universe, List.of(
-            new ExtendedItemType(null, bundle.getString("weapon"), ETypeRestriction.WEAPON, null,
-                List.of(handheld)),
-            new ExtendedItemType(null, bundle.getString("shield"), ETypeRestriction.SHIELD, null,
-                List.of(defensivItem, handheld)),
-            new ExtendedItemType(null, bundle.getString("head"), ETypeRestriction.ARMOR, null,
-                List.of(armor)),
-            new ExtendedItemType(null, bundle.getString("upperBody"), ETypeRestriction.ARMOR, null,
-                List.of(armor)),
-            new ExtendedItemType(null, bundle.getString("arms"), ETypeRestriction.ARMOR, null,
-                List.of(armor)),
-            new ExtendedItemType(null, bundle.getString("legs"), ETypeRestriction.ARMOR, null,
-                List.of(armor)),
-            new ExtendedItemType(null, bundle.getString("ring"), ETypeRestriction.JEWELLERY, null,
-                List.of(jewellery)),
-            new ExtendedItemType(null, bundle.getString("necklace"), ETypeRestriction.JEWELLERY, null,
-                List.of(jewellery)),
-            new ExtendedItemType(null, bundle.getString("bracelet"), ETypeRestriction.JEWELLERY, null,
-                List.of(jewellery))
-        ));
-    }
-
-    @GetMapping("equipment-types/armor-definitions")
-    @UniverseOwner
-    @Operation(summary = "Gets the basic armor definitions most universes need", operationId = "getDefaultArmorDefinitions")
-    public List<ArmorDefinition> getDefaultArmorDefinitions(@PathVariable String universe,
-        @RequestParam String language) {
-        ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", new Locale(language));
-
-        String localizedHead = bundle.getString("head");
-        ItemType head = itemTypeRepository.get(universe, localizedHead)
-            .orElseThrow(this::missingPrerequisites);
-        String localizedUpperBody = bundle.getString("upperBody");
-        ItemType upperBody = itemTypeRepository.get(universe, localizedUpperBody)
-            .orElseThrow(this::missingPrerequisites);
-        String localizedArms = bundle.getString("arms");
-        ItemType arms = itemTypeRepository.get(universe, localizedArms)
-            .orElseThrow(this::missingPrerequisites);
-        String localizedLegs = bundle.getString("legs");
-        ItemType legs = itemTypeRepository.get(universe, localizedLegs)
-            .orElseThrow(this::missingPrerequisites);
-
-        return List.of(
-            new ArmorDefinition(localizedHead, head),
-            new ArmorDefinition(localizedUpperBody, upperBody),
-            new ArmorDefinition(localizedArms, arms),
-            new ArmorDefinition(localizedLegs, legs)
-        );
-    }
-
     @GetMapping("equipment-types/jewellery-definitions")
     @UniverseOwner
     @Operation(summary = "Gets the basic armor definitions most universes need", operationId = "getDefaultJewelleryDefinitions")
@@ -168,20 +80,14 @@ public class UniverseCreationService {
         @RequestParam String language) {
         ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", new Locale(language));
 
-        String localizedRing = bundle.getString("ring");
-        ItemType ring = itemTypeRepository.get(universe, localizedRing)
-            .orElseThrow(this::missingPrerequisites);
-        String localizedNecklace = bundle.getString("necklace");
-        ItemType necklace = itemTypeRepository.get(universe, localizedNecklace)
-            .orElseThrow(this::missingPrerequisites);
-        String localizedBracelet = bundle.getString("bracelet");
-        ItemType bracelet = itemTypeRepository.get(universe, localizedBracelet)
-            .orElseThrow(this::missingPrerequisites);
+        String ring = bundle.getString("ring");
+        String necklace = bundle.getString("necklace");
+        String bracelet = bundle.getString("bracelet");
 
         return List.of(
-            new JewelleryDefinition(localizedRing, ring, 8),
-            new JewelleryDefinition(localizedNecklace, necklace, 1),
-            new JewelleryDefinition(localizedBracelet, bracelet, 2)
+            new JewelleryDefinition(ring, ring, 8),
+            new JewelleryDefinition(necklace, necklace, 1),
+            new JewelleryDefinition(bracelet, bracelet, 2)
         );
     }
 
@@ -191,34 +97,22 @@ public class UniverseCreationService {
     public void createDefaultMaterials(@PathVariable String universe, @RequestParam String language) {
         ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", new Locale(language));
 
-        ExtendedItemType material = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("material"), ETypeRestriction.ITEM, null,
-                List.of())
-        );
-        ExtendedItemType ore = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("ore"), ETypeRestriction.ITEM, null,
-                List.of(material))
-        );
-        ExtendedItemType ingot = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("ingot"), ETypeRestriction.ITEM, null,
-                List.of(material))
-        );
-        ExtendedItemType wood = itemTypeController.insert(universe,
-            new ExtendedItemType(null, bundle.getString("wood"), ETypeRestriction.ITEM, null,
-                List.of(material))
-        );
+        String material = bundle.getString("material");
+        String ore = bundle.getString("ore");
+        String ingot = bundle.getString("ingot");
+        String wood = bundle.getString("wood");
 
         Item ironIngot = itemRepository.insert(universe,
-            new Item(null, bundle.getString("iron_ingot"), material, ingot, "", "", ERarity.COMMON, 100, 1,
+            new Item(null, bundle.getString("iron_ingot"), Set.of(material, ingot), "", "", ERarity.COMMON, 100, 1,
                 bundle.getString("iron_ingot_description"), "", 100, 0));
         itemRepository.insert(universe,
-            new Item(null, bundle.getString("iron_ore"), material, ore, "", "", ERarity.COMMON, 30, 1,
+            new Item(null, bundle.getString("iron_ore"), Set.of(material, ore), "", "", ERarity.COMMON, 30, 1,
                 bundle.getString("iron_ore_description"), "", 100, 0));
         Item woodPlank = itemRepository.insert(universe,
-            new Item(null, bundle.getString("wood_plank"), material, wood, "", "", ERarity.COMMON, 10, 1,
+            new Item(null, bundle.getString("wood_plank"), Set.of(material, wood), "", "", ERarity.COMMON, 10, 1,
                 bundle.getString("wood_plank_description"), "", 100, 0));
         Item rawWood = itemRepository.insert(universe,
-            new Item(null, bundle.getString("raw_wood"), material, wood, "", "", ERarity.COMMON, 3, 1,
+            new Item(null, bundle.getString("raw_wood"), Set.of(material, wood), "", "", ERarity.COMMON, 3, 1,
                 bundle.getString("raw_wood_description"), "", 100, 0));
 
         materialRepository.insertAll(universe, List.of(

@@ -38,7 +38,7 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     protected Universe universe;
 
     @BeforeEach
-    void openItemPage() {
+    void openPage() {
         universe = getUniverse();
         page = openTestPage(webDriver.openMainMenu("admin", "admin"));
         page.selectActiveUniverse(universe);

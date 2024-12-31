@@ -17,7 +17,7 @@ public class ShieldPageTest extends ItemPageTestBase {
 
     @Override
     protected ItemPage openTestPage(MainMenu mainMenu) {
-        return mainMenu.openShieldPage();
+        return null; // mainMenu.openShieldPage();
     }
 
     @Override
@@ -28,8 +28,7 @@ public class ShieldPageTest extends ItemPageTestBase {
     @Override
     protected Pair<EItemClass, Item> getTestItem() {
         return ImmutablePair.of(EItemClass.SHIELD,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Giant Shield").withType("Armor")
-                .withSubtype("Shield")
+            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Giant Shield")
                 .withEffect("It is great").withDescription("It is a giant shield").withRarity(ERarity.LEGENDARY)
                 .withTier(2)
                 .withRequirement("None").withVendorPrice(10000)

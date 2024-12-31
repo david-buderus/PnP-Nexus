@@ -50,6 +50,6 @@ public record SecondaryAttributeDTO(@Id ObjectId id, @Indexed(unique = true) @No
      */
     public static SecondaryAttributeDTO from(SecondaryAttribute attribute) {
         return new SecondaryAttributeDTO(attribute.getId(), attribute.getName(), attribute.isConsumable(),
-            attribute.getCalculationFormula().asHumanReadableString());
+            attribute.getCalculationFormula().toHumanReadableString());
     }
 }

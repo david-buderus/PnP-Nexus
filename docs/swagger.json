@@ -1041,623 +1041,6 @@
         ]
       }
     },
-    "/api/{universe}/extended-item-types": {
-      "get": {
-        "operationId": "getAllExtendedItemTypes",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ExtendedItemType"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get all objects from the database",
-        "tags": [
-          "extended-item-type-service"
-        ]
-      },
-      "post": {
-        "operationId": "insertAllExtendedItemTypes",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ExtendedItemType"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ExtendedItemType"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Inserts the objects into the database",
-        "tags": [
-          "extended-item-type-service"
-        ]
-      }
-    },
-    "/api/{universe}/extended-item-types/{id}": {
-      "put": {
-        "operationId": "updateExtendedItemType",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExtendedItemType"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExtendedItemType"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Updates an object in the database",
-        "tags": [
-          "extended-item-type-service"
-        ]
-      }
-    },
-    "/api/{universe}/item-type-translations": {
-      "delete": {
-        "operationId": "deleteAllItemTypeTranslations",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes all objects with the given ids from the database",
-        "tags": [
-          "item-type-translation-service"
-        ]
-      },
-      "get": {
-        "operationId": "getAllItemTypeTranslations",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItemTypeTranslation"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get all objects from the database",
-        "tags": [
-          "item-type-translation-service"
-        ]
-      },
-      "post": {
-        "operationId": "insertAllItemTypeTranslations",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ItemTypeTranslation"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItemTypeTranslation"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Inserts the objects into the database",
-        "tags": [
-          "item-type-translation-service"
-        ]
-      }
-    },
-    "/api/{universe}/item-type-translations/{id}": {
-      "delete": {
-        "operationId": "deleteItemTypeTranslation",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes an object from the database",
-        "tags": [
-          "item-type-translation-service"
-        ]
-      },
-      "get": {
-        "operationId": "getItemTypeTranslation",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemTypeTranslation"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get an object from the database",
-        "tags": [
-          "item-type-translation-service"
-        ]
-      },
-      "put": {
-        "operationId": "updateItemTypeTranslation",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemTypeTranslation"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemTypeTranslation"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Updates an object in the database",
-        "tags": [
-          "item-type-translation-service"
-        ]
-      }
-    },
-    "/api/{universe}/item-types": {
-      "delete": {
-        "operationId": "deleteAllItemTypes",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes all objects with the given ids from the database",
-        "tags": [
-          "item-type-service"
-        ]
-      },
-      "get": {
-        "operationId": "getAllItemTypes",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "ids",
-            "required": false,
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItemType"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get all objects from the database",
-        "tags": [
-          "item-type-service"
-        ]
-      },
-      "post": {
-        "operationId": "insertAllItemTypes",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/ItemType"
-                }
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ItemType"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Inserts the objects into the database",
-        "tags": [
-          "item-type-service"
-        ]
-      }
-    },
-    "/api/{universe}/item-types/{id}": {
-      "delete": {
-        "operationId": "deleteItemType",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        },
-        "summary": "Deletes an object from the database",
-        "tags": [
-          "item-type-service"
-        ]
-      },
-      "get": {
-        "operationId": "getItemType",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemType"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Get an object from the database",
-        "tags": [
-          "item-type-service"
-        ]
-      },
-      "put": {
-        "operationId": "updateItemType",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ItemType"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ItemType"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Updates an object in the database",
-        "tags": [
-          "item-type-service"
-        ]
-      }
-    },
     "/api/{universe}/items": {
       "delete": {
         "operationId": "deleteAllItems",
@@ -1824,6 +1207,142 @@
           }
         },
         "summary": "Inserts the objects into the database",
+        "tags": [
+          "item-service"
+        ]
+      }
+    },
+    "/api/{universe}/items/armor": {
+      "get": {
+        "operationId": "getAllArmor",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Armor"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all weapons from the database",
+        "tags": [
+          "item-service"
+        ]
+      }
+    },
+    "/api/{universe}/items/jewellery": {
+      "get": {
+        "operationId": "getAllJewellery",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Jewellery"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all weapons from the database",
+        "tags": [
+          "item-service"
+        ]
+      }
+    },
+    "/api/{universe}/items/shields": {
+      "get": {
+        "operationId": "getAllShields",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Shield"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all weapons from the database",
+        "tags": [
+          "item-service"
+        ]
+      }
+    },
+    "/api/{universe}/items/weapons": {
+      "get": {
+        "operationId": "getAllWeapons",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Weapon"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all weapons from the database",
         "tags": [
           "item-service"
         ]
@@ -2915,80 +2434,6 @@
         "summary": "Updates an object in the database",
         "tags": [
           "talent-service"
-        ]
-      }
-    },
-    "/api/{universe}/universe-creation/equipment-types": {
-      "post": {
-        "operationId": "createDefaultItemTypes",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "language",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "summary": "Creates the basic item types most universes need",
-        "tags": [
-          "universe-creation-service"
-        ]
-      }
-    },
-    "/api/{universe}/universe-creation/equipment-types/armor-definitions": {
-      "get": {
-        "operationId": "getDefaultArmorDefinitions",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "language",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ArmorDefinition"
-                  }
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Gets the basic armor definitions most universes need",
-        "tags": [
-          "universe-creation-service"
         ]
       }
     },
@@ -4329,6 +3774,7 @@
       "Armor": {
         "required": [
           "armor",
+          "armorSlot",
           "description",
           "effect",
           "material",
@@ -4336,11 +3782,11 @@
           "minimumStackSize",
           "name",
           "note",
+          "protection",
           "rarity",
           "requirement",
-          "subtype",
+          "tags",
           "tier",
-          "type",
           "upgradeSlots",
           "vendorPrice",
           "weight"
@@ -4357,8 +3803,15 @@
                 "type": "integer",
                 "format": "int32"
               },
+              "armorSlot": {
+                "$ref": "#/components/schemas/EArmorSlot"
+              },
               "material": {
                 "$ref": "#/components/schemas/Material"
+              },
+              "protection": {
+                "type": "integer",
+                "format": "int32"
               },
               "upgradeSlots": {
                 "type": "integer",
@@ -4371,21 +3824,6 @@
             }
           }
         ]
-      },
-      "ArmorDefinition": {
-        "required": [
-          "name",
-          "type"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
-          }
-        }
       },
       "BinaryExpressionTree": {
         "required": [
@@ -4457,17 +3895,10 @@
       },
       "CharacterSettings": {
         "required": [
-          "armorDefinitions",
           "jewelleryDefinitions"
         ],
         "type": "object",
         "properties": {
-          "armorDefinitions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ArmorDefinition"
-            }
-          },
           "jewelleryDefinitions": {
             "type": "array",
             "items": {
@@ -4596,6 +4027,29 @@
           }
         }
       },
+      "Dice": {
+        "required": [
+          "dices"
+        ],
+        "type": "object",
+        "properties": {
+          "dices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SingleDice"
+            }
+          }
+        }
+      },
+      "EArmorSlot": {
+        "type": "string",
+        "enum": [
+          "HEAD",
+          "BODY",
+          "ARMS",
+          "LEGS"
+        ]
+      },
       "ECalculation": {
         "type": "string",
         "enum": [
@@ -4617,13 +4071,25 @@
       "EUpgradeEquipmentManipulator": {
         "type": "string",
         "enum": [
-          "NONE",
           "SLOTS",
           "DAMAGE",
           "HIT",
           "INITIATIVE",
           "ARMOR",
           "WEIGHT"
+        ]
+      },
+      "EUpgradeRestriction": {
+        "type": "string",
+        "enum": [
+          "ITEM",
+          "EQUIPMENT",
+          "JEWELLERY",
+          "WEAPON",
+          "DEFENSIVE_ITEM",
+          "SHIELD",
+          "HANDHELD",
+          "ARMOR"
         ]
       },
       "EquipmentUpgradeEffect": {
@@ -4654,44 +4120,6 @@
             }
           }
         ]
-      },
-      "ExtendedItemType": {
-        "required": [
-          "broaderVariants",
-          "name",
-          "typeRestriction"
-        ],
-        "type": "object",
-        "properties": {
-          "broaderVariants": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ItemType"
-            }
-          },
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "translationId": {
-            "type": "string"
-          },
-          "typeRestriction": {
-            "type": "string",
-            "enum": [
-              "ITEM",
-              "EQUIPMENT",
-              "JEWELLERY",
-              "WEAPON",
-              "DEFENSIVE_ITEM",
-              "SHIELD",
-              "HANDHELD",
-              "ARMOR"
-            ]
-          }
-        }
       },
       "GrantedUniverseAuthorityDTO": {
         "required": [
@@ -4738,9 +4166,8 @@
           "note",
           "rarity",
           "requirement",
-          "subtype",
+          "tags",
           "tier",
-          "type",
           "vendorPrice"
         ],
         "type": "object",
@@ -4774,15 +4201,16 @@
           "requirement": {
             "type": "string"
           },
-          "subtype": {
-            "$ref": "#/components/schemas/ItemType"
+          "tags": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "tier": {
             "type": "integer",
             "format": "int32"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
           },
           "vendorPrice": {
             "type": "integer",
@@ -4792,63 +4220,21 @@
       },
       "ItemSettings": {
         "required": [
+          "shieldUsingDice",
+          "usingProtection",
           "wearFactor"
         ],
         "type": "object",
         "properties": {
+          "shieldUsingDice": {
+            "type": "boolean"
+          },
+          "usingProtection": {
+            "type": "boolean"
+          },
           "wearFactor": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "ItemType": {
-        "required": [
-          "name",
-          "typeRestriction"
-        ],
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "typeRestriction": {
-            "type": "string",
-            "enum": [
-              "ITEM",
-              "EQUIPMENT",
-              "JEWELLERY",
-              "WEAPON",
-              "DEFENSIVE_ITEM",
-              "SHIELD",
-              "HANDHELD",
-              "ARMOR"
-            ]
-          }
-        }
-      },
-      "ItemTypeTranslation": {
-        "required": [
-          "broaderVariants",
-          "type"
-        ],
-        "type": "object",
-        "properties": {
-          "broaderVariants": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ItemType"
-            }
-          },
-          "id": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
           }
         }
       },
@@ -4886,9 +4272,8 @@
           "note",
           "rarity",
           "requirement",
-          "subtype",
+          "tags",
           "tier",
-          "type",
           "upgradeSlots",
           "vendorPrice"
         ],
@@ -4914,7 +4299,7 @@
       "JewelleryDefinition": {
         "required": [
           "name",
-          "type"
+          "tag"
         ],
         "type": "object",
         "properties": {
@@ -4925,8 +4310,8 @@
           "name": {
             "type": "string"
           },
-          "type": {
-            "$ref": "#/components/schemas/ItemType"
+          "tag": {
+            "type": "string"
           }
         }
       },
@@ -5185,6 +4570,7 @@
         "required": [
           "armor",
           "description",
+          "dice",
           "effect",
           "hit",
           "initiative",
@@ -5195,9 +4581,8 @@
           "note",
           "rarity",
           "requirement",
-          "subtype",
+          "tags",
           "tier",
-          "type",
           "upgradeSlots",
           "vendorPrice",
           "weight"
@@ -5213,6 +4598,9 @@
               "armor": {
                 "type": "integer",
                 "format": "int32"
+              },
+              "dice": {
+                "$ref": "#/components/schemas/Dice"
               },
               "hit": {
                 "type": "integer",
@@ -5247,6 +4635,19 @@
             "$ref": "#/components/schemas/UpgradeEffect"
           }
         ]
+      },
+      "SingleDice": {
+        "type": "object",
+        "properties": {
+          "dice": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfThrows": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "Spell": {
         "required": [
@@ -5305,6 +4706,21 @@
       },
       "StreamingResponseBody": {
         "type": "object"
+      },
+      "TagRequirement": {
+        "type": "object",
+        "properties": {
+          "tagRequirements": {
+            "type": "array",
+            "items": {
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
       },
       "Talent": {
         "required": [
@@ -5397,8 +4813,9 @@
         "required": [
           "effects",
           "name",
+          "restriction",
           "slots",
-          "target",
+          "tagRequirement",
           "vendorPrice"
         ],
         "type": "object",
@@ -5422,12 +4839,15 @@
           "name": {
             "type": "string"
           },
+          "restriction": {
+            "$ref": "#/components/schemas/EUpgradeRestriction"
+          },
           "slots": {
             "type": "integer",
             "format": "int32"
           },
-          "target": {
-            "$ref": "#/components/schemas/ItemType"
+          "tagRequirement": {
+            "$ref": "#/components/schemas/TagRequirement"
           },
           "vendorPrice": {
             "type": "integer",
@@ -5534,9 +4954,8 @@
           "note",
           "rarity",
           "requirement",
-          "subtype",
+          "tags",
           "tier",
-          "type",
           "upgradeSlots",
           "vendorPrice"
         ],
@@ -5553,7 +4972,7 @@
                 "format": "int32"
               },
               "dice": {
-                "type": "string"
+                "$ref": "#/components/schemas/Dice"
               },
               "hit": {
                 "type": "integer",

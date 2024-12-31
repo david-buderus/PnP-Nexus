@@ -1,39 +1,47 @@
 
 import { useTranslation } from "react-i18next";
-import { ECalculation, EUpgradeEquipmentManipulator, ItemType, ItemTypeServiceApi, Upgrade, UpgradeServiceApi } from "../../api";
+import { ECalculation, EUpgradeEquipmentManipulator, EUpgradeRestriction, Upgrade, UpgradeServiceApi } from "../../api";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
-import { useEffect, useState } from "react";
 import { getUniverseContext } from '../../components/PageBase';
 import { currencyToHumanReadable } from "../../components/Utils";
 
-const ITEM_TYPE_API = new ItemTypeServiceApi(API_CONFIGURATION);
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 
 /** Page to give an overview over all upgrades */
 export function UpgradePage() {
     const { t } = useTranslation();
-    const { activeUniverse, currencySettings } = getUniverseContext();
-
-    const [itemTypes, setItemTypes] = useState<ItemType[]>([]);
-
-    useEffect(() => {
-        if (activeUniverse) {
-            ITEM_TYPE_API.getAllItemTypes(activeUniverse.name).then(response => setItemTypes(response.data));
-        }
-    }, [activeUniverse]);
+    const { currencySettings } = getUniverseContext();
 
     return <OverviewBasePage<Upgrade>
         columns={[
             { label: t("name"), id: "name", getter: upgrade => upgrade.name },
             { label: t("upgrade:effects"), id: "effects", getter: upgrade => upgrade.effects.map(effect => effect.description).join(", ") },
-            { label: t("upgrade:target"), id: "target", getter: upgrade => upgrade.target.name },
+            { label: t("upgrade:restriction"), id: "restriction", getter: upgrade => upgrade.restriction },
             { label: t("upgrade:necessary-slots"), id: "slots", getter: upgrade => upgrade.slots, numeric: true },
             { label: t("price"), id: "vendorPrice", getter: upgrade => currencyToHumanReadable(currencySettings, upgrade.vendorPrice) },
         ]}
         fields={[
             { fieldId: "name", label: t("name"), fieldType: "STRING" },
-            { fieldId: "target", label: t("upgrade:target"), fieldType: "DATABASE", dependency: itemTypes, dependencyLabel: "name" },
+            {
+                fieldId: "restriction", label: t("upgrade:restriction"), fieldType: "ENUM", dependency: Object.values(EUpgradeRestriction).map(restriction => {
+                    return { key: restriction, content: restriction, label: t(restriction.toLowerCase()) };
+                })
+            },
+            {
+                fieldId: "tagRequirement", label: "", fieldType: "COMPLEX_ENTRY",
+                emptyObject: { tagRequirements: [] },
+                subFields: [
+                    {
+                        fieldId: "tagRequirements", label: t("upgrade:effects"), fieldType: "COMPLEX_LIST", aligment: "column",
+                        newListObjectLabel: t("upgrade:addEffect"),
+                        emptyObject: new Set<String>(),
+                        subFields: [
+                            { fieldId: "test", label: t("item:tags"), fieldType: "STRING_SET" }
+                        ]
+                    }
+                ]
+            },
             { fieldId: "slots", label: t("upgrade:necessary-slots"), fieldType: "NUMBER" },
             { fieldId: "vendorPrice", label: t("price"), fieldType: "PRICE" },
             {
@@ -80,7 +88,8 @@ export function UpgradePage() {
         createObjects={(universe, objs) => UPGRADE_API.insertAllUpgrades(universe, objs)}
         emptyObject={{
             name: "",
-            target: null,
+            restriction: EUpgradeRestriction.Item,
+            tagRequirement: { tagRequirements: [] },
             slots: 1,
             vendorPrice: 0,
             effects: []

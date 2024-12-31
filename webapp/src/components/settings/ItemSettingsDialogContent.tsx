@@ -1,6 +1,6 @@
 import { getUniverseContext } from '../PageBase';
 import { Button, Checkbox, FormControlLabel, Stack, Tooltip, Typography } from "@mui/material";
-import { NumberFieldWithError } from "../inputs/TestFieldWithError";
+import { NumberFieldWithError } from "../inputs/InputFields";
 import { useEffect, useState } from "react";
 import { ItemSettings, UniverseSettingsServiceApi } from "../../api";
 import { useTranslation } from "react-i18next";

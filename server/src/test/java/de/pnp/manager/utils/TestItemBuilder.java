@@ -1,10 +1,11 @@
 package de.pnp.manager.utils;
 
+import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.EArmorSlot;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
 import de.pnp.manager.component.item.equipable.Jewellery;
@@ -14,24 +15,24 @@ import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
-import de.pnp.manager.server.database.item.ItemTypeRepository;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * Helper class to create {@link Item items}.
  */
-public class TestItemBuilder extends TestBuilderBase {
+public class TestItemBuilder {
 
     /**
      * Component wrapper for the {@link TestItemBuilder}.
      */
     @Component
     public static class TestItemBuilderFactory {
-
-        @Autowired
-        private ItemTypeRepository typeRepository;
 
         @Autowired
         private ItemRepository itemRepository;
@@ -43,7 +44,7 @@ public class TestItemBuilder extends TestBuilderBase {
          * Builder with default values.
          */
         public TestItemBuilder createItemBuilder(String universe) {
-            return new TestItemBuilder(universe, typeRepository, itemRepository, materialRepository);
+            return new TestItemBuilder(universe, itemRepository, materialRepository);
         }
     }
 
@@ -51,12 +52,13 @@ public class TestItemBuilder extends TestBuilderBase {
      * Returns a builder without a link to a {@link Universe} or database.
      */
     public static TestItemBuilder createItemBuilder() {
-        return new TestItemBuilder(null, null, null, null);
+        return new TestItemBuilder(null, null, null);
     }
 
+    private final String universe;
+
     private String name;
-    private ItemType type;
-    private ItemType subtype;
+    private final @NotNull Set<@NotBlank String> tags;
     private String requirement;
     private String effect;
     private ERarity rarity;
@@ -66,12 +68,14 @@ public class TestItemBuilder extends TestBuilderBase {
     private String note;
     private Material material;
     private int upgradeSlots;
+    private EArmorSlot armorSlot;
     private int armor;
+    private int protection;
     private float weight;
     private float initiativeModifier;
     private int hit;
     private int damage;
-    private String dice;
+    private Dice dice;
     private int maximumStackSize;
     private int minimumStackSize;
 
@@ -80,14 +84,13 @@ public class TestItemBuilder extends TestBuilderBase {
     private final ItemRepository itemRepository;
     private final MaterialRepository materialRepository;
 
-    private TestItemBuilder(String universe, ItemTypeRepository typeRepository, ItemRepository itemRepository,
+    private TestItemBuilder(String universe, ItemRepository itemRepository,
         MaterialRepository materialRepository) {
-        super(universe, typeRepository);
+        this.universe = universe;
         this.itemRepository = itemRepository;
         this.materialRepository = materialRepository;
         name = "name";
-        type = getType("Type");
-        subtype = getType("Subtype");
+        tags = new HashSet<>();
         requirement = "requirement";
         effect = "effect";
         rarity = ERarity.COMMON;
@@ -97,12 +100,14 @@ public class TestItemBuilder extends TestBuilderBase {
         note = "note";
         material = null;
         upgradeSlots = 0;
+        armorSlot = EArmorSlot.BODY;
         armor = 1;
+        protection = 0;
         weight = 0;
         initiativeModifier = 0;
         hit = 0;
         damage = 0;
-        dice = "D6";
+        dice = Dice.simpleDice(6);
         maximumStackSize = 100;
         minimumStackSize = 0;
         shouldGetPersisted = false;
@@ -117,34 +122,10 @@ public class TestItemBuilder extends TestBuilderBase {
     }
 
     /**
-     * @see Item#getType()
+     * @see Item#getTags()
      */
-    public TestItemBuilder withType(String type) {
-        this.type = getType(type);
-        return this;
-    }
-
-    /**
-     * @see Item#getType()
-     */
-    public TestItemBuilder withType(ItemType type) {
-        this.type = type;
-        return this;
-    }
-
-    /**
-     * @see Item#getSubtype()
-     */
-    public TestItemBuilder withSubtype(String subtype) {
-        this.subtype = getType(subtype);
-        return this;
-    }
-
-    /**
-     * @see Item#getSubtype()
-     */
-    public TestItemBuilder withSubtype(ItemType subtype) {
-        this.subtype = subtype;
+    public TestItemBuilder withTags(String... tags) {
+        this.tags.addAll(List.of(tags));
         return this;
     }
 
@@ -207,7 +188,7 @@ public class TestItemBuilder extends TestBuilderBase {
     /**
      * @see Weapon#getDice()
      */
-    public TestItemBuilder withDice(String dice) {
+    public TestItemBuilder withDice(Dice dice) {
         this.dice = dice;
         return this;
     }
@@ -241,6 +222,14 @@ public class TestItemBuilder extends TestBuilderBase {
      */
     public TestItemBuilder withWeight(int weight) {
         this.weight = weight;
+        return this;
+    }
+
+    /**
+     * @see Armor#getArmorSlot()
+     */
+    public TestItemBuilder withArmorSlot(EArmorSlot armorSlot) {
+        this.armorSlot = armorSlot;
         return this;
     }
 
@@ -304,7 +293,7 @@ public class TestItemBuilder extends TestBuilderBase {
      * Creates an item matching this builder.
      */
     public Item buildItem() {
-        Item item = new Item(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Item item = new Item(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
             description, note, maximumStackSize, minimumStackSize);
         if (shouldGetPersisted) {
             return itemRepository.insert(universe, item);
@@ -316,8 +305,8 @@ public class TestItemBuilder extends TestBuilderBase {
      * Creates armor matching this builder.
      */
     public Armor buildArmor() {
-        Armor armorItem = new Armor(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
-            description, note, material, upgradeSlots, armor, weight, 1, 1);
+        Armor armorItem = new Armor(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
+            description, note, material, upgradeSlots, armorSlot, armor, protection, weight, 1, 1);
         if (shouldGetPersisted) {
             return (Armor) itemRepository.insert(universe, armorItem);
         }
@@ -328,7 +317,7 @@ public class TestItemBuilder extends TestBuilderBase {
      * Creates weapon matching this builder.
      */
     public Weapon buildWeapon() {
-        Weapon weapon = new Weapon(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Weapon weapon = new Weapon(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
         if (shouldGetPersisted) {
             return (Weapon) itemRepository.insert(universe, weapon);
@@ -340,9 +329,9 @@ public class TestItemBuilder extends TestBuilderBase {
      * Creates shield matching this builder.
      */
     public Shield buildShield() {
-        Shield shield = new Shield(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Shield shield = new Shield(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
             description, note,
-            material, upgradeSlots, initiativeModifier, hit, weight, armor, 1, 1);
+            material, upgradeSlots, initiativeModifier, hit, dice, weight, armor, 1, 1);
         if (shouldGetPersisted) {
             return (Shield) itemRepository.insert(universe, shield);
         }
@@ -353,7 +342,7 @@ public class TestItemBuilder extends TestBuilderBase {
      * Creates jewellery matching this builder.
      */
     public Jewellery buildJewellery() {
-        Jewellery jewellery = new Jewellery(null, name, type, subtype, requirement, effect, rarity, vendorPrice, tier,
+        Jewellery jewellery = new Jewellery(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
             description, note, material, upgradeSlots, 1, 1);
         if (shouldGetPersisted) {
             return (Jewellery) itemRepository.insert(universe, jewellery);

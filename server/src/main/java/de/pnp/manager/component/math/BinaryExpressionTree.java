@@ -55,7 +55,7 @@ public class BinaryExpressionTree {
     /**
      * Returns the underlying formula as a human-readable string.
      */
-    public String asHumanReadableString() {
+    public String toHumanReadableString() {
         if (root == null) {
             return "";
         }

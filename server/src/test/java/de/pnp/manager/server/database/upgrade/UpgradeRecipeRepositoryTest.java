@@ -4,13 +4,10 @@ import de.pnp.manager.component.IResourceUsage.CharacterResourceUsage;
 import de.pnp.manager.component.IResourceUsage.ItemUsage;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.UpgradeRecipe;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.server.database.RepositoryTestBase;
-import de.pnp.manager.server.database.item.ItemTypeRepository;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -20,9 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Tests for {@link UpgradeRecipeRepository}.
  */
 class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, UpgradeRecipeRepository> {
-
-    @Autowired
-    private ItemTypeRepository typeRepository;
 
     @Autowired
     private UpgradeRepository upgradeRepository;
@@ -62,30 +56,24 @@ class UpgradeRecipeRepositoryTest extends RepositoryTestBase<UpgradeRecipe, Upgr
 
     @Override
     protected UpgradeRecipe createObject() {
-        ItemType type = typeRepository.insert(getUniverseName(),
-            new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
         SecondaryAttribute resource = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
-        Upgrade upgrade = createUpgrade().withName("Test").withTarget(type).persist().build();
+        Upgrade upgrade = createUpgrade().withName("Test").withNecessaryTags("Test-Tag").persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "",
             List.of(new CharacterResourceUsage(10, resource)));
     }
 
     @Override
     protected UpgradeRecipe createSlightlyChangeObject() {
-        ItemType type = typeRepository.insert(getUniverseName(),
-            new ItemType(null, "Other Test-Type", ETypeRestriction.ITEM));
         SecondaryAttribute resource = createSecondaryAttribute().withName("Life").isConsumable().persist().build();
-        Upgrade upgrade = createUpgrade().withName("Other Test").withTarget(type).persist().build();
+        Upgrade upgrade = createUpgrade().withName("Other Test").withNecessaryTags("Other-Test-Tag").persist().build();
         return new UpgradeRecipe(null, upgrade, List.of(), "Something",
             List.of(new CharacterResourceUsage(10, resource)));
     }
 
     @Override
     protected List<UpgradeRecipe> createMultipleObjects() {
-        ItemType type = typeRepository.insert(getUniverseName(),
-            new ItemType(null, "Test-Type", ETypeRestriction.ITEM));
-        Upgrade upgrade1 = createUpgrade().withName("Test 1").withTarget(type).persist().build();
-        Upgrade upgrade2 = createUpgrade().withName("Test 2").withTarget(type).persist().build();
+        Upgrade upgrade1 = createUpgrade().withName("Test 1").persist().build();
+        Upgrade upgrade2 = createUpgrade().withName("Test 2").persist().build();
         Item item = createItem().persist().buildItem();
         return List.of(new UpgradeRecipe(null, upgrade1, List.of(), "", List.of(new ItemUsage(2, item))),
             new UpgradeRecipe(null, upgrade2, List.of(upgrade1), "", List.of(new ItemUsage(10, item))));

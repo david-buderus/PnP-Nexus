@@ -4,10 +4,11 @@ import { ReactNode, useState } from "react";
 import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField, Tooltip } from "@mui/material";
 import { AxiosResponse } from "axios";
 import { handleValidationErrors } from "../ErrorUtils";
-import { NumberFieldWithError, TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/TestFieldWithError";
+import { DiceField, NumberFieldWithError, StringSetField, TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/InputFields";
 import { NexusSelect } from "../inputs/NexusSelect";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { currencyToHumanReadable } from "../Utils";
+import { Dice } from "../../api";
 
 /**
  * A simple interface to describe database objects
@@ -22,7 +23,7 @@ export interface DatabaseObject {
  */
 export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     /** The id of the property */
-    fieldId: keyof O;
+    fieldId: keyof O | "@type" | `${string}-row`;
     /** The full id of the property. This includes the id of the parent object if one exists */
     fullId?: string;
     /** The label used for the input */
@@ -30,7 +31,7 @@ export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     /** The tooltip for the input */
     tooltip?: ReactNode;
     /** What kind of field is needed */
-    fieldType: "STRING" | "NUMBER" | "BOOLEAN" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "STACK";
+    fieldType: "STRING" | "NUMBER" | "BOOLEAN" | "DICE" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "STACK" | "STRING_SET";
     /** The dependencies needed for the field. Needed for ENUM, DATABASE and MULTI_DATABASE */
     dependency?: D[];
     /** The label used for the dependency */
@@ -45,6 +46,10 @@ export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     aligment?: "row" | "column";
     /** Only shows the input if the @type is contained in the list */
     visibleForTypes?: string[];
+    /** If the field should be a multiline field */
+    multiline?: boolean;
+    /** If the field should be hidden */
+    hidden?: boolean;
 }
 
 /**
@@ -101,6 +106,7 @@ export function DatabaseObjectDialog<O extends DatabaseObject>({
                     databaseObject={databaseObject}
                     setDatabaseObject={setDatabaseObject}
                     errors={errors}
+                    multiline={field.multiline}
                 />
             )}
         </Stack>
@@ -125,6 +131,8 @@ interface FieldProps<O, D> {
     databaseObject: O;
     /** Callback to manipulate the database object */
     setDatabaseObject: (obj: O) => void;
+    /** If the field should be a multiline field */
+    multiline?: boolean;
 }
 
 /** Creates a field */
@@ -132,12 +140,18 @@ export function Field<O, D>({
     field,
     errors,
     databaseObject,
-    setDatabaseObject
+    setDatabaseObject,
+    multiline
 }: FieldProps<O, D>): React.JSX.Element {
     const { t } = useTranslation();
     const { currencySettings } = getUniverseContext();
 
     const fullId = (field.fullId ?? field.fieldId) as string;
+    const keyId = field.fieldId as keyof O;
+
+    if (field.hidden) {
+        return <></>;
+    }
 
     if (field.visibleForTypes !== undefined && !field.visibleForTypes.includes(databaseObject["@type"])) {
         return <></>;
@@ -150,13 +164,32 @@ export function Field<O, D>({
                 fieldId={fullId}
                 label={field.label}
                 tooltip={field.tooltip}
-                value={databaseObject?.[field.fieldId] as string}
+                value={databaseObject?.[keyId] as string}
                 onChange={value => setDatabaseObject({
                     ...databaseObject,
                     [field.fieldId]: value
                 })}
                 errorMap={errors}
                 fullWidth
+                multiline={multiline}
+                rows={2}
+            />;
+        case "STRING_SET":
+            return <StringSetField
+                key={fullId}
+                fieldId={fullId}
+                label={field.label}
+                tooltip={field.tooltip}
+                value={databaseObject?.[keyId] as Set<string>}
+                onChange={value => setDatabaseObject({
+                    ...databaseObject,
+                    [field.fieldId]: value
+                })
+                }
+                errorMap={errors}
+                fullWidth
+                multiline={multiline}
+                rows={2}
             />;
         case "NUMBER":
             return <NumberFieldWithError
@@ -164,7 +197,7 @@ export function Field<O, D>({
                 fieldId={fullId}
                 label={field.label}
                 tooltip={field.tooltip}
-                value={databaseObject?.[field.fieldId] as number}
+                value={databaseObject?.[keyId] as number}
                 onChange={value => setDatabaseObject({
                     ...databaseObject,
                     [field.fieldId]: value
@@ -180,7 +213,7 @@ export function Field<O, D>({
                         <Tooltip title={field.tooltip} placement="right-start">
                             <Checkbox
                                 data-testid={fullId}
-                                checked={databaseObject?.[field.fieldId] as boolean}
+                                checked={databaseObject?.[keyId] as boolean}
                                 onChange={event => setDatabaseObject({
                                     ...databaseObject,
                                     [field.fieldId]: event.target.checked
@@ -191,6 +224,20 @@ export function Field<O, D>({
                     label={field.label}
                 />
             </FormGroup>;
+        case "DICE":
+            return <DiceField
+                key={fullId}
+                fieldId={fullId}
+                label={field.label}
+                tooltip={field.tooltip}
+                value={databaseObject?.[keyId] as Dice}
+                onChange={value => setDatabaseObject({
+                    ...databaseObject,
+                    [field.fieldId]: value
+                })}
+                errorMap={errors}
+                fullWidth
+            />;
         case "PRICE":
             return <Stack direction="row" spacing={2}>
                 <NumberFieldWithError
@@ -200,7 +247,7 @@ export function Field<O, D>({
                     integerField
                     label={field.label}
                     tooltip={field.tooltip}
-                    value={databaseObject?.[field.fieldId] as number}
+                    value={databaseObject?.[keyId] as number}
                     onChange={value => setDatabaseObject({
                         ...databaseObject,
                         [field.fieldId]: value
@@ -212,7 +259,7 @@ export function Field<O, D>({
                     label={t("resultingPrice")}
                     data-testid="resultingPrice"
                     variant="outlined"
-                    value={currencyToHumanReadable(currencySettings, Number(databaseObject?.[field.fieldId]))}
+                    value={currencyToHumanReadable(currencySettings, Number(databaseObject?.[keyId]))}
                     InputProps={{ readOnly: true }}
                     fullWidth
                 />
@@ -224,7 +271,7 @@ export function Field<O, D>({
                 label={field.label}
                 tooltip={field.tooltip}
                 values={field.dependency as any}
-                value={databaseObject?.[field.fieldId] as any}
+                value={databaseObject?.[keyId] as any}
                 onChange={event => setDatabaseObject({
                     ...databaseObject,
                     [field.fieldId]: event.target.value
@@ -243,7 +290,7 @@ export function Field<O, D>({
                     }}
                     isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option.id === value.id}
                     renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
-                    value={databaseObject?.[field.fieldId] as D ?? null}
+                    value={databaseObject?.[keyId] as D ?? null}
                     onChange={(_, value) => setDatabaseObject({
                         ...databaseObject,
                         [field.fieldId]: value
@@ -263,7 +310,7 @@ export function Field<O, D>({
                     }}
                     isOptionEqualToValue={(option: DatabaseObject, value: DatabaseObject) => option?.id === value?.id}
                     renderInput={(params) => <TextFieldWithErrorForAutoComplete {...params} fieldId={fullId} errorMap={errors} label={field.label} />}
-                    value={databaseObject?.[field.fieldId] as D[] ?? []}
+                    value={databaseObject?.[keyId] as D[] ?? []}
                     onChange={(_, value) => setDatabaseObject({
                         ...databaseObject,
                         [field.fieldId]: value
@@ -285,7 +332,7 @@ export function Field<O, D>({
                             fullId: subFullId
                         }}
                         errors={errors}
-                        databaseObject={databaseObject[field.fieldId]}
+                        databaseObject={databaseObject[keyId]}
                         setDatabaseObject={obj => {
                             setDatabaseObject({
                                 ...databaseObject,
@@ -338,7 +385,7 @@ function ComplexFieldList<O extends DatabaseObject, D extends DatabaseObject>({
     setDatabaseObject
 }: FieldProps<O, D>) {
     const fullId = (field.fullId ?? field.fieldId) as string;
-    const entries = databaseObject[field.fieldId] as any[];
+    const entries = databaseObject[field.fieldId as keyof O] as any[];
 
     return <Stack spacing={2} key={fullId} data-testid={fullId} >
         {entries.map((value, index) => {

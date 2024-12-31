@@ -14,48 +14,40 @@ public class MainMenu extends PageBase {
     /**
      * Opens the basic {@link ItemPage}.
      */
-    public ItemPage openItemPage() {
+    public OverviewBasePage openItemPage() {
         openMenu("items-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
      * Opens the weapon {@link ItemPage}.
      */
-    public ItemPage openWeaponPage() {
+    public OverviewBasePage openWeaponPage() {
         openMenu("items-menu", "weapons-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
      * Opens the jewellery {@link ItemPage}.
      */
-    public ItemPage openJewelleryPage() {
+    public OverviewBasePage openJewelleryPage() {
         openMenu("items-menu", "jewellery-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
      * Opens the armor {@link ItemPage}.
      */
-    public ItemPage openArmorPage() {
+    public OverviewBasePage openArmorPage() {
         openMenu("items-menu", "armor-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
      * Opens the shield {@link ItemPage}.
      */
-    public ItemPage openShieldPage() {
+    public OverviewBasePage openShieldPage() {
         openMenu("items-menu", "shields-menu");
-        return new ItemPage(page);
-    }
-
-    /**
-     * Opens the overview page for item types.
-     */
-    public OverviewBasePage openItemTypePage() {
-        openMenu("items-menu", "item-types-menu");
         return new OverviewBasePage(page);
     }
 

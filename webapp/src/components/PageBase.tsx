@@ -155,7 +155,6 @@ function generateSidebarEntries(userPermissions: UserPermissions): MenuEntryProp
         { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
         { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> },
         { id: "upgrades-menu", label: t("upgrades"), link: "/upgrades", icon: <GiMagicAxe /> },
-        { id: "item-types-menu", label: t("item-types"), link: "/item-types", icon: <GiGearHammer /> },
         { id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick /> }
       ]
     },

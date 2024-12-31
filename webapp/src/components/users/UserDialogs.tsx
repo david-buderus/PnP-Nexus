@@ -3,7 +3,7 @@ import { getUniverseContext } from '../PageBase';
 import { useEffect, useMemo, useState } from "react";
 import { GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, RoleAuthorityDTO, UserServiceApi } from "../../api";
 import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField } from "@mui/material";
-import { TextFieldWithError } from "../inputs/TestFieldWithError";
+import { TextFieldWithError } from "../inputs/InputFields";
 import { handleValidationErrors } from "../ErrorUtils";
 import { API_CONFIGURATION } from "../Constants";
 

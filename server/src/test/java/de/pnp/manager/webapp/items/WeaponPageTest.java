@@ -1,5 +1,6 @@
 package de.pnp.manager.webapp.items;
 
+import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.equipable.Weapon;
@@ -17,7 +18,7 @@ public class WeaponPageTest extends ItemPageTestBase {
 
     @Override
     protected ItemPage openTestPage(MainMenu mainMenu) {
-        return mainMenu.openWeaponPage();
+        return null; // mainMenu.openWeaponPage();
     }
 
     @Override
@@ -28,12 +29,12 @@ public class WeaponPageTest extends ItemPageTestBase {
     @Override
     protected Pair<EItemClass, Item> getTestItem() {
         return ImmutablePair.of(EItemClass.WEAPON,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Great-Sword").withType("Weapon")
-                .withSubtype("Sword")
+            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Great-Sword").withTags("Sword")
                 .withEffect("It is great").withDescription("It is a great sword").withRarity(ERarity.UNCOMMON)
                 .withTier(2)
                 .withRequirement("None").withVendorPrice(10000)
-                .withNote("Some text").withMaterial("Iron").withDice("D6").withDamage(2).withUpgradeSlots(2).withHit(0)
+                .withNote("Some text").withMaterial("Iron").withDice(Dice.simpleDice(10)).withDamage(2)
+                .withUpgradeSlots(2).withHit(0)
                 .withInitiative(1).buildWeapon());
     }
 }

@@ -4,7 +4,7 @@ import { getUniverseContext } from '../PageBase';
 import { BinaryExpressionTreeServiceApi, SecondaryAttributeDTO, SecondaryAttributeInfo, SimpleSecondaryAttributeServiceApi, UniverseCreationServiceApi } from "../../api";
 import { API_CONFIGURATION } from "../Constants";
 import { useEffect, useState } from "react";
-import { NumberFieldWithError, TextFieldWithError } from "../inputs/TestFieldWithError";
+import { NumberFieldWithError, TextFieldWithError } from "../inputs/InputFields";
 import { FaMinus, FaPlus } from "react-icons/fa6";
 import { Field } from "./DatabaseObjectDialog";
 import { fetchAllPrimaryAttributes } from "../Database";

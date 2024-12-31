@@ -2,7 +2,7 @@ package de.pnp.manager.component.item.interfaces;
 
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.item.ERarity;
-import de.pnp.manager.component.item.ItemType;
+import java.util.Set;
 
 /**
  * An item in the universe.
@@ -15,14 +15,9 @@ public interface IItem {
     String getName();
 
     /**
-     * The type of this item.
+     * The tags of this item.
      */
-    ItemType getType();
-
-    /**
-     * The subtype of this item.
-     */
-    ItemType getSubtype();
+    Set<String> getTags();
 
     /**
      * The requirement needed to use this item.

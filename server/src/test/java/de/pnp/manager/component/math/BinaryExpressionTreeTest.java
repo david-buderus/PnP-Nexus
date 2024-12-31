@@ -70,6 +70,6 @@ class BinaryExpressionTreeTest {
         "0.5* STR -  0.1* INT + 10, 0.5 * STR - 0.1 * INT + 10"
     })
     void testHumanReadableFormat(String formula, String expected) throws IllegalFormulaException {
-        assertThat(BinaryExpressionTree.from(formula, Set.of()).asHumanReadableString()).isEqualTo(expected);
+        assertThat(BinaryExpressionTree.from(formula, Set.of()).toHumanReadableString()).isEqualTo(expected);
     }
 }

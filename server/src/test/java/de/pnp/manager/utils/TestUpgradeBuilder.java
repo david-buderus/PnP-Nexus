@@ -1,21 +1,23 @@
 package de.pnp.manager.utils;
 
-import de.pnp.manager.component.item.ItemType;
+import de.pnp.manager.component.TagRequirement;
 import de.pnp.manager.component.universe.Universe;
+import de.pnp.manager.component.upgrade.EUpgradeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
-import de.pnp.manager.server.database.item.ItemTypeRepository;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * Helper class to build {@link Upgrade}.
  */
-public class TestUpgradeBuilder extends TestBuilderBase {
+public class TestUpgradeBuilder {
 
     /**
      * Component wrapper for the {@link TestUpgradeBuilder}.
@@ -24,16 +26,13 @@ public class TestUpgradeBuilder extends TestBuilderBase {
     public static class TestUpgradeBuilderFactory {
 
         @Autowired
-        private ItemTypeRepository typeRepository;
-
-        @Autowired
         private UpgradeRepository upgradeRepository;
 
         /**
          * Builder with default values.
          */
         public TestUpgradeBuilder createUpgradeBuilder(String universe) {
-            return new TestUpgradeBuilder(universe, typeRepository, upgradeRepository);
+            return new TestUpgradeBuilder(universe, upgradeRepository);
         }
     }
 
@@ -41,12 +40,16 @@ public class TestUpgradeBuilder extends TestBuilderBase {
      * Returns a builder without a link to a {@link Universe} or database.
      */
     public static TestUpgradeBuilder createUpgrade() {
-        return new TestUpgradeBuilder(null, null, null);
+        return new TestUpgradeBuilder(null, null);
     }
+
+    private final String universe;
 
     private String name;
 
-    private ItemType type;
+    private EUpgradeRestriction restriction;
+
+    private TagRequirement tagRequirement;
 
     private int slots;
 
@@ -58,11 +61,12 @@ public class TestUpgradeBuilder extends TestBuilderBase {
 
     private final UpgradeRepository upgradeRepository;
 
-    public TestUpgradeBuilder(String universe, ItemTypeRepository typeRepository, UpgradeRepository upgradeRepository) {
-        super(universe, typeRepository);
+    public TestUpgradeBuilder(String universe, UpgradeRepository upgradeRepository) {
+        this.universe = universe;
         this.upgradeRepository = upgradeRepository;
         name = "Test";
-        type = getType("Test");
+        restriction = EUpgradeRestriction.ITEM;
+        tagRequirement = TagRequirement.EMPTY;
         slots = 1;
         vendorPrice = 10;
         effects = new ArrayList<>();
@@ -78,10 +82,18 @@ public class TestUpgradeBuilder extends TestBuilderBase {
     }
 
     /**
-     * @see Upgrade#getTarget()
+     * @see Upgrade#getRestriction()
      */
-    public TestUpgradeBuilder withTarget(ItemType target) {
-        this.type = target;
+    public TestUpgradeBuilder withRestriction(EUpgradeRestriction restriction) {
+        this.restriction = restriction;
+        return this;
+    }
+
+    /**
+     * @see Upgrade#getTagRequirement()
+     */
+    public TestUpgradeBuilder withNecessaryTags(String... tags) {
+        this.tagRequirement = new TagRequirement(List.of(Set.of(tags)));
         return this;
     }
 
@@ -116,7 +128,7 @@ public class TestUpgradeBuilder extends TestBuilderBase {
         if (effects.isEmpty()) {
             effects.add(new SimpleUpgradeEffect("default effect"));
         }
-        Upgrade upgrade = new Upgrade(null, name, type, slots, vendorPrice, effects);
+        Upgrade upgrade = new Upgrade(null, name, restriction, tagRequirement, slots, vendorPrice, effects);
         if (shouldGetPersisted) {
             return upgradeRepository.insert(universe, upgrade);
         }

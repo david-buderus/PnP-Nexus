@@ -6,6 +6,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.math.BinaryExpressionTree;
@@ -128,7 +129,9 @@ public class DatabaseObjectDialog {
             } else if (property instanceof Upgrade u) {
                 setAutoComplete(id, u.getName());
             } else if (property instanceof BinaryExpressionTree tree) {
-                set(id, tree.asHumanReadableString());
+                set(id, tree.toHumanReadableString());
+            } else if (property instanceof Dice dice) {
+                set(id, dice.toHumandReadableString());
             } else {
                 fillOut(property, id + ".");
             }

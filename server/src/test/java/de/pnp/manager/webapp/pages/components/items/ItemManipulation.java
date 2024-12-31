@@ -4,14 +4,16 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.component.item.ItemType;
 import de.pnp.manager.component.item.Material;
+import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.EArmorSlot;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.item.interfaces.IHandheldItem;
 import de.pnp.manager.webapp.utils.WebTestUtils;
+import java.util.List;
 
 /**
  * Represents the ItemManipulation component.
@@ -42,31 +44,17 @@ public abstract class ItemManipulation {
     }
 
     /**
-     * @see Item#getType()
+     * @see Item#getTags()
      */
-    public void setType(ItemType type) {
-        setType(type.getName());
+    public void setTags(String... tags) {
+        locator.getByTestId("tags").getByRole(AriaRole.TEXTBOX).fill(String.join(", ", tags));
     }
 
     /**
-     * @see Item#getType()
+     * @see Item#getTags()
      */
-    public void setType(String type) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("type"), type, true);
-    }
-
-    /**
-     * @see Item#getSubtype()
-     */
-    public void setSubtype(ItemType subtype) {
-        setSubtype(subtype.getName());
-    }
-
-    /**
-     * @see Item#getSubtype()
-     */
-    public void setSubtype(String subtype) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("subtype"), subtype, true);
+    public void setTags(List<String> tags) {
+        locator.getByTestId("tags").getByRole(AriaRole.TEXTBOX).fill(String.join(", ", tags));
     }
 
     /**
@@ -95,6 +83,20 @@ public abstract class ItemManipulation {
      */
     public void setArmor(int armor) {
         locator.getByTestId("armor").getByRole(AriaRole.TEXTBOX).fill(String.valueOf(armor));
+    }
+
+    /**
+     * @see Armor#getProtection()
+     */
+    public void setProtection(int protection) {
+        locator.getByTestId("protection").getByRole(AriaRole.TEXTBOX).fill(String.valueOf(protection));
+    }
+
+    /**
+     * @see Armor#getArmorSlot()
+     */
+    public void setArmorSlot(EArmorSlot armorSlot) {
+        WebTestUtils.select(locator.getByTestId("rarity"), armorSlot.name());
     }
 
     /**
@@ -220,8 +222,6 @@ public abstract class ItemManipulation {
      */
     public void setItem(Item item) {
         setName(item.getName());
-        setType(item.getType());
-        setSubtype(item.getSubtype());
         setRequirement(item.getRequirement());
         setEffect(item.getEffect());
         setRarity(item.getRarity());
@@ -245,7 +245,10 @@ public abstract class ItemManipulation {
         }
         if (item instanceof Weapon weapon) {
             setDamage(weapon.getDamage());
-            setDice(weapon.getDice());
+        }
+        if (item instanceof Armor armor) {
+            setProtection(armor.getProtection());
+            setArmorSlot(armor.getArmorSlot());
         }
     }
 }
