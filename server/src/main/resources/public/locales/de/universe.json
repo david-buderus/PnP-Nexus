@@ -53,8 +53,18 @@
   "jewelleryImportExplanation": "Das importieren von den empfohlenen Definitionen funktioniert nur, wenn die Ausrüstung-Item-Typen importiert wurden.",
   "importMissingRequirements": "Es wurden nicht die benötigten Item-Typen vorher importiert oder sie wurden mit einer anderen Sprache importiert.",
   "importDefaults": "Importieren",
-  "secondaryAttributeExplanation": "",
-  "secondaryAttributeExplanationTooltip": "",
-  "getSecondaryAttributeInfos": "",
-  "secondaryAttributeTesting": ""
+  "secondaryAttributeExplanation": "Sekundäre Attribute sind....",
+  "secondaryAttributeExplanationTooltip": "Die Werte können nicht berechnet werden",
+  "getSecondaryAttributeInfos": "Berechne die Intervalle der sekundären Attribute",
+  "secondaryAttributeTesting": "Testbereich",
+  "creationStep": "Universum",
+  "currencyStep": "Währung",
+  "itemStep": "Items",
+  "importStep": "Defaults",
+  "primaryAttributeStep": "Primäre Attribute",
+  "characterStep": "Charakter",
+  "secondaryAttributeStep": "Sekundäre Attribute",
+  "shieldUsingDice": "Ob Schilde beim Blocken zusätzlich einen Würfel verwenden sollen.",
+  "usingProtection": "Ob Rüstung/Schilde Schutz verwenden. Der Schutz wird mit jedem Treffer verringert. Wenn der Schutz 0 erreicht, bietet die Rüstung keine Rüstung mehr. Sie wird nach jedem Kampf zurückgesetzt.",
+  "lastStep": "Fertig"
 }

@@ -1,13 +1,19 @@
 package de.pnp.manager.server.database.item;
 
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.RepositoryBase;
+import de.pnp.manager.server.database.TagRepository;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
@@ -22,6 +28,9 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
      * Name of the repository
      */
     public static final String REPOSITORY_NAME = "items";
+
+    @Autowired
+    private TagRepository tagRepository;
 
     public ItemRepository() {
         super(Item.class, REPOSITORY_NAME);
@@ -53,6 +62,17 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
      */
     public Collection<Shield> getAllShields(String universe) {
         return getAllByClass(universe, Shield.class);
+    }
+
+    @Override
+    protected void onAfterPersist(String universe, List<Item> objects) {
+        super.onAfterPersist(universe, objects);
+
+        Set<Tag> newTags = new HashSet<>();
+        for (Item item : objects) {
+            newTags.addAll(item.getTags());
+        }
+        tagRepository.saveAll(universe, newTags);
     }
 
     private <I> Collection<I> getAllByClass(String universe, Class<I> clazz) {

@@ -3,12 +3,14 @@ package de.pnp.manager.component;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.item.Item;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Requirements which are defined by multiple possibilities of tags which are needed.
@@ -18,29 +20,29 @@ public class TagRequirement {
     /**
      * A requirement which accepts everything
      */
-    public final static TagRequirement EMPTY = new TagRequirement(List.of());
+    public final static TagRequirement NO_REQUIREMENT = new TagRequirement(List.of());
 
     /**
      * One of the given tag sets needs to be a subset of given tags.
      */
     @JsonProperty
     @NotNull
-    private final List<@NotEmpty Set<String>> tagRequirements;
+    private final List<@NotEmpty Set<Tag>> tagRequirements;
 
     @JsonCreator
-    public TagRequirement(List<Set<String>> tagRequirements) {
+    public TagRequirement(List<Set<Tag>> tagRequirements) {
         this.tagRequirements = tagRequirements;
     }
 
     /**
      * Checks if the given tags fulfill the requirements.
      */
-    public boolean fulfillsRequirements(Set<String> tags) {
+    public boolean fulfillsRequirements(Set<Tag> tags) {
         if (tagRequirements.isEmpty()) {
             return true;
         }
 
-        for (Set<String> necessaryTags : tagRequirements) {
+        for (Set<Tag> necessaryTags : tagRequirements) {
             if (tags.containsAll(necessaryTags)) {
                 return true;
             }
@@ -56,6 +58,14 @@ public class TagRequirement {
      */
     public boolean fulfillsRequirements(Item item) {
         return fulfillsRequirements(item.getTags());
+    }
+
+    /**
+     * Creates {@link TagRequirement} from the given raw strings.
+     */
+    public static TagRequirement from(List<Set<String>> tagRequirements) {
+        return new TagRequirement(
+            tagRequirements.stream().map(set -> set.stream().map(Tag::from).collect(Collectors.toSet())).toList());
     }
 
     @Override

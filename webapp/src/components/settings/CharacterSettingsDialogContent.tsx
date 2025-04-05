@@ -2,10 +2,9 @@ import { getUserContext } from '../PageBase';
 import { getUniverseContext } from '../PageBase';
 import { Alert, Button, Dialog, DialogActions, DialogTitle, Link, Stack, Typography } from "@mui/material";
 import { NumberFieldWithError } from "../inputs/InputFields";
-import { useEffect, useState } from "react";
-import { CharacterSettings, JewelleryDefinition, UniverseCreationServiceApi, UniverseSettingsServiceApi } from "../../api";
+import { useState } from "react";
+import { CharacterSettings, JewelleryDefinition, UniverseCreationServiceApi } from "../../api";
 import { useTranslation } from "react-i18next";
-import { handleValidationErrors } from "../ErrorUtils";
 import { numberFormatter, percentageFormatter, probabilityForSuccesfulThrows } from "../Utils";
 import { fetchAllPrimaryAttributes } from "../Database";
 import { Field } from "../database/DatabaseObjectDialog";
@@ -13,39 +12,14 @@ import { SettingsProps } from "./SettingsProps";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { LanguageSelect } from "../inputs/NexusSelect";
 import { API_CONFIGURATION } from "../Constants";
-import { openDialog } from "../DialogUtils";
 
-const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
 const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
 
-export function CharacterSettingsDialogContent({ onSave }: SettingsProps) {
+export function CharacterSettingsDialogContent({ settings, setSettings, errors }: SettingsProps<CharacterSettings>) {
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
-
-    const [settings, setSettings] = useState<CharacterSettings>({
-        minPrimaryAttributeValue: 2,
-        maxPrimaryAttributeValue: 12,
-        maxPrimaryAttributeSum: 50,
-        numberOfHandheld: 2,
-        jewelleryDefinitions: [{
-            "amount": 1,
-            "name": "",
-            "tag": ""
-        }]
-    });
-    const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
-    const [openArmorImport, setOpenArmorImport] = useState(false);
     const [openJewelleryImport, setOpenJewelleryImport] = useState(false);
 
     const [primaryAttributes] = fetchAllPrimaryAttributes();
-
-    useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
-        SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setSettings(response.data));
-    }, [activeUniverse]);
-
     const attributeLength = primaryAttributes.length;
 
     return <Stack padding={2} justifyContent="center">
@@ -145,14 +119,6 @@ export function CharacterSettingsDialogContent({ onSave }: SettingsProps) {
                         setDatabaseObject={setSettings} />
                 </Stack>
             </Stack>
-            <Stack spacing={2} direction="row" justifyContent="flex-end">
-                <Button color="warning" variant="outlined" autoFocus href="/">
-                    {t('cancel')}
-                </Button>
-                <Button color="primary" variant="outlined" onClick={() => {
-                    SETTINGS_API.updateCharacterSettings(activeUniverse.name, settings).then(onSave).catch(handleValidationErrors(setErrors));
-                }}>{t('save')}</Button>
-            </Stack>
         </Stack>
         <ImportDefaultsDialog<JewelleryDefinition>
             title={t("universe:jewelleryImportTitle")}
@@ -227,55 +193,4 @@ function ImportDefaultsDialog<Definitions>({
             }}>{t('universe:importDefaults')}</Button>
         </DialogActions>
     </Dialog >;
-}
-
-function ImportDefaultsDialogContent<Definitions>({
-    title,
-    explanation,
-    onClose,
-    importFunction
-}: {
-    title: string;
-    explanation: string;
-    onClose: (definitons: Definitions[]) => void;
-    importFunction: (universe: string, language: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<Definitions[], any>>;
-}) {
-    const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
-    const { userPreferences } = getUserContext();
-
-    const [language, setLanguage] = useState<string>(userPreferences?.language ?? null);
-    const [error, setError] = useState(false);
-
-    return <>
-        <DialogTitle>{title}</DialogTitle>
-        <Stack spacing={2} padding={2}>
-            <Typography gutterBottom variant="body2" component="div" align='left'>
-                {explanation}
-            </Typography>
-            <LanguageSelect
-                language={language}
-                onChange={setLanguage}
-            />
-            {error && <Alert severity="error">
-                {t("universe:importMissingRequirements")}
-            </Alert>}
-        </Stack>
-        <DialogActions>
-            <Button data-testid="dialog-cancel" autoFocus onClick={() => onClose(null)}>
-                {t('cancel')}
-            </Button>
-            <Button data-testid="dialog-action" variant="contained" color="success" onClick={() => {
-                importFunction(activeUniverse.name, language).then(response => onClose(response.data)).catch((err: Error | AxiosError) => {
-                    if (!axios.isAxiosError(err)) {
-                        return;
-                    }
-                    if (err.response.status !== 400) {
-                        return;
-                    }
-                    setError(true);
-                });
-            }}>{t('universe:importDefaults')}</Button>
-        </DialogActions>
-    </>;
 }

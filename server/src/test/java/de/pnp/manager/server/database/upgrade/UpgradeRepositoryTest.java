@@ -23,25 +23,25 @@ class UpgradeRepositoryTest extends RepositoryTestBase<Upgrade, UpgradeRepositor
 
     @Override
     protected Upgrade createObject() {
-        return new Upgrade(null, "Shine", EUpgradeRestriction.WEAPON, TagRequirement.EMPTY, 1, 10,
+        return new Upgrade(null, "Shine", EUpgradeRestriction.WEAPON, TagRequirement.NO_REQUIREMENT, 1, 10,
             List.of(new SimpleUpgradeEffect("The weapon emits light")));
     }
 
     @Override
     protected Upgrade createSlightlyChangeObject() {
         return new Upgrade(null, "Shine", EUpgradeRestriction.EQUIPMENT,
-            new TagRequirement(List.of(Set.of("Tag 1"), Set.of("Tag 2", "Tag 3"))), 1, 10,
+            TagRequirement.from(List.of(Set.of("Tag 1"), Set.of("Tag 2", "Tag 3"))), 1, 10,
             List.of(new SimpleUpgradeEffect("The equipment emits light")));
     }
 
     @Override
     protected List<Upgrade> createMultipleObjects() {
         return List.of(
-            new Upgrade(null, "Shine", EUpgradeRestriction.WEAPON, TagRequirement.EMPTY, 1, 10,
+            new Upgrade(null, "Shine", EUpgradeRestriction.WEAPON, TagRequirement.NO_REQUIREMENT, 1, 10,
                 List.of(
                     new EquipmentUpgradeEffect("The weapon emits light", 2, EUpgradeEquipmentManipulator.HIT,
                         ECalculation.MULTIPLICATIVE))),
-            new Upgrade(null, "Fire", EUpgradeRestriction.WEAPON, TagRequirement.EMPTY, 2, 70,
+            new Upgrade(null, "Fire", EUpgradeRestriction.WEAPON, TagRequirement.NO_REQUIREMENT, 2, 70,
                 List.of(new EquipmentUpgradeEffect("The item is on fire", 1, EUpgradeEquipmentManipulator.DAMAGE,
                     ECalculation.ADDITIVE))));
     }

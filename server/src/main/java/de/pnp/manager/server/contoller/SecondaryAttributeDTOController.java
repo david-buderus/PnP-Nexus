@@ -5,15 +5,12 @@ import de.pnp.manager.component.attributes.SecondaryAttributeDTO;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
-import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
 import de.pnp.manager.component.math.IllegalFormulaException;
-import de.pnp.manager.exception.InvalidRequestBodyException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
+import de.pnp.manager.validation.IsValidExpressionValidator;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,11 +24,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SecondaryAttributeDTOController {
-
-    /**
-     * All string variables allowed in {@link SecondaryAttribute}.
-     */
-    public static final Set<String> ALLOWED_STRING_VARIABLES = Set.of("LVL");
 
 
     @Autowired
@@ -86,10 +78,6 @@ public class SecondaryAttributeDTOController {
         SecondaryAttribute secondaryAttribute = new SecondaryAttribute(attribute.id(), attribute.name(),
             attribute.consumable(), createExpression(attribute.calculationFormula(), attributeVariables));
 
-        if (checkUsedVariables(secondaryAttribute)) {
-            throw new InvalidRequestBodyException("calculationFormula", "expression.unknownVariable");
-        }
-
         return SecondaryAttributeDTO.from(secondaryAttributeRepository.update(universe, secondaryAttribute));
     }
 
@@ -98,7 +86,7 @@ public class SecondaryAttributeDTOController {
      */
     public List<String> getSupportedVariables(String universe) {
         return Stream.concat(getPrimaryAttributeVariables(universe).stream().map(IExpressionVariable::getIdentifier),
-            ALLOWED_STRING_VARIABLES.stream()).toList();
+            IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream()).toList();
     }
 
     /**
@@ -106,24 +94,9 @@ public class SecondaryAttributeDTOController {
      */
     public List<SecondaryAttribute> convert(String universe, List<SecondaryAttributeDTO> attributeDTOS) {
         Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
-
-        List<SecondaryAttribute> secondaryAttributes = attributeDTOS.stream().map(
+        return attributeDTOS.stream().map(
             dto -> new SecondaryAttribute(dto.id(), dto.name(), dto.consumable(),
                 createExpression(dto.calculationFormula(), attributeVariables))).toList();
-
-        Map<String, String> violations = new HashMap<>();
-
-        for (int i = 0; i < secondaryAttributes.size(); i++) {
-            if (checkUsedVariables(secondaryAttributes.get(i))) {
-                violations.put("insertAll.objects[" + i + "].calculationFormula", "expression.unknownVariable");
-            }
-        }
-
-        if (!violations.isEmpty()) {
-            throw new InvalidRequestBodyException(violations);
-        }
-
-        return secondaryAttributes;
     }
 
     /**
@@ -143,12 +116,6 @@ public class SecondaryAttributeDTOController {
                     return null;
                 }
             }).toList();
-    }
-
-    private static boolean checkUsedVariables(SecondaryAttribute secondaryAttribute) {
-        return secondaryAttribute.getCalculationFormula().getVariables().stream()
-            .filter(StringVariable.class::isInstance)
-            .anyMatch(v -> !ALLOWED_STRING_VARIABLES.contains(((StringVariable) v).variable()));
     }
 
     private Set<IExpressionVariable> getPrimaryAttributeVariables(String universe) {

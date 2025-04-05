@@ -22,6 +22,8 @@ public @interface IsValidExpression {
      */
     String message() default "{expression.invalid}";
 
+    EExpressionType expressionType();
+
     /**
      * Used in the spring backend.
      */
@@ -31,4 +33,8 @@ public @interface IsValidExpression {
      * Used in the spring backend.
      */
     Class<? extends Payload>[] payload() default {};
+
+    enum EExpressionType {
+        SECONDARY_ATTRIBUTE_EXPRESSION;
+    }
 }

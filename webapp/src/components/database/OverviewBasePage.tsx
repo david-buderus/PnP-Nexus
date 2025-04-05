@@ -77,7 +77,7 @@ export function OverviewBasePage<O extends DatabaseObject>({
         <OverviewTable id='id' sortBy={sortingKey} data={databaseObjects} columns={columns} selectedState={[selected, setSelected]} />
         {
             userPermissions.canWriteActiveUniverse &&
-            <Stack spacing={2} direction="row" justifyContent="flex-end">
+            <Stack spacing={2} direction="row" justifyContent="flex-end" paddingTop={2}>
                 <Button className='btn' data-testid="add" onClick={() => setOpenCreationDialog(true)}>
                     {t("add")}
                 </Button>

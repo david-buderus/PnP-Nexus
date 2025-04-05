@@ -1,13 +1,13 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { useState, useEffect } from "react";
 import { getUniverseContext } from './PageBase';
-import { Item, ItemServiceApi, Material, MaterialServiceApi, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttributeDTO, SimpleSecondaryAttributeServiceApi } from "../api";
+import { Item, ItemServiceApi, Material, MaterialServiceApi, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttributeDTO, SimpleSecondaryAttributeServiceApi, Tag, TagServiceApi, UniverseSettingsServiceApi } from "../api";
 import { API_CONFIGURATION } from "./Constants";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
 const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
-const SIMPLE_SECONDARY_ATTRIBUTE_API = new SimpleSecondaryAttributeServiceApi(API_CONFIGURATION);
+const TAG_API = new TagServiceApi(API_CONFIGURATION);
 
 /**
  * Fetches all objects for the given fetch method.
@@ -48,4 +48,11 @@ export function fetchAllMaterials(): [Material[], () => void] {
  */
 export function fetchAllPrimaryAttributes(): [PrimaryAttribute[], () => void] {
     return fetchAll(universe => PRIMARY_ATTRIBUTE_API.getAllPrimaryAttributes(universe));
+}
+
+/**
+ * Fetches all known tags.
+ */
+export function fetchAllTags(): [Tag[], () => void] {
+    return fetchAll(universe => TAG_API.getAllTags(universe));
 }

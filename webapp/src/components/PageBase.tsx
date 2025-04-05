@@ -1,4 +1,4 @@
-import { AuthenticationServiceApi, CurrencySettings, PnPUser, PnPUserPreference, Universe, UniverseServiceApi, UniverseSettingsServiceApi, UserServiceApi } from '../api';
+import { AuthenticationServiceApi, CurrencySettings, ItemSettings, PnPUser, PnPUserPreference, Universe, UniverseServiceApi, UniverseSettingsServiceApi, UserServiceApi } from '../api';
 import { Outlet, useOutletContext, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Box, CssBaseline, ThemeProvider, Toolbar } from '@mui/material';
@@ -8,14 +8,27 @@ import { NexusAppBar } from './NexusAppBar';
 import { MenuEntryProps, NexusSidebar } from './NexusSidebar';
 import { useTranslation } from 'react-i18next';
 import { TfiWorld } from 'react-icons/tfi';
-import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiGearHammer, GiHeartInside, GiMagicAxe, GiMuscleUp, GiRing, GiShield, GiSpellBook, GiStoneCrafting, GiSupersonicArrow, GiSwapBag } from 'react-icons/gi';
+import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiHeartInside, GiMagicAxe, GiMuscleUp, GiRing, GiShield, GiSpellBook, GiStoneCrafting, GiSupersonicArrow, GiSwapBag } from 'react-icons/gi';
 import { FaPersonRays } from "react-icons/fa6";
 import i18n from '../i18n';
 import { IoSettingsSharp } from 'react-icons/io5';
 import { HiUserCircle } from 'react-icons/hi2';
 
-type UniverseContext = { universes: Universe[], activeUniverse: Universe, setActiveUniverse: (activeUniverse: Universe) => void, fetchUniverses: () => Promise<void>, currencySettings: CurrencySettings; };
-type UserContext = { userPermissions: UserPermissions, userPreferences: PnPUserPreference, user: PnPUser, refreshUser: () => void; };
+type UniverseContext = {
+  universes: Universe[],
+  activeUniverse: Universe,
+  setActiveUniverse: (activeUniverse: Universe) => void,
+  fetchUniverses: () => Promise<void>,
+  currencySettings: CurrencySettings;
+  itemSettings: ItemSettings;
+};
+
+type UserContext = {
+  userPermissions: UserPermissions,
+  userPreferences: PnPUserPreference,
+  user: PnPUser,
+  refreshUser: () => void;
+};
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
@@ -27,6 +40,7 @@ function PageBase() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
   const [currencySettings, setCurrencySettings] = useState<CurrencySettings>(null);
+  const [itemSettings, setItemSettings] = useState<ItemSettings>(null);
   const [username, setUsername] = useState<string>(null);
   const [user, setUser] = useState<PnPUser>(null);
   const [userPreferences, setUserPreferences] = useState<PnPUserPreference>(null);
@@ -87,6 +101,7 @@ function PageBase() {
     searchParams.set("universe", activeUniverse.name);
     setSearchParams(searchParams);
     SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
+    SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
   }, [activeUniverse]);
 
   useEffect(() => {
@@ -132,6 +147,7 @@ function PageBase() {
             setActiveUniverse: setActiveUniverse,
             fetchUniverses: fetchUniverses,
             currencySettings: currencySettings,
+            itemSettings: itemSettings,
             userPermissions: userPermissions,
             userPreferences: userPreferences,
             user: user,

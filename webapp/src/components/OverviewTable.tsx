@@ -198,6 +198,10 @@ function OverviewTable<T>(props: React.PropsWithChildren<OverviewTableProps<T>>)
 
   const visibleRows = React.useMemo(
     () => {
+      if (!data) {
+        return [];
+      }
+
       const getter = columns.find(c => c.id === orderBy)?.getter;
       return data.filter(dataValue => columns.every((column, index) => {
         if (!filters[index]) {

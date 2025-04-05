@@ -1,10 +1,10 @@
 package de.pnp.manager.component.item.equipable;
 
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IOffensiveItem;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Objects;
@@ -23,7 +23,7 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
     @PositiveOrZero
     protected final int damage;
 
-    public Weapon(ObjectId id, String name, @NotNull Set<@NotBlank String> tags, String requirement, String effect,
+    public Weapon(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
         ERarity rarity,
         int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
         float initiative, int hit, int damage, Dice dice, int maximumStackSize, int minimumStackSize) {

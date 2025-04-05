@@ -2198,6 +2198,40 @@
         ]
       }
     },
+    "/api/{universe}/tags": {
+      "get": {
+        "operationId": "getAllTags",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all tags from the database",
+        "tags": [
+          "tag-service"
+        ]
+      }
+    },
     "/api/{universe}/talents": {
       "delete": {
         "operationId": "deleteAllTalents",
@@ -4205,7 +4239,7 @@
             "uniqueItems": true,
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/Tag"
             }
           },
           "tier": {
@@ -4579,6 +4613,7 @@
           "minimumStackSize",
           "name",
           "note",
+          "protection",
           "rarity",
           "requirement",
           "tags",
@@ -4612,6 +4647,10 @@
               },
               "material": {
                 "$ref": "#/components/schemas/Material"
+              },
+              "protection": {
+                "type": "integer",
+                "format": "int32"
               },
               "upgradeSlots": {
                 "type": "integer",
@@ -4707,7 +4746,21 @@
       "StreamingResponseBody": {
         "type": "object"
       },
+      "Tag": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "TagRequirement": {
+        "required": [
+          "tagRequirements"
+        ],
         "type": "object",
         "properties": {
           "tagRequirements": {
@@ -4716,7 +4769,7 @@
               "uniqueItems": true,
               "type": "array",
               "items": {
-                "type": "string"
+                "$ref": "#/components/schemas/Tag"
               }
             }
           }

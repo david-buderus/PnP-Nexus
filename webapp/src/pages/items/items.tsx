@@ -1,13 +1,13 @@
 import { getUniverseContext } from '../../components/PageBase';
 import { currencyToHumanReadable } from '../../components/Utils';
 import { useTranslation } from 'react-i18next';
-import { Armor, EArmorSlot, ERarity, Item, ItemServiceApi, Jewellery, Shield, Weapon } from '../../api';
+import { Armor, EArmorSlot, ERarity, Item, ItemServiceApi, Jewellery, Shield, UniverseSettingsServiceApi, Weapon } from '../../api';
 import { OverviewBasePage } from '../../components/database/OverviewBasePage';
 import { API_CONFIGURATION, SomeItem } from '../../components/Constants';
-import { fetchAllMaterials } from '../../components/Database';
-import { TFunction } from 'i18next';
+import { fetchAllMaterials, fetchAllTags } from '../../components/Database';
 import { DatabaseObjectDialogField } from '../../components/database/DatabaseObjectDialog';
 import { AxiosResponse } from 'axios';
+import { Column } from '../../components/OverviewTable';
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
@@ -19,7 +19,7 @@ const ItemPage = () => {
     return <OverviewBasePage<ItemCombination>
         columns={[
             { label: t("name"), id: "name", getter: item => item.name },
-            { label: t("item:tags"), id: "tags", getter: item => Array.from(item.tags).join(", ") },
+            { label: t("tags"), id: "tags", getter: item => item.tags?.map(tag => tag.name)?.join(", ") },
             { label: t("rarity"), id: "rarity", getter: item => t("enum:" + item.rarity.toLowerCase()) },
             { label: t("tier"), id: "tier", getter: item => item.tier, numeric: true },
             { label: t("effect"), id: "effect", getter: item => item.effect },
@@ -45,7 +45,7 @@ const ItemPage = () => {
         emptyObject={{
             "@type": "Item",
             name: "",
-            tags: new Set<string>(),
+            tags: [],
             rarity: ERarity.Common,
             tier: 1,
             effect: "",
@@ -62,6 +62,8 @@ const ItemPage = () => {
 export function createItemFields(): DatabaseObjectDialogField<ItemCombination, any>[] {
     const { t } = useTranslation();
     const [materials] = fetchAllMaterials();
+    const [tags] = fetchAllTags();
+    const { itemSettings } = getUniverseContext();
 
     return [
         {
@@ -74,13 +76,13 @@ export function createItemFields(): DatabaseObjectDialogField<ItemCombination, a
             ]
         },
         { fieldId: "name", label: t("name"), fieldType: "STRING" },
-        { fieldId: "tags", label: t("item:tags"), fieldType: "STRING_SET" },
+        { fieldId: "tags", label: t("tags"), fieldType: "TAG_LIST", dependency: tags },
         {
             fieldId: "material", label: t("material"), fieldType: "DATABASE", dependency: materials, dependencyLabel: "name",
             visibleForTypes: ["Weapon", "Shield", "Armor", "Jewellery"]
         },
         {
-            fieldId: "armorSlot", label: t("slot"), fieldType: "ENUM", dependency: Object.values(EArmorSlot).map(rarity => {
+            fieldId: "armorSlot", label: t("item:armorSlot"), fieldType: "ENUM", dependency: Object.values(EArmorSlot).map(rarity => {
                 return { key: rarity, content: rarity, label: t("enum:" + rarity.toLowerCase()) };
             }),
             visibleForTypes: ["Armor"]
@@ -93,7 +95,14 @@ export function createItemFields(): DatabaseObjectDialogField<ItemCombination, a
             visibleForTypes: ["Armor", "Shield"]
         },
         {
-            fieldId: "protection", label: t("protection"), fieldType: "NUMBER", visibleForTypes: ["Armor"]
+            fieldId: "protection", label: t("protection"), fieldType: "NUMBER", visibleForTypes: ["Armor"], hidden: !itemSettings?.usingProtection
+        },
+        {
+            fieldId: "shield-row", label: "", fieldType: "STACK", subFields: [
+                { fieldId: "dice", label: t("dice"), fieldType: "DICE", hidden: !itemSettings?.shieldUsingDice },
+                { fieldId: "protection", label: t("protection"), fieldType: "NUMBER", hidden: !itemSettings?.usingProtection },
+            ],
+            visibleForTypes: ["Weapon", "Shield"], hidden: !itemSettings?.shieldUsingDice && !itemSettings?.usingProtection
         },
         {
             fieldId: "weapon-row", label: "", fieldType: "STACK", subFields: [

@@ -1,6 +1,6 @@
 package de.pnp.manager.server.service;
 
-import static de.pnp.manager.server.contoller.SecondaryAttributeDTOController.ALLOWED_STRING_VARIABLES;
+import static de.pnp.manager.validation.IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.component.math.BinaryExpressionTree;
@@ -53,7 +53,7 @@ public class BinaryExpressionTreeService {
         }
 
         if (tree.getVariables().stream().filter(StringVariable.class::isInstance)
-            .anyMatch(v -> !ALLOWED_STRING_VARIABLES.contains(((StringVariable) v).variable()))) {
+            .anyMatch(v -> !ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(((StringVariable) v).variable()))) {
             throw createResponseException("expression.unknownVariable");
         }
 

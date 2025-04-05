@@ -52,5 +52,19 @@
   "jewelleryImportTitle": "Import recommended Jewellery Definitions",
   "jewelleryImportExplanation": "Importing the recommended definitions only works if the equipment item types have been imported.",
   "importMissingRequirements": "The required item types were not imported beforehand or they were imported with a different language.",
-  "importDefaults": "Import"
+  "importDefaults": "Import",
+  "secondaryAttributeExplanation": "Secondary attributes are....",
+  "secondaryAttributeExplanationTooltip": "The value cannot be calculated",
+  "getSecondaryAttributeInfos": "Calculate the intervals of the secondary attributes",
+  "secondaryAttributeTesting": "Testing area",
+  "creationStep": "Universe",
+  "currencyStep": "Currency",
+  "itemStep": "Items",
+  "importStep": "Defaults",
+  "primaryAttributeStep": "Primary Attributes",
+  "characterStep": "Character",
+  "secondaryAttributeStep": "Secondary Attributes",
+  "shieldUsingDice": "Whether shields should additional using a dice while blocking.",
+  "usingProtection": "Whether armor/shields are using protection. Protection gets reduced with each hit taken. If protection hits 0, the armor doesn't provide any armor any longer. It resets after each fight.",
+  "lastStep": "Done"
 }

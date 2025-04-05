@@ -2,6 +2,7 @@ package de.pnp.manager.component.attributes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.validation.IsValidExpression;
+import de.pnp.manager.validation.IsValidExpression.EExpressionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
@@ -17,7 +18,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
  */
 public record SecondaryAttributeDTO(@Id ObjectId id, @Indexed(unique = true) @NotBlank String name,
                                     @NotNull boolean consumable,
-                                    @NotNull @IsValidExpression String calculationFormula) {
+                                    @NotNull @IsValidExpression(expressionType = EExpressionType.SECONDARY_ATTRIBUTE_EXPRESSION) String calculationFormula) {
 
     /**
      * Checks whether this object is already persisted in a database.

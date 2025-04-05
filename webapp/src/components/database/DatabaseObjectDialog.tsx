@@ -1,14 +1,14 @@
 import { useTranslation } from "react-i18next";
 import { getUniverseContext } from '../PageBase';
 import { ReactNode, useState } from "react";
-import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Stack, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, Button, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, Paper, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { AxiosResponse } from "axios";
 import { handleValidationErrors } from "../ErrorUtils";
-import { DiceField, NumberFieldWithError, StringSetField, TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/InputFields";
+import { DiceField, NumberFieldWithError, StringListField, TagListField, TextFieldWithError, TextFieldWithErrorForAutoComplete } from "../inputs/InputFields";
 import { NexusSelect } from "../inputs/NexusSelect";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { currencyToHumanReadable } from "../Utils";
-import { Dice } from "../../api";
+import { Dice, Tag } from "../../api";
 
 /**
  * A simple interface to describe database objects
@@ -31,7 +31,7 @@ export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     /** The tooltip for the input */
     tooltip?: ReactNode;
     /** What kind of field is needed */
-    fieldType: "STRING" | "NUMBER" | "BOOLEAN" | "DICE" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "STACK" | "STRING_SET";
+    fieldType: "STRING" | "NUMBER" | "BOOLEAN" | "DICE" | "PRICE" | "ENUM" | "DATABASE" | "MULTI_DATABASE" | "COMPLEX_ENTRY" | "COMPLEX_LIST" | "STACK" | "TAG_LIST";
     /** The dependencies needed for the field. Needed for ENUM, DATABASE and MULTI_DATABASE */
     dependency?: D[];
     /** The label used for the dependency */
@@ -50,6 +50,7 @@ export interface DatabaseObjectDialogField<O extends DatabaseObject, D> {
     multiline?: boolean;
     /** If the field should be hidden */
     hidden?: boolean;
+    directField?: boolean;
 }
 
 /**
@@ -174,18 +175,24 @@ export function Field<O, D>({
                 multiline={multiline}
                 rows={2}
             />;
-        case "STRING_SET":
-            return <StringSetField
+        case "TAG_LIST":
+            return <TagListField
                 key={fullId}
                 fieldId={fullId}
                 label={field.label}
                 tooltip={field.tooltip}
-                value={databaseObject?.[keyId] as Set<string>}
-                onChange={value => setDatabaseObject({
-                    ...databaseObject,
-                    [field.fieldId]: value
-                })
-                }
+                value={databaseObject?.[keyId] as Tag[]}
+                onChange={value => {
+                    if (field.directField) {
+                        setDatabaseObject(value as O);
+                    } else {
+                        setDatabaseObject({
+                            ...databaseObject,
+                            [field.fieldId]: value
+                        });
+                    }
+                }}
+                options={field.dependency as Tag[]}
                 errorMap={errors}
                 fullWidth
                 multiline={multiline}
@@ -320,7 +327,7 @@ export function Field<O, D>({
                 />
             </Tooltip>;
         case "COMPLEX_ENTRY":
-            return <Stack direction="row" spacing={2} alignItems="flex-start" key={fullId} data-testid={fullId} >
+            return <Stack direction={field.aligment ?? "row"} spacing={2} key={fullId} data-testid={fullId}>
                 {field.subFields!.map(subField => {
                     const subFullId = fullId + "." + (subField.fieldId as string);
 
@@ -387,51 +394,94 @@ function ComplexFieldList<O extends DatabaseObject, D extends DatabaseObject>({
     const fullId = (field.fullId ?? field.fieldId) as string;
     const entries = databaseObject[field.fieldId as keyof O] as any[];
 
-    return <Stack spacing={2} key={fullId} data-testid={fullId} >
-        {entries.map((value, index) => {
-            const fieldIdPrefix = fullId + "[" + index + "].";
+    return <Paper className='p-4'>
+        <Stack spacing={2} key={fullId} data-testid={fullId} >
+            <Tooltip title={field.tooltip}>
+                <Typography variant="subtitle1">
+                    {field.label}
+                </Typography>
+            </Tooltip>
+            {entries.map((value, index) => {
+                const fieldIdPrefix = fullId + "[" + index + "].";
 
-            if (field.aligment === "column") {
-                const lastSubField = field.subFields[field.subFields.length - 1];
+                if (field.aligment === "column") {
+                    const lastSubField = field.subFields[field.subFields.length - 1];
 
-                return <Stack direction="column" spacing={2} key={fullId + "-stack-" + index} >
-                    {field.subFields!.slice(0, -1).map(subField => {
-                        const subFullId = fieldIdPrefix + (subField.fieldId as string);
+                    return <Stack direction="column" spacing={2} key={fullId + "-stack-" + index} >
+                        {field.subFields!.slice(0, -1).map(subField => {
+                            const subFullId = fieldIdPrefix + (subField.fieldId as string);
 
-                        return <Field
-                            key={subFullId + "-field"}
-                            field={{
-                                ...subField,
-                                fullId: subFullId
-                            }}
-                            errors={errors}
-                            databaseObject={value}
-                            setDatabaseObject={obj => {
-                                setDatabaseObject({
-                                    ...databaseObject,
-                                    [field.fieldId]: entries.map((e, i) => index !== i ? e : obj)
+                            return <Field
+                                key={subFullId + "-field"}
+                                field={{
+                                    ...subField,
+                                    fullId: subFullId
+                                }}
+                                errors={errors}
+                                databaseObject={value}
+                                setDatabaseObject={obj => {
+                                    setDatabaseObject({
+                                        ...databaseObject,
+                                        [field.fieldId]: entries.map((e, i) => index !== i ? e : obj)
 
-                                });
-                            }}
-                        />;
-                    })}
-                    <Stack direction="row" spacing={2} alignItems="flex-startline" key={fullId + "-button-stack-" + index}>
-                        <Field
-                            key={fieldIdPrefix + (lastSubField.fieldId as string) + "-field"}
-                            field={{
-                                ...lastSubField,
-                                fullId: fieldIdPrefix + (lastSubField.fieldId as string)
-                            }}
-                            errors={errors}
-                            databaseObject={value}
-                            setDatabaseObject={obj => {
-                                setDatabaseObject({
-                                    ...databaseObject,
-                                    [field.fieldId]: entries.map((e, i) => index !== i ? e : obj)
+                                    });
+                                }}
+                            />;
+                        })}
+                        <Stack direction="row" spacing={2} alignItems="flex-startline" key={fullId + "-button-stack-" + index}>
+                            <Field
+                                key={fieldIdPrefix + (lastSubField.fieldId as string) + "-field"}
+                                field={{
+                                    ...lastSubField,
+                                    fullId: fieldIdPrefix + (lastSubField.fieldId as string)
+                                }}
+                                errors={errors}
+                                databaseObject={value}
+                                setDatabaseObject={obj => {
+                                    setDatabaseObject({
+                                        ...databaseObject,
+                                        [field.fieldId]: entries.map((e, i) => index !== i ? e : obj)
 
-                                });
-                            }}
-                        />
+                                    });
+                                }}
+                            />
+                            <Button
+                                key={fullId + "-sub-" + index}
+                                data-testid={fullId + "-sub-" + index}
+                                onClick={() => {
+                                    setDatabaseObject({
+                                        ...databaseObject,
+                                        [field.fieldId]: entries.filter((_, i) => i !== index)
+                                    });
+                                }}
+                                sx={{ width: 1 / 4, paddingTop: 1.5 }}
+                            >
+                                <FaMinus size={20} />
+                            </Button>
+                        </Stack>
+                    </Stack>;
+                } else {
+                    return <Stack direction="row" spacing={2} alignItems="flex-startline" key={fullId + "-stack-" + index} >
+                        {field.subFields!.map(subField => {
+                            const subFullId = fieldIdPrefix + (subField.fieldId as string);
+
+                            return <Field
+                                key={subFullId + "-field"}
+                                field={{
+                                    ...subField,
+                                    fullId: subFullId
+                                }}
+                                errors={errors}
+                                databaseObject={value}
+                                setDatabaseObject={obj => {
+                                    setDatabaseObject({
+                                        ...databaseObject,
+                                        [field.fieldId]: entries.map((e, i) => index !== i ? e : obj)
+
+                                    });
+                                }}
+                            />;
+                        })}
                         <Button
                             key={fullId + "-sub-" + index}
                             data-testid={fullId + "-sub-" + index}
@@ -440,60 +490,24 @@ function ComplexFieldList<O extends DatabaseObject, D extends DatabaseObject>({
                                     ...databaseObject,
                                     [field.fieldId]: entries.filter((_, i) => i !== index)
                                 });
-                            }}
-                            sx={{ width: 1 / 4, paddingTop: 1.5 }}
-                        >
-                            <FaMinus size={20} />
-                        </Button>
-                    </Stack>
-                </Stack>;
-            } else {
-                return <Stack direction="row" spacing={2} alignItems="flex-startline" key={fullId + "-stack-" + index} >
-                    {field.subFields!.map(subField => {
-                        const subFullId = fieldIdPrefix + (subField.fieldId as string);
-
-                        return <Field
-                            key={subFullId + "-field"}
-                            field={{
-                                ...subField,
-                                fullId: subFullId
-                            }}
-                            errors={errors}
-                            databaseObject={value}
-                            setDatabaseObject={obj => {
-                                setDatabaseObject({
-                                    ...databaseObject,
-                                    [field.fieldId]: entries.map((e, i) => index !== i ? e : obj)
-
-                                });
-                            }}
-                        />;
-                    })}
-                    <Button
-                        key={fullId + "-sub-" + index}
-                        data-testid={fullId + "-sub-" + index}
-                        onClick={() => {
-                            setDatabaseObject({
-                                ...databaseObject,
-                                [field.fieldId]: entries.filter((_, i) => i !== index)
-                            });
-                        }} sx={{ width: 1 / 4, paddingTop: 1.5 }} > <FaMinus size={20} /> </Button>
-                </Stack>;
-            }
-        })}
-        <Tooltip title={errors.get(fullId)}>
-            <Button
-                key={fullId + "-add"}
-                data-testid={fullId + "-add"}
-                fullWidth
-                startIcon={<FaPlus />}
-                color={errors.get(fullId) ? "error" : "primary"}
-                onClick={() => setDatabaseObject({
-                    ...databaseObject,
-                    [field.fieldId]: entries.concat([field.emptyObject])
-                })}>
-                {field.newListObjectLabel}
-            </Button>
-        </Tooltip>
-    </Stack>;
+                            }} sx={{ width: 1 / 4, paddingTop: 1.5 }} > <FaMinus size={20} /> </Button>
+                    </Stack>;
+                }
+            })}
+            <Tooltip title={errors.get(fullId)}>
+                <Button
+                    key={fullId + "-add"}
+                    data-testid={fullId + "-add"}
+                    fullWidth
+                    startIcon={<FaPlus />}
+                    color={errors.get(fullId) ? "error" : "primary"}
+                    onClick={() => setDatabaseObject({
+                        ...databaseObject,
+                        [field.fieldId]: entries.concat([field.emptyObject])
+                    })}>
+                    {field.newListObjectLabel}
+                </Button>
+            </Tooltip>
+        </Stack>
+    </Paper>;
 }

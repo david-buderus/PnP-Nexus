@@ -1,5 +1,6 @@
 package de.pnp.manager.utils;
 
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
@@ -15,11 +16,12 @@ import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +60,7 @@ public class TestItemBuilder {
     private final String universe;
 
     private String name;
-    private final @NotNull Set<@NotBlank String> tags;
+    private final Set<Tag> tags;
     private String requirement;
     private String effect;
     private ERarity rarity;
@@ -90,7 +92,7 @@ public class TestItemBuilder {
         this.itemRepository = itemRepository;
         this.materialRepository = materialRepository;
         name = "name";
-        tags = new HashSet<>();
+        tags = new HashSet<de.pnp.manager.@NotNull Tag>();
         requirement = "requirement";
         effect = "effect";
         rarity = ERarity.COMMON;
@@ -125,7 +127,7 @@ public class TestItemBuilder {
      * @see Item#getTags()
      */
     public TestItemBuilder withTags(String... tags) {
-        this.tags.addAll(List.of(tags));
+        this.tags.addAll(Arrays.stream(tags).map(Tag::from).collect(Collectors.toSet()));
         return this;
     }
 
@@ -330,8 +332,7 @@ public class TestItemBuilder {
      */
     public Shield buildShield() {
         Shield shield = new Shield(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-            description, note,
-            material, upgradeSlots, initiativeModifier, hit, dice, weight, armor, 1, 1);
+            description, note, material, upgradeSlots, initiativeModifier, hit, dice, weight, armor, protection, 1, 1);
         if (shouldGetPersisted) {
             return (Shield) itemRepository.insert(universe, shield);
         }

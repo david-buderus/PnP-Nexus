@@ -66,7 +66,7 @@ public class TestUpgradeBuilder {
         this.upgradeRepository = upgradeRepository;
         name = "Test";
         restriction = EUpgradeRestriction.ITEM;
-        tagRequirement = TagRequirement.EMPTY;
+        tagRequirement = TagRequirement.NO_REQUIREMENT;
         slots = 1;
         vendorPrice = 10;
         effects = new ArrayList<>();
@@ -93,7 +93,7 @@ public class TestUpgradeBuilder {
      * @see Upgrade#getTagRequirement()
      */
     public TestUpgradeBuilder withNecessaryTags(String... tags) {
-        this.tagRequirement = new TagRequirement(List.of(Set.of(tags)));
+        this.tagRequirement = TagRequirement.from(List.of(Set.of(tags)));
         return this;
     }
 

@@ -1,5 +1,6 @@
 package de.pnp.manager.component.item.interfaces;
 
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.item.ERarity;
 import java.util.Set;
@@ -17,7 +18,7 @@ public interface IItem {
     /**
      * The tags of this item.
      */
-    Set<String> getTags();
+    Set<Tag> getTags();
 
     /**
      * The requirement needed to use this item.

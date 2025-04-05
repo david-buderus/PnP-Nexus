@@ -5,10 +5,9 @@ export function handleNetworkErrors(): (err: Error | AxiosError) => void {
         if (!axios.isAxiosError(err)) {
             return;
         }
-        if (err.response.status === 401) {
+        if (err.response.status === 401 || err.response.status === 405) {
             location.reload();
         }
-
     };
 }
 

@@ -46,7 +46,7 @@ public class UpgradePageTest extends RepositoryOverviewTestBase<Upgrade> {
 
     @Override
     protected Upgrade getWrongObject() {
-        return new Upgrade(null, null, EUpgradeRestriction.ITEM, TagRequirement.EMPTY, -1, 10, List.of());
+        return new Upgrade(null, null, EUpgradeRestriction.ITEM, TagRequirement.NO_REQUIREMENT, -1, 10, List.of());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class UpgradePageTest extends RepositoryOverviewTestBase<Upgrade> {
 
     @Override
     protected Upgrade getCorrectObject() {
-        return new Upgrade(null, "Shine 100", EUpgradeRestriction.WEAPON, TagRequirement.EMPTY, 1, 10,
+        return new Upgrade(null, "Shine 100", EUpgradeRestriction.WEAPON, TagRequirement.NO_REQUIREMENT, 1, 10,
             List.of(new EquipmentUpgradeEffect("+100 Damage", 1, EUpgradeEquipmentManipulator.DAMAGE,
                     ECalculation.ADDITIVE),
                 new SimpleUpgradeEffect("It shines")));

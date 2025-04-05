@@ -12,16 +12,9 @@ import { API_CONFIGURATION } from "../Constants";
 
 const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
 
-export function CurrencySettingsDialogContent({ onSave }: SettingsProps) {
+export function CurrencySettingsDialogContent({ settings, setSettings, errors }: SettingsProps<CurrencySettings>) {
     const { t } = useTranslation();
     const { activeUniverse } = getUniverseContext();
-
-    const [settings, setSettings] = useState<CurrencySettings>({
-        baseCurrency: "",
-        baseCurrencyShortForm: "",
-        calculationEntries: []
-    });
-    const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
     const [priceExample, setPriceExample] = useState(1234);
 
     useEffect(() => {
@@ -134,14 +127,6 @@ export function CurrencySettingsDialogContent({ onSave }: SettingsProps) {
                     value={currencyToHumanReadable(settings, priceExample)}
                     InputProps={{ readOnly: true }}
                     fullWidth />
-                <Stack spacing={2} direction="row" justifyContent="flex-end">
-                    <Button color="warning" variant="outlined" autoFocus href="/">
-                        {t('cancel')}
-                    </Button>
-                    <Button color="primary" variant="outlined" onClick={() => {
-                        SETTINGS_API.updateCurrencySettings(activeUniverse.name, settings).then(onSave).catch(handleValidationErrors(setErrors));
-                    }}>{t('save')}</Button>
-                </Stack>
             </Stack>
         </Stack>
     </Stack>;

@@ -15,7 +15,7 @@ const WeaponPage = () => {
     return <OverviewBasePage<Weapon>
         columns={[
             { label: t("name"), id: "name", getter: item => item.name },
-            { label: t("item:tags"), id: "tags", getter: item => Array.from(item.tags).join(", ") },
+            { label: t("item:tags"), id: "tags", getter: item => item.tags.join(", ") },
             { label: t("material"), id: "material", getter: item => item.material?.name },
             { label: t("damage"), id: "damage", getter: item => item.damage, numeric: true },
             { label: t("dice"), id: "dice", getter: item => diceFormatter(item.dice) },
@@ -44,7 +44,7 @@ const WeaponPage = () => {
         emptyObject={{
             "@type": "Weapon",
             name: "",
-            tags: new Set<string>(),
+            tags: [],
             rarity: ERarity.Common,
             tier: 1,
             effect: "",

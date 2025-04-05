@@ -1,7 +1,6 @@
 package de.pnp.manager.server.service.universe;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttributeDTO;
 import de.pnp.manager.component.item.ERarity;
@@ -48,7 +47,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service to help create {@link Universe universes}.
@@ -78,7 +76,7 @@ public class UniverseCreationService {
     @Operation(summary = "Gets the basic armor definitions most universes need", operationId = "getDefaultJewelleryDefinitions")
     public List<JewelleryDefinition> getDefaultJewelleryDefinitions(@PathVariable String universe,
         @RequestParam String language) {
-        ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", new Locale(language));
+        ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", Locale.of(language));
 
         String ring = bundle.getString("ring");
         String necklace = bundle.getString("necklace");
@@ -95,12 +93,12 @@ public class UniverseCreationService {
     @UniverseOwner
     @Operation(summary = "Creates a few basic materials most universes need", operationId = "createDefaultMaterials")
     public void createDefaultMaterials(@PathVariable String universe, @RequestParam String language) {
-        ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", new Locale(language));
+        ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", Locale.of(language));
 
-        String material = bundle.getString("material");
-        String ore = bundle.getString("ore");
-        String ingot = bundle.getString("ingot");
-        String wood = bundle.getString("wood");
+        Tag material = new Tag(bundle.getString("material"));
+        Tag ore = new Tag(bundle.getString("ore"));
+        Tag ingot = new Tag(bundle.getString("ingot"));
+        Tag wood = new Tag(bundle.getString("wood"));
 
         Item ironIngot = itemRepository.insert(universe,
             new Item(null, bundle.getString("iron_ingot"), Set.of(material, ingot), "", "", ERarity.COMMON, 100, 1,
@@ -146,8 +144,7 @@ public class UniverseCreationService {
                 continue;
             }
 
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            try {
+            try (ExecutorService executor = Executors.newSingleThreadExecutor()) {
                 boundaries.add(executor.submit(
                         () -> calculateSecondaryAttributeInfo(secondaryAttribute.getCalculationFormula(),
                             settings.getMinPrimaryAttributeValue(), settings.getMaxPrimaryAttributeValue(),
@@ -160,8 +157,6 @@ public class UniverseCreationService {
                             v -> v instanceof PrimaryAttributeVariable ? averageAttributeValue : 1))));
 
                 boundaries.add(new SecondaryAttributeInfo(0, 0, average, true));
-            } finally {
-                executor.shutdownNow();
             }
         }
         return boundaries;
@@ -203,10 +198,6 @@ public class UniverseCreationService {
             .collect(Collectors.toMap(v -> v, v -> v instanceof PrimaryAttributeVariable ? averageValue : 1))));
 
         return new SecondaryAttributeInfo(min, max, average, false);
-    }
-
-    private ResponseStatusException missingPrerequisites() {
-        return new ResponseStatusException(BAD_REQUEST, "Prerequisites not met");
     }
 
     private record CalculationEntry(int[] values, int increasePointer) {

@@ -161,7 +161,8 @@ export function SecondaryAttributeDialogContent({ onSave }: { onSave: () => void
                                             <Tooltip title={t("universe:secondaryAttributeExplanationTooltip")}>
                                                 <div>/</div>
                                             </Tooltip>
-                                            : info.max : 0}</TableCell>
+                                            : info.max : 0}
+                                        </TableCell>
                                         <TableCell align="right">{info ? info.average : 0}</TableCell>
                                     </TableRow>;
                                 })}
@@ -215,11 +216,11 @@ export function SecondaryAttributeDialogContent({ onSave }: { onSave: () => void
         </Stack>
         <Stack spacing={2} direction="row" justifyContent="flex-end">
             <Button color="warning" variant="outlined" autoFocus href="/">
-                {t('cancel')}
+                {t('previous')}
             </Button>
             <Button color="primary" variant="outlined" onClick={() => {
                 SIMPLE_SECONDARY_ATTRIBUTE_API.setAllSimpleSecondaryAttributes(activeUniverse.name, attributes).then(onSave).catch(handleValidationErrors(setErrors));
-            }}>{t('save')}</Button>
+            }}>{t('next')}</Button>
         </Stack>
     </Stack>;
 }

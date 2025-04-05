@@ -1,37 +1,30 @@
-import { getUniverseContext } from '../PageBase';
-import { Button, Checkbox, FormControlLabel, Stack, Tooltip, Typography } from "@mui/material";
+import { Checkbox, FormControlLabel, FormGroup, Stack, Typography } from "@mui/material";
 import { NumberFieldWithError } from "../inputs/InputFields";
 import { useEffect, useState } from "react";
-import { ItemSettings, UniverseSettingsServiceApi } from "../../api";
+import { ItemSettings } from "../../api";
 import { useTranslation } from "react-i18next";
-import { handleValidationErrors } from "../ErrorUtils";
 import { SettingsProps } from "./SettingsProps";
-import { API_CONFIGURATION } from "../Constants";
 
-const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
-
-export function ItemSettingsDialogContent({ onSave }: SettingsProps) {
+export function ItemSettingsDialogContent({ settings, setSettings, errors }: SettingsProps<ItemSettings>) {
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
-
-    const [settings, setSettings] = useState<ItemSettings>({
-        wearFactor: 10
-    });
     const [wearFactorEnabled, setWearFactorEnabled] = useState(settings.wearFactor > 0);
-    const [errors, setErrors] = useState<Map<string, string>>(new Map<string, string>());
+    const [wearFactor, setWearFactor] = useState(settings.wearFactor);
 
     useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
-        SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setSettings(response.data));
-    }, [activeUniverse]);
+        setSettings({
+            ...settings,
+            wearFactor: wearFactorEnabled ? wearFactor : -1
+        });
+    }, [wearFactor, wearFactorEnabled]);
 
     return <Stack padding={2} justifyContent="center">
         <Typography gutterBottom variant="h3" component="div" align='center'>
             {t('universe:itemSettings')}
         </Typography>
         <Stack spacing={2} justifyContent="center">
+            <Typography gutterBottom variant="body2" component="div" align='center'>
+                {t("universe:wearFactorTooltip")}
+            </Typography>
             <Stack direction="row" justifyContent="center" spacing={2}>
                 <NumberFieldWithError
                     fieldId="settings.wearFactor"
@@ -39,36 +32,42 @@ export function ItemSettingsDialogContent({ onSave }: SettingsProps) {
                     disabled={!wearFactorEnabled}
                     errorMap={errors}
                     integerField
-                    value={settings.wearFactor}
-                    onChange={value => {
+                    value={wearFactor}
+                    onChange={setWearFactor}
+                    sx={{ width: "40%" }}
+                />
+                <FormControlLabel
+                    control={<Checkbox checked={wearFactorEnabled} onChange={event => {
+                        setWearFactorEnabled(event.target.checked);
+                    }} />}
+                    label={<Typography fontSize={12}> {t("universe:wearFactorEnabled")} </Typography>}
+                    labelPlacement="top"
+                />
+            </Stack>
+            <FormGroup>
+                <FormControlLabel
+                    control={<Checkbox checked={settings.shieldUsingDice} onChange={event => {
                         setSettings({
                             ...settings,
-                            wearFactor: wearFactorEnabled ? value : -1
+                            shieldUsingDice: event.target.checked
                         });
-                    }}
-                    sx={{ width: "40%" }} />
-                <Tooltip title={t("universe:wearFactorTooltip")} placement="right-start">
-                    <FormControlLabel
-                        control={<Checkbox checked={wearFactorEnabled} onChange={event => {
-                            const checked = event.target.checked;
-                            setWearFactorEnabled(checked);
-                            setSettings({
-                                ...settings,
-                                wearFactor: checked ? settings.wearFactor : -1
-                            });
-                        }} />}
-                        label={<Typography fontSize={12}> {t("universe:wearFactorEnabled")} </Typography>}
-                        labelPlacement="top" />
-                </Tooltip>
-            </Stack>
-            <Stack spacing={2} direction="row" justifyContent="flex-end">
-                <Button color="warning" variant="outlined" autoFocus href="/">
-                    {t('cancel')}
-                </Button>
-                <Button color="primary" variant="outlined" onClick={() => {
-                    SETTINGS_API.updateItemSettings(activeUniverse.name, settings).then(onSave).catch(handleValidationErrors(setErrors));
-                }}>{t('save')}</Button>
-            </Stack>
+                    }} />}
+                    label={<Typography fontSize={12}> {t("universe:shieldUsingDice")} </Typography>}
+                    labelPlacement="end"
+                    sx={{ justifyContent: "center" }}
+                />
+                <FormControlLabel
+                    control={<Checkbox checked={settings.usingProtection} onChange={event => {
+                        setSettings({
+                            ...settings,
+                            usingProtection: event.target.checked
+                        });
+                    }} />}
+                    label={<Typography fontSize={12}> {t("universe:usingProtection")} </Typography>}
+                    labelPlacement="end"
+                    sx={{ justifyContent: "center" }}
+                />
+            </FormGroup>
         </Stack>
     </Stack>;
 }

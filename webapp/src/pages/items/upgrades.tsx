@@ -5,6 +5,7 @@ import { API_CONFIGURATION } from "../../components/Constants";
 import { OverviewBasePage } from "../../components/database/OverviewBasePage";
 import { getUniverseContext } from '../../components/PageBase';
 import { currencyToHumanReadable } from "../../components/Utils";
+import { fetchAllTags } from "../../components/Database";
 
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 
@@ -12,12 +13,14 @@ const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 export function UpgradePage() {
     const { t } = useTranslation();
     const { currencySettings } = getUniverseContext();
+    const [tags] = fetchAllTags();
 
     return <OverviewBasePage<Upgrade>
         columns={[
             { label: t("name"), id: "name", getter: upgrade => upgrade.name },
             { label: t("upgrade:effects"), id: "effects", getter: upgrade => upgrade.effects.map(effect => effect.description).join(", ") },
             { label: t("upgrade:restriction"), id: "restriction", getter: upgrade => upgrade.restriction },
+            { label: t("item:tagRequirement"), id: "tagRequirement", getter: upgrade => upgrade.tagRequirement.tagRequirements.map(tags => tags.join(", ")).join(" " + t("or") + " ") },
             { label: t("upgrade:necessary-slots"), id: "slots", getter: upgrade => upgrade.slots, numeric: true },
             { label: t("price"), id: "vendorPrice", getter: upgrade => currencyToHumanReadable(currencySettings, upgrade.vendorPrice) },
         ]}
@@ -29,15 +32,15 @@ export function UpgradePage() {
                 })
             },
             {
-                fieldId: "tagRequirement", label: "", fieldType: "COMPLEX_ENTRY",
+                fieldId: "tagRequirement", label: t("upgrade:tagRequirement"), fieldType: "COMPLEX_ENTRY", aligment: "column",
                 emptyObject: { tagRequirements: [] },
                 subFields: [
                     {
-                        fieldId: "tagRequirements", label: t("upgrade:effects"), fieldType: "COMPLEX_LIST", aligment: "column",
-                        newListObjectLabel: t("upgrade:addEffect"),
-                        emptyObject: new Set<String>(),
+                        fieldId: "tagRequirements", label: t("upgrade:tagRequirement"), fieldType: "COMPLEX_LIST",
+                        newListObjectLabel: t("upgrade:addTagRequirement"), tooltip: t("upgrade:tagRequirementTooltip"),
+                        emptyObject: [],
                         subFields: [
-                            { fieldId: "test", label: t("item:tags"), fieldType: "STRING_SET" }
+                            { fieldId: "", label: t("tags"), fieldType: "TAG_LIST", directField: true, dependency: tags }
                         ]
                     }
                 ]

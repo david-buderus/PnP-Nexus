@@ -14,5 +14,6 @@
   "broaderVariants": "Broader Variants",
   "itemTypeCreationTitle": "Create a new item type",
   "itemTypeEditTitle": "Edit a item type",
-  "itemTypeDeletionTitle": "Do you want to delete the selected item types?"
+  "itemTypeDeletionTitle": "Do you want to delete the selected item types?",
+  "armorSlot": "Slot"
 }

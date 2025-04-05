@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.MoreObjects;
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.inventory.ItemStack;
@@ -49,11 +50,11 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     protected final String name;
 
     /**
-     * The type of this item.
+     * The tags of this item.
      * <p>
-     * An example would be material.
+     * An example would be sword.
      */
-    protected final @NotNull Set<@NotBlank String> tags;
+    protected final @NotNull Set<@NotNull Tag> tags;
 
     /**
      * The requirement needed to use this item.
@@ -116,7 +117,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     protected final int minimumStackSize;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public Item(ObjectId id, String name, @NotNull Set<@NotBlank String> tags, String requirement, String effect,
+    public Item(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
         ERarity rarity,
         int vendorPrice, int tier, String description, String note, int maximumStackSize, int minimumStackSize) {
         super(id);
@@ -138,7 +139,10 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         return name;
     }
 
-    public Set<String> getTags() {
+    /**
+     * @see #tags
+     */
+    public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
     }
 

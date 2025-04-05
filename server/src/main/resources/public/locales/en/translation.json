@@ -71,5 +71,11 @@
   "secondary-attribute": "Secondary Attribute",
   "secondary-attributes": "Secondary Attributes",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "or": "or",
+  "and": "and",
+  "next": "Next",
+  "previous": "Previous",
+  "tags": "Tags",
+  "protection": "Protection"
 }

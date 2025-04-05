@@ -1,11 +1,11 @@
 package de.pnp.manager.component.item.equipable;
 
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IHandheldItem;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
@@ -34,7 +34,7 @@ public abstract class HandheldEquipableItem extends EquipableItem implements IHa
     @NotNull
     protected final Dice dice;
 
-    public HandheldEquipableItem(ObjectId id, String name, @NotNull Set<@NotBlank String> tags, String requirement,
+    public HandheldEquipableItem(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement,
         String effect, ERarity rarity, int vendorPrice, int tier, String description, String note, Material material,
         int upgradeSlots, float initiative, int hit, Dice dice, int maximumStackSize, int minimumStackSize) {
         super(id, name, tags, requirement, effect, rarity, vendorPrice, tier, description, note, material,

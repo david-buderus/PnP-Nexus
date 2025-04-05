@@ -1,8 +1,8 @@
 package de.pnp.manager.component.item.equipable;
 
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Material;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 import org.bson.types.ObjectId;
@@ -12,7 +12,7 @@ import org.bson.types.ObjectId;
  */
 public class Jewellery extends EquipableItem {
 
-    public Jewellery(ObjectId id, String name, @NotNull Set<@NotBlank String> tags, String requirement, String effect,
+    public Jewellery(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
         ERarity rarity,
         int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
         int maximumStackSize, int minimumStackSize) {

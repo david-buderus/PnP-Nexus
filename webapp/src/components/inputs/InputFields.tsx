@@ -1,9 +1,9 @@
-import { Tooltip } from "@mui/material";
+import { Autocomplete, Chip, Tooltip } from "@mui/material";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { TFunction } from "i18next";
 import { ReactNode, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dice } from "../../api";
+import { Dice, Tag } from "../../api";
 import { diceFormatter } from "../Utils";
 
 function errorMessage(fieldId: string, errorMap: Map<string, string>, value: string, numberField: boolean, integerField: boolean, t: TFunction<"translation", undefined>) {
@@ -122,13 +122,58 @@ export function NumberFieldWithError(props: {
     />;
 }
 
-export function StringSetField(props: {
+export function TagListField(props: {
     /** The id of the field which gets tested. Used as data-testid. */
     fieldId: string,
     /** The current value of the text field. */
-    value: Set<string>,
+    value: Tag[],
     /** On change hook for the value. */
-    onChange: (value: Set<string>) => void;
+    onChange: (value: Tag[]) => void;
+    /** All known tags */
+    options: Tag[];
+    /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
+    errorMap?: Map<string, string>,
+    /** Tooltip for the textfield. */
+    tooltip?: ReactNode;
+} & Omit<TextFieldProps, 'variant' | 'onChange' | 'value'>) {
+    const { fieldId, value, onChange, options, errorMap, ...rest } = props;
+    const { t } = useTranslation();
+
+    return <Autocomplete
+        {...errorMessage(fieldId, errorMap, null, false, false, t)}
+        key={fieldId}
+        multiple
+        freeSolo
+        fullWidth
+        options={options?.map(t => t.name)}
+        value={value?.map(t => t.name)}
+        onChange={(_, v) => onChange(v.map(s => { return { name: s } as Tag; }))}
+        renderTags={(value: readonly string[], getTagProps) =>
+            value.map((option: string, index: number) => {
+                const { key, ...tagProps } = getTagProps({ index });
+                return (
+                    <Chip variant="outlined" label={option} key={key} {...tagProps} />
+                );
+            })
+        }
+        renderInput={(params) => (
+            <TextFieldWithErrorForAutoComplete
+                {...params}
+                fieldId={fieldId}
+                errorMap={errorMap}
+                {...rest}
+            />
+        )}
+    />;
+}
+
+export function StringListField(props: {
+    /** The id of the field which gets tested. Used as data-testid. */
+    fieldId: string,
+    /** The current value of the text field. */
+    value: string[],
+    /** On change hook for the value. */
+    onChange: (value: string[]) => void;
     /** All known errors. If the map contains the fieldId as key. The value will be shown as error. */
     errorMap?: Map<string, string>,
     /** Tooltip for the textfield. */
@@ -141,7 +186,7 @@ export function StringSetField(props: {
         value={stringValue}
         onChange={newValue => {
             setStringValue(newValue);
-            onChange(new Set(newValue.split(",").map(s => s.trim()).filter(s => s)));
+            onChange(newValue.split(",").map(s => s.trim()).filter(s => s));
         }}
         {...rest}
     />;
