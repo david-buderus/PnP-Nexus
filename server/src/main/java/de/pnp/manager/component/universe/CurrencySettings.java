@@ -2,9 +2,9 @@ package de.pnp.manager.component.universe;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,7 +68,7 @@ public class CurrencySettings extends SettingsBase {
     /**
      * Defines how many coins are needed to calculate this currency.
      */
-    public record CurrencyCalculationEntry(@Positive int factor, @NotBlank String currency,
+    public record CurrencyCalculationEntry(@Min(1) double factor, @NotBlank String currency,
                                            @NotBlank String currencyShortForm) {
 
     }

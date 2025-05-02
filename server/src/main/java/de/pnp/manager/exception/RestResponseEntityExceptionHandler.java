@@ -6,21 +6,14 @@ import com.mongodb.MongoServerException;
 import com.mongodb.MongoWriteException;
 import com.mongodb.WriteError;
 import com.mongodb.bulk.BulkWriteError;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,24 +32,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(ConstraintViolationException.class)
     protected ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex,
         WebRequest request) {
-        Map<String, String> response = new HashMap<>();
-
-        for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            response.put(violation.getPropertyPath().toString(), violation.getMessage());
-        }
-
-        return handleExceptionInternal(ex, response, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
-    }
-
-    /**
-     * Handles {@link InvalidRequestBodyException}.
-     */
-    @ExceptionHandler(InvalidRequestBodyException.class)
-    protected ResponseEntity<Object> handleInvalidRequestBodyException(InvalidRequestBodyException ex,
-        WebRequest request) {
-        ResourceBundle bundle = ResourceBundle.getBundle("messages", request.getLocale());
-        return handleExceptionInternal(ex, ex.getViolations().entrySet().stream()
-                .collect(Collectors.toMap(Entry::getKey, entry -> bundle.getString(entry.getValue()))), new HttpHeaders(),
+        return handleExceptionInternal(ex, ValidationErrorResponse.fromViolations(ex.getConstraintViolations()),
+            new HttpHeaders(),
             HttpStatus.BAD_REQUEST, request);
     }
 
@@ -84,18 +61,18 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         ResourceBundle bundle = ResourceBundle.getBundle("messages", request.getLocale());
         String errorMessage = bundle.getString("error.duplicate.key");
 
-        Map<String, String> response = new HashMap<>();
+        ValidationErrorResponse dto = new ValidationErrorResponse();
 
         for (WriteError writeError : writeErrors) {
             String field = extractWriteErrorField(writeError);
             if (writeError instanceof BulkWriteError bulkWriteError) {
-                response.put("objects[" + bulkWriteError.getIndex() + "]." + field, errorMessage);
+                dto.addValidationError("objects." + bulkWriteError.getIndex() + "." + field, errorMessage);
             } else {
-                response.put(field, errorMessage);
+                dto.addValidationError(field, errorMessage);
             }
         }
 
-        return handleExceptionInternal(ex, response, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     private String extractWriteErrorField(WriteError error) {
@@ -108,14 +85,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(@NotNull MethodArgumentNotValidException ex,
         @NotNull HttpHeaders headers, @NotNull HttpStatusCode status, @NotNull WebRequest request) {
-        Map<String, String> response = new HashMap<>();
-
-        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            response.put(fieldName, errorMessage);
-        }
-
-        return handleExceptionInternal(ex, response, headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, ValidationErrorResponse.fromErrors(ex.getBindingResult().getAllErrors()),
+            headers, HttpStatus.BAD_REQUEST, request);
     }
 }

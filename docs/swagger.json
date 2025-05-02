@@ -273,6 +273,16 @@
               }
             },
             "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorResponse"
+                }
+              }
+            },
+            "description": "The object is not valid"
           }
         },
         "summary": "Create a universe",
@@ -4973,6 +4983,17 @@
           },
           "dto": {
             "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+          }
+        }
+      },
+      "ValidationErrorResponse": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
           }
         }
       },

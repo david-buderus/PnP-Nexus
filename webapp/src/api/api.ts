@@ -1560,6 +1560,19 @@ export interface UserUniversePermissionDTO {
 /**
  * 
  * @export
+ * @interface ValidationErrorResponse
+ */
+export interface ValidationErrorResponse {
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof ValidationErrorResponse
+     */
+    'errors'?: { [key: string]: object; };
+}
+/**
+ * 
+ * @export
  * @interface VariableNode
  */
 export interface VariableNode {

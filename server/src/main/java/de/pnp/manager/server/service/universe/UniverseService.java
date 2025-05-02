@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.UserUniversePermissionDTO;
+import de.pnp.manager.exception.ValidationErrorResponse;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
@@ -13,6 +14,10 @@ import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.universe.UniverseRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import java.util.Collection;
 import java.util.Objects;
@@ -89,6 +94,12 @@ public class UniverseService {
     @PostMapping
     @PreAuthorize("hasRole('" + SecurityConstants.UNIVERSE_CREATOR + "')")
     @Operation(summary = "Create a universe", operationId = "createUniverse")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "400", description = "The object is not valid", content =
+            {@Content(mediaType = "application/json", schema =
+            @Schema(implementation = ValidationErrorResponse.class))})
+    })
     public Universe createUniverse(@AuthenticationPrincipal UserDetails userDetails,
         @Valid @RequestBody Universe universe) {
         Universe persistedUniverse = universeRepository.insert(universe);
