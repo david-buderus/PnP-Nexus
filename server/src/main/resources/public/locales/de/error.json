@@ -1,4 +1,5 @@
 {
   "notNumber": "muss eine Zahl sein",
-  "notInteger": "muss eine ganze Zahl sein"
+  "notInteger": "muss eine ganze Zahl sein",
+  "notDice": "muss ein Würfel in der Form von 4D6 + D4 sein"
 }

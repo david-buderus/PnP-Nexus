@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getUniverseContext, getUserContext } from "../components/PageBase";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, Grid, Stack, Text } from "@mantine/core";
 import { FaPlus } from "react-icons/fa6";
 
@@ -10,18 +10,22 @@ export default function Home() {
     const [searchParams] = useSearchParams();
     const { universes, setActiveUniverse, activeUniverse } = getUniverseContext();
     const { userPermissions } = getUserContext();
+    const navigate = useNavigate();
 
     return <Grid>
         {universes.map(u => <Grid.Col span={2}>
             <Card
                 shadow="sm"
                 padding="xl"
-                onClick={() => setActiveUniverse(u)}
+                onClick={() => {
+                    setActiveUniverse(u);
+                    navigate("/universe");
+                }}
                 key={u.name}
                 withBorder={activeUniverse?.name === u.name}
             >
                 <Text fw={500} size="lg" mt="md">
-                    {u.name}
+                    {u.displayName}
                 </Text>
 
                 <Text mt="xs" c="dimmed" size="sm">

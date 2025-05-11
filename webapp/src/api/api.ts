@@ -85,10 +85,10 @@ export interface Armor {
     'requirement': string;
     /**
      * 
-     * @type {Array<Tag>}
+     * @type {Array<string>}
      * @memberof Armor
      */
-    'tags': Array<Tag>;
+    'tags': Array<string>;
     /**
      * 
      * @type {number}
@@ -279,10 +279,10 @@ export interface CraftingRecipe {
     'otherCircumstances': string;
     /**
      * 
-     * @type {ItemUsage}
+     * @type {Array<ItemUsage>}
      * @memberof CraftingRecipe
      */
-    'product': ItemUsage;
+    'products': Array<ItemUsage>;
     /**
      * 
      * @type {string}
@@ -295,12 +295,6 @@ export interface CraftingRecipe {
      * @memberof CraftingRecipe
      */
     'requirement': string;
-    /**
-     * 
-     * @type {ItemUsage}
-     * @memberof CraftingRecipe
-     */
-    'sideProduct'?: ItemUsage;
 }
 /**
  * @type CraftingRecipeMaterialsInner
@@ -431,7 +425,9 @@ export const EUpgradeEquipmentManipulator = {
     Hit: 'HIT',
     Initiative: 'INITIATIVE',
     Armor: 'ARMOR',
-    Weight: 'WEIGHT'
+    Weight: 'WEIGHT',
+    Protection: 'PROTECTION',
+    Dice: 'DICE'
 } as const;
 
 export type EUpgradeEquipmentManipulator = typeof EUpgradeEquipmentManipulator[keyof typeof EUpgradeEquipmentManipulator];
@@ -583,10 +579,10 @@ export interface Item {
     'requirement': string;
     /**
      * 
-     * @type {Array<Tag>}
+     * @type {Array<string>}
      * @memberof Item
      */
-    'tags': Array<Tag>;
+    'tags': Array<string>;
     /**
      * 
      * @type {number}
@@ -708,10 +704,10 @@ export interface Jewellery {
     'requirement': string;
     /**
      * 
-     * @type {Array<Tag>}
+     * @type {Array<string>}
      * @memberof Jewellery
      */
-    'tags': Array<Tag>;
+    'tags': Array<string>;
     /**
      * 
      * @type {number}
@@ -1139,10 +1135,10 @@ export interface Shield {
     'requirement': string;
     /**
      * 
-     * @type {Array<Tag>}
+     * @type {Array<string>}
      * @memberof Shield
      */
-    'tags': Array<Tag>;
+    'tags': Array<string>;
     /**
      * 
      * @type {number}
@@ -1282,6 +1278,12 @@ export interface Spell {
     'name': string;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof Spell
+     */
+    'tags': Array<string>;
+    /**
+     * 
      * @type {Array<Talent>}
      * @memberof Spell
      */
@@ -1296,28 +1298,15 @@ export interface Spell {
 /**
  * 
  * @export
- * @interface Tag
- */
-export interface Tag {
-    /**
-     * 
-     * @type {string}
-     * @memberof Tag
-     */
-    'name': string;
-}
-/**
- * 
- * @export
  * @interface TagRequirement
  */
 export interface TagRequirement {
     /**
      * 
-     * @type {Array<Array<Tag>>}
+     * @type {Array<Array<string>>}
      * @memberof TagRequirement
      */
-    'tagRequirements': Array<Array<Tag>>;
+    'tagRequirements': Array<Array<string>>;
 }
 /**
  * 
@@ -1645,10 +1634,10 @@ export interface Weapon {
     'requirement': string;
     /**
      * 
-     * @type {Array<Tag>}
+     * @type {Array<string>}
      * @memberof Weapon
      */
-    'tags': Array<Tag>;
+    'tags': Array<string>;
     /**
      * 
      * @type {number}
@@ -6314,7 +6303,7 @@ export const TagServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllTags(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Tag>>> {
+        async getAllTags(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllTags(universe, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TagServiceApi.getAllTags']?.[localVarOperationServerIndex]?.url;
@@ -6337,7 +6326,7 @@ export const TagServiceApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllTags(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<Tag>> {
+        getAllTags(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
             return localVarFp.getAllTags(universe, options).then((request) => request(axios, basePath));
         },
     };

@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,7 +123,7 @@ public class UniverseService {
     @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Add the given access right to the given user", operationId = "addUniversePermission")
-    public void addPermission(@PathVariable String universe, @RequestParam String displayName,
+    public void addPermission(@PathVariable String universe, @RequestParam @NotBlank String displayName,
         @RequestParam(defaultValue = SecurityConstants.READ_ACCESS) String accessPermission) {
         userController.addGrantedAuthorityByDisplayName(displayName,
             GrantedUniverseAuthority.fromPermission(universe, accessPermission));

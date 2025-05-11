@@ -1,10 +1,12 @@
 package de.pnp.manager.exception;
 
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ElementKind;
 import jakarta.validation.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.springframework.validation.ObjectError;
@@ -64,11 +66,15 @@ public class ValidationErrorResponse {
 
     private static String transformPropertyPath(Path path) {
         return StreamSupport.stream(path.spliterator(), false).map(node -> {
+            if (node.getKind() == ElementKind.METHOD) {
+                // we don't need the name of the method in the front-end
+                return null;
+            }
             if (node.getIndex() != null) {
                 return node.getIndex() + "." + node.getName();
             } else {
                 return node.getName();
             }
-        }).collect(Collectors.joining("."));
+        }).filter(Objects::nonNull).collect(Collectors.joining("."));
     }
 }

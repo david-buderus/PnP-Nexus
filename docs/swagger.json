@@ -2228,7 +2228,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Tag"
+                    "type": "string"
                   }
                 }
               }
@@ -3988,7 +3988,7 @@
         "required": [
           "materials",
           "otherCircumstances",
-          "product",
+          "products",
           "profession",
           "requirement"
         ],
@@ -4016,17 +4016,17 @@
           "otherCircumstances": {
             "type": "string"
           },
-          "product": {
-            "$ref": "#/components/schemas/ItemUsage"
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemUsage"
+            }
           },
           "profession": {
             "type": "string"
           },
           "requirement": {
             "type": "string"
-          },
-          "sideProduct": {
-            "$ref": "#/components/schemas/ItemUsage"
           }
         }
       },
@@ -4044,8 +4044,9 @@
             "type": "string"
           },
           "factor": {
-            "type": "integer",
-            "format": "int32"
+            "minimum": 1,
+            "type": "number",
+            "format": "double"
           }
         }
       },
@@ -4120,7 +4121,9 @@
           "HIT",
           "INITIATIVE",
           "ARMOR",
-          "WEIGHT"
+          "WEIGHT",
+          "PROTECTION",
+          "DICE"
         ]
       },
       "EUpgradeRestriction": {
@@ -4249,7 +4252,7 @@
             "uniqueItems": true,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Tag"
+              "type": "string"
             }
           },
           "tier": {
@@ -4705,6 +4708,7 @@
           "cost",
           "effect",
           "name",
+          "tags",
           "talents",
           "tier"
         ],
@@ -4741,6 +4745,13 @@
           "name": {
             "type": "string"
           },
+          "tags": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "talents": {
             "type": "array",
             "items": {
@@ -4756,17 +4767,6 @@
       "StreamingResponseBody": {
         "type": "object"
       },
-      "Tag": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string"
-          }
-        }
-      },
       "TagRequirement": {
         "required": [
           "tagRequirements"
@@ -4779,7 +4779,7 @@
               "uniqueItems": true,
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/Tag"
+                "type": "string"
               }
             }
           }

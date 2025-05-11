@@ -76,6 +76,8 @@
   "and": "and",
   "next": "Next",
   "previous": "Previous",
+  "tag": "Tag",
   "tags": "Tags",
-  "protection": "Protection"
+  "protection": "Protection",
+  "nothing-here": "Nothing here..."
 }

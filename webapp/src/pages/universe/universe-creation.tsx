@@ -1,8 +1,8 @@
-import { Button, Grid, Group, Stack, Stepper, Textarea, TextInput, Title, Text, ActionIcon } from "@mantine/core";
+import { Button, Grid, Group, Stack, Stepper, Textarea, TextInput, Title, Text, ActionIcon, Switch, Tooltip, List, Table, Paper, NumberInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { API_CONFIGURATION } from "../../components/Constants";
-import { PrimaryAttribute, PrimaryAttributeServiceApi, Universe, UniverseCreationServiceApi, UniverseServiceApi, UniverseSettingsServiceApi } from "../../api";
+import { BinaryExpressionTreeServiceApi, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttributeDTO, SecondaryAttributeInfo, SimpleSecondaryAttributeServiceApi, Universe, UniverseCreationServiceApi, UniverseServiceApi } from "../../api";
 import { useForm } from "@mantine/form";
 import { getUniverseContext, getUserContext } from "../../components/PageBase";
 import { handleNetworkErrors, handleValidationErrors } from "../../components/utils/ErrorUtils";
@@ -11,10 +11,16 @@ import ItemSettingsForm from "../../components/settings/ItemSettingsForm";
 import LanguageSelect from "../../components/input/LanguageSelect";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { randomId } from "@mantine/hooks";
+import CharacterSettingsForm from "../../components/settings/CharacterSettingsForm";
+import { fetchAllPrimaryAttributes, fetchSupportedSecondaryAttributeVariables } from "../../components/Database";
+import { PrimaryAttributeForm } from "../../components/character/PrimaryAttributeForm";
+import { SecondaryAttributeForm } from "../../components/character/SecondaryAttributeForm";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
-const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
-const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
+export const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
+export const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
+export const SIMPLE_SECONDARY_ATTRIBUTE_API = new SimpleSecondaryAttributeServiceApi(API_CONFIGURATION);
+export const EXPRESSION_API = new BinaryExpressionTreeServiceApi(API_CONFIGURATION);
 
 export interface UniverseCreationStepProps {
     nextStep: () => void;
@@ -29,7 +35,7 @@ export default function UniverseCreation() {
     const shouldAllowSelectStep = (step: number) => highestStepVisited >= step && active !== step;
 
     function nextStep() {
-        if (active + 1 > 5) {
+        if (active + 1 > 10) {
             return;
         }
 
@@ -40,16 +46,16 @@ export default function UniverseCreation() {
     return (
         <>
             <Stepper active={active} onStepClick={setActive}>
-                <Stepper.Step label={t("universe:creationStep")} description="TODO" allowStepSelect={false}>
+                <Stepper.Step label={t("universe:creationStep")} allowStepSelect={false}>
                     <UniverseCreationStep nextStep={nextStep} prevStep={prevStep} />
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:currencyStep")} description="TODO" allowStepSelect={shouldAllowSelectStep(1)}>
+                <Stepper.Step label={t("universe:currencyStep")} allowStepSelect={shouldAllowSelectStep(1)}>
                     <CurrencySettingsForm
                         onSave={nextStep}
                         onSaveText={t("next")}
                     />
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:itemStep")} description="TODO" allowStepSelect={shouldAllowSelectStep(2)}>
+                <Stepper.Step label={t("universe:itemStep")} allowStepSelect={shouldAllowSelectStep(2)}>
                     <Group justify="center">
                         <ItemSettingsForm
                             onSave={nextStep}
@@ -58,7 +64,7 @@ export default function UniverseCreation() {
                         />
                     </Group>
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:importStep")} description="TODO" allowStepSelect={shouldAllowSelectStep(3)}>
+                <Stepper.Step label={t("universe:importStep")} allowStepSelect={shouldAllowSelectStep(3)}>
                     <Group justify="center">
                         <ItemImporStep
                             nextStep={nextStep}
@@ -66,11 +72,30 @@ export default function UniverseCreation() {
                         />
                     </Group>
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:primaryAttributeStep")} description="TODO" allowStepSelect={shouldAllowSelectStep(3)}>
-                    <PrimaryAttributeStep
-                        nextStep={nextStep}
-                        prevStep={prevStep}
-                    />
+                <Stepper.Step label={t("universe:primaryAttributeStep")} allowStepSelect={shouldAllowSelectStep(4)}>
+                    <Group justify="center">
+                        <PrimaryAttributeStep
+                            nextStep={nextStep}
+                            prevStep={prevStep}
+                        />
+                    </Group>
+                </Stepper.Step>
+                <Stepper.Step label={t("universe:characterStep")} allowStepSelect={shouldAllowSelectStep(5)}>
+                    <Group justify="center">
+                        <CharacterSettingsForm
+                            onSave={nextStep}
+                            onSaveText={t("next")}
+                            alternativeButton={<Button onClick={prevStep}>{t("previous")}</Button>}
+                        />
+                    </Group>
+                </Stepper.Step>
+                <Stepper.Step label={t("universe:secondaryAttributeStep")} allowStepSelect={shouldAllowSelectStep(6)}>
+                    <Group justify="center">
+                        <SecondaryAttributeStep
+                            nextStep={nextStep}
+                            prevStep={prevStep}
+                        />
+                    </Group>
                 </Stepper.Step>
                 <Stepper.Completed>
                     Completed, click back button to get to previous step
@@ -191,69 +216,38 @@ function ItemImporStep({ nextStep, prevStep }: UniverseCreationStepProps) {
 
 function PrimaryAttributeStep({ nextStep, prevStep }: UniverseCreationStepProps) {
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
-
-    const form = useForm<{
-        attributes: Array<PrimaryAttribute & { key: string; }>;
-    }>({
-        mode: 'uncontrolled',
-        initialValues: {
-            attributes: Array(8).fill({ shortName: "", name: "", key: randomId() })
-        }
-    });
-
-    useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
-        PRIMARY_ATTRIBUTE_API.getAllPrimaryAttributes(activeUniverse.name).then(response => {
-            if (response.data.length > 0) {
-                form.setValues({
-                    attributes: response.data.map(a => {
-                        return {
-                            ...a,
-                            key: randomId()
-                        };
-                    })
-                });
-            }
-        }).catch(handleNetworkErrors);
-    }, [activeUniverse]);
 
     return <Stack align="center">
         <Title order={3} ta="center">
             {t('universe:primaryAttributesStep')}
         </Title>
-        <form onSubmit={form.onSubmit((attributes) => PRIMARY_ATTRIBUTE_API.setAllPrimaryAttributes(activeUniverse.name, attributes.attributes)
-            .then(nextStep).catch(handleValidationErrors(form.setErrors))
-        )}>
-            {form.getValues().attributes.map((item, index) => {
-                return <Group key={item.key} mt="xs">
-                    <TextInput
-                        label={t("name")}
-                        key={form.key(`${index}.name`)}
-                        required
-                        {...form.getInputProps(`attributes.${index}.name`)}
-                    />
-                    <TextInput
-                        label={t("character:shortName")}
-                        key={form.key(`attributes.${index}.shortName`)}
-                        required
-                        {...form.getInputProps(`attributes.${index}.shortName`)}
-                    />
-                    <ActionIcon variant="outline" color="red" onClick={() => form.removeListItem('attributes', index)}>
-                        <FaRegTrashCan size={16} />
-                    </ActionIcon>
-                </Group>;
-            })}
-            <Button
-                mt="md"
-                onClick={() =>
-                    form.insertListItem('attributes', { name: '', shortName: '', key: randomId() })
-                }
-            >
-                {t("universe:addAnotherAttribute")}
-            </Button>
-        </form>
+        <PrimaryAttributeForm
+            onSave={nextStep}
+            onSaveText={t("next")}
+            alternativeButton={
+                <Button onClick={prevStep}>
+                    {t("previous")}
+                </Button>
+            }
+        />
+    </Stack >;
+}
+
+function SecondaryAttributeStep({ nextStep, prevStep }: UniverseCreationStepProps) {
+    const { t } = useTranslation();
+
+    return <Stack align="center">
+        <Title order={3} ta="center">
+            {t('universe:primaryAttributesStep')}
+        </Title>
+        <SecondaryAttributeForm
+            onSave={nextStep}
+            onSaveText={t("next")}
+            alternativeButton={
+                <Button onClick={prevStep}>
+                    {t("previous")}
+                </Button>
+            }
+        />
     </Stack >;
 }
