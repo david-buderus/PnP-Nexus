@@ -6,6 +6,7 @@ import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,7 +33,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
         Talent earthMagic = talentRepository.insert(getUniverseName(),
             new Talent(null, "Earth Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
         Spell spell = new Spell(null, "Wall", "Create a wall", List.of(), "10 Mana per meter", "1 per meter",
-            List.of(earthMagic), 2);
+            List.of(earthMagic), 2, Set.of());
         Talent changedEarthMagic = new Talent(null, "Earth Magic", "Magic", primaryAttribute, primaryAttribute,
             primaryAttribute);
 
@@ -48,7 +49,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
             new Talent(null, "Fire Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
 
         return new Spell(null, "Fireball", "Throw a fireball", List.of(), "10 Mana", "0",
-            List.of(fireMagic), 2);
+            List.of(fireMagic), 2, Set.of());
     }
 
     @Override
@@ -59,7 +60,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
             new Talent(null, "Fire Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
 
         return new Spell(null, "Big Fireball", "Throw a fireball", List.of(), "30 Mana", "1",
-            List.of(fireMagic), 3);
+            List.of(fireMagic), 3, Set.of());
     }
 
     @Override
@@ -69,7 +70,7 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
         Talent earthMagic = talentRepository.insert(getUniverseName(),
             new Talent(null, "Earth Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
 
-        return List.of(new Spell(null, "Wall", "Creates a wall", List.of(), "", "", List.of(earthMagic), 2),
-            new Spell(null, "Stone", "Throws a stone", List.of(), "", "", List.of(earthMagic), 1));
+        return List.of(new Spell(null, "Wall", "Creates a wall", List.of(), "", "", List.of(earthMagic), 2, Set.of()),
+            new Spell(null, "Stone", "Throws a stone", List.of(), "", "", List.of(earthMagic), 1, Set.of()));
     }
 }

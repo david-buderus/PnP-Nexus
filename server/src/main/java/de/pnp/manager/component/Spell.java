@@ -1,5 +1,6 @@
 package de.pnp.manager.component;
 
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.server.database.SpellRepository;
 import jakarta.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -67,9 +69,14 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
     @PositiveOrZero
     private final int tier;
 
+    /**
+     * The tags of this spell.
+     */
+    @NotNull
+    private final Set<@NotNull Tag> tags;
+
     public Spell(ObjectId id, String name, String effect, List<IResourceUsage<?>> cost, String additionalCost,
-        String castTime,
-        List<Talent> talents, int tier) {
+        String castTime, List<Talent> talents, int tier, Set<Tag> tags) {
         super(id);
         this.name = name;
         this.effect = effect;
@@ -78,6 +85,7 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
         this.castTime = castTime;
         this.talents = Collections.unmodifiableList(talents);
         this.tier = tier;
+        this.tags = Collections.unmodifiableSet(tags);
     }
 
     public String getName() {
@@ -108,6 +116,10 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
         return tier;
     }
 
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -122,12 +134,12 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
             && Objects.equals(getAdditionalCost(),
             spell.getAdditionalCost())
             && Objects.equals(getCastTime(), spell.getCastTime()) && Objects.equals(
-            getTalents(), spell.getTalents());
+            getTalents(), spell.getTalents()) && Objects.equals(getTags(), spell.getTags());
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getEffect(), getCost(), getAdditionalCost(), getCastTime(), getTalents(),
-            getTier());
+            getTier(), getTags());
     }
 }

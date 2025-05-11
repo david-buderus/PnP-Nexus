@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -98,7 +99,7 @@ public class BackupControllerTest {
         Collection<Spell> spells = spellRepository.insertAll(universeName,
             List.of(
                 new Spell(null, "Spell", "MAGIC!", List.of(new ItemUsage(10, items.stream().findFirst().orElseThrow())),
-                    "", "", List.of(talent), 2)));
+                    "", "", List.of(talent), 2, Set.of())));
 
         File backupZip = tempDir.resolve("backup.zip").toFile();
 

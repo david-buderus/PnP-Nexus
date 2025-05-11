@@ -13,6 +13,7 @@ import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
     @Override
     protected Spell getWrongObject() {
         return new Spell(null, "", "", null, "", "",
-            talentRepository.getByName(getUniverseName(), "Fire Magic").stream().toList(), -1);
+            talentRepository.getByName(getUniverseName(), "Fire Magic").stream().toList(), -1, Set.of());
     }
 
     @Override
@@ -64,13 +65,13 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
     @Override
     protected Spell getCorrectObject() {
         return new Spell(null, "Burn", "Burns the target", manaCost(3), "", "",
-            talentRepository.getByName(getUniverseName(), "Fire Magic").stream().toList(), 1);
+            talentRepository.getByName(getUniverseName(), "Fire Magic").stream().toList(), 1, Set.of());
     }
 
     @Override
     protected Spell getEditedObject() {
         return new Spell(null, "Big Fireball", "D20 Damage", manaCost(20), "", "",
-            getOriginalModifyObject().getTalents(), 1);
+            getOriginalModifyObject().getTalents(), 1, Set.of());
     }
 
     @Override

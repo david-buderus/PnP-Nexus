@@ -18,5 +18,9 @@
   "weight": "Gewicht",
   "calculation": "Berechnung",
   "additive": "Addieren",
-  "multiplicative": "Multiplizieren"
+  "multiplicative": "Multiplizieren",
+  "tagRequirement": "Voraussetzungen",
+  "tagRequirementTooltip": "Ein Item kann eine Verbesserung bekommen, wenn es alle Tags von einer der folgenden Zeilen hat.",
+  "noRequirements": "Die Verbesserung hat keine Voraussetzungen",
+  "addTagRequirement": "Füg eine Voraussetzung hinzu"
 }

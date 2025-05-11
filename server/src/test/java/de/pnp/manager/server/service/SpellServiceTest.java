@@ -9,6 +9,7 @@ import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -41,12 +42,12 @@ public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepo
         return List.of(
             new Spell(null, "Fireball", "Throws a fireball",
                 List.of(new CharacterResourceUsage(10, secondaryAttribute)),
-                "", "2 Rounds", List.of(fireTalent), 3),
+                "", "2 Rounds", List.of(fireTalent), 3, Set.of()),
             new Spell(null, "Spark", "Light a fire", List.of(new CharacterResourceUsage(2, secondaryAttribute)), "", "",
-                List.of(fireTalent), 1),
+                List.of(fireTalent), 1, Set.of()),
             new Spell(null, "Lightning Fire", "Fire with lightning",
                 List.of(new CharacterResourceUsage(100, secondaryAttribute)), "90 Mana per Round", "10 Rounds",
-                List.of(fireTalent, lightningTalent), 3)
+                List.of(fireTalent, lightningTalent), 3, Set.of())
         );
     }
 }

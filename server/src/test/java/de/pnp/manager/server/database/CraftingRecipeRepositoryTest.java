@@ -37,10 +37,10 @@ class CraftingRecipeRepositoryTest extends
         Item materialItem = itemRepository.insert(getUniverseName(),
             createItem().withName("A").buildItem());
         CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
-            new ItemUsage(1, resultOld), null, List.of(new ItemUsage(2, materialItem)));
+            List.of(new ItemUsage(1, resultOld)), List.of(new ItemUsage(2, materialItem)));
 
-        testRepositoryLink(recipe -> recipe.getProduct().resource(), itemRepository, craftingRecipe, resultOld,
-            resultNew);
+        testRepositoryLink(recipe -> recipe.getProducts().getFirst().resource(), itemRepository, craftingRecipe,
+            resultOld, resultNew);
     }
 
 
@@ -52,8 +52,7 @@ class CraftingRecipeRepositoryTest extends
             new Material(null, "Material", Collections.emptyList()));
 
         CraftingRecipe craftingRecipe = new CraftingRecipe(null, "", "", "",
-            new ItemUsage(1, result),
-            null, List.of(new MaterialUsage(7, material)));
+            List.of(new ItemUsage(1, result)), List.of(new MaterialUsage(7, material)));
 
         repository.insert(getUniverseName(), craftingRecipe);
         assertThat(repository.getAll(getUniverseName())).contains(craftingRecipe);
@@ -69,8 +68,7 @@ class CraftingRecipeRepositoryTest extends
             createItem().withName("B").buildItem());
 
         return new CraftingRecipe(null, "", "", "",
-            new ItemUsage(1, result),
-            null, List.of(new ItemUsage(7, itemA),
+            List.of(new ItemUsage(1, result)), List.of(new ItemUsage(7, itemA),
             new ItemUsage(4, itemB)));
     }
 
@@ -81,8 +79,7 @@ class CraftingRecipeRepositoryTest extends
         Item itemB = itemRepository.get(getUniverseName(), "B").orElseThrow();
 
         return new CraftingRecipe(null, "Alchemy", "", "Fire",
-            new ItemUsage(1, result),
-            null, List.of(new ItemUsage(7, itemA),
+            List.of(new ItemUsage(1, result)), List.of(new ItemUsage(7, itemA),
             new ItemUsage(4, itemB)));
     }
 
@@ -93,10 +90,10 @@ class CraftingRecipeRepositoryTest extends
         Item itemB = itemRepository.insert(getUniverseName(),
             createItem().withName("B").buildItem());
 
-        CraftingRecipe recipeA = new CraftingRecipe(null, "", "", "", new ItemUsage(1, itemA),
-            null, List.of(new ItemUsage(4, itemB)));
-        CraftingRecipe recipeB = new CraftingRecipe(null, "", "", "", new ItemUsage(1, itemB),
-            null, List.of(new ItemUsage(4, itemA)));
+        CraftingRecipe recipeA = new CraftingRecipe(null, "", "", "", List.of(new ItemUsage(1, itemA)),
+            List.of(new ItemUsage(4, itemB)));
+        CraftingRecipe recipeB = new CraftingRecipe(null, "", "", "", List.of(new ItemUsage(1, itemB)),
+            List.of(new ItemUsage(4, itemA)));
 
         return List.of(recipeA, recipeB);
     }

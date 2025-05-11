@@ -1,9 +1,9 @@
-import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, UnstyledButton, Title, Autocomplete } from "@mantine/core";
+import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, UnstyledButton, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { UserPermissions } from "../../src old/components/interfaces/UserPermissions";
 import { Link, Outlet, useOutletContext, useSearchParams } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
-import { Universe, CurrencySettings, ItemSettings, PnPUser, PnPUserPreference, UniverseServiceApi, UniverseSettingsServiceApi, AuthenticationServiceApi, UserServiceApi } from "../api";
+import { Universe, CurrencySettings, ItemSettings, PnPUser, PnPUserPreference, UniverseServiceApi, UniverseSettingsServiceApi, AuthenticationServiceApi, UserServiceApi, CharacterSettings } from "../api";
 import { API_CONFIGURATION } from "./Constants";
 import i18n from "../i18n";
 import { extractUserPermissions } from "./interfaces/UserPermissions";
@@ -14,14 +14,17 @@ import { TfiWorld } from "react-icons/tfi";
 import { IoSettingsSharp } from "react-icons/io5";
 import { HiUserCircle } from "react-icons/hi2";
 import { MdLogout } from "react-icons/md";
+import axios from "axios";
 
 type UniverseContext = {
-    universes: Universe[],
-    activeUniverse: Universe,
-    setActiveUniverse: (activeUniverse: Universe) => void,
-    fetchUniverses: () => Promise<void>,
+    universes: Universe[];
+    activeUniverse: Universe;
+    setActiveUniverse: (activeUniverse: Universe) => void;
+    fetchUniverses: () => Promise<void>;
     currencySettings: CurrencySettings;
     itemSettings: ItemSettings;
+    characterSettings: CharacterSettings;
+    refreshSettings: () => void;
 };
 
 type UserContext = {
@@ -42,6 +45,7 @@ export function PageBase() {
     const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
     const [currencySettings, setCurrencySettings] = useState<CurrencySettings>(null);
     const [itemSettings, setItemSettings] = useState<ItemSettings>(null);
+    const [characterSettings, setCharacterSettings] = useState<CharacterSettings>(null);
     const [username, setUsername] = useState<string>(null);
     const [user, setUser] = useState<PnPUser>(null);
     const [userPreferences, setUserPreferences] = useState<PnPUserPreference>(null);
@@ -69,6 +73,12 @@ export function PageBase() {
                 setActiveUniverse(prefUniverse);
             }
         }
+    }
+
+    function refreshSettings() {
+        SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
+        SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
+        SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
     }
 
     const refreshUser = () => {
@@ -99,6 +109,7 @@ export function PageBase() {
         setSearchParams(searchParams);
         SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
         SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
+        SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
     }, [activeUniverse]);
 
     useEffect(() => {
@@ -178,10 +189,12 @@ export function PageBase() {
                     fetchUniverses: fetchUniverses,
                     currencySettings: currencySettings,
                     itemSettings: itemSettings,
+                    characterSettings: characterSettings,
                     userPermissions: userPermissions,
                     userPreferences: userPreferences,
                     user: user,
-                    refreshUser: refreshUser
+                    refreshUser: refreshUser,
+                    refreshSettings: refreshSettings
                 }} />
             </AppShell.Main>
         </AppShell>
@@ -268,9 +281,7 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
         {
             id: "characters-menu", label: t("characters"), link: "/characters", icon: <FaPersonRays />, subEntries: [
                 { id: "spells-menu", label: t("spells"), link: "/spells", icon: <GiSpellBook /> },
-                { id: "talents-menu", label: t("talents"), link: "/talents", icon: <GiSupersonicArrow /> },
-                { id: "primary-attributes-menu", label: t("primary-attributes"), link: "/primary-attributes", icon: <GiMuscleUp /> },
-                { id: "secondary-attributes-menu", label: t("secondary-attributes"), link: "/secondary-attributes", icon: <GiHeartInside /> }
+                { id: "talents-menu", label: t("talents"), link: "/talents", icon: <GiSupersonicArrow /> }
             ]
         }
     ];
@@ -289,6 +300,8 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
 }
 
 function UserMenu({ user }: { user: PnPUser; }) {
+    const { t } = useTranslation();
+
     return <Menu
         width={260}
         position="bottom-end"
@@ -317,7 +330,15 @@ function UserMenu({ user }: { user: PnPUser; }) {
                 Account settings
             </Menu.Item>
             <Menu.Divider />
-            <Menu.Item leftSection={<MdLogout size={16} />}>Logout</Menu.Item>
+            <Menu.Item
+                leftSection={<MdLogout size={16} />}
+                onClick={() => {
+                    axios.post("/logout");
+                    window.location.reload();
+                }}
+            >
+                {t("logout")}
+            </Menu.Item>
 
         </Menu.Dropdown>
     </Menu>;

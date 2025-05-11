@@ -1,6 +1,5 @@
 {
-  "product": "Produkt",
-  "sideProduct": "Nebenprodukt",
+  "products": "Produkte",
   "profession": "Beruf",
   "requirement": "Voraussetzung",
   "otherCircumstances": "Sonstige Umstände",
@@ -9,6 +8,7 @@
   "craftingRecipeEditTitle": "Bearbeite ein Rezept",
   "craftingRecipeDeletionTitle": "Willst du die ausgewählten Rezepte löschen?",
   "addResource": "Füg eine weitere Resource dem Rezept hinzu",
+  "addProduct": "Füg eine weiteres Produkt dem Rezept hinzu",
   "requiredUpgrades": "Benötigte Verbesserungen",
   "upgradeRecipeCreationTitle": "Erstelle ein neues Rezept",
   "upgradeRecipeEditTitle": "Bearbeite ein Rezept",
