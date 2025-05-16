@@ -18,8 +18,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -125,6 +129,23 @@ public class UserDetailsRepository implements UserDetailsService {
         List<GrantedAuthority> allAuthorities = new ArrayList<>(userDetails.getAuthorities());
         allAuthorities.addAll(Arrays.asList(newAuthorities));
         setUserGrantedAuthorities(userDetails, allAuthorities);
+        refreshSession(username);
+    }
+
+    private void refreshSession(String username) {
+        Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
+        if (currentAuth == null || !currentAuth.getName().equals(username)) {
+            return;
+        }
+        UserDetails updatedUser = loadUserByUsername(username);
+
+        Authentication newAuth = new UsernamePasswordAuthenticationToken(
+            updatedUser,
+            updatedUser.getPassword(),
+            updatedUser.getAuthorities()
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(newAuth);
     }
 
     /**

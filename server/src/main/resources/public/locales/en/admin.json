@@ -1,0 +1,10 @@
+{
+  "uploadBackup": "Uploading a Backup",
+  "selectBackup": "Select a Backup",
+  "downloadBackup": "Downloading a Backup",
+  "upload": "Upload",
+  "download": "Download",
+  "selectAll": "Select All",
+  "selectNone": "Select None",
+  "downloadBackupDescription": "Select all the universes you want to back up."
+}

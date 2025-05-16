@@ -1,16 +1,38 @@
 import { useTranslation } from "react-i18next";
-import { getUniverseContext, getUserContext } from "../components/PageBase";
+import { useUniverseContext, useUserContext } from "../components/PageBase";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Card, Grid, Stack, Text } from "@mantine/core";
+import { Card, Flex, Grid, Stack, Text, Title } from "@mantine/core";
 import { FaPlus } from "react-icons/fa6";
+import { useEffect } from "react";
 
 
 export default function Home() {
     const { t } = useTranslation();
     const [searchParams] = useSearchParams();
-    const { universes, setActiveUniverse, activeUniverse } = getUniverseContext();
-    const { userPermissions } = getUserContext();
+    const { universes, fetchUniverses, setActiveUniverse, activeUniverse } = useUniverseContext();
+    const { userPermissions } = useUserContext();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchUniverses();
+    }, []);
+
+    if (universes.length === 0 && !userPermissions.canCreateUniverses) {
+        return <Flex
+            gap="md"
+            justify="center"
+            align="center"
+            direction="column"
+            wrap="wrap"
+        >
+            <Title>
+                {t("universe:noUniverse")}
+            </Title>
+            <Text>
+                {t("universe:needToInvited")}
+            </Text>
+        </Flex>;
+    }
 
     return <Grid>
         {universes.map(u => <Grid.Col span={2}>

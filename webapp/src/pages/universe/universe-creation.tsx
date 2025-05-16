@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { API_CONFIGURATION } from "../../components/Constants";
 import { BinaryExpressionTreeServiceApi, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttributeDTO, SecondaryAttributeInfo, SimpleSecondaryAttributeServiceApi, Universe, UniverseCreationServiceApi, UniverseServiceApi } from "../../api";
 import { useForm } from "@mantine/form";
-import { getUniverseContext, getUserContext } from "../../components/PageBase";
+import { useUniverseContext, useUserContext } from "../../components/PageBase";
 import { handleNetworkErrors, handleValidationErrors } from "../../components/utils/ErrorUtils";
 import CurrencySettingsForm from "../../components/settings/CurrencySettingsForm";
 import ItemSettingsForm from "../../components/settings/ItemSettingsForm";
@@ -116,7 +116,7 @@ function UniverseCreationStep({ nextStep }: UniverseCreationStepProps) {
             description: ""
         }
     });
-    const { setActiveUniverse, fetchUniverses } = getUniverseContext();
+    const { setActiveUniverse, fetchUniverses } = useUniverseContext();
 
     return <Stack align="center">
         <Title order={3} ta="center">
@@ -176,8 +176,8 @@ function UniverseCreationStep({ nextStep }: UniverseCreationStepProps) {
 
 function ItemImporStep({ nextStep, prevStep }: UniverseCreationStepProps) {
     const { t } = useTranslation();
-    const { activeUniverse } = getUniverseContext();
-    const { userPreferences } = getUserContext();
+    const { activeUniverse } = useUniverseContext();
+    const { userPreferences } = useUserContext();
 
     const [language, setLanguage] = useState<string>(userPreferences?.language ?? null);
     const [importedMaterials, setImportedMaterials] = useState(false);
@@ -190,7 +190,7 @@ function ItemImporStep({ nextStep, prevStep }: UniverseCreationStepProps) {
             {t("universe:startingExplanation")}
         </Text>
         <LanguageSelect
-            language={language}
+            value={language}
             onChange={setLanguage}
         />
         <Text ta='left'>

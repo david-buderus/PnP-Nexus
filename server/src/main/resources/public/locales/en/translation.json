@@ -79,5 +79,7 @@
   "tag": "Tag",
   "tags": "Tags",
   "protection": "Protection",
-  "nothing-here": "Nothing here..."
+  "nothing-here": "Nothing here...",
+  "rights": "Rights",
+  "search": "Search"
 }

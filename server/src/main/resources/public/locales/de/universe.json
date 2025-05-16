@@ -69,5 +69,9 @@
   "secondaryAttributeStep": "Sekundäre Attribute",
   "shieldUsingDice": "Ob Schilde beim Blocken zusätzlich einen Würfel verwenden sollen.",
   "usingProtection": "Ob Rüstung/Schilde Schutz verwenden. Der Schutz wird mit jedem Treffer verringert. Wenn der Schutz 0 erreicht, bietet die Rüstung keine Rüstung mehr. Sie wird nach jedem Kampf zurückgesetzt.",
-  "lastStep": "Fertig"
+  "lastStep": "Fertig",
+  "noUniverse": "Kein Universum ist ausgewählt",
+  "pleaseSelectUniverse": "Bitte wähle ein Universum aus.",
+  "createUniverseOrGetInvited": "Erstell ein neues Universum oder frag dein Dungeon Master nach Zugriff.",
+  "needToInvited": "Frag dein Dungeon Master nach Zugriff."
 }

@@ -1,0 +1,246 @@
+import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack, TagsInput } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { randomId, useDisclosure } from "@mantine/hooks";
+import { useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { Material, MaterialItem, MaterialServiceApi, Spell, SpellServiceApi, Talent } from "../../../api";
+import { fetchAllMaterials, fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage } from "../../../components/Database";
+import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
+import { useUniverseContext } from "../../../components/PageBase";
+import { handleValidationErrors, handleDatabaseInsertErrors } from "../../../components/utils/ErrorUtils";
+import { API_CONFIGURATION } from "../../../components/Constants";
+import { FaRegTrashCan } from "react-icons/fa6";
+import { ItemSelect, ObjectMultiSelect, ResourceSelect } from "../../../components/input/ObjectSelect";
+import { addTypeAnnotationToUsage } from "../crafting/crafting-recipes";
+import TagCell from "../../../components/table/TagCell";
+import { filterMultiNamedCell, MultiNamedCell } from "../../../components/table/NamedCell";
+import { resourceFormatter } from "../../../components/utils/Formatters";
+
+const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
+
+/** Overview over all spells */
+export function SpellOverview() {
+    const { t } = useTranslation();
+
+    const columns = useMemo<ExtendedColumnDef<Spell, any>[]>(
+        () => [
+            {
+                accessorKey: 'name',
+                header: t("name"),
+            },
+            {
+                accessorKey: 'effect',
+                header: t("effect"),
+            },
+            {
+                accessorKey: 'cost',
+                header: t("spell:cost"),
+                Cell: (cell) => {
+                    const items = cell.cell.getValue<IResourceUsage[]>();
+                    return items.map(resourceFormatter).join(", ");
+                },
+                filterFn: (row, id, filterValue) => {
+                    return row.getValue<IResourceUsage[]>(id).some(item => item.resource?.name.includes(filterValue));
+                }
+            },
+            {
+                accessorKey: 'additionalCost',
+                header: t("spell:additionalCost"),
+            },
+            {
+                accessorKey: 'castTime',
+                header: t("spell:castTime"),
+            },
+            {
+                accessorKey: 'tags',
+                header: t("tags"),
+                Cell: TagCell,
+                filterFn: (row, id, filterValue) =>
+                    row.getValue<string[]>(id).some(tag => tag.includes(filterValue))
+            },
+            {
+                accessorKey: 'talents',
+                header: t("talents"),
+                Cell: MultiNamedCell,
+                filterFn: filterMultiNamedCell
+            },
+            {
+                accessorKey: 'tier',
+                header: t("tier"),
+            }
+        ], []);
+
+    return <OverviewPage
+        fetchData={fetchAllSpells()}
+        columns={columns}
+        identifier="spells"
+        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode} refresh={refresh} disabled={disabled} getInitial={getInitial} />}
+        deletionDialogTitle={t("spell:editTitle")}
+        onDelete={(universe, spells) => SPELL_API.deleteAllSpells(universe, spells.map(spell => spell.id))}
+    />;
+}
+
+function CreationDialog({
+    editMode,
+    refresh,
+    disabled,
+    getInitial
+}: {
+    editMode: boolean,
+    refresh: () => void;
+    disabled: boolean;
+    getInitial: () => Spell;
+}) {
+    const { t } = useTranslation();
+    const { activeUniverse } = useUniverseContext();
+    const [talents] = fetchAllTalents();
+    const [tags] = fetchAllTags();
+
+    const [opened, { open, close }] = useDisclosure(false);
+    const form = useForm<Spell>({
+        mode: 'controlled',
+        initialValues: {
+            name: "",
+            additionalCost: "",
+            castTime: "",
+            cost: [],
+            effect: "",
+            tags: [],
+            talents: [],
+            tier: 1
+        }
+    });
+    console.log(form.getValues());
+
+    useEffect(() => {
+        if (!editMode || !opened) {
+            return;
+        }
+        form.setValues(getInitial());
+    }, [opened, getInitial, editMode]);
+
+    function onSubmit(spell: Spell) {
+        if (editMode) {
+            SPELL_API.updateSpell(activeUniverse.name, spell.id, addTypeAnnotationToSpell(spell)).then(refresh).then(close)
+                .catch(handleValidationErrors(form.setErrors));
+        } else {
+            SPELL_API.insertAllSpells(activeUniverse.name, [addTypeAnnotationToSpell(spell)]).then(refresh).then(close)
+                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+        }
+    }
+
+    return <>
+        <Modal opened={opened} onClose={close} title={editMode ? t("spell:editTitle") : t("spell:creationTitle")} maw={300}>
+            <form onSubmit={form.onSubmit(onSubmit)}>
+                <TextInput
+                    label={t("name")}
+                    key={form.key('name')}
+                    {...form.getInputProps('name')}
+                />
+                <TextInput
+                    label={t("effect")}
+                    key={form.key('effect')}
+                    {...form.getInputProps('effect')}
+                />
+                <TextInput
+                    label={t("spell:castTime")}
+                    key={form.key('castTime')}
+                    {...form.getInputProps('castTime')}
+                />
+                <ObjectMultiSelect<Talent>
+                    label={t("talents")}
+                    key={form.key('talents')}
+                    {...form.getInputProps('talents')}
+                    data={talents}
+                    idKey="id"
+                    labelKey="name"
+                />
+                <NumberInput
+                    label={t("tier")}
+                    key={form.key('tier')}
+                    {...form.getInputProps('tier')}
+                />
+                <Input.Label>
+                    {t("spell:cost")}
+                </Input.Label>
+                {form.getValues().cost.length > 0 ? (
+                    <Group>
+                        <Text fw={500} size="sm" style={{ flex: 1 }} pr={50}>
+                            {t("amount")}
+                        </Text>
+                        <Text fw={500} size="sm" pr={175}>
+                            {t("crafting:resource")}
+                        </Text>
+                    </Group>
+                ) : (
+                    <Text c="dimmed" ta="center">
+                        {t("nothing-here")}
+                    </Text>
+                )}
+                <Stack gap="xs">
+                    {form.getValues().cost.map((usage, index) => {
+                        if (!usage["key"]) {
+                            usage["key"] = randomId();
+                        }
+
+                        return <Group key={"item-" + usage["key"]} wrap="nowrap">
+                            <NumberInput
+                                key={form.key(`cost.${index}.amount`)}
+                                {...form.getInputProps(`cost.${index}.amount`)}
+                            />
+                            <ResourceSelect
+                                key={form.key(`cost.${index}.resource`)}
+                                {...form.getInputProps(`cost.${index}.resource`)}
+                            />
+                            <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('cost', index)}>
+                                <FaRegTrashCan />
+                            </ActionIcon>
+                        </Group>;
+                    })}
+                </Stack>
+                <Button
+                    onClick={() =>
+                        form.insertListItem('cost', {
+                            amount: 0,
+                            resource: null,
+                            key: randomId()
+                        })
+                    }
+                    mt="md"
+                >
+                    {t("spell:addCost")}
+                </Button>
+                <TextInput
+                    label={t("spell:additionalCost")}
+                    key={form.key('additionalCost')}
+                    {...form.getInputProps('additionalCost')}
+                />
+                <TagsInput
+                    label={t("tags")}
+                    data={tags}
+                    clearable
+                    key={form.key('tags')}
+                    {...form.getInputProps('tags')}
+                />
+                <Group justify="flex-end" mt="md">
+                    <Button autoFocus variant="outline" onClick={close}>
+                        {t("cancel")}
+                    </Button>
+                    <Button type="submit">
+                        {editMode ? t("edit") : t("add")}
+                    </Button>
+                </Group>
+            </form>
+        </Modal>
+        <Button data-testid={editMode ? "edit" : "add"} onClick={open} disabled={disabled}>
+            {editMode ? t("edit") : t("add")}
+        </Button>
+    </>;
+}
+
+function addTypeAnnotationToSpell(recipe: Spell): Spell {
+    return {
+        ...recipe,
+        cost: recipe.cost.map(addTypeAnnotationToUsage)
+    };
+}

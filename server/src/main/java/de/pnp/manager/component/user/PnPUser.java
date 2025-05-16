@@ -1,6 +1,8 @@
 package de.pnp.manager.component.user;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Objects;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -15,6 +17,8 @@ public class PnPUser {
     @Id
     private final String username;
 
+    @NotNull
+    @Size(min = 3)
     @Indexed(unique = true)
     private final String displayName;
 

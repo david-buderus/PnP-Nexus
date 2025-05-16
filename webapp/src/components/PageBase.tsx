@@ -1,4 +1,4 @@
-import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, UnstyledButton, Title } from "@mantine/core";
+import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, UnstyledButton, Title, Popover, Select } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { UserPermissions } from "../../src old/components/interfaces/UserPermissions";
 import { Link, Outlet, useOutletContext, useSearchParams } from "react-router-dom";
@@ -166,7 +166,13 @@ export function PageBase() {
                             </Title>
                         </UnstyledButton>
                     </Group>
-                    <UserMenu user={user} />
+                    <UserMenu
+                        user={user}
+                        universes={universes}
+                        activeUniverse={activeUniverse}
+                        setActiveUniverse={setActiveUniverse}
+                        searchParams={searchParams.toString()}
+                    />
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="md">
@@ -299,7 +305,13 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
     return entries;
 }
 
-function UserMenu({ user }: { user: PnPUser; }) {
+function UserMenu({ user, activeUniverse, setActiveUniverse, universes, searchParams }: {
+    user: PnPUser;
+    activeUniverse: Universe;
+    setActiveUniverse: (universe: Universe) => void;
+    universes: Universe[];
+    searchParams: string;
+}) {
     const { t } = useTranslation();
 
     return <Menu
@@ -325,9 +337,36 @@ function UserMenu({ user }: { user: PnPUser; }) {
             </UnstyledButton>
         </Menu.Target>
         <Menu.Dropdown>
-            <Menu.Label>Settings</Menu.Label>
-            <Menu.Item>
-                Account settings
+            <Menu.Label>{t("universe")}</Menu.Label>
+            <Menu.Item closeMenuOnClick={false}>
+                <Select
+                    data={universes?.map(universe => { return { value: universe.name, label: universe.displayName }; })}
+                    value={activeUniverse?.name}
+                    onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
+                    placeholder={t("universe:noUniverse") + "..."}
+                    disabled={universes.length === 0}
+                    variant="unstyled"
+                    searchable
+                />
+            </Menu.Item>
+            <Menu.Label>{t("preferences")}</Menu.Label>
+            <Menu.Item
+                component={Link}
+                to={{
+                    pathname: "/user",
+                    search: searchParams.toString()
+                }}
+            >
+                {t("profile")}
+            </Menu.Item>
+            <Menu.Item
+                component={Link}
+                to={{
+                    pathname: "/preferences",
+                    search: searchParams.toString()
+                }}
+            >
+                {t("preferences")}
             </Menu.Item>
             <Menu.Divider />
             <Menu.Item
@@ -345,12 +384,12 @@ function UserMenu({ user }: { user: PnPUser; }) {
 }
 
 /** Returns context over the currently avaible universes. */
-export function getUniverseContext() {
+export function useUniverseContext() {
     return useOutletContext<UniverseContext>();
 }
 
 /** Returns context over the currently logged in user. */
-export function getUserContext() {
+export function useUserContext() {
     return useOutletContext<UserContext>();
 }
 

@@ -17,12 +17,16 @@ import { UpgradeRecipeOverview } from './pages/database/crafting/upgrade-recipes
 import { SpellOverview } from './pages/database/characters/spellts';
 import { TalentOverview } from './pages/database/characters/talents';
 import { UserOverview } from './pages/admin/user-overview';
+import { UniverseView } from './components/UniverseView';
+import { User } from './pages/user/user';
+import { UserPreferences } from './pages/user/preferences';
+import { Admin } from './pages/admin/admin';
 
 /** The entry point of the webapp */
 class App extends Component {
     render() {
         return (
-            <MantineProvider>
+            <MantineProvider defaultColorScheme='auto'>
                 <Router>
                     <style>{`
                     body {
@@ -34,26 +38,25 @@ class App extends Component {
                     <Routes>
                         <Route path="/" element={<PageBase />} >
                             <Route path='/' element={<Home />}></Route>
-                            <Route path='/user'> </Route>
-                            <Route path='/preferences'> </Route>
-                            <Route path='/universe' element={<UniverseOverview />} ></Route>
+                            <Route path='/user' element={<User />}> </Route>
+                            <Route path='/preferences' element={<UserPreferences />}> </Route>
+                            <Route path='/universe' element={<UniverseView><UniverseOverview /></UniverseView>} ></Route>
                             <Route path='/universe-creation' element={<UniverseCreation />}></Route>
                             <Route path='/about' ></Route>
-                            <Route path='/items' element={<Items />} ></Route>
-                            <Route path='/weapons' element={<Weapons />} ></Route>
-                            <Route path='/shields' element={<Shields />} ></Route>
-                            <Route path='/armor' element={<ArmorOverview />} ></Route>
-                            <Route path='/jewellery' element={<JewelleryOverview />}></Route>
-                            <Route path='/upgrades' element={<UpgradeOverview />}></Route>
-                            <Route path='/materials' element={<MaterialOverview />}></Route>
-                            <Route path='/crafting-recipes' element={<CraftingRecipeOverview />}></Route>
-                            <Route path='/upgrade-recipes' element={<UpgradeRecipeOverview />}></Route>
-                            <Route path='/characters' ></Route>
-                            <Route path='/spells' element={<SpellOverview />}></Route>
-                            <Route path='/talents' element={<TalentOverview />}></Route>
-                            <Route path='/admin' > </Route>
+                            <Route path='/items' element={<UniverseView><Items /></UniverseView>} ></Route>
+                            <Route path='/weapons' element={<UniverseView><Weapons /></UniverseView>} ></Route>
+                            <Route path='/shields' element={<UniverseView><Shields /></UniverseView>} ></Route>
+                            <Route path='/armor' element={<UniverseView><ArmorOverview /></UniverseView>} ></Route>
+                            <Route path='/jewellery' element={<UniverseView><JewelleryOverview /></UniverseView>}></Route>
+                            <Route path='/upgrades' element={<UniverseView><UpgradeOverview /></UniverseView>}></Route>
+                            <Route path='/materials' element={<UniverseView><MaterialOverview /></UniverseView>}></Route>
+                            <Route path='/crafting-recipes' element={<UniverseView><CraftingRecipeOverview /></UniverseView>}></Route>
+                            <Route path='/upgrade-recipes' element={<UniverseView><UpgradeRecipeOverview /></UniverseView>}></Route>
+                            <Route path='/characters' element={<UniverseView><></></UniverseView>}></Route>
+                            <Route path='/spells' element={<UniverseView><SpellOverview /></UniverseView>}></Route>
+                            <Route path='/talents' element={<UniverseView><TalentOverview /></UniverseView>}></Route>
+                            <Route path='/admin' element={<Admin />}> </Route>
                             <Route path='/users' element={<UserOverview />}> </Route>
-                            <Route path='/backup'></Route>
                         </Route>
                         <Route path="/login" element={<Login />}> </Route>
                     </Routes>

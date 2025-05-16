@@ -69,5 +69,9 @@
   "secondaryAttributeStep": "Secondary Attributes",
   "shieldUsingDice": "Whether shields should additional using a dice while blocking.",
   "usingProtection": "Whether armor/shields are using protection. Protection gets reduced with each hit taken. If protection hits 0, the armor doesn't provide any armor any longer. It resets after each fight.",
-  "lastStep": "Done"
+  "lastStep": "Done",
+  "noUniverse": "No Universe is selected",
+  "pleaseSelectUniverse": "Please select a universe.",
+  "createUniverseOrGetInvited": "Create a new universe or ask your Dungeon Master to invite you.",
+  "needToInvited": "Ask your Dungeon Master to invite you."
 }

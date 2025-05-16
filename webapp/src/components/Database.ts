@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { useState, useEffect, useMemo } from "react";
-import { getUniverseContext } from './PageBase';
+import { useUniverseContext } from './PageBase';
 import { Armor, CharacterResourceUsage, CraftingRecipe, CraftingRecipeServiceApi, Item, ItemServiceApi, ItemUsage, Jewellery, Material, MaterialServiceApi, MaterialUsage, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttribute, SecondaryAttributeDTO, SecondaryAttributeServiceApi, Shield, SimpleSecondaryAttributeServiceApi, Spell, SpellServiceApi, TagServiceApi, Talent, TalentServiceApi, Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi, UpgradeServiceApi, Weapon } from "../api";
 import { API_CONFIGURATION, SomeItem } from "./Constants";
 import { handleNetworkErrors } from "./utils/ErrorUtils";
@@ -28,7 +28,7 @@ export type IResource = SomeItem | Material | SecondaryAttributeDTO;
  * Returns the data, a refresh callback and if the data is currenlty loading.
  */
 export function fetchAll<O>(fetch: ((universe: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<O[], any>>)): [O[], () => void, boolean] {
-    const { activeUniverse } = getUniverseContext();
+    const { activeUniverse } = useUniverseContext();
 
     const [objects, setObjects] = useState<O[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
