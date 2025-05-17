@@ -58,21 +58,25 @@ export default function CharacterSettingsForm({
                         label={t("universe:minPrimaryAttributeValue")}
                         key={form.key("minPrimaryAttributeValue")}
                         {...form.getInputProps("minPrimaryAttributeValue")}
+                        allowDecimal={false}
                     />
                     <NumberInput
                         label={t("universe:maxPrimaryAttributeValue")}
                         key={form.key("maxPrimaryAttributeValue")}
                         {...form.getInputProps("maxPrimaryAttributeValue")}
+                        allowDecimal={false}
                     />
                     <NumberInput
                         label={t("universe:maxPrimaryAttributeSum")}
                         key={form.key("maxPrimaryAttributeSum")}
                         {...form.getInputProps("maxPrimaryAttributeSum")}
+                        allowDecimal={false}
                     />
                     <NumberInput
                         label={t("universe:numberOfHandheld")}
                         key={form.key("numberOfHandheld")}
                         {...form.getInputProps("numberOfHandheld")}
+                        allowDecimal={false}
                     />
                 </Grid.Col >
                 <Grid.Col span={1}>
@@ -153,6 +157,7 @@ export default function CharacterSettingsForm({
                                     key={form.key(`jewelleryDefinitions.${index}.amount`)}
                                     required
                                     {...form.getInputProps(`jewelleryDefinitions.${index}.amount`)}
+                                    allowDecimal={false}
                                 />
                             </Grid.Col>,
                             <Grid.Col key={index + "-button"} span="content">

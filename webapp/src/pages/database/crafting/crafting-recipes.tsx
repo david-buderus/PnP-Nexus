@@ -158,7 +158,7 @@ function CreationDialog({
                             </Group>;
                         })}
                     </Stack>
-                    <Tooltip label={form.errors["products"]}>
+                    <Tooltip label={form.errors["products"]} disabled={!form.errors["products"]}>
                         <Button
                             onClick={() =>
                                 form.insertListItem('products', {
@@ -229,7 +229,7 @@ function CreationDialog({
                             </Group>;
                         })}
                     </Stack>
-                    <Tooltip label={form.errors["materials"]}>
+                    <Tooltip label={form.errors["materials"]} disabled={!form.errors["materials"]}>
                         <Button
                             onClick={() =>
                                 form.insertListItem('materials', {

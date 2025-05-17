@@ -1,15 +1,14 @@
 package de.pnp.manager.server.service;
 
-import de.pnp.manager.component.IResourceUsage.CharacterResourceUsage;
-import de.pnp.manager.component.Spell;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.Talent;
+import de.pnp.manager.component.spell.ECastingType;
+import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -40,14 +39,14 @@ public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepo
             new Talent(null, "Lightning", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
 
         return List.of(
-            new Spell(null, "Fireball", "Throws a fireball",
-                List.of(new CharacterResourceUsage(10, secondaryAttribute)),
-                "", "2 Rounds", List.of(fireTalent), 3, Set.of()),
-            new Spell(null, "Spark", "Light a fire", List.of(new CharacterResourceUsage(2, secondaryAttribute)), "", "",
-                List.of(fireTalent), 1, Set.of()),
-            new Spell(null, "Lightning Fire", "Fire with lightning",
-                List.of(new CharacterResourceUsage(100, secondaryAttribute)), "90 Mana per Round", "10 Rounds",
-                List.of(fireTalent, lightningTalent), 3, Set.of())
+            createSpell().withName("Fireball").withEffect("Throws a fireball").withCost(10, secondaryAttribute)
+                .withCastTime(2).withTalent(fireTalent).withTier(3).withCastingType(
+                    ECastingType.SOMATIC).build(),
+            createSpell().withName("Spark").withEffect("Light a fire").withCost(2, secondaryAttribute)
+                .withTalent(fireTalent).withTier(1).build(),
+            createSpell().withName("Lightning Fire").withEffect("Fire with lightning").withCost(100, secondaryAttribute)
+                .withAdditionalCost("90 Mana per Round").withCastTime(10).withCastingType(ECastingType.VERBAL)
+                .withTalent(fireTalent).withTalent(lightningTalent).withTier(3).build()
         );
     }
 }

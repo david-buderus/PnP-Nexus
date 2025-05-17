@@ -1,9 +1,9 @@
-import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack, TagsInput } from "@mantine/core";
+import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack, TagsInput, Paper, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { randomId, useDisclosure } from "@mantine/hooks";
 import { useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Material, MaterialItem, MaterialServiceApi, Spell, SpellServiceApi, Talent } from "../../../api";
+import { EAction, ECastingType, Material, MaterialItem, MaterialServiceApi, Spell, SpellServiceApi, Talent } from "../../../api";
 import { fetchAllMaterials, fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage } from "../../../components/Database";
 import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
 import { useUniverseContext } from "../../../components/PageBase";
@@ -15,6 +15,7 @@ import { addTypeAnnotationToUsage } from "../crafting/crafting-recipes";
 import TagCell from "../../../components/table/TagCell";
 import { filterMultiNamedCell, MultiNamedCell } from "../../../components/table/NamedCell";
 import { resourceFormatter } from "../../../components/utils/Formatters";
+import { ActionSelect, CastingTypeMultiSelect } from "../../../components/input/EnumSelect";
 
 const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 
@@ -52,6 +53,24 @@ export function SpellOverview() {
                 header: t("spell:castTime"),
             },
             {
+                accessorKey: 'cooldown',
+                header: t("spell:cooldown"),
+            },
+            {
+                accessorKey: 'action',
+                header: t("enum:action"),
+                filterVariant: 'select',
+                mantineFilterMultiSelectProps: {
+                    data: Object.values(EAction).map(action => {
+                        return {
+                            label: t("enum:" + action.toLowerCase()),
+                            value: action
+                        };
+                    }),
+                },
+                Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+            },
+            {
                 accessorKey: 'tags',
                 header: t("tags"),
                 Cell: TagCell,
@@ -65,8 +84,30 @@ export function SpellOverview() {
                 filterFn: filterMultiNamedCell
             },
             {
+                accessorKey: 'castingTypes',
+                header: t("spell:castingTypes"),
+                filterVariant: 'multi-select',
+                mantineFilterMultiSelectProps: {
+                    data: Object.values(ECastingType).map(type => {
+                        return {
+                            label: t("enum:" + type.toLowerCase()),
+                            value: type
+                        };
+                    }),
+                },
+                Cell: (cell) => cell.cell.getValue<ECastingType[]>()?.map(type => t("enum:" + type.toLowerCase())).join(", "),
+                filterFn: (row, id, filterValue: ECastingType[]) =>
+                    filterValue.every(val => row.getValue<ECastingType[]>(id).includes(val)),
+                defaultHidden: true
+            },
+            {
                 accessorKey: 'tier',
                 header: t("tier"),
+            },
+            {
+                accessorKey: 'countermeasures',
+                header: t("spell:countermeasures"),
+                defaultHidden: true
             }
         ], []);
 
@@ -102,15 +143,18 @@ function CreationDialog({
         initialValues: {
             name: "",
             additionalCost: "",
-            castTime: "",
+            castTime: 0,
             cost: [],
             effect: "",
             tags: [],
             talents: [],
-            tier: 1
+            tier: 1,
+            action: EAction.Action,
+            castingTypes: [],
+            countermeasures: "",
+            cooldown: 1
         }
     });
-    console.log(form.getValues());
 
     useEffect(() => {
         if (!editMode || !opened) {
@@ -142,11 +186,6 @@ function CreationDialog({
                     key={form.key('effect')}
                     {...form.getInputProps('effect')}
                 />
-                <TextInput
-                    label={t("spell:castTime")}
-                    key={form.key('castTime')}
-                    {...form.getInputProps('castTime')}
-                />
                 <ObjectMultiSelect<Talent>
                     label={t("talents")}
                     key={form.key('talents')}
@@ -155,65 +194,100 @@ function CreationDialog({
                     idKey="id"
                     labelKey="name"
                 />
+                <Group wrap="nowrap" grow>
+                    <NumberInput
+                        label={t("spell:castTime")}
+                        key={form.key('castTime')}
+                        {...form.getInputProps('castTime')}
+                        allowDecimal={false}
+                    />
+                    <NumberInput
+                        label={t("spell:cooldown")}
+                        key={form.key('cooldown')}
+                        {...form.getInputProps('cooldown')}
+                        allowDecimal={false}
+                    />
+                </Group>
+                <ActionSelect
+                    label={t("enum:action")}
+                    key={form.key('action')}
+                    {...form.getInputProps('action')}
+                />
+                <CastingTypeMultiSelect
+                    label={t("spell:castingTypes")}
+                    key={form.key('castingTypes')}
+                    {...form.getInputProps('castingTypes')}
+                />
                 <NumberInput
                     label={t("tier")}
                     key={form.key('tier')}
                     {...form.getInputProps('tier')}
+                    allowDecimal={false}
                 />
                 <Input.Label>
                     {t("spell:cost")}
                 </Input.Label>
-                {form.getValues().cost.length > 0 ? (
-                    <Group>
-                        <Text fw={500} size="sm" style={{ flex: 1 }} pr={50}>
-                            {t("amount")}
+                <Paper shadow="md" p="xs">
+                    {form.getValues().cost.length > 0 ? (
+                        <Group>
+                            <Text fw={500} size="sm" style={{ flex: 1 }} pr={50}>
+                                {t("amount")}
+                            </Text>
+                            <Text fw={500} size="sm" pr={175}>
+                                {t("crafting:resource")}
+                            </Text>
+                        </Group>
+                    ) : (
+                        <Text c="dimmed" ta="center">
+                            {t("nothing-here")}
                         </Text>
-                        <Text fw={500} size="sm" pr={175}>
-                            {t("crafting:resource")}
-                        </Text>
-                    </Group>
-                ) : (
-                    <Text c="dimmed" ta="center">
-                        {t("nothing-here")}
-                    </Text>
-                )}
-                <Stack gap="xs">
-                    {form.getValues().cost.map((usage, index) => {
-                        if (!usage["key"]) {
-                            usage["key"] = randomId();
-                        }
+                    )}
+                    <Stack gap="xs">
+                        {form.getValues().cost.map((usage, index) => {
+                            if (!usage["key"]) {
+                                usage["key"] = randomId();
+                            }
 
-                        return <Group key={"item-" + usage["key"]} wrap="nowrap">
-                            <NumberInput
-                                key={form.key(`cost.${index}.amount`)}
-                                {...form.getInputProps(`cost.${index}.amount`)}
-                            />
-                            <ResourceSelect
-                                key={form.key(`cost.${index}.resource`)}
-                                {...form.getInputProps(`cost.${index}.resource`)}
-                            />
-                            <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('cost', index)}>
-                                <FaRegTrashCan />
-                            </ActionIcon>
-                        </Group>;
-                    })}
-                </Stack>
-                <Button
-                    onClick={() =>
-                        form.insertListItem('cost', {
-                            amount: 0,
-                            resource: null,
-                            key: randomId()
-                        })
-                    }
-                    mt="md"
-                >
-                    {t("spell:addCost")}
-                </Button>
+                            return <Group key={"item-" + usage["key"]} wrap="nowrap">
+                                <NumberInput
+                                    key={form.key(`cost.${index}.amount`)}
+                                    {...form.getInputProps(`cost.${index}.amount`)}
+                                />
+                                <ResourceSelect
+                                    key={form.key(`cost.${index}.resource`)}
+                                    {...form.getInputProps(`cost.${index}.resource`)}
+                                />
+                                <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('cost', index)}>
+                                    <FaRegTrashCan />
+                                </ActionIcon>
+                            </Group>;
+                        })}
+                    </Stack>
+                </Paper>
+                <Tooltip label={form.errors["cost"]} disabled={!form.errors["cost"]}>
+                    <Button
+                        onClick={() =>
+                            form.insertListItem('cost', {
+                                amount: 0,
+                                resource: null,
+                                key: randomId()
+                            })
+                        }
+                        mt="md"
+                        color={form.errors["cost"] ? "red" : undefined}
+                    >
+                        {t("spell:addCost")}
+                    </Button>
+                </Tooltip>
                 <TextInput
                     label={t("spell:additionalCost")}
                     key={form.key('additionalCost')}
                     {...form.getInputProps('additionalCost')}
+                />
+                <TextInput
+                    label={t("spell:countermeasures")}
+                    key={form.key('countermeasures')}
+                    {...form.getInputProps('countermeasures')}
                 />
                 <TagsInput
                     label={t("tags")}

@@ -5,5 +5,8 @@
   "deletionTitle": "Do you want to delete the selected spells?",
   "creationTitle": "Create a spell",
   "editTitle": "Edit a spell",
-  "addCost": "Add another cost to the spell"
+  "addCost": "Add another cost to the spell",
+  "cooldown": "Cooldown",
+  "castingTypes": "Casting Type",
+  "countermeasures": "Countermeasures"
 }

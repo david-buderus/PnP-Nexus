@@ -273,16 +273,6 @@
               }
             },
             "description": "OK"
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ValidationErrorResponse"
-                }
-              }
-            },
-            "description": "The object is not valid"
           }
         },
         "summary": "Create a universe",
@@ -4086,6 +4076,15 @@
           }
         }
       },
+      "EAction": {
+        "type": "string",
+        "enum": [
+          "ACTION",
+          "BONUS_ACTION",
+          "MOVEMENT_ACTION",
+          "REACTION"
+        ]
+      },
       "EArmorSlot": {
         "type": "string",
         "enum": [
@@ -4100,6 +4099,13 @@
         "enum": [
           "ADDITIVE",
           "MULTIPLICATIVE"
+        ]
+      },
+      "ECastingType": {
+        "type": "string",
+        "enum": [
+          "VERBAL",
+          "SOMATIC"
         ]
       },
       "ERarity": {
@@ -4449,9 +4455,14 @@
         }
       },
       "PnPUser": {
+        "required": [
+          "displayName"
+        ],
         "type": "object",
         "properties": {
           "displayName": {
+            "maxLength": 2147483647,
+            "minLength": 3,
             "type": "string"
           },
           "email": {
@@ -4703,9 +4714,11 @@
       },
       "Spell": {
         "required": [
+          "action",
           "additionalCost",
-          "castTime",
+          "castingTypes",
           "cost",
+          "countermeasures",
           "effect",
           "name",
           "tags",
@@ -4714,11 +4727,25 @@
         ],
         "type": "object",
         "properties": {
+          "action": {
+            "$ref": "#/components/schemas/EAction"
+          },
           "additionalCost": {
             "type": "string"
           },
           "castTime": {
-            "type": "string"
+            "type": "integer",
+            "format": "int32"
+          },
+          "castingTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ECastingType"
+            }
+          },
+          "cooldown": {
+            "type": "integer",
+            "format": "int32"
           },
           "cost": {
             "type": "array",
@@ -4735,6 +4762,9 @@
                 }
               ]
             }
+          },
+          "countermeasures": {
+            "type": "string"
           },
           "effect": {
             "type": "string"
@@ -4983,17 +5013,6 @@
           },
           "dto": {
             "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
-          }
-        }
-      },
-      "ValidationErrorResponse": {
-        "type": "object",
-        "properties": {
-          "errors": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object"
-            }
           }
         }
       },

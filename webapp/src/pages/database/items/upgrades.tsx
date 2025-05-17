@@ -5,7 +5,7 @@ import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPag
 import { fetchAllUpgrades } from "../../../components/Database";
 import { API_CONFIGURATION } from "../../../components/Constants";
 import CurrencyCell from "../../../components/table/CurrencyCell";
-import { ActionIcon, Box, Button, Group, Input, List, Modal, NumberInput, Paper, Select, Stack, TextInput } from "@mantine/core";
+import { ActionIcon, Box, Button, Group, Input, List, Modal, NumberInput, Paper, Select, Stack, TextInput, Tooltip } from "@mantine/core";
 import { useUniverseContext } from "../../../components/PageBase";
 import { useForm, UseFormReturnType } from "@mantine/form";
 import { randomId, useDisclosure } from "@mantine/hooks";
@@ -155,6 +155,7 @@ function CreationDialog({
                     label={t("upgrade:necessary-slots")}
                     key={form.key('slots')}
                     {...form.getInputProps('slots')}
+                    allowDecimal={false}
                 />
                 <Effect form={form} />
                 <Group grow align="flex-start">
@@ -162,6 +163,7 @@ function CreationDialog({
                         label={t("price")}
                         key={form.key('vendorPrice')}
                         {...form.getInputProps('vendorPrice')}
+                        allowDecimal={false}
                     />
                     <TextInput
                         label={t("resultingPrice")}
@@ -245,20 +247,23 @@ function Effect({
                 </Stack>
             )}
         </Stack>
-        <Button
-            onClick={() =>
-                form.insertListItem('effects', {
-                    '@type': 'SimpleUpgradeEffect',
-                    description: '',
-                    upgradeManipulator: EUpgradeEquipmentManipulator.Damage,
-                    calculation: ECalculation.Additive,
-                    value: 0,
-                    key: randomId()
-                })
-            }
-            mt="md"
-        >
-            {t("upgrade:addEffect")}
-        </Button>
+        <Tooltip label={form.errors["effects"]} disabled={!form.errors["effects"]}>
+            <Button
+                onClick={() =>
+                    form.insertListItem('effects', {
+                        '@type': 'SimpleUpgradeEffect',
+                        description: '',
+                        upgradeManipulator: EUpgradeEquipmentManipulator.Damage,
+                        calculation: ECalculation.Additive,
+                        value: 0,
+                        key: randomId()
+                    })
+                }
+                mt="md"
+                color={form.errors["effects"] ? "red" : undefined}
+            >
+                {t("upgrade:addEffect")}
+            </Button>
+        </Tooltip>
     </Stack>;
 }

@@ -1,4 +1,4 @@
-import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack } from "@mantine/core";
+import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { randomId, useDisclosure } from "@mantine/hooks";
 import { useMemo, useEffect } from "react";
@@ -133,18 +133,21 @@ function CreationDialog({
                         </Group>;
                     })}
                 </Stack>
-                <Button
-                    onClick={() =>
-                        form.insertListItem('items', {
-                            amount: 0,
-                            item: null,
-                            key: randomId()
-                        })
-                    }
-                    mt="md"
-                >
-                    {t("item:addItem")}
-                </Button>
+                <Tooltip label={form.errors["items"]} disabled={!form.errors["items"]}>
+                    <Button
+                        onClick={() =>
+                            form.insertListItem('items', {
+                                amount: 0,
+                                item: null,
+                                key: randomId()
+                            })
+                        }
+                        mt="md"
+                        color={form.errors["items"] ? "red" : undefined}
+                    >
+                        {t("item:addItem")}
+                    </Button>
+                </Tooltip>
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
                         {t("cancel")}

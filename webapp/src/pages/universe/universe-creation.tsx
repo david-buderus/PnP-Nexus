@@ -1,18 +1,15 @@
-import { Button, Grid, Group, Stack, Stepper, Textarea, TextInput, Title, Text, ActionIcon, Switch, Tooltip, List, Table, Paper, NumberInput } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { Button, Grid, Group, Stack, Stepper, Textarea, TextInput, Title, Text } from "@mantine/core";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { API_CONFIGURATION } from "../../components/Constants";
-import { BinaryExpressionTreeServiceApi, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttributeDTO, SecondaryAttributeInfo, SimpleSecondaryAttributeServiceApi, Universe, UniverseCreationServiceApi, UniverseServiceApi } from "../../api";
+import { BinaryExpressionTreeServiceApi, PrimaryAttributeServiceApi, SimpleSecondaryAttributeServiceApi, Universe, UniverseCreationServiceApi, UniverseServiceApi } from "../../api";
 import { useForm } from "@mantine/form";
 import { useUniverseContext, useUserContext } from "../../components/PageBase";
-import { handleNetworkErrors, handleValidationErrors } from "../../components/utils/ErrorUtils";
+import { handleValidationErrors } from "../../components/utils/ErrorUtils";
 import CurrencySettingsForm from "../../components/settings/CurrencySettingsForm";
 import ItemSettingsForm from "../../components/settings/ItemSettingsForm";
 import LanguageSelect from "../../components/input/LanguageSelect";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { randomId } from "@mantine/hooks";
 import CharacterSettingsForm from "../../components/settings/CharacterSettingsForm";
-import { fetchAllPrimaryAttributes, fetchSupportedSecondaryAttributeVariables } from "../../components/Database";
 import { PrimaryAttributeForm } from "../../components/character/PrimaryAttributeForm";
 import { SecondaryAttributeForm } from "../../components/character/SecondaryAttributeForm";
 

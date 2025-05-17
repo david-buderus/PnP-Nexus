@@ -5,7 +5,7 @@ import { UniverseSettingsServiceApi, ItemSettings } from "../../api";
 import { API_CONFIGURATION } from "../Constants";
 import { useUniverseContext } from "../PageBase";
 import { handleNetworkErrors, handleValidationErrors } from "../utils/ErrorUtils";
-import { Button, Grid, Group, Stack, Title, Text, NumberInput, Checkbox } from "@mantine/core";
+import { Button, Group, Stack, Title, Text, NumberInput, Checkbox } from "@mantine/core";
 
 const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
 
@@ -48,6 +48,7 @@ export default function ItemSettingsForm({
                 label={t("universe:wearFactor")}
                 key={form.key("wearFactor")}
                 {...form.getInputProps("wearFactor")}
+                allowDecimal={false}
             />
             <Text ta='left' size="xs">
                 {t("universe:wearFactorTooltip")}

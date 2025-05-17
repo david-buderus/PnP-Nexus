@@ -98,6 +98,7 @@ export default function CurrencySettingsForm({
                                                 key={form.key(`calculationEntries.${index}.factor`)}
                                                 required
                                                 {...form.getInputProps(`calculationEntries.${index}.factor`)}
+                                                allowDecimal={false}
                                             />
                                             <Text mt="25">
                                                 {currencyFactor}
@@ -140,6 +141,7 @@ export default function CurrencySettingsForm({
                         label={t("universe:priceExample")}
                         value={priceExample}
                         onChange={setPriceExample}
+                        allowDecimal={false}
                     />
                     <TextInput
                         key={"priceExample-resulting"}

@@ -20,7 +20,7 @@ export function SecondaryAttributeForm({
     alternativeButton?: ReactNode;
 }) {
     const { t } = useTranslation();
-    const { activeUniverse } = useUniverseContext();
+    const { activeUniverse, characterSettings } = useUniverseContext();
 
     const [primaryAttributes] = fetchAllPrimaryAttributes();
     const [supportedVariables] = fetchSupportedSecondaryAttributeVariables();
@@ -212,6 +212,10 @@ export function SecondaryAttributeForm({
                                     label={primaryAttribute.name}
                                     value={primaryValues.get(primaryAttribute.shortName)}
                                     onChange={value => setPrimaryValues(new Map(primaryValues).set(primaryAttribute.shortName, Number(value)))}
+                                    allowDecimal={false}
+                                    clampBehavior="strict"
+                                    min={characterSettings.minPrimaryAttributeValue}
+                                    max={characterSettings.maxPrimaryAttributeValue}
                                 />
                             )}
                         </Grid.Col>

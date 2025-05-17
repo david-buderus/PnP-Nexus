@@ -25,5 +25,11 @@
   "protection": "Protection",
   "dice": "Dice",
   "additive": "Additive",
-  "multiplicative": "Multiplicative"
+  "multiplicative": "Multiplicative",
+  "action": "Action",
+  "bonus_action": "Bonus Action",
+  "movement_action": "Movement Action",
+  "reaction": "Reaction",
+  "verbal": "Verbal",
+  "somatic": "Somatic"
 }

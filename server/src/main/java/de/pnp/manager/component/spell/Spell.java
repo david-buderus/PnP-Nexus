@@ -1,6 +1,10 @@
-package de.pnp.manager.component;
+package de.pnp.manager.component.spell;
 
 import de.pnp.manager.Tag;
+import de.pnp.manager.component.DatabaseObject;
+import de.pnp.manager.component.EAction;
+import de.pnp.manager.component.IResourceUsage;
+import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.server.database.SpellRepository;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +12,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -52,8 +57,20 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
     /**
      * The time needed to cast this spell.
      */
+    @PositiveOrZero
+    private final int castTime;
+
+    /**
+     * The number of rounds the spell needs until it can be cast again.
+     */
+    @PositiveOrZero
+    private final int cooldown;
+
+    /**
+     * The type of action this spell needs.
+     */
     @NotNull
-    private final String castTime;
+    private final EAction action;
 
     /**
      * The talents needed to cast this spell.
@@ -61,6 +78,12 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
     @DBRef
     @NotEmpty
     private final List<Talent> talents;
+
+    /**
+     * How to cast this spell.
+     */
+    @NotNull
+    private final EnumSet<ECastingType> castingTypes;
 
     /**
      * The tier of this spell.
@@ -75,17 +98,28 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
     @NotNull
     private final Set<@NotNull Tag> tags;
 
+    /**
+     * How the spell can be countered, dodged, ...
+     */
+    @NotNull
+    private final String countermeasures;
+
     public Spell(ObjectId id, String name, String effect, List<IResourceUsage<?>> cost, String additionalCost,
-        String castTime, List<Talent> talents, int tier, Set<Tag> tags) {
+        int castTime, int cooldown, EAction action, List<Talent> talents, EnumSet<ECastingType> castingTypes, int tier,
+        Set<Tag> tags, String countermeasures) {
         super(id);
         this.name = name;
         this.effect = effect;
         this.cost = cost;
         this.additionalCost = additionalCost;
         this.castTime = castTime;
+        this.cooldown = cooldown;
+        this.action = action;
         this.talents = Collections.unmodifiableList(talents);
+        this.castingTypes = castingTypes;
         this.tier = tier;
         this.tags = Collections.unmodifiableSet(tags);
+        this.countermeasures = countermeasures;
     }
 
     public String getName() {
@@ -104,7 +138,7 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
         return additionalCost;
     }
 
-    public String getCastTime() {
+    public int getCastTime() {
         return castTime;
     }
 
@@ -116,30 +150,45 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
         return tier;
     }
 
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    public EAction getAction() {
+        return action;
+    }
+
+    public EnumSet<ECastingType> getCastingTypes() {
+        return castingTypes;
+    }
+
+    public String getCountermeasures() {
+        return countermeasures;
+    }
+
     public Set<Tag> getTags() {
         return tags;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Spell spell = (Spell) o;
-        return getTier() == spell.getTier() && Objects.equals(getName(), spell.getName())
-            && Objects.equals(getEffect(), spell.getEffect()) && Objects.equals(getCost(), spell.getCost())
-            && Objects.equals(getAdditionalCost(),
-            spell.getAdditionalCost())
-            && Objects.equals(getCastTime(), spell.getCastTime()) && Objects.equals(
-            getTalents(), spell.getTalents()) && Objects.equals(getTags(), spell.getTags());
+        return getCastTime() == spell.getCastTime() && getCooldown() == spell.getCooldown()
+            && getTier() == spell.getTier()
+            && Objects.equals(getName(), spell.getName()) && Objects.equals(getEffect(),
+            spell.getEffect()) && Objects.equals(getCost(), spell.getCost()) && Objects.equals(
+            getAdditionalCost(), spell.getAdditionalCost()) && getAction() == spell.getAction() && Objects.equals(
+            getTalents(), spell.getTalents()) && Objects.equals(getCastingTypes(), spell.getCastingTypes())
+            && Objects.equals(getTags(), spell.getTags()) && Objects.equals(getCountermeasures(),
+            spell.getCountermeasures());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getEffect(), getCost(), getAdditionalCost(), getCastTime(), getTalents(),
-            getTier(), getTags());
+        return Objects.hash(getName(), getEffect(), getCost(), getAdditionalCost(), getCastTime(), getCooldown(),
+            getAction(), getTalents(), getCastingTypes(), getTier(), getTags(), getCountermeasures());
     }
 }

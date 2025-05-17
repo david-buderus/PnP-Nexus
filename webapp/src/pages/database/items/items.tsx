@@ -694,6 +694,7 @@ function CreationDialog({
                             label={t("armor")}
                             key={form.key('armor')}
                             {...form.getInputProps('armor')}
+                            allowDecimal={false}
                         />
                         <NumberInput
                             label={t("weight")}
@@ -706,6 +707,7 @@ function CreationDialog({
                         label={t("protection")}
                         key={form.key('protection')}
                         {...form.getInputProps('protection')}
+                        allowDecimal={false}
                     /> : null}
                 {itemType === "Shield" && (itemSettings?.shieldUsingDice || itemSettings?.usingProtection) ?
                     <Group grow align="flex-start">
@@ -720,6 +722,7 @@ function CreationDialog({
                                 label={t("protection")}
                                 key={form.key('protection')}
                                 {...form.getInputProps('protection')}
+                                allowDecimal={false}
                             /> : null}
                     </Group> : null}
                 {itemType === "Weapon" ?
@@ -728,6 +731,7 @@ function CreationDialog({
                             label={t("damage")}
                             key={form.key('damage')}
                             {...form.getInputProps('damage')}
+                            allowDecimal={false}
                         />
                         <DiceInput
                             label={t("dice")}
@@ -741,6 +745,7 @@ function CreationDialog({
                             label={t("hit")}
                             key={form.key('hit')}
                             {...form.getInputProps('hit')}
+                            allowDecimal={false}
                         />
                         <NumberInput
                             label={t("initiative")}
@@ -762,7 +767,9 @@ function CreationDialog({
                     <NumberInput
                         label={t("upgradeSlots")}
                         key={form.key('upgradeSlots')}
-                        {...form.getInputProps('upgradeSlots')} /> : null}
+                        {...form.getInputProps('upgradeSlots')}
+                        allowDecimal={false}
+                    /> : null}
                 <Group grow align="flex-start">
                     <RaritySelect
                         label={t("rarity")}
@@ -773,6 +780,7 @@ function CreationDialog({
                         label={t("tier")}
                         key={form.key('tier')}
                         {...form.getInputProps('tier')}
+                        allowDecimal={false}
                     />
                 </Group>
                 <TextInput
@@ -785,6 +793,7 @@ function CreationDialog({
                         label={t("price")}
                         key={form.key('vendorPrice')}
                         {...form.getInputProps('vendorPrice')}
+                        allowDecimal={false}
                     />
                     <TextInput
                         label={t("resultingPrice")}
@@ -797,11 +806,13 @@ function CreationDialog({
                         label={t("item:minStackSize")}
                         key={form.key('minimumStackSize')}
                         {...form.getInputProps('minimumStackSize')}
+                        allowDecimal={false}
                     />
                     <NumberInput
                         label={t("item:maxStackSize")}
                         key={form.key('maximumStackSize')}
                         {...form.getInputProps('maximumStackSize')}
+                        allowDecimal={false}
                     />
                 </Group>
                 <TextInput

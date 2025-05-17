@@ -25,5 +25,11 @@
   "protection": "Schutz",
   "dice": "Würfel",
   "additive": "Additiv",
-  "multiplicative": "Multiplikativ"
+  "multiplicative": "Multiplikativ",
+  "action": "Aktion",
+  "bonus_action": "Bonusaktion",
+  "movement_action": "Bewegungsaktion",
+  "reaction": "Reaktion",
+  "verbal": "Verbal",
+  "somatic": "Somatisch"
 }

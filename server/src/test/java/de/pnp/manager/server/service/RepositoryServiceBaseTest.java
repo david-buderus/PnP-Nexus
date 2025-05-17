@@ -23,6 +23,8 @@ import de.pnp.manager.utils.TestItemBuilder;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.utils.TestSecondaryAttributeBuilder;
 import de.pnp.manager.utils.TestSecondaryAttributeBuilder.TestSecondaryAttributeBuilderFactory;
+import de.pnp.manager.utils.TestSpellBuilder;
+import de.pnp.manager.utils.TestSpellBuilder.TestSpellBuilderFactory;
 import de.pnp.manager.utils.TestUpgradeBuilder;
 import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
@@ -85,6 +87,9 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
 
     @Autowired
     private TestSecondaryAttributeBuilderFactory secondaryAttributeBuilder;
+
+    @Autowired
+    private TestSpellBuilderFactory spellBuilder;
 
     protected RepositoryServiceBaseTest(Service service, Repo repository, Class<Obj> objClass) {
         this.service = service;
@@ -361,7 +366,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
 
         assertThat(getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId())).isEqualTo(
-            objects.get(0));
+            objects.getFirst());
     }
 
     private void runInsertTest() throws Exception {
@@ -586,5 +591,12 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      */
     protected TestSecondaryAttributeBuilder createSecondaryAttribute() {
         return secondaryAttributeBuilder.createAttributeBuilder(getUniverseName());
+    }
+
+    /**
+     * A helper method to create {@link TestSpellBuilder}.
+     */
+    protected TestSpellBuilder createSpell() {
+        return spellBuilder.createSpellBuilder(getUniverseName());
     }
 }

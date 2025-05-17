@@ -5,5 +5,8 @@
   "deletionTitle": "Willst du die ausgewählten Zauber löschen?",
   "creationTitle": "Erstelle ein Zauber",
   "editTitle": "Bearbeite ein Zauber",
-  "addCost": "Füge dem Zauber weitere Kosten hinzu"
+  "addCost": "Füge dem Zauber weitere Kosten hinzu",
+  "cooldown": "Cooldown",
+  "castingTypes": "Zaubervarianten",
+  "countermeasures": "Gegenmaßnahmen"
 }

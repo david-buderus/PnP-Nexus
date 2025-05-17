@@ -371,6 +371,22 @@ export interface Dice {
  * @enum {string}
  */
 
+export const EAction = {
+    Action: 'ACTION',
+    BonusAction: 'BONUS_ACTION',
+    MovementAction: 'MOVEMENT_ACTION',
+    Reaction: 'REACTION'
+} as const;
+
+export type EAction = typeof EAction[keyof typeof EAction];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
 export const EArmorSlot = {
     Head: 'HEAD',
     Body: 'BODY',
@@ -393,6 +409,20 @@ export const ECalculation = {
 } as const;
 
 export type ECalculation = typeof ECalculation[keyof typeof ECalculation];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ECastingType = {
+    Verbal: 'VERBAL',
+    Somatic: 'SOMATIC'
+} as const;
+
+export type ECastingType = typeof ECastingType[keyof typeof ECastingType];
 
 
 /**
@@ -866,7 +896,7 @@ export interface PnPUser {
      * @type {string}
      * @memberof PnPUser
      */
-    'displayName'?: string;
+    'displayName': string;
     /**
      * 
      * @type {string}
@@ -1242,22 +1272,46 @@ export interface SingleDice {
 export interface Spell {
     /**
      * 
+     * @type {EAction}
+     * @memberof Spell
+     */
+    'action': EAction;
+    /**
+     * 
      * @type {string}
      * @memberof Spell
      */
     'additionalCost': string;
     /**
      * 
-     * @type {string}
+     * @type {number}
      * @memberof Spell
      */
-    'castTime': string;
+    'castTime'?: number;
+    /**
+     * 
+     * @type {Array<ECastingType>}
+     * @memberof Spell
+     */
+    'castingTypes': Array<ECastingType>;
+    /**
+     * 
+     * @type {number}
+     * @memberof Spell
+     */
+    'cooldown'?: number;
     /**
      * 
      * @type {Array<CraftingRecipeMaterialsInner>}
      * @memberof Spell
      */
     'cost': Array<CraftingRecipeMaterialsInner>;
+    /**
+     * 
+     * @type {string}
+     * @memberof Spell
+     */
+    'countermeasures': string;
     /**
      * 
      * @type {string}
@@ -1295,6 +1349,8 @@ export interface Spell {
      */
     'tier': number;
 }
+
+
 /**
  * 
  * @export
@@ -1545,19 +1601,6 @@ export interface UserUniversePermissionDTO {
      * @memberof UserUniversePermissionDTO
      */
     'dto': GrantedUniverseAuthorityDTO;
-}
-/**
- * 
- * @export
- * @interface ValidationErrorResponse
- */
-export interface ValidationErrorResponse {
-    /**
-     * 
-     * @type {{ [key: string]: object; }}
-     * @memberof ValidationErrorResponse
-     */
-    'errors'?: { [key: string]: object; };
 }
 /**
  * 
