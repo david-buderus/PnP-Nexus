@@ -12,10 +12,8 @@ import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -31,17 +29,6 @@ public class UpgradePageTest extends RepositoryOverviewTestBase<Upgrade> {
     @Override
     protected OverviewBasePage openTestPage(MainMenu mainMenu) {
         return mainMenu.openUpgradePage();
-    }
-
-    @Override
-    protected Comparator<Upgrade> getDefaultSort() {
-        return Comparator.comparing(Upgrade::getName);
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<Upgrade>>> getSorters() {
-        return List.of(Pair.of("slots", Comparator.comparing(Upgrade::getSlots)),
-            Pair.of("restriction", Comparator.comparing(Upgrade::getRestriction)));
     }
 
     @Override

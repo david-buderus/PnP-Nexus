@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { useUniverseContext, useUserContext } from "./PageBase";
 import { Button, Group, Stack } from "@mantine/core";
 import {
+    HTMLPropsRef,
     MantineReactTable,
     useMantineReactTable,
     type MRT_ColumnDef,
@@ -56,10 +57,14 @@ export default function OverviewPage<T>({
         },
         onColumnVisibilityChange: setVisibility,
         enableRowSelection: true,
+        mantineTableBodyRowProps: (props) => ({
+            'data-testid': props.row.original["id"]
+        } as HTMLPropsRef<any>),
     });
 
     return <Stack>
         <MantineReactTable
+            data-testid="overview-table"
             table={table}
         />
         {userPermissions.canWriteActiveUniverse && <Group justify="flex-end">

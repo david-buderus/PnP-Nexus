@@ -1,14 +1,13 @@
-import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, UnstyledButton, Title, Popover, Select } from "@mantine/core";
+import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, UnstyledButton, Title, Select } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { UserPermissions } from "../../src old/components/interfaces/UserPermissions";
 import { Link, Outlet, useOutletContext, useSearchParams } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
 import { Universe, CurrencySettings, ItemSettings, PnPUser, PnPUserPreference, UniverseServiceApi, UniverseSettingsServiceApi, AuthenticationServiceApi, UserServiceApi, CharacterSettings } from "../api";
 import { API_CONFIGURATION } from "./Constants";
 import i18n from "../i18n";
-import { extractUserPermissions } from "./interfaces/UserPermissions";
+import { extractUserPermissions, UserPermissions } from "./interfaces/UserPermissions";
 import { useTranslation } from "react-i18next";
-import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiHeartInside, GiMagicAxe, GiMuscleUp, GiRing, GiShield, GiSpellBook, GiStoneCrafting, GiSupersonicArrow, GiSwapBag } from 'react-icons/gi';
+import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiMagicAxe, GiRing, GiShield, GiSpellBook, GiStoneCrafting, GiSupersonicArrow, GiSwapBag } from 'react-icons/gi';
 import { FaChevronDown, FaPersonRays } from "react-icons/fa6";
 import { TfiWorld } from "react-icons/tfi";
 import { IoSettingsSharp } from "react-icons/io5";
@@ -146,6 +145,7 @@ export function PageBase() {
             header={{ height: 70 }}
             navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
             padding="md"
+            data-testid="page-base"
         >
             <AppShell.Header>
                 <Group justify="space-between" align="center">
@@ -180,6 +180,7 @@ export function PageBase() {
                     <Stack>
                         {generateSidebarEntries(userPermissions).map((item) =>
                             <NavbarEntry
+                                key={item.id}
                                 searchParams={searchParams.toString()}
                                 {...item}
                             />
@@ -225,6 +226,7 @@ function NavbarEntry({ id, label, icon, link, subEntries, searchParams }: Navbar
         return <NavLink
             component={Link}
             key={id}
+            data-testid={id}
             label={label}
             leftSection={icon}
             to={{
@@ -236,12 +238,14 @@ function NavbarEntry({ id, label, icon, link, subEntries, searchParams }: Navbar
 
     return <NavLink
         key={id}
+        data-testid={id}
         label={label}
         leftSection={icon}
     >
         <NavLink
             component={Link}
             key={id + "-inner"}
+            data-testid={id + "-inner"}
             label={label}
             leftSection={icon}
             to={{
@@ -253,6 +257,7 @@ function NavbarEntry({ id, label, icon, link, subEntries, searchParams }: Navbar
             <NavLink
                 component={Link}
                 key={subItem.id}
+                data-testid={subItem.id}
                 label={subItem.label}
                 leftSection={subItem.icon}
                 to={{

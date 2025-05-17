@@ -2,7 +2,6 @@ package de.pnp.manager.webapp.database;
 
 import de.pnp.manager.component.IResourceUsage;
 import de.pnp.manager.component.IResourceUsage.CharacterResourceUsage;
-import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -11,10 +10,7 @@ import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -41,13 +37,6 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
     @Override
     protected String getEditObjectName() {
         return "Fireball";
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<Spell>>> getSorters() {
-        return List.of(Pair.of("effect", Comparator.comparing(Spell::getEffect)),
-            Pair.of("talents", Comparator.comparing(
-                spell -> spell.getTalents().stream().map(Talent::getName).collect(Collectors.joining(", ")))));
     }
 
     @Override

@@ -10,11 +10,8 @@ import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -38,18 +35,6 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
     @Override
     protected OverviewBasePage openTestPage(MainMenu mainMenu) {
         return mainMenu.openUpgradeRecipePage();
-    }
-
-    @Override
-    protected Comparator<UpgradeRecipe> getDefaultSort() {
-        return Comparator.comparing(recipe -> recipe.getUpgrade().getName());
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<UpgradeRecipe>>> getSorters() {
-        return List.of(Pair.of("requirement", Comparator.comparing(UpgradeRecipe::getRequirement)),
-            Pair.of("requiredUpgrades", Comparator.comparing(recipe -> recipe.getRequiredUpgrades().stream().map(
-                Upgrade::getName).collect(Collectors.joining(", ")))));
     }
 
     @Override

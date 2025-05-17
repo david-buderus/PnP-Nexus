@@ -4,7 +4,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-import de.pnp.manager.webapp.utils.WebTestUtils;
+import de.pnp.manager.webapp.pages.components.Select;
 import org.assertj.core.api.Assertions;
 
 /**
@@ -34,7 +34,7 @@ public class UserPreferencePage extends PageBase {
      * Sets the language
      */
     public void setLanguage(String language) {
-        WebTestUtils.select(page.getByTestId("language"), language);
+        Select.from(page.getByTestId("language")).select(language);
     }
 
     /**

@@ -8,10 +8,8 @@ import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -30,17 +28,6 @@ public class TalentPageTest extends RepositoryOverviewTestBase<Talent> {
     @Override
     protected OverviewBasePage openTestPage(MainMenu mainMenu) {
         return mainMenu.openTalentPage();
-    }
-
-    @Override
-    protected Comparator<Talent> getDefaultSort() {
-        return Comparator.comparing(Talent::getName);
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<Talent>>> getSorters() {
-        return List.of(Pair.of("group", Comparator.comparing(Talent::getGroup)),
-            Pair.of("firstAttribute", Comparator.comparing(talent -> talent.getFirstAttribute().getName())));
     }
 
     @Override
@@ -67,13 +54,13 @@ public class TalentPageTest extends RepositoryOverviewTestBase<Talent> {
 
     @Override
     protected Talent getEditedObject() {
-        return new Talent(null, "Real Fire Magic", "Magic", getOriginalModifiedObject().getFirstAttribute(),
+        return new Talent(null, "Real Casting", "Magic", getOriginalModifiedObject().getFirstAttribute(),
             getOriginalModifiedObject().getSecondAttribute(), getOriginalModifiedObject().getThirdAttribute());
     }
 
     @Override
     protected String getChangeIdentifier() {
-        return "Real Fire Magic";
+        return "Real Casting";
     }
 
     private PrimaryAttribute getExampleAttribute() {
@@ -82,6 +69,6 @@ public class TalentPageTest extends RepositoryOverviewTestBase<Talent> {
 
     @Override
     protected Predicate<Talent> getOriginalModifiedFilter() {
-        return talent -> "Fire Magic".equals(talent.getName());
+        return talent -> "Casting".equals(talent.getName());
     }
 }

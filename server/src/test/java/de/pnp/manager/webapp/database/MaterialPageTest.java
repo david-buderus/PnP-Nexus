@@ -9,10 +9,7 @@ import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -31,13 +28,6 @@ public class MaterialPageTest extends UniquelyNamedOverviewTestBase<Material, Ma
     @Override
     protected OverviewBasePage openTestPage(MainMenu mainMenu) {
         return mainMenu.openMaterialPage();
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<Material>>> getSorters() {
-        return List.of(Pair.of("items", Comparator.comparing(
-            material -> material.getItems().stream().map(item -> item.item().getName())
-                .collect(Collectors.joining(", ")))));
     }
 
     @Override

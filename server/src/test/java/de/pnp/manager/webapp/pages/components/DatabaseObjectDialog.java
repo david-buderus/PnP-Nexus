@@ -1,5 +1,7 @@
 package de.pnp.manager.webapp.pages.components;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.microsoft.playwright.Locator;
@@ -8,9 +10,7 @@ import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
-import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.math.BinaryExpressionTree;
-import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.webapp.utils.WebTestUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,28 +39,28 @@ public class DatabaseObjectDialog {
      * Returns the currently open dialog.
      */
     public static DatabaseObjectDialog getDialog(Page page) {
-        return new DatabaseObjectDialog(page.getByTestId("database-object-dialog"));
+        return new DatabaseObjectDialog(page.getByRole(AriaRole.DIALOG));
     }
 
     /**
      * Sets the value of the corresponding attribute.
      */
     public void set(String attribute, String value) {
-        locator.getByTestId(attribute).getByRole(AriaRole.TEXTBOX).fill(value);
+        getByDataPath(attribute).fill(value);
     }
 
     /**
      * Sets the value of the corresponding attribute.
      */
     public void set(String attribute, Number value) {
-        locator.getByTestId(attribute).getByRole(AriaRole.TEXTBOX).fill(String.valueOf(value));
+        getByDataPath(attribute).fill(String.valueOf(value));
     }
 
     /**
      * Sets the value of the corresponding attribute.
      */
     public void set(String attribute, boolean value) {
-        Locator checkbox = locator.getByTestId(attribute);
+        Locator checkbox = getByDataPath(attribute);
         if (value) {
             checkbox.check();
         } else {
@@ -71,15 +71,23 @@ public class DatabaseObjectDialog {
     /**
      * Sets the value of the corresponding attribute.
      */
-    public void setAutoComplete(String attribute, String value) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId(attribute), value, true);
+    public void setSelect(String attribute, DatabaseObject object) {
+        Select.from(getByDataPath(attribute)).select(object);
     }
 
     /**
      * Sets the value of the corresponding attribute.
      */
+    public void setSelect(String attribute, IUniquelyNamedDataObject object) {
+        Select.from(getByDataPath(attribute)).select(object);
+    }
+
+
+    /**
+     * Sets the value of the corresponding attribute.
+     */
     public void setSelect(String attribute, String value) {
-        WebTestUtils.select(locator.getByTestId(attribute), value);
+        Select.from(getByDataPath(attribute)).select(value);
     }
 
     /**
@@ -97,7 +105,7 @@ public class DatabaseObjectDialog {
         getSubTypeAnnotation(object.getClass()).ifPresent(
             subTypeAnnotation -> {
                 String typePrefix = idPrefix + "@type";
-                if (locator.getByTestId(typePrefix).isVisible()) {
+                if (getByDataPath(typePrefix).isVisible()) {
                     setSelect(typePrefix, subTypeAnnotation);
                 }
             });
@@ -108,32 +116,20 @@ public class DatabaseObjectDialog {
 
             String id = idPrefix + field.getName();
 
-            if (!locator.getByTestId(id).isVisible()) {
+            if (!getByDataPath(id).isVisible()) {
                 return;
             }
 
-            if (property instanceof String s) {
-                set(id, s);
-            } else if (property instanceof Number n) {
-                set(id, n);
-            } else if (property instanceof Boolean b) {
-                set(id, b);
-            } else if (property instanceof Collection<?> collection) {
-                fillOutCollection(collection, id);
-            } else if (property instanceof Enum<?> e) {
-                setSelect(id, e.name());
-            } else if (property instanceof IUniquelyNamedDataObject named) {
-                setAutoComplete(id, named.getName());
-            } else if (property instanceof Talent t) {
-                setAutoComplete(id, t.getName());
-            } else if (property instanceof Upgrade u) {
-                setAutoComplete(id, u.getName());
-            } else if (property instanceof BinaryExpressionTree tree) {
-                set(id, tree.toHumanReadableString());
-            } else if (property instanceof Dice dice) {
-                set(id, dice.toHumandReadableString());
-            } else {
-                fillOut(property, id + ".");
+            switch (property) {
+                case String s -> set(id, s);
+                case Number n -> set(id, n);
+                case Boolean b -> set(id, b);
+                case Collection<?> collection -> fillOutCollection(collection, id);
+                case Enum<?> e -> Select.from(getByDataPath(id)).select(e.name());
+                case DatabaseObject databaseObject -> setSelect(id, databaseObject);
+                case BinaryExpressionTree tree -> set(id, tree.toHumanReadableString());
+                case Dice dice -> set(id, dice.toHumandReadableString());
+                case null, default -> fillOut(property, id + ".");
             }
         });
     }
@@ -156,14 +152,12 @@ public class DatabaseObjectDialog {
         } else {
             // This means it is an autocomplete with multiselect
 
-            WebTestUtils.clearAutoComplete(locator.getByTestId(id));
+            WebTestUtils.clearMultiSelect(getByDataPath(id));
             for (Object o : collection) {
-                if (o instanceof IUniquelyNamedDataObject named) {
-                    setAutoComplete(id, named.getName());
-                } else if (o instanceof Talent t) {
-                    setAutoComplete(id, t.getName());
-                } else if (o instanceof Upgrade u) {
-                    setAutoComplete(id, u.getName());
+                if (o instanceof DatabaseObject databaseObject) {
+                    setSelect(id, databaseObject);
+                } else {
+                    fail("Unsupported object: " + o);
                 }
             }
         }
@@ -193,7 +187,9 @@ public class DatabaseObjectDialog {
      */
     public void assertError(String attribute) {
         Assertions.assertThat(
-                locator.getByTestId(attribute)
+                getByDataPath(attribute)
+                    .locator("..")
+                    .locator("..")
                     .locator("p").textContent())
             .isNotBlank();
     }
@@ -202,13 +198,17 @@ public class DatabaseObjectDialog {
      * Tries to add the object to the universe.
      */
     public void add() {
-        locator.getByTestId("dialog-action").click();
+        locator.locator("[type=submit]").click();
     }
 
     /**
      * Tries to edit the object to the universe.
      */
     public void edit() {
-        locator.getByTestId("dialog-action").click();
+        locator.locator("[type=submit]").click();
+    }
+
+    private Locator getByDataPath(String path) {
+        return locator.locator("[data-path=\"" + path + "\"]");
     }
 }

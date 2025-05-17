@@ -35,7 +35,7 @@ export default function ConfirmationDialog({
                 <Button autoFocus variant="outline" onClick={close}>
                     {t("cancel")}
                 </Button>
-                <Button onClick={() => {
+                <Button type="submit" onClick={() => {
                     onConfirmation();
                     close();
                 }}>

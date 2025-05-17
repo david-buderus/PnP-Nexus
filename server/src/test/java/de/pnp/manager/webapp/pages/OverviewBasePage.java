@@ -1,6 +1,7 @@
 package de.pnp.manager.webapp.pages;
 
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.webapp.pages.components.DatabaseObjectDialog;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
 
@@ -41,7 +42,7 @@ public class OverviewBasePage extends PageBase {
      */
     public void deleteSelectedObjects() {
         page.getByTestId("delete").click();
-        page.getByTestId("confirm").click();
+        page.getByRole(AriaRole.DIALOG).locator("[type=submit]").click();
     }
 
     /**

@@ -5,7 +5,6 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.webapp.pages.MainMenu;
 import java.net.URL;
 
@@ -32,8 +31,8 @@ public class WebDriver {
         page.navigate(String.valueOf(baseUrl));
         page.bringToFront();
 
-        page.getByTestId("username-field").getByRole(AriaRole.TEXTBOX).fill(username);
-        page.getByTestId("password-field").getByRole(AriaRole.TEXTBOX).fill(password);
+        page.getByTestId("username-field").fill(username);
+        page.getByTestId("password-field").fill(password);
         page.getByTestId("login-button").click();
 
         assertThat(page.getByTestId("page-base")).isVisible();

@@ -4,16 +4,14 @@ import de.pnp.manager.component.item.Item;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
 import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Tests the item overview page.
  */
 public class ItemPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepository> {
-    
+
     protected ItemPageTest(@Autowired ItemRepository repository) {
         super(repository);
     }
@@ -21,11 +19,6 @@ public class ItemPageTest extends UniquelyNamedOverviewTestBase<Item, ItemReposi
     @Override
     protected OverviewBasePage openTestPage(MainMenu mainMenu) {
         return mainMenu.openItemPage();
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<Item>>> getSorters() {
-        return null;
     }
 
     @Override

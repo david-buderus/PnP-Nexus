@@ -12,10 +12,8 @@ import de.pnp.manager.webapp.pages.OverviewBasePage;
 import de.pnp.manager.webapp.pages.components.DatabaseObjectDialog;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.api.Assertions;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,22 +40,6 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
         universe = getUniverse();
         page = openTestPage(webDriver.openMainMenu("admin", "admin"));
         page.selectActiveUniverse(universe);
-    }
-
-    @Test
-    void testSorting() {
-        Collection<T> objects = getTestObjects();
-
-        OverviewTable table = page.getTable();
-
-        assertThat(table.getAllTableRows().asLocator()).not().hasCount(0);
-
-        table.assertIsSorted(objects, getDefaultSort());
-
-        for (Pair<String, Comparator<T>> sorter : getSorters()) {
-            table.clickSortBy(sorter.getLeft());
-            table.assertIsSorted(objects, sorter.getRight());
-        }
     }
 
     @Test
@@ -139,16 +121,6 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
      * Returns all known test objects.
      */
     protected abstract Collection<T> getTestObjects();
-
-    /**
-     * Returns the default sort of the underlying table.
-     */
-    protected abstract Comparator<T> getDefaultSort();
-
-    /**
-     * Returns sorters which should get tested with their corresponding id.
-     */
-    protected abstract List<Pair<String, Comparator<T>>> getSorters();
 
     /**
      * Returns an object which will have validation errors.

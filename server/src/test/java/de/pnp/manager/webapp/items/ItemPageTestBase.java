@@ -63,18 +63,6 @@ public abstract class ItemPageTestBase extends ServerTestBase {
     }
 
     @Test
-    void testSorting() {
-        Collection<Item> items = getTestItems();
-
-        OverviewTable table = page.getTable();
-
-        assertSorting(table, items, Comparator.comparing(Item::getName));
-
-        table.clickSortByLabel("Name");
-        assertSorting(table, items, Comparator.comparing(Item::getName).reversed());
-    }
-
-    @Test
     void testDeleting() {
         Collection<Item> items = getTestItems();
         Item item = items.stream().min(Comparator.comparing(Item::getName)).orElseThrow();

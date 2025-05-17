@@ -6,7 +6,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserDetails;
-import de.pnp.manager.webapp.utils.WebTestUtils;
+import de.pnp.manager.webapp.pages.components.Select;
 
 /**
  * Base class for user manipulation dialogs.
@@ -74,20 +74,20 @@ public class UserManipulation {
      * @see PnPUserDetails#getAuthorities()
      */
     public void addReadUniverse(String universe) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("universe-read-rights"), universe, true);
+        Select.from(locator.getByTestId("universe-read-rights")).select(universe);
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
     public void addWriteUniverse(String universe) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("universe-write-rights"), universe, true);
+        Select.from(locator.getByTestId("universe-write-rights")).select(universe);
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
     public void addOwnerUniverse(String universe) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("universe-owner-rights"), universe, true);
+        Select.from(locator.getByTestId("universe-owner-rights")).select(universe);
     }
 }

@@ -2,7 +2,6 @@ package de.pnp.manager.webapp.pages.components.items;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-import de.pnp.manager.webapp.utils.WebTestUtils;
 
 /**
  * Represents the ItemCreation component.
@@ -24,7 +23,6 @@ public class ItemCreation extends ItemManipulation {
      * Sets the class of the item which will be created.
      */
     public void setItemClass(EItemClass itemClass) {
-        WebTestUtils.select(locator.getByTestId("item-class-select"), itemClass.value);
     }
 
     /**

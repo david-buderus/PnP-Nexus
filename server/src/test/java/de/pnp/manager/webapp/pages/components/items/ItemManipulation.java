@@ -12,7 +12,6 @@ import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.item.interfaces.IHandheldItem;
-import de.pnp.manager.webapp.utils.WebTestUtils;
 import java.util.List;
 
 /**
@@ -68,7 +67,6 @@ public abstract class ItemManipulation {
      * @see EquipableItem#getMaterial()
      */
     public void setMaterial(String material) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("material"), material, true);
     }
 
     /**
@@ -96,7 +94,6 @@ public abstract class ItemManipulation {
      * @see Armor#getArmorSlot()
      */
     public void setArmorSlot(EArmorSlot armorSlot) {
-        WebTestUtils.select(locator.getByTestId("rarity"), armorSlot.name());
     }
 
     /**
@@ -152,7 +149,6 @@ public abstract class ItemManipulation {
      * @see Item#getRarity()
      */
     public void setRarity(ERarity rarity) {
-        WebTestUtils.select(locator.getByTestId("rarity"), rarity.name());
     }
 
     /**

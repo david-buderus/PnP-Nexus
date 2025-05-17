@@ -112,8 +112,8 @@ function CreationDialog({
                     {...form.getInputProps('name')}
                 />
                 <TextInput
-                    label={t("group")}
-                    key={form.key('character:group')}
+                    label={t("character:group")}
+                    key={form.key('group')}
                     {...form.getInputProps('group')}
                 />
                 <ObjectSelect<PrimaryAttribute>

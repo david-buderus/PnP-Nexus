@@ -35,6 +35,7 @@ export function UniverseView({ children }: { children: ReactNode; }) {
                     value={activeUniverse?.name ?? null}
                     onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
                     searchable
+                    data-testid="universe-selector"
                 />
             </>
             : userPermissions.canCreateUniverses ?

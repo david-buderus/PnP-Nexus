@@ -5,7 +5,6 @@ import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 
@@ -47,11 +46,6 @@ public abstract class UniquelyNamedOverviewTestBase<T extends DatabaseObject & I
     @Override
     protected Collection<T> getTestObjects() {
         return repository.getAll(getUniverseName());
-    }
-
-    @Override
-    protected Comparator<T> getDefaultSort() {
-        return Comparator.comparing(IUniquelyNamedDataObject::getName);
     }
 
     @Override
