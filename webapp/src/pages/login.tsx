@@ -1,12 +1,12 @@
-import { Button, Container, TextInput, Title, Text, Anchor, Paper, PasswordInput, Group, Checkbox } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import {Anchor, Button, Checkbox, Container, Group, Paper, PasswordInput, TextInput, Title} from "@mantine/core";
+import {useForm} from "@mantine/form";
 import axios from "axios";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
-
+/** Login screen */
 export default function Login() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
@@ -27,7 +27,7 @@ export default function Login() {
             password: '',
         },
         validate: {
-            password: (value) => searchParams.get("error") ? t("wrongPassword") : null
+            password: () => searchParams.get("error") ? t("wrongPassword") : null
         }
     });
 
@@ -55,7 +55,7 @@ export default function Login() {
                         {...form.getInputProps('password')}
                     />
                     <Group justify="space-between" mt="lg">
-                        <Checkbox label="Remember me" />
+                        <Checkbox label="Remember me"/>
                         <Anchor component="button" size="sm">
                             Forgot password?
                         </Anchor>

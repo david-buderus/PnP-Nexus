@@ -1,20 +1,23 @@
-import { ActionIcon, Box, Button, Group, Input, Stack, TagsInput, Text, Tooltip } from "@mantine/core";
-import { TagRequirement } from "../../api";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { useTranslation } from "react-i18next";
-import { fetchAllTags } from "../Database";
-import { MdOutlineHelpOutline } from "react-icons/md";
+import {ActionIcon, Box, Button, Group, Input, Stack, TagsInput, Text, Tooltip} from "@mantine/core";
+import {TagRequirement} from "../../api";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {useTranslation} from "react-i18next";
+import {fetchAllTags} from "../Database";
+import {MdOutlineHelpOutline} from "react-icons/md";
 
-
+/** Props of the tag requirement input */
 interface TagRequirementsInputProps {
+    /** The current value */
     value?: TagRequirement;
+    /** The change callback */
     onChange?: (t: TagRequirement) => void;
 }
 
+/** Input to change tag requirements */
 export default function TagRequirementsInput({
     value, onChange
 }: TagRequirementsInputProps) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [tags] = fetchAllTags();
 
     return <Stack gap={3}>
@@ -23,7 +26,7 @@ export default function TagRequirementsInput({
                 <Input.Label>
                     {t("upgrade:tagRequirement")}
                 </Input.Label>
-                <MdOutlineHelpOutline />
+                <MdOutlineHelpOutline/>
             </Group>
         </Tooltip>
         {value.tagRequirements.length === 0 ?
@@ -32,7 +35,7 @@ export default function TagRequirementsInput({
         {value.tagRequirements.map((requirement, index) =>
             <Group key={"requirement-" + index} wrap="nowrap">
                 <Box
-                    style={{ flex: 1 }}
+                    style={{flex: 1}}
                 >
                     <TagsInput
                         value={(requirement)}
@@ -46,7 +49,7 @@ export default function TagRequirementsInput({
                 <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => onChange({
                     tagRequirements: value.tagRequirements.filter((_, i) => i !== index)
                 })}>
-                    <FaRegTrashCan />
+                    <FaRegTrashCan/>
                 </ActionIcon>
             </Group>
         )}

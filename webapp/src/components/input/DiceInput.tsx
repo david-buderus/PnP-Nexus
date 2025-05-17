@@ -1,9 +1,10 @@
-import { TextInput, TextInputProps } from "@mantine/core";
-import { Dice } from "../../api";
-import { useState } from "react";
-import { diceFormatter } from "../utils/Formatters";
-import { useTranslation } from "react-i18next";
+import {TextInput, TextInputProps} from "@mantine/core";
+import {Dice} from "../../api";
+import {useState} from "react";
+import {diceFormatter} from "../utils/Formatters";
+import {useTranslation} from "react-i18next";
 
+/** The props for the dice input */
 export interface DiceInputProps extends Omit<TextInputProps, "value" | "onChange"> {
     /** The current value of the text field. */
     value?: Dice,
@@ -11,10 +12,11 @@ export interface DiceInputProps extends Omit<TextInputProps, "value" | "onChange
     onChange?: (value: Dice) => void;
 }
 
+/** An input field for dices */
 export default function DiceInput({
     value, onChange, ...rest
 }: DiceInputProps) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [stringValue, setStringValue] = useState(value === undefined ? "" : diceFormatter(value));
     const [validDice, setValidDice] = useState(true);
 
@@ -45,11 +47,9 @@ function parseDice(s: string): Dice {
     }
 
     return {
-        dices: s.split("+").map(d => d.split("D").map(d => d.trim())).map(d => {
-            return {
-                numberOfThrows: d[0] ? Number(d[0]) : 1,
-                dice: Number(d[1])
-            };
-        })
+        dices: s.split("+").map(d => d.split("D").map(p => p.trim())).map(d => ({
+            numberOfThrows: d[0] ? Number(d[0]) : 1,
+            dice: Number(d[1])
+        }))
     };
 }

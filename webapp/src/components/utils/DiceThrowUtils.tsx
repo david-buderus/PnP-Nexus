@@ -2,9 +2,9 @@
  * Returns the probability for a throw with at least the given values.
  */
 export function probabilityForSuccesfulThrows(a1: number, a2: number, a3: number, succesfulThrows: number = 2) {
-    const p1 = prohabilites(a1);
-    const p2 = prohabilites(a2);
-    const p3 = prohabilites(a3);
+    const p1 = probabilities(a1);
+    const p2 = probabilities(a2);
+    const p3 = probabilities(a3);
 
     let chance = 0;
     for (let x1 = -1; x1 < 3; x1++) {
@@ -19,7 +19,7 @@ export function probabilityForSuccesfulThrows(a1: number, a2: number, a3: number
     return chance;
 }
 
-function prohabilites(x: number): {
+function probabilities(x: number): {
     "-1": number;
     "0": number;
     "1": number;

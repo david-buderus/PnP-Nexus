@@ -1,35 +1,36 @@
-import { Button, Grid, Group, Stack, Stepper, Textarea, TextInput, Title, Text } from "@mantine/core";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { API_CONFIGURATION } from "../../components/Constants";
-import { BinaryExpressionTreeServiceApi, PrimaryAttributeServiceApi, SimpleSecondaryAttributeServiceApi, Universe, UniverseCreationServiceApi, UniverseServiceApi } from "../../api";
-import { useForm } from "@mantine/form";
-import { useUniverseContext, useUserContext } from "../../components/PageBase";
-import { handleValidationErrors } from "../../components/utils/ErrorUtils";
+import {Button, Grid, Group, Stack, Stepper, Text, Textarea, TextInput, Title} from "@mantine/core";
+import {useState} from "react";
+import {useTranslation} from "react-i18next";
+import {API_CONFIGURATION} from "../../components/Constants";
+import {Universe, UniverseCreationServiceApi, UniverseServiceApi} from "../../api";
+import {useForm} from "@mantine/form";
+import {useUniverseContext, useUserContext} from "../../components/PageBase";
+import {handleValidationErrors} from "../../components/utils/ErrorUtils";
 import CurrencySettingsForm from "../../components/settings/CurrencySettingsForm";
 import ItemSettingsForm from "../../components/settings/ItemSettingsForm";
 import LanguageSelect from "../../components/input/LanguageSelect";
 import CharacterSettingsForm from "../../components/settings/CharacterSettingsForm";
-import { PrimaryAttributeForm } from "../../components/character/PrimaryAttributeForm";
-import { SecondaryAttributeForm } from "../../components/character/SecondaryAttributeForm";
+import {PrimaryAttributeForm} from "../../components/character/PrimaryAttributeForm";
+import {SecondaryAttributeForm} from "../../components/character/SecondaryAttributeForm";
 import EquipmentSettingsForm from "../../components/settings/EquipmentSettingsForm";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
-export const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
-export const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
-export const SIMPLE_SECONDARY_ATTRIBUTE_API = new SimpleSecondaryAttributeServiceApi(API_CONFIGURATION);
-export const EXPRESSION_API = new BinaryExpressionTreeServiceApi(API_CONFIGURATION);
+const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
 
+/** The props needed for a universe creation step */
 export interface UniverseCreationStepProps {
+    /** Callback to go to the next step */
     nextStep: () => void;
+    /** Callback to go to the previous step */
     prevStep: () => void;
 }
 
+/** A view to create universes with a wizard */
 export default function UniverseCreation() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [active, setActive] = useState(0);
     const [highestStepVisited, setHighestStepVisited] = useState(active);
-    const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+    const prevStep = () => setActive(current => (current > 0 ? current - 1 : current));
     const shouldAllowSelectStep = (step: number) => highestStepVisited >= step && active !== step;
 
     function nextStep() {
@@ -45,7 +46,7 @@ export default function UniverseCreation() {
         <>
             <Stepper active={active} onStepClick={setActive}>
                 <Stepper.Step label={t("universe:creationStep")} allowStepSelect={false}>
-                    <UniverseCreationStep nextStep={nextStep} prevStep={prevStep} />
+                    <UniverseCreationStep nextStep={nextStep} prevStep={prevStep}/>
                 </Stepper.Step>
                 <Stepper.Step label={t("universe:currencyStep")} allowStepSelect={shouldAllowSelectStep(1)}>
                     <CurrencySettingsForm
@@ -112,8 +113,8 @@ export default function UniverseCreation() {
     );
 }
 
-function UniverseCreationStep({ nextStep }: UniverseCreationStepProps) {
-    const { t } = useTranslation();
+function UniverseCreationStep({nextStep}: UniverseCreationStepProps) {
+    const {t} = useTranslation();
     const form = useForm<Universe>({
         mode: 'uncontrolled',
         initialValues: {
@@ -123,7 +124,7 @@ function UniverseCreationStep({ nextStep }: UniverseCreationStepProps) {
             description: ""
         }
     });
-    const { setActiveUniverse, fetchUniverses } = useUniverseContext();
+    const {setActiveUniverse, fetchUniverses} = useUniverseContext();
 
     return <Stack align="center">
         <Title order={3} ta="center">
@@ -181,10 +182,10 @@ function UniverseCreationStep({ nextStep }: UniverseCreationStepProps) {
     </Stack>;
 }
 
-function ItemImporStep({ nextStep, prevStep }: UniverseCreationStepProps) {
-    const { t } = useTranslation();
-    const { activeUniverse } = useUniverseContext();
-    const { userPreferences } = useUserContext();
+function ItemImporStep({nextStep, prevStep}: UniverseCreationStepProps) {
+    const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const {userPreferences} = useUserContext();
 
     const [language, setLanguage] = useState<string>(userPreferences?.language ?? null);
     const [importedMaterials, setImportedMaterials] = useState(false);
@@ -221,8 +222,8 @@ function ItemImporStep({ nextStep, prevStep }: UniverseCreationStepProps) {
     </Stack>;
 }
 
-function PrimaryAttributeStep({ nextStep, prevStep }: UniverseCreationStepProps) {
-    const { t } = useTranslation();
+function PrimaryAttributeStep({nextStep, prevStep}: UniverseCreationStepProps) {
+    const {t} = useTranslation();
 
     return <Stack align="center">
         <Title order={3} ta="center">
@@ -237,11 +238,11 @@ function PrimaryAttributeStep({ nextStep, prevStep }: UniverseCreationStepProps)
                 </Button>
             }
         />
-    </Stack >;
+    </Stack>;
 }
 
-function SecondaryAttributeStep({ nextStep, prevStep }: UniverseCreationStepProps) {
-    const { t } = useTranslation();
+function SecondaryAttributeStep({nextStep, prevStep}: UniverseCreationStepProps) {
+    const {t} = useTranslation();
 
     return <Stack align="center">
         <Title order={3} ta="center">
@@ -256,5 +257,5 @@ function SecondaryAttributeStep({ nextStep, prevStep }: UniverseCreationStepProp
                 </Button>
             }
         />
-    </Stack >;
+    </Stack>;
 }

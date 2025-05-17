@@ -1,8 +1,8 @@
-import { FormErrors } from "@mantine/form";
-import axios, { AxiosError } from "axios";
-import { ValidationErrorResponse } from "../../api";
-import { ReactNode } from "react";
+import {FormErrors} from "@mantine/form";
+import axios, {AxiosError} from "axios";
+import {ReactNode} from "react";
 
+/** Handles network errors */
 export function handleNetworkErrors(): (err: Error | AxiosError) => void {
     return err => {
         if (!axios.isAxiosError(err)) {
@@ -14,7 +14,6 @@ export function handleNetworkErrors(): (err: Error | AxiosError) => void {
     };
 }
 
-
 /** Handles api errors and returns the resulting error map. */
 export function handleValidationErrors(setError: (errors: FormErrors) => void): (err: Error | AxiosError) => void {
     return err => {
@@ -25,14 +24,14 @@ export function handleValidationErrors(setError: (errors: FormErrors) => void): 
             handleNetworkErrors()(err);
             return;
         }
-        const response = err.response.data as ValidationErrorResponse;
+        const response = err.response.data;
         const errors: Record<string, ReactNode> = {};
 
         for (const [key, value] of Object.entries(response.errors)) {
             if (typeof (value) === 'string') {
                 errors[key] = value;
             } else {
-                console.error("Unkown type during validation " + typeof (value));
+                console.error("Unknown type during validation " + typeof (value));
             }
         }
 
@@ -40,6 +39,7 @@ export function handleValidationErrors(setError: (errors: FormErrors) => void): 
     };
 }
 
+/** Adjusts the form errors to handle the error output of database insertion */
 export function handleDatabaseInsertErrors(setError: (errors: FormErrors) => void): (errors: FormErrors) => void {
     return errors => {
         const result: Record<string, ReactNode> = {};

@@ -1,13 +1,13 @@
-import { Grid, Text, ActionIcon, TextInput, Button, Group } from "@mantine/core";
-import { randomId } from "@mantine/hooks";
-import { ReactNode, useEffect } from "react";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { PRIMARY_ATTRIBUTE_API } from "../../pages/universe/universe-creation";
-import { handleNetworkErrors, handleValidationErrors } from "../utils/ErrorUtils";
-import { useTranslation } from "react-i18next";
-import { useUniverseContext } from "../PageBase";
-import { PrimaryAttribute } from "../../api";
-import { useForm } from "@mantine/form";
+import {ActionIcon, Button, Grid, Group, Text, TextInput} from "@mantine/core";
+import {randomId} from "@mantine/hooks";
+import {ReactNode, useEffect} from "react";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {PRIMARY_ATTRIBUTE_API} from "../../pages/universe/universe-creation";
+import {handleNetworkErrors, handleValidationErrors} from "../utils/ErrorUtils";
+import {useTranslation} from "react-i18next";
+import {useUniverseContext} from "../PageBase";
+import {PrimaryAttribute} from "../../api";
+import {useForm} from "@mantine/form";
 
 
 /** A form to adjust all primary attributes */
@@ -18,15 +18,17 @@ export function PrimaryAttributeForm({
     onSaveText: string;
     alternativeButton?: ReactNode;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
 
     const form = useForm<{
-        attributes: Array<PrimaryAttribute & { key: string; }>;
+        attributes: (PrimaryAttribute & { key: string; })[];
     }>({
         mode: 'uncontrolled',
         initialValues: {
-            attributes: Array(8).fill({ shortName: "", name: "" }).map(a => { return { ...a, key: randomId() }; })
+            attributes: Array(8).fill({shortName: "", name: ""}).map(a => {
+                return {...a, key: randomId()};
+            })
         }
     });
 
@@ -48,14 +50,15 @@ export function PrimaryAttributeForm({
         }).catch(handleNetworkErrors);
     }, [activeUniverse]);
 
-    return <form onSubmit={form.onSubmit((attributes) => PRIMARY_ATTRIBUTE_API.setAllPrimaryAttributes(activeUniverse.name, attributes.attributes)
-        .then(onSave).catch(handleValidationErrors(form.setErrors))
-    )}>
+    return <form
+        onSubmit={form.onSubmit((attributes) => PRIMARY_ATTRIBUTE_API.setAllPrimaryAttributes(activeUniverse.name, attributes.attributes)
+            .then(onSave).catch(handleValidationErrors(form.setErrors))
+        )}>
         <Grid columns={3} justify="center">
             {form.getValues().attributes.length > 0 ? (
                 <>
                     <Grid.Col span={1} key="name-label">
-                        <Text fw={500} size="sm" style={{ flex: 1 }}>
+                        <Text fw={500} size="sm" style={{flex: 1}}>
                             {t("name")}
                         </Text>
                     </Grid.Col>
@@ -65,7 +68,7 @@ export function PrimaryAttributeForm({
                         </Text>
                     </Grid.Col>
                     <Grid.Col span="content" key="button-label">
-                        <ActionIcon size="lg" style={{ 'visibility': 'hidden' }} />
+                        <ActionIcon size="lg" style={{'visibility': 'hidden'}}/>
                     </Grid.Col>
                 </>
             ) : (
@@ -92,8 +95,9 @@ export function PrimaryAttributeForm({
                         />
                     </Grid.Col>,
                     <Grid.Col key={item.key + "-button"} span="content">
-                        <ActionIcon variant="outline" size="lg" color="red" onClick={() => form.removeListItem('attributes', index)}>
-                            <FaRegTrashCan size={16} />
+                        <ActionIcon variant="outline" size="lg" color="red"
+                                    onClick={() => form.removeListItem('attributes', index)}>
+                            <FaRegTrashCan size={16}/>
                         </ActionIcon>
                     </Grid.Col>
                 ];
@@ -102,7 +106,7 @@ export function PrimaryAttributeForm({
         <Button
             mt="md"
             onClick={() =>
-                form.insertListItem('attributes', { name: '', shortName: '', key: randomId() })
+                form.insertListItem('attributes', {name: '', shortName: '', key: randomId()})
             }
         >
             {t("universe:addAnotherAttribute")}

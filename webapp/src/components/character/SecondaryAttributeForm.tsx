@@ -1,14 +1,32 @@
-import { Stack, Title, Grid, Group, Text, ActionIcon, TextInput, Tooltip, List, Switch, Button, Paper, Table, NumberInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { randomId } from "@mantine/hooks";
-import { ReactNode, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { SecondaryAttributeInfo, SecondaryAttributeDTO } from "../../api";
-import { SIMPLE_SECONDARY_ATTRIBUTE_API, EXPRESSION_API, UNIVERSE_CREATION_API } from "../../pages/universe/universe-creation";
-import { fetchAllPrimaryAttributes, fetchSupportedSecondaryAttributeVariables } from "../Database";
-import { useUniverseContext } from "../PageBase";
-import { handleNetworkErrors, handleValidationErrors } from "../utils/ErrorUtils";
+import {
+    ActionIcon,
+    Button,
+    Grid,
+    Group,
+    List,
+    NumberInput,
+    Paper,
+    Stack,
+    Switch,
+    Table,
+    Text,
+    TextInput,
+    Tooltip
+} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {randomId} from "@mantine/hooks";
+import {ReactNode, useEffect, useState} from "react";
+import {useTranslation} from "react-i18next";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {SecondaryAttributeDTO, SecondaryAttributeInfo} from "../../api";
+import {
+    EXPRESSION_API,
+    SIMPLE_SECONDARY_ATTRIBUTE_API,
+    UNIVERSE_CREATION_API
+} from "../../pages/universe/universe-creation";
+import {fetchAllPrimaryAttributes, fetchSupportedSecondaryAttributeVariables} from "../Database";
+import {useUniverseContext} from "../PageBase";
+import {handleNetworkErrors, handleValidationErrors} from "../utils/ErrorUtils";
 
 
 /** A form to adjust all secondary attributes */
@@ -19,8 +37,8 @@ export function SecondaryAttributeForm({
     onSaveText: string;
     alternativeButton?: ReactNode;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse, characterSettings } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse, characterSettings} = useUniverseContext();
 
     const [primaryAttributes] = fetchAllPrimaryAttributes();
     const [supportedVariables] = fetchSupportedSecondaryAttributeVariables();
@@ -31,11 +49,13 @@ export function SecondaryAttributeForm({
     const [calculatedAttributeValues, setCalculatedAttributeValues] = useState<number[]>([]);
 
     const form = useForm<{
-        attributes: Array<SecondaryAttributeDTO & { key: string; }>;
+        attributes: (SecondaryAttributeDTO & { key: string; })[];
     }>({
         mode: 'controlled',
         initialValues: {
-            attributes: Array(8).fill({ name: "", consumable: false, calculationFormula: "" }).map(a => { return { ...a, key: randomId() }; })
+            attributes: Array(8).fill({name: "", consumable: false, calculationFormula: ""}).map(a => {
+                return {...a, key: randomId()};
+            })
         }
     });
 
@@ -46,12 +66,10 @@ export function SecondaryAttributeForm({
         SIMPLE_SECONDARY_ATTRIBUTE_API.getAllSimpleSecondaryAttributes(activeUniverse.name).then(response => {
             if (response.data.length > 0) {
                 form.setValues({
-                    attributes: response.data.map(a => {
-                        return {
-                            ...a,
-                            key: randomId()
-                        };
-                    })
+                    attributes: response.data.map(a => ({
+                        ...a,
+                        key: randomId()
+                    }))
                 });
             }
         }).catch(handleNetworkErrors);
@@ -73,13 +91,14 @@ export function SecondaryAttributeForm({
 
     return <Grid>
         <Grid.Col span="content">
-            <form onSubmit={form.onSubmit((attributes) => SIMPLE_SECONDARY_ATTRIBUTE_API.setAllSimpleSecondaryAttributes(activeUniverse.name, attributes.attributes)
-                .then(onSave).catch(handleValidationErrors(form.setErrors))
-            )}>
+            <form
+                onSubmit={form.onSubmit((attributes) => SIMPLE_SECONDARY_ATTRIBUTE_API.setAllSimpleSecondaryAttributes(activeUniverse.name, attributes.attributes)
+                    .then(onSave).catch(handleValidationErrors(form.setErrors))
+                )}>
                 <Stack>
                     {form.getValues().attributes.length > 0 ? (
                         <Group>
-                            <Text fw={500} size="sm" style={{ flex: 1 }} pr={150}>
+                            <Text fw={500} size="sm" style={{flex: 1}} pr={150}>
                                 {t("name")}
                             </Text>
                             <Text fw={500} size="sm" pr={50}>
@@ -88,7 +107,7 @@ export function SecondaryAttributeForm({
                             <Text fw={500} size="sm" maw={150}>
                                 {t("character:consumableAttribute")}
                             </Text>
-                            <ActionIcon size="lg" style={{ 'visibility': 'hidden' }} />
+                            <ActionIcon size="lg" style={{'visibility': 'hidden'}}/>
                         </Group>
                     ) : (
                         <Text c="dimmed" ta="center">
@@ -105,7 +124,8 @@ export function SecondaryAttributeForm({
                             <Tooltip label={<>
                                 {t("character:calculationFormulaTooltip")}
                                 <List>
-                                    {supportedVariables.map(v => <List.Item key={"tooltip-supported-variables-" + index + "-" + v}>{v}</List.Item>)}
+                                    {supportedVariables.map(v => <List.Item
+                                        key={"tooltip-supported-variables-" + index + "-" + v}>{v}</List.Item>)}
                                 </List>
                             </>} key={form.key(`attributes.${index}.consumable`) + "-calculationFormula"}>
                                 <TextInput
@@ -114,16 +134,18 @@ export function SecondaryAttributeForm({
                                     {...form.getInputProps(`attributes.${index}.calculationFormula`)}
                                 />
                             </Tooltip>
-                            <Tooltip label={t("character:consumableAttributeTooltip")} key={form.key(`attributes.${index}.consumable`) + "-tooltip"}>
+                            <Tooltip label={t("character:consumableAttributeTooltip")}
+                                     key={form.key(`attributes.${index}.consumable`) + "-tooltip"}>
                                 <div>
                                     <Switch
                                         key={form.key(`attributes.${index}.consumable`)}
-                                        {...form.getInputProps(`attributes.${index}.consumable`, { type: 'checkbox' })}
+                                        {...form.getInputProps(`attributes.${index}.consumable`, {type: 'checkbox'})}
                                     />
                                 </div>
                             </Tooltip>
-                            <ActionIcon variant="outline" size="lg" color="red" onClick={() => form.removeListItem('attributes', index)}>
-                                <FaRegTrashCan size={16} />
+                            <ActionIcon variant="outline" size="lg" color="red"
+                                        onClick={() => form.removeListItem('attributes', index)}>
+                                <FaRegTrashCan size={16}/>
                             </ActionIcon>
                         </Group>;
                     })}
@@ -131,7 +153,12 @@ export function SecondaryAttributeForm({
                 <Button
                     mt="md"
                     onClick={() =>
-                        form.insertListItem('attributes', { name: '', calculationFormula: '', consumable: false, key: randomId() })
+                        form.insertListItem('attributes', {
+                            name: '',
+                            calculationFormula: '',
+                            consumable: false,
+                            key: randomId()
+                        })
                     }
                 >
                     {t("universe:addAnotherAttribute")}
@@ -227,8 +254,8 @@ export function SecondaryAttributeForm({
                                     readOnly
                                     value={
                                         calculatedAttributeValues[i] === undefined
-                                            || calculatedAttributeValues[i].toString() === 'NaN'
-                                            || Number.isNaN(calculatedAttributeValues[i])
+                                        || calculatedAttributeValues[i].toString() === 'NaN'
+                                        || Number.isNaN(calculatedAttributeValues[i])
                                             ? "???" : Math.round(calculatedAttributeValues[i])}
                                 />
                             )}

@@ -1,14 +1,14 @@
-import { ReactNode, useEffect } from "react";
-import { useUniverseContext } from "../PageBase";
-import { useTranslation } from "react-i18next";
-import { useForm } from "@mantine/form";
-import { CharacterSettings, UniverseSettingsServiceApi } from "../../api";
-import { Group, Stack, Title, Text, NumberInput, Grid, Button } from "@mantine/core";
-import { numberFormatter, percentageFormatter } from "../utils/Formatters";
-import { API_CONFIGURATION } from "../Constants";
-import { handleNetworkErrors, handleValidationErrors } from "../utils/ErrorUtils";
-import { probabilityForSuccesfulThrows } from "../utils/DiceThrowUtils";
-import { fetchAllPrimaryAttributes } from "../Database";
+import {ReactNode, useEffect} from "react";
+import {useUniverseContext} from "../PageBase";
+import {useTranslation} from "react-i18next";
+import {useForm} from "@mantine/form";
+import {CharacterSettings, UniverseSettingsServiceApi} from "../../api";
+import {Button, Grid, Group, NumberInput, Stack, Text, Title} from "@mantine/core";
+import {numberFormatter, percentageFormatter} from "../utils/Formatters";
+import {API_CONFIGURATION} from "../Constants";
+import {handleNetworkErrors, handleValidationErrors} from "../utils/ErrorUtils";
+import {probabilityForSuccesfulThrows} from "../utils/DiceThrowUtils";
+import {fetchAllPrimaryAttributes} from "../Database";
 
 
 const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
@@ -20,8 +20,8 @@ export default function CharacterSettingsForm({
     onSaveText: string;
     alternativeButton?: ReactNode;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse, characterSettings } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse, characterSettings} = useUniverseContext();
     const form = useForm<CharacterSettings>({
         mode: 'controlled',
         initialValues: characterSettings
@@ -43,7 +43,7 @@ export default function CharacterSettingsForm({
         <Title order={3} ta="center">
             {t('universe:characterSettings')}
         </Title>
-        <form onSubmit={form.onSubmit((settings) => SETTINGS_API.updateCharacterSettings(activeUniverse.name, settings).then(onSave)
+        <form onSubmit={form.onSubmit(s => SETTINGS_API.updateCharacterSettings(activeUniverse.name, s).then(onSave)
             .catch(handleValidationErrors(form.setErrors)))}>
             <Grid columns={2} gutter="5vw">
                 <Grid.Col span={1}>
@@ -65,7 +65,7 @@ export default function CharacterSettingsForm({
                         {...form.getInputProps("maxPrimaryAttributeSum")}
                         allowDecimal={false}
                     />
-                </Grid.Col >
+                </Grid.Col>
                 <Grid.Col span={1}>
                     <Text ta='left'>
                         {t("universe:primaryAttributeDistributionExplanation", {
@@ -84,7 +84,7 @@ export default function CharacterSettingsForm({
                         })}
                     </Text>
                 </Grid.Col>
-            </Grid >
+            </Grid>
             <Group justify="flex-end" pt="md">
                 {alternativeButton}
                 <Button type="submit">
@@ -92,5 +92,5 @@ export default function CharacterSettingsForm({
                 </Button>
             </Group>
         </form>
-    </Stack >;
+    </Stack>;
 }

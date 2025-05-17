@@ -1,18 +1,54 @@
-import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, UnstyledButton, Title, Select } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { Link, Outlet, useOutletContext, useSearchParams } from "react-router-dom";
-import { ReactElement, useEffect, useState } from "react";
-import { Universe, CurrencySettings, ItemSettings, PnPUser, PnPUserPreference, UniverseServiceApi, UniverseSettingsServiceApi, AuthenticationServiceApi, UserServiceApi, CharacterSettings, EquipmentSettings } from "../api";
-import { API_CONFIGURATION } from "./Constants";
+import {
+    AppShell,
+    Burger,
+    Group,
+    Menu,
+    NavLink,
+    ScrollArea,
+    Select,
+    Stack,
+    Text,
+    Title,
+    UnstyledButton
+} from "@mantine/core";
+import {useDisclosure} from "@mantine/hooks";
+import {Link, Outlet, useOutletContext, useSearchParams} from "react-router-dom";
+import {ReactElement, useEffect, useState} from "react";
+import {
+    AuthenticationServiceApi,
+    CharacterSettings,
+    CurrencySettings,
+    EquipmentSettings,
+    ItemSettings,
+    PnPUser,
+    PnPUserPreference,
+    Universe,
+    UniverseServiceApi,
+    UniverseSettingsServiceApi,
+    UserServiceApi
+} from "../api";
+import {API_CONFIGURATION} from "./Constants";
 import i18n from "../i18n";
-import { extractUserPermissions, UserPermissions } from "./interfaces/UserPermissions";
-import { useTranslation } from "react-i18next";
-import { GiAxeSword, GiBurningBook, GiChestArmor, GiClayBrick, GiMagicAxe, GiRing, GiShield, GiSpellBook, GiStoneCrafting, GiSupersonicArrow, GiSwapBag } from 'react-icons/gi';
-import { FaChevronDown, FaPersonRays } from "react-icons/fa6";
-import { TfiWorld } from "react-icons/tfi";
-import { IoSettingsSharp } from "react-icons/io5";
-import { HiUserCircle } from "react-icons/hi2";
-import { MdLogout } from "react-icons/md";
+import {extractUserPermissions, UserPermissions} from "./interfaces/UserPermissions";
+import {useTranslation} from "react-i18next";
+import {
+    GiAxeSword,
+    GiBurningBook,
+    GiChestArmor,
+    GiClayBrick,
+    GiMagicAxe,
+    GiRing,
+    GiShield,
+    GiSpellBook,
+    GiStoneCrafting,
+    GiSupersonicArrow,
+    GiSwapBag
+} from 'react-icons/gi';
+import {FaChevronDown, FaPersonRays} from "react-icons/fa6";
+import {TfiWorld} from "react-icons/tfi";
+import {IoSettingsSharp} from "react-icons/io5";
+import {HiUserCircle} from "react-icons/hi2";
+import {MdLogout} from "react-icons/md";
 import axios from "axios";
 
 type UniverseContext = {
@@ -39,6 +75,7 @@ const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
 const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
+/** Base of most pages in the webapp */
 export function PageBase() {
     const [universes, setUniverses] = useState<Universe[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -57,7 +94,7 @@ export function PageBase() {
         canWriteActiveUniverse: false,
         isActiveUniverseOwner: false
     });
-    const [opened, { toggle }] = useDisclosure();
+    const [opened, {toggle}] = useDisclosure();
 
     async function fetchUniverses(): Promise<void> {
         const response = await UNIVERSE_API.getAllUniverses();
@@ -146,15 +183,15 @@ export function PageBase() {
 
     return (
         <AppShell
-            header={{ height: 70 }}
-            navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+            header={{height: 70}}
+            navbar={{width: 300, breakpoint: 'sm', collapsed: {mobile: !opened}}}
             padding="md"
             data-testid="page-base"
         >
             <AppShell.Header>
                 <Group justify="space-between" align="center">
                     <Group align="center">
-                        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+                        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm"/>
                         <UnstyledButton
                             component={Link}
                             to={{
@@ -180,7 +217,7 @@ export function PageBase() {
                 </Group>
             </AppShell.Header>
             <AppShell.Navbar p="md">
-                <ScrollArea >
+                <ScrollArea>
                     <Stack>
                         {generateSidebarEntries(userPermissions).map((item) =>
                             <NavbarEntry
@@ -207,17 +244,23 @@ export function PageBase() {
                     user: user,
                     refreshUser: refreshUser,
                     refreshSettings: refreshSettings
-                }} />
+                }}/>
             </AppShell.Main>
         </AppShell>
     );
 }
 
+/** Props for a navbar entry */
 interface NavbarEntryProps {
+    /** The id of the entry */
     id: string;
+    /** The label shown */
     label: string;
+    /** The icon show */
     icon: ReactElement;
+    /** The link where to navigate to */
     link: string;
+    /** Possible subentries */
     subEntries?: {
         id: string;
         label: string;
@@ -226,7 +269,7 @@ interface NavbarEntryProps {
     }[];
 }
 
-function NavbarEntry({ id, label, icon, link, subEntries, searchParams }: NavbarEntryProps & { searchParams: string; }) {
+function NavbarEntry({id, label, icon, link, subEntries, searchParams}: NavbarEntryProps & { searchParams: string; }) {
     if (!subEntries) {
         return <NavLink
             component={Link}
@@ -275,29 +318,38 @@ function NavbarEntry({ id, label, icon, link, subEntries, searchParams }: Navbar
 }
 
 function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryProps[] {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const entries = [
-        { id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld /> },
+        {id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld/>},
         {
-            id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag />, subEntries: [
-                { id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword /> },
-                { id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield /> },
-                { id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor /> },
-                { id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing /> },
-                { id: "upgrades-menu", label: t("upgrades"), link: "/upgrades", icon: <GiMagicAxe /> },
-                { id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick /> }
+            id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag/>, subEntries: [
+                {id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword/>},
+                {id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield/>},
+                {id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor/>},
+                {id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing/>},
+                {id: "upgrades-menu", label: t("upgrades"), link: "/upgrades", icon: <GiMagicAxe/>},
+                {id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick/>}
             ]
         },
         {
-            id: "crafting-recipes-menu", label: t("crafting-recipes"), link: "/crafting-recipes", icon: <GiStoneCrafting />, subEntries: [
-                { id: "upgrade-recipes-menu", label: t("upgrade-recipes"), link: "/upgrade-recipes", icon: <GiBurningBook /> }
+            id: "crafting-recipes-menu",
+            label: t("crafting-recipes"),
+            link: "/crafting-recipes",
+            icon: <GiStoneCrafting/>,
+            subEntries: [
+                {
+                    id: "upgrade-recipes-menu",
+                    label: t("upgrade-recipes"),
+                    link: "/upgrade-recipes",
+                    icon: <GiBurningBook/>
+                }
             ]
         },
         {
-            id: "characters-menu", label: t("characters"), link: "/characters", icon: <FaPersonRays />, subEntries: [
-                { id: "spells-menu", label: t("spells"), link: "/spells", icon: <GiSpellBook /> },
-                { id: "talents-menu", label: t("talents"), link: "/talents", icon: <GiSupersonicArrow /> }
+            id: "characters-menu", label: t("characters"), link: "/characters", icon: <FaPersonRays/>, subEntries: [
+                {id: "spells-menu", label: t("spells"), link: "/spells", icon: <GiSpellBook/>},
+                {id: "talents-menu", label: t("talents"), link: "/talents", icon: <GiSupersonicArrow/>}
             ]
         }
     ];
@@ -305,8 +357,8 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
     if (userPermissions.isAdmin) {
         entries.push(
             {
-                id: "admin-menu", label: t("admin"), link: "/admin", icon: <IoSettingsSharp />, subEntries: [
-                    { id: "users-menu", label: t("users"), link: "/users", icon: <HiUserCircle /> }
+                id: "admin-menu", label: t("admin"), link: "/admin", icon: <IoSettingsSharp/>, subEntries: [
+                    {id: "users-menu", label: t("users"), link: "/users", icon: <HiUserCircle/>}
                 ]
             }
         );
@@ -315,19 +367,19 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
     return entries;
 }
 
-function UserMenu({ user, activeUniverse, setActiveUniverse, universes, searchParams }: {
+function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchParams}: {
     user: PnPUser;
     activeUniverse: Universe;
     setActiveUniverse: (universe: Universe) => void;
     universes: Universe[];
     searchParams: string;
 }) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     return <Menu
         width={260}
         position="bottom-end"
-        transitionProps={{ transition: 'pop-top-right' }}
+        transitionProps={{transition: 'pop-top-right'}}
         withinPortal
     >
         <Menu.Target>
@@ -342,7 +394,7 @@ function UserMenu({ user, activeUniverse, setActiveUniverse, universes, searchPa
                     <Text fw={500} size="sm" lh={1} mr={3}>
                         {user?.displayName}
                     </Text>
-                    <FaChevronDown size={12} />
+                    <FaChevronDown size={12}/>
                 </Group>
             </UnstyledButton>
         </Menu.Target>
@@ -350,7 +402,9 @@ function UserMenu({ user, activeUniverse, setActiveUniverse, universes, searchPa
             <Menu.Label>{t("universe")}</Menu.Label>
             <Menu.Item closeMenuOnClick={false}>
                 <Select
-                    data={universes?.map(universe => { return { value: universe.name, label: universe.displayName }; })}
+                    data={universes?.map(universe => {
+                        return {value: universe.name, label: universe.displayName};
+                    })}
                     value={activeUniverse?.name}
                     onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
                     placeholder={t("universe:noUniverse") + "..."}
@@ -378,9 +432,9 @@ function UserMenu({ user, activeUniverse, setActiveUniverse, universes, searchPa
             >
                 {t("preferences")}
             </Menu.Item>
-            <Menu.Divider />
+            <Menu.Divider/>
             <Menu.Item
-                leftSection={<MdLogout size={16} />}
+                leftSection={<MdLogout size={16}/>}
                 onClick={() => {
                     axios.post("/logout");
                     window.location.reload();

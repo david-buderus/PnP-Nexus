@@ -1,18 +1,33 @@
-import { ReactNode, useEffect, useState } from "react";
-import { useUniverseContext, useUserContext } from "../PageBase";
-import { useTranslation } from "react-i18next";
-import { useForm } from "@mantine/form";
-import { CharacterSettings, CurrencySettings, EquipmentSettings, JewelleryDefinition, UniverseCreationServiceApi, UniverseSettingsServiceApi } from "../../api";
-import { Group, Stack, Title, Text, NumberInput, TextInput, Grid, ActionIcon, Button, Flex, Tooltip, Anchor, Modal, Alert, Table } from "@mantine/core";
-import { currencyFormatter, numberFormatter, percentageFormatter } from "../utils/Formatters";
-import { randomId, useDisclosure } from "@mantine/hooks";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { API_CONFIGURATION } from "../Constants";
-import { handleNetworkErrors, handleValidationErrors } from "../utils/ErrorUtils";
-import { probabilityForSuccesfulThrows } from "../utils/DiceThrowUtils";
-import { fetchAllPrimaryAttributes } from "../Database";
+import {ReactNode, useEffect, useState} from "react";
+import {useUniverseContext, useUserContext} from "../PageBase";
+import {useTranslation} from "react-i18next";
+import {useForm} from "@mantine/form";
+import {
+    EquipmentSettings,
+    JewelleryDefinition,
+    UniverseCreationServiceApi,
+    UniverseSettingsServiceApi
+} from "../../api";
+import {
+    ActionIcon,
+    Alert,
+    Anchor,
+    Button,
+    Group,
+    Modal,
+    NumberInput,
+    Stack,
+    Table,
+    Text,
+    TextInput,
+    Title
+} from "@mantine/core";
+import {randomId, useDisclosure} from "@mantine/hooks";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {API_CONFIGURATION} from "../Constants";
+import {handleNetworkErrors, handleValidationErrors} from "../utils/ErrorUtils";
 import LanguageSelect from "../input/LanguageSelect";
-import axios, { AxiosError } from "axios";
+import axios, {AxiosError} from "axios";
 
 
 const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
@@ -25,8 +40,8 @@ export default function EquipmentSettingsForm({
     onSaveText: string;
     alternativeButton?: ReactNode;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse, equipmentSettings } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse, equipmentSettings} = useUniverseContext();
     const form = useForm<EquipmentSettings>({
         mode: 'controlled',
         initialValues: equipmentSettings
@@ -46,8 +61,9 @@ export default function EquipmentSettingsForm({
         <Title order={3} ta="center">
             {t('universe:characterSettings')}
         </Title>
-        <form onSubmit={form.onSubmit((settings) => SETTINGS_API.updateEquipmentSettings(activeUniverse.name, settings).then(onSave)
-            .catch(handleValidationErrors(form.setErrors)))}>
+        <form
+            onSubmit={form.onSubmit(s => SETTINGS_API.updateEquipmentSettings(activeUniverse.name, s).then(onSave)
+                .catch(handleValidationErrors(form.setErrors)))}>
             <NumberInput
                 label={t("universe:numberOfHandheld")}
                 key={form.key("numberOfHandheld")}
@@ -61,7 +77,8 @@ export default function EquipmentSettingsForm({
                 <Text ta='center'>
                     {t("universe:jewelleryDefinitionsExplanation")}
                     {" "}
-                    <JewelleryImportModal setJewelleryDefinition={definitions => form.setFieldValue("jewelleryDefinitions", definitions)} />
+                    <JewelleryImportModal
+                        setJewelleryDefinition={definitions => form.setFieldValue("jewelleryDefinitions", definitions)}/>
                 </Text>
                 <Table>
                     <Table.Thead>
@@ -98,8 +115,9 @@ export default function EquipmentSettingsForm({
                                     />
                                 </Table.Td>
                                 <Table.Td>
-                                    <ActionIcon variant="outline" size="lg" color="red" onClick={() => form.removeListItem('jewelleryDefinitions', index)}>
-                                        <FaRegTrashCan size={16} />
+                                    <ActionIcon variant="outline" size="lg" color="red"
+                                                onClick={() => form.removeListItem('jewelleryDefinitions', index)}>
+                                        <FaRegTrashCan size={16}/>
                                     </ActionIcon>
                                 </Table.Td>
                             </Table.Tr>;
@@ -114,7 +132,7 @@ export default function EquipmentSettingsForm({
                     <Button
                         mt="md"
                         onClick={() =>
-                            form.insertListItem('jewelleryDefinitions', { name: '', tag: '', amount: 1, key: randomId() })
+                            form.insertListItem('jewelleryDefinitions', {name: '', tag: '', amount: 1, key: randomId()})
                         }
                     >
                         {t("universe:addAnotherJewelleryDefinition")}
@@ -129,7 +147,7 @@ export default function EquipmentSettingsForm({
                 </Button>
             </Group>
         </form>
-    </Stack >;
+    </Stack>;
 }
 
 function JewelleryImportModal({
@@ -137,11 +155,11 @@ function JewelleryImportModal({
 }: {
     setJewelleryDefinition: (jewelleryDefinitions: JewelleryDefinition[]) => void;
 }) {
-    const { t } = useTranslation();
-    const [opened, { open, close }] = useDisclosure(false);
+    const {t} = useTranslation();
+    const [opened, {open, close}] = useDisclosure(false);
 
-    const { activeUniverse } = useUniverseContext();
-    const { userPreferences } = useUserContext();
+    const {activeUniverse} = useUniverseContext();
+    const {userPreferences} = useUserContext();
 
     const [language, setLanguage] = useState<string>(userPreferences?.language ?? null);
     const [error, setError] = useState(false);
@@ -156,7 +174,7 @@ function JewelleryImportModal({
                     value={language}
                     onChange={setLanguage}
                 />
-                {error && <Alert variant="light" color="red" title={t("universe:importMissingRequirements")} />}
+                {error && <Alert variant="light" color="red" title={t("universe:importMissingRequirements")}/>}
                 <Group pt="md" justify="flex-end">
                     <Button data-testid="dialog-cancel" autoFocus onClick={close}>
                         {t('cancel')}
