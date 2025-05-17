@@ -1,30 +1,42 @@
-import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack, Paper, Tooltip } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { randomId, useDisclosure } from "@mantine/hooks";
-import { useMemo, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { CraftingRecipe, CraftingRecipeServiceApi, Item, ItemUsage, Material, SecondaryAttribute } from "../../../api";
-import { fetchAllCraftingRecipes, IResourceUsage } from "../../../components/Database";
-import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
-import { useUniverseContext } from "../../../components/PageBase";
-import { handleValidationErrors, handleDatabaseInsertErrors } from "../../../components/utils/ErrorUtils";
-import { API_CONFIGURATION } from "../../../components/Constants";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { ItemSelect, ResourceSelect } from "../../../components/input/ObjectSelect";
-import { resourceFormatter } from "../../../components/utils/Formatters";
+import {
+    ActionIcon,
+    Button,
+    Group,
+    Input,
+    Modal,
+    NumberInput,
+    Paper,
+    Stack,
+    Text,
+    TextInput,
+    Tooltip
+} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {randomId, useDisclosure} from "@mantine/hooks";
+import {useEffect, useMemo} from "react";
+import {useTranslation} from "react-i18next";
+import {CraftingRecipe, CraftingRecipeServiceApi, Item, ItemUsage, Material, SecondaryAttribute} from "../../../api";
+import {fetchAllCraftingRecipes, IResourceUsage} from "../../../components/Database";
+import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
+import {useUniverseContext} from "../../../components/PageBase";
+import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
+import {API_CONFIGURATION} from "../../../components/Constants";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {ItemSelect, ResourceSelect} from "../../../components/input/ObjectSelect";
+import {resourceFormatter} from "../../../components/utils/Formatters";
 
 const CRAFTING_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
 
 /** Overview over all crafting recipes */
 export function CraftingRecipeOverview() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<CraftingRecipe, any>[]>(
         () => [
             {
                 accessorKey: 'products',
                 header: t("crafting:products"),
-                Cell: (cell) => {
+                Cell: cell => {
                     const items = cell.cell.getValue<ItemUsage[]>();
                     return items.map(resourceFormatter).join(", ");
                 },
@@ -47,7 +59,7 @@ export function CraftingRecipeOverview() {
             {
                 accessorKey: 'materials',
                 header: t("materials"),
-                Cell: (cell) => {
+                Cell: cell => {
                     const items = cell.cell.getValue<IResourceUsage[]>();
                     return items.map(resourceFormatter).join(", ");
                 },
@@ -61,9 +73,16 @@ export function CraftingRecipeOverview() {
         fetchData={fetchAllCraftingRecipes()}
         columns={columns}
         identifier="crafting-recipes"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode} refresh={refresh} disabled={disabled} getInitial={getInitial} />}
+        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
+            <CreationDialog
+                editMode={editMode}
+                refresh={refresh}
+                disabled={disabled}
+                getInitial={getInitial}
+            />}
         deletionDialogTitle={t("crafting:craftingRecipeDeletionTitle")}
         onDelete={(universe, recipes) => CRAFTING_API.deleteAllCraftingRecipes(universe, recipes.map(recipe => recipe.id))}
+        idKey="id"
     />;
 }
 
@@ -78,10 +97,10 @@ function CreationDialog({
     disabled: boolean;
     getInitial: () => CraftingRecipe;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<CraftingRecipe>({
         mode: 'controlled',
         initialValues: {
@@ -117,7 +136,9 @@ function CreationDialog({
     }
 
     return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t("crafting:craftingRecipeEditTitle") : t("crafting:craftingRecipeCreationTitle")} maw={300}>
+        <Modal opened={opened} onClose={close}
+               title={editMode ? t("crafting:craftingRecipeEditTitle") : t("crafting:craftingRecipeCreationTitle")}
+               maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 <Input.Label>
                     {t("crafting:products")}
@@ -125,7 +146,7 @@ function CreationDialog({
                 <Paper shadow="md" p="sm">
                     {form.getValues().products.length > 0 ? (
                         <Group>
-                            <Text fw={500} size="sm" style={{ flex: 1 }} pr={50}>
+                            <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
                                 {t("amount")}
                             </Text>
                             <Text fw={500} size="sm" pr={195}>
@@ -152,8 +173,9 @@ function CreationDialog({
                                     key={form.key(`products.${index}.resource`)}
                                     {...form.getInputProps(`products.${index}.resource`)}
                                 />
-                                <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('products', index)}>
-                                    <FaRegTrashCan />
+                                <ActionIcon variant="outline" color="red" size="input-sm"
+                                            onClick={() => form.removeListItem('products', index)}>
+                                    <FaRegTrashCan/>
                                 </ActionIcon>
                             </Group>;
                         })}
@@ -196,7 +218,7 @@ function CreationDialog({
                 <Paper shadow="md" p="sm">
                     {form.getValues().materials.length > 0 ? (
                         <Group>
-                            <Text fw={500} size="sm" style={{ flex: 1 }} pr={50}>
+                            <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
                                 {t("amount")}
                             </Text>
                             <Text fw={500} size="sm" pr={160}>
@@ -223,8 +245,9 @@ function CreationDialog({
                                     key={form.key(`materials.${index}.resource`)}
                                     {...form.getInputProps(`materials.${index}.resource`)}
                                 />
-                                <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('materials', index)}>
-                                    <FaRegTrashCan />
+                                <ActionIcon variant="outline" color="red" size="input-sm"
+                                            onClick={() => form.removeListItem('materials', index)}>
+                                    <FaRegTrashCan/>
                                 </ActionIcon>
                             </Group>;
                         })}

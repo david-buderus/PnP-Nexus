@@ -1,13 +1,15 @@
-import { Row } from "@tanstack/table-core/build/lib/types";
-import { MRT_Cell } from "mantine-react-table";
+import {Row} from "@tanstack/table-core/build/lib/types";
+import {MRT_Cell} from "mantine-react-table";
+import {ReactNode} from "react";
 
-/** A simple interace for an object with a name */
+/** A simple interface for an object with a name */
 export interface NamedObject {
+    /** Named of the object */
     name: string;
 }
 
 /** Renders an object with a name as a cell */
-export function NamedCell({ cell }: { cell: MRT_Cell<any, NamedObject>; }) {
+export function NamedCell({cell}: { cell: MRT_Cell<any, NamedObject>; }): ReactNode {
     return cell.getValue()?.name ?? "";
 }
 
@@ -17,7 +19,7 @@ export function filterNamedCell(row: Row<any>, id: string, filterValue: any) {
 }
 
 /** Renders multi objects with a name as a cell */
-export function MultiNamedCell({ cell }: { cell: MRT_Cell<any, NamedObject[]>; }) {
+export function MultiNamedCell({cell}: { cell: MRT_Cell<any, NamedObject[]>; }): ReactNode {
     return cell.getValue()?.map(o => o?.name ?? "-").join(", ");
 }
 

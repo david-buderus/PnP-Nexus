@@ -15,6 +15,9 @@ import org.bson.types.ObjectId;
  */
 public class Armor extends EquipableItem implements IDefensiveItem {
 
+    /**
+     * The slot of this armor.
+     */
     @NotNull
     protected final EArmorSlot armorSlot;
 

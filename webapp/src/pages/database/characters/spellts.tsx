@@ -1,27 +1,40 @@
-import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack, TagsInput, Paper, Tooltip } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { randomId, useDisclosure } from "@mantine/hooks";
-import { useMemo, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { EAction, ECastingType, Material, MaterialItem, MaterialServiceApi, Spell, SpellServiceApi, Talent } from "../../../api";
-import { fetchAllMaterials, fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage } from "../../../components/Database";
-import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
-import { useUniverseContext } from "../../../components/PageBase";
-import { handleValidationErrors, handleDatabaseInsertErrors } from "../../../components/utils/ErrorUtils";
-import { API_CONFIGURATION } from "../../../components/Constants";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { ItemSelect, ObjectMultiSelect, ResourceSelect } from "../../../components/input/ObjectSelect";
-import { addTypeAnnotationToUsage } from "../crafting/crafting-recipes";
+import {
+    ActionIcon,
+    Button,
+    Group,
+    Input,
+    Modal,
+    NumberInput,
+    Paper,
+    Stack,
+    TagsInput,
+    Text,
+    TextInput,
+    Tooltip
+} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {randomId, useDisclosure} from "@mantine/hooks";
+import {useEffect, useMemo} from "react";
+import {useTranslation} from "react-i18next";
+import {EAction, ECastingType, Spell, SpellServiceApi, Talent} from "../../../api";
+import {fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage} from "../../../components/Database";
+import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
+import {useUniverseContext} from "../../../components/PageBase";
+import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
+import {API_CONFIGURATION} from "../../../components/Constants";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {ObjectMultiSelect, ResourceSelect} from "../../../components/input/ObjectSelect";
+import {addTypeAnnotationToUsage} from "../crafting/crafting-recipes";
 import TagCell from "../../../components/table/TagCell";
-import { filterMultiNamedCell, MultiNamedCell } from "../../../components/table/NamedCell";
-import { resourceFormatter } from "../../../components/utils/Formatters";
-import { ActionSelect, CastingTypeMultiSelect } from "../../../components/input/EnumSelect";
+import {filterMultiNamedCell, MultiNamedCell} from "../../../components/table/NamedCell";
+import {resourceFormatter} from "../../../components/utils/Formatters";
+import {ActionSelect, CastingTypeMultiSelect} from "../../../components/input/EnumSelect";
 
 const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 
 /** Overview over all spells */
 export function SpellOverview() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<Spell, any>[]>(
         () => [
@@ -36,7 +49,7 @@ export function SpellOverview() {
             {
                 accessorKey: 'cost',
                 header: t("spell:cost"),
-                Cell: (cell) => {
+                Cell: cell => {
                     const items = cell.cell.getValue<IResourceUsage[]>();
                     return items.map(resourceFormatter).join(", ");
                 },
@@ -68,7 +81,7 @@ export function SpellOverview() {
                         };
                     }),
                 },
-                Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+                Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'tags',
@@ -95,7 +108,7 @@ export function SpellOverview() {
                         };
                     }),
                 },
-                Cell: (cell) => cell.cell.getValue<ECastingType[]>()?.map(type => t("enum:" + type.toLowerCase())).join(", "),
+                Cell: cell => cell.cell.getValue<ECastingType[]>()?.map(type => t("enum:" + type.toLowerCase())).join(", "),
                 filterFn: (row, id, filterValue: ECastingType[]) =>
                     filterValue.every(val => row.getValue<ECastingType[]>(id).includes(val)),
                 defaultHidden: true
@@ -115,29 +128,33 @@ export function SpellOverview() {
         fetchData={fetchAllSpells()}
         columns={columns}
         identifier="spells"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode} refresh={refresh} disabled={disabled} getInitial={getInitial} />}
+        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode}
+                                                                                         refresh={refresh}
+                                                                                         disabled={disabled}
+                                                                                         getInitial={getInitial}/>}
         deletionDialogTitle={t("spell:editTitle")}
         onDelete={(universe, spells) => SPELL_API.deleteAllSpells(universe, spells.map(spell => spell.id))}
+        idKey="id"
     />;
 }
 
 function CreationDialog({
-    editMode,
-    refresh,
-    disabled,
-    getInitial
-}: {
+                            editMode,
+                            refresh,
+                            disabled,
+                            getInitial
+                        }: {
     editMode: boolean,
     refresh: () => void;
     disabled: boolean;
     getInitial: () => Spell;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
     const [talents] = fetchAllTalents();
     const [tags] = fetchAllTags();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Spell>({
         mode: 'controlled',
         initialValues: {
@@ -174,7 +191,8 @@ function CreationDialog({
     }
 
     return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t("spell:editTitle") : t("spell:creationTitle")} maw={300}>
+        <Modal opened={opened} onClose={close} title={editMode ? t("spell:editTitle") : t("spell:creationTitle")}
+               maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 <TextInput
                     label={t("name")}
@@ -230,7 +248,7 @@ function CreationDialog({
                 <Paper shadow="md" p="xs">
                     {form.getValues().cost.length > 0 ? (
                         <Group>
-                            <Text fw={500} size="sm" style={{ flex: 1 }} pr={50}>
+                            <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
                                 {t("amount")}
                             </Text>
                             <Text fw={500} size="sm" pr={175}>
@@ -257,14 +275,15 @@ function CreationDialog({
                                     key={form.key(`cost.${index}.resource`)}
                                     {...form.getInputProps(`cost.${index}.resource`)}
                                 />
-                                <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('cost', index)}>
-                                    <FaRegTrashCan />
+                                <ActionIcon variant="outline" color="red" size="input-sm"
+                                            onClick={() => form.removeListItem('cost', index)}>
+                                    <FaRegTrashCan/>
                                 </ActionIcon>
                             </Group>;
                         })}
                     </Stack>
                 </Paper>
-                <Tooltip label={form.errors["cost"]} disabled={!form.errors["cost"]}>
+                <Tooltip label={form.errors.cost} disabled={!form.errors.cost}>
                     <Button
                         onClick={() =>
                             form.insertListItem('cost', {
@@ -274,7 +293,7 @@ function CreationDialog({
                             })
                         }
                         mt="md"
-                        color={form.errors["cost"] ? "red" : undefined}
+                        color={form.errors.cost ? "red" : undefined}
                     >
                         {t("spell:addCost")}
                     </Button>

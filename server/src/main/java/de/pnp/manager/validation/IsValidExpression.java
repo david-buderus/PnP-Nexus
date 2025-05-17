@@ -2,11 +2,8 @@ package de.pnp.manager.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+
+import java.lang.annotation.*;
 
 /**
  * Marker interface for {@link IsValidExpressionValidator}.
@@ -22,6 +19,9 @@ public @interface IsValidExpression {
      */
     String message() default "{expression.invalid}";
 
+    /**
+     * The type of expression.
+     */
     EExpressionType expressionType();
 
     /**
@@ -34,7 +34,10 @@ public @interface IsValidExpression {
      */
     Class<? extends Payload>[] payload() default {};
 
+    /**
+     * The different types of expressions.
+     */
     enum EExpressionType {
-        SECONDARY_ATTRIBUTE_EXPRESSION;
+        SECONDARY_ATTRIBUTE_EXPRESSION
     }
 }

@@ -1,28 +1,37 @@
-import { useEffect, useMemo } from "react";
-import { fetchAllArmor, fetchAllItems, fetchAllJewllery, fetchAllMaterials, fetchAllShields, fetchAllTags, fetchAllWeapons } from "../../../components/Database";
-import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
-import { useTranslation } from "react-i18next";
+import {useEffect, useMemo} from "react";
+import {
+    fetchAllArmor,
+    fetchAllItems,
+    fetchAllJewllery,
+    fetchAllMaterials,
+    fetchAllShields,
+    fetchAllTags,
+    fetchAllWeapons
+} from "../../../components/Database";
+import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
+import {useTranslation} from "react-i18next";
 import TagCell from "../../../components/table/TagCell";
-import { Armor, EArmorSlot, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon } from "../../../api";
+import {Armor, EArmorSlot, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from "../../../api";
 import CurrencyCell from "../../../components/table/CurrencyCell";
-import { API_CONFIGURATION } from "../../../components/Constants";
-import { useDisclosure } from "@mantine/hooks";
-import { Button, Group, Modal, NumberInput, Select, TagsInput, Textarea, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useUniverseContext } from "../../../components/PageBase";
-import { handleDatabaseInsertErrors, handleValidationErrors } from "../../../components/utils/ErrorUtils";
-import { ObjectSelect } from "../../../components/input/ObjectSelect";
-import { ArmorSlotSelect, RaritySelect } from "../../../components/input/EnumSelect";
+import {API_CONFIGURATION} from "../../../components/Constants";
+import {useDisclosure} from "@mantine/hooks";
+import {Button, Group, Modal, NumberInput, Select, TagsInput, Textarea, TextInput} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {useUniverseContext} from "../../../components/PageBase";
+import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
+import {ObjectSelect} from "../../../components/input/ObjectSelect";
+import {ArmorSlotSelect, RaritySelect} from "../../../components/input/EnumSelect";
 import DiceInput from "../../../components/input/DiceInput";
-import { currencyFormatter } from "../../../components/utils/Formatters";
+import {currencyFormatter} from "../../../components/utils/Formatters";
 import DiceCell from "../../../components/table/DiceCell";
+import {filterNamedCell, NamedCell} from "../../../components/table/NamedCell";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
 
 /** Overview over all items */
 export function Items() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<Item, any>[]>(
         () => [
@@ -57,7 +66,7 @@ export function Items() {
                         };
                     }),
                 },
-                Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+                Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
@@ -102,12 +111,13 @@ export function Items() {
         />}
         deletionDialogTitle={t("item:confirmDeletionTitle")}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        idKey="id"
     />;
 }
 
 /** Overview over all weapons */
 export function Weapons() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<Weapon, any>[]>(
         () => [
@@ -126,10 +136,8 @@ export function Weapons() {
             {
                 accessorKey: 'material',
                 header: t("material"),
-                Cell: (cell) => cell.cell.getValue<Material>().name,
-                filterFn: (row, id, filterValue) => {
-                    return row.getValue<Material>(id).name.includes(filterValue);
-                }
+                Cell: NamedCell,
+                filterFn: filterNamedCell
             },
             {
                 accessorKey: 'damage',
@@ -168,7 +176,7 @@ export function Weapons() {
                         };
                     }),
                 },
-                Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+                Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
@@ -217,13 +225,14 @@ export function Weapons() {
         />}
         deletionDialogTitle={t("item:confirmDeletionTitle")}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        idKey="id"
     />;
 }
 
 /** Overview over all shields */
 export function Shields() {
-    const { t } = useTranslation();
-    const { itemSettings } = useUniverseContext();
+    const {t} = useTranslation();
+    const {itemSettings} = useUniverseContext();
 
     const columns = useMemo<ExtendedColumnDef<Shield, any>[]>(
         () => {
@@ -243,10 +252,8 @@ export function Shields() {
                 {
                     accessorKey: 'material',
                     header: t("material"),
-                    Cell: (cell) => cell.cell.getValue<Material>().name,
-                    filterFn: (row, id, filterValue) => {
-                        return row.getValue<Material>(id).name.includes(filterValue);
-                    }
+                    Cell: NamedCell,
+                    filterFn: filterNamedCell
                 },
                 {
                     accessorKey: 'armor',
@@ -284,7 +291,7 @@ export function Shields() {
                             };
                         }),
                     },
-                    Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+                    Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'vendorPrice',
@@ -351,13 +358,14 @@ export function Shields() {
         />}
         deletionDialogTitle={t("item:confirmDeletionTitle")}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        idKey="id"
     />;
 }
 
 /** Overview over all shields */
 export function ArmorOverview() {
-    const { t } = useTranslation();
-    const { itemSettings } = useUniverseContext();
+    const {t} = useTranslation();
+    const {itemSettings} = useUniverseContext();
 
     const columns = useMemo<ExtendedColumnDef<Armor, any>[]>(
         () => {
@@ -377,10 +385,8 @@ export function ArmorOverview() {
                 {
                     accessorKey: 'material',
                     header: t("material"),
-                    Cell: (cell) => cell.cell.getValue<Material>().name,
-                    filterFn: (row, id, filterValue) => {
-                        return row.getValue<Material>(id).name.includes(filterValue);
-                    }
+                    Cell: NamedCell,
+                    filterFn: filterNamedCell
                 },
                 {
                     accessorKey: 'armorSlot',
@@ -394,7 +400,7 @@ export function ArmorOverview() {
                             };
                         }),
                     },
-                    Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+                    Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'armor',
@@ -424,7 +430,7 @@ export function ArmorOverview() {
                             };
                         }),
                     },
-                    Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+                    Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'vendorPrice',
@@ -483,12 +489,13 @@ export function ArmorOverview() {
         />}
         deletionDialogTitle={t("item:confirmDeletionTitle")}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        idKey="id"
     />;
 }
 
 /** Overview over all jewellery */
 export function JewelleryOverview() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<Jewellery, any>[]>(
         () => [
@@ -507,10 +514,8 @@ export function JewelleryOverview() {
             {
                 accessorKey: 'material',
                 header: t("material"),
-                Cell: (cell) => cell.cell.getValue<Material>().name,
-                filterFn: (row, id, filterValue) => {
-                    return row.getValue<Material>(id).name.includes(filterValue);
-                }
+                Cell: NamedCell,
+                filterFn: filterNamedCell
             },
             {
                 accessorKey: 'requirement',
@@ -532,7 +537,7 @@ export function JewelleryOverview() {
                         };
                     }),
                 },
-                Cell: (cell) => t("enum:" + cell.cell.getValue().toLowerCase())
+                Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
@@ -581,6 +586,7 @@ export function JewelleryOverview() {
         />}
         deletionDialogTitle={t("item:confirmDeletionTitle")}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        idKey="id"
     />;
 }
 
@@ -597,12 +603,12 @@ function CreationDialog({
     disabled: boolean;
     getInitial: () => Item;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse, itemSettings, currencySettings } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse, itemSettings, currencySettings} = useUniverseContext();
     const [tags] = fetchAllTags();
     const [materials] = fetchAllMaterials();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<ItemCombination & {
         "@type": string;
     }>({
@@ -626,7 +632,7 @@ function CreationDialog({
             hit: 0,
             initiative: 0,
             upgradeSlots: 0,
-            dice: { dices: [] }
+            dice: {dices: []}
         }
     });
     const itemType = form.getValues()["@type"];
@@ -649,15 +655,16 @@ function CreationDialog({
     }
 
     return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t("item:editTitle") : t("item:creationTitle")} maw={300}>
+        <Modal opened={opened} onClose={close} title={editMode ? t("item:editTitle") : t("item:creationTitle")}
+               maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 {!editMode ? <Select
                     data={[
-                        { value: "Item", label: t("item") },
-                        { value: "Weapon", label: t("weapon") },
-                        { value: "Shield", label: t("shield") },
-                        { value: "Armor", label: t("armor") },
-                        { value: "Jewellery", label: t("jewellery") }
+                        {value: "Item", label: t("item")},
+                        {value: "Weapon", label: t("weapon")},
+                        {value: "Shield", label: t("shield")},
+                        {value: "Armor", label: t("armor")},
+                        {value: "Jewellery", label: t("jewellery")}
                     ]}
                     key={form.key('@type')}
                     {...form.getInputProps('@type')}

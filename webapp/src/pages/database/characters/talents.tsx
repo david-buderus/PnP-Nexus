@@ -1,23 +1,22 @@
-import { Modal, TextInput, Group, Button } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
-import { useMemo, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { PrimaryAttribute, Spell, Talent, TalentServiceApi } from "../../../api";
-import { fetchAllPrimaryAttributes, fetchAllTalents } from "../../../components/Database";
-import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
-import { useUniverseContext } from "../../../components/PageBase";
-import { handleValidationErrors, handleDatabaseInsertErrors } from "../../../components/utils/ErrorUtils";
-import { API_CONFIGURATION } from "../../../components/Constants";
-import { ObjectSelect } from "../../../components/input/ObjectSelect";
-import { addTypeAnnotationToUsage } from "../crafting/crafting-recipes";
-import { filterNamedCell, NamedCell } from "../../../components/table/NamedCell";
+import {Button, Group, Modal, TextInput} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {useDisclosure} from "@mantine/hooks";
+import {useEffect, useMemo} from "react";
+import {useTranslation} from "react-i18next";
+import {PrimaryAttribute, Talent, TalentServiceApi} from "../../../api";
+import {fetchAllPrimaryAttributes, fetchAllTalents} from "../../../components/Database";
+import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
+import {useUniverseContext} from "../../../components/PageBase";
+import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
+import {API_CONFIGURATION} from "../../../components/Constants";
+import {ObjectSelect} from "../../../components/input/ObjectSelect";
+import {filterNamedCell, NamedCell} from "../../../components/table/NamedCell";
 
 const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
 
 /** Overview over all talents */
 export function TalentOverview() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<Talent, any>[]>(
         () => [
@@ -53,28 +52,32 @@ export function TalentOverview() {
         fetchData={fetchAllTalents()}
         columns={columns}
         identifier="talents"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode} refresh={refresh} disabled={disabled} getInitial={getInitial} />}
+        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode}
+                                                                                         refresh={refresh}
+                                                                                         disabled={disabled}
+                                                                                         getInitial={getInitial}/>}
         deletionDialogTitle={t("character:talentDeletionTitle")}
         onDelete={(universe, talents) => TALENT_API.deleteAllTalents(universe, talents.map(talent => talent.id))}
+        idKey="id"
     />;
 }
 
 function CreationDialog({
-    editMode,
-    refresh,
-    disabled,
-    getInitial
-}: {
+                            editMode,
+                            refresh,
+                            disabled,
+                            getInitial
+                        }: {
     editMode: boolean,
     refresh: () => void;
     disabled: boolean;
     getInitial: () => Talent;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
     const [attributes] = fetchAllPrimaryAttributes();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Talent>({
         mode: 'controlled',
         initialValues: {
@@ -104,7 +107,8 @@ function CreationDialog({
     }
 
     return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t("character:talentEditTitle") : t("character:talentCreationTitle")} maw={300}>
+        <Modal opened={opened} onClose={close}
+               title={editMode ? t("character:talentEditTitle") : t("character:talentCreationTitle")} maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 <TextInput
                     label={t("name")}

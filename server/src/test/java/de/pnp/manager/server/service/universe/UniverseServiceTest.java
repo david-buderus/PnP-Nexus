@@ -1,4 +1,4 @@
-package de.pnp.manager.server.service;
+package de.pnp.manager.server.service.universe;
 
 import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +21,6 @@ import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.universe.UniverseRepository;
-import de.pnp.manager.server.service.universe.UniverseService;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

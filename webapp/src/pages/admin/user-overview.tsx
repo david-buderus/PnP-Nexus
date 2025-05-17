@@ -1,19 +1,19 @@
-import { useTranslation } from "react-i18next";
-import { GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, PrimaryAttribute, RoleAuthorityDTO, UserServiceApi } from "../../api";
-import { API_CONFIGURATION } from "../../components/Constants";
-import { useEffect, useMemo, useState } from "react";
-import OverviewPage, { ExtendedColumnDef } from "../../components/OverviewPage";
-import { Modal, TextInput, Group, Button, PasswordInput, Switch, MultiSelect, Stack, Input, Paper } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
-import { handleValidationErrors } from "../../components/utils/ErrorUtils";
-import { useUniverseContext } from "../../components/PageBase";
+import {useTranslation} from "react-i18next";
+import {GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, RoleAuthorityDTO, UserServiceApi} from "../../api";
+import {API_CONFIGURATION} from "../../components/Constants";
+import {useEffect, useMemo, useState} from "react";
+import OverviewPage, {ExtendedColumnDef} from "../../components/OverviewPage";
+import {Button, Group, Input, Modal, MultiSelect, Paper, PasswordInput, Stack, Switch, TextInput} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {useDisclosure} from "@mantine/hooks";
+import {handleValidationErrors} from "../../components/utils/ErrorUtils";
+import {useUniverseContext} from "../../components/PageBase";
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
 /** Admin overview over all users */
 export function UserOverview() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const [users, setUsers] = useState<PnPUser[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -50,28 +50,29 @@ export function UserOverview() {
         fetchData={[users, refresh, loading]}
         columns={columns}
         identifier="users"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => {
+        manipulationDialog={(editMode, refreshCallback, disabled, getInitial) => {
             if (editMode) {
-                return <EditDialog refresh={refresh} disabled={disabled} getInitial={getInitial} />;
+                return <EditDialog refresh={refreshCallback} disabled={disabled} getInitial={getInitial}/>;
             } else {
-                return <CreationDialog refresh={refresh} disabled={disabled} />;
+                return <CreationDialog refresh={refreshCallback} disabled={disabled}/>;
             }
         }}
         deletionDialogTitle={t("user:confirmDeletionUser")}
-        onDelete={(_, users) => USER_API.removeUsers(users.map(user => user.username))}
+        onDelete={(_, usersToDelete) => USER_API.removeUsers(usersToDelete.map(user => user.username))}
+        idKey="username"
     />;
 }
 
 function CreationDialog({
-    refresh,
-    disabled
-}: {
+                            refresh,
+                            disabled
+                        }: {
     refresh: () => void;
     disabled: boolean;
 }) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<PnPUserCreation>({
         mode: 'controlled',
         initialValues: {
@@ -107,7 +108,8 @@ function CreationDialog({
                     {...form.getInputProps('password')}
 
                 />
-                <PermissionManipulation authorities={[]} setAuthorities={authorities => form.setFieldValue("authorities", authorities)} />
+                <PermissionManipulation authorities={[]}
+                                        setAuthorities={authorities => form.setFieldValue("authorities", authorities)}/>
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
                         {t("cancel")}
@@ -125,17 +127,17 @@ function CreationDialog({
 }
 
 function EditDialog({
-    refresh,
-    disabled,
-    getInitial
-}: {
+                        refresh,
+                        disabled,
+                        getInitial
+                    }: {
     refresh: () => void;
     disabled: boolean;
     getInitial: () => PnPUser;
 }) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<PnPUser>({
         mode: 'controlled',
         initialValues: {
@@ -175,7 +177,7 @@ function EditDialog({
                     key={form.key('email')}
                     {...form.getInputProps('email')}
                 />
-                <PermissionManipulation authorities={orginialAuthorities} setAuthorities={setEditAuthorities} />
+                <PermissionManipulation authorities={orginialAuthorities} setAuthorities={setEditAuthorities}/>
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
                         {t("cancel")}
@@ -192,15 +194,15 @@ function EditDialog({
     </>;
 }
 
-function PermissionManipulation({ authorities, setAuthorities }: {
+function PermissionManipulation({authorities, setAuthorities}: {
     authorities: (GrantedUniverseAuthorityDTO | RoleAuthorityDTO)[];
     setAuthorities: (authorities: (GrantedUniverseAuthorityDTO | RoleAuthorityDTO)[]) => void;
 }) {
-    const { t } = useTranslation();
-    const { universes } = useUniverseContext();
+    const {t} = useTranslation();
+    const {universes} = useUniverseContext();
     const universeOptions = useMemo(() => {
         return universes.map(universe => {
-            return { label: universe.displayName, value: universe.name };
+            return {label: universe.displayName, value: universe.name};
         });
     }, [universes]);
 

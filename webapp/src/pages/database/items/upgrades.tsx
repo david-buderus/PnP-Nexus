@@ -1,25 +1,51 @@
-import { useEffect, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-import { ECalculation, EUpgradeEquipmentManipulator, EUpgradeRestriction, TagRequirement, Upgrade, UpgradeEffectsInner, UpgradeServiceApi } from "../../../api";
-import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
-import { fetchAllUpgrades } from "../../../components/Database";
-import { API_CONFIGURATION } from "../../../components/Constants";
+import {useEffect, useMemo} from "react";
+import {useTranslation} from "react-i18next";
+import {
+    ECalculation,
+    EUpgradeEquipmentManipulator,
+    EUpgradeRestriction,
+    TagRequirement,
+    Upgrade,
+    UpgradeEffectsInner,
+    UpgradeServiceApi
+} from "../../../api";
+import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
+import {fetchAllUpgrades} from "../../../components/Database";
+import {API_CONFIGURATION} from "../../../components/Constants";
 import CurrencyCell from "../../../components/table/CurrencyCell";
-import { ActionIcon, Box, Button, Group, Input, List, Modal, NumberInput, Paper, Select, Stack, TextInput, Tooltip } from "@mantine/core";
-import { useUniverseContext } from "../../../components/PageBase";
-import { useForm, UseFormReturnType } from "@mantine/form";
-import { randomId, useDisclosure } from "@mantine/hooks";
-import { handleDatabaseInsertErrors, handleValidationErrors } from "../../../components/utils/ErrorUtils";
-import { currencyFormatter } from "../../../components/utils/Formatters";
-import { CalculationSelect, UpgradeEquipmentManipulatorSelect, UpgradeRestrictionSelect } from "../../../components/input/EnumSelect";
-import { FaRegTrashCan } from "react-icons/fa6";
+import {
+    ActionIcon,
+    Box,
+    Button,
+    Group,
+    Input,
+    List,
+    Modal,
+    NumberInput,
+    Paper,
+    Select,
+    Stack,
+    TextInput,
+    Tooltip
+} from "@mantine/core";
+import {useUniverseContext} from "../../../components/PageBase";
+import {useForm, UseFormReturnType} from "@mantine/form";
+import {randomId, useDisclosure} from "@mantine/hooks";
+import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
+import {currencyFormatter} from "../../../components/utils/Formatters";
+import {
+    CalculationSelect,
+    UpgradeEquipmentManipulatorSelect,
+    UpgradeRestrictionSelect
+} from "../../../components/input/EnumSelect";
+import {FaRegTrashCan} from "react-icons/fa6";
 import TagRequirementsInput from "../../../components/input/TagRequirementsInput";
 
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 
 /** Overview over all upgades */
 export function UpgradeOverview() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<Upgrade, any>[]>(
         () => [
@@ -30,7 +56,7 @@ export function UpgradeOverview() {
             {
                 accessorKey: 'effects',
                 header: t("upgrade:effects"),
-                Cell: (cell) => {
+                Cell: cell => {
                     const effects = cell.cell.getValue<UpgradeEffectsInner[]>();
                     if (effects.length < 2) {
                         return effects[0]?.description;
@@ -58,12 +84,12 @@ export function UpgradeOverview() {
                         };
                     }),
                 },
-                Cell: (cell) => t("enum:" + cell.cell.getValue()?.toLowerCase())
+                Cell: cell => t("enum:" + cell.cell.getValue()?.toLowerCase())
             },
             {
                 accessorKey: 'tagRequirement',
                 header: t("upgrade:tagRequirement"),
-                Cell: (cell) => cell.cell.getValue<TagRequirement>().tagRequirements.map(tags => tags.join(", ")).join(" " + t("or") + " "),
+                Cell: cell => cell.cell.getValue<TagRequirement>().tagRequirements.map(tags => tags.join(", ")).join(" " + t("or") + " "),
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<TagRequirement>(id).tagRequirements.some(tags => tags.some(tag => tag.includes(filterValue)));
                 }
@@ -83,9 +109,16 @@ export function UpgradeOverview() {
         fetchData={fetchAllUpgrades()}
         columns={columns}
         identifier="upgrades"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode} refresh={refresh} disabled={disabled} getInitial={getInitial} />}
+        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
+            <CreationDialog
+                editMode={editMode}
+                refresh={refresh}
+                disabled={disabled}
+                getInitial={getInitial}
+            />}
         deletionDialogTitle={t("upgrade:upgradeDeletionTitle")}
         onDelete={(universe, upgrades) => UPGRADE_API.deleteAllUpgrades(universe, upgrades.map(upgrade => upgrade.id))}
+        idKey="id"
     />;
 }
 
@@ -100,10 +133,10 @@ function CreationDialog({
     disabled: boolean;
     getInitial: () => Upgrade;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse, currencySettings } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse, currencySettings} = useUniverseContext();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Upgrade>({
         mode: 'controlled',
         initialValues: {
@@ -136,7 +169,8 @@ function CreationDialog({
     }
 
     return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t("upgrade:upgradeEditTitle") : t("upgrade:upgradeCreationTitle")} maw={300}>
+        <Modal opened={opened} onClose={close}
+               title={editMode ? t("upgrade:upgradeEditTitle") : t("upgrade:upgradeCreationTitle")} maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 <TextInput
                     label={t("name")}
@@ -157,7 +191,7 @@ function CreationDialog({
                     {...form.getInputProps('slots')}
                     allowDecimal={false}
                 />
-                <Effect form={form} />
+                <Effect form={form}/>
                 <Group grow align="flex-start">
                     <NumberInput
                         label={t("price")}
@@ -192,7 +226,7 @@ function Effect({
 }: {
     form: UseFormReturnType<Upgrade, (values: Upgrade) => Upgrade>;
 }) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     return <Stack gap={0}>
         <Input.Label>
@@ -204,8 +238,8 @@ function Effect({
                     <Paper shadow="md" p="sm">
                         <Select
                             data={[
-                                { value: "SimpleUpgradeEffect", label: t("upgrade:simpleEffect") },
-                                { value: "EquipmentUpgradeEffect", label: t("upgrade:equipmentEffect") }
+                                {value: "SimpleUpgradeEffect", label: t("upgrade:simpleEffect")},
+                                {value: "EquipmentUpgradeEffect", label: t("upgrade:equipmentEffect")}
                             ]}
                             key={form.key(`effects.${index}.@type`)}
                             {...form.getInputProps(`effects.${index}.@type`)}
@@ -231,7 +265,7 @@ function Effect({
                         </> : null}
                         <Group wrap="nowrap">
                             <Box
-                                style={{ flex: 1 }}
+                                style={{flex: 1}}
                             >
                                 <TextInput
                                     label={t("description")}
@@ -239,8 +273,9 @@ function Effect({
                                     {...form.getInputProps(`effects.${index}.description`)}
                                 />
                             </Box>
-                            <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('effects', index)} mt={20}>
-                                <FaRegTrashCan />
+                            <ActionIcon variant="outline" color="red" size="input-sm"
+                                        onClick={() => form.removeListItem('effects', index)} mt={20}>
+                                <FaRegTrashCan/>
                             </ActionIcon>
                         </Group>
                     </Paper>

@@ -1,22 +1,22 @@
-import { Modal, TextInput, Group, Button, NumberInput, Text, ActionIcon, Input, Stack, Tooltip } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { randomId, useDisclosure } from "@mantine/hooks";
-import { useMemo, useEffect } from "react";
-import { useTranslation } from "react-i18next";
-import { Material, MaterialItem, MaterialServiceApi } from "../../../api";
-import { fetchAllMaterials } from "../../../components/Database";
-import OverviewPage, { ExtendedColumnDef } from "../../../components/OverviewPage";
-import { useUniverseContext } from "../../../components/PageBase";
-import { handleValidationErrors, handleDatabaseInsertErrors } from "../../../components/utils/ErrorUtils";
-import { API_CONFIGURATION } from "../../../components/Constants";
-import { FaRegTrashCan } from "react-icons/fa6";
-import { ItemSelect } from "../../../components/input/ObjectSelect";
+import {ActionIcon, Button, Group, Input, Modal, NumberInput, Stack, Text, TextInput, Tooltip} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {randomId, useDisclosure} from "@mantine/hooks";
+import {useEffect, useMemo} from "react";
+import {useTranslation} from "react-i18next";
+import {Material, MaterialItem, MaterialServiceApi} from "../../../api";
+import {fetchAllMaterials} from "../../../components/Database";
+import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
+import {useUniverseContext} from "../../../components/PageBase";
+import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
+import {API_CONFIGURATION} from "../../../components/Constants";
+import {FaRegTrashCan} from "react-icons/fa6";
+import {ItemSelect} from "../../../components/input/ObjectSelect";
 
 const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
 
 /** Overview over all materials */
 export function MaterialOverview() {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     const columns = useMemo<ExtendedColumnDef<Material, any>[]>(
         () => [
@@ -27,7 +27,7 @@ export function MaterialOverview() {
             {
                 accessorKey: 'items',
                 header: t("items"),
-                Cell: (cell) => {
+                Cell: cell => {
                     const items = cell.cell.getValue<MaterialItem[]>();
                     return items.map(item => item.amount + " " + item.item?.name).join(", ");
                 },
@@ -41,9 +41,16 @@ export function MaterialOverview() {
         fetchData={fetchAllMaterials()}
         columns={columns}
         identifier="materials"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode} refresh={refresh} disabled={disabled} getInitial={getInitial} />}
+        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
+            <CreationDialog
+                editMode={editMode}
+                refresh={refresh}
+                disabled={disabled}
+                getInitial={getInitial}
+            />}
         deletionDialogTitle={t("item:materialDeletionTitle")}
         onDelete={(universe, materials) => MATERIAL_API.deleteAllMaterials(universe, materials.map(material => material.id))}
+        idKey="id"
     />;
 }
 
@@ -58,10 +65,10 @@ function CreationDialog({
     disabled: boolean;
     getInitial: () => Material;
 }) {
-    const { t } = useTranslation();
-    const { activeUniverse } = useUniverseContext();
+    const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
 
-    const [opened, { open, close }] = useDisclosure(false);
+    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Material>({
         mode: 'controlled',
         initialValues: {
@@ -88,7 +95,8 @@ function CreationDialog({
     }
 
     return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t("item:materialEditTitle") : t("item:materialCreationTitle")} maw={300}>
+        <Modal opened={opened} onClose={close}
+               title={editMode ? t("item:materialEditTitle") : t("item:materialCreationTitle")} maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 <TextInput
                     label={t("name")}
@@ -100,7 +108,7 @@ function CreationDialog({
                 </Input.Label>
                 {form.getValues().items.length > 0 ? (
                     <Group>
-                        <Text fw={500} size="sm" style={{ flex: 1 }} pr={50}>
+                        <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
                             {t("amount")}
                         </Text>
                         <Text fw={500} size="sm" pr={195}>
@@ -127,8 +135,9 @@ function CreationDialog({
                                 key={form.key(`items.${index}.item`)}
                                 {...form.getInputProps(`items.${index}.item`)}
                             />
-                            <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => form.removeListItem('items', index)}>
-                                <FaRegTrashCan />
+                            <ActionIcon variant="outline" color="red" size="input-sm"
+                                        onClick={() => form.removeListItem('items', index)}>
+                                <FaRegTrashCan/>
                             </ActionIcon>
                         </Group>;
                     })}
