@@ -2718,6 +2718,69 @@
         ]
       }
     },
+    "/api/{universe}/universe-settings/equipment": {
+      "get": {
+        "operationId": "getEquipmentSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateEquipmentSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EquipmentSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
     "/api/{universe}/universe-settings/item": {
       "get": {
         "operationId": "getItemSettings",
@@ -3928,17 +3991,8 @@
         ]
       },
       "CharacterSettings": {
-        "required": [
-          "jewelleryDefinitions"
-        ],
         "type": "object",
         "properties": {
-          "jewelleryDefinitions": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/JewelleryDefinition"
-            }
-          },
           "maxPrimaryAttributeSum": {
             "type": "integer",
             "format": "int32"
@@ -3948,10 +4002,6 @@
             "format": "int32"
           },
           "minPrimaryAttributeValue": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "numberOfHandheld": {
             "type": "integer",
             "format": "int32"
           }
@@ -4144,6 +4194,24 @@
           "HANDHELD",
           "ARMOR"
         ]
+      },
+      "EquipmentSettings": {
+        "required": [
+          "jewelleryDefinitions"
+        ],
+        "type": "object",
+        "properties": {
+          "jewelleryDefinitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JewelleryDefinition"
+            }
+          },
+          "numberOfHandheld": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "EquipmentUpgradeEffect": {
         "required": [

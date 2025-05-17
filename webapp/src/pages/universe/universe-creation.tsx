@@ -12,6 +12,7 @@ import LanguageSelect from "../../components/input/LanguageSelect";
 import CharacterSettingsForm from "../../components/settings/CharacterSettingsForm";
 import { PrimaryAttributeForm } from "../../components/character/PrimaryAttributeForm";
 import { SecondaryAttributeForm } from "../../components/character/SecondaryAttributeForm";
+import EquipmentSettingsForm from "../../components/settings/EquipmentSettingsForm";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 export const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
@@ -61,7 +62,16 @@ export default function UniverseCreation() {
                         />
                     </Group>
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:importStep")} allowStepSelect={shouldAllowSelectStep(3)}>
+                <Stepper.Step label={t("universe:equipmentStep")} allowStepSelect={shouldAllowSelectStep(3)}>
+                    <Group justify="center">
+                        <EquipmentSettingsForm
+                            onSave={nextStep}
+                            onSaveText={t("next")}
+                            alternativeButton={<Button onClick={prevStep}>{t("previous")}</Button>}
+                        />
+                    </Group>
+                </Stepper.Step>
+                <Stepper.Step label={t("universe:importStep")} allowStepSelect={shouldAllowSelectStep(4)}>
                     <Group justify="center">
                         <ItemImporStep
                             nextStep={nextStep}
@@ -69,7 +79,7 @@ export default function UniverseCreation() {
                         />
                     </Group>
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:primaryAttributeStep")} allowStepSelect={shouldAllowSelectStep(4)}>
+                <Stepper.Step label={t("universe:primaryAttributeStep")} allowStepSelect={shouldAllowSelectStep(5)}>
                     <Group justify="center">
                         <PrimaryAttributeStep
                             nextStep={nextStep}
@@ -77,7 +87,7 @@ export default function UniverseCreation() {
                         />
                     </Group>
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:characterStep")} allowStepSelect={shouldAllowSelectStep(5)}>
+                <Stepper.Step label={t("universe:characterStep")} allowStepSelect={shouldAllowSelectStep(6)}>
                     <Group justify="center">
                         <CharacterSettingsForm
                             onSave={nextStep}
@@ -86,7 +96,7 @@ export default function UniverseCreation() {
                         />
                     </Group>
                 </Stepper.Step>
-                <Stepper.Step label={t("universe:secondaryAttributeStep")} allowStepSelect={shouldAllowSelectStep(6)}>
+                <Stepper.Step label={t("universe:secondaryAttributeStep")} allowStepSelect={shouldAllowSelectStep(7)}>
                     <Group justify="center">
                         <SecondaryAttributeStep
                             nextStep={nextStep}

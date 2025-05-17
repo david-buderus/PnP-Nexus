@@ -2,12 +2,8 @@ package de.pnp.manager.component.universe;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.character.PnPCharacter;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -18,7 +14,7 @@ public final class CharacterSettings extends SettingsBase {
     /**
      * The default settings
      */
-    public static final CharacterSettings DEFAULT = new CharacterSettings(2, 12, 50, 2, List.of());
+    public static final CharacterSettings DEFAULT = new CharacterSettings(2, 12, 50);
 
     @PositiveOrZero
     private final int minPrimaryAttributeValue;
@@ -29,20 +25,11 @@ public final class CharacterSettings extends SettingsBase {
     @Positive
     private final int maxPrimaryAttributeSum;
 
-    @PositiveOrZero
-    private final int numberOfHandheld;
-
-    @NotNull
-    private final List<@Valid JewelleryDefinition> jewelleryDefinitions;
-
     @JsonCreator
-    public CharacterSettings(int minPrimaryAttributeValue, int maxPrimaryAttributeValue, int maxPrimaryAttributeSum,
-        int numberOfHandheld, List<JewelleryDefinition> jewelleryDefinitions) {
+    public CharacterSettings(int minPrimaryAttributeValue, int maxPrimaryAttributeValue, int maxPrimaryAttributeSum) {
         this.minPrimaryAttributeValue = minPrimaryAttributeValue;
         this.maxPrimaryAttributeValue = maxPrimaryAttributeValue;
         this.maxPrimaryAttributeSum = maxPrimaryAttributeSum;
-        this.numberOfHandheld = numberOfHandheld;
-        this.jewelleryDefinitions = jewelleryDefinitions;
     }
 
     public int getMinPrimaryAttributeValue() {
@@ -57,36 +44,19 @@ public final class CharacterSettings extends SettingsBase {
         return maxPrimaryAttributeSum;
     }
 
-    public int getNumberOfHandheld() {
-        return numberOfHandheld;
-    }
-
-    public List<JewelleryDefinition> getJewelleryDefinitions() {
-        return jewelleryDefinitions;
-    }
-
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CharacterSettings that = (CharacterSettings) obj;
-        return this.numberOfHandheld == that.numberOfHandheld &&
-            Objects.equals(this.jewelleryDefinitions, that.jewelleryDefinitions);
+        CharacterSettings that = (CharacterSettings) o;
+        return getMinPrimaryAttributeValue() == that.getMinPrimaryAttributeValue()
+            && getMaxPrimaryAttributeValue() == that.getMaxPrimaryAttributeValue()
+            && getMaxPrimaryAttributeSum() == that.getMaxPrimaryAttributeSum();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(numberOfHandheld, jewelleryDefinitions);
-    }
-
-    /**
-     * In which jewellery slot what kind of jewellery is allowed and how many.
-     */
-    public record JewelleryDefinition(@NotBlank String name, @NotNull String tag, @Positive int amount) {
-
+        return Objects.hash(getMinPrimaryAttributeValue(), getMaxPrimaryAttributeValue(), getMaxPrimaryAttributeSum());
     }
 }

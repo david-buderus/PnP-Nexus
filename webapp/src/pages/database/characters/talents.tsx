@@ -54,7 +54,7 @@ export function TalentOverview() {
         columns={columns}
         identifier="talents"
         manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode} refresh={refresh} disabled={disabled} getInitial={getInitial} />}
-        deletionDialogTitle={t("character:talentEditTitle")}
+        deletionDialogTitle={t("character:talentDeletionTitle")}
         onDelete={(universe, talents) => TALENT_API.deleteAllTalents(universe, talents.map(talent => talent.id))}
     />;
 }

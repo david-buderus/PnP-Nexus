@@ -12,7 +12,7 @@ import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
 import de.pnp.manager.component.universe.CharacterSettings;
-import de.pnp.manager.component.universe.CharacterSettings.JewelleryDefinition;
+import de.pnp.manager.component.universe.EquipmentSettings.JewelleryDefinition;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.server.contoller.SecondaryAttributeDTOController;

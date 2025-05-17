@@ -2,6 +2,7 @@ package de.pnp.manager.server.service.universe;
 
 import de.pnp.manager.component.universe.CharacterSettings;
 import de.pnp.manager.component.universe.CurrencySettings;
+import de.pnp.manager.component.universe.EquipmentSettings;
 import de.pnp.manager.component.universe.ItemSettings;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
@@ -71,7 +72,22 @@ public class UniverseSettingsService {
     @UniverseOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Update the settings", operationId = "updateItemSettings")
-    public void updateCurrencySettings(@PathVariable String universe, @Valid @RequestBody ItemSettings settings) {
+    public void updateItemSettings(@PathVariable String universe, @Valid @RequestBody ItemSettings settings) {
+        settingsRepository.setSettings(universe, settings);
+    }
+
+    @GetMapping("equipment")
+    @UniverseRead
+    @Operation(summary = "Get the settings", operationId = "getEquipmentSettings")
+    public EquipmentSettings getEquipmentSettings(@PathVariable String universe) {
+        return settingsRepository.getSettings(universe, EquipmentSettings.class);
+    }
+
+    @PutMapping("equipment")
+    @UniverseOwner
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update the settings", operationId = "updateEquipmentSettings")
+    public void updateEquipmentSettings(@PathVariable String universe, @Valid @RequestBody EquipmentSettings settings) {
         settingsRepository.setSettings(universe, settings);
     }
 }

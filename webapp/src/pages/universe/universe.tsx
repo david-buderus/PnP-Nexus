@@ -20,6 +20,7 @@ import { fetchAllPrimaryAttributes, fetchAllSimpleSecondaryAttributes } from "..
 import { PrimaryAttributeForm } from "../../components/character/PrimaryAttributeForm";
 import { SecondaryAttributeForm } from "../../components/character/SecondaryAttributeForm";
 import { FaCheck } from "react-icons/fa";
+import EquipmentSettingsForm from "../../components/settings/EquipmentSettingsForm";
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
@@ -59,6 +60,7 @@ export default function UniverseOverview() {
             }
         </Card>
         <ItemSettingsCard />
+        <EquipmentSettingsCard />
         <CurrencySettingsCard />
         <CharacterSettingsCard primaryAttributes={primaryAttributes} />
         <PrimaryAttributeCard primaryAttributes={primaryAttributes} refreshPrimaryAttributes={refreshPrimaryAttributes} />
@@ -157,6 +159,63 @@ function ItemSettingsCard() {
         }
         <Modal opened={opened} onClose={close}>
             <ItemSettingsForm
+                onSave={() => {
+                    close();
+                    refreshSettings();
+                }}
+                onSaveText={t("save")}
+            />
+        </Modal >
+        {userPermissions.isActiveUniverseOwner && <Group style={{ position: 'absolute', bottom: 16, right: 16 }}>
+            <Button onClick={open}>
+                {t("edit")}
+            </Button>
+        </Group>}
+    </Card>;
+}
+
+function EquipmentSettingsCard() {
+    const { equipmentSettings, refreshSettings } = useUniverseContext();
+    const { userPermissions } = useUserContext();
+    const { t } = useTranslation();
+    const [opened, { open, close }] = useDisclosure(false);
+
+    return <Card shadow="md" p="md" maw={400} pb={60}>
+        <Title order={5} ta="center">
+            {t("universe:equipmentSettings")}
+        </Title>
+        <Text ta='left'>
+            {t("universe:numberOfHandheldDescription", { "number": equipmentSettings?.numberOfHandheld })}
+        </Text>
+        <Title order={6} ta="center" pt="md">
+            {t('universe:jewelleryDefinitions')}
+        </Title>
+        <Table>
+            <Table.Thead>
+                <Table.Tr>
+                    <Table.Th>{t("name")}</Table.Th>
+                    <Table.Th>{t("tag")}</Table.Th>
+                    <Table.Th>{t("amount")}</Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+                {equipmentSettings?.jewelleryDefinitions.map((definition, i) => {
+                    return <Table.Tr key={i}>
+                        <Table.Td>
+                            {definition?.name || ""}
+                        </Table.Td>
+                        <Table.Td>
+                            {definition?.tag || ""}
+                        </Table.Td>
+                        <Table.Td>
+                            {definition?.amount || ""}
+                        </Table.Td>
+                    </Table.Tr>;
+                })}
+            </Table.Tbody>
+        </Table>
+        <Modal opened={opened} onClose={close}>
+            <EquipmentSettingsForm
                 onSave={() => {
                     close();
                     refreshSettings();

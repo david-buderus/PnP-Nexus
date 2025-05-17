@@ -6,7 +6,6 @@ import de.pnp.manager.component.universe.CharacterSettings;
 import de.pnp.manager.component.universe.SettingsBase;
 import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.utils.TestUtils;
-import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ class UniverseSettingRepositoryTest extends UniverseTestBase {
     @Test
     void testInsert() {
         CharacterSettings settings = new CharacterSettings(2, 12,
-            50, 7, List.of());
+            50);
 
         settingsRepository.setSettings(getUniverseName(), settings);
 

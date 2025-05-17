@@ -136,21 +136,23 @@ export default function CurrencySettingsForm({
                     <Text ta='left'>
                         {t("universe:currencyExplanation")}
                     </Text>
-                    <NumberInput
-                        key="priceExample"
-                        label={t("universe:priceExample")}
-                        value={priceExample}
-                        onChange={setPriceExample}
-                        allowDecimal={false}
-                    />
-                    <TextInput
-                        key={"priceExample-resulting"}
-                        label={t("resultingPrice")}
-                        data-testid="resultingPrice"
-                        variant="outlined"
-                        value={currencyFormatter(form.getValues(), priceExample)}
-                        readOnly
-                    />
+                    <Group wrap="nowrap" grow>
+                        <NumberInput
+                            key="priceExample"
+                            label={t("universe:priceExample")}
+                            value={priceExample}
+                            onChange={setPriceExample}
+                            allowDecimal={false}
+                        />
+                        <TextInput
+                            key={"priceExample-resulting"}
+                            label={t("resultingPrice")}
+                            data-testid="resultingPrice"
+                            variant="outlined"
+                            value={currencyFormatter(form.getValues(), priceExample)}
+                            readOnly
+                        />
+                    </Group>
                 </Stack>
             </Grid.Col>
         </Grid >

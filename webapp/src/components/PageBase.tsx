@@ -2,7 +2,7 @@ import { AppShell, Burger, Group, Menu, NavLink, ScrollArea, Text, Stack, Unstyl
 import { useDisclosure } from "@mantine/hooks";
 import { Link, Outlet, useOutletContext, useSearchParams } from "react-router-dom";
 import { ReactElement, useEffect, useState } from "react";
-import { Universe, CurrencySettings, ItemSettings, PnPUser, PnPUserPreference, UniverseServiceApi, UniverseSettingsServiceApi, AuthenticationServiceApi, UserServiceApi, CharacterSettings } from "../api";
+import { Universe, CurrencySettings, ItemSettings, PnPUser, PnPUserPreference, UniverseServiceApi, UniverseSettingsServiceApi, AuthenticationServiceApi, UserServiceApi, CharacterSettings, EquipmentSettings } from "../api";
 import { API_CONFIGURATION } from "./Constants";
 import i18n from "../i18n";
 import { extractUserPermissions, UserPermissions } from "./interfaces/UserPermissions";
@@ -22,6 +22,7 @@ type UniverseContext = {
     fetchUniverses: () => Promise<void>;
     currencySettings: CurrencySettings;
     itemSettings: ItemSettings;
+    equipmentSettings: EquipmentSettings;
     characterSettings: CharacterSettings;
     refreshSettings: () => void;
 };
@@ -44,6 +45,7 @@ export function PageBase() {
     const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
     const [currencySettings, setCurrencySettings] = useState<CurrencySettings>(null);
     const [itemSettings, setItemSettings] = useState<ItemSettings>(null);
+    const [equipmentSettings, setEquipmentSettings] = useState<EquipmentSettings>(null);
     const [characterSettings, setCharacterSettings] = useState<CharacterSettings>(null);
     const [username, setUsername] = useState<string>(null);
     const [user, setUser] = useState<PnPUser>(null);
@@ -78,6 +80,7 @@ export function PageBase() {
         SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
         SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
         SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
+        SETTINGS_API.getEquipmentSettings(activeUniverse.name).then(response => setEquipmentSettings(response.data));
     }
 
     const refreshUser = () => {
@@ -109,6 +112,7 @@ export function PageBase() {
         SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
         SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
         SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
+        SETTINGS_API.getEquipmentSettings(activeUniverse.name).then(response => setEquipmentSettings(response.data));
     }, [activeUniverse]);
 
     useEffect(() => {
@@ -196,6 +200,7 @@ export function PageBase() {
                     fetchUniverses: fetchUniverses,
                     currencySettings: currencySettings,
                     itemSettings: itemSettings,
+                    equipmentSettings: equipmentSettings,
                     characterSettings: characterSettings,
                     userPermissions: userPermissions,
                     userPreferences: userPreferences,
