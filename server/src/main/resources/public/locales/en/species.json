@@ -1,0 +1,12 @@
+{
+  "playable": "Playable by players",
+  "playableDescription": "This species can be played by players.",
+  "nonplayableDescription": "This species can't be played by players.",
+  "playableSpecies": "Playable Species",
+  "nonplayableSpecies": "Nonplayable Species",
+  "overviewDescription": "An overview over all known species in the universe.",
+  "addNation": "Add a nation",
+  "addExistingNation": "Add an existing nation",
+  "unboundNations": "Nations without Species",
+  "removeNation": "Remove a nation"
+}

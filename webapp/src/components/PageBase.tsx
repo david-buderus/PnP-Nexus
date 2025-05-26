@@ -50,6 +50,7 @@ import {IoSettingsSharp} from "react-icons/io5";
 import {HiUserCircle} from "react-icons/hi2";
 import {MdLogout} from "react-icons/md";
 import axios from "axios";
+import {PiPerson} from "react-icons/pi";
 
 type UniverseContext = {
     universes: Universe[];
@@ -321,7 +322,11 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
     const {t} = useTranslation();
 
     const entries = [
-        {id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld/>},
+        {
+            id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld/>, subEntries: [
+                {id: "species-menu", label: t("species"), link: "/species", icon: <PiPerson/>},
+            ]
+        },
         {
             id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag/>, subEntries: [
                 {id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword/>},

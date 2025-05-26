@@ -13,9 +13,10 @@ import de.pnp.manager.component.spell.Spell;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.util.List;
 
 /**
  * A character in the universe.
@@ -28,10 +29,9 @@ public class PnPCharacter extends DatabaseObject {
 
     @DBRef
     @NotNull
-    private final Race race;
+    private final Species species;
 
     @DBRef
-    @NotNull
     private final Nation nation;
 
     @NotNull
@@ -66,13 +66,13 @@ public class PnPCharacter extends DatabaseObject {
     @PositiveOrZero
     private int experience;
 
-    public PnPCharacter(ObjectId id, CharacterDescription description, Race race, Nation nation,
-        List<ICharacterTrait> advantageTraits, List<ICharacterTrait> disadvantageTraits, CharacterStats stats,
-        CharacterTalents talents, CharacterEquipment equipment, CharacterInventory inventory, List<Spell> spells,
-        int level, int experience) {
+    public PnPCharacter(ObjectId id, CharacterDescription description, Species species, Nation nation,
+                        List<ICharacterTrait> advantageTraits, List<ICharacterTrait> disadvantageTraits, CharacterStats stats,
+                        CharacterTalents talents, CharacterEquipment equipment, CharacterInventory inventory, List<Spell> spells,
+                        int level, int experience) {
         super(id);
         this.description = description;
-        this.race = race;
+        this.species = species;
         this.nation = nation;
         this.advantageTraits = advantageTraits;
         this.disadvantageTraits = disadvantageTraits;
@@ -112,32 +112,34 @@ public class PnPCharacter extends DatabaseObject {
     public List<ICharacterTrait> getAllTraits() {
         Builder<ICharacterTrait> builder = ImmutableList.builder();
         builder.addAll(advantageTraits).addAll(disadvantageTraits);
-        builder.addAll(race.getAdvantageTraits()).addAll(race.getDisadvantageTraits());
-        builder.addAll(nation.getAdvantageTraits()).addAll(nation.getDisadvantageTraits());
+        builder.addAll(species.getAdvantageTraits()).addAll(species.getDisadvantageTraits());
+        if (nation != null) {
+            builder.addAll(nation.getAdvantageTraits()).addAll(nation.getDisadvantageTraits());
+        }
         return builder.build();
     }
 
     public List<TalentCharacterTrait> getAllTalentTraits() {
         return getAllTraits().stream()
-            .filter(TalentCharacterTrait.class::isInstance).map(TalentCharacterTrait.class::cast).toList();
+                .filter(TalentCharacterTrait.class::isInstance).map(TalentCharacterTrait.class::cast).toList();
     }
 
     public List<PrimaryStatTrait> getAllPrimaryStatTraits() {
         return getAllTraits().stream()
-            .filter(PrimaryStatTrait.class::isInstance).map(PrimaryStatTrait.class::cast).toList();
+                .filter(PrimaryStatTrait.class::isInstance).map(PrimaryStatTrait.class::cast).toList();
     }
 
     public List<SecondaryStatTrait> getAllSecondaryStatTraits() {
         return getAllTraits().stream()
-            .filter(SecondaryStatTrait.class::isInstance).map(SecondaryStatTrait.class::cast).toList();
+                .filter(SecondaryStatTrait.class::isInstance).map(SecondaryStatTrait.class::cast).toList();
     }
 
     public CharacterDescription getDescription() {
         return description;
     }
 
-    public Race getRace() {
-        return race;
+    public Species getSpecies() {
+        return species;
     }
 
     public Nation getNation() {

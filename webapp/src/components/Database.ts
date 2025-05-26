@@ -1,9 +1,42 @@
-import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { useState, useEffect, useMemo } from "react";
-import { useUniverseContext } from './PageBase';
-import { Armor, CharacterResourceUsage, CraftingRecipe, CraftingRecipeServiceApi, Item, ItemServiceApi, ItemUsage, Jewellery, Material, MaterialServiceApi, MaterialUsage, PrimaryAttribute, PrimaryAttributeServiceApi, SecondaryAttribute, SecondaryAttributeDTO, SecondaryAttributeServiceApi, Shield, SimpleSecondaryAttributeServiceApi, Spell, SpellServiceApi, TagServiceApi, Talent, TalentServiceApi, Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi, UpgradeServiceApi, Weapon } from "../api";
-import { API_CONFIGURATION, SomeItem } from "./Constants";
-import { handleNetworkErrors } from "./utils/ErrorUtils";
+import {AxiosRequestConfig, AxiosResponse} from "axios";
+import {useEffect, useMemo, useState} from "react";
+import {useUniverseContext} from './PageBase';
+import {
+    Armor,
+    CharacterResourceUsage,
+    CraftingRecipe,
+    CraftingRecipeServiceApi,
+    Item,
+    ItemServiceApi,
+    ItemUsage,
+    Jewellery,
+    Material,
+    MaterialServiceApi,
+    MaterialUsage,
+    Nation,
+    NationServiceApi,
+    PrimaryAttribute,
+    PrimaryAttributeServiceApi,
+    SecondaryAttribute,
+    SecondaryAttributeDTO,
+    SecondaryAttributeServiceApi,
+    Shield,
+    SimpleSecondaryAttributeServiceApi,
+    Species,
+    SpeciesServiceApi,
+    Spell,
+    SpellServiceApi,
+    TagServiceApi,
+    Talent,
+    TalentServiceApi,
+    Upgrade,
+    UpgradeRecipe,
+    UpgradeRecipeServiceApi,
+    UpgradeServiceApi,
+    Weapon
+} from "../api";
+import {API_CONFIGURATION, SomeItem} from "./Constants";
+import {handleNetworkErrors} from "./utils/ErrorUtils";
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
@@ -16,6 +49,8 @@ const CRAFTING_RECIPE_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
 const UPGRADE_RECIPE_API = new UpgradeRecipeServiceApi(API_CONFIGURATION);
 const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
+const SPECIES_API = new SpeciesServiceApi(API_CONFIGURATION);
+const NATION_API = new NationServiceApi(API_CONFIGURATION);
 
 /** Super type of all possible resource usages */
 export type IResourceUsage = ItemUsage | MaterialUsage | CharacterResourceUsage;
@@ -28,7 +63,7 @@ export type IResource = SomeItem | Material | SecondaryAttributeDTO;
  * Returns the data, a refresh callback and if the data is currenlty loading.
  */
 export function fetchAll<O>(fetch: ((universe: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<O[], any>>)): [O[], () => void, boolean] {
-    const { activeUniverse } = useUniverseContext();
+    const {activeUniverse} = useUniverseContext();
 
     const [objects, setObjects] = useState<O[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -46,6 +81,7 @@ export function fetchAll<O>(fetch: ((universe: string, options?: AxiosRequestCon
             handleNetworkErrors()(err);
         });
     }
+
     useEffect(refresh, [activeUniverse]);
 
     return [objects, refresh, loading];
@@ -161,6 +197,20 @@ export function fetchAllTalents(): [Talent[], () => void, boolean] {
  */
 export function fetchAllSpells(): [Spell[], () => void, boolean] {
     return fetchAll(universe => SPELL_API.getAllSpells(universe));
+}
+
+/**
+ * Fetches all species.
+ */
+export function fetchAllSpecies(): [Species[], () => void, boolean] {
+    return fetchAll(universe => SPECIES_API.getAllSpeciess(universe));
+}
+
+/**
+ * Fetches all species.
+ */
+export function fetchAllNations(): [Nation[], () => void, boolean] {
+    return fetchAll(universe => NATION_API.getAllNations(universe));
 }
 
 /** Fetches all possible resource for the given universe. */

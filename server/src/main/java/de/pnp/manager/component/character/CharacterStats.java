@@ -1,15 +1,18 @@
 package de.pnp.manager.component.character;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.stats.Stat;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import jakarta.validation.constraints.NotEmpty;
+import org.bson.types.ObjectId;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 /**
@@ -18,44 +21,54 @@ import java.util.stream.Collectors;
 public class CharacterStats {
 
     @NotEmpty
-    private final Map<PrimaryAttribute, Stat> primaryStats;
+    @JsonProperty("primaryStats")
+    private final Map<ObjectId, Stat> primaryStats;
 
     @NotEmpty
-    private final Map<SecondaryAttribute, Stat> secondaryStats;
+    @JsonProperty("secondaryStats")
+    private final Map<ObjectId, Stat> secondaryStats;
 
     @JsonCreator
-    public CharacterStats(Map<PrimaryAttribute, Stat> primaryStats, Map<SecondaryAttribute, Stat> secondaryStats) {
+    public CharacterStats(Map<ObjectId, Stat> primaryStats, Map<ObjectId, Stat> secondaryStats) {
         this.primaryStats = new HashMap<>(primaryStats);
         this.secondaryStats = new HashMap<>(secondaryStats);
     }
 
     public int getStat(PrimaryAttribute attribute) {
-        return primaryStats.get(attribute).getValue();
+        return get(attribute).getValue();
     }
 
 
     public int getStat(SecondaryAttribute attribute) {
-        return secondaryStats.get(attribute).getValue();
+        return get(attribute).getValue();
     }
 
     public void setFlatModifier(PrimaryAttribute attribute, int flatModifier) {
-        primaryStats.get(attribute).setFlatModifier(flatModifier);
+        get(attribute).setFlatModifier(flatModifier);
     }
 
     public void setFlatModifier(SecondaryAttribute attribute, int flatModifier) {
-        secondaryStats.get(attribute).setFlatModifier(flatModifier);
+        get(attribute).setFlatModifier(flatModifier);
     }
 
-    public void recalculateSecondaryStats() {
-        Map<IExpressionVariable, Double> primaryAttributeVariables = primaryStats.entrySet().stream()
-            .collect(
-                Collectors.toMap(e -> new PrimaryAttributeVariable(e.getKey()), e -> (double) e.getValue().getValue()));
+    private Stat get(PrimaryAttribute attribute) {
+        return primaryStats.putIfAbsent(attribute.getId(), new Stat(0));
+    }
 
-        for (Entry<SecondaryAttribute, Stat> entry : secondaryStats.entrySet()) {
-            SecondaryAttribute attribute = entry.getKey();
-            secondaryStats.put(attribute,
-                new Stat((int) Math.round(attribute.getCalculationFormula().calculate(primaryAttributeVariables)),
-                    entry.getValue().getFlatModifier()));
+    private Stat get(SecondaryAttribute attribute) {
+        return secondaryStats.putIfAbsent(attribute.getId(), new Stat(0));
+    }
+
+    public void recalculateSecondaryStats(List<PrimaryAttribute> primaryAttributes, List<SecondaryAttribute> secondaryAttributes) {
+        Map<IExpressionVariable, Double> primaryAttributeVariables = primaryAttributes.stream()
+                .collect(Collectors.toMap(PrimaryAttributeVariable::new, e -> (double) get(e).getRawValue()));
+
+        for (SecondaryAttribute secondaryAttribute : secondaryAttributes) {
+            secondaryStats.put(secondaryAttribute.getId(), new Stat(
+                            (int) Math.round(secondaryAttribute.getCalculationFormula().calculate(primaryAttributeVariables)),
+                            get(secondaryAttribute).getFlatModifier()
+                    )
+            );
         }
     }
 }

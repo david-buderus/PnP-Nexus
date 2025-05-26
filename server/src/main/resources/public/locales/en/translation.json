@@ -83,5 +83,13 @@
   "protection": "Protection",
   "nothing-here": "Nothing here...",
   "rights": "Rights",
-  "search": "Search"
+  "search": "Search",
+  "species": "Species",
+  "nation": "Nation",
+  "nations": "Nations",
+  "overview": "Overview",
+  "advantage": "Advantage",
+  "advantages": "Advantages",
+  "disadvantage": "Disadvantage",
+  "disadvantages": "Disadvantages"
 }

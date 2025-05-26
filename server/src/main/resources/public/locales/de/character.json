@@ -16,5 +16,9 @@
   "talentDeletionTitle": "Willst du die ausgewählten Talente löschen?",
   "firstAttribute": "Erstes Attribut",
   "secondAttribute": "Zweites Attribut",
-  "thirdAttribute": "Drittes Attribut"
+  "thirdAttribute": "Drittes Attribut",
+  "simpleTrait": "Simpel",
+  "talentTrait": "Talent",
+  "primaryAttributeTrait": "Primäres Attribut",
+  "secondaryAttributeTrait": "Sekundäres Attribut"
 }

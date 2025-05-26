@@ -1,6 +1,8 @@
 package de.pnp.manager.component.character.traits;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
 /**
@@ -11,6 +13,7 @@ public class SimpleCharacterTrait implements ICharacterTrait {
     @NotBlank
     private final String description;
 
+    @JsonCreator
     public SimpleCharacterTrait(String description) {
         this.description = description;
     }

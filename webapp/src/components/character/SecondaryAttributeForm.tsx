@@ -18,16 +18,22 @@ import {randomId} from "@mantine/hooks";
 import {ReactNode, useEffect, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {FaRegTrashCan} from "react-icons/fa6";
-import {SecondaryAttributeDTO, SecondaryAttributeInfo} from "../../api";
 import {
-    EXPRESSION_API,
-    SIMPLE_SECONDARY_ATTRIBUTE_API,
-    UNIVERSE_CREATION_API
-} from "../../pages/universe/universe-creation";
+    BinaryExpressionTreeServiceApi,
+    SecondaryAttributeDTO,
+    SecondaryAttributeInfo,
+    SimpleSecondaryAttributeServiceApi,
+    UniverseCreationServiceApi
+} from "../../api";
 import {fetchAllPrimaryAttributes, fetchSupportedSecondaryAttributeVariables} from "../Database";
 import {useUniverseContext} from "../PageBase";
 import {handleNetworkErrors, handleValidationErrors} from "../utils/ErrorUtils";
+import {API_CONFIGURATION} from "../Constants";
 
+
+const SIMPLE_SECONDARY_ATTRIBUTE_API = new SimpleSecondaryAttributeServiceApi(API_CONFIGURATION);
+const EXPRESSION_API = new BinaryExpressionTreeServiceApi(API_CONFIGURATION);
+const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
 
 /** A form to adjust all secondary attributes */
 export function SecondaryAttributeForm({
@@ -95,61 +101,64 @@ export function SecondaryAttributeForm({
                 onSubmit={form.onSubmit((attributes) => SIMPLE_SECONDARY_ATTRIBUTE_API.setAllSimpleSecondaryAttributes(activeUniverse.name, attributes.attributes)
                     .then(onSave).catch(handleValidationErrors(form.setErrors))
                 )}>
-                <Stack>
-                    {form.getValues().attributes.length > 0 ? (
-                        <Group>
-                            <Text fw={500} size="sm" style={{flex: 1}} pr={150}>
-                                {t("name")}
-                            </Text>
-                            <Text fw={500} size="sm" pr={50}>
-                                {t("character:calculationFormula")}
-                            </Text>
-                            <Text fw={500} size="sm" maw={150}>
-                                {t("character:consumableAttribute")}
-                            </Text>
-                            <ActionIcon size="lg" style={{'visibility': 'hidden'}}/>
-                        </Group>
-                    ) : (
-                        <Text c="dimmed" ta="center">
-                            {t("nothing-here")}
-                        </Text>
-                    )}
-                    {form.getValues().attributes.map((item, index) => {
-                        return <Group key={item.key}>
-                            <TextInput
-                                key={form.key(`attributes.${index}.name`)}
-                                required
-                                {...form.getInputProps(`attributes.${index}.name`)}
-                            />
-                            <Tooltip label={<>
-                                {t("character:calculationFormulaTooltip")}
-                                <List>
-                                    {supportedVariables.map(v => <List.Item
-                                        key={"tooltip-supported-variables-" + index + "-" + v}>{v}</List.Item>)}
-                                </List>
-                            </>} key={form.key(`attributes.${index}.consumable`) + "-calculationFormula"}>
-                                <TextInput
-                                    key={form.key(`attributes.${index}.calculationFormula`)}
-                                    required
-                                    {...form.getInputProps(`attributes.${index}.calculationFormula`)}
-                                />
-                            </Tooltip>
-                            <Tooltip label={t("character:consumableAttributeTooltip")}
-                                     key={form.key(`attributes.${index}.consumable`) + "-tooltip"}>
-                                <div>
-                                    <Switch
-                                        key={form.key(`attributes.${index}.consumable`)}
-                                        {...form.getInputProps(`attributes.${index}.consumable`, {type: 'checkbox'})}
+                <Table>
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th>{t("name")}</Table.Th>
+                            <Table.Th>{t("character:calculationFormula")}</Table.Th>
+                            <Table.Th colSpan={2} style={{width: 150}}>{t("character:consumableAttribute")}</Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {form.getValues().attributes.map((attribute, index) => {
+                            return <Table.Tr key={attribute.key}>
+                                <Table.Td>
+                                    <TextInput
+                                        key={form.key(`attributes.${index}.name`)}
+                                        required
+                                        {...form.getInputProps(`attributes.${index}.name`)}
                                     />
-                                </div>
-                            </Tooltip>
-                            <ActionIcon variant="outline" size="lg" color="red"
-                                        onClick={() => form.removeListItem('attributes', index)}>
-                                <FaRegTrashCan size={16}/>
-                            </ActionIcon>
-                        </Group>;
-                    })}
-                </Stack>
+                                </Table.Td>
+                                <Table.Td>
+                                    <Tooltip label={<>
+                                        {t("character:calculationFormulaTooltip")}
+                                        <List>
+                                            {supportedVariables.map(v => <List.Item
+                                                key={"tooltip-supported-variables-" + index + "-" + v}>{v}</List.Item>)}
+                                        </List>
+                                    </>} key={form.key(`attributes.${index}.consumable`) + "-calculationFormula"}>
+                                        <TextInput
+                                            key={form.key(`attributes.${index}.calculationFormula`)}
+                                            required
+                                            {...form.getInputProps(`attributes.${index}.calculationFormula`)}
+                                        />
+                                    </Tooltip>
+                                </Table.Td>
+                                <Table.Td>
+                                    <Tooltip label={t("character:consumableAttributeTooltip")}
+                                             key={form.key(`attributes.${index}.consumable`) + "-tooltip"}>
+                                        <div>
+                                            <Switch
+                                                key={form.key(`attributes.${index}.consumable`)}
+                                                {...form.getInputProps(`attributes.${index}.consumable`, {type: 'checkbox'})}
+                                            />
+                                        </div>
+                                    </Tooltip>
+                                </Table.Td>
+                                <Table.Td>
+                                    <ActionIcon variant="outline" size="lg" color="red"
+                                                onClick={() => form.removeListItem('attributes', index)}>
+                                        <FaRegTrashCan size={16}/>
+                                    </ActionIcon>
+                                </Table.Td>
+                            </Table.Tr>;
+                        })}
+                    </Table.Tbody>
+                    {form.getValues().attributes.length === 0 ?
+                        <Table.Caption c="dimmed" ta="center">
+                            {t("nothing-here")}
+                        </Table.Caption> : null}
+                </Table>
                 <Button
                     mt="md"
                     onClick={() =>
@@ -175,7 +184,7 @@ export function SecondaryAttributeForm({
         <Grid.Col span="content">
             <Paper shadow="md" p="md">
                 <Stack>
-                    <Text ta='left'>
+                    <Text ta="left">
                         {t("universe:secondaryAttributeExplanation")}
                     </Text>
                     <Table>
@@ -228,7 +237,7 @@ export function SecondaryAttributeForm({
             </Paper>
             <Paper shadow="md" p="md" mt="md">
                 <Stack>
-                    <Text ta='left'>
+                    <Text ta="left">
                         {t("universe:secondaryAttributeTesting")}
                     </Text>
                     <Grid columns={2}>

@@ -1,5 +1,6 @@
 package de.pnp.manager.component.character.stats;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.PositiveOrZero;
 
 /**
@@ -9,7 +10,7 @@ public class Stat {
 
     @PositiveOrZero
     private final int rawValue;
-    
+
     private int flatModifier;
 
     public Stat(int rawValue) {
@@ -29,11 +30,12 @@ public class Stat {
         return flatModifier;
     }
 
-    public int getValue() {
-        return getRawValue() + getFlatModifier();
-    }
-
     public void setFlatModifier(int flatModifier) {
         this.flatModifier = flatModifier;
+    }
+
+    @JsonIgnore
+    public int getValue() {
+        return getRawValue() + getFlatModifier();
     }
 }

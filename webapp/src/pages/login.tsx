@@ -10,10 +10,11 @@ export default function Login() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    function tryLogin(username: string, password: string) {
+    function tryLogin(username: string, password: string, rememberMe: boolean) {
         axios.postForm("/login", {
             username: username,
-            password: password
+            password: password,
+            "remember-me": rememberMe
         }).then(response => {
             const redirectUrl = new URL(response.request.responseURL);
             navigate(redirectUrl.pathname + redirectUrl.search);
@@ -25,6 +26,7 @@ export default function Login() {
         initialValues: {
             username: '',
             password: '',
+            rememberMe: false
         },
         validate: {
             password: () => searchParams.get("error") ? t("wrongPassword") : null
@@ -38,7 +40,9 @@ export default function Login() {
             </Title>
 
             <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-                <form onSubmit={form.onSubmit((values) => tryLogin(values.username, values.password))}>
+                <form
+                    onSubmit={form.onSubmit((values) =>
+                        tryLogin(values.username, values.password, values.rememberMe))}>
                     <TextInput
                         data-testid="username-field"
                         label={t("username")}
@@ -55,7 +59,11 @@ export default function Login() {
                         {...form.getInputProps('password')}
                     />
                     <Group justify="space-between" mt="lg">
-                        <Checkbox label="Remember me"/>
+                        <Checkbox
+                            label="Remember me"
+                            key={form.key('rememberMe')}
+                            {...form.getInputProps('rememberMe', {type: "checkbox"})}
+                        />
                         <Anchor component="button" size="sm">
                             Forgot password?
                         </Anchor>

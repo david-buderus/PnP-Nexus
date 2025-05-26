@@ -4,8 +4,10 @@ import com.google.common.collect.ListMultimap;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
 import de.pnp.manager.component.inventory.equipment.Equipment;
 import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipment;
+import de.pnp.manager.component.item.equipable.EArmorSlot;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,13 +21,13 @@ public class CharacterEquipment {
     private final List<? extends IHandheldEquipment> handheldEquipments;
 
     @NotNull
-    private final Map<String, ArmorEquipment> armor;
+    private final Map<EArmorSlot, ArmorEquipment> armor;
 
     @NotNull
     private final ListMultimap<String, Equipment<Jewellery>> jewellery;
 
-    public CharacterEquipment(List<? extends IHandheldEquipment> handheldEquipments, Map<String, ArmorEquipment> armor,
-        ListMultimap<String, Equipment<Jewellery>> jewellery) {
+    public CharacterEquipment(List<? extends IHandheldEquipment> handheldEquipments, Map<EArmorSlot, ArmorEquipment> armor,
+                              ListMultimap<String, Equipment<Jewellery>> jewellery) {
         this.handheldEquipments = handheldEquipments;
         this.armor = armor;
         this.jewellery = jewellery;
@@ -35,7 +37,7 @@ public class CharacterEquipment {
         return handheldEquipments;
     }
 
-    public Optional<ArmorEquipment> getArmor(String slot) {
+    public Optional<ArmorEquipment> getArmor(EArmorSlot slot) {
         return Optional.ofNullable(armor.get(slot));
     }
 

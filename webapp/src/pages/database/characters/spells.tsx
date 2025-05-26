@@ -139,11 +139,11 @@ export function SpellOverview() {
 }
 
 function CreationDialog({
-                            editMode,
-                            refresh,
-                            disabled,
-                            getInitial
-                        }: {
+    editMode,
+    refresh,
+    disabled,
+    getInitial
+}: {
     editMode: boolean,
     refresh: () => void;
     disabled: boolean;

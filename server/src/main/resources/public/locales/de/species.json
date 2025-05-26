@@ -1,0 +1,12 @@
+{
+  "playable": "Spielbar bei Spielern",
+  "playableDescription": "Diese Spezie kann von Spielern gespielt werden.",
+  "nonplayableDescription": "Diese Spezie kann nicht von Spielern gespielt werden.",
+  "playableSpecies": "Spielbare Spezien",
+  "nonplayableSpecies": "Nicht Spielbare Spezien",
+  "overviewDescription": "Eine Übersicht über alle bekannten Spezien in dem Universum.",
+  "addNation": "Füg ein Volk hinzu",
+  "addExistingNation": "Füg ein existierendes Volk hinzu",
+  "unboundNations": "Völker ohne Spezien",
+  "removeNation": "Entferne eine Nation"
+}

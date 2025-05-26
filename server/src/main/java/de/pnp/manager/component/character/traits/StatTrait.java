@@ -1,26 +1,33 @@
 package de.pnp.manager.component.character.traits;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.ECalculation;
+import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.stats.Stat;
 import jakarta.validation.constraints.NotNull;
-import java.util.Objects;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.util.Objects;
 
 /**
  * Influences a {@link Stat}.
  */
-public sealed abstract class StatTrait<Attribute> implements ICharacterTrait {
+public sealed abstract class StatTrait<Attribute extends IUniquelyNamedDataObject> implements ICharacterTrait {
 
     @NotNull
+    @JsonProperty("calculation")
     private final ECalculation calculation;
 
+    @JsonProperty("value")
     private final float value;
 
     @DBRef
     @NotNull
+    @JsonProperty("attribute")
     private final Attribute attribute;
 
     @NotNull
@@ -48,7 +55,18 @@ public sealed abstract class StatTrait<Attribute> implements ICharacterTrait {
 
     @Override
     public String getDescription() {
-        return description;
+        if (!description.isBlank()) {
+            return description;
+        }
+        return switch (calculation) {
+            case ADDITIVE -> {
+                if (value > 0) {
+                    yield "+" + value + " " + attribute.getName();
+                }
+                yield value + " " + attribute.getName();
+            }
+            case MULTIPLICATIVE -> value + " * " + attribute.getName();
+        };
     }
 
     @Override
@@ -61,8 +79,8 @@ public sealed abstract class StatTrait<Attribute> implements ICharacterTrait {
         }
         StatTrait<?> statTrait = (StatTrait<?>) o;
         return Float.compare(statTrait.value, value) == 0 && calculation == statTrait.calculation
-            && Objects.equals(attribute, statTrait.attribute) && Objects.equals(getDescription(),
-            statTrait.getDescription());
+                && Objects.equals(attribute, statTrait.attribute) && Objects.equals(getDescription(),
+                statTrait.getDescription());
     }
 
     @Override
@@ -75,9 +93,10 @@ public sealed abstract class StatTrait<Attribute> implements ICharacterTrait {
      */
     public static final class PrimaryStatTrait extends StatTrait<PrimaryAttribute> {
 
-        public PrimaryStatTrait(ECalculation calculation, float value, PrimaryAttribute primaryAttribute,
-            String description) {
-            super(calculation, value, primaryAttribute, description);
+        @JsonCreator
+        public PrimaryStatTrait(ECalculation calculation, float value, PrimaryAttribute attribute,
+                                String description) {
+            super(calculation, value, attribute, description);
         }
     }
 
@@ -86,9 +105,10 @@ public sealed abstract class StatTrait<Attribute> implements ICharacterTrait {
      */
     public static final class SecondaryStatTrait extends StatTrait<SecondaryAttribute> {
 
-        public SecondaryStatTrait(ECalculation calculation, float value, SecondaryAttribute secondaryAttribute,
-            String description) {
-            super(calculation, value, secondaryAttribute, description);
+        @JsonCreator
+        public SecondaryStatTrait(ECalculation calculation, float value, SecondaryAttribute attribute,
+                                  String description) {
+            super(calculation, value, attribute, description);
         }
     }
 }
