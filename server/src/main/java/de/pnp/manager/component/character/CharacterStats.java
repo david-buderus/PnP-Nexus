@@ -1,17 +1,14 @@
 package de.pnp.manager.component.character;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.stats.Stat;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
-import jakarta.validation.constraints.NotEmpty;
-import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -20,16 +17,13 @@ import java.util.stream.Collectors;
  */
 public class CharacterStats {
 
-    @NotEmpty
-    @JsonProperty("primaryStats")
-    private final Map<ObjectId, Stat> primaryStats;
+    @DBRef
+    private final Map<PrimaryAttribute, Stat> primaryStats;
 
-    @NotEmpty
-    @JsonProperty("secondaryStats")
-    private final Map<ObjectId, Stat> secondaryStats;
+    @DBRef
+    private final Map<SecondaryAttribute, Stat> secondaryStats;
 
-    @JsonCreator
-    public CharacterStats(Map<ObjectId, Stat> primaryStats, Map<ObjectId, Stat> secondaryStats) {
+    public CharacterStats(Map<PrimaryAttribute, Stat> primaryStats, Map<SecondaryAttribute, Stat> secondaryStats) {
         this.primaryStats = new HashMap<>(primaryStats);
         this.secondaryStats = new HashMap<>(secondaryStats);
     }
@@ -51,20 +45,20 @@ public class CharacterStats {
         get(attribute).setFlatModifier(flatModifier);
     }
 
-    private Stat get(PrimaryAttribute attribute) {
-        return primaryStats.putIfAbsent(attribute.getId(), new Stat(0));
+    public Stat get(PrimaryAttribute attribute) {
+        return primaryStats.putIfAbsent(attribute, new Stat(0));
     }
 
-    private Stat get(SecondaryAttribute attribute) {
-        return secondaryStats.putIfAbsent(attribute.getId(), new Stat(0));
+    public Stat get(SecondaryAttribute attribute) {
+        return secondaryStats.putIfAbsent(attribute, new Stat(0));
     }
 
-    public void recalculateSecondaryStats(List<PrimaryAttribute> primaryAttributes, List<SecondaryAttribute> secondaryAttributes) {
+    public void recalculateSecondaryStats(Collection<PrimaryAttribute> primaryAttributes, Collection<SecondaryAttribute> secondaryAttributes) {
         Map<IExpressionVariable, Double> primaryAttributeVariables = primaryAttributes.stream()
                 .collect(Collectors.toMap(PrimaryAttributeVariable::new, e -> (double) get(e).getRawValue()));
 
         for (SecondaryAttribute secondaryAttribute : secondaryAttributes) {
-            secondaryStats.put(secondaryAttribute.getId(), new Stat(
+            secondaryStats.put(secondaryAttribute, new Stat(
                             (int) Math.round(secondaryAttribute.getCalculationFormula().calculate(primaryAttributeVariables)),
                             get(secondaryAttribute).getFlatModifier()
                     )

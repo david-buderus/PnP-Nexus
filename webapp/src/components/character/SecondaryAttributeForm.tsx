@@ -105,6 +105,7 @@ export function SecondaryAttributeForm({
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th>{t("name")}</Table.Th>
+                            <Table.Th>{t("character:shortName")}</Table.Th>
                             <Table.Th>{t("character:calculationFormula")}</Table.Th>
                             <Table.Th colSpan={2} style={{width: 150}}>{t("character:consumableAttribute")}</Table.Th>
                         </Table.Tr>
@@ -115,8 +116,15 @@ export function SecondaryAttributeForm({
                                 <Table.Td>
                                     <TextInput
                                         key={form.key(`attributes.${index}.name`)}
-                                        required
                                         {...form.getInputProps(`attributes.${index}.name`)}
+                                        required
+                                    />
+                                </Table.Td>
+                                <Table.Td>
+                                    <TextInput
+                                        key={form.key(`attributes.${index}.shortName`)}
+                                        {...form.getInputProps(`attributes.${index}.shortName`)}
+                                        required
                                     />
                                 </Table.Td>
                                 <Table.Td>

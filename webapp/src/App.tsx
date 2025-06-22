@@ -22,7 +22,7 @@ import {UniverseView} from './components/UniverseView';
 import {User} from './pages/user/user';
 import {UserPreferences} from './pages/user/preferences';
 import {Admin} from './pages/admin/admin';
-import {PnPCharacterEditor} from "./components/character/editor/PnPCharacterEditor";
+import {PnPCharacterSheetEditor} from "./components/character/editor/PnPCharacterSheetEditor";
 import {SpeciesOverview} from "./pages/database/world/species";
 
 /** The entry point of the webapp */
@@ -65,7 +65,7 @@ class App extends Component {
                             <Route path="/species" element={<UniverseView><SpeciesOverview/></UniverseView>}></Route>
                             <Route path="/admin" element={<Admin/>}> </Route>
                             <Route path="/users" element={<UserOverview/>}> </Route>
-                            <Route path="/test" element={<PnPCharacterEditor/>}> </Route>
+                            <Route path="/test" element={<PnPCharacterSheetEditor/>}> </Route>
                         </Route>
                         <Route path="/login" element={<Login/>}> </Route>
                     </Routes>

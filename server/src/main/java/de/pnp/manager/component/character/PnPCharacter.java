@@ -10,9 +10,6 @@ import de.pnp.manager.component.character.traits.StatTrait.PrimaryStatTrait;
 import de.pnp.manager.component.character.traits.StatTrait.SecondaryStatTrait;
 import de.pnp.manager.component.character.traits.TalentCharacterTrait;
 import de.pnp.manager.component.spell.Spell;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -23,55 +20,37 @@ import java.util.List;
  */
 public class PnPCharacter extends DatabaseObject {
 
-    @Valid
-    @NotNull
     private final CharacterDescription description;
 
+    private final CharacterLevel level;
+
     @DBRef
-    @NotNull
     private final Species species;
 
     @DBRef
     private final Nation nation;
 
-    @NotNull
-    private final List<@Valid ICharacterTrait> advantageTraits;
+    private final List<ICharacterTrait> advantageTraits;
 
-    @NotNull
-    private final List<@Valid ICharacterTrait> disadvantageTraits;
+    private final List<ICharacterTrait> disadvantageTraits;
 
-    @Valid
-    @NotNull
     private final CharacterStats stats;
 
-    @Valid
-    @NotNull
     private final CharacterTalents talents;
 
-    @Valid
-    @NotNull
     private final CharacterEquipment equipment;
 
-    @Valid
-    @NotNull
     private final CharacterInventory inventory;
 
     @DBRef
-    @NotNull
     private final List<Spell> spells;
 
-    @PositiveOrZero
-    private int level;
-
-    @PositiveOrZero
-    private int experience;
-
-    public PnPCharacter(ObjectId id, CharacterDescription description, Species species, Nation nation,
+    public PnPCharacter(ObjectId id, CharacterDescription description, CharacterLevel level, Species species, Nation nation,
                         List<ICharacterTrait> advantageTraits, List<ICharacterTrait> disadvantageTraits, CharacterStats stats,
-                        CharacterTalents talents, CharacterEquipment equipment, CharacterInventory inventory, List<Spell> spells,
-                        int level, int experience) {
+                        CharacterTalents talents, CharacterEquipment equipment, CharacterInventory inventory, List<Spell> spells) {
         super(id);
         this.description = description;
+        this.level = level;
         this.species = species;
         this.nation = nation;
         this.advantageTraits = advantageTraits;
@@ -81,8 +60,6 @@ public class PnPCharacter extends DatabaseObject {
         this.equipment = equipment;
         this.inventory = inventory;
         this.spells = spells;
-        this.level = level;
-        this.experience = experience;
     }
 
     public int getTalentRoll(Talent talent) {
@@ -174,11 +151,7 @@ public class PnPCharacter extends DatabaseObject {
         return spells;
     }
 
-    public int getLevel() {
+    public CharacterLevel getLevel() {
         return level;
-    }
-
-    public int getExperience() {
-        return experience;
     }
 }

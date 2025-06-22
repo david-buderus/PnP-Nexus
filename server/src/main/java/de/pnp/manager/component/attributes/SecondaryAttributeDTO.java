@@ -5,10 +5,11 @@ import de.pnp.manager.validation.IsValidExpression;
 import de.pnp.manager.validation.IsValidExpression.EExpressionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+
+import java.util.Objects;
 
 /**
  * This is a simpler format of {@link SecondaryAttribute}.
@@ -17,7 +18,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
  * @param name The human-readable name of this attribute.
  */
 public record SecondaryAttributeDTO(@Id ObjectId id, @Indexed(unique = true) @NotBlank String name,
-                                    @NotNull boolean consumable,
+                                    @NotBlank String shortName, @NotNull boolean consumable,
                                     @NotNull @IsValidExpression(expressionType = EExpressionType.SECONDARY_ATTRIBUTE_EXPRESSION) String calculationFormula) {
 
     /**
@@ -38,19 +39,20 @@ public record SecondaryAttributeDTO(@Id ObjectId id, @Indexed(unique = true) @No
         }
         SecondaryAttributeDTO that = (SecondaryAttributeDTO) o;
         return consumable() == that.consumable() && Objects.equals(name(), that.name())
-            && Objects.equals(calculationFormula(), that.calculationFormula());
+                && Objects.equals(shortName(), that.shortName())
+                && Objects.equals(calculationFormula(), that.calculationFormula());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name(), consumable(), calculationFormula());
+        return Objects.hash(name(), shortName(), consumable(), calculationFormula());
     }
 
     /**
      * Returns the matching {@link SecondaryAttributeDTO DTO} for the given {@link SecondaryAttribute}.
      */
     public static SecondaryAttributeDTO from(SecondaryAttribute attribute) {
-        return new SecondaryAttributeDTO(attribute.getId(), attribute.getName(), attribute.isConsumable(),
-            attribute.getCalculationFormula().toHumanReadableString());
+        return new SecondaryAttributeDTO(attribute.getId(), attribute.getName(), attribute.getShortName(),
+                attribute.isConsumable(), attribute.getCalculationFormula().toHumanReadableString());
     }
 }

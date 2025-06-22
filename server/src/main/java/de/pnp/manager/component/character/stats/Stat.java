@@ -1,14 +1,12 @@
 package de.pnp.manager.component.character.stats;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.PositiveOrZero;
 
 /**
  * A single stat of a character.
  */
 public class Stat {
 
-    @PositiveOrZero
     private final int rawValue;
 
     private int flatModifier;

@@ -1,10 +1,12 @@
 import React, {ReactNode} from "react";
 import {useNode} from "@craftjs/core";
-import {Group} from "@mantine/core";
-import {highlightStyle} from "./Constants";
+import {SimpleGrid} from "@mantine/core";
+import {getPartStyle} from "../Constants";
 
-export const GroupPart = ({children, ...props}: {
+export const GridPart = ({children, ...props}: {
     children?: ReactNode;
+    columns: number;
+    rows: number;
 }) => {
     const {
         connectors: {connect, drag},
@@ -18,9 +20,9 @@ export const GroupPart = ({children, ...props}: {
     return (
         <div
             ref={(ref) => ref && connect(drag(ref))}
-            style={selected || isEmpty ? highlightStyle : undefined}
+            style={getPartStyle(selected, isEmpty)}
         >
-            <Group {...props}>{children}</Group>
+            <SimpleGrid {...props}>{children}</SimpleGrid>
         </div>
     );
 };

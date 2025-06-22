@@ -31,6 +31,18 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 export interface Armor {
     /**
      * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'armor': number;
+    /**
+     * 
+     * @type {EArmorSlot}
+     * @memberof Armor
+     */
+    'armorSlot': EArmorSlot;
+    /**
+     * 
      * @type {string}
      * @memberof Armor
      */
@@ -47,6 +59,12 @@ export interface Armor {
      * @memberof Armor
      */
     'id'?: string;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Armor
+     */
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -71,6 +89,12 @@ export interface Armor {
      * @memberof Armor
      */
     'note': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'protection': number;
     /**
      * 
      * @type {ERarity}
@@ -100,37 +124,13 @@ export interface Armor {
      * @type {number}
      * @memberof Armor
      */
-    'vendorPrice': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
-    'armor': number;
-    /**
-     * 
-     * @type {EArmorSlot}
-     * @memberof Armor
-     */
-    'armorSlot': EArmorSlot;
-    /**
-     * 
-     * @type {Material}
-     * @memberof Armor
-     */
-    'material': Material;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
-    'protection': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Armor
-     */
     'upgradeSlots': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Armor
+     */
+    'vendorPrice': number;
     /**
      * 
      * @type {number}
@@ -193,6 +193,18 @@ export interface ArmorEquipment {
      * @type {number}
      * @memberof ArmorEquipment
      */
+    'maxProtection'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ArmorEquipment
+     */
+    'protection'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ArmorEquipment
+     */
     'relativeDurability'?: number;
     /**
      * 
@@ -212,6 +224,12 @@ export interface ArmorEquipment {
      * @memberof ArmorEquipment
      */
     'upgrades': Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof ArmorEquipment
+     */
+    'wear'?: number;
     /**
      * 
      * @type {number}
@@ -310,10 +328,28 @@ export interface CharacterDescription {
 export interface CharacterEquipment {
     /**
      * 
-     * @type {Array<IHandheldEquipment>}
+     * @type {{ [key: string]: ArmorEquipment; }}
      * @memberof CharacterEquipment
      */
-    'handheldEquipments': Array<IHandheldEquipment>;
+    'armor': { [key: string]: ArmorEquipment; };
+    /**
+     * 
+     * @type {{ [key: string]: Array<EquipmentJewellery>; }}
+     * @memberof CharacterEquipment
+     */
+    'jewellery': { [key: string]: Array<EquipmentJewellery>; };
+    /**
+     * 
+     * @type {ShieldEquipment}
+     * @memberof CharacterEquipment
+     */
+    'shieldEquipment': ShieldEquipment;
+    /**
+     * 
+     * @type {Array<WeaponEquipment>}
+     * @memberof CharacterEquipment
+     */
+    'weaponEquipments': Array<WeaponEquipment>;
 }
 /**
  * 
@@ -333,6 +369,31 @@ export interface CharacterInventory {
      * @memberof CharacterInventory
      */
     'inventory'?: Inventory;
+}
+/**
+ * 
+ * @export
+ * @interface CharacterLevel
+ */
+export interface CharacterLevel {
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterLevel
+     */
+    'experience'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterLevel
+     */
+    'level'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CharacterLevel
+     */
+    'skillPoints'?: number;
 }
 /**
  * 
@@ -381,34 +442,21 @@ export interface CharacterSettings {
 /**
  * 
  * @export
- * @interface CharacterStats
+ * @interface CharacterStatsDto
  */
-export interface CharacterStats {
+export interface CharacterStatsDto {
     /**
      * 
-     * @type {{ [key: string]: Stat; }}
-     * @memberof CharacterStats
+     * @type {{ [key: string]: StatsDto; }}
+     * @memberof CharacterStatsDto
      */
-    'primaryStats': { [key: string]: Stat; };
+    'primaryStats': { [key: string]: StatsDto; };
     /**
      * 
-     * @type {{ [key: string]: Stat; }}
-     * @memberof CharacterStats
+     * @type {{ [key: string]: StatsDto; }}
+     * @memberof CharacterStatsDto
      */
-    'secondaryStats': { [key: string]: Stat; };
-}
-/**
- * 
- * @export
- * @interface CharacterTalents
- */
-export interface CharacterTalents {
-    /**
-     * 
-     * @type {{ [key: string]: number; }}
-     * @memberof CharacterTalents
-     */
-    'talents': { [key: string]: number; };
+    'secondaryStats': { [key: string]: StatsDto; };
 }
 /**
  * 
@@ -699,6 +747,49 @@ export interface Equipment {
 /**
  * 
  * @export
+ * @interface EquipmentJewellery
+ */
+export interface EquipmentJewellery {
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentJewellery
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {Jewellery}
+     * @memberof EquipmentJewellery
+     */
+    'item': Jewellery;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentJewellery
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentJewellery
+     */
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof EquipmentJewellery
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof EquipmentJewellery
+     */
+    'upgrades': Array<Upgrade>;
+}
+/**
+ * 
+ * @export
  * @interface EquipmentSettings
  */
 export interface EquipmentSettings {
@@ -747,12 +838,6 @@ export interface EquipmentUpgradeEffect {
     'value': number;
 }
 
-
-/**
- * @type GetAllItems200ResponseInner
- * @export
- */
-export type GetAllItems200ResponseInner = Armor | Item | Jewellery | Shield | Weapon;
 
 /**
  * @type GetPermissions200ResponseInner
@@ -873,31 +958,6 @@ export interface IEquipableItem {
 }
 
 
-/**
- * 
- * @export
- * @interface IHandheldEquipment
- */
-export interface IHandheldEquipment {
-    /**
-     * 
-     * @type {number}
-     * @memberof IHandheldEquipment
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IHandheldEquipment
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IHandheldEquipment
-     */
-    'relativeDurability'?: number;
-}
 /**
  * 
  * @export
@@ -1026,7 +1086,7 @@ export interface Inventory {
  * @type InventoryItemsInner
  * @export
  */
-export type InventoryItemsInner = ArmorEquipment | Equipment | ItemStackObject | ShieldEquipment | WeaponEquipment;
+export type InventoryItemsInner = ArmorEquipment | Equipment | ItemStackItem | ShieldEquipment | WeaponEquipment;
 
 /**
  * 
@@ -1137,25 +1197,25 @@ export interface ItemSettings {
 /**
  * 
  * @export
- * @interface ItemStackObject
+ * @interface ItemStackItem
  */
-export interface ItemStackObject {
+export interface ItemStackItem {
     /**
      * 
      * @type {number}
-     * @memberof ItemStackObject
+     * @memberof ItemStackItem
      */
     'amount'?: number;
     /**
      * 
-     * @type {object}
-     * @memberof ItemStackObject
+     * @type {Item}
+     * @memberof ItemStackItem
      */
-    'item': object;
+    'item': Item;
     /**
      * 
      * @type {number}
-     * @memberof ItemStackObject
+     * @memberof ItemStackItem
      */
     'stackSize'?: number;
 }
@@ -1202,6 +1262,12 @@ export interface Jewellery {
      * @memberof Jewellery
      */
     'id'?: string;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Jewellery
+     */
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -1255,19 +1321,13 @@ export interface Jewellery {
      * @type {number}
      * @memberof Jewellery
      */
-    'vendorPrice': number;
-    /**
-     * 
-     * @type {Material}
-     * @memberof Jewellery
-     */
-    'material': Material;
+    'upgradeSlots': number;
     /**
      * 
      * @type {number}
      * @memberof Jewellery
      */
-    'upgradeSlots': number;
+    'vendorPrice': number;
 }
 
 
@@ -1437,111 +1497,75 @@ export interface PasswordChange {
 /**
  * 
  * @export
- * @interface PnPCharacter
+ * @interface PnPCharacterDto
  */
-export interface PnPCharacter {
+export interface PnPCharacterDto {
     /**
      * 
      * @type {Array<NationAdvantageTraitsInner>}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'advantageTraits': Array<NationAdvantageTraitsInner>;
     /**
      * 
-     * @type {Array<PrimaryStatTrait>}
-     * @memberof PnPCharacter
-     */
-    'allPrimaryStatTraits'?: Array<PrimaryStatTrait>;
-    /**
-     * 
-     * @type {Array<SecondaryStatTrait>}
-     * @memberof PnPCharacter
-     */
-    'allSecondaryStatTraits'?: Array<SecondaryStatTrait>;
-    /**
-     * 
-     * @type {Array<TalentCharacterTrait>}
-     * @memberof PnPCharacter
-     */
-    'allTalentTraits'?: Array<TalentCharacterTrait>;
-    /**
-     * 
-     * @type {Array<NationAdvantageTraitsInner>}
-     * @memberof PnPCharacter
-     */
-    'allTraits'?: Array<NationAdvantageTraitsInner>;
-    /**
-     * 
      * @type {CharacterDescription}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'description': CharacterDescription;
     /**
      * 
      * @type {Array<NationAdvantageTraitsInner>}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'disadvantageTraits': Array<NationAdvantageTraitsInner>;
     /**
      * 
      * @type {CharacterEquipment}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'equipment': CharacterEquipment;
     /**
      * 
-     * @type {number}
-     * @memberof PnPCharacter
-     */
-    'experience'?: number;
-    /**
-     * 
      * @type {string}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'id'?: string;
     /**
      * 
      * @type {CharacterInventory}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'inventory': CharacterInventory;
     /**
      * 
-     * @type {number}
-     * @memberof PnPCharacter
+     * @type {CharacterLevel}
+     * @memberof PnPCharacterDto
      */
-    'level'?: number;
+    'level': CharacterLevel;
     /**
      * 
      * @type {Nation}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'nation'?: Nation;
     /**
      * 
      * @type {Species}
-     * @memberof PnPCharacter
+     * @memberof PnPCharacterDto
      */
     'species': Species;
     /**
      * 
-     * @type {Array<Spell>}
-     * @memberof PnPCharacter
+     * @type {CharacterStatsDto}
+     * @memberof PnPCharacterDto
      */
-    'spells': Array<Spell>;
+    'stats': CharacterStatsDto;
     /**
      * 
-     * @type {CharacterStats}
-     * @memberof PnPCharacter
+     * @type {{ [key: string]: TalentRollDto; }}
+     * @memberof PnPCharacterDto
      */
-    'stats': CharacterStats;
-    /**
-     * 
-     * @type {CharacterTalents}
-     * @memberof PnPCharacter
-     */
-    'talents': CharacterTalents;
+    'talents': { [key: string]: TalentRollDto; };
 }
 /**
  * 
@@ -1731,6 +1755,12 @@ export interface SecondaryAttribute {
      * @memberof SecondaryAttribute
      */
     'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SecondaryAttribute
+     */
+    'shortName': string;
 }
 /**
  * 
@@ -1762,6 +1792,12 @@ export interface SecondaryAttributeDTO {
      * @memberof SecondaryAttributeDTO
      */
     'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SecondaryAttributeDTO
+     */
+    'shortName': string;
 }
 /**
  * 
@@ -1835,10 +1871,22 @@ export interface SecondaryStatTrait {
 export interface Shield {
     /**
      * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'armor': number;
+    /**
+     * 
      * @type {string}
      * @memberof Shield
      */
     'description': string;
+    /**
+     * 
+     * @type {Dice}
+     * @memberof Shield
+     */
+    'dice': Dice;
     /**
      * 
      * @type {string}
@@ -1847,10 +1895,28 @@ export interface Shield {
     'effect': string;
     /**
      * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'hit': number;
+    /**
+     * 
      * @type {string}
      * @memberof Shield
      */
     'id'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'initiative': number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Shield
+     */
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -1875,6 +1941,12 @@ export interface Shield {
      * @memberof Shield
      */
     'note': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'protection': number;
     /**
      * 
      * @type {ERarity}
@@ -1904,49 +1976,13 @@ export interface Shield {
      * @type {number}
      * @memberof Shield
      */
-    'vendorPrice': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'armor': number;
-    /**
-     * 
-     * @type {Dice}
-     * @memberof Shield
-     */
-    'dice': Dice;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'hit': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'initiative': number;
-    /**
-     * 
-     * @type {Material}
-     * @memberof Shield
-     */
-    'material': Material;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
-    'protection': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Shield
-     */
     'upgradeSlots': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Shield
+     */
+    'vendorPrice': number;
     /**
      * 
      * @type {number}
@@ -2015,6 +2051,18 @@ export interface ShieldEquipment {
      * @type {number}
      * @memberof ShieldEquipment
      */
+    'maxProtection'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldEquipment
+     */
+    'protection'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldEquipment
+     */
     'relativeDurability'?: number;
     /**
      * 
@@ -2034,6 +2082,12 @@ export interface ShieldEquipment {
      * @memberof ShieldEquipment
      */
     'upgrades': Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof ShieldEquipment
+     */
+    'wear'?: number;
     /**
      * 
      * @type {number}
@@ -2225,21 +2279,27 @@ export interface Spell {
 /**
  * 
  * @export
- * @interface Stat
+ * @interface StatsDto
  */
-export interface Stat {
+export interface StatsDto {
     /**
      * 
      * @type {number}
-     * @memberof Stat
+     * @memberof StatsDto
      */
     'flatModifier'?: number;
     /**
      * 
      * @type {number}
-     * @memberof Stat
+     * @memberof StatsDto
      */
     'rawValue'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof StatsDto
+     */
+    'totalValue'?: number;
 }
 /**
  * 
@@ -2321,6 +2381,25 @@ export interface TalentCharacterTrait {
      * @memberof TalentCharacterTrait
      */
     'talent': Talent;
+}
+/**
+ * 
+ * @export
+ * @interface TalentRollDto
+ */
+export interface TalentRollDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof TalentRollDto
+     */
+    'rawValue'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TalentRollDto
+     */
+    'totalValue'?: number;
 }
 /**
  * 
@@ -2538,10 +2617,22 @@ export interface VariableNode {
 export interface Weapon {
     /**
      * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'damage': number;
+    /**
+     * 
      * @type {string}
      * @memberof Weapon
      */
     'description': string;
+    /**
+     * 
+     * @type {Dice}
+     * @memberof Weapon
+     */
+    'dice': Dice;
     /**
      * 
      * @type {string}
@@ -2550,10 +2641,28 @@ export interface Weapon {
     'effect': string;
     /**
      * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'hit': number;
+    /**
+     * 
      * @type {string}
      * @memberof Weapon
      */
     'id'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'initiative': number;
+    /**
+     * 
+     * @type {Material}
+     * @memberof Weapon
+     */
+    'material': Material;
     /**
      * 
      * @type {number}
@@ -2607,43 +2716,13 @@ export interface Weapon {
      * @type {number}
      * @memberof Weapon
      */
-    'vendorPrice': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'damage': number;
-    /**
-     * 
-     * @type {Dice}
-     * @memberof Weapon
-     */
-    'dice': Dice;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'hit': number;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
-    'initiative': number;
-    /**
-     * 
-     * @type {Material}
-     * @memberof Weapon
-     */
-    'material': Material;
-    /**
-     * 
-     * @type {number}
-     * @memberof Weapon
-     */
     'upgradeSlots': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Weapon
+     */
+    'vendorPrice': number;
 }
 
 
@@ -2725,6 +2804,12 @@ export interface WeaponEquipment {
      * @memberof WeaponEquipment
      */
     'upgrades': Array<Upgrade>;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeaponEquipment
+     */
+    'wear'?: number;
 }
 
 /**
@@ -4151,15 +4236,15 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<GetAllItems200ResponseInner>} getAllItems200ResponseInner 
+         * @param {Array<Item>} item 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        insertAllItems: async (universe: string, getAllItems200ResponseInner: Array<GetAllItems200ResponseInner>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        insertAllItems: async (universe: string, item: Array<Item>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('insertAllItems', 'universe', universe)
-            // verify required parameter 'getAllItems200ResponseInner' is not null or undefined
-            assertParamExists('insertAllItems', 'getAllItems200ResponseInner', getAllItems200ResponseInner)
+            // verify required parameter 'item' is not null or undefined
+            assertParamExists('insertAllItems', 'item', item)
             const localVarPath = `/api/{universe}/items`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4180,7 +4265,7 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(getAllItems200ResponseInner, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(item, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -4192,17 +4277,17 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {GetAllItems200ResponseInner} getAllItems200ResponseInner 
+         * @param {Item} item 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateItem: async (universe: string, id: string, getAllItems200ResponseInner: GetAllItems200ResponseInner, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateItem: async (universe: string, id: string, item: Item, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('updateItem', 'universe', universe)
             // verify required parameter 'id' is not null or undefined
             assertParamExists('updateItem', 'id', id)
-            // verify required parameter 'getAllItems200ResponseInner' is not null or undefined
-            assertParamExists('updateItem', 'getAllItems200ResponseInner', getAllItems200ResponseInner)
+            // verify required parameter 'item' is not null or undefined
+            assertParamExists('updateItem', 'item', item)
             const localVarPath = `/api/{universe}/items/{id}`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
@@ -4224,7 +4309,7 @@ export const ItemServiceApiAxiosParamCreator = function (configuration?: Configu
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(getAllItems200ResponseInner, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(item, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -4290,7 +4375,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllItems(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAllItems200ResponseInner>>> {
+        async getAllItems(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Item>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllItems(universe, ids, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemServiceApi.getAllItems']?.[localVarOperationServerIndex]?.url;
@@ -4343,7 +4428,7 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getItem(universe: string, id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAllItems200ResponseInner>> {
+        async getItem(universe: string, id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Item>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getItem(universe, id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemServiceApi.getItem']?.[localVarOperationServerIndex]?.url;
@@ -4353,12 +4438,12 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<GetAllItems200ResponseInner>} getAllItems200ResponseInner 
+         * @param {Array<Item>} item 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async insertAllItems(universe: string, getAllItems200ResponseInner: Array<GetAllItems200ResponseInner>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<GetAllItems200ResponseInner>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAllItems(universe, getAllItems200ResponseInner, options);
+        async insertAllItems(universe: string, item: Array<Item>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Item>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAllItems(universe, item, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemServiceApi.insertAllItems']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -4368,12 +4453,12 @@ export const ItemServiceApiFp = function(configuration?: Configuration) {
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {GetAllItems200ResponseInner} getAllItems200ResponseInner 
+         * @param {Item} item 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateItem(universe: string, id: string, getAllItems200ResponseInner: GetAllItems200ResponseInner, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GetAllItems200ResponseInner>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateItem(universe, id, getAllItems200ResponseInner, options);
+        async updateItem(universe: string, id: string, item: Item, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Item>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateItem(universe, id, item, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ItemServiceApi.updateItem']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -4428,7 +4513,7 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllItems(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<Array<GetAllItems200ResponseInner>> {
+        getAllItems(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<Array<Item>> {
             return localVarFp.getAllItems(universe, ids, options).then((request) => request(axios, basePath));
         },
         /**
@@ -4469,31 +4554,31 @@ export const ItemServiceApiFactory = function (configuration?: Configuration, ba
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getItem(universe: string, id: string, options?: RawAxiosRequestConfig): AxiosPromise<GetAllItems200ResponseInner> {
+        getItem(universe: string, id: string, options?: RawAxiosRequestConfig): AxiosPromise<Item> {
             return localVarFp.getItem(universe, id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Inserts the objects into the database
          * @param {string} universe 
-         * @param {Array<GetAllItems200ResponseInner>} getAllItems200ResponseInner 
+         * @param {Array<Item>} item 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        insertAllItems(universe: string, getAllItems200ResponseInner: Array<GetAllItems200ResponseInner>, options?: RawAxiosRequestConfig): AxiosPromise<Array<GetAllItems200ResponseInner>> {
-            return localVarFp.insertAllItems(universe, getAllItems200ResponseInner, options).then((request) => request(axios, basePath));
+        insertAllItems(universe: string, item: Array<Item>, options?: RawAxiosRequestConfig): AxiosPromise<Array<Item>> {
+            return localVarFp.insertAllItems(universe, item, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Updates an object in the database
          * @param {string} universe 
          * @param {string} id 
-         * @param {GetAllItems200ResponseInner} getAllItems200ResponseInner 
+         * @param {Item} item 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateItem(universe: string, id: string, getAllItems200ResponseInner: GetAllItems200ResponseInner, options?: RawAxiosRequestConfig): AxiosPromise<GetAllItems200ResponseInner> {
-            return localVarFp.updateItem(universe, id, getAllItems200ResponseInner, options).then((request) => request(axios, basePath));
+        updateItem(universe: string, id: string, item: Item, options?: RawAxiosRequestConfig): AxiosPromise<Item> {
+            return localVarFp.updateItem(universe, id, item, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -4609,13 +4694,13 @@ export class ItemServiceApi extends BaseAPI {
      * 
      * @summary Inserts the objects into the database
      * @param {string} universe 
-     * @param {Array<GetAllItems200ResponseInner>} getAllItems200ResponseInner 
+     * @param {Array<Item>} item 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public insertAllItems(universe: string, getAllItems200ResponseInner: Array<GetAllItems200ResponseInner>, options?: RawAxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).insertAllItems(universe, getAllItems200ResponseInner, options).then((request) => request(this.axios, this.basePath));
+    public insertAllItems(universe: string, item: Array<Item>, options?: RawAxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).insertAllItems(universe, item, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4623,13 +4708,13 @@ export class ItemServiceApi extends BaseAPI {
      * @summary Updates an object in the database
      * @param {string} universe 
      * @param {string} id 
-     * @param {GetAllItems200ResponseInner} getAllItems200ResponseInner 
+     * @param {Item} item 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ItemServiceApi
      */
-    public updateItem(universe: string, id: string, getAllItems200ResponseInner: GetAllItems200ResponseInner, options?: RawAxiosRequestConfig) {
-        return ItemServiceApiFp(this.configuration).updateItem(universe, id, getAllItems200ResponseInner, options).then((request) => request(this.axios, this.basePath));
+    public updateItem(universe: string, id: string, item: Item, options?: RawAxiosRequestConfig) {
+        return ItemServiceApiFp(this.configuration).updateItem(universe, id, item, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -5816,7 +5901,7 @@ export const PnPCharacterServiceApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllCharacters(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPCharacter>>> {
+        async getAllCharacters(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPCharacterDto>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllCharacters(universe, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.getAllCharacters']?.[localVarOperationServerIndex]?.url;
@@ -5839,7 +5924,7 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllCharacters(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacter>> {
+        getAllCharacters(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterDto>> {
             return localVarFp.getAllCharacters(universe, options).then((request) => request(axios, basePath));
         },
     };

@@ -1,5 +1,7 @@
 package de.pnp.manager.component.inventory;
 
+import de.pnp.manager.component.item.Item;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,9 +13,9 @@ public class Inventory {
 
     private final int maxSize;
 
-    private final List<ItemStack<?>> items;
+    private final List<ItemStack<? extends Item>> items;
 
-    public Inventory(int maxSize, List<ItemStack<?>> items) {
+    public Inventory(int maxSize, List<ItemStack<? extends Item>> items) {
         this.maxSize = maxSize;
         this.items = items;
     }
@@ -40,7 +42,7 @@ public class Inventory {
     /**
      * Adds an item to inventory.
      */
-    public boolean addItem(ItemStack<?> itemStack) {
+    public boolean addItem(ItemStack<? extends Item> itemStack) {
         if (!hasSpaceFor(itemStack)) {
             return false;
         }
@@ -50,6 +52,9 @@ public class Inventory {
             if (Objects.equals(stack.getItem(), itemStack.getItem())) {
                 remaining -= stack.addAmount(remaining);
             }
+        }
+        if (remaining > 0) {
+            items.add(itemStack);
         }
         return true;
     }
@@ -61,7 +66,7 @@ public class Inventory {
     /**
      * Returns a copy of the underlying item list.
      */
-    public List<ItemStack<?>> getItems() {
+    public List<ItemStack<? extends Item>> getItems() {
         return new ArrayList<>(items);
     }
 }

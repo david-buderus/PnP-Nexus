@@ -6,9 +6,10 @@ import de.pnp.manager.component.character.PnPCharacter;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
+
+import java.util.Objects;
 
 /**
  * A secondary attribute of a {@link PnPCharacter}.
@@ -24,16 +25,24 @@ public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamed
     @NotBlank
     private final String name;
 
+    /**
+     * The human-readable short name of this attribute.
+     */
+    @Indexed(unique = true)
+    @NotBlank
+    private final String shortName;
+
     @NotNull
     private final boolean consumable;
 
     @NotNull(message = "{expression.invalid}")
     private final BinaryExpressionTree calculationFormula;
 
-    public SecondaryAttribute(ObjectId id, String name, boolean consumable,
-        BinaryExpressionTree calculationFormula) {
+    public SecondaryAttribute(ObjectId id, String name, String shortName, boolean consumable,
+                              BinaryExpressionTree calculationFormula) {
         super(id);
         this.name = name;
+        this.shortName = shortName;
         this.consumable = consumable;
         this.calculationFormula = calculationFormula;
     }
@@ -41,6 +50,10 @@ public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamed
     @Override
     public String getName() {
         return name;
+    }
+
+    public String getShortName() {
+        return shortName;
     }
 
     public boolean isConsumable() {
@@ -61,11 +74,12 @@ public class SecondaryAttribute extends DatabaseObject implements IUniquelyNamed
         }
         SecondaryAttribute that = (SecondaryAttribute) o;
         return isConsumable() == that.isConsumable() && Objects.equals(getName(), that.getName())
-            && Objects.equals(getCalculationFormula(), that.getCalculationFormula());
+                && Objects.equals(getShortName(), that.getShortName())
+                && Objects.equals(getCalculationFormula(), that.getCalculationFormula());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), isConsumable(), getCalculationFormula());
+        return Objects.hash(getName(), getShortName(), isConsumable(), getCalculationFormula());
     }
 }

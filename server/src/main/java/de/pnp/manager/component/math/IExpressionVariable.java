@@ -13,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
  * Interface for classes which can be used as variables in {@link BinaryExpressionTree}.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = PrimaryAttributeVariable.class, name = "PrimaryAttributeVariable"),
-    @JsonSubTypes.Type(value = StringVariable.class, name = "StringVariable")
+        @JsonSubTypes.Type(value = PrimaryAttributeVariable.class, name = "PrimaryAttributeVariable"),
+        @JsonSubTypes.Type(value = StringVariable.class, name = "StringVariable")
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public sealed interface IExpressionVariable {
@@ -32,6 +32,10 @@ public sealed interface IExpressionVariable {
 
         @Override
         public String getIdentifier() {
+            if (attribute == null) {
+                return "???";
+            }
+
             return attribute.getShortName();
         }
     }

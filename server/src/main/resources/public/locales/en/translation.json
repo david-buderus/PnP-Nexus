@@ -91,5 +91,8 @@
   "advantage": "Advantage",
   "advantages": "Advantages",
   "disadvantage": "Disadvantage",
-  "disadvantages": "Disadvantages"
+  "disadvantages": "Disadvantages",
+  "print": "Print",
+  "inventory": "Inventory",
+  "other": "Other"
 }

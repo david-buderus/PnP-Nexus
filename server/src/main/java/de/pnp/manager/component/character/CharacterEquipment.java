@@ -1,13 +1,15 @@
 package de.pnp.manager.component.character;
 
-import com.google.common.collect.ListMultimap;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
 import de.pnp.manager.component.inventory.equipment.Equipment;
-import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipment;
+import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
+import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.equipable.EArmorSlot;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,23 +20,35 @@ import java.util.Optional;
 public class CharacterEquipment {
 
     @NotNull
-    private final List<? extends IHandheldEquipment> handheldEquipments;
+    @JsonProperty("weaponEquipments")
+    private final List<WeaponEquipment> weaponEquipments;
 
     @NotNull
+    @JsonProperty("shieldEquipment")
+    private final ShieldEquipment shieldEquipment;
+
+    @NotNull
+    @JsonProperty("armor")
     private final Map<EArmorSlot, ArmorEquipment> armor;
 
     @NotNull
-    private final ListMultimap<String, Equipment<Jewellery>> jewellery;
+    @JsonProperty("jewellery")
+    private final Map<String, List<Equipment<Jewellery>>> jewellery;
 
-    public CharacterEquipment(List<? extends IHandheldEquipment> handheldEquipments, Map<EArmorSlot, ArmorEquipment> armor,
-                              ListMultimap<String, Equipment<Jewellery>> jewellery) {
-        this.handheldEquipments = handheldEquipments;
+    public CharacterEquipment(List<WeaponEquipment> weaponEquipments, ShieldEquipment shieldEquipment, Map<EArmorSlot, ArmorEquipment> armor,
+                              Map<String, List<Equipment<Jewellery>>> jewellery) {
+        this.weaponEquipments = weaponEquipments;
+        this.shieldEquipment = shieldEquipment;
         this.armor = armor;
         this.jewellery = jewellery;
     }
 
-    public List<? extends IHandheldEquipment> getHandheldEquipments() {
-        return handheldEquipments;
+    public List<WeaponEquipment> getWeaponEquipments() {
+        return weaponEquipments;
+    }
+
+    public ShieldEquipment getShieldEquipment() {
+        return shieldEquipment;
     }
 
     public Optional<ArmorEquipment> getArmor(EArmorSlot slot) {
@@ -42,6 +56,6 @@ public class CharacterEquipment {
     }
 
     public List<Equipment<Jewellery>> getJewellery(String slot) {
-        return jewellery.get(slot);
+        return jewellery.putIfAbsent(slot, new ArrayList<>());
     }
 }

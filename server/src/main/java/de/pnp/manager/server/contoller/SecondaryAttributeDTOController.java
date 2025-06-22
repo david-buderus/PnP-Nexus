@@ -9,15 +9,16 @@ import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
 import de.pnp.manager.validation.IsValidExpressionValidator;
+import org.bson.types.ObjectId;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.bson.types.ObjectId;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * A controller to convert {@link SecondaryAttributeDTO} and {@link SecondaryAttribute}.
@@ -57,9 +58,9 @@ public class SecondaryAttributeDTOController {
      * Inserts the given {@link SecondaryAttributeDTO} into the universe.
      */
     public Collection<SecondaryAttributeDTO> insertAll(String universe,
-        List<SecondaryAttributeDTO> attributes) {
+                                                       List<SecondaryAttributeDTO> attributes) {
         return secondaryAttributeRepository.insertAll(universe, convert(universe, attributes)).stream()
-            .map(SecondaryAttributeDTO::from).toList();
+                .map(SecondaryAttributeDTO::from).toList();
     }
 
     /**
@@ -75,8 +76,8 @@ public class SecondaryAttributeDTOController {
     public SecondaryAttributeDTO update(String universe, SecondaryAttributeDTO attribute) {
         Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
 
-        SecondaryAttribute secondaryAttribute = new SecondaryAttribute(attribute.id(), attribute.name(),
-            attribute.consumable(), createExpression(attribute.calculationFormula(), attributeVariables));
+        SecondaryAttribute secondaryAttribute = new SecondaryAttribute(attribute.id(), attribute.name(), attribute.shortName(),
+                attribute.consumable(), createExpression(attribute.calculationFormula(), attributeVariables));
 
         return SecondaryAttributeDTO.from(secondaryAttributeRepository.update(universe, secondaryAttribute));
     }
@@ -86,7 +87,7 @@ public class SecondaryAttributeDTOController {
      */
     public List<String> getSupportedVariables(String universe) {
         return Stream.concat(getPrimaryAttributeVariables(universe).stream().map(IExpressionVariable::getIdentifier),
-            IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream()).toList();
+                IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream()).toList();
     }
 
     /**
@@ -95,8 +96,8 @@ public class SecondaryAttributeDTOController {
     public List<SecondaryAttribute> convert(String universe, List<SecondaryAttributeDTO> attributeDTOS) {
         Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
         return attributeDTOS.stream().map(
-            dto -> new SecondaryAttribute(dto.id(), dto.name(), dto.consumable(),
-                createExpression(dto.calculationFormula(), attributeVariables))).toList();
+                dto -> new SecondaryAttribute(dto.id(), dto.name(), dto.shortName(), dto.consumable(),
+                        createExpression(dto.calculationFormula(), attributeVariables))).toList();
     }
 
     /**
@@ -108,19 +109,19 @@ public class SecondaryAttributeDTOController {
         Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
 
         return attributeDTOS.stream().map(
-            dto -> {
-                try {
-                    return new SecondaryAttribute(dto.id(), dto.name(), dto.consumable(),
-                        BinaryExpressionTree.from(dto.calculationFormula(), attributeVariables));
-                } catch (IllegalFormulaException e) {
-                    return null;
-                }
-            }).toList();
+                dto -> {
+                    try {
+                        return new SecondaryAttribute(dto.id(), dto.name(), dto.shortName(), dto.consumable(),
+                                BinaryExpressionTree.from(dto.calculationFormula(), attributeVariables));
+                    } catch (IllegalFormulaException e) {
+                        return null;
+                    }
+                }).toList();
     }
 
     private Set<IExpressionVariable> getPrimaryAttributeVariables(String universe) {
         return primaryAttributeRepository.getAll(universe).stream().map(PrimaryAttributeVariable::new)
-            .collect(Collectors.toSet());
+                .collect(Collectors.toSet());
     }
 
     private BinaryExpressionTree createExpression(String formula, Set<IExpressionVariable> variables) {

@@ -1,9 +1,5 @@
 package de.pnp.manager.component.character;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotNull;
-import org.bson.types.ObjectId;
-
 import java.util.Map;
 
 /**
@@ -11,19 +7,17 @@ import java.util.Map;
  */
 public class CharacterTalents {
 
-    @NotNull
-    @JsonProperty("talents")
-    private final Map<ObjectId, Integer> talents;
+    private final Map<Talent, Integer> talents;
 
-    public CharacterTalents(Map<ObjectId, Integer> talents) {
+    public CharacterTalents(Map<Talent, Integer> talents) {
         this.talents = talents;
     }
 
     public int getRoll(Talent talent) {
-        return talents.getOrDefault(talent.getId(), 0);
+        return talents.getOrDefault(talent, 0);
     }
 
     public void setRoll(Talent talent, int roll) {
-        talents.put(talent.getId(), roll);
+        talents.put(talent, roll);
     }
 }

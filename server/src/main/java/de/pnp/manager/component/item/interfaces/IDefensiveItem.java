@@ -14,4 +14,9 @@ public interface IDefensiveItem extends IDamageableItem, IEquipableItem {
      * The armor of the item.
      */
     int getArmor();
+
+    /**
+     * The protection of the item.
+     */
+    int getProtection();
 }
