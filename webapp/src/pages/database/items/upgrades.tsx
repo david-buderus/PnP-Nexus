@@ -278,8 +278,14 @@ function Effect({
                                     {...form.getInputProps(`effects.${index}.description`)}
                                 />
                             </Box>
-                            <ActionIcon variant="outline" color="red" size="input-sm"
-                                        onClick={() => form.removeListItem('effects', index)} mt={20}>
+                            <ActionIcon
+                                variant="outline"
+                                color="red"
+                                size="input-sm"
+                                onClick={() => form.removeListItem('effects', index)}
+                                mt={20}
+                                data-testid={'effects-sub-' + index}
+                            >
                                 <FaRegTrashCan/>
                             </ActionIcon>
                         </Group>
@@ -301,6 +307,7 @@ function Effect({
                 }
                 mt="md"
                 color={form.errors['effects'] ? 'red' : undefined}
+                data-testid={'effects-add'}
             >
                 {t('upgrade:addEffect')}
             </Button>

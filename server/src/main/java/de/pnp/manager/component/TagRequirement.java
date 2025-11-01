@@ -7,6 +7,8 @@ import de.pnp.manager.Tag;
 import de.pnp.manager.component.item.Item;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -65,7 +67,14 @@ public class TagRequirement {
      */
     public static TagRequirement from(List<Set<String>> tagRequirements) {
         return new TagRequirement(
-            tagRequirements.stream().map(set -> set.stream().map(Tag::from).collect(Collectors.toSet())).toList());
+                tagRequirements.stream().map(set -> set.stream().map(Tag::from).collect(Collectors.toSet())).toList());
+    }
+
+    /**
+     * Returns the content as unmodifiable copy.
+     */
+    public List<Set<Tag>> getTagRequirements() {
+        return tagRequirements.stream().map(Collections::unmodifiableSet).toList();
     }
 
     @Override
@@ -88,7 +97,7 @@ public class TagRequirement {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("tagRequirements", tagRequirements)
-            .toString();
+                .add("tagRequirements", tagRequirements)
+                .toString();
     }
 }

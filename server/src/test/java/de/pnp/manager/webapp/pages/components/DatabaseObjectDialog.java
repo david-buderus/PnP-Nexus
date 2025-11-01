@@ -9,6 +9,7 @@ import de.pnp.manager.Tag;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
+import de.pnp.manager.component.TagRequirement;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.webapp.utils.WebTestUtils;
 import org.bson.types.ObjectId;
@@ -133,6 +134,7 @@ public class DatabaseObjectDialog {
                 case DatabaseObject databaseObject -> setSelect(id, databaseObject);
                 case BinaryExpressionTree tree -> set(id, tree.toHumanReadableString());
                 case Dice dice -> set(id, dice.toHumandReadableString());
+                case TagRequirement tagRequirement -> fillOutTagRequirement(id, tagRequirement);
                 case null, default -> fillOut(property, id + ".");
             }
         });
@@ -164,6 +166,22 @@ public class DatabaseObjectDialog {
                     case Enum<?> enumObject -> setSelect(id, enumObject.name());
                     case null, default -> fail("Unsupported object: " + o);
                 }
+            }
+        }
+    }
+
+    private void fillOutTagRequirement(String id, TagRequirement tagRequirement) {
+        // Remove all currently open entries
+        locator.getByTestId(Pattern.compile(id + ".tagRequirements-sub-\\d+")).all().stream()
+                // We need to remove the last button first, so the data-testids won't change
+                .sorted(Comparator.comparing(l -> l.getAttribute("data-testid"), Comparator.reverseOrder()))
+                .forEach(Locator::click);
+
+        List<Set<Tag>> list = tagRequirement.getTagRequirements();
+        for (int i = 0; i < list.size(); i++) {
+            locator.getByTestId(id + ".tagRequirements-add").click();
+            for (Tag tag : list.get(i)) {
+                locator.getByTestId(id + ".tagRequirements-field-" + i).fill(tag.name());
             }
         }
     }

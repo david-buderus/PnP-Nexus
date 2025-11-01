@@ -47,6 +47,7 @@ export default function TagRequirementsInput({
                 >
                     <TagsInput
                         value={(requirement)}
+                        data-testid={dataTestIdPrefix + 'tagRequirements-field-' + index}
                         onChange={(newReq) => onChange({
                             tagRequirements: value.tagRequirements.map((v, i) => i !== index ? v : newReq)
                         })}
