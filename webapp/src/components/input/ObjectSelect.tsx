@@ -53,7 +53,7 @@ export function ObjectSelect<O>(props: ObjectSelectProps<O>) {
             };
         })}
         value={value?.[idKey] as string}
-        onChange={v => onChange(data.find(o => o[idKey] === v))}
+        onChange={v => onChange(data.find(o => o[idKey] === v) ?? null)}
         searchable
         {...rest}
     />;
@@ -112,6 +112,7 @@ function ObjectSelectWithRefresh<O>({
                 labelKey={labelKey}
                 size={size}
                 error={!!error}
+                style={{flexGrow: 1}}
                 {...props}
             />
             <ActionIcon
@@ -119,6 +120,7 @@ function ObjectSelectWithRefresh<O>({
                 loading={loading}
                 variant="outline"
                 size={"input-" + size}
+                style={{flexShrink: 0}}
             >
                 <MdRefresh/>
             </ActionIcon>

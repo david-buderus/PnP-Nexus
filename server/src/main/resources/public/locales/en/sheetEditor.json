@@ -20,5 +20,11 @@
   "withShield": "With Shield",
   "stats": "Stats",
   "textField": "Text Field",
-  "jewelleryList": "Jewellery"
+  "jewelleryList": "Jewellery",
+  "primaryAttributeRow": "Primary Attribute Row",
+  "talentGroup": "Talent Group",
+  "title": "Title",
+  "addTalent": "Add a Talent",
+  "addEmptyRow": "Add an Empty Row",
+  "emptyRow": "Empty Row"
 }

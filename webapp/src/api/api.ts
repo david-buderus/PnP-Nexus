@@ -291,10 +291,22 @@ export interface CalculationRequest {
 export interface CharacterDescription {
     /**
      * 
+     * @type {string}
+     * @memberof CharacterDescription
+     */
+    'affiliations': string;
+    /**
+     * 
      * @type {number}
      * @memberof CharacterDescription
      */
     'age'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterDescription
+     */
+    'appearance': string;
     /**
      * 
      * @type {string}
@@ -306,13 +318,31 @@ export interface CharacterDescription {
      * @type {string}
      * @memberof CharacterDescription
      */
+    'deficits': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterDescription
+     */
     'gender': string;
     /**
      * 
      * @type {string}
      * @memberof CharacterDescription
      */
+    'goals': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterDescription
+     */
     'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CharacterDescription
+     */
+    'personality': string;
     /**
      * 
      * @type {string}
@@ -2209,6 +2239,12 @@ export interface Spell {
     'additionalCost': string;
     /**
      * 
+     * @type {SpellCast}
+     * @memberof Spell
+     */
+    'cast': SpellCast;
+    /**
+     * 
      * @type {number}
      * @memberof Spell
      */
@@ -2263,18 +2299,18 @@ export interface Spell {
     'tags': Array<string>;
     /**
      * 
-     * @type {Array<Talent>}
-     * @memberof Spell
-     */
-    'talents': Array<Talent>;
-    /**
-     * 
      * @type {number}
      * @memberof Spell
      */
     'tier': number;
 }
 
+
+/**
+ * @type SpellCast
+ * @export
+ */
+export type SpellCast = TagCast | TalentCast;
 
 /**
  * 
@@ -2300,6 +2336,19 @@ export interface StatsDto {
      * @memberof StatsDto
      */
     'totalValue'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TagCast
+ */
+export interface TagCast {
+    /**
+     * 
+     * @type {TagRequirement}
+     * @memberof TagCast
+     */
+    'tagRequirement': TagRequirement;
 }
 /**
  * 
@@ -2331,12 +2380,6 @@ export interface Talent {
      * @type {string}
      * @memberof Talent
      */
-    'group': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Talent
-     */
     'id'?: string;
     /**
      * 
@@ -2352,10 +2395,29 @@ export interface Talent {
     'secondAttribute': PrimaryAttribute;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof Talent
+     */
+    'tags': Array<string>;
+    /**
+     * 
      * @type {PrimaryAttribute}
      * @memberof Talent
      */
     'thirdAttribute': PrimaryAttribute;
+}
+/**
+ * 
+ * @export
+ * @interface TalentCast
+ */
+export interface TalentCast {
+    /**
+     * 
+     * @type {Array<Talent>}
+     * @memberof TalentCast
+     */
+    'talents': Array<Talent>;
 }
 /**
  * 

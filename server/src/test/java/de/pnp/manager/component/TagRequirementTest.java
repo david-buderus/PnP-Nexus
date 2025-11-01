@@ -1,19 +1,19 @@
 package de.pnp.manager.component;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import de.pnp.manager.Tag;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.utils.TestItemBuilder;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import static de.pnp.manager.utils.TestUtils.tagSet;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link TagRequirement}
@@ -36,7 +36,7 @@ class TagRequirementTest {
     @Test
     void testFulfillsRequirements() {
         TagRequirement requirement = TagRequirement.from(
-            List.of(Set.of("Example 1", "Example 3"), Set.of("Example 2")));
+                List.of(Set.of("Example 1", "Example 3"), Set.of("Example 2")));
         Item item1 = TestItemBuilder.createItemBuilder().withTags("Example 1", "Example 2").buildItem();
         Item item2 = TestItemBuilder.createItemBuilder().withTags("Example 3").buildItem();
 
@@ -46,19 +46,15 @@ class TagRequirementTest {
 
     private static Stream<Arguments> provideTags() {
         return Stream.of(
-            Arguments.of(tagSet("E2"), true),
-            Arguments.of(tagSet("E1"), false),
-            Arguments.of(tagSet("E3"), false),
-            Arguments.of(tagSet("E4"), false),
-            Arguments.of(tagSet("E5"), false),
-            Arguments.of(tagSet("E1", "E3"), true),
-            Arguments.of(tagSet("E1", "E2"), true),
-            Arguments.of(tagSet("E3", "E4"), false),
-            Arguments.of(tagSet("E1", "E4"), true)
+                Arguments.of(tagSet("E2"), true),
+                Arguments.of(tagSet("E1"), false),
+                Arguments.of(tagSet("E3"), false),
+                Arguments.of(tagSet("E4"), false),
+                Arguments.of(tagSet("E5"), false),
+                Arguments.of(tagSet("E1", "E3"), true),
+                Arguments.of(tagSet("E1", "E2"), true),
+                Arguments.of(tagSet("E3", "E4"), false),
+                Arguments.of(tagSet("E1", "E4"), true)
         );
-    }
-
-    private static Set<Tag> tagSet(String... tags) {
-        return Arrays.stream(tags).map(Tag::from).collect(Collectors.toSet());
     }
 }

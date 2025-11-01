@@ -94,5 +94,7 @@
   "disadvantages": "Disadvantages",
   "print": "Print",
   "inventory": "Inventory",
-  "other": "Other"
+  "other": "Other",
+  "export": "Export",
+  "import": "Import"
 }

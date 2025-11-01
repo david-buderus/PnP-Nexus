@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from "react";
+import {useEffect, useMemo} from 'react';
 import {
     fetchAllArmor,
     fetchAllItems,
@@ -7,24 +7,24 @@ import {
     fetchAllShields,
     fetchAllTags,
     fetchAllWeapons
-} from "../../../components/Database";
-import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
-import {useTranslation} from "react-i18next";
-import TagCell from "../../../components/table/TagCell";
-import {Armor, EArmorSlot, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from "../../../api";
-import CurrencyCell from "../../../components/table/CurrencyCell";
-import {API_CONFIGURATION} from "../../../components/Constants";
-import {useDisclosure} from "@mantine/hooks";
-import {Button, Group, Modal, NumberInput, Select, TagsInput, Textarea, TextInput} from "@mantine/core";
-import {useForm} from "@mantine/form";
-import {useUniverseContext} from "../../../components/PageBase";
-import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
-import {ObjectSelect} from "../../../components/input/ObjectSelect";
-import {ArmorSlotSelect, RaritySelect} from "../../../components/input/EnumSelect";
-import DiceInput from "../../../components/input/DiceInput";
-import {currencyFormatter} from "../../../components/utils/Formatters";
-import DiceCell from "../../../components/table/DiceCell";
-import {filterNamedCell, NamedCell} from "../../../components/table/NamedCell";
+} from '../../../components/Database';
+import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import {useTranslation} from 'react-i18next';
+import TagCell, {filterTagCell} from '../../../components/table/TagCell';
+import {Armor, EArmorSlot, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from '../../../api';
+import CurrencyCell from '../../../components/table/CurrencyCell';
+import {API_CONFIGURATION} from '../../../components/Constants';
+import {useDisclosure} from '@mantine/hooks';
+import {Button, Group, Modal, NumberInput, Select, TagsInput, Textarea, TextInput} from '@mantine/core';
+import {useForm} from '@mantine/form';
+import {useUniverseContext} from '../../../components/PageBase';
+import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
+import {ObjectSelect} from '../../../components/input/ObjectSelect';
+import {ArmorSlotSelect, RaritySelect} from '../../../components/input/EnumSelect';
+import DiceInput from '../../../components/input/DiceInput';
+import {currencyFormatter} from '../../../components/utils/Formatters';
+import DiceCell from '../../../components/table/DiceCell';
+import {filterNamedCell, NamedCell} from '../../../components/table/NamedCell';
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
@@ -37,63 +37,62 @@ export function Items() {
         () => [
             {
                 accessorKey: 'name',
-                header: t("name"),
+                header: t('name'),
             },
             {
                 accessorKey: 'tags',
-                header: t("tags"),
+                header: t('tags'),
                 Cell: TagCell,
-                filterFn: (row, id, filterValue) =>
-                    row.getValue<string[]>(id).some(tag => tag.includes(filterValue))
+                filterFn: filterTagCell
             },
             {
                 accessorKey: 'requirement',
-                header: t("requirement"),
+                header: t('requirement'),
             },
             {
                 accessorKey: 'effect',
-                header: t("effect"),
+                header: t('effect'),
             },
             {
                 accessorKey: 'rarity',
-                header: t("rarity"),
+                header: t('rarity'),
                 filterVariant: 'select',
                 mantineFilterMultiSelectProps: {
                     data: Object.values(ERarity).map(rarity => {
                         return {
-                            label: t("enum:" + rarity.toLowerCase()),
+                            label: t('enum:' + rarity.toLowerCase()),
                             value: rarity
                         };
                     }),
                 },
-                Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
+                Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
-                header: t("price"),
+                header: t('price'),
                 Cell: CurrencyCell
             },
             {
                 accessorKey: 'tier',
-                header: t("tier"),
+                header: t('tier'),
             },
             {
                 accessorKey: 'description',
-                header: t("description"),
+                header: t('description'),
             },
             {
                 accessorKey: 'note',
-                header: t("note"),
+                header: t('note'),
                 defaultHidden: true
             },
             {
                 accessorKey: 'maximumStackSize',
-                header: t("item:maxStackSize"),
+                header: t('item:maxStackSize'),
                 defaultHidden: true
             },
             {
                 accessorKey: 'minimumStackSize',
-                header: t("item:minStackSize"),
+                header: t('item:minStackSize'),
                 defaultHidden: true
             }
         ], []);
@@ -109,7 +108,7 @@ export function Items() {
             disabled={disabled}
             getInitial={getInitial}
         />}
-        deletionDialogTitle={t("item:confirmDeletionTitle")}
+        deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
     />;
@@ -123,11 +122,11 @@ export function Weapons() {
         () => [
             {
                 accessorKey: 'name',
-                header: t("name"),
+                header: t('name'),
             },
             {
                 accessorKey: 'tags',
-                header: t("tags"),
+                header: t('tags'),
                 Cell: TagCell,
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
@@ -135,79 +134,79 @@ export function Weapons() {
             },
             {
                 accessorKey: 'material',
-                header: t("material"),
+                header: t('material'),
                 Cell: NamedCell,
                 filterFn: filterNamedCell
             },
             {
                 accessorKey: 'damage',
-                header: t("damage"),
+                header: t('damage'),
             },
             {
                 accessorKey: 'dice',
-                header: t("dice"),
+                header: t('dice'),
                 Cell: DiceCell
             },
             {
                 accessorKey: 'hit',
-                header: t("hit"),
+                header: t('hit'),
             },
             {
                 accessorKey: 'initiative',
-                header: t("initiative"),
+                header: t('initiative'),
             },
             {
                 accessorKey: 'requirement',
-                header: t("requirement")
+                header: t('requirement')
             },
             {
                 accessorKey: 'effect',
-                header: t("effect"),
+                header: t('effect'),
             },
             {
                 accessorKey: 'rarity',
-                header: t("rarity"),
+                header: t('rarity'),
                 filterVariant: 'select',
                 mantineFilterMultiSelectProps: {
                     data: Object.values(ERarity).map(rarity => {
                         return {
-                            label: t("enum:" + rarity.toLowerCase()),
+                            label: t('enum:' + rarity.toLowerCase()),
                             value: rarity
                         };
                     }),
                 },
-                Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
+                Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
-                header: t("price"),
+                header: t('price'),
                 Cell: CurrencyCell
             },
             {
                 accessorKey: 'tier',
-                header: t("tier"),
+                header: t('tier'),
             },
             {
                 accessorKey: 'description',
-                header: t("description"),
+                header: t('description'),
             },
             {
                 accessorKey: 'upgradeSlots',
-                header: t("upgradeSlots"),
+                header: t('upgradeSlots'),
             },
             {
                 accessorKey: 'note',
-                header: t("note"),
+                header: t('note'),
                 defaultHidden: true
             },
             {
                 accessorKey: 'maximumStackSize',
-                header: t("item:maxStackSize"),
+                header: t('item:maxStackSize'),
                 defaultHidden: true
             },
             {
                 accessorKey: 'minimumStackSize',
-                header: t("item:minStackSize"),
+                header: t('item:minStackSize'),
                 defaultHidden: true
             }
         ], []);
@@ -223,7 +222,7 @@ export function Weapons() {
             disabled={disabled}
             getInitial={getInitial}
         />}
-        deletionDialogTitle={t("item:confirmDeletionTitle")}
+        deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
     />;
@@ -239,11 +238,11 @@ export function Shields() {
             const c: ExtendedColumnDef<Shield, any>[] = [
                 {
                     accessorKey: 'name',
-                    header: t("name"),
+                    header: t('name'),
                 },
                 {
                     accessorKey: 'tags',
-                    header: t("tags"),
+                    header: t('tags'),
                     Cell: TagCell,
                     filterFn: (row, id, filterValue) => {
                         return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
@@ -251,93 +250,93 @@ export function Shields() {
                 },
                 {
                     accessorKey: 'material',
-                    header: t("material"),
+                    header: t('material'),
                     Cell: NamedCell,
                     filterFn: filterNamedCell
                 },
                 {
                     accessorKey: 'armor',
-                    header: t("armor"),
+                    header: t('armor'),
                 },
                 {
                     accessorKey: 'weight',
-                    header: t("weight"),
+                    header: t('weight'),
                 },
                 {
                     accessorKey: 'hit',
-                    header: t("hit"),
+                    header: t('hit'),
                 },
                 {
                     accessorKey: 'initiative',
-                    header: t("initiative"),
+                    header: t('initiative'),
                 },
                 {
                     accessorKey: 'requirement',
-                    header: t("requirement")
+                    header: t('requirement')
                 },
                 {
                     accessorKey: 'effect',
-                    header: t("effect"),
+                    header: t('effect'),
                 },
                 {
                     accessorKey: 'rarity',
-                    header: t("rarity"),
+                    header: t('rarity'),
                     filterVariant: 'select',
                     mantineFilterMultiSelectProps: {
                         data: Object.values(ERarity).map(rarity => {
                             return {
-                                label: t("enum:" + rarity.toLowerCase()),
+                                label: t('enum:' + rarity.toLowerCase()),
                                 value: rarity
                             };
                         }),
                     },
-                    Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
+                    Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'vendorPrice',
-                    header: t("price"),
+                    header: t('price'),
                     Cell: CurrencyCell
                 },
                 {
                     accessorKey: 'tier',
-                    header: t("tier"),
+                    header: t('tier'),
                 },
                 {
                     accessorKey: 'description',
-                    header: t("description"),
+                    header: t('description'),
                 },
                 {
                     accessorKey: 'upgradeSlots',
-                    header: t("upgradeSlots"),
+                    header: t('upgradeSlots'),
                 },
                 {
                     accessorKey: 'note',
-                    header: t("note"),
+                    header: t('note'),
                     defaultHidden: true
                 },
                 {
                     accessorKey: 'maximumStackSize',
-                    header: t("item:maxStackSize"),
+                    header: t('item:maxStackSize'),
                     defaultHidden: true
                 },
                 {
                     accessorKey: 'minimumStackSize',
-                    header: t("item:minStackSize"),
+                    header: t('item:minStackSize'),
                     defaultHidden: true
                 }
             ];
 
             if (itemSettings?.usingProtection) {
                 columns.splice(4, 0, {
-                    accessorKey: "protection",
-                    header: t("protection"),
+                    accessorKey: 'protection',
+                    header: t('protection'),
                 });
             }
             if (itemSettings?.shieldUsingDice) {
                 const offset = itemSettings.usingProtection ? 7 : 6;
                 columns.splice(offset, 0, {
-                    accessorKey: "dice",
-                    header: t("dice"),
+                    accessorKey: 'dice',
+                    header: t('dice'),
                     Cell: DiceCell
                 });
             }
@@ -356,7 +355,7 @@ export function Shields() {
             disabled={disabled}
             getInitial={getInitial}
         />}
-        deletionDialogTitle={t("item:confirmDeletionTitle")}
+        deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
     />;
@@ -372,11 +371,11 @@ export function ArmorOverview() {
             const c: ExtendedColumnDef<Armor, any>[] = [
                 {
                     accessorKey: 'name',
-                    header: t("name"),
+                    header: t('name'),
                 },
                 {
                     accessorKey: 'tags',
-                    header: t("tags"),
+                    header: t('tags'),
                     Cell: TagCell,
                     filterFn: (row, id, filterValue) => {
                         return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
@@ -384,92 +383,92 @@ export function ArmorOverview() {
                 },
                 {
                     accessorKey: 'material',
-                    header: t("material"),
+                    header: t('material'),
                     Cell: NamedCell,
                     filterFn: filterNamedCell
                 },
                 {
                     accessorKey: 'armorSlot',
-                    header: t("item:armorSlot"),
+                    header: t('item:armorSlot'),
                     filterVariant: 'select',
                     mantineFilterMultiSelectProps: {
                         data: Object.values(EArmorSlot).map(rarity => {
                             return {
-                                label: t("enum:" + rarity.toLowerCase()),
+                                label: t('enum:' + rarity.toLowerCase()),
                                 value: rarity
                             };
                         }),
                     },
-                    Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
+                    Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'armor',
-                    header: t("armor"),
+                    header: t('armor'),
                 },
                 {
                     accessorKey: 'weight',
-                    header: t("weight"),
+                    header: t('weight'),
                 },
                 {
                     accessorKey: 'requirement',
-                    header: t("requirement")
+                    header: t('requirement')
                 },
                 {
                     accessorKey: 'effect',
-                    header: t("effect"),
+                    header: t('effect'),
                 },
                 {
                     accessorKey: 'rarity',
-                    header: t("rarity"),
+                    header: t('rarity'),
                     filterVariant: 'select',
                     mantineFilterMultiSelectProps: {
                         data: Object.values(ERarity).map(rarity => {
                             return {
-                                label: t("enum:" + rarity.toLowerCase()),
+                                label: t('enum:' + rarity.toLowerCase()),
                                 value: rarity
                             };
                         }),
                     },
-                    Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
+                    Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'vendorPrice',
-                    header: t("price"),
+                    header: t('price'),
                     Cell: CurrencyCell
                 },
                 {
                     accessorKey: 'tier',
-                    header: t("tier"),
+                    header: t('tier'),
                 },
                 {
                     accessorKey: 'description',
-                    header: t("description"),
+                    header: t('description'),
                 },
                 {
                     accessorKey: 'upgradeSlots',
-                    header: t("upgradeSlots"),
+                    header: t('upgradeSlots'),
                 },
                 {
                     accessorKey: 'note',
-                    header: t("note"),
+                    header: t('note'),
                     defaultHidden: true
                 },
                 {
                     accessorKey: 'maximumStackSize',
-                    header: t("item:maxStackSize"),
+                    header: t('item:maxStackSize'),
                     defaultHidden: true
                 },
                 {
                     accessorKey: 'minimumStackSize',
-                    header: t("item:minStackSize"),
+                    header: t('item:minStackSize'),
                     defaultHidden: true
                 }
             ];
 
             if (itemSettings?.usingProtection) {
                 columns.splice(4, 0, {
-                    accessorKey: "protection",
-                    header: t("protection"),
+                    accessorKey: 'protection',
+                    header: t('protection'),
                 });
             }
 
@@ -487,7 +486,7 @@ export function ArmorOverview() {
             disabled={disabled}
             getInitial={getInitial}
         />}
-        deletionDialogTitle={t("item:confirmDeletionTitle")}
+        deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
     />;
@@ -501,11 +500,11 @@ export function JewelleryOverview() {
         () => [
             {
                 accessorKey: 'name',
-                header: t("name"),
+                header: t('name'),
             },
             {
                 accessorKey: 'tags',
-                header: t("tags"),
+                header: t('tags'),
                 Cell: TagCell,
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
@@ -513,62 +512,62 @@ export function JewelleryOverview() {
             },
             {
                 accessorKey: 'material',
-                header: t("material"),
+                header: t('material'),
                 Cell: NamedCell,
                 filterFn: filterNamedCell
             },
             {
                 accessorKey: 'requirement',
-                header: t("requirement")
+                header: t('requirement')
             },
             {
                 accessorKey: 'effect',
-                header: t("effect"),
+                header: t('effect'),
             },
             {
                 accessorKey: 'rarity',
-                header: t("rarity"),
+                header: t('rarity'),
                 filterVariant: 'select',
                 mantineFilterMultiSelectProps: {
                     data: Object.values(ERarity).map(rarity => {
                         return {
-                            label: t("enum:" + rarity.toLowerCase()),
+                            label: t('enum:' + rarity.toLowerCase()),
                             value: rarity
                         };
                     }),
                 },
-                Cell: cell => t("enum:" + cell.cell.getValue().toLowerCase())
+                Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
-                header: t("price"),
+                header: t('price'),
                 Cell: CurrencyCell
             },
             {
                 accessorKey: 'tier',
-                header: t("tier"),
+                header: t('tier'),
             },
             {
                 accessorKey: 'description',
-                header: t("description"),
+                header: t('description'),
             },
             {
                 accessorKey: 'upgradeSlots',
-                header: t("upgradeSlots"),
+                header: t('upgradeSlots'),
             },
             {
                 accessorKey: 'note',
-                header: t("note"),
+                header: t('note'),
                 defaultHidden: true
             },
             {
                 accessorKey: 'maximumStackSize',
-                header: t("item:maxStackSize"),
+                header: t('item:maxStackSize'),
                 defaultHidden: true
             },
             {
                 accessorKey: 'minimumStackSize',
-                header: t("item:minStackSize"),
+                header: t('item:minStackSize'),
                 defaultHidden: true
             }
         ], []);
@@ -584,7 +583,7 @@ export function JewelleryOverview() {
             disabled={disabled}
             getInitial={getInitial}
         />}
-        deletionDialogTitle={t("item:confirmDeletionTitle")}
+        deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
     />;
@@ -610,19 +609,19 @@ function CreationDialog({
 
     const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<ItemCombination & {
-        "@type": string;
+        '@type': string;
     }>({
         mode: 'controlled',
         initialValues: {
-            "@type": initialType,
-            description: "",
-            effect: "",
-            maximumStackSize: initialType === "Item" ? 100 : 1,
-            minimumStackSize: initialType === "Item" ? 0 : 1,
-            name: "",
-            note: "",
+            '@type': initialType,
+            description: '',
+            effect: '',
+            maximumStackSize: initialType === 'Item' ? 100 : 1,
+            minimumStackSize: initialType === 'Item' ? 0 : 1,
+            name: '',
+            note: '',
             rarity: ERarity.Common,
-            requirement: "",
+            requirement: '',
             tags: [],
             tier: 1,
             vendorPrice: 0,
@@ -635,7 +634,7 @@ function CreationDialog({
             dice: {dices: []}
         }
     });
-    const itemType = form.getValues()["@type"];
+    const itemType = form.getValues()['@type'];
 
     useEffect(() => {
         if (!editMode || !opened) {
@@ -655,190 +654,190 @@ function CreationDialog({
     }
 
     return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t("item:editTitle") : t("item:creationTitle")}
+        <Modal opened={opened} onClose={close} title={editMode ? t('item:editTitle') : t('item:creationTitle')}
                maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 {!editMode ? <Select
                     data={[
-                        {value: "Item", label: t("item")},
-                        {value: "Weapon", label: t("weapon")},
-                        {value: "Shield", label: t("shield")},
-                        {value: "Armor", label: t("armor")},
-                        {value: "Jewellery", label: t("jewellery")}
+                        {value: 'Item', label: t('item')},
+                        {value: 'Weapon', label: t('weapon')},
+                        {value: 'Shield', label: t('shield')},
+                        {value: 'Armor', label: t('armor')},
+                        {value: 'Jewellery', label: t('jewellery')}
                     ]}
                     key={form.key('@type')}
                     {...form.getInputProps('@type')}
                 /> : null}
                 <TextInput
-                    label={t("name")}
+                    label={t('name')}
                     key={form.key('name')}
                     {...form.getInputProps('name')}
                 />
                 <TagsInput
-                    label={t("tags")}
+                    label={t('tags')}
                     data={tags}
                     clearable
                     key={form.key('tags')}
                     {...form.getInputProps('tags')}
                 />
-                {["Weapon", "Shield", "Armor", "Jewellery"].includes(itemType) ?
+                {['Weapon', 'Shield', 'Armor', 'Jewellery'].includes(itemType) ?
                     <ObjectSelect<Material>
                         idKey="id"
                         labelKey="name"
-                        label={t("material")}
+                        label={t('material')}
                         data={materials}
                         searchable
                         key={form.key('material')}
                         {...form.getInputProps('material')} /> : null}
-                {itemType === "Armor" ?
+                {itemType === 'Armor' ?
                     <ArmorSlotSelect
                         key={form.key('armorSlot')}
                         {...form.getInputProps('armorSlot')}
                     /> : null}
-                {["Shield", "Armor"].includes(itemType) ?
+                {['Shield', 'Armor'].includes(itemType) ?
                     <Group grow align="flex-start">
                         <NumberInput
-                            label={t("armor")}
+                            label={t('armor')}
                             key={form.key('armor')}
                             {...form.getInputProps('armor')}
                             allowDecimal={false}
                         />
                         <NumberInput
-                            label={t("weight")}
+                            label={t('weight')}
                             key={form.key('weight')}
                             {...form.getInputProps('weight')}
                         />
                     </Group> : null}
-                {itemType === "Armor" && itemSettings?.usingProtection ?
+                {itemType === 'Armor' && itemSettings?.usingProtection ?
                     <NumberInput
-                        label={t("protection")}
+                        label={t('protection')}
                         key={form.key('protection')}
                         {...form.getInputProps('protection')}
                         allowDecimal={false}
                     /> : null}
-                {itemType === "Shield" && (itemSettings?.shieldUsingDice || itemSettings?.usingProtection) ?
+                {itemType === 'Shield' && (itemSettings?.shieldUsingDice || itemSettings?.usingProtection) ?
                     <Group grow align="flex-start">
                         {itemSettings?.shieldUsingDice ?
                             <DiceInput
-                                label={t("dice")}
+                                label={t('dice')}
                                 key={form.key('dice')}
                                 {...form.getInputProps('dice')}
                             /> : null}
                         {itemSettings?.usingProtection ?
                             <NumberInput
-                                label={t("protection")}
+                                label={t('protection')}
                                 key={form.key('protection')}
                                 {...form.getInputProps('protection')}
                                 allowDecimal={false}
                             /> : null}
                     </Group> : null}
-                {itemType === "Weapon" ?
+                {itemType === 'Weapon' ?
                     <Group grow align="flex-start">
                         <NumberInput
-                            label={t("damage")}
+                            label={t('damage')}
                             key={form.key('damage')}
                             {...form.getInputProps('damage')}
                             allowDecimal={false}
                         />
                         <DiceInput
-                            label={t("dice")}
+                            label={t('dice')}
                             key={form.key('dice')}
                             {...form.getInputProps('dice')}
                         />
                     </Group> : null}
-                {["Shield", "Weapon"].includes(itemType) ?
+                {['Shield', 'Weapon'].includes(itemType) ?
                     <Group grow align="flex-start">
                         <NumberInput
-                            label={t("hit")}
+                            label={t('hit')}
                             key={form.key('hit')}
                             {...form.getInputProps('hit')}
                             allowDecimal={false}
                         />
                         <NumberInput
-                            label={t("initiative")}
+                            label={t('initiative')}
                             key={form.key('initiative')}
                             {...form.getInputProps('initiative')}
                         />
                     </Group> : null}
                 <Textarea
-                    label={t("effect")}
+                    label={t('effect')}
                     key={form.key('effect')}
                     {...form.getInputProps('effect')}
                 />
                 <Textarea
-                    label={t("description")}
+                    label={t('description')}
                     key={form.key('description')}
                     {...form.getInputProps('description')}
                 />
-                {["Weapon", "Shield", "Armor", "Jewellery"].includes(itemType) ?
+                {['Weapon', 'Shield', 'Armor', 'Jewellery'].includes(itemType) ?
                     <NumberInput
-                        label={t("upgradeSlots")}
+                        label={t('upgradeSlots')}
                         key={form.key('upgradeSlots')}
                         {...form.getInputProps('upgradeSlots')}
                         allowDecimal={false}
                     /> : null}
                 <Group grow align="flex-start">
                     <RaritySelect
-                        label={t("rarity")}
+                        label={t('rarity')}
                         key={form.key('rarity')}
                         {...form.getInputProps('rarity')}
                     />
                     <NumberInput
-                        label={t("tier")}
+                        label={t('tier')}
                         key={form.key('tier')}
                         {...form.getInputProps('tier')}
                         allowDecimal={false}
                     />
                 </Group>
                 <TextInput
-                    label={t("requirement")}
+                    label={t('requirement')}
                     key={form.key('requirement')}
                     {...form.getInputProps('requirement')}
                 />
                 <Group grow align="flex-start">
                     <NumberInput
-                        label={t("price")}
+                        label={t('price')}
                         key={form.key('vendorPrice')}
                         {...form.getInputProps('vendorPrice')}
                         allowDecimal={false}
                     />
                     <TextInput
-                        label={t("resultingPrice")}
+                        label={t('resultingPrice')}
                         readOnly
                         value={currencyFormatter(currencySettings, form.getValues().vendorPrice)}
                     />
                 </Group>
                 <Group grow align="flex-start">
                     <NumberInput
-                        label={t("item:minStackSize")}
+                        label={t('item:minStackSize')}
                         key={form.key('minimumStackSize')}
                         {...form.getInputProps('minimumStackSize')}
                         allowDecimal={false}
                     />
                     <NumberInput
-                        label={t("item:maxStackSize")}
+                        label={t('item:maxStackSize')}
                         key={form.key('maximumStackSize')}
                         {...form.getInputProps('maximumStackSize')}
                         allowDecimal={false}
                     />
                 </Group>
                 <TextInput
-                    label={t("note")}
+                    label={t('note')}
                     key={form.key('note')}
                     {...form.getInputProps('note')}
                 />
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button type="submit">
-                        {editMode ? t("edit") : t("add")}
+                        {editMode ? t('edit') : t('add')}
                     </Button>
                 </Group>
             </form>
         </Modal>
-        <Button data-testid={editMode ? "edit" : "add"} onClick={open} disabled={disabled}>
-            {editMode ? t("edit") : t("add")}
+        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
+            {editMode ? t('edit') : t('add')}
         </Button>
     </>;
 }

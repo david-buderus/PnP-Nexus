@@ -1,25 +1,25 @@
 package de.pnp.manager.webapp.pages.components;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.webapp.utils.WebTestUtils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
 import org.assertj.core.api.Assertions;
+import org.bson.types.ObjectId;
 import org.springframework.util.ReflectionUtils;
+
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Describes the database object dialog
@@ -103,22 +103,23 @@ public class DatabaseObjectDialog {
         }
 
         getSubTypeAnnotation(object.getClass()).ifPresent(
-            subTypeAnnotation -> {
-                String typePrefix = idPrefix + "@type";
-                if (getByDataPath(typePrefix).isVisible()) {
-                    setSelect(typePrefix, subTypeAnnotation);
-                }
-            });
+                subTypeAnnotation -> {
+                    String typePrefix = idPrefix + "@type";
+                    if (getByDataPath(typePrefix).isVisible()) {
+                        setSelect(typePrefix, subTypeAnnotation);
+                    }
+                });
 
         ReflectionUtils.doWithFields(object.getClass(), field -> {
+            if (field.getType().equals(ObjectId.class)) {
+                // ObjectIds don't need to be filled out
+                return;
+            }
+
             field.setAccessible(true);
             Object property = field.get(object);
 
             String id = idPrefix + field.getName();
-
-            if (!getByDataPath(id).isVisible()) {
-                return;
-            }
 
             switch (property) {
                 case String s -> set(id, s);
@@ -140,9 +141,9 @@ public class DatabaseObjectDialog {
 
             // Remove all currently open entries
             locator.getByTestId(Pattern.compile(id + "-sub-\\d+")).all().stream()
-                // We need to remove the last button first, so the data-testids won't change
-                .sorted(Comparator.comparing(l -> l.getAttribute("data-testid"), Comparator.reverseOrder()))
-                .forEach(Locator::click);
+                    // We need to remove the last button first, so the data-testids won't change
+                    .sorted(Comparator.comparing(l -> l.getAttribute("data-testid"), Comparator.reverseOrder()))
+                    .forEach(Locator::click);
 
             List<?> list = collection.stream().toList();
             for (int i = 0; i < list.size(); i++) {
@@ -156,6 +157,8 @@ public class DatabaseObjectDialog {
             for (Object o : collection) {
                 if (o instanceof DatabaseObject databaseObject) {
                     setSelect(id, databaseObject);
+                } else if (o instanceof Tag(String name)) {
+                    set(id, name);
                 } else {
                     fail("Unsupported object: " + o);
                 }
@@ -187,11 +190,11 @@ public class DatabaseObjectDialog {
      */
     public void assertError(String attribute) {
         Assertions.assertThat(
-                getByDataPath(attribute)
-                    .locator("..")
-                    .locator("..")
-                    .locator("p").textContent())
-            .isNotBlank();
+                        getByDataPath(attribute)
+                                .locator("..")
+                                .locator("..")
+                                .locator("p").textContent())
+                .isNotBlank();
     }
 
     /**
@@ -209,6 +212,9 @@ public class DatabaseObjectDialog {
     }
 
     private Locator getByDataPath(String path) {
-        return locator.locator("[data-path=\"" + path + "\"]");
+        Locator input = locator.locator("[data-path=\"" + path + "\"]");
+        assertThat(input).isVisible();
+        assertThat(input).isEnabled();
+        return input;
     }
 }

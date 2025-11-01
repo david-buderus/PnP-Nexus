@@ -1,5 +1,5 @@
-import {useEffect, useMemo} from "react";
-import {useTranslation} from "react-i18next";
+import {useEffect, useMemo} from 'react';
+import {useTranslation} from 'react-i18next';
 import {
     ECalculation,
     EUpgradeEquipmentManipulator,
@@ -8,11 +8,11 @@ import {
     Upgrade,
     UpgradeEffectsInner,
     UpgradeServiceApi
-} from "../../../api";
-import OverviewPage, {ExtendedColumnDef} from "../../../components/OverviewPage";
-import {fetchAllUpgrades} from "../../../components/Database";
-import {API_CONFIGURATION} from "../../../components/Constants";
-import CurrencyCell from "../../../components/table/CurrencyCell";
+} from '../../../api';
+import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import {fetchAllUpgrades} from '../../../components/Database';
+import {API_CONFIGURATION} from '../../../components/Constants';
+import CurrencyCell from '../../../components/table/CurrencyCell';
 import {
     ActionIcon,
     Box,
@@ -27,19 +27,19 @@ import {
     Stack,
     TextInput,
     Tooltip
-} from "@mantine/core";
-import {useUniverseContext} from "../../../components/PageBase";
-import {useForm, UseFormReturnType} from "@mantine/form";
-import {randomId, useDisclosure} from "@mantine/hooks";
-import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
-import {currencyFormatter} from "../../../components/utils/Formatters";
+} from '@mantine/core';
+import {useUniverseContext} from '../../../components/PageBase';
+import {useForm, UseFormReturnType} from '@mantine/form';
+import {randomId, useDisclosure} from '@mantine/hooks';
+import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
+import {currencyFormatter} from '../../../components/utils/Formatters';
 import {
     CalculationSelect,
     UpgradeEquipmentManipulatorSelect,
     UpgradeRestrictionSelect
-} from "../../../components/input/EnumSelect";
-import {FaRegTrashCan} from "react-icons/fa6";
-import TagRequirementsInput from "../../../components/input/TagRequirementsInput";
+} from '../../../components/input/EnumSelect';
+import {FaRegTrashCan} from 'react-icons/fa6';
+import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
 
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 
@@ -51,11 +51,11 @@ export function UpgradeOverview() {
         () => [
             {
                 accessorKey: 'name',
-                header: t("name"),
+                header: t('name'),
             },
             {
                 accessorKey: 'effects',
-                header: t("upgrade:effects"),
+                header: t('upgrade:effects'),
                 Cell: cell => {
                     const effects = cell.cell.getValue<UpgradeEffectsInner[]>();
                     if (effects.length < 2) {
@@ -74,33 +74,33 @@ export function UpgradeOverview() {
             },
             {
                 accessorKey: 'restriction',
-                header: t("upgrade:restriction"),
+                header: t('upgrade:restriction'),
                 filterVariant: 'select',
                 mantineFilterMultiSelectProps: {
                     data: Object.values(EUpgradeRestriction).map(rarity => {
                         return {
-                            label: t("enum:" + rarity.toLowerCase()),
+                            label: t('enum:' + rarity.toLowerCase()),
                             value: rarity
                         };
                     }),
                 },
-                Cell: cell => t("enum:" + cell.cell.getValue()?.toLowerCase())
+                Cell: cell => t('enum:' + cell.cell.getValue()?.toLowerCase())
             },
             {
                 accessorKey: 'tagRequirement',
-                header: t("upgrade:tagRequirement"),
-                Cell: cell => cell.cell.getValue<TagRequirement>().tagRequirements.map(tags => tags.join(", ")).join(" " + t("or") + " "),
+                header: t('upgrade:tagRequirement'),
+                Cell: cell => cell.cell.getValue<TagRequirement>().tagRequirements.map(tags => tags.join(', ')).join(' ' + t('or') + ' '),
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<TagRequirement>(id).tagRequirements.some(tags => tags.some(tag => tag.includes(filterValue)));
                 }
             },
             {
                 accessorKey: 'slots',
-                header: t("upgrade:necessary-slots"),
+                header: t('upgrade:necessary-slots'),
             },
             {
                 accessorKey: 'vendorPrice',
-                header: t("price"),
+                header: t('price'),
                 Cell: CurrencyCell
             }
         ], []);
@@ -116,7 +116,7 @@ export function UpgradeOverview() {
                 disabled={disabled}
                 getInitial={getInitial}
             />}
-        deletionDialogTitle={t("upgrade:upgradeDeletionTitle")}
+        deletionDialogTitle={t('upgrade:upgradeDeletionTitle')}
         onDelete={(universe, upgrades) => UPGRADE_API.deleteAllUpgrades(universe, upgrades.map(upgrade => upgrade.id))}
         idKey="id"
     />;
@@ -141,8 +141,8 @@ function CreationDialog({
         mode: 'controlled',
         initialValues: {
             effects: [],
-            name: "",
-            restriction: "ARMOR",
+            name: '',
+            restriction: 'ARMOR',
             slots: 0,
             tagRequirement: {
                 tagRequirements: []
@@ -170,10 +170,10 @@ function CreationDialog({
 
     return <>
         <Modal opened={opened} onClose={close}
-               title={editMode ? t("upgrade:upgradeEditTitle") : t("upgrade:upgradeCreationTitle")} maw={300}>
+               title={editMode ? t('upgrade:upgradeEditTitle') : t('upgrade:upgradeCreationTitle')} maw={300}>
             <form onSubmit={form.onSubmit(onSubmit)}>
                 <TextInput
-                    label={t("name")}
+                    label={t('name')}
                     key={form.key('name')}
                     {...form.getInputProps('name')}
                 />
@@ -182,11 +182,15 @@ function CreationDialog({
                     {...form.getInputProps('restriction')}
                 />
                 <TagRequirementsInput
+                    label={t('upgrade:tagRequirement')}
+                    tooltip={t('upgrade:tagRequirementTooltip')}
+                    noRequirementsText={t('upgrade:noRequirements')}
+                    addTagRequirementText={t('upgrade:addTagRequirement')}
                     key={form.key('tagRequirement')}
                     {...form.getInputProps('tagRequirement')}
                 />
                 <NumberInput
-                    label={t("upgrade:necessary-slots")}
+                    label={t('upgrade:necessary-slots')}
                     key={form.key('slots')}
                     {...form.getInputProps('slots')}
                     allowDecimal={false}
@@ -194,29 +198,29 @@ function CreationDialog({
                 <Effect form={form}/>
                 <Group grow align="flex-start">
                     <NumberInput
-                        label={t("price")}
+                        label={t('price')}
                         key={form.key('vendorPrice')}
                         {...form.getInputProps('vendorPrice')}
                         allowDecimal={false}
                     />
                     <TextInput
-                        label={t("resultingPrice")}
+                        label={t('resultingPrice')}
                         readOnly
                         value={currencyFormatter(currencySettings, form.getValues().vendorPrice)}
                     />
                 </Group>
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button type="submit">
-                        {editMode ? t("edit") : t("add")}
+                        {editMode ? t('edit') : t('add')}
                     </Button>
                 </Group>
             </form>
         </Modal>
-        <Button data-testid={editMode ? "edit" : "add"} onClick={open} disabled={disabled}>
-            {editMode ? t("edit") : t("add")}
+        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
+            {editMode ? t('edit') : t('add')}
         </Button>
     </>;
 }
@@ -230,34 +234,34 @@ function Effect({
 
     return <Stack gap={0}>
         <Input.Label>
-            {t("upgrade:effects")}
+            {t('upgrade:effects')}
         </Input.Label>
         <Stack gap="xs">
             {form.getValues().effects.map((effect, index) =>
-                <Stack key={"effect-" + index} gap={0}>
+                <Stack key={'effect-' + index} gap={0}>
                     <Paper shadow="md" p="sm">
                         <Select
                             data={[
-                                {value: "SimpleUpgradeEffect", label: t("upgrade:simpleEffect")},
-                                {value: "EquipmentUpgradeEffect", label: t("upgrade:equipmentEffect")}
+                                {value: 'SimpleUpgradeEffect', label: t('upgrade:simpleEffect')},
+                                {value: 'EquipmentUpgradeEffect', label: t('upgrade:equipmentEffect')}
                             ]}
                             key={form.key(`effects.${index}.@type`)}
                             {...form.getInputProps(`effects.${index}.@type`)}
                         />
-                        {effect["@type"] === "EquipmentUpgradeEffect" ? <>
+                        {effect['@type'] === 'EquipmentUpgradeEffect' ? <>
                             <UpgradeEquipmentManipulatorSelect
-                                label={t("upgrade:upgradeManipulator")}
+                                label={t('upgrade:upgradeManipulator')}
                                 key={form.key(`effects.${index}.upgradeManipulator`)}
                                 {...form.getInputProps(`effects.${index}.upgradeManipulator`)}
                             />
                             <Group wrap="nowrap">
                                 <CalculationSelect
-                                    label={t("upgrade:calculation")}
+                                    label={t('upgrade:calculation')}
                                     key={form.key(`effects.${index}.calculation`)}
                                     {...form.getInputProps(`effects.${index}.calculation`)}
                                 />
                                 <NumberInput
-                                    label={t("value")}
+                                    label={t('value')}
                                     key={form.key(`effects.${index}.value`)}
                                     {...form.getInputProps(`effects.${index}.value`)}
                                 />
@@ -268,7 +272,7 @@ function Effect({
                                 style={{flex: 1}}
                             >
                                 <TextInput
-                                    label={t("description")}
+                                    label={t('description')}
                                     key={form.key(`effects.${index}.description`)}
                                     {...form.getInputProps(`effects.${index}.description`)}
                                 />
@@ -282,7 +286,7 @@ function Effect({
                 </Stack>
             )}
         </Stack>
-        <Tooltip label={form.errors["effects"]} disabled={!form.errors["effects"]}>
+        <Tooltip label={form.errors['effects']} disabled={!form.errors['effects']}>
             <Button
                 onClick={() =>
                     form.insertListItem('effects', {
@@ -295,9 +299,9 @@ function Effect({
                     })
                 }
                 mt="md"
-                color={form.errors["effects"] ? "red" : undefined}
+                color={form.errors['effects'] ? 'red' : undefined}
             >
-                {t("upgrade:addEffect")}
+                {t('upgrade:addEffect')}
             </Button>
         </Tooltip>
     </Stack>;

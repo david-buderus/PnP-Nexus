@@ -4,8 +4,11 @@ import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static de.pnp.manager.utils.TestUtils.tagSet;
 
 /**
  * Tests for {@link TalentService}.
@@ -22,11 +25,11 @@ public class TalentServiceTest extends RepositoryServiceBaseTest<Talent, TalentR
     @Override
     protected List<Talent> createObjects() {
         PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
-            new PrimaryAttribute(null, "Primary", "PRI"));
+                new PrimaryAttribute(null, "Primary", "PRI"));
         return List.of(
-            new Talent(null, "Alchemy", "Knowledge", primaryAttribute, primaryAttribute, primaryAttribute),
-            new Talent(null, "Swimming", "Physical", primaryAttribute, primaryAttribute, primaryAttribute),
-            new Talent(null, "Magical Knowledge", "Magic", primaryAttribute, primaryAttribute, primaryAttribute)
+                new Talent(null, "Alchemy", tagSet("Knowledge"), primaryAttribute, primaryAttribute, primaryAttribute),
+                new Talent(null, "Swimming", tagSet("Physical"), primaryAttribute, primaryAttribute, primaryAttribute),
+                new Talent(null, "Magical Knowledge", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute)
         );
     }
 }

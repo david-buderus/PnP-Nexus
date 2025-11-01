@@ -4490,24 +4490,44 @@
       },
       "CharacterDescription": {
         "required": [
+          "affiliations",
+          "appearance",
           "backstory",
+          "deficits",
           "gender",
+          "goals",
           "name",
+          "personality",
           "profession"
         ],
         "type": "object",
         "properties": {
+          "affiliations": {
+            "type": "string"
+          },
           "age": {
             "type": "integer",
             "format": "int32"
           },
+          "appearance": {
+            "type": "string"
+          },
           "backstory": {
+            "type": "string"
+          },
+          "deficits": {
             "type": "string"
           },
           "gender": {
             "type": "string"
           },
+          "goals": {
+            "type": "string"
+          },
           "name": {
+            "type": "string"
+          },
+          "personality": {
             "type": "string"
           },
           "profession": {
@@ -5100,6 +5120,9 @@
         }
       },
       "IResourceUsageObject": {
+        "type": "object"
+      },
+      "ISpellCast": {
         "type": "object"
       },
       "Inventory": {
@@ -6091,13 +6114,13 @@
         "required": [
           "action",
           "additionalCost",
+          "cast",
           "castingTypes",
           "cost",
           "countermeasures",
           "effect",
           "name",
           "tags",
-          "talents",
           "tier"
         ],
         "type": "object",
@@ -6107,6 +6130,16 @@
           },
           "additionalCost": {
             "type": "string"
+          },
+          "cast": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TagCast"
+              },
+              {
+                "$ref": "#/components/schemas/TalentCast"
+              }
+            ]
           },
           "castTime": {
             "type": "integer",
@@ -6157,12 +6190,6 @@
               "type": "string"
             }
           },
-          "talents": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Talent"
-            }
-          },
           "tier": {
             "type": "integer",
             "format": "int32"
@@ -6189,6 +6216,25 @@
       "StreamingResponseBody": {
         "type": "object"
       },
+      "TagCast": {
+        "required": [
+          "tagRequirement"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ISpellCast"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "tagRequirement": {
+                "$ref": "#/components/schemas/TagRequirement"
+              }
+            }
+          }
+        ]
+      },
       "TagRequirement": {
         "required": [
           "tagRequirements"
@@ -6210,18 +6256,15 @@
       "Talent": {
         "required": [
           "firstAttribute",
-          "group",
           "name",
           "secondAttribute",
+          "tags",
           "thirdAttribute"
         ],
         "type": "object",
         "properties": {
           "firstAttribute": {
             "$ref": "#/components/schemas/PrimaryAttribute"
-          },
-          "group": {
-            "type": "string"
           },
           "id": {
             "type": "string"
@@ -6232,10 +6275,39 @@
           "secondAttribute": {
             "$ref": "#/components/schemas/PrimaryAttribute"
           },
+          "tags": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "thirdAttribute": {
             "$ref": "#/components/schemas/PrimaryAttribute"
           }
         }
+      },
+      "TalentCast": {
+        "required": [
+          "talents"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ISpellCast"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "talents": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Talent"
+                }
+              }
+            }
+          }
+        ]
       },
       "TalentCharacterTrait": {
         "required": [

@@ -5,6 +5,7 @@ import de.pnp.manager.component.EAction;
 import de.pnp.manager.component.IResourceUsage;
 import de.pnp.manager.component.IResourceUsage.CharacterResourceUsage;
 import de.pnp.manager.component.IResourceUsage.ItemUsage;
+import de.pnp.manager.component.TagRequirement;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.item.Item;
@@ -12,13 +13,10 @@ import de.pnp.manager.component.spell.ECastingType;
 import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.SpellRepository;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 /**
  * Helper class to create {@link Spell spells}.
@@ -58,7 +56,7 @@ public class TestSpellBuilder {
     private int castTime;
     private int cooldown;
     private EAction action;
-    private final List<Talent> talents;
+    private Spell.ISpellCast cast;
     private final EnumSet<ECastingType> castingTypes;
     private int tier;
     private final Set<Tag> tags;
@@ -79,7 +77,7 @@ public class TestSpellBuilder {
         this.castTime = 0;
         this.cooldown = 1;
         this.action = EAction.ACTION;
-        this.talents = new ArrayList<>();
+        this.cast = new Spell.TagCast(TagRequirement.NO_REQUIREMENT);
         this.castingTypes = EnumSet.noneOf(ECastingType.class);
         this.tier = 1;
         this.tags = new HashSet<>();
@@ -127,10 +125,10 @@ public class TestSpellBuilder {
     }
 
     /**
-     * @see Spell#getTalents()
+     * @see Spell#getCast()
      */
-    public TestSpellBuilder withTalent(Talent talent) {
-        this.talents.add(talent);
+    public TestSpellBuilder withTalents(Talent... talent) {
+        this.cast = new Spell.TalentCast(Arrays.asList(talent));
         return this;
     }
 
@@ -170,8 +168,8 @@ public class TestSpellBuilder {
      * Creates jewellery matching this builder.
      */
     public Spell build() {
-        Spell spell = new Spell(null, name, effect, cost, additionalCost, castTime, cooldown, action, talents,
-            castingTypes, tier, tags, countermeasures);
+        Spell spell = new Spell(null, name, effect, cost, additionalCost, castTime, cooldown, action, cast,
+                castingTypes, tier, tags, countermeasures);
         if (shouldGetPersisted) {
             return spellRepository.insert(universe, spell);
         }

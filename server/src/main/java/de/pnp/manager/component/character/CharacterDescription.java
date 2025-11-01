@@ -7,7 +7,17 @@ import jakarta.validation.constraints.Positive;
 /**
  * The description of a {@link PnPCharacter}.
  */
-public record CharacterDescription(@NotBlank String name, @Positive int age, @NotNull String profession,
-                                   @NotNull String gender, @NotNull String backstory) {
-    
+public record CharacterDescription(
+        @NotBlank String name,
+        @Positive int age,
+        @NotNull String profession,
+        @NotNull String gender,
+        @NotNull String backstory,
+        @NotNull String appearance,
+        @NotNull String personality,
+        @NotNull String goals,
+        @NotNull String deficits,
+        @NotNull String affiliations
+) {
+
 }

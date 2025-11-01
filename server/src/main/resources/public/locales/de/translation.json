@@ -94,5 +94,7 @@
   "disadvantages": "Nachteile",
   "print": "Drucken",
   "inventory": "Inventar",
-  "other": "Sonstige"
+  "other": "Sonstige",
+  "export": "Export",
+  "import": "Import"
 }

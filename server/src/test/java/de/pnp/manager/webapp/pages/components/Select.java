@@ -1,11 +1,11 @@
 package de.pnp.manager.webapp.pages.components;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * A select box in the webapp.
@@ -40,8 +40,9 @@ public class Select {
         deselect();
 
         locator.click();
+
         Locator option = locator.page().getByRole(AriaRole.OPTION)
-            .and(locator.page().locator("[value=\"" + value + "\"]"));
+                .and(locator.page().locator("[value=\"" + value + "\"]"));
         option.click();
 
         if (wait) {
@@ -76,6 +77,6 @@ public class Select {
 
         locator.click();
         locator.page().getByRole(AriaRole.OPTION)
-            .and(locator.page().locator("[data-checked=\"true\"]")).click();
+                .and(locator.page().locator("[data-checked=\"true\"]")).click();
     }
 }

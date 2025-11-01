@@ -20,5 +20,11 @@
   "withShield": "Mit Schild",
   "stats": "Status",
   "textField": "Textfeld",
-  "jewelleryList": "Schmuck"
+  "jewelleryList": "Schmuck",
+  "primaryAttributeRow": "Primäre Attribute Zeile",
+  "talentGroup": "Talentgruppe",
+  "title": "Titel",
+  "addTalent": "Talent hinzufügen",
+  "addEmptyRow": "Leere Zeile einfügen",
+  "emptyRow": "Leere Zeile"
 }

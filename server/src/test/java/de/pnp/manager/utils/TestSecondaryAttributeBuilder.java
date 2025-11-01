@@ -1,7 +1,5 @@
 package de.pnp.manager.utils;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.math.BinaryExpressionTree;
@@ -9,11 +7,14 @@ import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariabl
 import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Builder for {@link SecondaryAttribute}.
@@ -37,7 +38,7 @@ public class TestSecondaryAttributeBuilder {
          */
         public TestSecondaryAttributeBuilder createAttributeBuilder(String universe) {
             return new TestSecondaryAttributeBuilder(universe, primaryAttributeRepository,
-                secondaryAttributeRepository);
+                    secondaryAttributeRepository);
         }
     }
 
@@ -52,6 +53,8 @@ public class TestSecondaryAttributeBuilder {
 
     private String name;
 
+    private String shortName;
+
     private boolean consumable;
 
     private String formula;
@@ -61,12 +64,13 @@ public class TestSecondaryAttributeBuilder {
     private boolean shouldGetPersisted;
 
     private TestSecondaryAttributeBuilder(String universe, PrimaryAttributeRepository primaryAttributeRepository,
-        SecondaryAttributeRepository secondaryAttributeRepository) {
+                                          SecondaryAttributeRepository secondaryAttributeRepository) {
         this.universe = universe;
         this.primaryAttributeRepository = primaryAttributeRepository;
         this.secondaryAttributeRepository = secondaryAttributeRepository;
 
         name = "Sec Attribute";
+        shortName = "SEA";
         consumable = false;
         formula = "10";
         dependencies = new HashSet<>();
@@ -77,6 +81,14 @@ public class TestSecondaryAttributeBuilder {
      */
     public TestSecondaryAttributeBuilder withName(String name) {
         this.name = name;
+        return this;
+    }
+
+    /**
+     * @see SecondaryAttribute#getShortName()
+     */
+    public TestSecondaryAttributeBuilder withShortName(String shortName) {
+        this.shortName = shortName;
         return this;
     }
 
@@ -127,12 +139,12 @@ public class TestSecondaryAttributeBuilder {
         BinaryExpressionTree tree;
         try {
             tree = BinaryExpressionTree.from(formula,
-                dependencies.stream().map(PrimaryAttributeVariable::new).collect(Collectors.toSet()));
+                    dependencies.stream().map(PrimaryAttributeVariable::new).collect(Collectors.toSet()));
         } catch (IllegalFormulaException e) {
             return fail(e);
         }
 
-        SecondaryAttribute attribute = new SecondaryAttribute(null, name, consumable, tree);
+        SecondaryAttribute attribute = new SecondaryAttribute(null, name, shortName, consumable, tree);
         if (shouldGetPersisted) {
             return secondaryAttributeRepository.insert(universe, attribute);
         }
@@ -142,13 +154,13 @@ public class TestSecondaryAttributeBuilder {
     private PrimaryAttribute getPrimaryAttribute(String attributeName) {
         if (primaryAttributeRepository == null) {
             return new PrimaryAttribute(null, attributeName,
-                attributeName.chars().filter(Character::isUpperCase).mapToObj(i -> String.valueOf((char) i))
-                    .collect(Collectors.joining()));
+                    attributeName.chars().filter(Character::isUpperCase).mapToObj(i -> String.valueOf((char) i))
+                            .collect(Collectors.joining()));
         }
         return primaryAttributeRepository.get(universe, attributeName).orElseGet(() ->
-            primaryAttributeRepository.insert(universe,
-                new PrimaryAttribute(null, attributeName,
-                    attributeName.chars().filter(Character::isUpperCase).mapToObj(i -> String.valueOf((char) i))
-                        .collect(Collectors.joining()))));
+                primaryAttributeRepository.insert(universe,
+                        new PrimaryAttribute(null, attributeName,
+                                attributeName.chars().filter(Character::isUpperCase).mapToObj(i -> String.valueOf((char) i))
+                                        .collect(Collectors.joining()))));
     }
 }

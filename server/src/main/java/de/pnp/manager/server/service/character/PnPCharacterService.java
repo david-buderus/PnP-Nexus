@@ -1,12 +1,15 @@
 package de.pnp.manager.server.service.character;
 
 import de.pnp.manager.component.Dice;
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.*;
 import de.pnp.manager.component.character.dto.CharacterStatsDto;
 import de.pnp.manager.component.character.dto.PnPCharacterDto;
 import de.pnp.manager.component.character.stats.Stat;
+import de.pnp.manager.component.character.traits.SimpleCharacterTrait;
+import de.pnp.manager.component.character.traits.StatTrait;
 import de.pnp.manager.component.inventory.Inventory;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
@@ -62,12 +65,16 @@ public class PnPCharacterService {
         return transform(universe, List.of(
                 new PnPCharacter(
                         null,
-                        new CharacterDescription("Name", 20, "Profession", "Male", "Backstroy"),
+                        new CharacterDescription("Name", 20, "Profession", "Male", "Backstory", "Appearance", "Pesonality", "Goals", "Deficits", "Affiliations"),
                         new CharacterLevel(2, 1, 0),
                         new Species(null, "Race", "Race description", true, List.of(), List.of(), List.of()),
                         null,
-                        List.of(),
-                        List.of(),
+                        List.of(
+                                new SimpleCharacterTrait("Some Advantage")
+                        ),
+                        List.of(
+                                new StatTrait.SecondaryStatTrait(ECalculation.MULTIPLICATIVE, 10, secondaryAttributes.stream().findFirst().orElseThrow(), "")
+                        ),
                         stats,
                         new CharacterTalents(Map.of()),
                         new CharacterEquipment(List.of(

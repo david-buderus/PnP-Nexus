@@ -8,9 +8,12 @@ import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 import java.util.function.Predicate;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import static de.pnp.manager.utils.TestUtils.tagSet;
 
 /**
  * Tests the talent overview page.
@@ -32,19 +35,19 @@ public class TalentPageTest extends RepositoryOverviewTestBase<Talent> {
 
     @Override
     protected Talent getWrongObject() {
-        return new Talent(null, "", "", getExampleAttribute(),
-            null, null);
+        return new Talent(null, "", tagSet(), getExampleAttribute(),
+                null, null);
     }
 
     @Override
     protected List<String> getExpectedErrorFields() {
-        return List.of("name", "group", "secondAttribute", "thirdAttribute");
+        return List.of("name", "secondAttribute", "thirdAttribute");
     }
 
     @Override
     protected Talent getCorrectObject() {
-        return new Talent(null, "Body Strength", "Body", getExampleAttribute(), getExampleAttribute(),
-            getExampleAttribute());
+        return new Talent(null, "Body Strength", tagSet("Body"), getExampleAttribute(), getExampleAttribute(),
+                getExampleAttribute());
     }
 
     @Override
@@ -54,8 +57,8 @@ public class TalentPageTest extends RepositoryOverviewTestBase<Talent> {
 
     @Override
     protected Talent getEditedObject() {
-        return new Talent(null, "Real Casting", "Magic", getOriginalModifiedObject().getFirstAttribute(),
-            getOriginalModifiedObject().getSecondAttribute(), getOriginalModifiedObject().getThirdAttribute());
+        return new Talent(null, "Real Casting", tagSet("Magic"), getOriginalModifiedObject().getFirstAttribute(),
+                getOriginalModifiedObject().getSecondAttribute(), getOriginalModifiedObject().getThirdAttribute());
     }
 
     @Override

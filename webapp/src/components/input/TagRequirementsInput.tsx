@@ -1,9 +1,9 @@
-import {ActionIcon, Box, Button, Group, Input, Stack, TagsInput, Text, Tooltip} from "@mantine/core";
-import {TagRequirement} from "../../api";
-import {FaRegTrashCan} from "react-icons/fa6";
-import {useTranslation} from "react-i18next";
-import {fetchAllTags} from "../Database";
-import {MdOutlineHelpOutline} from "react-icons/md";
+import {ActionIcon, Box, Button, Group, Input, Stack, TagsInput, Text, Tooltip} from '@mantine/core';
+import {TagRequirement} from '../../api';
+import {FaRegTrashCan} from 'react-icons/fa6';
+import {useTranslation} from 'react-i18next';
+import {fetchAllTags} from '../Database';
+import {MdOutlineHelpOutline} from 'react-icons/md';
 
 /** Props of the tag requirement input */
 interface TagRequirementsInputProps {
@@ -11,29 +11,37 @@ interface TagRequirementsInputProps {
     value?: TagRequirement;
     /** The change callback */
     onChange?: (t: TagRequirement) => void;
+    /** The text of the tooltip */
+    tooltip: string;
+    /** The label used for everything */
+    label: string;
+    /** The text shown if there are no requirements */
+    noRequirementsText: string;
+    /** The Text of the button which adds an requirement */
+    addTagRequirementText: string;
 }
 
 /** Input to change tag requirements */
 export default function TagRequirementsInput({
-    value, onChange
+    value, onChange, tooltip, label, noRequirementsText, addTagRequirementText,
 }: TagRequirementsInputProps) {
     const {t} = useTranslation();
     const [tags] = fetchAllTags();
 
     return <Stack gap={3}>
-        <Tooltip label={t("upgrade:tagRequirementTooltip")}>
+        <Tooltip label={tooltip}>
             <Group gap={1}>
                 <Input.Label>
-                    {t("upgrade:tagRequirement")}
+                    {label}
                 </Input.Label>
                 <MdOutlineHelpOutline/>
             </Group>
         </Tooltip>
         {value.tagRequirements.length === 0 ?
-            <Text>{t("upgrade:noRequirements")}</Text>
+            <Text>{noRequirementsText}</Text>
             : null}
         {value.tagRequirements.map((requirement, index) =>
-            <Group key={"requirement-" + index} wrap="nowrap">
+            <Group key={'requirement-' + index} wrap="nowrap">
                 <Box
                     style={{flex: 1}}
                 >
@@ -58,7 +66,7 @@ export default function TagRequirementsInput({
                 tagRequirements: value.tagRequirements.concat([[]])
             })}
         >
-            {t("upgrade:addTagRequirement")}
+            {addTagRequirementText}
         </Button>
     </Stack>;
 }
