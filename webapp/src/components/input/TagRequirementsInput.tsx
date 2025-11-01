@@ -1,7 +1,6 @@
 import {ActionIcon, Box, Button, Group, Input, Stack, TagsInput, Text, Tooltip} from '@mantine/core';
 import {TagRequirement} from '../../api';
 import {FaRegTrashCan} from 'react-icons/fa6';
-import {useTranslation} from 'react-i18next';
 import {fetchAllTags} from '../Database';
 import {MdOutlineHelpOutline} from 'react-icons/md';
 
@@ -19,13 +18,14 @@ interface TagRequirementsInputProps {
     noRequirementsText: string;
     /** The Text of the button which adds an requirement */
     addTagRequirementText: string;
+    /** Prefix added before all data-testids */
+    dataTestIdPrefix?: string;
 }
 
 /** Input to change tag requirements */
 export default function TagRequirementsInput({
-    value, onChange, tooltip, label, noRequirementsText, addTagRequirementText,
+    value, onChange, tooltip, label, noRequirementsText, addTagRequirementText, dataTestIdPrefix = ''
 }: TagRequirementsInputProps) {
-    const {t} = useTranslation();
     const [tags] = fetchAllTags();
 
     return <Stack gap={3}>
@@ -54,14 +54,20 @@ export default function TagRequirementsInput({
                         clearable
                     />
                 </Box>
-                <ActionIcon variant="outline" color="red" size="input-sm" onClick={() => onChange({
-                    tagRequirements: value.tagRequirements.filter((_, i) => i !== index)
-                })}>
+                <ActionIcon
+                    variant="outline"
+                    color="red"
+                    size="input-sm"
+                    data-testid={dataTestIdPrefix + 'tagRequirements-sub-' + index}
+                    onClick={() => onChange({
+                        tagRequirements: value.tagRequirements.filter((_, i) => i !== index)
+                    })}>
                     <FaRegTrashCan/>
                 </ActionIcon>
             </Group>
         )}
         <Button
+            data-testid={dataTestIdPrefix + 'tagRequirements-add'}
             onClick={() => onChange({
                 tagRequirements: value.tagRequirements.concat([[]])
             })}

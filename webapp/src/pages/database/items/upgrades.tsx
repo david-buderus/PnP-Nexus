@@ -186,6 +186,7 @@ function CreationDialog({
                     tooltip={t('upgrade:tagRequirementTooltip')}
                     noRequirementsText={t('upgrade:noRequirements')}
                     addTagRequirementText={t('upgrade:addTagRequirement')}
+                    dataTestIdPrefix="tagRequirement."
                     key={form.key('tagRequirement')}
                     {...form.getInputProps('tagRequirement')}
                 />

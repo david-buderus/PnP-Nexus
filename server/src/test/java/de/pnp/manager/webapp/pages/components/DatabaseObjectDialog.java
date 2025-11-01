@@ -15,6 +15,7 @@ import org.assertj.core.api.Assertions;
 import org.bson.types.ObjectId;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -105,7 +106,7 @@ public class DatabaseObjectDialog {
         getSubTypeAnnotation(object.getClass()).ifPresent(
                 subTypeAnnotation -> {
                     String typePrefix = idPrefix + "@type";
-                    if (getByDataPath(typePrefix).isVisible()) {
+                    if (getByDataPathWithoutExistenceCheck(typePrefix).isVisible()) {
                         setSelect(typePrefix, subTypeAnnotation);
                     }
                 });
@@ -113,6 +114,9 @@ public class DatabaseObjectDialog {
         ReflectionUtils.doWithFields(object.getClass(), field -> {
             if (field.getType().equals(ObjectId.class)) {
                 // ObjectIds don't need to be filled out
+                return;
+            }
+            if (Modifier.isStatic(field.getModifiers())) {
                 return;
             }
 
@@ -148,19 +152,18 @@ public class DatabaseObjectDialog {
             List<?> list = collection.stream().toList();
             for (int i = 0; i < list.size(); i++) {
                 locator.getByTestId(id + "-add").click();
-                fillOut(list.get(i), id + "[" + i + "].");
+                fillOut(list.get(i), id + "." + i + ".");
             }
         } else {
             // This means it is an autocomplete with multiselect
 
             WebTestUtils.clearMultiSelect(getByDataPath(id));
             for (Object o : collection) {
-                if (o instanceof DatabaseObject databaseObject) {
-                    setSelect(id, databaseObject);
-                } else if (o instanceof Tag(String name)) {
-                    set(id, name);
-                } else {
-                    fail("Unsupported object: " + o);
+                switch (o) {
+                    case DatabaseObject databaseObject -> setSelect(id, databaseObject);
+                    case Tag(String name) -> set(id, name);
+                    case Enum<?> enumObject -> setSelect(id, enumObject.name());
+                    case null, default -> fail("Unsupported object: " + o);
                 }
             }
         }
@@ -173,6 +176,9 @@ public class DatabaseObjectDialog {
             subTypes.addAll(List.of(currentClass.getDeclaredAnnotationsByType(JsonSubTypes.class)));
             currentClass = currentClass.getSuperclass();
         } while (currentClass != null);
+        for (Class<?> implementedInterfaces : clazz.getInterfaces()) {
+            subTypes.addAll(List.of(implementedInterfaces.getDeclaredAnnotationsByType(JsonSubTypes.class)));
+        }
 
         for (JsonSubTypes subType : subTypes) {
             for (Type type : subType.value()) {
@@ -212,9 +218,13 @@ public class DatabaseObjectDialog {
     }
 
     private Locator getByDataPath(String path) {
-        Locator input = locator.locator("[data-path=\"" + path + "\"]");
+        Locator input = getByDataPathWithoutExistenceCheck(path);
         assertThat(input).isVisible();
         assertThat(input).isEnabled();
         return input;
+    }
+
+    private Locator getByDataPathWithoutExistenceCheck(String path) {
+        return locator.locator("[data-path=\"" + path + "\"]");
     }
 }

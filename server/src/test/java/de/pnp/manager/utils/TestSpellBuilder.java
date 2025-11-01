@@ -125,10 +125,26 @@ public class TestSpellBuilder {
     }
 
     /**
+     * @see Spell#getCost()
+     */
+    public TestSpellBuilder withCost(List<IResourceUsage<?>> resourceUsages) {
+        this.cost.addAll(resourceUsages);
+        return this;
+    }
+
+    /**
      * @see Spell#getCast()
      */
     public TestSpellBuilder withTalents(Talent... talent) {
         this.cast = new Spell.TalentCast(Arrays.asList(talent));
+        return this;
+    }
+
+    /**
+     * @see Spell#getCast()
+     */
+    public TestSpellBuilder withCast(Spell.ISpellCast cast) {
+        this.cast = cast;
         return this;
     }
 
@@ -153,6 +169,14 @@ public class TestSpellBuilder {
      */
     public TestSpellBuilder withCastingType(ECastingType castingType) {
         this.castingTypes.add(castingType);
+        return this;
+    }
+
+    /**
+     * @see Spell#getCastingTypes()
+     */
+    public TestSpellBuilder withTags(String... tags) {
+        this.tags.addAll(Arrays.stream(tags).map(Tag::new).toList());
         return this;
     }
 
