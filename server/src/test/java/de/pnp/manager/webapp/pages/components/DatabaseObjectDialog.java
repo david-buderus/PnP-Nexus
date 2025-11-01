@@ -11,7 +11,6 @@ import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.webapp.utils.WebTestUtils;
-import org.assertj.core.api.Assertions;
 import org.bson.types.ObjectId;
 import org.springframework.util.ReflectionUtils;
 
@@ -195,12 +194,10 @@ public class DatabaseObjectDialog {
      * Asserts that the given attribute has an error hint.
      */
     public void assertError(String attribute) {
-        Assertions.assertThat(
-                        getByDataPath(attribute)
-                                .locator("..")
-                                .locator("..")
-                                .locator("p").textContent())
-                .isNotBlank();
+        assertThat(getByDataPath(attribute)
+                .locator("..")
+                .locator("..")
+                .locator("p")).not().isEmpty();
     }
 
     /**

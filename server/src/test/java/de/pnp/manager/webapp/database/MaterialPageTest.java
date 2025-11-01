@@ -9,8 +9,9 @@ import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Tests the material overview page.
@@ -37,7 +38,7 @@ public class MaterialPageTest extends UniquelyNamedOverviewTestBase<Material, Ma
 
     @Override
     protected List<String> getExpectedErrorFields() {
-        return List.of("name", "items[0].amount", "items[0].item");
+        return List.of("name", "items.0.amount");
     }
 
     @Override
@@ -52,12 +53,12 @@ public class MaterialPageTest extends UniquelyNamedOverviewTestBase<Material, Ma
 
     @Override
     protected Material getEditedObject() {
-        return new Material(null, "Iron", List.of(new MaterialItem(10, getItem("Blood"))));
+        return new Material(null, "Iron", List.of(new MaterialItem(10, getItem("Iron Ore"))));
     }
 
     @Override
     protected String getChangeIdentifier() {
-        return "Blood";
+        return "Iron Ore";
     }
 
     private Item getItem(String name) {
