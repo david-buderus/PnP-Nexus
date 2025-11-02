@@ -1,7 +1,5 @@
 package de.pnp.manager.webapp.users;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.server.ManipulatesMetadata;
@@ -13,10 +11,13 @@ import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.webapp.pages.UserPage;
 import de.pnp.manager.webapp.pages.components.users.ChangePassword;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the user page.
@@ -73,8 +74,8 @@ public class UserPageTest extends ServerTestBase {
         assertThat(page.getEmail()).isEqualTo(NEW_EMAIL);
 
         PnPUser user = userRepository.getUser(USERNAME).orElseThrow();
-        assertThat(user.getDisplayName()).isEqualTo(NEW_DISPLAYNAME);
-        assertThat(user.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(user.displayName()).isEqualTo(NEW_DISPLAYNAME);
+        assertThat(user.email()).isEqualTo(NEW_EMAIL);
     }
 
     @Test
@@ -90,8 +91,8 @@ public class UserPageTest extends ServerTestBase {
         assertThat(page.getEmail()).isBlank();
 
         PnPUser user = userRepository.getUser(USERNAME).orElseThrow();
-        assertThat(user.getDisplayName()).isEqualTo(USERNAME);
-        assertThat(user.getEmail()).isBlank();
+        assertThat(user.displayName()).isEqualTo(USERNAME);
+        assertThat(user.email()).isBlank();
     }
 
     @Test

@@ -12,12 +12,10 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 /**
  * A select box in the webapp.
  */
-public class Select {
-
-    private final Locator locator;
-
+public class Select extends ComponentBase {
+    
     private Select(Locator locator) {
-        this.locator = locator;
+        super(locator);
     }
 
     /**

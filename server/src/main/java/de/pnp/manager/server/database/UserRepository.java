@@ -1,18 +1,19 @@
 package de.pnp.manager.server.database;
 
-import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
-
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.server.contoller.UserController;
-import java.util.Collection;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.Optional;
+
+import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
 
 /**
  * Repository for {@link PnPUser users}.
@@ -50,7 +51,7 @@ public class UserRepository {
      */
     public Optional<PnPUser> getUser(String username) {
         return Optional.ofNullable(
-            mongoTemplate.findById(username, PnPUser.class, REPOSITORY_NAME));
+                mongoTemplate.findById(username, PnPUser.class, REPOSITORY_NAME));
     }
 
     /**
@@ -58,8 +59,8 @@ public class UserRepository {
      */
     public Optional<PnPUser> getUserByDisplayName(String displayName) {
         return Optional.ofNullable(
-            mongoTemplate.findOne(Query.query(Criteria.where("displayName").is(displayName)), PnPUser.class,
-                REPOSITORY_NAME));
+                mongoTemplate.findOne(Query.query(Criteria.where("displayName").is(displayName)), PnPUser.class,
+                        REPOSITORY_NAME));
     }
 
     /**
@@ -75,7 +76,7 @@ public class UserRepository {
      * Updates the user in the database.
      */
     public void updateUser(PnPUser user) {
-        mongoTemplate.findAndReplace(Query.query(Criteria.where("_id").is(user.getUsername())), user, REPOSITORY_NAME);
+        mongoTemplate.findAndReplace(Query.query(Criteria.where("_id").is(user.username())), user, REPOSITORY_NAME);
     }
 
     /**
@@ -85,7 +86,7 @@ public class UserRepository {
      */
     public boolean removeUser(String username) {
         DeleteResult result = mongoTemplate.remove(Query.query(Criteria.where("_id").is(username)),
-            REPOSITORY_NAME);
+                REPOSITORY_NAME);
         return result.wasAcknowledged();
     }
 }

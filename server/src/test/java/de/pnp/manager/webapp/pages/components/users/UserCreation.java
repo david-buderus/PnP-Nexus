@@ -19,27 +19,27 @@ public class UserCreation extends UserManipulation {
      * Creates the UserCreation from the given {@link Page}.
      */
     public static UserCreation getUserCreation(Page page) {
-        return new UserCreation(page.getByTestId("user-creation-dialog"));
+        return new UserCreation(page.getByRole(AriaRole.DIALOG));
     }
 
     /**
-     * @see PnPUser#getUsername()
+     * @see PnPUser#username()
      */
     public void setUsername(String name) {
-        locator.getByTestId("username").getByRole(AriaRole.TEXTBOX).fill(name);
+        getByDataPath("username").fill(name);
     }
 
     /**
      * @see PnPUserCreation#getPassword()
      */
     public void setPassword(String password) {
-        locator.getByTestId("password").getByRole(AriaRole.TEXTBOX).fill(password);
+        getByDataPath("password").fill(password);
     }
 
     /**
      * Tries to add the user.
      */
     public void addUser() {
-        locator.getByTestId("user-create").click();
+        locator.locator("[type=submit]").click();
     }
 }

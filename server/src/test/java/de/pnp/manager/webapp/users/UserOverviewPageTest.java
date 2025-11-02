@@ -1,7 +1,6 @@
 package de.pnp.manager.webapp.users;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.RoleAuthorityDTO;
@@ -21,13 +20,16 @@ import de.pnp.manager.webapp.pages.UserOverviewPage;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
 import de.pnp.manager.webapp.pages.components.users.UserCreation;
 import de.pnp.manager.webapp.pages.components.users.UserEdit;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the user overview page.
@@ -69,8 +71,8 @@ public class UserOverviewPageTest extends ServerTestBase {
         universe = createUniverse("users-test", "Test Universe");
         if (userRepository.getUser(ADMIN_USERNAME).isEmpty()) {
             userController.createNewUser(
-                new PnPUserCreation(ADMIN_USERNAME, ADMIN_USERNAME, ADMIN_USERNAME, "",
-                    List.of(new RoleAuthorityDTO(SecurityConstants.ADMIN))));
+                    new PnPUserCreation(ADMIN_USERNAME, ADMIN_USERNAME, ADMIN_USERNAME, "",
+                            List.of(new RoleAuthorityDTO(SecurityConstants.ADMIN))));
         }
 
         page = webDriver.openMainMenu(ADMIN_USERNAME, "admin").openUserOverviewPage();
@@ -95,7 +97,7 @@ public class UserOverviewPageTest extends ServerTestBase {
         userCreation.setIsAdmin(false);
 
         userCreation.setIsUniverseCreator(true);
-        userCreation.addReadUniverse(universe.getDisplayName());
+        userCreation.addReadUniverse(universe);
         userCreation.addUser();
 
         OverviewTable table = page.getTable();
@@ -108,14 +110,14 @@ public class UserOverviewPageTest extends ServerTestBase {
         Optional<PnPUserDetails> userDetails = userDetailsRepository.getUser(USER_USERNAME);
         assertThat(userDetails).isPresent();
         assertThat(userDetails.get().getAuthorities()).map(a -> (GrantedAuthority) a)
-            .containsExactlyInAnyOrder(GrantedUniverseAuthority.readAuthority(universe.getName()),
-                new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE));
+                .containsExactlyInAnyOrder(GrantedUniverseAuthority.readAuthority(universe.getName()),
+                        new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE));
     }
 
     @Test
     void testDeleteUser() {
         userController.createNewUser(
-            new PnPUserCreation(USER_USERNAME, USER_PASSWORD, USER_DISPLAYNAME, USER_EMAIL, List.of()));
+                new PnPUserCreation(USER_USERNAME, USER_PASSWORD, USER_DISPLAYNAME, USER_EMAIL, List.of()));
         page.asPage().reload();
 
         OverviewTable table = page.getTable();
@@ -133,7 +135,7 @@ public class UserOverviewPageTest extends ServerTestBase {
     @Test
     void testEditButton() {
         userController.createNewUser(
-            new PnPUserCreation(USER_USERNAME, USER_PASSWORD, USER_DISPLAYNAME, USER_EMAIL, List.of()));
+                new PnPUserCreation(USER_USERNAME, USER_PASSWORD, USER_DISPLAYNAME, USER_EMAIL, List.of()));
         page.asPage().reload();
 
         OverviewTable table = page.getTable();
@@ -150,7 +152,7 @@ public class UserOverviewPageTest extends ServerTestBase {
     @Test
     void testEditUser() {
         userController.createNewUser(
-            new PnPUserCreation(USER_USERNAME, USER_PASSWORD, USER_DISPLAYNAME, USER_EMAIL, List.of()));
+                new PnPUserCreation(USER_USERNAME, USER_PASSWORD, USER_DISPLAYNAME, USER_EMAIL, List.of()));
         page.asPage().reload();
 
         OverviewTable table = page.getTable();
@@ -159,10 +161,10 @@ public class UserOverviewPageTest extends ServerTestBase {
         UserEdit userEdit = page.openUserEditMenu();
         userEdit.setDisplayName(NEW_DISPLAYNAME);
         userEdit.setEmail(NEW_EMAIL);
-        userEdit.addWriteUniverse(universe.getDisplayName());
+        userEdit.addWriteUniverse(universe);
         userEdit.editUser();
 
-        table.assertThatTableRowExists(USER_USERNAME);
+        PlaywrightAssertions.assertThat(table.asLocator()).containsText(NEW_DISPLAYNAME);
 
         Optional<PnPUser> user = userRepository.getUser(USER_USERNAME);
         assertThat(user).isPresent();
@@ -171,6 +173,6 @@ public class UserOverviewPageTest extends ServerTestBase {
         Optional<PnPUserDetails> userDetails = userDetailsRepository.getUser(USER_USERNAME);
         assertThat(userDetails).isPresent();
         assertThat(userDetails.get().getAuthorities()).map(a -> (GrantedAuthority) a)
-            .containsExactlyInAnyOrder(GrantedUniverseAuthority.writeAuthority(universe.getName()));
+                .containsExactlyInAnyOrder(GrantedUniverseAuthority.writeAuthority(universe.getName()));
     }
 }

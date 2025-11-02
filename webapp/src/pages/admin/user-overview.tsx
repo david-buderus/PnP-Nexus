@@ -1,13 +1,13 @@
-import {useTranslation} from "react-i18next";
-import {GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, RoleAuthorityDTO, UserServiceApi} from "../../api";
-import {API_CONFIGURATION} from "../../components/Constants";
-import {useEffect, useMemo, useState} from "react";
-import OverviewPage, {ExtendedColumnDef} from "../../components/OverviewPage";
-import {Button, Group, Input, Modal, MultiSelect, Paper, PasswordInput, Stack, Switch, TextInput} from "@mantine/core";
-import {useForm} from "@mantine/form";
-import {useDisclosure} from "@mantine/hooks";
-import {handleValidationErrors} from "../../components/utils/ErrorUtils";
-import {useUniverseContext} from "../../components/PageBase";
+import {useTranslation} from 'react-i18next';
+import {GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, RoleAuthorityDTO, UserServiceApi} from '../../api';
+import {API_CONFIGURATION} from '../../components/Constants';
+import {useEffect, useMemo, useState} from 'react';
+import OverviewPage, {ExtendedColumnDef} from '../../components/OverviewPage';
+import {Button, Group, Input, Modal, MultiSelect, Paper, PasswordInput, Stack, Switch, TextInput} from '@mantine/core';
+import {useForm} from '@mantine/form';
+import {useDisclosure} from '@mantine/hooks';
+import {handleValidationErrors} from '../../components/utils/ErrorUtils';
+import {useUniverseContext} from '../../components/PageBase';
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
@@ -34,15 +34,15 @@ export function UserOverview() {
         () => [
             {
                 accessorKey: 'username',
-                header: t("username"),
+                header: t('username'),
             },
             {
                 accessorKey: 'displayName',
-                header: t("displayName"),
+                header: t('displayName'),
             },
             {
                 accessorKey: 'email',
-                header: t("email"),
+                header: t('email'),
             }
         ], []);
 
@@ -57,16 +57,16 @@ export function UserOverview() {
                 return <CreationDialog refresh={refreshCallback} disabled={disabled}/>;
             }
         }}
-        deletionDialogTitle={t("user:confirmDeletionUser")}
+        deletionDialogTitle={t('user:confirmDeleteUser')}
         onDelete={(_, usersToDelete) => USER_API.removeUsers(usersToDelete.map(user => user.username))}
         idKey="username"
     />;
 }
 
 function CreationDialog({
-                            refresh,
-                            disabled
-                        }: {
+    refresh,
+    disabled
+}: {
     refresh: () => void;
     disabled: boolean;
 }) {
@@ -77,60 +77,62 @@ function CreationDialog({
         mode: 'controlled',
         initialValues: {
             authorities: [],
-            displayName: "",
-            username: ""
+            displayName: '',
+            username: ''
         }
     });
 
     return <>
-        <Modal opened={opened} onClose={close} title={t("user:createUser")} maw={300}>
+        <Modal opened={opened} onClose={close} title={t('user:createUser')} maw={300}>
             <form onSubmit={form.onSubmit(user => USER_API.createUser(user).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors)))}
             >
                 <TextInput
-                    label={t("username")}
+                    label={t('username')}
                     key={form.key('username')}
                     {...form.getInputProps('username')}
                 />
                 <TextInput
-                    label={t("displayName")}
+                    label={t('displayName')}
                     key={form.key('displayName')}
                     {...form.getInputProps('displayName')}
                 />
                 <TextInput
-                    label={t("email")}
+                    label={t('email')}
                     key={form.key('email')}
                     {...form.getInputProps('email')}
                 />
                 <PasswordInput
-                    label={t("password")}
+                    label={t('password')}
                     key={form.key('password')}
                     {...form.getInputProps('password')}
 
                 />
-                <PermissionManipulation authorities={[]}
-                                        setAuthorities={authorities => form.setFieldValue("authorities", authorities)}/>
+                <PermissionManipulation
+                    authorities={form.getValues()?.authorities ?? []}
+                    setAuthorities={authorities => form.setFieldValue('authorities', authorities)}
+                />
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button type="submit">
-                        {t("add")}
+                        {t('add')}
                     </Button>
                 </Group>
             </form>
         </Modal>
-        <Button data-testid={"add"} onClick={open} disabled={disabled}>
-            {t("add")}
+        <Button data-testid={'add'} onClick={open} disabled={disabled}>
+            {t('add')}
         </Button>
     </>;
 }
 
 function EditDialog({
-                        refresh,
-                        disabled,
-                        getInitial
-                    }: {
+    refresh,
+    disabled,
+    getInitial
+}: {
     refresh: () => void;
     disabled: boolean;
     getInitial: () => PnPUser;
@@ -158,7 +160,7 @@ function EditDialog({
     }, [opened, getInitial]);
 
     return <>
-        <Modal opened={opened} onClose={close} title={t("user:editUser")} maw={300}>
+        <Modal opened={opened} onClose={close} title={t('user:editUser')} maw={300}>
             <form onSubmit={form.onSubmit(user => USER_API.updateUser(user.username, user)
                 .then(() => USER_API.updatePermissions(user.username, editAuthorities))
                 .then(() => {
@@ -168,28 +170,28 @@ function EditDialog({
                 .catch(handleValidationErrors(form.setErrors)))}
             >
                 <TextInput
-                    label={t("displayName")}
+                    label={t('displayName')}
                     key={form.key('displayName')}
                     {...form.getInputProps('displayName')}
                 />
                 <TextInput
-                    label={t("email")}
+                    label={t('email')}
                     key={form.key('email')}
                     {...form.getInputProps('email')}
                 />
                 <PermissionManipulation authorities={orginialAuthorities} setAuthorities={setEditAuthorities}/>
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button type="submit">
-                        {t("edit")}
+                        {t('edit')}
                     </Button>
                 </Group>
             </form>
         </Modal>
-        <Button data-testid={"edit"} onClick={open} disabled={disabled}>
-            {t("edit")}
+        <Button data-testid={'edit'} onClick={open} disabled={disabled}>
+            {t('edit')}
         </Button>
     </>;
 }
@@ -206,7 +208,7 @@ function PermissionManipulation({authorities, setAuthorities}: {
         });
     }, [universes]);
 
-    function getUniverseRights(right: "READ" | "WRITE" | "OWNER") {
+    function getUniverseRights(right: 'READ' | 'WRITE' | 'OWNER') {
         return authorities.filter(auth => (auth as GrantedUniverseAuthorityDTO)?.permission === right)
             .map(auth => universes.find(opt => opt.name === (auth as GrantedUniverseAuthorityDTO).universe)).filter(auth => auth !== undefined).map(universe => universe.name);
     }
@@ -218,43 +220,43 @@ function PermissionManipulation({authorities, setAuthorities}: {
     const [ownerRights, setOwnerRights] = useState([]);
 
     useEffect(() => {
-        setAdminRights(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === "ADMIN") !== undefined);
-        setUniverseCreationRights(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === "UNIVERSE_CREATOR") !== undefined);
-        setReadRights(getUniverseRights("READ"));
-        setWriteRights(getUniverseRights("WRITE"));
-        setOwnerRights(getUniverseRights("OWNER"));
+        setAdminRights(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === 'ADMIN') !== undefined);
+        setUniverseCreationRights(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === 'UNIVERSE_CREATOR') !== undefined);
+        setReadRights(getUniverseRights('READ'));
+        setWriteRights(getUniverseRights('WRITE'));
+        setOwnerRights(getUniverseRights('OWNER'));
     }, [authorities]);
 
     useEffect(() => {
         const newAuthorities = [];
         if (adminRights) {
             newAuthorities.push({
-                "@type": "Role",
-                "role": "ADMIN"
+                '@type': 'Role',
+                'role': 'ADMIN'
             });
         }
         if (!adminRights && universeCreationRights) {
             newAuthorities.push({
-                "@type": "Role",
-                role: "UNIVERSE_CREATOR"
+                '@type': 'Role',
+                role: 'UNIVERSE_CREATOR'
             });
         }
         readRights.forEach(right => newAuthorities.push({
-            "@type": "UniverseAuthority",
+            '@type': 'UniverseAuthority',
             universe: right,
-            permission: "READ"
+            permission: 'READ'
 
         }));
         writeRights.forEach(right => newAuthorities.push({
-            "@type": "UniverseAuthority",
+            '@type': 'UniverseAuthority',
             universe: right,
-            permission: "WRITE"
+            permission: 'WRITE'
 
         }));
         ownerRights.forEach(right => newAuthorities.push({
-            "@type": "UniverseAuthority",
+            '@type': 'UniverseAuthority',
             universe: right,
-            permission: "OWNER"
+            permission: 'OWNER'
 
         }));
 
@@ -263,39 +265,44 @@ function PermissionManipulation({authorities, setAuthorities}: {
 
     return <>
         <Input.Label>
-            {t("rights")}
+            {t('rights')}
         </Input.Label>
         <Paper shadow="sm" p="xs">
             <Stack gap="xs">
                 <Switch
                     checked={adminRights}
                     onChange={event => setAdminRights(event.target.checked)}
-                    label={t("user:adminRights")}
+                    label={t('user:adminRights')}
+                    data-testid="adminRights"
                 />
                 <Switch
                     checked={universeCreationRights || adminRights}
                     disabled={adminRights}
                     onChange={event => setUniverseCreationRights(event.target.checked)}
-                    label={t("user:universeCreationRights")}
+                    label={t('user:universeCreationRights')}
+                    data-testid="universeCreationRights"
                 />
             </Stack>
             <MultiSelect
-                label={t("user:universeReadRights")}
+                label={t('user:universeReadRights')}
                 data={universeOptions}
                 value={readRights}
                 onChange={setReadRights}
+                data-testid="universe-read-rights"
             />
             <MultiSelect
-                label={t("user:universeWriteRights")}
+                label={t('user:universeWriteRights')}
                 data={universeOptions}
                 value={writeRights}
                 onChange={setWriteRights}
+                data-testid="universe-write-rights"
             />
             <MultiSelect
-                label={t("user:universeOwnerRights")}
+                label={t('user:universeOwnerRights')}
                 data={universeOptions}
                 value={ownerRights}
                 onChange={setOwnerRights}
+                data-testid="universe-owner-rights"
             />
         </Paper>
     </>;

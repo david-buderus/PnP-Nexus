@@ -1,12 +1,12 @@
-import {useTranslation} from "react-i18next";
-import {useUniverseContext, useUserContext} from "./PageBase";
-import {Button, Group, Stack} from "@mantine/core";
+import {useTranslation} from 'react-i18next';
+import {useUniverseContext, useUserContext} from './PageBase';
+import {Button, Group, Stack} from '@mantine/core';
 import {HTMLPropsRef, MantineReactTable, type MRT_ColumnDef, useMantineReactTable,} from 'mantine-react-table';
-import {useLocalStorage} from "@mantine/hooks";
-import ConfirmationDialog from "./modal/ConfirmationDialog";
-import {AxiosResponse} from "axios";
-import {handleNetworkErrors} from "./utils/ErrorUtils";
-import {ReactNode} from "react";
+import {useLocalStorage} from '@mantine/hooks';
+import ConfirmationDialog from './modal/ConfirmationDialog';
+import {AxiosResponse} from 'axios';
+import {handleNetworkErrors} from './utils/ErrorUtils';
+import {ReactNode} from 'react';
 
 /**
  * An extended format of the column definition.
@@ -50,7 +50,7 @@ export default function OverviewPage<T>({
     const [data, refresh, loading] = fetchData;
 
     const [visibility, setVisibility] = useLocalStorage<Record<string, boolean>>({
-        key: identifier + "-visibility",
+        key: identifier + '-visibility',
         defaultValue: columns.reduce<Record<string, boolean>>((rec, col) => {
             const key: string = col.id ?? (col.accessorKey) as string;
             rec[key] = !col.defaultHidden;
@@ -82,14 +82,14 @@ export default function OverviewPage<T>({
             {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0].original)}
             <ConfirmationDialog
                 title={deletionDialogTitle}
-                onConfirmation={() => onDelete(activeUniverse.name, table.getSelectedRowModel().flatRows.map(row => row.original))
+                onConfirmation={() => onDelete(activeUniverse?.name, table.getSelectedRowModel().flatRows.map(row => row.original))
                     .then(refresh).catch(handleNetworkErrors)}
                 openNode={(open) => <Button
                     data-testid="delete"
                     disabled={table.getSelectedRowModel().flatRows.length === 0}
                     onClick={open}
                 >
-                    {t("delete")}
+                    {t('delete')}
                 </Button>}
             />
         </Group>}

@@ -13,6 +13,6 @@
   "universeWriteRights": "Schreibzugriffe",
   "universeOwnerRights": "Besitzer",
   "deleteUser": "Account löschen",
-  "confirmDeleteUser": "Willst du einen Account wirklich löschen?",
+  "confirmDeleteUser": "Willst du diesen Account wirklich löschen?",
   "unknownUser": "Unbekannter Nutzer"
 }
