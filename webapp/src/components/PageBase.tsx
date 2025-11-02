@@ -51,6 +51,7 @@ import {HiUserCircle} from 'react-icons/hi2';
 import {MdLogout} from 'react-icons/md';
 import axios from 'axios';
 import {PiPerson} from 'react-icons/pi';
+import {ErrorBoundary} from './ErrorBoundary';
 
 type UniverseContext = {
     universes: Universe[];
@@ -231,21 +232,23 @@ export function PageBase() {
                 </ScrollArea>
             </AppShell.Navbar>
             <AppShell.Main>
-                <Outlet context={{
-                    universes: universes,
-                    activeUniverse: activeUniverse,
-                    setActiveUniverse: setActiveUniverse,
-                    fetchUniverses: fetchUniverses,
-                    currencySettings: currencySettings,
-                    itemSettings: itemSettings,
-                    equipmentSettings: equipmentSettings,
-                    characterSettings: characterSettings,
-                    userPermissions: userPermissions,
-                    userPreferences: userPreferences,
-                    user: user,
-                    refreshUser: refreshUser,
-                    refreshSettings: refreshSettings
-                }}/>
+                <ErrorBoundary>
+                    <Outlet context={{
+                        universes: universes,
+                        activeUniverse: activeUniverse,
+                        setActiveUniverse: setActiveUniverse,
+                        fetchUniverses: fetchUniverses,
+                        currencySettings: currencySettings,
+                        itemSettings: itemSettings,
+                        equipmentSettings: equipmentSettings,
+                        characterSettings: characterSettings,
+                        userPermissions: userPermissions,
+                        userPreferences: userPreferences,
+                        user: user,
+                        refreshUser: refreshUser,
+                        refreshSettings: refreshSettings
+                    }}/>
+                </ErrorBoundary>
             </AppShell.Main>
         </AppShell>
     );
@@ -408,9 +411,7 @@ function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchPar
             <Menu.Label>{t('universe')}</Menu.Label>
             <Menu.Item closeMenuOnClick={false}>
                 <Select
-                    data={universes?.map(universe => {
-                        return {value: universe.name, label: universe.displayName};
-                    })}
+                    data={universes?.map(universe => ({value: universe.name, label: universe.displayName})) ?? []}
                     value={activeUniverse?.name}
                     onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
                     placeholder={t('universe:noUniverse') + '...'}

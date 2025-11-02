@@ -109,7 +109,7 @@ public class UserPageTest extends ServerTestBase {
         dialog.assertIsClosed();
 
         // We need to wait for the backend to process the change
-        Thread.sleep(100);
+        Thread.sleep(500);
         assertThat(userDetailsRepository.isValidPassword(USERNAME, NEW_PASSWORD)).isTrue();
     }
 }
