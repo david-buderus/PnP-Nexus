@@ -1,7 +1,5 @@
 package de.pnp.manager.webapp.database;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.universe.Universe;
@@ -11,13 +9,16 @@ import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
 import de.pnp.manager.webapp.pages.components.DatabaseObjectDialog;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Base class for testing overview pages.
@@ -45,6 +46,8 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testAdd() {
         OverviewTable table = page.getTable();
+        table.setRowsPerPage(100);
+
         DatabaseObjectDialog dialog = page.openAddDialog();
 
         dialog.fillOut(getWrongObject());
@@ -70,6 +73,7 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testEdit() {
         OverviewTable table = page.getTable();
+        table.setRowsPerPage(100);
 
         Assertions.assertThat(page.isEditDisabled()).isTrue();
         table.getTableRow(getModifyId().toHexString()).select();
@@ -93,6 +97,8 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testDelete() {
         OverviewTable table = page.getTable();
+        table.setRowsPerPage(100);
+        
         Collection<T> testObjects = getTestObjects();
         ObjectId modifyId = getModifyId();
 

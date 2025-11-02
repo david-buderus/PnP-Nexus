@@ -1,17 +1,18 @@
 package de.pnp.manager.webapp.pages.components;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.DatabaseObject;
+import org.assertj.core.api.Assertions;
+import org.bson.types.ObjectId;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-import org.assertj.core.api.Assertions;
-import org.bson.types.ObjectId;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Represents the OverviewTable component.
@@ -91,7 +92,7 @@ public class OverviewTable {
             String expected = id.apply(sorted.get(i));
             String actual = tableRows.getRow(i).getDataTestId();
             Assertions.assertThat(actual).as("Expected in line %s [%s] but got [%s]", i, expected, actual)
-                .isEqualTo(expected);
+                    .isEqualTo(expected);
         }
     }
 
@@ -107,6 +108,14 @@ public class OverviewTable {
      */
     public Locator asLocator() {
         return table;
+    }
+
+    /**
+     * Sets the number of rows showed in the table.
+     */
+    public void setRowsPerPage(int value) {
+        Select.from(table.locator("..").locator("..").getByLabel("Rows per page"))
+                .select(String.valueOf(value));
     }
 
 

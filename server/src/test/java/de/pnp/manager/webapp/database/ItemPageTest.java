@@ -1,15 +1,22 @@
 package de.pnp.manager.webapp.database;
 
+import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.server.TestServer;
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 
 /**
  * Tests the item overview page.
  */
+@TestServer(EServerTestConfiguration.BASIC_ITEMS)
 public class ItemPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepository> {
 
     protected ItemPageTest(@Autowired ItemRepository repository) {
@@ -23,31 +30,34 @@ public class ItemPageTest extends UniquelyNamedOverviewTestBase<Item, ItemReposi
 
     @Override
     protected Item getWrongObject() {
-        return null;
+        return createItemBuilder().withName("").withVendorPrice(-1).buildItem();
     }
 
     @Override
     protected List<String> getExpectedErrorFields() {
-        return null;
+        return List.of("name", "vendorPrice");
     }
 
     @Override
     protected Item getCorrectObject() {
-        return null;
+        return createItemBuilder().withName("Apple").withVendorPrice(154).withRarity(ERarity.EPIC).buildItem();
     }
 
     @Override
     protected Item getEditedObject() {
-        return null;
+        Item item = getOriginalModifyObject();
+        return new Item(null, item.getName(), item.getTags(), item.getRequirement(), item.getEffect(),
+                item.getRarity(), 302, item.getTier(), "A raw piece of wood", item.getNote(),
+                item.getMaximumStackSize(), item.getMinimumStackSize());
     }
 
     @Override
     protected String getChangeIdentifier() {
-        return null;
+        return "A raw piece of wood";
     }
 
     @Override
     protected String getEditObjectName() {
-        return null;
+        return "Raw Wood";
     }
 }

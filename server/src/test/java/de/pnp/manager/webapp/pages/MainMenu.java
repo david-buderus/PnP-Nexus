@@ -100,22 +100,6 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the overview page for primary attributes.
-     */
-    public OverviewBasePage openPrimaryAttributePage() {
-        openMenu("characters-menu", "primary-attributes-menu");
-        return new OverviewBasePage(page);
-    }
-
-    /**
-     * Opens the overview page for secondary attributes.
-     */
-    public OverviewBasePage openSecondaryAttributePage() {
-        openMenu("characters-menu", "secondary-attributes-menu");
-        return new OverviewBasePage(page);
-    }
-
-    /**
      * Opens the {@link UserOverviewPage}.
      */
     public UserOverviewPage openUserOverviewPage() {
@@ -141,6 +125,9 @@ public class MainMenu extends PageBase {
 
     private void openMenu(String menu, String... submenus) {
         page.getByTestId(menu).click();
+        if (submenus.length == 0) {
+            page.getByTestId(menu + "-inner").click();
+        }
         for (String submenu : submenus) {
             page.getByTestId(submenu).click();
         }
