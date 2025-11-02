@@ -46,14 +46,14 @@ public class UserPageTest extends ServerTestBase {
             userController.createNewUser(new PnPUserCreation(USERNAME, USERNAME, USERNAME, "", List.of()));
         }
 
-        page = webDriver.openMainMenu(USERNAME, "admin").openUserPage();
+        page = webDriver.openMainMenu(USERNAME, USERNAME).openUserPage();
     }
 
     @Test
     void testContent() {
-        assertThat(page.getUsername()).isEqualTo(USERNAME);
-        assertThat(page.getDisplayName()).isEqualTo(USERNAME);
-        assertThat(page.getEmail()).isEmpty();
+        page.assertUsername(USERNAME);
+        page.assertDisplayName(USERNAME);
+        page.assertEmail("");
     }
 
     @Test
@@ -64,14 +64,14 @@ public class UserPageTest extends ServerTestBase {
         page.saveEditedUser();
 
         page.assertIsInEditMode();
-        assertThat(page.getEmailError()).isNotBlank();
+        page.assertEmailError();
         page.setEmail(NEW_EMAIL);
         page.saveEditedUser();
 
         page.assertIsInNonEditMode();
 
-        assertThat(page.getDisplayName()).isEqualTo(NEW_DISPLAYNAME);
-        assertThat(page.getEmail()).isEqualTo(NEW_EMAIL);
+        page.assertDisplayName(NEW_DISPLAYNAME);
+        page.assertEmail(NEW_EMAIL);
 
         PnPUser user = userRepository.getUser(USERNAME).orElseThrow();
         assertThat(user.displayName()).isEqualTo(NEW_DISPLAYNAME);
@@ -87,8 +87,8 @@ public class UserPageTest extends ServerTestBase {
 
         page.assertIsInNonEditMode();
 
-        assertThat(page.getDisplayName()).isEqualTo(USERNAME);
-        assertThat(page.getEmail()).isBlank();
+        page.assertDisplayName(USERNAME);
+        page.assertEmail("");
 
         PnPUser user = userRepository.getUser(USERNAME).orElseThrow();
         assertThat(user.displayName()).isEqualTo(USERNAME);
@@ -96,7 +96,7 @@ public class UserPageTest extends ServerTestBase {
     }
 
     @Test
-    void testChangePassword() {
+    void testChangePassword() throws InterruptedException {
         ChangePassword dialog = page.changePassword();
         dialog.setCurrentPassword("admin");
         dialog.setNewPassword(NEW_PASSWORD);
@@ -107,6 +107,9 @@ public class UserPageTest extends ServerTestBase {
         dialog.savePassword();
 
         dialog.assertIsClosed();
+
+        // We need to wait for the backend to process the change
+        Thread.sleep(100);
         assertThat(userDetailsRepository.isValidPassword(USERNAME, NEW_PASSWORD)).isTrue();
     }
 }

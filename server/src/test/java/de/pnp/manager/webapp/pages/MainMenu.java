@@ -12,7 +12,7 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the basic {@link ItemPage}.
+     * Opens the overview page for items.
      */
     public OverviewBasePage openItemPage() {
         openMenu("items-menu");
@@ -20,7 +20,7 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the weapon {@link ItemPage}.
+     * Opens the overview page for weapons.
      */
     public OverviewBasePage openWeaponPage() {
         openMenu("items-menu", "weapons-menu");
@@ -28,7 +28,7 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the jewellery {@link ItemPage}.
+     * Opens the overview page for jewellery.
      */
     public OverviewBasePage openJewelleryPage() {
         openMenu("items-menu", "jewellery-menu");
@@ -36,7 +36,7 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the armor {@link ItemPage}.
+     * Opens the overview page for armor.
      */
     public OverviewBasePage openArmorPage() {
         openMenu("items-menu", "armor-menu");
@@ -44,7 +44,7 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the shield {@link ItemPage}.
+     * Opens the overview page for shield.
      */
     public OverviewBasePage openShieldPage() {
         openMenu("items-menu", "shields-menu");
@@ -136,6 +136,5 @@ public class MainMenu extends PageBase {
     private void openAppBarMenu(String menu) {
         page.getByTestId("menu-appbar").click();
         page.getByTestId(menu).click();
-        page.mouse().click(0, 0); // Closes the popup menu
     }
 }

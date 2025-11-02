@@ -10,10 +10,10 @@ import {
     Text,
     Title,
     UnstyledButton
-} from "@mantine/core";
-import {useDisclosure} from "@mantine/hooks";
-import {Link, Outlet, useOutletContext, useSearchParams} from "react-router-dom";
-import {ReactElement, useEffect, useState} from "react";
+} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
+import {Link, Outlet, useOutletContext, useSearchParams} from 'react-router-dom';
+import {ReactElement, useEffect, useState} from 'react';
 import {
     AuthenticationServiceApi,
     CharacterSettings,
@@ -26,11 +26,11 @@ import {
     UniverseServiceApi,
     UniverseSettingsServiceApi,
     UserServiceApi
-} from "../api";
-import {API_CONFIGURATION} from "./Constants";
-import i18n from "../i18n";
-import {extractUserPermissions, UserPermissions} from "./interfaces/UserPermissions";
-import {useTranslation} from "react-i18next";
+} from '../api';
+import {API_CONFIGURATION} from './Constants';
+import i18n from '../i18n';
+import {extractUserPermissions, UserPermissions} from './interfaces/UserPermissions';
+import {useTranslation} from 'react-i18next';
 import {
     GiAxeSword,
     GiBurningBook,
@@ -44,13 +44,13 @@ import {
     GiSupersonicArrow,
     GiSwapBag
 } from 'react-icons/gi';
-import {FaChevronDown, FaPersonRays} from "react-icons/fa6";
-import {TfiWorld} from "react-icons/tfi";
-import {IoSettingsSharp} from "react-icons/io5";
-import {HiUserCircle} from "react-icons/hi2";
-import {MdLogout} from "react-icons/md";
-import axios from "axios";
-import {PiPerson} from "react-icons/pi";
+import {FaChevronDown, FaPersonRays} from 'react-icons/fa6';
+import {TfiWorld} from 'react-icons/tfi';
+import {IoSettingsSharp} from 'react-icons/io5';
+import {HiUserCircle} from 'react-icons/hi2';
+import {MdLogout} from 'react-icons/md';
+import axios from 'axios';
+import {PiPerson} from 'react-icons/pi';
 
 type UniverseContext = {
     universes: Universe[];
@@ -100,7 +100,7 @@ export function PageBase() {
     async function fetchUniverses(): Promise<void> {
         const response = await UNIVERSE_API.getAllUniverses();
         setUniverses(response.data);
-        const paramUniverse = response.data.find(u => u.name === searchParams.get("universe"));
+        const paramUniverse = response.data.find(u => u.name === searchParams.get('universe'));
         if (paramUniverse !== undefined) {
             setActiveUniverse(paramUniverse);
             return;
@@ -145,7 +145,7 @@ export function PageBase() {
         if (!activeUniverse) {
             return;
         }
-        searchParams.set("universe", activeUniverse.name);
+        searchParams.set('universe', activeUniverse.name);
         setSearchParams(searchParams);
         SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
         SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
@@ -196,7 +196,7 @@ export function PageBase() {
                         <UnstyledButton
                             component={Link}
                             to={{
-                                pathname: "/",
+                                pathname: '/',
                                 search: searchParams.toString()
                             }}
                         >
@@ -293,8 +293,8 @@ function NavbarEntry({id, label, icon, link, subEntries, searchParams}: NavbarEn
     >
         <NavLink
             component={Link}
-            key={id + "-inner"}
-            data-testid={id + "-inner"}
+            key={id + '-inner'}
+            data-testid={id + '-inner'}
             label={label}
             leftSection={icon}
             to={{
@@ -323,38 +323,38 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
 
     const entries = [
         {
-            id: "universe-menu", label: t("universe"), link: "/universe", icon: <TfiWorld/>, subEntries: [
-                {id: "species-menu", label: t("species"), link: "/species", icon: <PiPerson/>},
+            id: 'universe-menu', label: t('universe'), link: '/universe', icon: <TfiWorld/>, subEntries: [
+                {id: 'species-menu', label: t('species'), link: '/species', icon: <PiPerson/>},
             ]
         },
         {
-            id: "items-menu", label: t("items"), link: "/items", icon: <GiSwapBag/>, subEntries: [
-                {id: "weapons-menu", label: t("weapons"), link: "/weapons", icon: <GiAxeSword/>},
-                {id: "shields-menu", label: t("shields"), link: "/shields", icon: <GiShield/>},
-                {id: "armor-menu", label: t("armor"), link: "/armor", icon: <GiChestArmor/>},
-                {id: "jewellery-menu", label: t("jewellery"), link: "/jewellery", icon: <GiRing/>},
-                {id: "upgrades-menu", label: t("upgrades"), link: "/upgrades", icon: <GiMagicAxe/>},
-                {id: "materials-menu", label: t("materials"), link: "/materials", icon: <GiClayBrick/>}
+            id: 'items-menu', label: t('items'), link: '/items', icon: <GiSwapBag/>, subEntries: [
+                {id: 'weapons-menu', label: t('weapons'), link: '/weapons', icon: <GiAxeSword/>},
+                {id: 'shields-menu', label: t('shields'), link: '/shields', icon: <GiShield/>},
+                {id: 'armor-menu', label: t('armor'), link: '/armor', icon: <GiChestArmor/>},
+                {id: 'jewellery-menu', label: t('jewellery'), link: '/jewellery', icon: <GiRing/>},
+                {id: 'upgrades-menu', label: t('upgrades'), link: '/upgrades', icon: <GiMagicAxe/>},
+                {id: 'materials-menu', label: t('materials'), link: '/materials', icon: <GiClayBrick/>}
             ]
         },
         {
-            id: "crafting-recipes-menu",
-            label: t("crafting-recipes"),
-            link: "/crafting-recipes",
+            id: 'crafting-recipes-menu',
+            label: t('crafting-recipes'),
+            link: '/crafting-recipes',
             icon: <GiStoneCrafting/>,
             subEntries: [
                 {
-                    id: "upgrade-recipes-menu",
-                    label: t("upgrade-recipes"),
-                    link: "/upgrade-recipes",
+                    id: 'upgrade-recipes-menu',
+                    label: t('upgrade-recipes'),
+                    link: '/upgrade-recipes',
                     icon: <GiBurningBook/>
                 }
             ]
         },
         {
-            id: "characters-menu", label: t("characters"), link: "/characters", icon: <FaPersonRays/>, subEntries: [
-                {id: "spells-menu", label: t("spells"), link: "/spells", icon: <GiSpellBook/>},
-                {id: "talents-menu", label: t("talents"), link: "/talents", icon: <GiSupersonicArrow/>}
+            id: 'characters-menu', label: t('characters'), link: '/characters', icon: <FaPersonRays/>, subEntries: [
+                {id: 'spells-menu', label: t('spells'), link: '/spells', icon: <GiSpellBook/>},
+                {id: 'talents-menu', label: t('talents'), link: '/talents', icon: <GiSupersonicArrow/>}
             ]
         }
     ];
@@ -362,8 +362,8 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
     if (userPermissions.isAdmin) {
         entries.push(
             {
-                id: "admin-menu", label: t("admin"), link: "/admin", icon: <IoSettingsSharp/>, subEntries: [
-                    {id: "users-menu", label: t("users"), link: "/users", icon: <HiUserCircle/>}
+                id: 'admin-menu', label: t('admin'), link: '/admin', icon: <IoSettingsSharp/>, subEntries: [
+                    {id: 'users-menu', label: t('users'), link: '/users', icon: <HiUserCircle/>}
                 ]
             }
         );
@@ -394,6 +394,7 @@ function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchPar
                     color: 'var(--mantine-color-text)',
                     borderRadius: 'var(--mantine-radius-sm)',
                 }}
+                data-testid="menu-appbar"
             >
                 <Group gap={7}>
                     <Text fw={500} size="sm" lh={1} mr={3}>
@@ -404,7 +405,7 @@ function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchPar
             </UnstyledButton>
         </Menu.Target>
         <Menu.Dropdown>
-            <Menu.Label>{t("universe")}</Menu.Label>
+            <Menu.Label>{t('universe')}</Menu.Label>
             <Menu.Item closeMenuOnClick={false}>
                 <Select
                     data={universes?.map(universe => {
@@ -412,40 +413,42 @@ function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchPar
                     })}
                     value={activeUniverse?.name}
                     onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
-                    placeholder={t("universe:noUniverse") + "..."}
+                    placeholder={t('universe:noUniverse') + '...'}
                     disabled={universes.length === 0}
                     variant="unstyled"
                     searchable
                 />
             </Menu.Item>
-            <Menu.Label>{t("preferences")}</Menu.Label>
+            <Menu.Label>{t('preferences')}</Menu.Label>
             <Menu.Item
+                data-testid="user-menu"
                 component={Link}
                 to={{
-                    pathname: "/user",
+                    pathname: '/user',
                     search: searchParams.toString()
                 }}
             >
-                {t("profile")}
+                {t('profile')}
             </Menu.Item>
             <Menu.Item
+                data-testid="preferences-menu"
                 component={Link}
                 to={{
-                    pathname: "/preferences",
+                    pathname: '/preferences',
                     search: searchParams.toString()
                 }}
             >
-                {t("preferences")}
+                {t('preferences')}
             </Menu.Item>
             <Menu.Divider/>
             <Menu.Item
                 leftSection={<MdLogout size={16}/>}
                 onClick={() => {
-                    axios.post("/logout");
+                    axios.post('/logout');
                     window.location.reload();
                 }}
             >
-                {t("logout")}
+                {t('logout')}
             </Menu.Item>
 
         </Menu.Dropdown>

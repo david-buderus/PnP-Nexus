@@ -1,10 +1,9 @@
 package de.pnp.manager.webapp.pages.components.users;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.assertions.LocatorAssertions.IsVisibleOptions;
-import com.microsoft.playwright.options.AriaRole;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Represents the change password dialog.
@@ -24,35 +23,35 @@ public class ChangePassword {
      * Sets the current password field
      */
     public void setCurrentPassword(String password) {
-        locator.getByTestId("oldPassword").getByRole(AriaRole.TEXTBOX).fill(password);
+        getByDataPath("oldPassword").fill(password);
     }
 
     /**
      * Sets the new password field
      */
     public void setNewPassword(String password) {
-        locator.getByTestId("newPassword").getByRole(AriaRole.TEXTBOX).fill(password);
+        getByDataPath("newPassword").fill(password);
     }
 
     /**
      * Sets the confirmation password field
      */
     public void setConfirmPassword(String password) {
-        locator.getByTestId("confirmPassword").getByRole(AriaRole.TEXTBOX).fill(password);
+        locator.getByTestId("confirmPassword").fill(password);
     }
 
     /**
      * Tries to save the password.
      */
     public void savePassword() {
-        locator.getByTestId("save-password").click();
+        locator.locator("[type=submit]").click();
     }
 
     /**
      * Asserts that the save button can not be clicked.
      */
     public void assertThatSaveIsDisabled() {
-        assertThat(locator.getByTestId("save-password")).isDisabled();
+        assertThat(locator.locator("[type=submit]")).isDisabled();
     }
 
     /**
@@ -60,5 +59,12 @@ public class ChangePassword {
      */
     public void assertIsClosed() {
         assertThat(locator).isVisible(new IsVisibleOptions().setVisible(false));
+    }
+
+    private Locator getByDataPath(String path) {
+        Locator input = locator.locator("[data-path=\"" + path + "\"]");
+        assertThat(input).isVisible();
+        assertThat(input).isEnabled();
+        return input;
     }
 }
