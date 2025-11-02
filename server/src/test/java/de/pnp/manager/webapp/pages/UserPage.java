@@ -1,10 +1,10 @@
 package de.pnp.manager.webapp.pages;
 
-import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import de.pnp.manager.webapp.pages.components.users.ChangePassword;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static de.pnp.manager.webapp.utils.WebTestUtils.getByDataPath;
 
 /**
  * Represents the user page
@@ -26,35 +26,35 @@ public class UserPage extends PageBase {
      * Asserts the displayname
      */
     public void assertDisplayName(String expectedDisplayName) {
-        assertThat(getByDataPath("displayName")).hasValue(expectedDisplayName);
+        assertThat(getByDataPath(page, "displayName")).hasValue(expectedDisplayName);
     }
 
     /**
      * Sets the display name
      */
     public void setDisplayName(String displayName) {
-        getByDataPath("displayName").fill(displayName);
+        getByDataPath(page, "displayName").fill(displayName);
     }
 
     /**
      * Asserts the email
      */
     public void assertEmail(String expectedEmail) {
-        assertThat(getByDataPath("email")).hasValue(expectedEmail);
+        assertThat(getByDataPath(page, "email")).hasValue(expectedEmail);
     }
 
     /**
      * Sets the email
      */
     public void setEmail(String email) {
-        getByDataPath("email").fill(email);
+        getByDataPath(page, "email").fill(email);
     }
 
     /**
      * Returns the error text of the email input field if it exists.
      */
     public void assertEmailError() {
-        assertThat(getByDataPath("email")
+        assertThat(getByDataPath(page, "email")
                 .locator("..")
                 .locator("..")
                 .locator("p")).not().isEmpty();
@@ -102,12 +102,5 @@ public class UserPage extends PageBase {
     public ChangePassword changePassword() {
         page.getByTestId("change-password").click();
         return new ChangePassword(page.getByTestId("change-password-dialog"));
-    }
-
-    private Locator getByDataPath(String path) {
-        Locator input = page.locator("[data-path=\"" + path + "\"]");
-        assertThat(input).isVisible();
-        assertThat(input).isEnabled();
-        return input;
     }
 }

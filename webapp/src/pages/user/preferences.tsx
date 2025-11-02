@@ -1,12 +1,12 @@
-import { useTranslation } from "react-i18next";
-import { useUserContext } from "../../components/PageBase";
-import { useForm } from "@mantine/form";
-import { PnPUserPreference, UserServiceApi } from "../../api";
-import { useEffect, useState } from "react";
-import { Button, Group, Stack, Text } from "@mantine/core";
-import { API_CONFIGURATION } from "../../components/Constants";
-import { handleValidationErrors } from "../../components/utils/ErrorUtils";
-import LanguageSelect from "../../components/input/LanguageSelect";
+import {useTranslation} from 'react-i18next';
+import {useUserContext} from '../../components/PageBase';
+import {useForm} from '@mantine/form';
+import {PnPUserPreference, UserServiceApi} from '../../api';
+import {useEffect, useState} from 'react';
+import {Button, Group, Stack, Text} from '@mantine/core';
+import {API_CONFIGURATION} from '../../components/Constants';
+import {handleValidationErrors} from '../../components/utils/ErrorUtils';
+import LanguageSelect from '../../components/input/LanguageSelect';
 
 const USER_API = new UserServiceApi(API_CONFIGURATION);
 
@@ -14,8 +14,8 @@ const USER_API = new UserServiceApi(API_CONFIGURATION);
  * View to manipulate the preferences of the current logged-in user.
  */
 export function UserPreferences() {
-    const { t } = useTranslation();
-    const { user, userPreferences, refreshUser } = useUserContext();
+    const {t} = useTranslation();
+    const {user, userPreferences, refreshUser} = useUserContext();
 
     const [editMode, setEditMode] = useState(false);
 
@@ -47,22 +47,27 @@ export function UserPreferences() {
                 .catch(handleValidationErrors(form.setErrors)))}
         >
             <LanguageSelect
-                key={form.key("language")}
-                {...form.getInputProps("language")}
+                key={form.key('language')}
+                {...form.getInputProps('language')}
                 readOnly={!editMode}
             />
             {editMode ?
                 <Group wrap="nowrap" grow pt="xs">
                     <Button
-                        onClick={() => setEditMode(false)}
+                        onClick={() => {
+                            form.setValues(userPreferences);
+                            setEditMode(false);
+                        }}
                         variant="outline"
+                        data-testid="cancel"
                     >
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button
                         type="submit"
+                        data-testid="save"
                     >
-                        {t("save")}
+                        {t('save')}
                     </Button>
                 </Group>
                 : null}
@@ -70,9 +75,10 @@ export function UserPreferences() {
         </form>
         {!editMode ?
             <Button
+                data-testid="edit"
                 onClick={() => setEditMode(true)}
             >
-                {t("edit")}
+                {t('edit')}
             </Button>
             : null}
     </Stack>;
