@@ -232,6 +232,13 @@ public class DatabaseObjectDialog {
         locator.locator("[type=submit]").click();
     }
 
+    /**
+     * Asserts that the dialog is visible.
+     */
+    public void assertIsVisible() {
+        assertThat(locator).isVisible();
+    }
+
     private Locator getByDataPath(String path) {
         Locator input = getByDataPathWithoutExistenceCheck(path);
         assertThat(input).isVisible();

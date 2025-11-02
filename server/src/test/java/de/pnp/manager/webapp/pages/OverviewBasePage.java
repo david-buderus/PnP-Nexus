@@ -26,7 +26,9 @@ public class OverviewBasePage extends PageBase {
      */
     public DatabaseObjectDialog openAddDialog() {
         page.getByTestId("add").click();
-        return DatabaseObjectDialog.getDialog(page);
+        DatabaseObjectDialog dialog = DatabaseObjectDialog.getDialog(page);
+        dialog.assertIsVisible();
+        return dialog;
     }
 
     /**
@@ -34,7 +36,9 @@ public class OverviewBasePage extends PageBase {
      */
     public DatabaseObjectDialog openEditDialog() {
         page.getByTestId("edit").click();
-        return DatabaseObjectDialog.getDialog(page);
+        DatabaseObjectDialog dialog = DatabaseObjectDialog.getDialog(page);
+        dialog.assertIsVisible();
+        return dialog;
     }
 
     /**
