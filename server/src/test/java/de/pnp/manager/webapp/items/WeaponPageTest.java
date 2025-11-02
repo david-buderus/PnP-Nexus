@@ -3,38 +3,72 @@ package de.pnp.manager.webapp.items;
 import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Weapon;
-import de.pnp.manager.webapp.pages.ItemPage;
+import de.pnp.manager.server.TestServer;
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
+import de.pnp.manager.server.database.MaterialRepository;
+import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.webapp.database.UniquelyNamedOverviewTestBase;
 import de.pnp.manager.webapp.pages.MainMenu;
-import de.pnp.manager.webapp.pages.components.items.ItemCreation.EItemClass;
-import java.util.Collection;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import de.pnp.manager.webapp.pages.OverviewBasePage;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 
 /**
- * Tests the item overview page.
+ * Tests the weapon overview page.
  */
-public class WeaponPageTest extends ItemPageTestBase {
+@TestServer(EServerTestConfiguration.BASIC_ITEMS)
+public class WeaponPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepository> {
 
-    @Override
-    protected ItemPage openTestPage(MainMenu mainMenu) {
-        return null; // mainMenu.openWeaponPage();
+    @Autowired
+    private MaterialRepository materialRepository;
+
+    protected WeaponPageTest(@Autowired ItemRepository repository) {
+        super(repository);
     }
 
     @Override
-    protected Collection<Item> getTestItems() {
-        return itemRepository.getAll(universe.getName()).stream().filter(Weapon.class::isInstance).toList();
+    protected OverviewBasePage openTestPage(MainMenu mainMenu) {
+        return mainMenu.openWeaponPage();
     }
 
     @Override
-    protected Pair<EItemClass, Item> getTestItem() {
-        return ImmutablePair.of(EItemClass.WEAPON,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Great-Sword").withTags("Sword")
-                .withEffect("It is great").withDescription("It is a great sword").withRarity(ERarity.UNCOMMON)
-                .withTier(2)
-                .withRequirement("None").withVendorPrice(10000)
-                .withNote("Some text").withMaterial("Iron").withDice(Dice.simpleDice(10)).withDamage(2)
-                .withUpgradeSlots(2).withHit(0)
-                .withInitiative(1).buildWeapon());
+    protected Weapon getWrongObject() {
+        return createItemBuilder().withName("").withVendorPrice(-1).withUpgradeSlots(-1).buildWeapon();
+    }
+
+    @Override
+    protected List<String> getExpectedErrorFields() {
+        return List.of("name", "vendorPrice", "material", "upgradeSlots");
+    }
+
+    @Override
+    protected Weapon getCorrectObject() {
+        Material iron = materialRepository.get(getUniverseName(), "Iron").orElseThrow();
+        return createItemBuilder().withName("The Stick").withMaterial(iron).withDice(Dice.simpleDice(6))
+                .withVendorPrice(154).withRarity(ERarity.EPIC).buildWeapon();
+    }
+
+    @Override
+    protected Weapon getEditedObject() {
+        Weapon weapon = (Weapon) getOriginalModifyObject();
+        return new Weapon(null, "Greatsword", weapon.getTags(), weapon.getRequirement(), weapon.getEffect(),
+                weapon.getRarity(), 302, weapon.getTier(), "A big weapon", weapon.getNote(),
+                weapon.getMaterial(), weapon.getUpgradeSlots(), weapon.getInitiative(), weapon.getHit(),
+                weapon.getDamage(), weapon.getDice(), weapon.getMaximumStackSize(), weapon.getMinimumStackSize());
+    }
+
+    @Override
+    protected String getChangeIdentifier() {
+        return "Greatsword";
+    }
+
+    @Override
+    protected String getEditObjectName() {
+        return "Iron Sword";
     }
 }

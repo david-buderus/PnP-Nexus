@@ -2,37 +2,73 @@ package de.pnp.manager.webapp.items;
 
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Shield;
-import de.pnp.manager.webapp.pages.ItemPage;
+import de.pnp.manager.server.TestServer;
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
+import de.pnp.manager.server.database.MaterialRepository;
+import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.webapp.database.UniquelyNamedOverviewTestBase;
 import de.pnp.manager.webapp.pages.MainMenu;
-import de.pnp.manager.webapp.pages.components.items.ItemCreation.EItemClass;
-import java.util.Collection;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import de.pnp.manager.webapp.pages.OverviewBasePage;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 
 /**
- * Tests the item overview page.
+ * Tests the weapon overview page.
  */
-public class ShieldPageTest extends ItemPageTestBase {
+@TestServer(EServerTestConfiguration.BASIC_ITEMS)
+public class ShieldPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepository> {
 
-    @Override
-    protected ItemPage openTestPage(MainMenu mainMenu) {
-        return null; // mainMenu.openShieldPage();
+    @Autowired
+    private MaterialRepository materialRepository;
+
+    protected ShieldPageTest(@Autowired ItemRepository repository) {
+        super(repository);
     }
 
     @Override
-    protected Collection<Item> getTestItems() {
-        return itemRepository.getAll(universe.getName()).stream().filter(Shield.class::isInstance).toList();
+    protected OverviewBasePage openTestPage(MainMenu mainMenu) {
+        return mainMenu.openShieldPage();
     }
 
     @Override
-    protected Pair<EItemClass, Item> getTestItem() {
-        return ImmutablePair.of(EItemClass.SHIELD,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Giant Shield")
-                .withEffect("It is great").withDescription("It is a giant shield").withRarity(ERarity.LEGENDARY)
-                .withTier(2)
-                .withRequirement("None").withVendorPrice(10000)
-                .withNote("Some text").withMaterial("Iron").withUpgradeSlots(2).withHit(0)
-                .withInitiative(-1).withArmor(100).withWeight(10).buildShield());
+    protected Shield getWrongObject() {
+        return createItemBuilder().withName("").withVendorPrice(-1).withUpgradeSlots(-1).buildShield();
+    }
+
+    @Override
+    protected List<String> getExpectedErrorFields() {
+        return List.of("name", "vendorPrice", "material", "upgradeSlots");
+    }
+
+    @Override
+    protected Shield getCorrectObject() {
+        Material iron = materialRepository.get(getUniverseName(), "Iron").orElseThrow();
+        return createItemBuilder().withName("Piece of Wood").withMaterial(iron).withArmor(3)
+                .withVendorPrice(154).withRarity(ERarity.EPIC).buildShield();
+    }
+
+    @Override
+    protected Shield getEditedObject() {
+        Shield shield = (Shield) getOriginalModifyObject();
+        return new Shield(null, "Towershield", shield.getTags(), shield.getRequirement(), shield.getEffect(),
+                shield.getRarity(), 302, shield.getTier(), "A big shield", shield.getNote(),
+                shield.getMaterial(), shield.getUpgradeSlots(), shield.getInitiative(), shield.getHit(),
+                shield.getDice(), shield.getWeight(), shield.getArmor(), shield.getProtection(),
+                shield.getMaximumStackSize(), shield.getMinimumStackSize());
+    }
+
+    @Override
+    protected String getChangeIdentifier() {
+        return "Towershield";
+    }
+
+    @Override
+    protected String getEditObjectName() {
+        return "Iron Shield";
     }
 }
