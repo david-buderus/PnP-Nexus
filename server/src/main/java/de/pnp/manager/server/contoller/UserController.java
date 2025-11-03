@@ -1,28 +1,18 @@
 package de.pnp.manager.server.contoller;
 
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
-import de.pnp.manager.component.user.IGrantedAuthorityDTO;
-import de.pnp.manager.component.user.PnPUser;
-import de.pnp.manager.component.user.PnPUserCreation;
-import de.pnp.manager.component.user.PnPUserDetails;
-import de.pnp.manager.component.user.PnPUserPreference;
-import de.pnp.manager.component.user.UserUniversePermissionDTO;
+import de.pnp.manager.component.user.*;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserPreferenceRepository;
 import de.pnp.manager.server.database.UserRepository;
 import jakarta.validation.ConstraintViolationException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A controller to create and manipulate user.
@@ -46,9 +36,9 @@ public class UserController {
         String username = userCreation.getUsername();
         try {
             userRepository.addNewUser(
-                new PnPUser(username, userCreation.getDisplayName(), userCreation.getEmail()));
+                    new PnPUser(username, userCreation.getDisplayName(), userCreation.getEmail()));
             userDetailsRepository.addNewUser(username, userCreation.getPassword(),
-                userCreation.getAuthorities().stream().map(IGrantedAuthorityDTO::convert).toList());
+                    userCreation.getAuthorities().stream().map(IGrantedAuthorityDTO::convert).toList());
             preferenceRepository.addNewPreference(new PnPUserPreference(username, null, null));
         } catch (ConstraintViolationException e) {
             userRepository.removeUser(username);
@@ -73,7 +63,7 @@ public class UserController {
      */
     public Collection<String> getAllUsernames() {
         Set<String> usernames = new HashSet<>();
-        usernames.addAll(userRepository.getAllUsers().stream().map(PnPUser::getUsername).toList());
+        usernames.addAll(userRepository.getAllUsers().stream().map(PnPUser::username).toList());
         usernames.addAll(userDetailsRepository.getAllUsernames());
         return usernames;
     }
@@ -84,8 +74,8 @@ public class UserController {
     public void addGrantedAuthorityByDisplayName(String displayName, GrantedAuthority... newAuthorities) {
         Optional<PnPUser> user = userRepository.getUserByDisplayName(displayName);
         userDetailsRepository.addGrantedAuthority(
-            user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with display name " + displayName + " not found.")).getUsername(), newAuthorities);
+                user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "User with display name " + displayName + " not found.")).username(), newAuthorities);
     }
 
     /**
@@ -94,8 +84,8 @@ public class UserController {
     public void removeGrantedUniverseAuthoritiesByDisplayName(String displayName, String universe) {
         Optional<PnPUser> user = userRepository.getUserByDisplayName(displayName);
         userDetailsRepository.removeGrantedUniverseAuthorities(
-            user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "User with display name " + displayName + " not found.")).getUsername(), universe);
+                user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "User with display name " + displayName + " not found.")).username(), universe);
     }
 
     /**
@@ -103,26 +93,26 @@ public class UserController {
      */
     public Collection<UserUniversePermissionDTO> getAllUserWithUniversePermission(String universe) {
         Collection<PnPUserDetails> users = userDetailsRepository.getAllUsersWithUniversePermissions(
-            universe);
+                universe);
         Map<String, String> displayNames = userRepository.getAllUsers(
-                users.stream().map(PnPUserDetails::getUsername).toList()).stream()
-            .collect(Collectors.toUnmodifiableMap(PnPUser::getUsername, PnPUser::getDisplayName));
+                        users.stream().map(PnPUserDetails::getUsername).toList()).stream()
+                .collect(Collectors.toUnmodifiableMap(PnPUser::username, PnPUser::displayName));
         return users.stream().map(detail -> new UserUniversePermissionDTO(displayNames.get(detail.getUsername()),
-            IGrantedAuthorityDTO.from(getHighestUniverseAuthority(universe, detail.getAuthorities())))).toList();
+                IGrantedAuthorityDTO.from(getHighestUniverseAuthority(universe, detail.getAuthorities())))).toList();
     }
 
     private static GrantedUniverseAuthority getHighestUniverseAuthority(String universe,
-        Collection<? extends GrantedAuthority> authorities) {
+                                                                        Collection<? extends GrantedAuthority> authorities) {
         List<GrantedUniverseAuthority> universeAuthorities = authorities.stream()
-            .filter(GrantedUniverseAuthority.class::isInstance).map(GrantedUniverseAuthority.class::cast)
-            .filter(auth -> auth.getUniverse().equals(universe)).toList();
+                .filter(GrantedUniverseAuthority.class::isInstance).map(GrantedUniverseAuthority.class::cast)
+                .filter(auth -> auth.getUniverse().equals(universe)).toList();
         Optional<GrantedUniverseAuthority> owner = universeAuthorities.stream().filter(auth -> auth.isOwner(universe))
-            .findFirst();
+                .findFirst();
         if (owner.isPresent()) {
             return owner.get();
         }
         Optional<GrantedUniverseAuthority> write = universeAuthorities.stream().filter(auth -> auth.canWrite(universe))
-            .findFirst();
+                .findFirst();
         return write.orElseGet(() -> universeAuthorities.stream().findFirst().orElseThrow());
     }
 

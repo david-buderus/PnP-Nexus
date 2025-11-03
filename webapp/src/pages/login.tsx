@@ -1,71 +1,78 @@
-import { Alert, Button, CssBaseline, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
-import { THEME } from "../components/Constants";
-import { useTranslation } from "react-i18next";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {Anchor, Button, Checkbox, Container, Group, Paper, PasswordInput, TextInput, Title} from "@mantine/core";
+import {useForm} from "@mantine/form";
 import axios from "axios";
-import { useState } from "react";
+import {useTranslation} from "react-i18next";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
-/** The login page */
-export function Login() {
-    const { t } = useTranslation();
+/** Login screen */
+export default function Login() {
+    const {t} = useTranslation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
 
-    function tryLogin() {
+    function tryLogin(username: string, password: string, rememberMe: boolean) {
         axios.postForm("/login", {
             username: username,
-            password: password
+            password: password,
+            "remember-me": rememberMe
         }).then(response => {
             const redirectUrl = new URL(response.request.responseURL);
             navigate(redirectUrl.pathname + redirectUrl.search);
         });
     }
 
-    return <ThemeProvider theme={THEME}>
-        <CssBaseline />
-        <Stack
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-            sx={{ flexGrow: 1, height: '100%' }}
-        >
-            <Typography gutterBottom variant="h2" component="div" align='center'>
+    const form = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            username: '',
+            password: '',
+            rememberMe: false
+        },
+        validate: {
+            password: () => searchParams.get("error") ? t("wrongPassword") : null
+        }
+    });
+
+    return (
+        <Container size={420} my={40}>
+            <Title ta="center">
                 P&P Nexus
-            </Typography>
-            <TextField
-                data-testid="username-field"
-                content={username}
-                onChange={event => setUsername(event.target.value)}
-                id="username" name="username"
-                label={t("username")}
-                sx={{ width: 320 }}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        tryLogin();
-                    }
-                }}
-            />
-            <TextField
-                data-testid="password-field"
-                content={password}
-                onChange={event => setPassword(event.target.value)}
-                id="password"
-                name="password"
-                type="password"
-                label={t("password")}
-                sx={{ width: 320 }}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        tryLogin();
-                    }
-                }}
-            />
-            {searchParams.get("error") &&
-                <Alert data-testid="login-alert" severity="error" sx={{ width: 320 }}>{t("wrongPassword")}</Alert>
-            }
-            <Button data-testid="login-button" variant="contained" sx={{ width: 320 }} onClick={tryLogin}>{t("logIn")}</Button>
-        </Stack>
-    </ThemeProvider>;
+            </Title>
+
+            <Paper withBorder shadow="md" p={30} mt={30} radius="md">
+                <form
+                    onSubmit={form.onSubmit((values) =>
+                        tryLogin(values.username, values.password, values.rememberMe))}>
+                    <TextInput
+                        data-testid="username-field"
+                        label={t("username")}
+                        key={form.key('username')}
+                        required
+                        {...form.getInputProps('username')}
+                    />
+                    <PasswordInput
+                        data-testid="password-field"
+                        label={t("password")}
+                        key={form.key('password')}
+                        required
+                        mt="md"
+                        {...form.getInputProps('password')}
+                    />
+                    <Group justify="space-between" mt="lg">
+                        <Checkbox
+                            label="Remember me"
+                            key={form.key('rememberMe')}
+                            {...form.getInputProps('rememberMe', {type: "checkbox"})}
+                        />
+                        <Anchor component="button" size="sm">
+                            Forgot password?
+                        </Anchor>
+                    </Group>
+                    <Button fullWidth mt="xl" type="submit" data-testid="login-button">
+                        {t("logIn")}
+                    </Button>
+                </form>
+            </Paper>
+        </Container>
+    );
 }

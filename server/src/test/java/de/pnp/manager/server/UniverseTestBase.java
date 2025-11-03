@@ -1,9 +1,9 @@
 package de.pnp.manager.server;
 
+import de.pnp.manager.component.universe.SettingsBase;
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.component.universe.UniverseSettings;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
-import de.pnp.manager.server.database.UniverseRepository;
+import de.pnp.manager.server.database.universe.UniverseSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -13,14 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class UniverseTestBase extends ServerTestBase {
 
     @Autowired
-    private UniverseRepository universeRepository;
+    private UniverseSettingsRepository settingsRepository;
 
     /**
-     * Updates the {@link UniverseSettings} of the {@link Universe test universe}.
+     * Updates the {@link SettingsBase} of the {@link Universe test universe}.
      */
-    protected void updateUniverseSettings(UniverseSettings settings) {
-        Universe universe = universeRepository.get(getUniverseName()).orElseThrow();
-        universeRepository.update(
-            new Universe(getUniverseName(), universe.getDisplayName(), "", "", settings));
+    protected void updateUniverseSettings(SettingsBase settings) {
+        settingsRepository.setSettings(getUniverseName(), settings);
     }
 }

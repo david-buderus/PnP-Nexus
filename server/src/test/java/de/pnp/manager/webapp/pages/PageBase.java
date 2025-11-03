@@ -2,7 +2,7 @@ package de.pnp.manager.webapp.pages;
 
 import com.microsoft.playwright.Page;
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.webapp.utils.WebTestUtils;
+import de.pnp.manager.webapp.pages.components.Select;
 
 /**
  * Base class for testing webapp pages.
@@ -22,7 +22,7 @@ public class PageBase {
      * Select the currently active {@link Universe}.
      */
     public void selectActiveUniverse(Universe universe) {
-        WebTestUtils.selectAutoComplete(page.getByTestId("universe-selector"), universe.getDisplayName(), true);
+        Select.from(page.getByTestId("universe-selector")).select(universe.getName(), false);
     }
 
     /**

@@ -5,10 +5,10 @@ import de.pnp.manager.server.database.CraftingRecipeRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import org.bson.types.ObjectId;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -38,35 +38,24 @@ public class CraftingRecipe extends DatabaseObject {
     /**
      * The product of this {@link CraftingRecipe}
      */
-    @NotNull
-    @Valid
-    private final IResourceUsage.ItemUsage product;
-
-    /**
-     * The side-product of this {@link CraftingRecipe}
-     */
-    @Nullable
-    @Valid
-    private final IResourceUsage.ItemUsage sideProduct;
+    @NotEmpty
+    private final List<@Valid ItemUsage> products;
 
     /**
      * The materials needed to use this {@link CraftingRecipe}
      */
     @NotEmpty
-    private final Collection<@Valid IResourceUsage<?>> materials;
+    private final List<@Valid IResourceUsage<?>> materials;
 
     public CraftingRecipe(ObjectId id, String profession, String requirement,
-        String otherCircumstances, ItemUsage product, @Nullable IResourceUsage.ItemUsage sideProduct,
-        Collection<IResourceUsage<?>> materials) {
+        String otherCircumstances, List<ItemUsage> products, List<IResourceUsage<?>> materials) {
         super(id);
         this.profession = profession;
         this.requirement = requirement;
         this.otherCircumstances = otherCircumstances;
-        this.product = Objects.requireNonNull(product);
-        this.sideProduct = sideProduct;
-        this.materials = materials;
+        this.products = Collections.unmodifiableList(products);
+        this.materials = Collections.unmodifiableList(materials);
     }
-
 
     public String getProfession() {
         return profession;
@@ -80,16 +69,11 @@ public class CraftingRecipe extends DatabaseObject {
         return otherCircumstances;
     }
 
-    public ItemUsage getProduct() {
-        return product;
+    public List<ItemUsage> getProducts() {
+        return products;
     }
 
-    @Nullable
-    public IResourceUsage.ItemUsage getSideProduct() {
-        return sideProduct;
-    }
-
-    public Collection<IResourceUsage<?>> getMaterials() {
+    public List<IResourceUsage<?>> getMaterials() {
         return materials;
     }
 
@@ -106,13 +90,11 @@ public class CraftingRecipe extends DatabaseObject {
         return Objects.equals(getProfession(), that.getProfession())
             && Objects.equals(getRequirement(), that.getRequirement())
             && Objects.equals(getOtherCircumstances(), that.getOtherCircumstances())
-            && getProduct().equals(that.getProduct()) && Objects.equals(getSideProduct(),
-            that.getSideProduct()) && Objects.equals(getMaterials(), that.getMaterials());
+            && getProducts().equals(that.getProducts()) && Objects.equals(getMaterials(), that.getMaterials());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getProfession(), getRequirement(), getOtherCircumstances(), getProduct(),
-            getSideProduct(), getMaterials());
+        return Objects.hash(getProfession(), getRequirement(), getOtherCircumstances(), getProducts());
     }
 }

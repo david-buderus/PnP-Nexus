@@ -1,6 +1,6 @@
 package de.pnp.manager.server.service;
 
-import de.pnp.manager.component.Spell;
+import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.server.database.SpellRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

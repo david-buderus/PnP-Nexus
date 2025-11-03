@@ -1,11 +1,23 @@
 package de.pnp.manager.component.character;
 
-import de.pnp.manager.component.character.traits.CharacterTrait;
-import java.util.Set;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-public class CharacterDescription {
+/**
+ * The description of a {@link PnPCharacter}.
+ */
+public record CharacterDescription(
+        @NotBlank String name,
+        @Positive int age,
+        @NotNull String profession,
+        @NotNull String gender,
+        @NotNull String backstory,
+        @NotNull String appearance,
+        @NotNull String personality,
+        @NotNull String goals,
+        @NotNull String deficits,
+        @NotNull String affiliations
+) {
 
-    private String description;
-
-    private Set<CharacterTrait> traits;
 }

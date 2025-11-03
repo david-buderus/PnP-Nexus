@@ -5,7 +5,8 @@ package de.pnp.manager.component.item.interfaces;
  */
 public interface IOffensiveItem extends IDamageableItem, IHandheldItem {
 
-    String getDice();
-
+    /**
+     * The flat damage of the item.
+     */
     int getDamage();
 }

@@ -1,10 +1,10 @@
 package de.pnp.manager.webapp.pages;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.webapp.pages.components.users.ChangePassword;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
+import static de.pnp.manager.webapp.utils.WebTestUtils.getByDataPath;
 
 /**
  * Represents the user page
@@ -16,45 +16,48 @@ public class UserPage extends PageBase {
     }
 
     /**
-     * Returns the username
+     * Asserts the username
      */
-    public String getUsername() {
-        return page.getByTestId("username").getByRole(AriaRole.TEXTBOX).inputValue();
+    public void assertUsername(String expectedUsername) {
+        assertThat(page.getByTestId("username")).hasValue(expectedUsername);
     }
 
     /**
-     * Returns the displayname
+     * Asserts the displayname
      */
-    public String getDisplayName() {
-        return page.getByTestId("displayname").getByRole(AriaRole.TEXTBOX).inputValue();
+    public void assertDisplayName(String expectedDisplayName) {
+        assertThat(getByDataPath(page, "displayName")).hasValue(expectedDisplayName);
     }
 
     /**
      * Sets the display name
      */
     public void setDisplayName(String displayName) {
-        page.getByTestId("displayname").getByRole(AriaRole.TEXTBOX).fill(displayName);
+        getByDataPath(page, "displayName").fill(displayName);
     }
 
     /**
-     * Returns the Email
+     * Asserts the email
      */
-    public String getEmail() {
-        return page.getByTestId("email").getByRole(AriaRole.TEXTBOX).inputValue();
+    public void assertEmail(String expectedEmail) {
+        assertThat(getByDataPath(page, "email")).hasValue(expectedEmail);
     }
 
     /**
      * Sets the email
      */
     public void setEmail(String email) {
-        page.getByTestId("email").getByRole(AriaRole.TEXTBOX).fill(email);
+        getByDataPath(page, "email").fill(email);
     }
 
     /**
      * Returns the error text of the email input field if it exists.
      */
-    public String getEmailError() {
-        return page.getByTestId("email").locator("[id=email-helper-text]").textContent();
+    public void assertEmailError() {
+        assertThat(getByDataPath(page, "email")
+                .locator("..")
+                .locator("..")
+                .locator("p")).not().isEmpty();
     }
 
     /**

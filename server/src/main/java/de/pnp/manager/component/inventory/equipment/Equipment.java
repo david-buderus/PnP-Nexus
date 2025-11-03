@@ -1,14 +1,20 @@
 package de.pnp.manager.component.inventory.equipment;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.Preconditions;
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IEquipment;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,16 +23,31 @@ import java.util.List;
 /**
  * Represents an {@link EquipableItem} that can be held and used.
  */
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Equipment.class, name = "Equipment"),
+        @JsonSubTypes.Type(value = ShieldEquipment.class, name = "ShieldEquipment"),
+        @JsonSubTypes.Type(value = ArmorEquipment.class, name = "ArmorEquipment"),
+        @JsonSubTypes.Type(value = WeaponEquipment.class, name = "WeaponEquipment"),
+})
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements IEquipment {
 
     /**
      * The {@link Upgrade upgrades} of the {@link EquipableItem}.
      */
+    @DBRef
+    @NotNull
     private Collection<Upgrade> upgrades;
 
     public Equipment(float amount, E item) {
         super(amount, item);
         upgrades = new ArrayList<>();
+    }
+
+    @JsonCreator
+    public Equipment(float stackSize, E item, Collection<Upgrade> upgrades) {
+        super(stackSize, item);
+        this.upgrades = upgrades;
     }
 
     /**
@@ -56,8 +77,8 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
     public void setUpgrades(Collection<Upgrade> upgrades) {
         int requiredSlots = upgrades.stream().mapToInt(Upgrade::getSlots).sum();
         Preconditions.checkArgument(requiredSlots <= getUpgradeSlots(),
-            "The required '%s' slots of the upgrades exceed the capacity of the item '%s'.",
-            requiredSlots, getItem().getName());
+                "The required '%s' slots of the upgrades exceed the capacity of the item '%s'.",
+                requiredSlots, getItem().getName());
         this.upgrades = upgrades;
     }
 
@@ -66,8 +87,8 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
      */
     public void addUpgrade(Upgrade upgrade) {
         Preconditions.checkArgument(upgrade.getSlots() <= getRemainingUpgradeSlots(),
-            "The required '%s' slots of the upgrades exceed the capacity of the item '%s'.",
-            upgrade.getSlots() + getUpgradeSlots(), getItem().getName());
+                "The required '%s' slots of the upgrades exceed the capacity of the item '%s'.",
+                upgrade.getSlots() + getUpgradeSlots(), getItem().getName());
         upgrades.add(upgrade);
     }
 
@@ -83,15 +104,15 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
      */
     protected float applyUpgradeEffects(EUpgradeEquipmentManipulator manipulator, float value) {
         List<EquipmentUpgradeEffect> upgradeEffects = getUpgrades().stream()
-            .flatMap(upgrade -> upgrade.getEffects().stream())
-            .filter(EquipmentUpgradeEffect.class::isInstance).map(EquipmentUpgradeEffect.class::cast)
-            .toList();
+                .flatMap(upgrade -> upgrade.getEffects().stream())
+                .filter(EquipmentUpgradeEffect.class::isInstance).map(EquipmentUpgradeEffect.class::cast)
+                .toList();
         List<EquipmentUpgradeEffect> additiveEffects = upgradeEffects.stream()
-            .filter(effect -> effect.getCalculation() == EUpgradeEffectCalculation.ADDITIVE)
-            .toList();
+                .filter(effect -> effect.getCalculation() == ECalculation.ADDITIVE)
+                .toList();
         List<EquipmentUpgradeEffect> multiplicativeEffects = upgradeEffects.stream()
-            .filter(effect -> effect.getCalculation() == EUpgradeEffectCalculation.MULTIPLICATIVE)
-            .toList();
+                .filter(effect -> effect.getCalculation() == ECalculation.MULTIPLICATIVE)
+                .toList();
 
         for (EquipmentUpgradeEffect effect : additiveEffects) {
             value = effect.apply(manipulator, value);

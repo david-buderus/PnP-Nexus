@@ -1,7 +1,7 @@
 package de.pnp.manager.server.service.upgrade;
 
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
@@ -23,11 +23,11 @@ public class UpgradeServiceTest extends RepositoryServiceBaseTest<Upgrade, Upgra
     protected List<Upgrade> createObjects() {
         return List.of(createUpgrade().withName("A")
                 .addEffect(new EquipmentUpgradeEffect("More Damage", 2, EUpgradeEquipmentManipulator.DAMAGE,
-                    EUpgradeEffectCalculation.ADDITIVE)).build(),
+                    ECalculation.ADDITIVE)).build(),
             createUpgrade().withName("B")
                 .addEffect(new SimpleUpgradeEffect("Nothing")).build(),
             createUpgrade().withName("C")
                 .addEffect(new EquipmentUpgradeEffect("Wall", 10, EUpgradeEquipmentManipulator.ARMOR,
-                    EUpgradeEffectCalculation.MULTIPLICATIVE)).build());
+                    ECalculation.MULTIPLICATIVE)).build());
     }
 }

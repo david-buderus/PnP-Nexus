@@ -2,38 +2,73 @@ package de.pnp.manager.webapp.items;
 
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
-import de.pnp.manager.webapp.pages.ItemPage;
+import de.pnp.manager.component.item.equipable.EArmorSlot;
+import de.pnp.manager.server.TestServer;
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
+import de.pnp.manager.server.database.MaterialRepository;
+import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.webapp.database.UniquelyNamedOverviewTestBase;
 import de.pnp.manager.webapp.pages.MainMenu;
-import de.pnp.manager.webapp.pages.components.items.ItemCreation.EItemClass;
-import java.util.Collection;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import de.pnp.manager.webapp.pages.OverviewBasePage;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 
 /**
- * Tests the item overview page.
+ * Tests the weapon overview page.
  */
-public class ArmorPageTest extends ItemPageTestBase {
+@TestServer(EServerTestConfiguration.BASIC_ITEMS)
+public class ArmorPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepository> {
+
+    @Autowired
+    private MaterialRepository materialRepository;
+
+    protected ArmorPageTest(@Autowired ItemRepository repository) {
+        super(repository);
+    }
 
     @Override
-    protected ItemPage openTestPage(MainMenu mainMenu) {
+    protected OverviewBasePage openTestPage(MainMenu mainMenu) {
         return mainMenu.openArmorPage();
     }
 
     @Override
-    protected Collection<Item> getTestItems() {
-        return itemRepository.getAll(universe.getName()).stream().filter(Armor.class::isInstance).toList();
+    protected Armor getWrongObject() {
+        return createItemBuilder().withName("").withVendorPrice(-1).withUpgradeSlots(-1).buildArmor();
     }
 
     @Override
-    protected Pair<EItemClass, Item> getTestItem() {
-        return ImmutablePair.of(EItemClass.ARMOR,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Iron Spike Helmet").withType("Armor")
-                .withSubtype("Head")
-                .withEffect("It is spiky").withDescription("It is a spiky helmet").withRarity(ERarity.EPIC)
-                .withTier(2)
-                .withRequirement("None").withVendorPrice(10000)
-                .withNote("Some text").withMaterial("Iron").withUpgradeSlots(2).withArmor(100).withWeight(10)
-                .buildArmor());
+    protected List<String> getExpectedErrorFields() {
+        return List.of("name", "vendorPrice", "material", "upgradeSlots");
+    }
+
+    @Override
+    protected Armor getCorrectObject() {
+        Material iron = materialRepository.get(getUniverseName(), "Iron").orElseThrow();
+        return createItemBuilder().withName("Piece of Wood").withMaterial(iron).withArmor(3)
+                .withVendorPrice(154).withRarity(ERarity.EPIC).withArmorSlot(EArmorSlot.ARMS).buildArmor();
+    }
+
+    @Override
+    protected Armor getEditedObject() {
+        Armor armor = (Armor) getOriginalModifyObject();
+        return new Armor(null, "Other Helmet", armor.getTags(), armor.getRequirement(), armor.getEffect(),
+                armor.getRarity(), 302, armor.getTier(), "A fancy helmet", armor.getNote(),
+                armor.getMaterial(), armor.getUpgradeSlots(), armor.getArmorSlot(), armor.getArmor(),
+                armor.getProtection(), armor.getWeight(), armor.getMaximumStackSize(), armor.getMinimumStackSize());
+    }
+
+    @Override
+    protected String getChangeIdentifier() {
+        return "Other Helmet";
+    }
+
+    @Override
+    protected String getEditObjectName() {
+        return "Iron Helmet";
     }
 }

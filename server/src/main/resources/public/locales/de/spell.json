@@ -5,5 +5,13 @@
   "deletionTitle": "Willst du die ausgewählten Zauber löschen?",
   "creationTitle": "Erstelle ein Zauber",
   "editTitle": "Bearbeite ein Zauber",
-  "addCost": "Füge dem Zauber weitere Kosten hinzu"
+  "addCost": "Füge dem Zauber weitere Kosten hinzu",
+  "cooldown": "Cooldown",
+  "castingTypes": "Zaubervarianten",
+  "countermeasures": "Gegenmaßnahmen",
+  "cast": "Talent/Tags",
+  "tagRequirement": "Voraussetzungen",
+  "tagRequirementTooltip": "Ein Zauber kann nur durch ein Talent gezaubert werden, wenn er alle Tags von einer der folgenden Zeilen hat.",
+  "noRequirements": "Der Zauber hat keine Voraussetzungen",
+  "addTagRequirement": "Füg eine Voraussetzung hinzu"
 }

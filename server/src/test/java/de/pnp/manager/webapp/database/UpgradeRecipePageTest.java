@@ -10,14 +10,12 @@ import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Tests the upgrade recipe overview page.
@@ -41,18 +39,6 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
     }
 
     @Override
-    protected Comparator<UpgradeRecipe> getDefaultSort() {
-        return Comparator.comparing(recipe -> recipe.getUpgrade().getName());
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<UpgradeRecipe>>> getSorters() {
-        return List.of(Pair.of("requirement", Comparator.comparing(UpgradeRecipe::getRequirement)),
-            Pair.of("requiredUpgrades", Comparator.comparing(recipe -> recipe.getRequiredUpgrades().stream().map(
-                Upgrade::getName).collect(Collectors.joining(", ")))));
-    }
-
-    @Override
     protected UpgradeRecipe getWrongObject() {
         return new UpgradeRecipe(null, null, List.of(), "", List.of(new ItemUsage(-1, null)));
     }
@@ -64,8 +50,8 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
 
     @Override
     protected UpgradeRecipe getCorrectObject() {
-        return new UpgradeRecipe(null, getUpgrade("Silver Coating"), List.of(), "",
-            List.of(new ItemUsage(0.2f, itemRepository.get(getUniverseName(), "Silver Ingot").orElseThrow())));
+        return new UpgradeRecipe(null, getUpgrade("Fire 1"), List.of(), "",
+                List.of(new ItemUsage(2, itemRepository.get(getUniverseName(), "Coal").orElseThrow())));
     }
 
     @Override
@@ -77,7 +63,7 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
     protected UpgradeRecipe getEditedObject() {
         UpgradeRecipe original = getOriginalModifiedObject();
         return new UpgradeRecipe(null, original.getUpgrade(), original.getRequiredUpgrades(), "CHANGE",
-            original.getMaterials());
+                original.getMaterials());
     }
 
     @Override
@@ -87,7 +73,7 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
 
     @Override
     protected Predicate<UpgradeRecipe> getOriginalModifiedFilter() {
-        return upgradeRecipe -> upgradeRecipe.getUpgrade().getName().equals("Reinforce 2");
+        return upgradeRecipe -> upgradeRecipe.getUpgrade().getName().equals("Sharpness 2");
     }
 
     private Upgrade getUpgrade(String name) {

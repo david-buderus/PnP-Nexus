@@ -3,10 +3,10 @@ package de.pnp.manager.server.database.item;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.component.item.ItemType;
-import de.pnp.manager.component.item.ItemType.ETypeRestriction;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.Jewellery;
+import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.RepositoryTestBase;
@@ -21,13 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository> {
 
     @Autowired
-    private ItemTypeRepository typeRepository;
-
-    @Autowired
     private MaterialRepository materialRepository;
-
-    @Autowired
-    private ItemTypeTranslationRepository typeTranslationRepository;
 
     public ItemRepositoryTest(@Autowired ItemRepository repository) {
         super(repository);
@@ -47,23 +41,21 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     }
 
     @Test
-    void testTypeLink() {
-        ItemType typeA = typeRepository.insert(getUniverseName(),
-            new ItemType(null, "Type A", ETypeRestriction.ITEM));
-        ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.ITEM);
-        Item item = createItem().withType(typeA).buildItem();
+    void testMixedInput() {
+        Material material = materialRepository.insert(getUniverseName(),
+            new Material(null, "Mat", Collections.emptyList()));
 
-        testRepositoryLink(Item::getType, typeRepository, item, typeA, typeB);
-    }
+        Armor armor1 = createItem().withName("A1").withMaterial(material).persist().buildArmor();
+        Armor armor2 = createItem().withName("A2").withMaterial(material).persist().buildArmor();
+        Weapon weapon = createItem().withName("W1").withMaterial(material).persist().buildWeapon();
+        Jewellery jewellery = createItem().withName("J1").withMaterial(material).persist().buildJewellery();
+        Shield shield = createItem().withName("S1").withMaterial(material).persist().buildShield();
+        createItem().withName("E1").persist().buildItem();
 
-    @Test
-    void testSubtypeLink() {
-        ItemType typeA = typeRepository.insert(getUniverseName(),
-            new ItemType(null, "Type A", ETypeRestriction.ITEM));
-        ItemType typeB = new ItemType(null, "Type B", ETypeRestriction.ITEM);
-        Item item = createItem().withSubtype(typeA).buildItem();
-
-        testRepositoryLink(Item::getSubtype, typeRepository, item, typeA, typeB);
+        assertThat(repository.getAllArmor(getUniverseName())).containsExactlyInAnyOrder(armor1, armor2);
+        assertThat(repository.getAllWeapons(getUniverseName())).containsExactlyInAnyOrder(weapon);
+        assertThat(repository.getAllJewellery(getUniverseName())).containsExactlyInAnyOrder(jewellery);
+        assertThat(repository.getAllShields(getUniverseName())).containsExactlyInAnyOrder(shield);
     }
 
     @Test
@@ -75,22 +67,6 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
             .buildWeapon();
 
         testRepositoryLink(Weapon::getMaterial, materialRepository, weapon, materialA, materialB);
-    }
-
-
-    @Test
-    void testAutomaticTypeTranslations() {
-        ItemType type = typeRepository.insert(getUniverseName(),
-            new ItemType(null, "Type", ETypeRestriction.ITEM));
-        ItemType subtype = typeRepository.insert(getUniverseName(),
-            new ItemType(null, "Subtype", ETypeRestriction.ITEM));
-        Item item = repository.insert(getUniverseName(),
-            createItem().withType(type).withSubtype(subtype).buildItem());
-        assertThat(item).isNotNull();
-
-        assertThat(
-            typeTranslationRepository.getAllVariants(getUniverseName(), subtype)).containsExactlyInAnyOrder(type,
-            subtype);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package de.pnp.manager.webapp.users;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.server.ManipulatesMetadata;
@@ -13,10 +11,13 @@ import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
 import de.pnp.manager.webapp.pages.UserPage;
 import de.pnp.manager.webapp.pages.components.users.ChangePassword;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the user page.
@@ -45,14 +46,14 @@ public class UserPageTest extends ServerTestBase {
             userController.createNewUser(new PnPUserCreation(USERNAME, USERNAME, USERNAME, "", List.of()));
         }
 
-        page = webDriver.openMainMenu(USERNAME, "admin").openUserPage();
+        page = webDriver.openMainMenu(USERNAME, USERNAME).openUserPage();
     }
 
     @Test
     void testContent() {
-        assertThat(page.getUsername()).isEqualTo(USERNAME);
-        assertThat(page.getDisplayName()).isEqualTo(USERNAME);
-        assertThat(page.getEmail()).isEmpty();
+        page.assertUsername(USERNAME);
+        page.assertDisplayName(USERNAME);
+        page.assertEmail("");
     }
 
     @Test
@@ -63,18 +64,18 @@ public class UserPageTest extends ServerTestBase {
         page.saveEditedUser();
 
         page.assertIsInEditMode();
-        assertThat(page.getEmailError()).isNotBlank();
+        page.assertEmailError();
         page.setEmail(NEW_EMAIL);
         page.saveEditedUser();
 
         page.assertIsInNonEditMode();
 
-        assertThat(page.getDisplayName()).isEqualTo(NEW_DISPLAYNAME);
-        assertThat(page.getEmail()).isEqualTo(NEW_EMAIL);
+        page.assertDisplayName(NEW_DISPLAYNAME);
+        page.assertEmail(NEW_EMAIL);
 
         PnPUser user = userRepository.getUser(USERNAME).orElseThrow();
-        assertThat(user.getDisplayName()).isEqualTo(NEW_DISPLAYNAME);
-        assertThat(user.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(user.displayName()).isEqualTo(NEW_DISPLAYNAME);
+        assertThat(user.email()).isEqualTo(NEW_EMAIL);
     }
 
     @Test
@@ -86,16 +87,16 @@ public class UserPageTest extends ServerTestBase {
 
         page.assertIsInNonEditMode();
 
-        assertThat(page.getDisplayName()).isEqualTo(USERNAME);
-        assertThat(page.getEmail()).isBlank();
+        page.assertDisplayName(USERNAME);
+        page.assertEmail("");
 
         PnPUser user = userRepository.getUser(USERNAME).orElseThrow();
-        assertThat(user.getDisplayName()).isEqualTo(USERNAME);
-        assertThat(user.getEmail()).isBlank();
+        assertThat(user.displayName()).isEqualTo(USERNAME);
+        assertThat(user.email()).isBlank();
     }
 
     @Test
-    void testChangePassword() {
+    void testChangePassword() throws InterruptedException {
         ChangePassword dialog = page.changePassword();
         dialog.setCurrentPassword("admin");
         dialog.setNewPassword(NEW_PASSWORD);
@@ -106,6 +107,9 @@ public class UserPageTest extends ServerTestBase {
         dialog.savePassword();
 
         dialog.assertIsClosed();
+
+        // We need to wait for the backend to process the change
+        Thread.sleep(500);
         assertThat(userDetailsRepository.isValidPassword(USERNAME, NEW_PASSWORD)).isTrue();
     }
 }

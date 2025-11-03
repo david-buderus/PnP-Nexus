@@ -1,6 +1,6 @@
 {
   "effects": "Effect",
-  "target": "Target",
+  "restriction": "Restriction",
   "necessary-slots": "Necessary Upgrade-Slots",
   "upgradeCreationTitle": "Create an upgrade",
   "upgradeEditTitle": "Edit an upgrade",
@@ -10,7 +10,6 @@
   "simpleEffect": "Simple",
   "equipmentEffect": "Equipment",
   "upgradeManipulator": "Changes",
-  "none": "Nothing",
   "slots": "Upgrade-Slots",
   "damage": "Damage",
   "hit": "Hit",
@@ -19,5 +18,9 @@
   "weight": "Weight",
   "calculation": "Calculation",
   "additive": "Addition",
-  "multiplicative": "Multiplication"
+  "multiplicative": "Multiplication",
+  "tagRequirement": "Requirements",
+  "tagRequirementTooltip": "An item can only receive an upgrade if it has all tags in one of the following rows.",
+  "noRequirements": "The upgrade has no requirements",
+  "addTagRequirement": "Add a requirement"
 }

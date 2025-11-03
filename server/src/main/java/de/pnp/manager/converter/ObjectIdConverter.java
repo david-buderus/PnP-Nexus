@@ -37,6 +37,7 @@ public class ObjectIdConverter {
      * A custom {@link JsonDeserializer} for {@link ObjectId}.
      */
     public static class ObjectIdJsonDeserializer extends JsonDeserializer<ObjectId> {
+
         @Override
         public ObjectId deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
             return new ObjectId(p.getValueAsString());

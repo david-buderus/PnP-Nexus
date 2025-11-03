@@ -3,16 +3,18 @@ package de.pnp.manager.component.item;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.server.database.MaterialRepository;
+import de.pnp.manager.validation.IsNotEquipable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import java.util.Collection;
-import java.util.Objects;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * A material in the universe.
@@ -69,7 +71,7 @@ public class Material extends DatabaseObject implements IUniquelyNamedDataObject
     /**
      * Determines how many of an item is needed to equal the material.
      */
-    public record MaterialItem(@Positive double amount, @NotNull @DBRef Item item) {
+    public record MaterialItem(@Positive double amount, @NotNull @DBRef @IsNotEquipable Item item) {
         // empty
     }
 }

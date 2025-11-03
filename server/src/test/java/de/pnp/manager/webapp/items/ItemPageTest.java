@@ -2,35 +2,63 @@ package de.pnp.manager.webapp.items;
 
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.webapp.pages.ItemPage;
+import de.pnp.manager.server.TestServer;
+import de.pnp.manager.server.configurator.EServerTestConfiguration;
+import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.webapp.database.UniquelyNamedOverviewTestBase;
 import de.pnp.manager.webapp.pages.MainMenu;
-import de.pnp.manager.webapp.pages.components.items.ItemCreation.EItemClass;
-import java.util.Collection;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import de.pnp.manager.webapp.pages.OverviewBasePage;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 
 /**
  * Tests the item overview page.
  */
-public class ItemPageTest extends ItemPageTestBase {
+@TestServer(EServerTestConfiguration.BASIC_ITEMS)
+public class ItemPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepository> {
+
+    protected ItemPageTest(@Autowired ItemRepository repository) {
+        super(repository);
+    }
 
     @Override
-    protected ItemPage openTestPage(MainMenu mainMenu) {
+    protected OverviewBasePage openTestPage(MainMenu mainMenu) {
         return mainMenu.openItemPage();
     }
 
     @Override
-    protected Collection<Item> getTestItems() {
-        return itemRepository.getAll(universe.getName());
+    protected Item getWrongObject() {
+        return createItemBuilder().withName("").withVendorPrice(-1).buildItem();
     }
 
     @Override
-    protected Pair<EItemClass, Item> getTestItem() {
-        return ImmutablePair.of(EItemClass.ITEM,
-            itemBuilder.createItemBuilder(universe.getName()).withName("Gold Ore").withType("Material")
-                .withSubtype("Ore")
-                .withEffect("It is shiny").withDescription("It is gold ore").withRarity(ERarity.UNCOMMON).withTier(2)
-                .withRequirement("None").withVendorPrice(1000000).withMinimumStackSize(10).withMaximumStackSize(50)
-                .withNote("Some text").buildItem());
+    protected List<String> getExpectedErrorFields() {
+        return List.of("name", "vendorPrice");
+    }
+
+    @Override
+    protected Item getCorrectObject() {
+        return createItemBuilder().withName("Apple").withVendorPrice(154).withRarity(ERarity.EPIC).buildItem();
+    }
+
+    @Override
+    protected Item getEditedObject() {
+        Item item = getOriginalModifyObject();
+        return new Item(null, item.getName(), item.getTags(), item.getRequirement(), item.getEffect(),
+                item.getRarity(), 302, item.getTier(), "A raw piece of wood", item.getNote(),
+                item.getMaximumStackSize(), item.getMinimumStackSize());
+    }
+
+    @Override
+    protected String getChangeIdentifier() {
+        return "A raw piece of wood";
+    }
+
+    @Override
+    protected String getEditObjectName() {
+        return "Raw Wood";
     }
 }

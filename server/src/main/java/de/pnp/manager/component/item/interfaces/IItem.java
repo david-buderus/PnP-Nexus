@@ -1,12 +1,29 @@
 package de.pnp.manager.component.item.interfaces;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.item.ERarity;
-import de.pnp.manager.component.item.ItemType;
+import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.Jewellery;
+import de.pnp.manager.component.item.equipable.Shield;
+import de.pnp.manager.component.item.equipable.Weapon;
+
+import java.util.Set;
 
 /**
  * An item in the universe.
  */
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Weapon.class, name = "Weapon"),
+        @JsonSubTypes.Type(value = Shield.class, name = "Shield"),
+        @JsonSubTypes.Type(value = Armor.class, name = "Armor"),
+        @JsonSubTypes.Type(value = Jewellery.class, name = "Jewellery"),
+        @JsonSubTypes.Type(value = Item.class, name = "Item")
+})
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public interface IItem {
 
     /**
@@ -15,14 +32,9 @@ public interface IItem {
     String getName();
 
     /**
-     * The type of this item.
+     * The tags of this item.
      */
-    ItemType getType();
-
-    /**
-     * The subtype of this item.
-     */
-    ItemType getSubtype();
+    Set<Tag> getTags();
 
     /**
      * The requirement needed to use this item.

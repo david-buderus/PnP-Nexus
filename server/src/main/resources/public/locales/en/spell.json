@@ -5,5 +5,13 @@
   "deletionTitle": "Do you want to delete the selected spells?",
   "creationTitle": "Create a spell",
   "editTitle": "Edit a spell",
-  "addCost": "Add another cost to the spell"
+  "addCost": "Add another cost to the spell",
+  "cooldown": "Cooldown",
+  "castingTypes": "Casting Type",
+  "countermeasures": "Countermeasures",
+  "cast": "Talent/Tags",
+  "tagRequirement": "Requirements",
+  "tagRequirementTooltip": "An spell can only be cast by a talent if it has all tags in one of the following rows.",
+  "noRequirements": "The spell has no requirements",
+  "addTagRequirement": "Add a requirement"
 }

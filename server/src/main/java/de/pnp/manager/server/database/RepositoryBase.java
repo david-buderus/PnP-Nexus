@@ -1,28 +1,23 @@
 package de.pnp.manager.server.database;
 
-import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
-
 import com.google.common.base.Preconditions;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.exception.AlreadyPersistedException;
 import de.pnp.manager.exception.UniverseNotFoundException;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import de.pnp.manager.server.database.universe.UniverseRepository;
+import jakarta.validation.*;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.FindAndReplaceOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.*;
+
+import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
 
 /**
  * Base class for repositories.
@@ -117,7 +112,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     public Collection<E> insertAll(String universe, List<E> collection) {
         if (collection.stream().anyMatch(DatabaseObject::isPersisted)) {
             throw new AlreadyPersistedException(
-                collection.stream().filter(DatabaseObject::isPersisted).toList());
+                    collection.stream().filter(DatabaseObject::isPersisted).toList());
         }
         onBeforePersist(universe, collection);
         Collection<E> persistedObjects = getTemplate(universe).insert(collection, collectionName);
@@ -141,10 +136,20 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
         Preconditions.checkNotNull(id);
         onBeforePersist(universe, List.of(object));
         E persistedObject = getTemplate(universe).findAndReplace(
-            Query.query(Criteria.where("_id").is(id)),
-            object, FindAndReplaceOptions.options().returnNew(), collectionName);
+                Query.query(Criteria.where("_id").is(id)),
+                object, FindAndReplaceOptions.options().returnNew(), collectionName);
         onAfterPersist(universe, List.of(object));
         return persistedObject;
+    }
+
+    /**
+     * Updates the objects directly in the database defined by the query and update.
+     * <p>
+     * This does not call {@link #onBeforePersist(String, List)} and {@link #onAfterPersist(String, List)}.
+     * It should be mainly used to clean up database references.
+     */
+    protected boolean updateMulti(String universe, Query query, Update update) {
+        return getTemplate(universe).updateMulti(query, update, clazz, collectionName).wasAcknowledged();
     }
 
     /**
@@ -153,7 +158,10 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     public boolean remove(String universe, ObjectId id) {
         Preconditions.checkNotNull(id);
         DeleteResult result = getTemplate(universe).remove(Query.query(Criteria.where("_id").is(id)),
-            collectionName);
+                collectionName);
+        if (result.wasAcknowledged()) {
+            onAfterDeletion(universe, List.of(id));
+        }
         return result.wasAcknowledged();
     }
 
@@ -161,8 +169,9 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * Removes the objects stored under the given ids.
      */
     public boolean removeAll(String universe, Collection<ObjectId> ids) {
-        List<Object> deletedIds = getTemplate(universe).findAllAndRemove(
-            Query.query(Criteria.where("_id").in(ids)), collectionName);
+        List<E> deletedIds = getTemplate(universe).findAllAndRemove(
+                Query.query(Criteria.where("_id").in(ids)), collectionName);
+        onAfterDeletion(universe, deletedIds.stream().map(DatabaseObject::getId).toList());
         return deletedIds.size() == ids.size();
     }
 
@@ -197,6 +206,13 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * This means the objects will always have an {@link DatabaseObject#getId() id}.
      */
     protected void onAfterPersist(String universe, List<E> objects) {
+        // no op
+    }
+
+    /**
+     * Possibility to add hooks or something similar after the repository has successfully deleted the object.
+     */
+    protected void onAfterDeletion(String universe, List<ObjectId> ids) {
         // no op
     }
 }

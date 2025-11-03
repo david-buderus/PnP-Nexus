@@ -36,14 +36,14 @@ public class CraftingRecipeServiceTest extends
 
         return List.of(
             new CraftingRecipe(null, "Smith", "Crafting: 4", "Furnace",
-                new ItemUsage(1, ironIngot), null,
+                List.of(new ItemUsage(1, ironIngot)),
                 List.of(new ItemUsage(2, createItem().withName("Iron Ore").persist().buildItem()))),
             new CraftingRecipe(null, "", "", "",
-                new ItemUsage(1, createItem().withName("Blood").persist().buildItem()), null,
+                List.of(new ItemUsage(1, createItem().withName("Blood").persist().buildItem())),
                 List.of(new CharacterResourceUsage(10, health))),
             new CraftingRecipe(null, "", "", "",
-                new ItemUsage(2, createItem().withName("Steel Ingot").persist().buildItem()),
-                new ItemUsage(1, createItem().withName("Slag").persist().buildItem()),
+                List.of(new ItemUsage(2, createItem().withName("Steel Ingot").persist().buildItem()),
+                    new ItemUsage(1, createItem().withName("Slag").persist().buildItem())),
                 List.of(new MaterialUsage(2, iron),
                     new ItemUsage(3, createItem().withName("Coal").persist().buildItem())))
         );

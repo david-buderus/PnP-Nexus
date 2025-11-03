@@ -12,50 +12,42 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the basic {@link ItemPage}.
+     * Opens the overview page for items.
      */
-    public ItemPage openItemPage() {
+    public OverviewBasePage openItemPage() {
         openMenu("items-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
-     * Opens the weapon {@link ItemPage}.
+     * Opens the overview page for weapons.
      */
-    public ItemPage openWeaponPage() {
+    public OverviewBasePage openWeaponPage() {
         openMenu("items-menu", "weapons-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
-     * Opens the jewellery {@link ItemPage}.
+     * Opens the overview page for jewellery.
      */
-    public ItemPage openJewelleryPage() {
+    public OverviewBasePage openJewelleryPage() {
         openMenu("items-menu", "jewellery-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
-     * Opens the armor {@link ItemPage}.
+     * Opens the overview page for armor.
      */
-    public ItemPage openArmorPage() {
+    public OverviewBasePage openArmorPage() {
         openMenu("items-menu", "armor-menu");
-        return new ItemPage(page);
+        return new OverviewBasePage(page);
     }
 
     /**
-     * Opens the shield {@link ItemPage}.
+     * Opens the overview page for shield.
      */
-    public ItemPage openShieldPage() {
+    public OverviewBasePage openShieldPage() {
         openMenu("items-menu", "shields-menu");
-        return new ItemPage(page);
-    }
-
-    /**
-     * Opens the overview page for item types.
-     */
-    public OverviewBasePage openItemTypePage() {
-        openMenu("items-menu", "item-types-menu");
         return new OverviewBasePage(page);
     }
 
@@ -108,22 +100,6 @@ public class MainMenu extends PageBase {
     }
 
     /**
-     * Opens the overview page for primary attributes.
-     */
-    public OverviewBasePage openPrimaryAttributePage() {
-        openMenu("characters-menu", "primary-attributes-menu");
-        return new OverviewBasePage(page);
-    }
-
-    /**
-     * Opens the overview page for secondary attributes.
-     */
-    public OverviewBasePage openSecondaryAttributePage() {
-        openMenu("characters-menu", "secondary-attributes-menu");
-        return new OverviewBasePage(page);
-    }
-
-    /**
      * Opens the {@link UserOverviewPage}.
      */
     public UserOverviewPage openUserOverviewPage() {
@@ -149,6 +125,9 @@ public class MainMenu extends PageBase {
 
     private void openMenu(String menu, String... submenus) {
         page.getByTestId(menu).click();
+        if (submenus.length == 0) {
+            page.getByTestId(menu + "-inner").click();
+        }
         for (String submenu : submenus) {
             page.getByTestId(submenu).click();
         }
@@ -157,6 +136,5 @@ public class MainMenu extends PageBase {
     private void openAppBarMenu(String menu) {
         page.getByTestId("menu-appbar").click();
         page.getByTestId(menu).click();
-        page.mouse().click(0, 0); // Closes the popup menu
     }
 }

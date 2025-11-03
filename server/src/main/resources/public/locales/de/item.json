@@ -14,5 +14,6 @@
   "broaderVariants": "Gröbere Varianten",
   "itemTypeCreationTitle": "Erstelle ein Item Typ",
   "itemTypeEditTitle": "Bearbeite ein Item Typ",
-  "itemTypeDeletionTitle": "Willst du die ausgewählten Item Typen löschen?"
+  "itemTypeDeletionTitle": "Willst du die ausgewählten Item Typen löschen?",
+  "armorSlot": "Slot"
 }

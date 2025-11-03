@@ -1,12 +1,13 @@
 package de.pnp.manager.server.configurator;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import de.pnp.manager.server.ServerTestBase;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * The test configuration for integration tests.
@@ -15,7 +16,7 @@ public enum EServerTestConfiguration {
 
     EMPTY(EmptyServerConfigurator.class, null, null),
     SIMPLE_UNIVERSE(SimpleUniverseServerConfiguration.class, null, SimpleUniverseServerConfiguration.UNIVERSE_NAME),
-    BASIC_ITEMS(EmptyServerConfigurator.class, "backups/BasicItems.zip", "example-universe"),
+    BASIC_ITEMS(EmptyServerConfigurator.class, "backups/BasicItems.zip", "basic-items"),
     CHARACTERS(EmptyServerConfigurator.class, "backups/Characters.zip", "character-universe");
 
     private final Class<? extends TestServerConfiguratorBase> configuratorClass;
@@ -23,7 +24,7 @@ public enum EServerTestConfiguration {
     private final String defaultUniverse;
 
     EServerTestConfiguration(@Nullable Class<? extends TestServerConfiguratorBase> configuratorClass,
-        @Nullable String backupZip, String defaultUniverse) {
+                             @Nullable String backupZip, String defaultUniverse) {
         this.configuratorClass = configuratorClass;
         this.defaultUniverse = defaultUniverse;
         if (backupZip == null) {
@@ -46,7 +47,7 @@ public enum EServerTestConfiguration {
         if (configuratorClass != null) {
             try {
                 TestServerConfiguratorBase configurator = configuratorClass.getConstructor(File.class)
-                    .newInstance(backupZip);
+                        .newInstance(backupZip);
                 serverTestBase.getBeanFactory().autowireBean(configurator);
                 configurator.loadBackup(importPrefix);
                 configurator.configure(importPrefix);

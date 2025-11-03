@@ -1,13 +1,17 @@
 package de.pnp.manager.server.database;
 
-import de.pnp.manager.component.Spell;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
+import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.Talent;
+import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
+
+import static de.pnp.manager.utils.TestUtils.tagSet;
 
 /**
  * Tests for {@link SpellRepository}.
@@ -27,49 +31,53 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
     @Test
     void testTalentLink() {
         PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
-            new PrimaryAttribute(null, "Primary", "PRI"));
+                new PrimaryAttribute(null, "Primary", "PRI"));
 
         Talent earthMagic = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Earth Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
-        Spell spell = new Spell(null, "Wall", "Create a wall", List.of(), "10 Mana per meter", "1 per meter",
-            List.of(earthMagic), 2);
-        Talent changedEarthMagic = new Talent(null, "Earth Magic", "Magic", primaryAttribute, primaryAttribute,
-            primaryAttribute);
+                new Talent(null, "Earth Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
+        Spell spell = createSpell().withName("Wall").withEffect("Create a Wall").withAdditionalCost("10 Mana per meter")
+                .withTalents(earthMagic).build();
+        Talent changedEarthMagic = new Talent(null, "Earth Magic", tagSet("Magic"), primaryAttribute, primaryAttribute,
+                primaryAttribute);
 
-        testRepositoryCollectionLink(Spell::getTalents, talentRepository, spell, List.of(earthMagic),
-            Map.of(earthMagic, changedEarthMagic));
+        testRepositoryCollectionLink(s -> ((Spell.TalentCast) s.getCast()).talents(), talentRepository, spell, List.of(earthMagic),
+                Map.of(earthMagic, changedEarthMagic));
     }
 
     @Override
     protected Spell createObject() {
         PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
-            new PrimaryAttribute(null, "Primary", "PRI"));
+                new PrimaryAttribute(null, "Primary", "PRI"));
+        SecondaryAttribute mana = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
         Talent fireMagic = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Fire Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
+                new Talent(null, "Fire Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
 
-        return new Spell(null, "Fireball", "Throw a fireball", List.of(), "10 Mana", "0",
-            List.of(fireMagic), 2);
+        return createSpell().withName("Fireball").withEffect("Throw a fireball").withCost(10, mana)
+                .withTalents(fireMagic).withTier(1).build();
     }
 
     @Override
     protected Spell createSlightlyChangeObject() {
         PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
-            new PrimaryAttribute(null, "Other", "OT"));
+                new PrimaryAttribute(null, "Other", "OT"));
+        SecondaryAttribute life = createSecondaryAttribute().withName("Life").isConsumable().persist().build();
         Talent fireMagic = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Fire Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
+                new Talent(null, "Fire Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
 
-        return new Spell(null, "Big Fireball", "Throw a fireball", List.of(), "30 Mana", "1",
-            List.of(fireMagic), 3);
+        return createSpell().withName("Big Fireball").withEffect("Throw a fireball").withCost(10, life)
+                .withTalents(fireMagic).withTier(3).build();
     }
 
     @Override
     protected List<Spell> createMultipleObjects() {
         PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
-            new PrimaryAttribute(null, "Primary", "PRI"));
+                new PrimaryAttribute(null, "Primary", "PRI"));
         Talent earthMagic = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Earth Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
+                new Talent(null, "Earth Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
 
-        return List.of(new Spell(null, "Wall", "Creates a wall", List.of(), "", "", List.of(earthMagic), 2),
-            new Spell(null, "Stone", "Throws a stone", List.of(), "", "", List.of(earthMagic), 1));
+        return List.of(
+                createSpell().withName("Wall").withEffect("Creates a wall").withTalents(earthMagic).withTier(2).build(),
+                createSpell().withName("Stone").withEffect("Throws a stone").withTalents(earthMagic).withTier(1).build()
+        );
     }
 }

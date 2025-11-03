@@ -4,8 +4,8 @@ import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 import static de.pnp.manager.utils.TestUpgradeBuilder.createUpgrade;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.item.equipable.Shield;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEffectCalculation;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,13 @@ class DefensiveEquipmentTest {
 
     @Test
     void testGetArmor() {
-        DefensiveEquipment defensiveEquipment = new DefensiveEquipment(1, TEST_SHIELD, 0);
+        ShieldEquipment defensiveEquipment = new ShieldEquipment(1, TEST_SHIELD, 0);
         assertThat(defensiveEquipment.getArmor()).isEqualTo(5);
         assertThat(defensiveEquipment.getMaxArmor()).isEqualTo(5);
 
         defensiveEquipment.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.ARMOR,
-                    EUpgradeEffectCalculation.MULTIPLICATIVE))
+                    ECalculation.MULTIPLICATIVE))
                 .build());
         assertThat(defensiveEquipment.getArmor()).isEqualTo(10);
         assertThat(defensiveEquipment.getMaxArmor()).isEqualTo(10);
@@ -51,12 +51,12 @@ class DefensiveEquipmentTest {
 
     @Test
     void testGetHit() {
-        DefensiveEquipment defensiveEquipment = new DefensiveEquipment(1, TEST_SHIELD, 0);
+        ShieldEquipment defensiveEquipment = new ShieldEquipment(1, TEST_SHIELD, 0);
         assertThat(defensiveEquipment.getHit()).isEqualTo(2);
 
         defensiveEquipment.addUpgrade(
             createUpgrade().addEffect(
-                    new EquipmentUpgradeEffect("", 1, EUpgradeEquipmentManipulator.HIT, EUpgradeEffectCalculation.ADDITIVE))
+                    new EquipmentUpgradeEffect("", 1, EUpgradeEquipmentManipulator.HIT, ECalculation.ADDITIVE))
                 .build());
         assertThat(defensiveEquipment.getHit()).isEqualTo(3);
 
@@ -68,12 +68,12 @@ class DefensiveEquipmentTest {
 
     @Test
     void testGetInitiative() {
-        DefensiveEquipment defensiveEquipment = new DefensiveEquipment(1, TEST_SHIELD, 0);
+        ShieldEquipment defensiveEquipment = new ShieldEquipment(1, TEST_SHIELD, 0);
         assertThat(defensiveEquipment.getInitiative()).isEqualTo(1);
 
         defensiveEquipment.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", 0.5F, EUpgradeEquipmentManipulator.INITIATIVE,
-                    EUpgradeEffectCalculation.ADDITIVE))
+                    ECalculation.ADDITIVE))
                 .build());
         assertThat(defensiveEquipment.getInitiative()).isEqualTo(1.5F);
 
@@ -85,12 +85,12 @@ class DefensiveEquipmentTest {
 
     @Test
     void testGetWeight() {
-        DefensiveEquipment defensiveEquipment = new DefensiveEquipment(1, TEST_SHIELD, 0);
+        ShieldEquipment defensiveEquipment = new ShieldEquipment(1, TEST_SHIELD, 0);
         assertThat(defensiveEquipment.getWeight()).isEqualTo(3);
 
         defensiveEquipment.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.WEIGHT,
-                EUpgradeEffectCalculation.ADDITIVE)).build());
+                ECalculation.ADDITIVE)).build());
         assertThat(defensiveEquipment.getWeight()).isEqualTo(5);
 
         // Check no other stat got changed due to the upgrade
@@ -101,17 +101,17 @@ class DefensiveEquipmentTest {
 
     @Test
     void testCurseUpgrades() {
-        DefensiveEquipment defensiveEquipment = new DefensiveEquipment(1, TEST_SHIELD, 0);
+        ShieldEquipment defensiveEquipment = new ShieldEquipment(1, TEST_SHIELD, 0);
         assertThat(defensiveEquipment.getArmor()).isEqualTo(5);
 
         defensiveEquipment.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.ARMOR,
-                EUpgradeEffectCalculation.ADDITIVE)).build());
+                ECalculation.ADDITIVE)).build());
         assertThat(defensiveEquipment.getArmor()).isEqualTo(2);
 
         defensiveEquipment.addUpgrade(
             createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.ARMOR,
-                EUpgradeEffectCalculation.ADDITIVE)).build());
+                ECalculation.ADDITIVE)).build());
         assertThat(defensiveEquipment.getArmor()).isEqualTo(0);
     }
 }

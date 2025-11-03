@@ -3,6 +3,8 @@ package de.pnp.manager.component.item;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.google.common.base.MoreObjects;
+import de.pnp.manager.Tag;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.inventory.ItemStack;
@@ -12,16 +14,16 @@ import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.server.database.item.ItemRepository;
-import de.pnp.manager.validation.MatchingItemTypes;
 import de.pnp.manager.validation.MatchingStackSizes;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -34,7 +36,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
     @JsonSubTypes.Type(value = Jewellery.class, name = "Jewellery"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-@MatchingItemTypes
 @MatchingStackSizes
 @Document(ItemRepository.REPOSITORY_NAME)
 public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObject {
@@ -49,22 +50,11 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     protected final String name;
 
     /**
-     * The type of this item.
+     * The tags of this item.
      * <p>
-     * An example would be material.
+     * An example would be sword.
      */
-    @DBRef
-    @NotNull
-    protected final ItemType type;
-
-    /**
-     * The subtype of this item.
-     * <p>
-     * An example would be metal.
-     */
-    @DBRef
-    @NotNull
-    protected final ItemType subtype;
+    protected final @NotNull Set<@NotNull Tag> tags;
 
     /**
      * The requirement needed to use this item.
@@ -127,13 +117,12 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     protected final int minimumStackSize;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public Item(ObjectId id, String name, ItemType type, ItemType subtype, String requirement, String effect,
-        ERarity rarity, int vendorPrice, int tier, String description, String note, int maximumStackSize,
-        int minimumStackSize) {
+    public Item(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
+        ERarity rarity,
+        int vendorPrice, int tier, String description, String note, int maximumStackSize, int minimumStackSize) {
         super(id);
         this.name = name;
-        this.type = type;
-        this.subtype = subtype;
+        this.tags = tags;
         this.requirement = requirement;
         this.effect = effect;
         this.rarity = rarity;
@@ -150,14 +139,11 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         return name;
     }
 
-    @Override
-    public ItemType getType() {
-        return type;
-    }
-
-    @Override
-    public ItemType getSubtype() {
-        return subtype;
+    /**
+     * @see #tags
+     */
+    public Set<Tag> getTags() {
+        return Collections.unmodifiableSet(tags);
     }
 
     @Override
@@ -217,34 +203,33 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         return getVendorPrice() == item.getVendorPrice() && getTier() == item.getTier()
             && getMaximumStackSize() == item.getMaximumStackSize()
             && getMinimumStackSize() == item.getMinimumStackSize()
-            && Objects.equals(getName(), item.getName()) && Objects.equals(getType(), item.getType())
-            && Objects.equals(getSubtype(), item.getSubtype()) && Objects.equals(getRequirement(),
-            item.getRequirement()) && Objects.equals(getEffect(), item.getEffect())
-            && getRarity() == item.getRarity() && Objects.equals(getDescription(), item.getDescription())
-            && Objects.equals(getNote(), item.getNote());
+            && Objects.equals(getName(), item.getName()) && Objects.equals(getTags(), item.getTags())
+            && Objects.equals(getRequirement(), item.getRequirement()) && Objects.equals(getEffect(),
+            item.getEffect()) && getRarity() == item.getRarity() && Objects.equals(getDescription(),
+            item.getDescription()) && Objects.equals(getNote(), item.getNote());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getType(), getSubtype(), getRequirement(), getEffect(), getRarity(),
-            getVendorPrice(), getTier(), getDescription(), getNote(), getMaximumStackSize(), getMinimumStackSize());
+        return Objects.hash(getName(), getTags(), getRequirement(), getEffect(), getRarity(), getVendorPrice(),
+            getTier(),
+            getDescription(), getNote(), getMaximumStackSize(), getMinimumStackSize());
     }
 
     @Override
     public String toString() {
-        return "Item{" +
-            "name='" + name + '\'' +
-            ", type=" + type +
-            ", subtype=" + subtype +
-            ", requirement='" + requirement + '\'' +
-            ", effect='" + effect + '\'' +
-            ", rarity=" + rarity +
-            ", vendorPrice=" + vendorPrice +
-            ", tier=" + tier +
-            ", description='" + description + '\'' +
-            ", note='" + note + '\'' +
-            ", maximalStackSize=" + maximumStackSize +
-            ", minimalStackSize=" + minimumStackSize +
-            '}';
+        return MoreObjects.toStringHelper(this)
+            .add("name", name)
+            .add("tags", tags)
+            .add("requirement", requirement)
+            .add("effect", effect)
+            .add("rarity", rarity)
+            .add("vendorPrice", vendorPrice)
+            .add("tier", tier)
+            .add("description", description)
+            .add("note", note)
+            .add("maximumStackSize", maximumStackSize)
+            .add("minimumStackSize", minimumStackSize)
+            .toString();
     }
 }

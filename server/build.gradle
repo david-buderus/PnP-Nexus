@@ -4,7 +4,7 @@ plugins {
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
     id "org.springdoc.openapi-gradle-plugin" version "1.6.0"
-    id "org.openapi.generator" version "6.6.0"
+    id "org.openapi.generator" version "7.10.0"
 }
 
 group = 'de.pnp.manager'
@@ -28,11 +28,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation:3.1.0'
     implementation 'org.springframework.boot:spring-boot-starter-security:3.1.0'
 
+    compileOnly 'org.springframework.boot:spring-boot-devtools'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
     testImplementation 'org.springframework.security:spring-security-test:6.1.5'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.21.0'
-    testImplementation 'com.microsoft.playwright:playwright:1.35.1'
+    testImplementation 'com.microsoft.playwright:playwright:1.56.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 }
 
@@ -84,6 +86,7 @@ openApiGenerate {
     generatorName.set("typescript-axios")
     outputDir.set("$rootDir/webapp/src/api")
     inputSpec.set("$rootDir/docs/swagger.json")
+    typeMappings.set(Map.of("set", "Array"))
 }
 
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask

@@ -5,12 +5,59 @@
 .btn {
     @apply font-bold py-2 px-4 rounded bg-stone-400;
 }
+
 .btn:hover {
     @apply bg-stone-500;
 }
+
 .btn-icon {
     @apply font-bold py-2 px-3 rounded bg-stone-400;
 }
+
 .btn-icon:hover {
     @apply bg-stone-500;
+}
+
+.page-hidden {
+    display: none;
+}
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    .page-break {
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .print-clean {
+        box-shadow: none !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+    
+    .page-hidden {
+        display: block !important;
+    }
+
+    #print-section,
+    #print-section * {
+        visibility: visible !important;
+    }
+
+    #print-section {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        background: white;
+    }
 }

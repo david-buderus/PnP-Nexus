@@ -6,11 +6,13 @@
   "passwordNotMatching": "Passwords don't match",
   "createUser": "Create a new user",
   "editUser": "Edit a user",
+  "rights": "Rights",
   "adminRights": "Admin rights",
   "universeCreationRights": "Is able to create universes",
   "universeReadRights": "Right Access",
   "universeWriteRights": "Write Access",
   "universeOwnerRights": "Owner",
   "deleteUser": "Delete account",
-  "confirmDeleteUser": "Do you really want to delete your account?"
+  "confirmDeleteUser": "Do you really want to delete this account?",
+  "unknownUser": "Unknown user"
 }

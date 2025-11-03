@@ -1,12 +1,13 @@
 package de.pnp.manager.webapp.pages.components.users;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.options.AriaRole;
+import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserDetails;
-import de.pnp.manager.webapp.utils.WebTestUtils;
+import de.pnp.manager.webapp.pages.components.Select;
+import de.pnp.manager.webapp.pages.components.Switch;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Base class for user manipulation dialogs.
@@ -23,29 +24,24 @@ public class UserManipulation {
     }
 
     /**
-     * @see PnPUser#getDisplayName()
+     * @see PnPUser#displayName()
      */
     public void setDisplayName(String name) {
-        locator.getByTestId("displayName").getByRole(AriaRole.TEXTBOX).fill(name);
+        getByDataPath("displayName").fill(name);
     }
 
     /**
-     * @see PnPUser#getEmail()
+     * @see PnPUser#email()
      */
     public void setEmail(String email) {
-        locator.getByTestId("email").getByRole(AriaRole.TEXTBOX).fill(email);
+        getByDataPath("email").fill(email);
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
     public void setIsAdmin(boolean admin) {
-        Locator checkBox = locator.getByTestId("adminRights").getByRole(AriaRole.CHECKBOX);
-        if (admin) {
-            checkBox.check();
-        } else {
-            checkBox.uncheck();
-        }
+        Switch.from(locator.getByTestId("adminRights")).set(admin);
     }
 
 
@@ -53,41 +49,47 @@ public class UserManipulation {
      * @see PnPUserDetails#getAuthorities()
      */
     public void setIsUniverseCreator(boolean creator) {
-        Locator checkBox = locator.getByTestId("universeCreationRights").getByRole(AriaRole.CHECKBOX);
-        if (creator) {
-            checkBox.check();
-        } else {
-            checkBox.uncheck();
-        }
+        Switch.from(locator.getByTestId("universeCreationRights")).set(creator);
     }
 
     /**
      * Checks of the universe creator checkbox is disabled and checked.
      */
     public void assertUniverseCreatorIsCheckedAndDisabled() {
-        Locator checkBox = locator.getByTestId("universeCreationRights").getByRole(AriaRole.CHECKBOX);
-        assertThat(checkBox).isDisabled();
-        assertThat(checkBox).isChecked();
+        Switch creationRights = Switch.from(locator.getByTestId("universeCreationRights"));
+        assertThat(creationRights.asLocator()).isDisabled();
+        assertThat(creationRights.asLocator()).isChecked();
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
-    public void addReadUniverse(String universe) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("universe-read-rights"), universe, true);
+    public void addReadUniverse(Universe universe) {
+        Select.from(locator.getByTestId("universe-read-rights")).select(universe.getName());
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
-    public void addWriteUniverse(String universe) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("universe-write-rights"), universe, true);
+    public void addWriteUniverse(Universe universe) {
+        Select.from(locator.getByTestId("universe-write-rights")).select(universe.getName());
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
-    public void addOwnerUniverse(String universe) {
-        WebTestUtils.selectAutoComplete(locator.getByTestId("universe-owner-rights"), universe, true);
+    public void addOwnerUniverse(Universe universe) {
+        Select.from(locator.getByTestId("universe-owner-rights")).select(universe.getName());
+    }
+
+    /**
+     * Returns the locator based on the data path.
+     * Ensure that the locator is visible and enabled.
+     */
+    protected Locator getByDataPath(String path) {
+        Locator input = locator.locator("[data-path=\"" + path + "\"]");
+        assertThat(input).isVisible();
+        assertThat(input).isEnabled();
+        return input;
     }
 }

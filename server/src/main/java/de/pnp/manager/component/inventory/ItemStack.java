@@ -4,18 +4,22 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Floats;
-import de.pnp.manager.component.inventory.equipment.DefensiveEquipment;
+import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
 import de.pnp.manager.component.inventory.equipment.Equipment;
+import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IItem;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
 /**
  * Represents an {@link Item} that can be held and used.
  */
 @JsonSubTypes({
     @JsonSubTypes.Type(value = Equipment.class, name = "Equipment"),
-    @JsonSubTypes.Type(value = DefensiveEquipment.class, name = "DefensiveEquipment"),
+    @JsonSubTypes.Type(value = ShieldEquipment.class, name = "ShieldEquipment"),
+    @JsonSubTypes.Type(value = ArmorEquipment.class, name = "ArmorEquipment"),
     @JsonSubTypes.Type(value = WeaponEquipment.class, name = "WeaponEquipment"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
@@ -24,11 +28,13 @@ public class ItemStack<I extends IItem> {
     /**
      * The amount of the {@link #item} this {@link ItemStack} holds.
      */
+    @PositiveOrZero
     private float stackSize;
 
     /**
      * The {@link Item} this {@link ItemStack} represents.
      */
+    @NotNull
     private final I item;
 
     public ItemStack(float stackSize, I item) {

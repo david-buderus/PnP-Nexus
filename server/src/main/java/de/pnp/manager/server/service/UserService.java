@@ -1,15 +1,7 @@
 package de.pnp.manager.server.service;
 
-import static de.pnp.manager.security.SecurityConstants.ADMIN;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-
 import com.google.common.annotations.VisibleForTesting;
-import de.pnp.manager.component.user.IGrantedAuthorityDTO;
-import de.pnp.manager.component.user.PnPUser;
-import de.pnp.manager.component.user.PnPUserCreation;
-import de.pnp.manager.component.user.PnPUserDetails;
-import de.pnp.manager.component.user.PnPUserPreference;
+import de.pnp.manager.component.user.*;
 import de.pnp.manager.security.AdminRights;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
@@ -20,28 +12,20 @@ import de.pnp.manager.validation.ValidCurrentPassword;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
+
+import static de.pnp.manager.security.SecurityConstants.ADMIN;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * Service to access {@link UserRepository} and {@link UserDetailsRepository}.
@@ -65,7 +49,7 @@ public class UserService {
     @GetMapping("display-names")
     @Operation(summary = "Get all display names", operationId = "getDisplayNames")
     public Collection<String> getAllDisplayNames() {
-        return userRepository.getAllUsers().stream().map(PnPUser::getDisplayName).toList();
+        return userRepository.getAllUsers().stream().map(PnPUser::displayName).toList();
     }
 
     @GetMapping
@@ -88,7 +72,7 @@ public class UserService {
     @Operation(summary = "Get a user", operationId = "getUser")
     public PnPUser getUser(@PathVariable String username) {
         return userRepository.getUser(username)
-            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User " + username + " not found."));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User " + username + " not found."));
     }
 
     @PutMapping("{username}")
@@ -96,7 +80,7 @@ public class UserService {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Updates a user", operationId = "updateUser")
     public void updateUser(@PathVariable String username, @Valid @RequestBody PnPUser user) {
-        if (!Objects.equals(username, user.getUsername())) {
+        if (!Objects.equals(username, user.username())) {
             throw new ResponseStatusException(BAD_REQUEST, "The username of the object does not match.");
         }
         userRepository.updateUser(user);
@@ -107,7 +91,7 @@ public class UserService {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a user", operationId = "removeUser")
     public void removeUser(HttpServletRequest request, @AuthenticationPrincipal UserDetails userDetails,
-        @PathVariable String username) {
+                           @PathVariable String username) {
         if (!userController.removeUser(username)) {
             throw new ResponseStatusException(NOT_FOUND, "User " + username + " not found.");
         }
@@ -140,7 +124,7 @@ public class UserService {
     @Operation(summary = "Gets the user preferences", operationId = "getUserPreferences")
     public PnPUserPreference getPreferences(@PathVariable String username) {
         return preferenceRepository.getPreference(username)
-            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User " + username + " not found."));
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User " + username + " not found."));
     }
 
     @PutMapping("{username}/preferences")
@@ -159,9 +143,9 @@ public class UserService {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Updates the permissions of a user", operationId = "updatePermissions")
     public void updatePermissions(@PathVariable String username,
-        @Valid @RequestBody Collection<IGrantedAuthorityDTO> authorities) {
+                                  @Valid @RequestBody Collection<IGrantedAuthorityDTO> authorities) {
         userDetailsRepository.updateGrantedAuthority(username,
-            authorities.stream().map(IGrantedAuthorityDTO::convert).toList());
+                authorities.stream().map(IGrantedAuthorityDTO::convert).toList());
     }
 
     @GetMapping("{username}/permissions")

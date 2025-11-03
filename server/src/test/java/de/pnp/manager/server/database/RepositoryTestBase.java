@@ -10,6 +10,8 @@ import de.pnp.manager.utils.TestItemBuilder;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.utils.TestSecondaryAttributeBuilder;
 import de.pnp.manager.utils.TestSecondaryAttributeBuilder.TestSecondaryAttributeBuilderFactory;
+import de.pnp.manager.utils.TestSpellBuilder;
+import de.pnp.manager.utils.TestSpellBuilder.TestSpellBuilderFactory;
 import de.pnp.manager.utils.TestUpgradeBuilder;
 import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
 import java.util.Collection;
@@ -37,6 +39,9 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
 
     @Autowired
     private TestSecondaryAttributeBuilderFactory secondaryAttributeBuilder;
+
+    @Autowired
+    private TestSpellBuilderFactory spellBuilder;
 
     /**
      * The main repository for the test.
@@ -235,5 +240,12 @@ public abstract class RepositoryTestBase<E extends DatabaseObject, Repo extends 
      */
     protected TestSecondaryAttributeBuilder createSecondaryAttribute() {
         return secondaryAttributeBuilder.createAttributeBuilder(getUniverseName());
+    }
+
+    /**
+     * A helper method to create {@link TestSpellBuilder}.
+     */
+    protected TestSpellBuilder createSpell() {
+        return spellBuilder.createSpellBuilder(getUniverseName());
     }
 }

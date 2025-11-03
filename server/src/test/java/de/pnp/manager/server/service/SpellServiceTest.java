@@ -1,17 +1,18 @@
 package de.pnp.manager.server.service;
 
-import de.pnp.manager.component.IResourceUsage.CharacterResourceUsage;
-import de.pnp.manager.component.Spell;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
-import de.pnp.manager.component.attributes.SecondaryAttribute.PrimaryAttributeDependency;
 import de.pnp.manager.component.character.Talent;
+import de.pnp.manager.component.spell.ECastingType;
+import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
-import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static de.pnp.manager.utils.TestUtils.tagSet;
 
 /**
  * Tests for {@link SpellService}.
@@ -20,9 +21,6 @@ public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepo
 
     @Autowired
     private PrimaryAttributeRepository primaryAttributeRepository;
-
-    @Autowired
-    private SecondaryAttributeRepository secondaryAttributeRepository;
 
     @Autowired
     private TalentRepository talentRepository;
@@ -34,23 +32,24 @@ public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepo
     @Override
     protected List<Spell> createObjects() {
         PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
-            new PrimaryAttribute(null, "Primary", "PRI"));
-        SecondaryAttribute secondaryAttribute = secondaryAttributeRepository.insert(getUniverseName(),
-            new SecondaryAttribute(null, "Secondary", true,
-                List.of(new PrimaryAttributeDependency(1, primaryAttribute))));
+                new PrimaryAttribute(null, "Primary", "PRI"));
+        SecondaryAttribute secondaryAttribute = createSecondaryAttribute().withName("Secondary").isConsumable()
+                .withFormula("1 * PRI").addDependency(primaryAttribute).persist().build();
+
         Talent fireTalent = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Fire", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
+                new Talent(null, "Fire", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
         Talent lightningTalent = talentRepository.insert(getUniverseName(),
-            new Talent(null, "Lightning", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
+                new Talent(null, "Lightning", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
+
         return List.of(
-            new Spell(null, "Fireball", "Throws a fireball",
-                List.of(new CharacterResourceUsage(10, secondaryAttribute)),
-                "", "2 Rounds", List.of(fireTalent), 3),
-            new Spell(null, "Spark", "Light a fire", List.of(new CharacterResourceUsage(2, secondaryAttribute)), "", "",
-                List.of(fireTalent), 1),
-            new Spell(null, "Lightning Fire", "Fire with lightning",
-                List.of(new CharacterResourceUsage(100, secondaryAttribute)), "90 Mana per Round", "10 Rounds",
-                List.of(fireTalent, lightningTalent), 3)
+                createSpell().withName("Fireball").withEffect("Throws a fireball").withCost(10, secondaryAttribute)
+                        .withCastTime(2).withTalents(fireTalent).withTier(3).withCastingType(
+                                ECastingType.SOMATIC).build(),
+                createSpell().withName("Spark").withEffect("Light a fire").withCost(2, secondaryAttribute)
+                        .withTalents(fireTalent).withTier(1).build(),
+                createSpell().withName("Lightning Fire").withEffect("Fire with lightning").withCost(100, secondaryAttribute)
+                        .withAdditionalCost("90 Mana per Round").withCastTime(10).withCastingType(ECastingType.VERBAL)
+                        .withTalents(fireTalent, lightningTalent).withTier(3).build()
         );
     }
 }

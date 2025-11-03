@@ -1,0 +1,10 @@
+{
+  "uploadBackup": "Hochladen eines Backups",
+  "selectBackup": "Backup wählen",
+  "downloadBackup": "Runterladen eines Backups",
+  "upload": "Hochladen",
+  "download": "Runterladen",
+  "selectAll": "Alle Auswählen",
+  "selectNone": "Keine Auswählen",
+  "downloadBackupDescription": "Wähle alle Universen aus, die du backupen möchtest."
+}

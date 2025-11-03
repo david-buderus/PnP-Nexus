@@ -1,23 +1,27 @@
 package de.pnp.manager.server.controller.backup;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import de.pnp.manager.component.IResourceUsage.ItemUsage;
-import de.pnp.manager.component.Spell;
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
+import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.SpellRepository;
 import de.pnp.manager.server.database.TalentRepository;
-import de.pnp.manager.server.database.UniverseRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.server.database.universe.UniverseRepository;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
+import de.pnp.manager.utils.TestSpellBuilder.TestSpellBuilderFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,11 +29,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+
+import static de.pnp.manager.utils.TestUtils.tagSet;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link BackupExportController} and {@link BackupImportController}.
@@ -40,6 +42,9 @@ public class BackupControllerTest {
 
     @Autowired
     private TestItemBuilderFactory itemBuilder;
+
+    @Autowired
+    private TestSpellBuilderFactory spellBuilder;
 
     @Autowired
     private UniverseRepository universeRepository;
@@ -85,20 +90,19 @@ public class BackupControllerTest {
         assertThat(universeRepository.insert(universe)).isNotNull();
 
         Material material = materialRepository.insert(universeName,
-            new Material(null, "Iron", List.of()));
+                new Material(null, "Iron", List.of()));
         Collection<Item> items = itemRepository.insertAll(universeName, List.of(
-            itemBuilder.createItemBuilder(universeName).withName("Item").buildItem(),
-            itemBuilder.createItemBuilder(universeName).withName("Weapon").withMaterial(material)
-                .buildArmor()
+                itemBuilder.createItemBuilder(universeName).withName("Item").buildItem(),
+                itemBuilder.createItemBuilder(universeName).withName("Weapon").withMaterial(material)
+                        .buildArmor()
         ));
         PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(universeName,
-            new PrimaryAttribute(null, "Primary", "PRI"));
+                new PrimaryAttribute(null, "Primary", "PRI"));
         Talent talent = talentRepository.insert(universeName,
-            new Talent(null, "Magic", "Magic", primaryAttribute, primaryAttribute, primaryAttribute));
+                new Talent(null, "Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
         Collection<Spell> spells = spellRepository.insertAll(universeName,
-            List.of(
-                new Spell(null, "Spell", "MAGIC!", List.of(new ItemUsage(10, items.stream().findFirst().orElseThrow())),
-                    "", "", List.of(talent), 2)));
+                List.of(spellBuilder.createSpellBuilder(universeName).withName("Spell")
+                        .withCost(10, items.stream().findFirst().orElseThrow()).withTalents(talent).build()));
 
         File backupZip = tempDir.resolve("backup.zip").toFile();
 

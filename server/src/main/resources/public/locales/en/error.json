@@ -1,4 +1,5 @@
 {
   "notNumber": "has to be a number",
-  "notInteger": "has to be a natural number"
+  "notInteger": "has to be a natural number",
+  "notDice": "has to be a dice in the format of 4D6 + D4"
 }

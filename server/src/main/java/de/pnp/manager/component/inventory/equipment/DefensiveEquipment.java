@@ -1,18 +1,15 @@
 package de.pnp.manager.component.inventory.equipment;
 
-import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipment;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
-import de.pnp.manager.component.item.interfaces.IHandheldItem;
 import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
 
 /**
  * Represents an {@link IDefensiveItem} that can be held and used.
  */
-public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> implements
-    IHandheldEquipment {
+public abstract class DefensiveEquipment<I extends IDefensiveItem> extends DamageableEquipment<I> {
 
-    public DefensiveEquipment(float stackSize, IDefensiveItem item, int wear) {
+    protected DefensiveEquipment(float stackSize, I item, int wear) {
         super(stackSize, item, wear);
     }
 
@@ -22,7 +19,7 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
      */
     public int getArmor() {
         return Math.max(0, (int) Math.ceil(
-            applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability()));
+                applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability()));
     }
 
     /**
@@ -34,28 +31,28 @@ public class DefensiveEquipment extends DamageableEquipment<IDefensiveItem> impl
     }
 
     /**
+     * Returns the {@link IDefensiveItem#getProtection() protection} of the underlying {@link Item} with regard to the
+     * {@link #getUpgrades() upgrades}.
+     */
+    public int getMaxProtection() {
+        return Math.max(0, applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getProtection()));
+    }
+
+    /**
+     * Returns the {@link IDefensiveItem#getProtection() protection} of the underlying {@link Item} with regard to the
+     * {@link #getUpgrades() upgrades}.
+     */
+    public int getProtection() {
+        return Math.max(0, applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getProtection()));
+    }
+
+    /**
      * Returns the {@link IDefensiveItem#getWeight() weight} of the underlying {@link Item} with regard to the
      * {@link #getUpgrades() upgrades}.
      */
     public int getWeight() {
         return Math.round(
-            applyUpgradeEffects(EUpgradeEquipmentManipulator.WEIGHT, getItem().getWeight()) * getRelativeDurability());
-    }
-
-    @Override
-    public int getHit() {
-        if (getItem() instanceof IHandheldItem handHoldItem) {
-            return applyUpgradeEffects(EUpgradeEquipmentManipulator.HIT, handHoldItem.getHit());
-        }
-        throw new AssertionError("Only HandholdItems have hit.");
-    }
-
-    @Override
-    public float getInitiative() {
-        if (getItem() instanceof IHandheldItem handHoldItem) {
-            return applyUpgradeEffects(EUpgradeEquipmentManipulator.INITIATIVE, handHoldItem.getInitiative());
-        }
-        throw new AssertionError("Only HandholdItems have initiative.");
+                applyUpgradeEffects(EUpgradeEquipmentManipulator.WEIGHT, getItem().getWeight()) * getRelativeDurability());
     }
 
     @Override

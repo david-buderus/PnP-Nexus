@@ -9,11 +9,9 @@ import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Tests the material overview page.
@@ -34,20 +32,13 @@ public class MaterialPageTest extends UniquelyNamedOverviewTestBase<Material, Ma
     }
 
     @Override
-    protected List<Pair<String, Comparator<Material>>> getSorters() {
-        return List.of(Pair.of("items", Comparator.comparing(
-            material -> material.getItems().stream().map(item -> item.item().getName())
-                .collect(Collectors.joining(", ")))));
-    }
-
-    @Override
     protected Material getWrongObject() {
         return new Material(null, null, List.of(new MaterialItem(0, null)));
     }
 
     @Override
     protected List<String> getExpectedErrorFields() {
-        return List.of("name", "items[0].amount", "items[0].item");
+        return List.of("name", "items.0.amount");
     }
 
     @Override
@@ -62,12 +53,12 @@ public class MaterialPageTest extends UniquelyNamedOverviewTestBase<Material, Ma
 
     @Override
     protected Material getEditedObject() {
-        return new Material(null, "Iron", List.of(new MaterialItem(10, getItem("Blood"))));
+        return new Material(null, "Iron", List.of(new MaterialItem(10, getItem("Iron Ore"))));
     }
 
     @Override
     protected String getChangeIdentifier() {
-        return "Blood";
+        return "Iron Ore";
     }
 
     private Item getItem(String name) {

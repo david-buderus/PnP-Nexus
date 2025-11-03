@@ -5,7 +5,18 @@ package de.pnp.manager.component.item.interfaces;
  */
 public interface IDefensiveItem extends IDamageableItem, IEquipableItem {
 
+    /**
+     * The weight of the item.
+     */
     float getWeight();
 
+    /**
+     * The armor of the item.
+     */
     int getArmor();
+
+    /**
+     * The protection of the item.
+     */
+    int getProtection();
 }

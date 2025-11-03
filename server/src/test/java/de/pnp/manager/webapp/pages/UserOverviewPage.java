@@ -1,6 +1,7 @@
 package de.pnp.manager.webapp.pages;
 
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
 import de.pnp.manager.webapp.pages.components.users.UserCreation;
 import de.pnp.manager.webapp.pages.components.users.UserEdit;
@@ -26,7 +27,7 @@ public class UserOverviewPage extends PageBase {
      */
     public void deleteSelectedUsers() {
         page.getByTestId("delete").click();
-        page.getByTestId("confirm").click();
+        page.getByRole(AriaRole.DIALOG).locator("[type=submit]").click();
     }
 
     /**

@@ -2,7 +2,7 @@ package de.pnp.manager.component.upgrade;
 
 import com.google.common.base.MoreObjects;
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.component.item.ItemType;
+import de.pnp.manager.component.TagRequirement;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
@@ -14,7 +14,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.Objects;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -30,11 +29,13 @@ public class Upgrade extends DatabaseObject {
     private final String name;
 
     /**
-     * The {@link ItemType} on which this {@link Upgrade} can be used.
+     * The {@link EUpgradeRestriction} on which this {@link Upgrade} can be used.
      */
-    @DBRef
     @NotNull
-    private final ItemType target;
+    private final EUpgradeRestriction restriction;
+
+    @NotNull
+    private final TagRequirement tagRequirement;
 
     /**
      * The amount of {@link EquipableItem#getUpgradeSlots() slots} needed for an {@link EquipableItem} to hold this
@@ -57,11 +58,13 @@ public class Upgrade extends DatabaseObject {
     @NotEmpty
     private final Collection<@Valid UpgradeEffect> effects;
 
-    public Upgrade(ObjectId id, String name, ItemType target, int slots, int vendorPrice,
+    public Upgrade(ObjectId id, String name, EUpgradeRestriction restriction, TagRequirement tagRequirement, int slots,
+        int vendorPrice,
         Collection<UpgradeEffect> effects) {
         super(id);
         this.name = name;
-        this.target = target;
+        this.restriction = restriction;
+        this.tagRequirement = tagRequirement;
         this.slots = slots;
         this.vendorPrice = vendorPrice;
         this.effects = effects;
@@ -71,8 +74,8 @@ public class Upgrade extends DatabaseObject {
         return name;
     }
 
-    public ItemType getTarget() {
-        return target;
+    public EUpgradeRestriction getRestriction() {
+        return restriction;
     }
 
     public int getSlots() {
@@ -87,6 +90,10 @@ public class Upgrade extends DatabaseObject {
         return effects;
     }
 
+    public TagRequirement getTagRequirement() {
+        return tagRequirement;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -97,20 +104,22 @@ public class Upgrade extends DatabaseObject {
         }
         Upgrade upgrade = (Upgrade) o;
         return getSlots() == upgrade.getSlots() && getVendorPrice() == upgrade.getVendorPrice() && Objects.equals(
-            getName(), upgrade.getName()) && Objects.equals(getTarget(), upgrade.getTarget())
-            && Objects.equals(getEffects(), upgrade.getEffects());
+            getName(), upgrade.getName()) && getRestriction() == upgrade.getRestriction() && Objects.equals(
+            getTagRequirement(), upgrade.getTagRequirement()) && Objects.equals(getEffects(), upgrade.getEffects());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getTarget(), getSlots(), getVendorPrice(), getEffects());
+        return Objects.hash(getName(), getRestriction(), getTagRequirement(), getSlots(), getVendorPrice(),
+            getEffects());
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
             .add("name", name)
-            .add("target", target)
+            .add("restriction", restriction)
+            .add("tagRequirement", tagRequirement)
             .add("slots", slots)
             .add("vendorPrice", vendorPrice)
             .add("effects", effects)

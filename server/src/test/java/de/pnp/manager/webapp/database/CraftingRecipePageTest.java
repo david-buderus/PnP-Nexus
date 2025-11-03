@@ -1,8 +1,7 @@
 package de.pnp.manager.webapp.database;
 
 import de.pnp.manager.component.CraftingRecipe;
-import de.pnp.manager.component.IResourceUsage.ItemUsage;
-import de.pnp.manager.component.IResourceUsage.MaterialUsage;
+import de.pnp.manager.component.IResourceUsage;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
@@ -11,11 +10,10 @@ import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import java.util.Comparator;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 import java.util.function.Predicate;
-import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Tests the crafting recipe overview page.
@@ -39,44 +37,35 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
     }
 
     @Override
-    protected Comparator<CraftingRecipe> getDefaultSort() {
-        return Comparator.comparing(
-            recipe -> recipe.getProduct().amount() + " " + recipe.getProduct().resource().getName());
-    }
-
-    @Override
-    protected List<Pair<String, Comparator<CraftingRecipe>>> getSorters() {
-        return List.of(Pair.of("profession", Comparator.comparing(CraftingRecipe::getProfession)),
-            Pair.of("requirement", Comparator.comparing(CraftingRecipe::getRequirement)));
-    }
-
-    @Override
     protected CraftingRecipe getWrongObject() {
-        return new CraftingRecipe(null, "", "", "", new ItemUsage(-1, null), null, List.of());
+        return new CraftingRecipe(null, "", "", "",
+                List.of(new IResourceUsage.ItemUsage(-1, null)),
+                List.of(new IResourceUsage.ItemUsage(-2, null)));
     }
 
     @Override
     protected List<String> getExpectedErrorFields() {
-        return List.of("product.amount", "product.resource");
+        return List.of("products.0.amount", "materials.0.amount");
     }
 
     @Override
     protected CraftingRecipe getCorrectObject() {
-        return new CraftingRecipe(null, "Smith", "Forge", "", new ItemUsage(1, getItem("Iron Sword")), null,
-            List.of(new MaterialUsage(1, materialRepository.get(getUniverseName(), "Iron").orElseThrow()),
-                new ItemUsage(1, getItem("Iron Ingot"))));
+        return new CraftingRecipe(null, "Smith", "NEW", "",
+                List.of(new IResourceUsage.ItemUsage(1, getItem("Iron Sword"))),
+                List.of(new IResourceUsage.MaterialUsage(1, materialRepository.get(getUniverseName(), "Iron").orElseThrow())));
     }
 
     @Override
     protected String getIdentifier(CraftingRecipe object) {
-        return object.getProduct().resource().getName();
+        return object.getProducts().getFirst().resource().getName();
     }
 
     @Override
     protected CraftingRecipe getEditedObject() {
         CraftingRecipe original = getOriginalModifiedObject();
-        return new CraftingRecipe(null, "Smith", "Example", "Something", original.getProduct(),
-            original.getSideProduct(), List.of(new ItemUsage(1, getItem("Iron Ring"))));
+        return new CraftingRecipe(null, original.getProfession(), original.getRequirement(),
+                original.getOtherCircumstances(),
+                List.of(new IResourceUsage.ItemUsage(1, getItem("Iron Ring"))), original.getMaterials());
     }
 
     @Override
@@ -86,7 +75,7 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
 
     @Override
     protected Predicate<CraftingRecipe> getOriginalModifiedFilter() {
-        return recipe -> recipe.getProduct().resource().getName().equals("Iron Ingot");
+        return recipe -> recipe.getProfession().equals("Smith");
     }
 
     private Item getItem(String name) {

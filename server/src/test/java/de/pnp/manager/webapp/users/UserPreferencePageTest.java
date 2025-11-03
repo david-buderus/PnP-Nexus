@@ -1,7 +1,5 @@
 package de.pnp.manager.webapp.users;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserPreference;
@@ -12,10 +10,13 @@ import de.pnp.manager.server.UiTestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.UserPreferenceRepository;
 import de.pnp.manager.webapp.pages.UserPreferencePage;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests the user page.
@@ -38,7 +39,7 @@ public class UserPreferencePageTest extends ServerTestBase {
     private UserPreferenceRepository preferenceRepository;
 
     @BeforeEach
-    void openItemPage() {
+    void openPage() {
         universe = getUniverse();
         if (preferenceRepository.getPreference(USERNAME).isEmpty()) {
             userController.createNewUser(new PnPUserCreation(USERNAME, USERNAME, USERNAME, "", List.of()));
@@ -49,7 +50,6 @@ public class UserPreferencePageTest extends ServerTestBase {
 
     @Test
     void testContent() {
-        assertThat(page.getUsername()).isEqualTo(USERNAME);
         page.assertNoLanguageIsSelected();
     }
 
@@ -60,7 +60,7 @@ public class UserPreferencePageTest extends ServerTestBase {
         page.saveEditedUser();
         page.assertIsInNonEditMode();
 
-        assertThat(page.getLanguage().trim()).isEqualTo("English");
+        page.assertLanguage("English");
 
         PnPUserPreference preference = preferenceRepository.getPreference(USERNAME).orElseThrow();
         assertThat(preference.language()).isEqualTo("en");

@@ -1,101 +1,80 @@
-import React, { useState } from 'react';
-import { getUniverseContext, getUserContext } from '../components/PageBase';
-import { Box, Card, CardActionArea, CardContent, Grid, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { FaPlus } from "react-icons/fa";
-import { UniverseCreationDialog } from '../components/universes/UniverseCreationDialog';
-import { Link, useSearchParams } from "react-router-dom";
+import {useTranslation} from 'react-i18next';
+import {useUniverseContext, useUserContext} from '../components/PageBase';
+import {Link, useNavigate, useSearchParams} from 'react-router-dom';
+import {Card, Flex, Grid, Stack, Text, Title} from '@mantine/core';
+import {FaPlus} from 'react-icons/fa6';
+import {useEffect} from 'react';
 
-function Home() {
-    const { t } = useTranslation();
+
+export default function Home() {
+    const {t} = useTranslation();
     const [searchParams] = useSearchParams();
-    const { universes, setActiveUniverse, fetchUniverses } = getUniverseContext();
-    const { userPermissions } = getUserContext();
+    const {universes, fetchUniverses, setActiveUniverse, activeUniverse} = useUniverseContext();
+    const {userPermissions} = useUserContext();
+    const navigate = useNavigate();
 
-    const [openUniverseCreationDialog, setOpenUniverseCreationDialog] = useState(false);
+    useEffect(() => {
+        fetchUniverses();
+    }, []);
 
     if (universes.length === 0 && !userPermissions.canCreateUniverses) {
-        return <Grid
-            container
+        return <Flex
+            gap="md"
+            justify="center"
+            align="center"
             direction="column"
-            justifyContent="flex-start"
-            alignItems="center"
+            wrap="wrap"
         >
-            <Typography gutterBottom variant="h5" component="div" align='center'>
-                {t("universe:noUniverses")}
-            </Typography>
-            <Typography gutterBottom variant="body2" component="div" align='center'>
-                {t("universe:noUniversesDetails")}
-            </Typography>
-        </Grid>;
+            <Title>
+                {t('universe:noUniverse')}
+            </Title>
+            <Text>
+                {t('universe:needToInvited')}
+            </Text>
+        </Flex>;
     }
 
-    return <Box>
-        <Grid container
-            direction="row"
-            justifyContent="center"
-            alignItems="flex-start"
-            spacing={3}
-        >
-            {universes.map(universe =>
-                <Grid item key={universe.name}>
-                    <Card >
-                        <CardActionArea
-                            sx={{ width: 250, height: 250 }}
-                            onClick={() => setActiveUniverse(universe)}
-                            component={Link}
-                            to={{
-                                pathname: "/universe",
-                                search: searchParams.toString()
-                            }}
-                        >
-                            <CardContent>
-                                <Grid
-                                    container
-                                    direction="column"
-                                    justifyContent="flex-start"
-                                    alignItems="center"
-                                >
-                                    <Typography gutterBottom variant="h5" component="div" align='center'>
-                                        {universe.displayName}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {universe.shortDescription}
-                                    </Typography>
-                                </Grid>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                </Grid>
-            )}
-            {userPermissions.canCreateUniverses && <Grid item>
-                <Card >
-                    <CardActionArea sx={{ width: 250, height: 250 }} onClick={() => setOpenUniverseCreationDialog(true)}>
-                        <CardContent>
-                            <Grid
-                                container
-                                direction="column"
-                                justifyContent="center"
-                                alignItems="center"
-                            >
-                                <Typography gutterBottom variant="h5" component="div" align='center'>
-                                    {t("universe:createUniverse")}
-                                </Typography>
-                                <FaPlus size={30} />
-                            </Grid>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-            </Grid>}
-        </Grid>
-        <UniverseCreationDialog open={openUniverseCreationDialog} onClose={(event, reason) => {
-            if (reason === "successful") {
-                fetchUniverses();
-            }
-            setOpenUniverseCreationDialog(false);
-        }}
-        />
-    </Box>;
-}
+    return <Grid>
+        {universes.map(u => <Grid.Col span={2} key={u.name}>
+            <Card
+                shadow="sm"
+                padding="xl"
+                onClick={() => {
+                    setActiveUniverse(u);
+                    navigate('/universe');
+                }}
+                key={u.name}
+                withBorder={activeUniverse?.name === u.name}
+            >
+                <Text fw={500} size="lg" mt="md">
+                    {u.displayName}
+                </Text>
 
-export default Home;
+                <Text mt="xs" c="dimmed" size="sm">
+                    {u.shortDescription}
+                </Text>
+            </Card>
+        </Grid.Col>)}
+
+        {userPermissions.canCreateUniverses &&
+            <Grid.Col span={2}>
+                <Card
+                    shadow="sm"
+                    padding="xl"
+                    component={Link}
+                    to={{
+                        pathname: '/universe-creation',
+                        search: searchParams.toString()
+                    }}
+                >
+                    <Stack align="center">
+                        <Text fw={500} size="lg" mt="md" ta="center">
+                            {t('universe:createUniverse')}
+                        </Text>
+                        <FaPlus size={30}/>
+                    </Stack>
+                </Card>
+            </Grid.Col>
+        }
+    </Grid>;
+}

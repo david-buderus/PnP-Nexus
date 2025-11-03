@@ -1,37 +1,35 @@
 package de.pnp.manager.webapp.pages.components;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Locator.LocatorOptions;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.component.DatabaseObject;
+import org.assertj.core.api.Assertions;
+import org.bson.types.ObjectId;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
-import org.assertj.core.api.Assertions;
-import org.bson.types.ObjectId;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Represents the OverviewTable component.
  */
 public class OverviewTable {
 
-    private final Locator base;
     private final Locator table;
 
-    public OverviewTable(Locator base) {
-        this.base = base;
-        this.table = base.getByRole(AriaRole.TABLE);
+    public OverviewTable(Locator table) {
+        this.table = table;
     }
 
     /**
      * Returns the {@link OverviewTable} of a page.
      */
     public static OverviewTable getOverviewTable(Page page) {
-        return new OverviewTable(page.getByTestId("overview-table"));
+        return new OverviewTable(page.getByRole(AriaRole.TABLE));
     }
 
     /**
@@ -60,22 +58,6 @@ public class OverviewTable {
      */
     public OverviewTableRows getTableRow(ObjectId id) {
         return getTableRow(id.toHexString());
-    }
-
-    /**
-     * Clicks the sorting button of the table column with the given label.
-     */
-    public void clickSortByLabel(String label) {
-        table.locator("//thead").locator("//th", new LocatorOptions().setHasText(label)).getByRole(AriaRole.BUTTON)
-            .click();
-    }
-
-    /**
-     * Clicks the sorting button of the table column with the given test-id.
-     */
-    public void clickSortBy(String testId) {
-        table.locator("//thead").getByTestId(testId).getByRole(AriaRole.BUTTON)
-            .click();
     }
 
     /**
@@ -110,7 +92,7 @@ public class OverviewTable {
             String expected = id.apply(sorted.get(i));
             String actual = tableRows.getRow(i).getDataTestId();
             Assertions.assertThat(actual).as("Expected in line %s [%s] but got [%s]", i, expected, actual)
-                .isEqualTo(expected);
+                    .isEqualTo(expected);
         }
     }
 
@@ -125,7 +107,15 @@ public class OverviewTable {
      * Returns the underlying {@link Locator}.
      */
     public Locator asLocator() {
-        return base;
+        return table;
+    }
+
+    /**
+     * Sets the number of rows showed in the table.
+     */
+    public void setRowsPerPage(int value) {
+        Select.from(table.locator("..").locator("..").getByLabel("Rows per page"))
+                .select(String.valueOf(value));
     }
 
 

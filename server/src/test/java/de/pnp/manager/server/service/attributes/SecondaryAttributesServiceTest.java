@@ -2,7 +2,6 @@ package de.pnp.manager.server.service.attributes;
 
 import de.pnp.manager.component.attributes.PrimaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
-import de.pnp.manager.component.attributes.SecondaryAttribute.PrimaryAttributeDependency;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
 import de.pnp.manager.server.service.RepositoryServiceBaseTest;
@@ -28,8 +27,9 @@ public class SecondaryAttributesServiceTest extends
         PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseName(),
             new PrimaryAttribute(null, "Strength", "STR"));
         return List.of(
-            new SecondaryAttribute(null, "Power", false, List.of(new PrimaryAttributeDependency(2, strength))),
-            new SecondaryAttribute(null, "Health", true, List.of(new PrimaryAttributeDependency(10, strength))),
-            new SecondaryAttribute(null, "Damage", false, List.of(new PrimaryAttributeDependency(0.1, strength))));
+            createSecondaryAttribute().withName("Power").addDependency(strength).withFormula("2 * STR").build(),
+            createSecondaryAttribute().withName("Health").isConsumable().addDependency(strength)
+                .withFormula("10 * STR + 5").build(),
+            createSecondaryAttribute().withName("Damage").addDependency(strength).withFormula("0.1 * STR").build());
     }
 }

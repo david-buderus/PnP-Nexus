@@ -1,8 +1,10 @@
 package de.pnp.manager.webapp.utils;
 
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page.GetByRoleOptions;
+import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Util class to web app testing
@@ -12,33 +14,40 @@ public abstract class WebTestUtils {
     /**
      * Selects the given option in the given auto complete.
      *
-     * @param autocomplete the locator of the autocomplete
-     * @param option       the option which should be selected
-     * @param exact        if only the exact option should be selected or the first matching one
+     * @param select the locator of the autocomplete
+     * @param option the option which should be selected
      */
-    public static void selectAutoComplete(Locator autocomplete, String option, boolean exact) {
-        autocomplete.click();
-        autocomplete.type(option);
-        if (exact) {
-            autocomplete.page().getByRole(AriaRole.OPTION, new GetByRoleOptions().setName(option).setExact(true))
+    public static void selectWithSearch(Locator select, String searchText, String option) {
+        select.click();
+        select.type(searchText);
+        select.page().getByRole(AriaRole.OPTION).and(select.page().locator("[value=\"" + option + "\"]"))
                 .click();
-        } else {
-            autocomplete.page().getByRole(AriaRole.OPTION, new GetByRoleOptions().setName(option)).first().click();
-        }
     }
 
     /**
      * Clears the given auto complete.
      */
-    public static void clearAutoComplete(Locator autocomplete) {
+    public static void clearMultiSelect(Locator autocomplete) {
         autocomplete.getByRole(AriaRole.BUTTON).all().forEach(Locator::click);
     }
 
     /**
-     * Selects the given value in a combobox.
+     * Returns the locator given the path.
      */
-    public static void select(Locator select, String value) {
-        select.click();
-        select.page().getByRole(AriaRole.OPTION).and(select.page().locator("[data-value=\"" + value + "\"]")).click();
+    public static Locator getByDataPath(Locator locator, String path) {
+        Locator input = locator.locator("[data-path=\"" + path + "\"]");
+        assertThat(input).isVisible();
+        assertThat(input).isEnabled();
+        return input;
+    }
+
+    /**
+     * Returns the locator given the path.
+     */
+    public static Locator getByDataPath(Page page, String path) {
+        Locator input = page.locator("[data-path=\"" + path + "\"]");
+        assertThat(input).isVisible();
+        assertThat(input).isEnabled();
+        return input;
     }
 }

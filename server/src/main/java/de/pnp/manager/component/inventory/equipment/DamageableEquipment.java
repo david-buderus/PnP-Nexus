@@ -1,21 +1,25 @@
 package de.pnp.manager.component.inventory.equipment;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.inventory.equipment.interfaces.IDamageableEquipment;
 import de.pnp.manager.component.item.interfaces.IDamageableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
+import jakarta.validation.constraints.PositiveOrZero;
 
 /**
  * Represents an {@link IDamageableItem} that can be held and used.
  */
 public abstract class DamageableEquipment<I extends IDamageableItem & IEquipableItem> extends
-    Equipment<I> implements IDamageableEquipment {
+        Equipment<I> implements IDamageableEquipment {
 
     /**
      * The current wear of this {@link Equipment}.
      */
+    @PositiveOrZero
+    @JsonProperty("wear")
     protected float wear;
 
-    public DamageableEquipment(float stackSize, I item, float wear) {
+    protected DamageableEquipment(float stackSize, I item, float wear) {
         super(stackSize, item);
         this.wear = wear;
     }

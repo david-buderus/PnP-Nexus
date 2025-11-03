@@ -1,7 +1,5 @@
 package de.pnp.manager.webapp.database;
 
-import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
-
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.universe.Universe;
@@ -11,15 +9,16 @@ import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
 import de.pnp.manager.webapp.pages.components.DatabaseObjectDialog;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.core.api.Assertions;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Base class for testing overview pages.
@@ -38,31 +37,17 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     protected Universe universe;
 
     @BeforeEach
-    void openItemPage() {
+    void openPage() {
         universe = getUniverse();
         page = openTestPage(webDriver.openMainMenu("admin", "admin"));
         page.selectActiveUniverse(universe);
     }
 
     @Test
-    void testSorting() {
-        Collection<T> objects = getTestObjects();
-
-        OverviewTable table = page.getTable();
-
-        assertThat(table.getAllTableRows().asLocator()).not().hasCount(0);
-
-        table.assertIsSorted(objects, getDefaultSort());
-
-        for (Pair<String, Comparator<T>> sorter : getSorters()) {
-            table.clickSortBy(sorter.getLeft());
-            table.assertIsSorted(objects, sorter.getRight());
-        }
-    }
-
-    @Test
     void testAdd() {
         OverviewTable table = page.getTable();
+        table.setRowsPerPage(100);
+
         DatabaseObjectDialog dialog = page.openAddDialog();
 
         dialog.fillOut(getWrongObject());
@@ -88,6 +73,7 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testEdit() {
         OverviewTable table = page.getTable();
+        table.setRowsPerPage(100);
 
         Assertions.assertThat(page.isEditDisabled()).isTrue();
         table.getTableRow(getModifyId().toHexString()).select();
@@ -111,6 +97,8 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testDelete() {
         OverviewTable table = page.getTable();
+        table.setRowsPerPage(100);
+        
         Collection<T> testObjects = getTestObjects();
         ObjectId modifyId = getModifyId();
 
@@ -139,16 +127,6 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
      * Returns all known test objects.
      */
     protected abstract Collection<T> getTestObjects();
-
-    /**
-     * Returns the default sort of the underlying table.
-     */
-    protected abstract Comparator<T> getDefaultSort();
-
-    /**
-     * Returns sorters which should get tested with their corresponding id.
-     */
-    protected abstract List<Pair<String, Comparator<T>>> getSorters();
 
     /**
      * Returns an object which will have validation errors.
