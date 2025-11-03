@@ -128,7 +128,7 @@ jobs:
 
 
       - name: Upload Backend Coverage to Teamscale
-        uses: 'cqse/teamscale-upload-action@v2.8.0'
+        uses: 'cqse/teamscale-upload-action@v2.9.9'
         if: github.event_name != 'pull_request'
         with:
           server: 'https://pnp-nexus.de/teamscale/'
