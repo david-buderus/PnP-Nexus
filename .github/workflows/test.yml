@@ -126,12 +126,6 @@ jobs:
             rm ./collector.pid
           fi
 
-      - name: Add Sectigo Public Server Authentication Root R46
-        run: |
-          sudo curl -L -o /usr/local/share/ca-certificates/SectigoPublicServerAuthRootR46.crt https://crt.sh/?d=1966255316
-          sudo update-ca-certificates
-          sudo ls /etc/ssl/certs | grep Sectigo || echo "Sectigo R46 not found in /etc/ssl/certs"
-
       - name: Upload Backend Coverage to Teamscale
         uses: 'cqse/teamscale-upload-action@v2.9.9'
         if: github.event_name != 'pull_request'
