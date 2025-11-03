@@ -82,6 +82,10 @@ public class UserManipulation {
         Select.from(locator.getByTestId("universe-owner-rights")).select(universe.getName());
     }
 
+    /**
+     * Returns the locator based on the data path.
+     * Ensure that the locator is visible and enabled.
+     */
     protected Locator getByDataPath(String path) {
         Locator input = locator.locator("[data-path=\"" + path + "\"]");
         assertThat(input).isVisible();

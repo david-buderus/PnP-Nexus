@@ -1,13 +1,13 @@
-import {ActionIcon, Button, Group, Table, TextInput} from "@mantine/core";
-import {randomId} from "@mantine/hooks";
-import {ReactNode, useEffect} from "react";
-import {FaRegTrashCan} from "react-icons/fa6";
-import {handleNetworkErrors, handleValidationErrors} from "../utils/ErrorUtils";
-import {useTranslation} from "react-i18next";
-import {useUniverseContext} from "../PageBase";
-import {PrimaryAttribute, PrimaryAttributeServiceApi} from "../../api";
-import {useForm} from "@mantine/form";
-import {API_CONFIGURATION} from "../Constants";
+import {ActionIcon, Button, Group, Table, TextInput} from '@mantine/core';
+import {randomId} from '@mantine/hooks';
+import {ReactNode, useEffect} from 'react';
+import {FaRegTrashCan} from 'react-icons/fa6';
+import {handleNetworkErrors, handleValidationErrors} from '../utils/ErrorUtils';
+import {useTranslation} from 'react-i18next';
+import {useUniverseContext} from '../PageBase';
+import {PrimaryAttribute, PrimaryAttributeServiceApi} from '../../api';
+import {useForm} from '@mantine/form';
+import {API_CONFIGURATION} from '../Constants';
 
 const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
 
@@ -27,7 +27,7 @@ export function PrimaryAttributeForm({
     }>({
         mode: 'uncontrolled',
         initialValues: {
-            attributes: Array(8).fill({shortName: "", name: ""}).map(a => {
+            attributes: Array(8).fill({shortName: '', name: ''}).map(a => {
                 return {...a, key: randomId()};
             })
         }
@@ -58,8 +58,8 @@ export function PrimaryAttributeForm({
         <Table>
             <Table.Thead>
                 <Table.Tr>
-                    <Table.Th>{t("name")}</Table.Th>
-                    <Table.Th>{t("character:shortName")}</Table.Th>
+                    <Table.Th>{t('name')}</Table.Th>
+                    <Table.Th>{t('character:shortName')}</Table.Th>
                     <Table.Th></Table.Th>
                 </Table.Tr>
             </Table.Thead>
@@ -91,7 +91,7 @@ export function PrimaryAttributeForm({
             </Table.Tbody>
             {form.getValues().attributes.length === 0 ?
                 <Table.Caption c="dimmed" ta="center">
-                    {t("nothing-here")}
+                    {t('nothing-here')}
                 </Table.Caption> : null}
         </Table>
         <Button
@@ -100,7 +100,7 @@ export function PrimaryAttributeForm({
                 form.insertListItem('attributes', {name: '', shortName: '', key: randomId()})
             }
         >
-            {t("universe:addAnotherAttribute")}
+            {t('universe:addAnotherAttribute')}
         </Button>
 
         <Group justify="flex-end" pt="md">

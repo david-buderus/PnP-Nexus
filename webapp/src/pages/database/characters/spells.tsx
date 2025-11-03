@@ -110,7 +110,7 @@ export function SpellOverview() {
                 filterFn: (row, id, filterValue) => {
                     const cast = row.getValue<SpellCast>(id);
                     if (!cast) {
-                        return !!filterValue;
+                        return Boolean(filterValue);
                     }
                     if (cast['@type'] === 'TalentCast') {
                         return (cast as TalentCast).talents.some(o => o?.name?.includes(filterValue));

@@ -187,6 +187,9 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
                 getAction(), getCast(), getCastingTypes(), getTier(), getTags(), getCountermeasures());
     }
 
+    /**
+     * Interface how a spell can be cast.
+     */
     @JsonSubTypes({
             @JsonSubTypes.Type(value = TalentCast.class, name = "TalentCast"),
             @JsonSubTypes.Type(value = TagCast.class, name = "TagCast")
@@ -196,9 +199,15 @@ public class Spell extends DatabaseObject implements IUniquelyNamedDataObject {
 
     }
 
+    /**
+     * A spell cast via a specific talent
+     */
     public record TalentCast(@DBRef @NotEmpty List<Talent> talents) implements ISpellCast {
     }
 
+    /**
+     * A spell cast via s definition of tags
+     */
     public record TagCast(@NotNull TagRequirement tagRequirement) implements ISpellCast {
     }
 }

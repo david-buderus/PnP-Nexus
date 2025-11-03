@@ -1,6 +1,6 @@
-import {ActionIcon, Button, ButtonProps, Group, Menu, MenuItemProps} from "@mantine/core";
-import {FaChevronDown} from "react-icons/fa6";
-import {ReactNode} from "react";
+import {ActionIcon, Button, ButtonProps, Group, Menu, MenuItemProps} from '@mantine/core';
+import {FaChevronDown} from 'react-icons/fa6';
+import {ReactNode} from 'react';
 
 /** Props for the dropdown button */
 export type DropdownButtonProps = ButtonProps & {
@@ -20,7 +20,7 @@ export function DropdownButton({
     label,
     onClick,
     variant,
-    size = "sm",
+    size = 'sm',
     dropdownItems,
     ...props
 }: DropdownButtonProps) {
@@ -41,7 +41,7 @@ export function DropdownButton({
             <Menu.Target>
                 <ActionIcon
                     variant={variant}
-                    size={"input-" + size}
+                    size={'input-' + size}
                     style={{
                         borderTopLeftRadius: 0,
                         borderBottomLeftRadius: 0,
@@ -53,9 +53,9 @@ export function DropdownButton({
             </Menu.Target>
             <Menu.Dropdown>
                 {dropdownItems.map((item, index) => {
-                    const {label: itemLabel, onClick, ...itemProps} = item;
+                    const {label: itemLabel, onClick: onItemClick, ...itemProps} = item;
 
-                    return <Menu.Item key={index} onClick={onClick} {...itemProps}>
+                    return <Menu.Item key={index} onClick={onItemClick} {...itemProps}>
                         {itemLabel}
                     </Menu.Item>;
                 })}

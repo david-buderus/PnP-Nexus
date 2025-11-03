@@ -34,6 +34,9 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Rest service to control characters
+ */
 @RestController
 @RequestMapping("api/{universe}/characters")
 public class PnPCharacterService {

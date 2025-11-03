@@ -7,6 +7,9 @@ import com.microsoft.playwright.Locator;
  */
 public abstract class ComponentBase {
 
+    /**
+     * The locator of this base
+     */
     protected final Locator locator;
 
     protected ComponentBase(Locator locator) {

@@ -1,15 +1,15 @@
-import { ReactNode } from "react";
-import { useUniverseContext, useUserContext } from "./PageBase";
-import { Flex, Select, Title, Text, Button } from "@mantine/core";
-import { useTranslation } from "react-i18next";
-import { Link, useSearchParams } from "react-router-dom";
+import {ReactNode} from 'react';
+import {useUniverseContext, useUserContext} from './PageBase';
+import {Button, Flex, Select, Text, Title} from '@mantine/core';
+import {useTranslation} from 'react-i18next';
+import {Link, useSearchParams} from 'react-router-dom';
 
-
-export function UniverseView({ children }: { children: ReactNode; }) {
-    const { t } = useTranslation();
+/** A view which catches if no universe has been selected. */
+export function UniverseView({children}: { children: ReactNode; }) {
+    const {t} = useTranslation();
     const [searchParams] = useSearchParams();
-    const { universes, activeUniverse, setActiveUniverse } = useUniverseContext();
-    const { userPermissions } = useUserContext();
+    const {universes, activeUniverse, setActiveUniverse} = useUniverseContext();
+    const {userPermissions} = useUserContext();
 
     if (activeUniverse) {
         return children;
@@ -23,15 +23,17 @@ export function UniverseView({ children }: { children: ReactNode; }) {
         wrap="wrap"
     >
         <Title>
-            {t("universe:noUniverse")}
+            {t('universe:noUniverse')}
         </Title>
         {universes.length > 0 ?
             <>
                 <Text>
-                    {t("universe:pleaseSelectUniverse")}
+                    {t('universe:pleaseSelectUniverse')}
                 </Text>
                 <Select
-                    data={universes?.map(universe => { return { value: universe.name, label: universe.displayName }; })}
+                    data={universes?.map(universe => {
+                        return {value: universe.name, label: universe.displayName};
+                    })}
                     value={activeUniverse?.name ?? null}
                     onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
                     searchable
@@ -41,21 +43,21 @@ export function UniverseView({ children }: { children: ReactNode; }) {
             : userPermissions.canCreateUniverses ?
                 <>
                     <Text>
-                        {t("universe:createUniverseOrGetInvited")}
+                        {t('universe:createUniverseOrGetInvited')}
                     </Text>
                     <Button
                         component={Link}
                         to={{
-                            pathname: "/universe-creation",
+                            pathname: '/universe-creation',
                             search: searchParams.toString()
                         }}
                     >
-                        {t("universe:createUniverse")}
+                        {t('universe:createUniverse')}
                     </Button>
                 </>
                 :
                 <Text>
-                    {t("universe:needToInvited")}
+                    {t('universe:needToInvited')}
                 </Text>
         }
     </Flex>;
