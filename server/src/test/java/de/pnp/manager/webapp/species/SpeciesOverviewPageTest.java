@@ -47,7 +47,7 @@ public class SpeciesOverviewPageTest extends ServerTestBase {
     void links() {
         Collection<Species> species = speciesRepository.getAll(getUniverseName());
         Collection<Nation> nations = nationRepository.getAll(getUniverseName());
-        List<Nation> unboundNations = nations.stream().filter(n -> species.stream().anyMatch(s -> s.getNations().contains(n))).toList();
+        List<Nation> unboundNations = nations.stream().filter(n -> species.stream().noneMatch(s -> s.getNations().contains(n))).toList();
 
         for (Species s : species) {
             Locator speciesLink = page.getLink(s);
