@@ -205,6 +205,7 @@ export function PageBase() {
                                 pathname: '/',
                                 search: searchParams.toString()
                             }}
+                            data-testid="main-menu"
                         >
                             <Title
                                 order={1}

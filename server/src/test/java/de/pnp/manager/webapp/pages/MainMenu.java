@@ -108,6 +108,14 @@ public class MainMenu extends PageBase {
     }
 
     /**
+     * Opens the {@link SpeciesOverviewPage}.
+     */
+    public SpeciesOverviewPage openSpeciesOverviewPage() {
+        openMenu("universe-menu", "species-menu");
+        return new SpeciesOverviewPage(page);
+    }
+
+    /**
      * Opens the {@link UserPage}.
      */
     public UserPage openUserPage() {

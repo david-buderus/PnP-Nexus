@@ -58,6 +58,7 @@ export function SpeciesForm({
     });
 
     return <form
+        data-testid="species-form"
         onSubmit={form.onSubmit(species => {
             if (species.id) {
                 SPECIES_API.updateSpecies(activeUniverse.name, species.id, species)
@@ -95,7 +96,7 @@ export function SpeciesForm({
                         /> : null
                     }
                 </Group>
-                <RichTextEditor editor={editor} variant="subtle">
+                <RichTextEditor editor={editor} variant="subtle" data-path="description">
                     <RichTextEditor.Toolbar sticky stickyOffset={60}>
                         <RichTextEditor.ControlsGroup>
                             <RichTextEditor.Bold/>

@@ -108,7 +108,7 @@ export function SpeciesDetail() {
             <Paper shadow="sm" p="md">
                 <Stack miw={900}>
                     <Group justify="space-between">
-                        <Title>
+                        <Title data-testid="name">
                             {selected.name}
                         </Title>
                         {userPermissions?.canWriteActiveUniverse ?

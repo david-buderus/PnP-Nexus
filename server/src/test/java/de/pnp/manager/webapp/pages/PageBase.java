@@ -26,6 +26,14 @@ public class PageBase {
     }
 
     /**
+     * Goes back to the {@link MainMenu}
+     */
+    public MainMenu toMainMenu() {
+        page.getByTestId("main-menu").click();
+        return new MainMenu(page);
+    }
+
+    /**
      * Returns the underlying {@link Page}.
      */
     public Page asPage() {

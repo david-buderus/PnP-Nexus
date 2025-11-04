@@ -1,5 +1,6 @@
 package de.pnp.manager.component.character;
 
+import com.google.common.base.MoreObjects;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.character.traits.ICharacterTrait;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a species in a universe.
@@ -73,5 +75,35 @@ public class Species extends DatabaseObject implements IUniquelyNamedDataObject 
 
     public List<Nation> getNations() {
         return nations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Species species = (Species) o;
+        return playable == species.playable && Objects.equals(name, species.name)
+                && Objects.equals(description, species.description)
+                && Objects.equals(advantageTraits, species.advantageTraits)
+                && Objects.equals(disadvantageTraits, species.disadvantageTraits)
+                && Objects.equals(nations, species.nations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, playable, advantageTraits, disadvantageTraits, nations);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", name)
+                .add("description", description)
+                .add("playable", playable)
+                .add("advantageTraits", advantageTraits)
+                .add("disadvantageTraits", disadvantageTraits)
+                .add("nations", nations)
+                .toString();
     }
 }

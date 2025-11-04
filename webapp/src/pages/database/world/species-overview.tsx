@@ -6,6 +6,7 @@ import {useUniverseContext, useUserContext} from '../../../components/PageBase';
 import {Link, useNavigate} from 'react-router-dom';
 import {SpeciesForm} from '../../../components/character/SpeciesForm';
 import {BooleanParam, useQueryParam, withDefault} from 'use-query-params';
+import {Nation, Species} from '../../../api';
 
 /** Overview over all species */
 export function SpeciesOverview() {
@@ -54,7 +55,11 @@ export function SpeciesOverview() {
                         {t('species')}
                     </Title>
                     {userPermissions?.canWriteActiveUniverse ?
-                        <Button variant="outline" onClick={() => setEditMode(true)}>
+                        <Button
+                            variant="outline"
+                            data-testid="add"
+                            onClick={() => setEditMode(true)}
+                        >
                             {t('add')}
                         </Button> : null
                     }
@@ -63,111 +68,93 @@ export function SpeciesOverview() {
                     {t('species:overviewDescription')}
                 </Text>
                 {playableSpecies.length > 0 ?
-                    <>
-                        <Title order={4}>
-                            {t('species:playableSpecies')}
-                        </Title>
-                        <List>
-                            {playableSpecies.map(s =>
-                                <List.Item key={s.id}>
-                                    <Anchor
-                                        component={Link}
-                                        to={{
-                                            pathname: `/species/${s.id}`,
-                                            search: `universe=${activeUniverse.name}`
-                                        }}
-                                        data-testid={s.id}
-                                    >
-                                        {s.name}
-                                    </Anchor>
-                                    {s.nations.length > 0 ?
-                                        <List>
-                                            {s.nations.map(n =>
-                                                <List.Item key={n.id}>
-                                                    <Anchor
-                                                        component={Link}
-                                                        to={{
-                                                            pathname: `/nations/${n.id}`,
-                                                            search: `universe=${activeUniverse.name}&species=${s.id}`
-                                                        }}
-                                                        data-testid={s.id + '/' + n.id}
-                                                    >
-                                                        {n.name}
-                                                    </Anchor>
-                                                </List.Item>)
-                                            }
-                                        </List>
-                                        : null}
-                                </List.Item>
-                            )}
-                        </List>
-                    </> : null
+                    <SpeciesList
+                        title={t('species:playableSpecies')}
+                        species={playableSpecies}
+                    /> : null
                 }
                 {nonplayableSpecies.length > 0 ?
-                    <>
-                        <Title order={4}>
-                            {t('species:nonplayableSpecies')}
-                        </Title>
-                        <List>
-                            {nonplayableSpecies.map(s =>
-                                <List.Item key={s.id}>
-                                    <Anchor
-                                        component={Link}
-                                        to={{
-                                            pathname: `/species/${s.id}`,
-                                            search: `universe=${activeUniverse.name}`
-                                        }}
-                                        data-testid={s.id}
-                                    >
-                                        {s.name}
-                                    </Anchor>
-                                    {s.nations.length > 0 ?
-                                        <List>
-                                            {s.nations.map(n =>
-                                                <List.Item key={n.id}>
-                                                    <Anchor
-                                                        component={Link}
-                                                        to={{
-                                                            pathname: `/nations/${n.id}`,
-                                                            search: `universe=${activeUniverse.name}&species=${species}`
-                                                        }}
-                                                        data-testid={s.id + '/' + n.id}
-                                                    >
-                                                        {n.name}
-                                                    </Anchor>
-                                                </List.Item>)
-                                            }
-                                        </List>
-                                        : null}
-                                </List.Item>
-                            )}
-                        </List>
-                    </> : null
+                    <SpeciesList
+                        title={t('species:nonplayableSpecies')}
+                        species={nonplayableSpecies}
+                    /> : null
                 }
                 {unboundNations.length > 0 ?
                     <>
                         <Title order={4}>
                             {t('species:unboundNations')}
                         </Title>
-                        <List>
-                            {unboundNations.map(n =>
-                                <List.Item key={n.id}>
-                                    <Anchor
-                                        component={Link}
-                                        to={{
-                                            pathname: `/nations/${n.id}`,
-                                            search: `universe=${activeUniverse.name}`
-                                        }}
-                                        data-testid={n.id}
-                                    >
-                                        {n.name}
-                                    </Anchor>
-                                </List.Item>
-                            )}
-                        </List>
+                        <NationList
+                            nations={unboundNations}
+                        />
                     </> : null
                 }
             </Stack>
         </Paper>
     </Center>;
+}
+
+function SpeciesList({
+    title,
+    species,
+}: {
+    title: string;
+    species: Species[];
+}) {
+    const {activeUniverse} = useUniverseContext();
+
+    return <>
+        <Title order={4}>
+            {title}
+        </Title>
+        <List>
+            {species.map(s =>
+                <List.Item key={s.id}>
+                    <Anchor
+                        component={Link}
+                        to={{
+                            pathname: `/species/${s.id}`,
+                            search: `universe=${activeUniverse.name}`
+                        }}
+                        data-testid={s.id}
+                    >
+                        {s.name}
+                    </Anchor>
+                    {s.nations.length > 0 ?
+                        <NationList
+                            species={s}
+                            nations={s.nations}
+                        />
+                        : null}
+                </List.Item>
+            )}
+        </List>
+    </>;
+}
+
+function NationList({
+    species,
+    nations
+}: {
+    species?: Species;
+    nations: Nation[];
+}) {
+    const {activeUniverse} = useUniverseContext();
+
+    return <List>
+        {nations.map(n =>
+            <List.Item key={n.id}>
+                <Anchor
+                    component={Link}
+                    to={{
+                        pathname: `/nations/${n.id}`,
+                        search: `universe=${activeUniverse.name}` + (species ? `&species=${species.id}` : '')
+                    }}
+                    data-testid={(species ? species.id + '/' : '') + n.id}
+                >
+                    {n.name}
+                </Anchor>
+            </List.Item>)
+        }
+    </List>;
 }

@@ -17,7 +17,8 @@ public enum EServerTestConfiguration {
     EMPTY(EmptyServerConfigurator.class, null, null),
     SIMPLE_UNIVERSE(SimpleUniverseServerConfiguration.class, null, SimpleUniverseServerConfiguration.UNIVERSE_NAME),
     BASIC_ITEMS(EmptyServerConfigurator.class, "backups/BasicItems.zip", "basic-items"),
-    CHARACTERS(EmptyServerConfigurator.class, "backups/Characters.zip", "character-universe");
+    CHARACTERS(EmptyServerConfigurator.class, "backups/Characters.zip", "character-universe"),
+    SPECIES(EmptyServerConfigurator.class, "backups/BasicSpecies.zip", "basic-species");
 
     private final Class<? extends TestServerConfiguratorBase> configuratorClass;
     private final File backupZip;
