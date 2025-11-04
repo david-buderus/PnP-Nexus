@@ -46,7 +46,7 @@ public class PageService {
     /**
      * Returns the base index.html.
      */
-    @GetMapping(value = "/{path:^(?!api|favicon\\.ico|locales).*}/**", produces = MediaType.TEXT_HTML_VALUE)
+    @GetMapping(value = "/{path:^(?!api|favicon\\.ico|locales|assets).*}/**", produces = MediaType.TEXT_HTML_VALUE)
     public String getPage(@PathVariable String path) {
         if (EJvmFlag.DEV_MODE.isEnabled()) {
             return DEV_MODE_INDEX;
