@@ -22,12 +22,16 @@ import {UniverseView} from './components/UniverseView';
 import {User} from './pages/user/user';
 import {UserPreferences} from './pages/user/preferences';
 import {Admin} from './pages/admin/admin';
-import {PnPCharacterSheetEditor} from "./components/character/editor/PnPCharacterSheetEditor";
-import {SpeciesOverview} from "./pages/database/world/species";
+import {PnPCharacterSheetEditor} from './components/character/editor/PnPCharacterSheetEditor';
+import {NationView} from './pages/database/world/nations';
+import {ReactRouter6Adapter} from 'use-query-params/adapters/react-router-6';
+import {QueryParamProvider} from 'use-query-params';
+import {SpeciesOverview} from './pages/database/world/species-overview';
+import {SpeciesDetail} from './pages/database/world/species';
 
 /** The entry point of the webapp */
 class App extends Component {
-    render() {
+    override render() {
         return (
             <MantineProvider defaultColorScheme="auto">
                 <Router>
@@ -39,33 +43,42 @@ class App extends Component {
                 `}
                     </style>
                     <Routes>
-                        <Route path="/" element={<PageBase/>}>
+                        <Route path="/" element={
+                            <QueryParamProvider adapter={ReactRouter6Adapter}>
+                                <PageBase/>
+                            </QueryParamProvider>
+                        }>
                             <Route path="/" element={<Home/>}></Route>
                             <Route path="/user" element={<User/>}> </Route>
-                            <Route path="/preferences" element={<UserPreferences/>}> </Route>
-                            <Route path="/universe" element={<UniverseView><UniverseOverview/></UniverseView>}></Route>
-                            <Route path="/universe-creation" element={<UniverseCreation/>}></Route>
-                            <Route path="/about"></Route>
-                            <Route path="/items" element={<UniverseView><Items/></UniverseView>}></Route>
-                            <Route path="/weapons" element={<UniverseView><Weapons/></UniverseView>}></Route>
-                            <Route path="/shields" element={<UniverseView><Shields/></UniverseView>}></Route>
-                            <Route path="/armor" element={<UniverseView><ArmorOverview/></UniverseView>}></Route>
+                            <Route path="/preferences" element={<UserPreferences/>}/>
+                            <Route path="/universe" element={<UniverseView><UniverseOverview/></UniverseView>}/>
+                            <Route path="/universe-creation" element={<UniverseCreation/>}/>
+                            <Route path="/about"/>
+                            <Route path="/items" element={<UniverseView><Items/></UniverseView>}/>
+                            <Route path="/weapons" element={<UniverseView><Weapons/></UniverseView>}/>
+                            <Route path="/shields" element={<UniverseView><Shields/></UniverseView>}/>
+                            <Route path="/armor" element={<UniverseView><ArmorOverview/></UniverseView>}/>
                             <Route path="/jewellery"
-                                   element={<UniverseView><JewelleryOverview/></UniverseView>}></Route>
-                            <Route path="/upgrades" element={<UniverseView><UpgradeOverview/></UniverseView>}></Route>
-                            <Route path="/materials" element={<UniverseView><MaterialOverview/></UniverseView>}></Route>
+                                   element={<UniverseView><JewelleryOverview/></UniverseView>}/>
+                            <Route path="/upgrades"
+                                   element={<UniverseView><UpgradeOverview/></UniverseView>}/>
+                            <Route path="/materials"
+                                   element={<UniverseView><MaterialOverview/></UniverseView>}/>
                             <Route path="/crafting-recipes"
-                                   element={<UniverseView><CraftingRecipeOverview/></UniverseView>}></Route>
+                                   element={<UniverseView><CraftingRecipeOverview/></UniverseView>}/>
                             <Route path="/upgrade-recipes"
-                                   element={<UniverseView><UpgradeRecipeOverview/></UniverseView>}></Route>
+                                   element={<UniverseView><UpgradeRecipeOverview/></UniverseView>}/>
                             <Route path="/characters" element={<UniverseView><></>
-                            </UniverseView>}></Route>
-                            <Route path="/spells" element={<UniverseView><SpellOverview/></UniverseView>}></Route>
-                            <Route path="/talents" element={<UniverseView><TalentOverview/></UniverseView>}></Route>
-                            <Route path="/species" element={<UniverseView><SpeciesOverview/></UniverseView>}></Route>
-                            <Route path="/admin" element={<Admin/>}> </Route>
-                            <Route path="/users" element={<UserOverview/>}> </Route>
-                            <Route path="/test" element={<PnPCharacterSheetEditor/>}> </Route>
+                            </UniverseView>}/>
+                            <Route path="/spells" element={<UniverseView><SpellOverview/></UniverseView>}/>
+                            <Route path="/talents" element={<UniverseView><TalentOverview/></UniverseView>}/>
+                            <Route path="/species" element={<UniverseView><SpeciesOverview/></UniverseView>}/>
+                            <Route path="/species/:species" element={<UniverseView><SpeciesDetail/></UniverseView>}/>
+                            <Route path="/nations" element={<UniverseView><NationView/></UniverseView>}/>
+                            <Route path="/nations/:nation" element={<UniverseView><NationView/></UniverseView>}/>
+                            <Route path="/admin" element={<Admin/>}/>
+                            <Route path="/users" element={<UserOverview/>}/>
+                            <Route path="/test" element={<PnPCharacterSheetEditor/>}/>
                         </Route>
                         <Route path="/login" element={<Login/>}> </Route>
                     </Routes>

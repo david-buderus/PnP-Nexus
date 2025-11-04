@@ -1,13 +1,13 @@
-import {Nation, NationServiceApi, Species, SpeciesServiceApi} from "../../../api";
-import {useTranslation} from "react-i18next";
-import {useUniverseContext, useUserContext} from "../../../components/PageBase";
-import {useForm} from "@mantine/form";
-import {BubbleMenu, EditorContent, useEditor} from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import {Link, RichTextEditor} from "@mantine/tiptap";
-import Underline from "@tiptap/extension-underline";
-import TextAlign from "@tiptap/extension-text-align";
-import {handleDatabaseInsertErrors, handleValidationErrors} from "../../../components/utils/ErrorUtils";
+import {Nation, NationServiceApi, Species, SpeciesServiceApi} from '../../../api';
+import {useTranslation} from 'react-i18next';
+import {useUniverseContext, useUserContext} from '../../../components/PageBase';
+import {useForm} from '@mantine/form';
+import {BubbleMenu, EditorContent, useEditor} from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import {Link, RichTextEditor} from '@mantine/tiptap';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
 import {
     Anchor,
     Breadcrumbs,
@@ -21,66 +21,85 @@ import {
     Stack,
     TextInput,
     Title
-} from "@mantine/core";
-import ConfirmationDialog from "../../../components/modal/ConfirmationDialog";
-import {CharacterTraitInput} from "../../../components/input/CharacterTraitInput";
-import {API_CONFIGURATION} from "../../../components/Constants";
+} from '@mantine/core';
+import ConfirmationDialog from '../../../components/modal/ConfirmationDialog';
+import {CharacterTraitInput} from '../../../components/input/CharacterTraitInput';
+import {API_CONFIGURATION} from '../../../components/Constants';
+import {BooleanParam, StringParam, useQueryParam, withDefault} from 'use-query-params';
+import {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 
 const SPECIES_API = new SpeciesServiceApi(API_CONFIGURATION);
 const NATION_API = new NationServiceApi(API_CONFIGURATION);
 
 /** View for nations */
-export function NationView({
-    editMode,
-    setEditMode,
-    selectedSpecies,
-    selectedNation,
-    refreshSpecies,
-    setSelectedNation,
-    refreshNations,
-    clearSelection,
-    clearNationSelection,
-}: {
-    editMode: boolean,
-    setEditMode: (value: boolean) => void,
-    selectedSpecies: Species,
-    refreshSpecies: () => void,
-    selectedNation: Nation,
-    setSelectedNation: (value: Nation) => void,
-    refreshNations: () => void,
-    clearSelection: () => void,
-    clearNationSelection: () => void,
-}) {
-    if (editMode) {
+export function NationView() {
+    const {nation} = useParams();
+    const {activeUniverse} = useUniverseContext();
+    const [selectedSpeciesQuery] = useQueryParam('species', withDefault(StringParam, null));
+    const [editMode, setEditMode] = useQueryParam('edit', withDefault(BooleanParam, false));
+    const navigate = useNavigate();
+
+    const [species, setSpecies] = useState<Species>(null);
+    const [selected, setSelected] = useState<Nation>(null);
+
+    useEffect(() => {
+        if (selectedSpeciesQuery) {
+            SPECIES_API.getSpecies(activeUniverse.name, selectedSpeciesQuery).then(response => {
+                setSpecies(response.data);
+            });
+        }
+        if (nation) {
+            NATION_API.getNation(activeUniverse.name, nation).then(response => {
+                setSelected(response.data);
+            });
+        }
+    }, [nation, selectedSpeciesQuery, setSelected, setSpecies]);
+
+    function clearSelection() {
+        navigate(`/species?universe=${activeUniverse.name}`);
+    }
+
+    function clearNationSelection() {
+        if (species) {
+            navigate(`/species/${selectedSpeciesQuery}?universe=${activeUniverse.name}`);
+        } else {
+            navigate(`/species?universe=${activeUniverse.name}`);
+        }
+    }
+
+    if (editMode || !nation) {
         return <NationEdit
-            selectedSpecies={selectedSpecies}
-            selectedNation={selectedNation}
-            onSave={() => {
-                setEditMode(false);
-                refreshNations();
-                refreshSpecies();
+            selectedSpecies={species}
+            initial={selected}
+            onSave={n => {
+                if (species) {
+                    navigate(`/nations/${n.id}?universe=${activeUniverse.name}&species=${selectedSpeciesQuery}`);
+                } else {
+                    navigate(`/nations/${n.id}?universe=${activeUniverse.name}`);
+                }
             }}
-            onDelete={() => {
-                setEditMode(false);
-                setSelectedNation(null);
-                refreshNations();
-                refreshSpecies();
-            }}
+            onDelete={clearNationSelection}
             onCancel={() => {
-                setEditMode(false);
-                if (!selectedNation?.id) {
-                    setSelectedNation(null);
+                if (selected) {
+                    setEditMode(false);
+                } else {
+                    clearNationSelection();
                 }
             }}
         />;
     }
-    return <NationDetail
-        selectedSpecies={selectedSpecies}
-        selectedNation={selectedNation}
-        onClear={clearSelection}
-        onClearNation={clearNationSelection}
-        onEdit={() => setEditMode(true)}
-    />;
+    if (selected) {
+        return <NationDetail
+            selectedSpecies={species}
+            selectedNation={selected}
+            onClear={clearSelection}
+            onClearNation={clearNationSelection}
+            onEdit={() => setEditMode(true)}
+        />;
+    }
+
+    return <></>;
 }
 
 function NationDetail({
@@ -114,7 +133,7 @@ function NationDetail({
         <Stack gap="sm">
             <Breadcrumbs>
                 <Anchor onClick={onClear}>
-                    {t("overview")}
+                    {t('overview')}
                 </Anchor>
                 {selectedSpecies ?
                     <Anchor onClick={onClearNation}>
@@ -136,7 +155,7 @@ function NationDetail({
                                 onClick={onEdit}
                                 variant="outline"
                             >
-                                {t("edit")}
+                                {t('edit')}
                             </Button> : null
                         }
                     </Group>
@@ -145,7 +164,7 @@ function NationDetail({
                     <Group wrap="nowrap" justify="space-between" align="flex-start">
                         <Stack pl="xl">
                             <Title order={3}>
-                                {t("advantages")}
+                                {t('advantages')}
                             </Title>
                             {selectedNation.advantageTraits.length > 0 ?
                                 <List>
@@ -153,12 +172,12 @@ function NationDetail({
                                         <List.Item key={index}>{trait.description}</List.Item>
                                     )}
                                 </List>
-                                : t("nothing-here")
+                                : t('nothing-here')
                             }
                         </Stack>
                         <Stack pr="xl">
                             <Title order={3}>
-                                {t("disadvantages")}
+                                {t('disadvantages')}
                             </Title>
                             {selectedNation.disadvantageTraits.length > 0 ?
                                 <List>
@@ -166,7 +185,7 @@ function NationDetail({
                                         <List.Item key={index}>{trait.description}</List.Item>
                                     )}
                                 </List>
-                                : t("nothing-here")
+                                : t('nothing-here')
                             }
                         </Stack>
                     </Group>
@@ -178,14 +197,14 @@ function NationDetail({
 
 function NationEdit({
     selectedSpecies,
-    selectedNation,
+    initial,
     onSave,
     onDelete,
     onCancel
 }: {
     selectedSpecies: Species;
-    selectedNation: Nation;
-    onSave: () => void;
+    initial: Nation;
+    onSave: (n: Nation) => void;
     onDelete: () => void;
     onCancel: () => void;
 }) {
@@ -195,7 +214,12 @@ function NationEdit({
 
     const form = useForm<Nation>({
         mode: 'controlled',
-        initialValues: selectedNation
+        initialValues: initial ?? {
+            name: '',
+            description: '',
+            advantageTraits: [],
+            disadvantageTraits: []
+        }
     });
 
     const editor = useEditor({
@@ -215,40 +239,44 @@ function NationEdit({
         onSubmit={form.onSubmit(nation => {
             if (nation.id) {
                 NATION_API.updateNation(activeUniverse.name, nation.id, nation)
-                    .then(onSave).catch(handleValidationErrors(form.setErrors));
+                    .then(response => onSave(response.data)).catch(handleValidationErrors(form.setErrors));
             } else {
                 NATION_API.insertAllNations(activeUniverse.name, [nation])
                     .then(response => {
                         if (!selectedSpecies) {
-                            return;
+                            return response.data[0];
                         }
                         SPECIES_API.updateSpecies(activeUniverse.name, selectedSpecies.id, {
                             ...selectedSpecies,
                             nations: selectedSpecies.nations.concat(response.data),
                         });
+                        return response.data[0];
                     })
-                    .then(onSave).catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+                    .then(n => onSave(n)).catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
             }
         })}
     >
         <Center>
             <Stack>
+                <Title order={3}>
+                    {t('species:createNation')}
+                </Title>
                 <Group justify="space-between">
                     <TextInput
                         size="lg"
-                        label={t("name")}
+                        label={t('name')}
                         key={form.key('name')}
                         {...form.getInputProps('name')}
                     />
-                    {userPermissions?.canWriteActiveUniverse && selectedNation.id !== undefined ?
+                    {userPermissions?.canWriteActiveUniverse && initial?.id !== undefined ?
                         <ConfirmationDialog
-                            title={t("species:deleteSpecies")}
+                            title={t('species:deleteNation')}
                             onConfirmation={() => {
-                                NATION_API.deleteNation(activeUniverse.name, selectedNation.id).then(onDelete);
+                                NATION_API.deleteNation(activeUniverse.name, initial.id).then(onDelete);
                             }}
                             openNode={open =>
                                 <Button variant="outline" color="red" onClick={open}>
-                                    {t("delete")}
+                                    {t('delete')}
                                 </Button>
                             }
                         /> : null
@@ -310,7 +338,7 @@ function NationEdit({
                 <Group wrap="nowrap" justify="space-between" align="flex-start">
                     <Stack>
                         <Title order={3}>
-                            {t("advantages")}
+                            {t('advantages')}
                         </Title>
                         <CharacterTraitInput
                             form={form}
@@ -319,7 +347,7 @@ function NationEdit({
                     </Stack>
                     <Stack>
                         <Title order={3}>
-                            {t("disadvantages")}
+                            {t('disadvantages')}
                         </Title>
                         <CharacterTraitInput
                             form={form}
@@ -329,10 +357,10 @@ function NationEdit({
                 </Group>
                 <Group justify="flex-end" pt="md">
                     <Button onClick={onCancel} variant="outline">
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button type="submit">
-                        {t("save")}
+                        {t('save')}
                     </Button>
                 </Group>
             </Stack>
