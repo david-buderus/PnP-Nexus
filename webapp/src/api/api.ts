@@ -5810,15 +5810,15 @@ export const PageServiceApiAxiosParamCreator = function (configuration?: Configu
     return {
         /**
          * 
-         * @param {string} destination 
+         * @param {string} path 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPage: async (destination: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'destination' is not null or undefined
-            assertParamExists('getPage', 'destination', destination)
-            const localVarPath = `/{destination}`
-                .replace(`{${"destination"}}`, encodeURIComponent(String(destination)));
+        getPage: async (path: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'path' is not null or undefined
+            assertParamExists('getPage', 'path', path)
+            const localVarPath = `/{path}/**`
+                .replace(`{${"path"}}`, encodeURIComponent(String(path)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -5853,12 +5853,12 @@ export const PageServiceApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {string} destination 
+         * @param {string} path 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getPage(destination: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getPage(destination, options);
+        async getPage(path: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPage(path, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PageServiceApi.getPage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -5875,12 +5875,12 @@ export const PageServiceApiFactory = function (configuration?: Configuration, ba
     return {
         /**
          * 
-         * @param {string} destination 
+         * @param {string} path 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getPage(destination: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.getPage(destination, options).then((request) => request(axios, basePath));
+        getPage(path: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.getPage(path, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -5894,13 +5894,13 @@ export const PageServiceApiFactory = function (configuration?: Configuration, ba
 export class PageServiceApi extends BaseAPI {
     /**
      * 
-     * @param {string} destination 
+     * @param {string} path 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PageServiceApi
      */
-    public getPage(destination: string, options?: RawAxiosRequestConfig) {
-        return PageServiceApiFp(this.configuration).getPage(destination, options).then((request) => request(this.axios, this.basePath));
+    public getPage(path: string, options?: RawAxiosRequestConfig) {
+        return PageServiceApiFp(this.configuration).getPage(path, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
