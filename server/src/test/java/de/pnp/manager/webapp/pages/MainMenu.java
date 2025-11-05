@@ -1,6 +1,7 @@
 package de.pnp.manager.webapp.pages;
 
 import com.microsoft.playwright.Page;
+import de.pnp.manager.webapp.pages.species.SpeciesOverviewPage;
 
 /**
  * Represents the main menu of the webapp.
@@ -105,6 +106,14 @@ public class MainMenu extends PageBase {
     public UserOverviewPage openUserOverviewPage() {
         openMenu("admin-menu", "users-menu");
         return new UserOverviewPage(page);
+    }
+
+    /**
+     * Opens the {@link SpeciesOverviewPage}.
+     */
+    public SpeciesOverviewPage openSpeciesOverviewPage() {
+        openMenu("universe-menu", "species-menu");
+        return new SpeciesOverviewPage(page);
     }
 
     /**

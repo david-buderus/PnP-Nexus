@@ -8,5 +8,9 @@
   "addNation": "Add a nation",
   "addExistingNation": "Add an existing nation",
   "unboundNations": "Nations without Species",
-  "removeNation": "Remove a nation"
+  "removeNation": "Remove a nation",
+  "deleteNation": "Delete a nation",
+  "deleteSpecies": "Delete a species",
+  "createNation": "Create a new Nation",
+  "createSpecies": "Create a new Specie"
 }

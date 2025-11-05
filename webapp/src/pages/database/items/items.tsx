@@ -327,14 +327,14 @@ export function Shields() {
             ];
 
             if (itemSettings?.usingProtection) {
-                columns.splice(4, 0, {
+                c.splice(4, 0, {
                     accessorKey: 'protection',
                     header: t('protection'),
                 });
             }
             if (itemSettings?.shieldUsingDice) {
                 const offset = itemSettings.usingProtection ? 7 : 6;
-                columns.splice(offset, 0, {
+                c.splice(offset, 0, {
                     accessorKey: 'dice',
                     header: t('dice'),
                     Cell: DiceCell
@@ -466,7 +466,7 @@ export function ArmorOverview() {
             ];
 
             if (itemSettings?.usingProtection) {
-                columns.splice(4, 0, {
+                c.splice(4, 0, {
                     accessorKey: 'protection',
                     header: t('protection'),
                 });

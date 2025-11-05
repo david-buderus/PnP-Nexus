@@ -1,17 +1,22 @@
 import {ActionIcon, Button, ButtonProps, Group, Menu, MenuItemProps} from '@mantine/core';
 import {FaChevronDown} from 'react-icons/fa6';
 import {ReactNode} from 'react';
+import {Link, To} from 'react-router-dom';
 
 /** Props for the dropdown button */
 export type DropdownButtonProps = ButtonProps & {
     /** Label used for the primary button */
     label: ReactNode;
-    /** On clock handler for the primary button */
+    /** On click handler for the primary button */
     onClick?: () => void;
+    /** The data testid */
+    'data-testid'?: string;
     /** Props for the dropdown items */
     dropdownItems: (MenuItemProps & {
         label: string;
         onClick?: () => void;
+        link?: To;
+        'data-testid'?: string;
     })[]
 };
 
@@ -22,13 +27,15 @@ export function DropdownButton({
     variant,
     size = 'sm',
     dropdownItems,
+    'data-testid': dataTestId,
     ...props
 }: DropdownButtonProps) {
-    return <Group wrap="nowrap" gap={0}>
+    return <Group wrap="nowrap" gap={0} data-testid={dataTestId}>
         <Button
             variant={variant}
             size={size}
             onClick={onClick}
+            data-testid="main-button"
             {...props}
             style={{
                 borderTopRightRadius: 0,
@@ -37,7 +44,7 @@ export function DropdownButton({
         >
             {label}
         </Button>
-        <Menu transitionProps={{transition: 'pop'}} position="bottom-end" withinPortal>
+        <Menu transitionProps={{transition: 'pop'}} position="bottom-end" withinPortal data-testid="dropdownMenu">
             <Menu.Target>
                 <ActionIcon
                     variant={variant}
@@ -53,7 +60,19 @@ export function DropdownButton({
             </Menu.Target>
             <Menu.Dropdown>
                 {dropdownItems.map((item, index) => {
-                    const {label: itemLabel, onClick: onItemClick, ...itemProps} = item;
+                    const {label: itemLabel, onClick: onItemClick, link, ...itemProps} = item;
+
+                    if (link) {
+                        return <Menu.Item
+                            key={index}
+                            component={Link}
+                            to={link}
+                            onClick={onItemClick}
+                            {...itemProps}
+                        >
+                            {itemLabel}
+                        </Menu.Item>;
+                    }
 
                     return <Menu.Item key={index} onClick={onItemClick} {...itemProps}>
                         {itemLabel}

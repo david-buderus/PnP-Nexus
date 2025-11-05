@@ -8,13 +8,14 @@ import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.Tag;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.Dice;
-import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.TagRequirement;
+import de.pnp.manager.component.character.Species;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.webapp.utils.WebTestUtils;
 import org.bson.types.ObjectId;
 import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -25,29 +26,41 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * Describes the database object dialog
  */
-public class DatabaseObjectDialog {
+public class DatabaseObjectForm {
 
     /**
      * The locator of the component
      */
     protected final Locator locator;
 
-    private DatabaseObjectDialog(Locator locator) {
+    private DatabaseObjectForm(Locator locator) {
         this.locator = locator;
     }
 
     /**
      * Returns the currently open dialog.
      */
-    public static DatabaseObjectDialog getDialog(Page page) {
-        return new DatabaseObjectDialog(page.getByRole(AriaRole.DIALOG));
+    public static DatabaseObjectForm fromDialog(Page page) {
+        return new DatabaseObjectForm(page.getByRole(AriaRole.DIALOG));
+    }
+
+    /**
+     * Returns the currently open dialog.
+     */
+    public static DatabaseObjectForm fromLocator(Locator locator) {
+        return new DatabaseObjectForm(locator);
     }
 
     /**
      * Sets the value of the corresponding attribute.
      */
     public void set(String attribute, String value) {
-        getByDataPath(attribute).fill(value);
+        Locator dataPath = getByDataPath(attribute);
+        if (dataPath.getAttribute("class").contains("RichTextEditor")) {
+            dataPath.getByRole(AriaRole.TEXTBOX).fill(value);
+            return;
+        }
+        dataPath.fill(value);
     }
 
     /**
@@ -61,11 +74,17 @@ public class DatabaseObjectDialog {
      * Sets the value of the corresponding attribute.
      */
     public void set(String attribute, boolean value) {
-        Locator checkbox = getByDataPath(attribute);
-        if (value) {
-            checkbox.check();
+        Locator checkbox = getByDataPathWithoutExistenceCheck(attribute);
+        if (checkbox.getAttribute("class").contains("Switch")) {
+            Switch.from(checkbox).set(value);
         } else {
-            checkbox.uncheck();
+            assertThat(checkbox).isVisible();
+            assertThat(checkbox).isEnabled();
+            if (value) {
+                checkbox.check();
+            } else {
+                checkbox.uncheck();
+            }
         }
     }
 
@@ -73,13 +92,6 @@ public class DatabaseObjectDialog {
      * Sets the value of the corresponding attribute.
      */
     public void setSelect(String attribute, DatabaseObject object) {
-        Select.from(getByDataPath(attribute)).select(object);
-    }
-
-    /**
-     * Sets the value of the corresponding attribute.
-     */
-    public void setSelect(String attribute, IUniquelyNamedDataObject object) {
         Select.from(getByDataPath(attribute)).select(object);
     }
 
@@ -117,6 +129,9 @@ public class DatabaseObjectDialog {
                 return;
             }
             if (Modifier.isStatic(field.getModifiers())) {
+                return;
+            }
+            if (skipField(object, field)) {
                 return;
             }
 
@@ -191,11 +206,11 @@ public class DatabaseObjectDialog {
         Class<?> currentClass = clazz;
         do {
             subTypes.addAll(List.of(currentClass.getDeclaredAnnotationsByType(JsonSubTypes.class)));
+            for (Class<?> implementedInterfaces : currentClass.getInterfaces()) {
+                subTypes.addAll(List.of(implementedInterfaces.getDeclaredAnnotationsByType(JsonSubTypes.class)));
+            }
             currentClass = currentClass.getSuperclass();
         } while (currentClass != null);
-        for (Class<?> implementedInterfaces : clazz.getInterfaces()) {
-            subTypes.addAll(List.of(implementedInterfaces.getDeclaredAnnotationsByType(JsonSubTypes.class)));
-        }
 
         for (JsonSubTypes subType : subTypes) {
             for (Type type : subType.value()) {
@@ -248,5 +263,13 @@ public class DatabaseObjectDialog {
 
     private Locator getByDataPathWithoutExistenceCheck(String path) {
         return locator.locator("[data-path=\"" + path + "\"]");
+    }
+
+    private boolean skipField(Object object, Field field) {
+        if (object instanceof Species && field.getName().equals("nations")) {
+            // They are not part of the form
+            return true;
+        }
+        return false;
     }
 }

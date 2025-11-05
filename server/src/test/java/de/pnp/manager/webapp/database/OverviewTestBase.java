@@ -7,7 +7,7 @@ import de.pnp.manager.server.ServerTestBase;
 import de.pnp.manager.server.UiTestServer;
 import de.pnp.manager.webapp.pages.MainMenu;
 import de.pnp.manager.webapp.pages.OverviewBasePage;
-import de.pnp.manager.webapp.pages.components.DatabaseObjectDialog;
+import de.pnp.manager.webapp.pages.components.DatabaseObjectForm;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
 import org.assertj.core.api.Assertions;
 import org.bson.types.ObjectId;
@@ -48,7 +48,7 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
         OverviewTable table = page.getTable();
         table.setRowsPerPage(100);
 
-        DatabaseObjectDialog dialog = page.openAddDialog();
+        DatabaseObjectForm dialog = page.openAddDialog();
 
         dialog.fillOut(getWrongObject());
         dialog.add();
@@ -79,7 +79,7 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
         table.getTableRow(getModifyId().toHexString()).select();
         Assertions.assertThat(page.isEditDisabled()).isFalse();
 
-        DatabaseObjectDialog dialog = page.openEditDialog();
+        DatabaseObjectForm dialog = page.openEditDialog();
 
         T editedObject = getEditedObject();
         dialog.fillOut(editedObject);
@@ -98,7 +98,7 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     void testDelete() {
         OverviewTable table = page.getTable();
         table.setRowsPerPage(100);
-        
+
         Collection<T> testObjects = getTestObjects();
         ObjectId modifyId = getModifyId();
 

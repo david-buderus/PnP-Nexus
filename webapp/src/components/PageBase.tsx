@@ -12,7 +12,7 @@ import {
     UnstyledButton
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
-import {Link, Outlet, useOutletContext, useSearchParams} from 'react-router-dom';
+import {Link, Outlet, useOutletContext} from 'react-router-dom';
 import {ReactElement, useEffect, useState} from 'react';
 import {
     AuthenticationServiceApi,
@@ -52,6 +52,7 @@ import {MdLogout} from 'react-icons/md';
 import axios from 'axios';
 import {PiPerson} from 'react-icons/pi';
 import {ErrorBoundary} from './ErrorBoundary';
+import {StringParam, useQueryParam, withDefault} from 'use-query-params';
 
 type UniverseContext = {
     universes: Universe[];
@@ -80,7 +81,7 @@ const USER_API = new UserServiceApi(API_CONFIGURATION);
 /** Base of most pages in the webapp */
 export function PageBase() {
     const [universes, setUniverses] = useState<Universe[]>([]);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [universeQuery, setUniverseQuery] = useQueryParam('universe', withDefault(StringParam, null));
     const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
     const [currencySettings, setCurrencySettings] = useState<CurrencySettings>(null);
     const [itemSettings, setItemSettings] = useState<ItemSettings>(null);
@@ -101,7 +102,7 @@ export function PageBase() {
     async function fetchUniverses(): Promise<void> {
         const response = await UNIVERSE_API.getAllUniverses();
         setUniverses(response.data);
-        const paramUniverse = response.data.find(u => u.name === searchParams.get('universe'));
+        const paramUniverse = response.data.find(u => u.name === universeQuery);
         if (paramUniverse !== undefined) {
             setActiveUniverse(paramUniverse);
             return;
@@ -146,8 +147,7 @@ export function PageBase() {
         if (!activeUniverse) {
             return;
         }
-        searchParams.set('universe', activeUniverse.name);
-        setSearchParams(searchParams);
+        setUniverseQuery(activeUniverse.name);
         SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
         SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
         SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
@@ -183,6 +183,11 @@ export function PageBase() {
         });
     }, [activeUniverse, userPreferences]);
 
+    const searchParams = new URLSearchParams();
+    if (universeQuery) {
+        searchParams.set('universe', universeQuery);
+    }
+
     return (
         <AppShell
             header={{height: 70}}
@@ -200,6 +205,7 @@ export function PageBase() {
                                 pathname: '/',
                                 search: searchParams.toString()
                             }}
+                            data-testid="main-menu"
                         >
                             <Title
                                 order={1}

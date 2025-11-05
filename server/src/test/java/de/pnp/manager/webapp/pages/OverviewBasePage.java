@@ -2,7 +2,7 @@ package de.pnp.manager.webapp.pages;
 
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-import de.pnp.manager.webapp.pages.components.DatabaseObjectDialog;
+import de.pnp.manager.webapp.pages.components.DatabaseObjectForm;
 import de.pnp.manager.webapp.pages.components.OverviewTable;
 
 /**
@@ -24,9 +24,9 @@ public class OverviewBasePage extends PageBase {
     /**
      * Opens the item add menu.
      */
-    public DatabaseObjectDialog openAddDialog() {
+    public DatabaseObjectForm openAddDialog() {
         page.getByTestId("add").click();
-        DatabaseObjectDialog dialog = DatabaseObjectDialog.getDialog(page);
+        DatabaseObjectForm dialog = DatabaseObjectForm.fromDialog(page);
         dialog.assertIsVisible();
         return dialog;
     }
@@ -34,9 +34,9 @@ public class OverviewBasePage extends PageBase {
     /**
      * Tries to open the edit menu.
      */
-    public DatabaseObjectDialog openEditDialog() {
+    public DatabaseObjectForm openEditDialog() {
         page.getByTestId("edit").click();
-        DatabaseObjectDialog dialog = DatabaseObjectDialog.getDialog(page);
+        DatabaseObjectForm dialog = DatabaseObjectForm.fromDialog(page);
         dialog.assertIsVisible();
         return dialog;
     }

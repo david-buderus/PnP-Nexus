@@ -5,7 +5,6 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.component.IUniquelyNamedDataObject;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -13,7 +12,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
  * A select box in the webapp.
  */
 public class Select extends ComponentBase {
-    
+
     private Select(Locator locator) {
         super(locator);
     }
@@ -49,6 +48,8 @@ public class Select extends ComponentBase {
         if (wait) {
             if (isMultiSelect()) {
                 assertThat(locator.locator("..")).not().isEmpty();
+                // Close the multi selection
+                locator.press("Escape");
             } else {
                 assertThat(locator).not().isEmpty();
             }
@@ -61,15 +62,6 @@ public class Select extends ComponentBase {
      */
     public void select(DatabaseObject object) {
         select(object.getId().toHexString());
-    }
-
-
-    /**
-     * Selects the given value.
-     */
-    public void select(IUniquelyNamedDataObject object) {
-        select(object.getId().toHexString());
-        assertThat(locator).hasValue(object.getName());
     }
 
     /**

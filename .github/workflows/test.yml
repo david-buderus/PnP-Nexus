@@ -98,7 +98,7 @@ jobs:
       - name: Instrument WebApp
         if: github.event_name != 'pull_request'
         working-directory: ./webapp
-        run: npm exec -c "javascript-instrumenter ../server/src/main/resources/static/assets/** --in-place --include-origin 'webapp/src/**' --exclude-origin 'node_modules/**' --collector localhost:54321"
+        run: npm exec -c "javascript-instrumenter --input ../server/src/main/resources/static/assets/** --in-place --include-origin 'webapp/src/**' --exclude-origin 'node_modules/**' --collector localhost:54321 --commit ${{ github.sha }} --config-id ci-js-frontend"
 
       - name: Setup playwright
         uses: gradle/actions/setup-gradle@v3
@@ -108,7 +108,7 @@ jobs:
       - name: Start Coverage Collector
         if: github.event_name != 'pull_request'
         working-directory: ./webapp
-        run: npm exec -c 'coverage-collector --dump-after-mins 3 --port 54321 --dump-to-folder ../js-profiler-coverage/' & echo $! > ../collector.pid
+        run: npm exec -c 'coverage-collector --dump-after-mins 3 --port 54321 -f ../js-profiler-coverage/' & echo $! > ../collector.pid
 
       - name: Setup and execute Gradle 'test' task
         uses: gradle/actions/setup-gradle@v3

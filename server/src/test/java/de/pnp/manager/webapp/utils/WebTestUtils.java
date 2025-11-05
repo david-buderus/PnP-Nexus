@@ -3,6 +3,7 @@ package de.pnp.manager.webapp.utils;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
+import de.pnp.manager.webapp.pages.PageBase;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -49,5 +50,12 @@ public abstract class WebTestUtils {
         assertThat(input).isVisible();
         assertThat(input).isEnabled();
         return input;
+    }
+
+    /**
+     * Returns the locator given the path.
+     */
+    public static Locator getByDataPath(PageBase page, String path) {
+        return getByDataPath(page.asPage(), path);
     }
 }

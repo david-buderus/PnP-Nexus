@@ -3738,13 +3738,13 @@
         ]
       }
     },
-    "/{destination}": {
+    "/{path}/**": {
       "get": {
         "operationId": "getPage",
         "parameters": [
           {
             "in": "path",
-            "name": "destination",
+            "name": "path",
             "required": true,
             "schema": {
               "type": "string"

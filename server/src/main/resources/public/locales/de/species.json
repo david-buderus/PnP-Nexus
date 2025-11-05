@@ -8,5 +8,9 @@
   "addNation": "Füg ein Volk hinzu",
   "addExistingNation": "Füg ein existierendes Volk hinzu",
   "unboundNations": "Völker ohne Spezien",
-  "removeNation": "Entferne eine Nation"
+  "removeNation": "Entferne eine Nation",
+  "deleteNation": "Lösche diese Nation",
+  "deleteSpecies": "Lösche eine Spezie",
+  "createNation": "Erstelle eine neue Nation",
+  "createSpecies": "Erstelle eine neue Spezie"
 }
