@@ -120,6 +120,7 @@ export function SpeciesDetail() {
                                 dropdownItems={[
                                     {
                                         label: t('species:addNation'),
+                                        'data-testid': 'addNation',
                                         link: {
                                             pathname: `/nations`,
                                             search: `universe=${activeUniverse.name}&species=${species}&edit=1`
@@ -127,10 +128,12 @@ export function SpeciesDetail() {
                                     },
                                     {
                                         label: t('species:addExistingNation'),
+                                        'data-testid': 'addExistingNation',
                                         onClick: openAddition
                                     },
                                     {
                                         label: t('species:removeNation'),
+                                        'data-testid': 'removeNation',
                                         onClick: openDeletion
                                     }
                                 ]}
@@ -236,6 +239,7 @@ function AddNationDialog({
             labelKey="name"
             value={nation}
             onChange={setNation}
+            data-testid="nation-to-add"
         />
         <Group justify="flex-end" pt="md">
             <Button autoFocus variant="outline" onClick={close}>
@@ -249,6 +253,7 @@ function AddNationDialog({
                     }).then(close);
                 }}
                 disabled={nation === null}
+                type="submit"
             >
                 {t('confirm')}
             </Button>
@@ -276,6 +281,7 @@ function DeletionNationDialog({
             labelKey="name"
             value={nations}
             onChange={setNations}
+            data-testid="nations-to-remove"
         />
         <Group justify="flex-end" pt="md">
             <Button autoFocus variant="outline" onClick={close}>
@@ -289,6 +295,7 @@ function DeletionNationDialog({
                     }).then(close).then(() => setNations([]));
                 }}
                 disabled={nations.length === 0}
+                type="submit"
             >
                 {t('confirm')}
             </Button>

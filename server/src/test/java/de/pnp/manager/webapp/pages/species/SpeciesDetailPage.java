@@ -3,6 +3,8 @@ package de.pnp.manager.webapp.pages.species;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import de.pnp.manager.component.character.Nation;
+import de.pnp.manager.webapp.pages.components.DropdownButton;
+import de.pnp.manager.webapp.pages.components.species.NationFormPage;
 import de.pnp.manager.webapp.pages.components.species.SpeciesFormPage;
 
 /**
@@ -25,7 +27,22 @@ public class SpeciesDetailPage extends DetailPageBase {
      * Opens the species creation form.
      */
     public SpeciesFormPage edit() {
-        page.getByTestId("edit").click();
+        getEditButton().click();
         return new SpeciesFormPage(page);
+    }
+
+    /*+
+     * Gets the edit button
+     */
+    public DropdownButton getEditButton() {
+        return DropdownButton.from(page.getByTestId("edit"));
+    }
+
+    /*+
+     * Opens the form to add a new nation
+     */
+    public NationFormPage addNation() {
+        getEditButton().clickDropdown("addNation");
+        return new NationFormPage(page);
     }
 }

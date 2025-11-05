@@ -7,13 +7,16 @@ import {Link, To} from 'react-router-dom';
 export type DropdownButtonProps = ButtonProps & {
     /** Label used for the primary button */
     label: ReactNode;
-    /** On clock handler for the primary button */
+    /** On click handler for the primary button */
     onClick?: () => void;
+    /** The data testid */
+    'data-testid'?: string;
     /** Props for the dropdown items */
     dropdownItems: (MenuItemProps & {
         label: string;
         onClick?: () => void;
         link?: To;
+        'data-testid'?: string;
     })[]
 };
 
@@ -24,13 +27,15 @@ export function DropdownButton({
     variant,
     size = 'sm',
     dropdownItems,
+    'data-testid': dataTestId,
     ...props
 }: DropdownButtonProps) {
-    return <Group wrap="nowrap" gap={0}>
+    return <Group wrap="nowrap" gap={0} data-testid={dataTestId}>
         <Button
             variant={variant}
             size={size}
             onClick={onClick}
+            data-testid="main-button"
             {...props}
             style={{
                 borderTopRightRadius: 0,
@@ -39,7 +44,7 @@ export function DropdownButton({
         >
             {label}
         </Button>
-        <Menu transitionProps={{transition: 'pop'}} position="bottom-end" withinPortal>
+        <Menu transitionProps={{transition: 'pop'}} position="bottom-end" withinPortal data-testid="dropdownMenu">
             <Menu.Target>
                 <ActionIcon
                     variant={variant}

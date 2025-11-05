@@ -8,7 +8,6 @@ import com.microsoft.playwright.options.AriaRole;
 import de.pnp.manager.Tag;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.Dice;
-import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.component.TagRequirement;
 import de.pnp.manager.component.character.Species;
 import de.pnp.manager.component.math.BinaryExpressionTree;
@@ -93,13 +92,6 @@ public class DatabaseObjectForm {
      * Sets the value of the corresponding attribute.
      */
     public void setSelect(String attribute, DatabaseObject object) {
-        Select.from(getByDataPath(attribute)).select(object);
-    }
-
-    /**
-     * Sets the value of the corresponding attribute.
-     */
-    public void setSelect(String attribute, IUniquelyNamedDataObject object) {
         Select.from(getByDataPath(attribute)).select(object);
     }
 
