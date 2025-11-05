@@ -113,6 +113,7 @@ export function SpeciesDetail() {
                         </Title>
                         {userPermissions?.canWriteActiveUniverse ?
                             <DropdownButton
+                                data-testid="edit"
                                 label={t('edit')}
                                 onClick={() => setEditMode(true)}
                                 variant="outline"
@@ -136,7 +137,7 @@ export function SpeciesDetail() {
                             /> : null
                         }
                     </Group>
-                    <EditorContent editor={editor}/>
+                    <EditorContent editor={editor} data-testid="description"/>
                     <Text>
                         {selected.playable ?
                             t('species:playableDescription') :
@@ -173,7 +174,7 @@ export function SpeciesDetail() {
                                 {t('advantages')}
                             </Title>
                             {selected.advantageTraits.length > 0 ?
-                                <List>
+                                <List data-testid="advantageTraits">
                                     {selected.advantageTraits.map((trait, index) =>
                                         <List.Item key={index}>{trait.description}</List.Item>
                                     )}
@@ -186,7 +187,7 @@ export function SpeciesDetail() {
                                 {t('disadvantages')}
                             </Title>
                             {selected.disadvantageTraits.length > 0 ?
-                                <List>
+                                <List data-testid="disadvantageTraits">
                                     {selected.disadvantageTraits.map((trait, index) =>
                                         <List.Item key={index}>{trait.description}</List.Item>
                                     )}

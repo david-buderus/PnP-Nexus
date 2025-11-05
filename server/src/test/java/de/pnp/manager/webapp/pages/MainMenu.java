@@ -1,6 +1,7 @@
 package de.pnp.manager.webapp.pages;
 
 import com.microsoft.playwright.Page;
+import de.pnp.manager.webapp.pages.species.SpeciesOverviewPage;
 
 /**
  * Represents the main menu of the webapp.

@@ -73,6 +73,13 @@ export function NationView() {
             selectedSpecies={species}
             initial={selected}
             onSave={n => {
+                if (nation) {
+                    setEditMode(false);
+                    NATION_API.getNation(activeUniverse.name, nation).then(response => {
+                        setSelected(response.data);
+                    });
+                    return;
+                }
                 if (species) {
                     navigate(`/nations/${n.id}?universe=${activeUniverse.name}&species=${selectedSpeciesQuery}`);
                 } else {
@@ -129,6 +136,10 @@ function NationDetail({
         editable: false
     });
 
+    useEffect(() => {
+        editor.commands.setContent(selectedNation.description);
+    }, [selectedNation]);
+
     return <Center>
         <Stack gap="sm">
             <Breadcrumbs>
@@ -147,19 +158,20 @@ function NationDetail({
             <Paper shadow="sm" p="md">
                 <Stack miw={900}>
                     <Group justify="space-between">
-                        <Title>
+                        <Title data-testid="name">
                             {selectedNation.name}
                         </Title>
                         {userPermissions?.canWriteActiveUniverse ?
                             <Button
                                 onClick={onEdit}
                                 variant="outline"
+                                data-testid="edit"
                             >
                                 {t('edit')}
                             </Button> : null
                         }
                     </Group>
-                    <EditorContent editor={editor}/>
+                    <EditorContent editor={editor} data-testid="description"/>
                     <Divider/>
                     <Group wrap="nowrap" justify="space-between" align="flex-start">
                         <Stack pl="xl">
@@ -167,7 +179,7 @@ function NationDetail({
                                 {t('advantages')}
                             </Title>
                             {selectedNation.advantageTraits.length > 0 ?
-                                <List>
+                                <List data-testid="advantageTraits">
                                     {selectedNation.advantageTraits.map((trait, index) =>
                                         <List.Item key={index}>{trait.description}</List.Item>
                                     )}
@@ -180,7 +192,7 @@ function NationDetail({
                                 {t('disadvantages')}
                             </Title>
                             {selectedNation.disadvantageTraits.length > 0 ?
-                                <List>
+                                <List data-testid="disadvantages">
                                     {selectedNation.disadvantageTraits.map((trait, index) =>
                                         <List.Item key={index}>{trait.description}</List.Item>
                                     )}
@@ -236,6 +248,7 @@ function NationEdit({
     });
 
     return <form
+        data-testid="nation-form"
         onSubmit={form.onSubmit(nation => {
             if (nation.id) {
                 NATION_API.updateNation(activeUniverse.name, nation.id, nation)
@@ -282,7 +295,7 @@ function NationEdit({
                         /> : null
                     }
                 </Group>
-                <RichTextEditor editor={editor} variant="subtle">
+                <RichTextEditor editor={editor} variant="subtle" data-path="description">
                     <RichTextEditor.Toolbar sticky stickyOffset={60}>
                         <RichTextEditor.ControlsGroup>
                             <RichTextEditor.Bold/>

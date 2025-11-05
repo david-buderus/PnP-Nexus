@@ -1,9 +1,10 @@
-package de.pnp.manager.webapp.pages;
+package de.pnp.manager.webapp.pages.species;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import de.pnp.manager.component.character.Nation;
 import de.pnp.manager.component.character.Species;
+import de.pnp.manager.webapp.pages.PageBase;
 import de.pnp.manager.webapp.pages.components.species.SpeciesFormPage;
 
 /**
@@ -34,6 +35,22 @@ public class SpeciesOverviewPage extends PageBase {
      */
     public Locator getLink(Nation nation) {
         return page.getByTestId(nation.getId().toHexString());
+    }
+
+    /**
+     * Opens the {@link SpeciesDetailPage} for the given species.
+     */
+    public SpeciesDetailPage openSpeciesPage(Species species) {
+        getLink(species).click();
+        return new SpeciesDetailPage(page);
+    }
+
+    /**
+     * Opens the {@link NationDetailPage} for the given species.
+     */
+    public NationDetailPage openNationPage(Species species, Nation nation) {
+        getLink(species, nation).click();
+        return new NationDetailPage(page);
     }
 
     /**

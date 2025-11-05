@@ -58,7 +58,7 @@ public class DatabaseObjectForm {
     public void set(String attribute, String value) {
         Locator dataPath = getByDataPath(attribute);
         if (dataPath.getAttribute("class").contains("RichTextEditor")) {
-            dataPath.getByRole(AriaRole.TEXTBOX).pressSequentially(value);
+            dataPath.getByRole(AriaRole.TEXTBOX).fill(value);
             return;
         }
         dataPath.fill(value);
@@ -214,11 +214,11 @@ public class DatabaseObjectForm {
         Class<?> currentClass = clazz;
         do {
             subTypes.addAll(List.of(currentClass.getDeclaredAnnotationsByType(JsonSubTypes.class)));
+            for (Class<?> implementedInterfaces : currentClass.getInterfaces()) {
+                subTypes.addAll(List.of(implementedInterfaces.getDeclaredAnnotationsByType(JsonSubTypes.class)));
+            }
             currentClass = currentClass.getSuperclass();
         } while (currentClass != null);
-        for (Class<?> implementedInterfaces : clazz.getInterfaces()) {
-            subTypes.addAll(List.of(implementedInterfaces.getDeclaredAnnotationsByType(JsonSubTypes.class)));
-        }
 
         for (JsonSubTypes subType : subTypes) {
             for (Type type : subType.value()) {
