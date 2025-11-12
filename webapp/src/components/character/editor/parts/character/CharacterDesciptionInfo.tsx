@@ -3,7 +3,7 @@ import {NumberInput, Stack, Table} from '@mantine/core';
 import React, {useContext} from 'react';
 import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {ObjectSelect} from '../../../../input/ObjectSelect';
 import {CharacterDescription} from '../../../../../api';
 

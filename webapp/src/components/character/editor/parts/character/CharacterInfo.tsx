@@ -3,7 +3,7 @@ import {Table} from '@mantine/core';
 import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext} from 'react';
 import {useTranslation} from 'react-i18next';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 
 /** Shows name and co of the character */
 export const CharacterInfo = () => {

@@ -2,7 +2,7 @@ import {useNode} from '@craftjs/core';
 import {Table} from '@mantine/core';
 import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext} from 'react';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {fetchAllPrimaryAttributes} from '../../../../Database';
 import {OrderModifier} from '../OrderModifier';
 import {toIdMap} from '../../../../utils/Utils';

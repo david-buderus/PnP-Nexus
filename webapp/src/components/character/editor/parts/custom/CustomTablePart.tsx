@@ -3,7 +3,7 @@ import {ActionIcon, Group, Select, Slider, Stack, Switch, Table, TextInput, Tool
 import React, {useContext, useState} from 'react';
 import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {FaMinus, FaPlus} from 'react-icons/fa6';
 
 type CellValues = {

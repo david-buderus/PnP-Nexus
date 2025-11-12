@@ -2,7 +2,7 @@ import {useNode} from '@craftjs/core';
 import {Button, Card, Divider, Group, Modal, Stack, Table, TextInput} from '@mantine/core';
 import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo, useState} from 'react';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {Talent} from '../../../../../api';
 import {useTranslation} from 'react-i18next';
 import {useDisclosure} from '@mantine/hooks';

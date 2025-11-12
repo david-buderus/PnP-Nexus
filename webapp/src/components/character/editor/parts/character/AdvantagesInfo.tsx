@@ -3,7 +3,7 @@ import {List, NumberInput, Stack, Switch, Table, Text} from '@mantine/core';
 import React, {useContext, useMemo} from 'react';
 import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 
 /** Part to show text */
 export const AdvantagesInfo = ({showsAdvantages, numberOfRows}: {

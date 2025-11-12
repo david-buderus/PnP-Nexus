@@ -16,12 +16,12 @@ import {
     TextInput,
     Title
 } from '@mantine/core';
-import {Editor, Element, Frame, useEditor} from '@craftjs/core';
+import {Editor, Element, Frame, Resolver, useEditor} from '@craftjs/core';
 import {StackPart} from './parts/layout/StackPart';
 import {FreeTextPart} from './parts/other/FreeTextPart';
 import {GroupPart} from './parts/layout/GroupPart';
 import {GridPart} from './parts/layout/GridPart';
-import {PnPCharacterContext} from './PnPCharacterContext';
+import {PnPCharacterContext} from '../PnPCharacterContext';
 import {CharacterInfo} from './parts/character/CharacterInfo';
 import {LevelInfo} from './parts/character/LevelInfo';
 import {PrimaryAttributeInfo} from './parts/stats/PrimaryAttributeInfo';
@@ -46,17 +46,35 @@ import {DropdownButton} from '../../button/DropdownButton';
 import {SpellList} from './parts/spells/SpellList';
 import {CurrencyPart, SHOW_ALL_CURRENCIES} from './parts/items/CurrencyPart';
 import {CustomTablePart, EMPTY_TABLE_DEFINITION} from './parts/custom/CustomTablePart';
+import {PnPCharacterSheetContext} from '../PnPCharacterSheetContext';
 
 const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
 
-/** Interface for the context */
-interface SheetEditor {
-    selectedPage: number;
-}
-
-/** Context in sheet editor */
-export const SheetEditorContext = React.createContext<SheetEditor>(null);
+export const RESOLVER: Resolver = {
+    StackPart,
+    FreeTextPart,
+    TextFieldPart,
+    TitlePart,
+    GroupPart,
+    GridPart,
+    CharacterInfo,
+    LevelInfo,
+    CharacterDescriptionInfo,
+    PrimaryAttributeInfo,
+    SecondaryAttributeInfo,
+    PrimaryAttributeRow,
+    WeaponList,
+    ArmorSlots,
+    JewelleryList,
+    InventoryPart,
+    TalentGroup,
+    SpellList,
+    AdvantagesInfo,
+    CurrencyPart,
+    CharacterSheetPaper,
+    CustomTablePart
+};
 
 /** Editor to create character sheets */
 export function PnPCharacterSheetEditor({
@@ -84,31 +102,8 @@ export function PnPCharacterSheetEditor({
 
     return <Group wrap="nowrap" align="flex-start">
         <PnPCharacterContext.Provider value={{character}}>
-            <SheetEditorContext.Provider value={{selectedPage}}>
-                <Editor resolver={{
-                    StackPart,
-                    FreeTextPart,
-                    TextFieldPart,
-                    TitlePart,
-                    GroupPart,
-                    GridPart,
-                    CharacterInfo,
-                    LevelInfo,
-                    CharacterDescriptionInfo,
-                    PrimaryAttributeInfo,
-                    SecondaryAttributeInfo,
-                    PrimaryAttributeRow,
-                    WeaponList,
-                    ArmorSlots,
-                    JewelleryList,
-                    InventoryPart,
-                    TalentGroup,
-                    SpellList,
-                    AdvantagesInfo,
-                    CurrencyPart,
-                    CharacterSheetPaper,
-                    CustomTablePart
-                }}>
+            <PnPCharacterSheetContext.Provider value={{selectedPage}}>
+                <Editor resolver={RESOLVER}>
                     <Stack>
                         <Stack id="print-section">
                             <Frame>
@@ -156,7 +151,7 @@ export function PnPCharacterSheetEditor({
                         <StorageModal initialSheet={initialSheet} setPages={setPages}/>
                     </Stack>
                 </Editor>
-            </SheetEditorContext.Provider>
+            </PnPCharacterSheetContext.Provider>
         </PnPCharacterContext.Provider>
     </Group>;
 }
@@ -574,7 +569,8 @@ function ImportModal({setPages, opened, close}: {
     </Modal>;
 }
 
-function countPagesOfImport(nodes: any) {
+/** Counts the number of pages in a sheet import */
+export function countPagesOfImport(nodes: any) {
     let count = 0;
 
     for (const nodeId in nodes) {

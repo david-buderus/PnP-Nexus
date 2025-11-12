@@ -3,7 +3,7 @@ import {NumberInput, Stack, Table} from '@mantine/core';
 import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {resourceFormatter, spellCastFormatter} from '../../../../utils/Formatters';
 import {resizeArray} from '../../../../utils/Utils';
 

@@ -1,7 +1,7 @@
-import React from "react";
-import {PnPCharacterDto} from "../../../api";
+import React from 'react';
+import {PnPCharacterDto} from '../../api';
 
-export interface PnPCharacterContextContent {
+export type PnPCharacterContextContent = {
     character: PnPCharacterDto;
 }
 
