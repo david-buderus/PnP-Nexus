@@ -29,7 +29,7 @@ import {FaRegTrashCan} from 'react-icons/fa6';
 import {ObjectMultiSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {addTypeAnnotationToUsage} from '../crafting/crafting-recipes';
 import TagCell from '../../../components/table/TagCell';
-import {resourceFormatter} from '../../../components/utils/Formatters';
+import {resourceFormatter, spellCastFormatter} from '../../../components/utils/Formatters';
 import {ActionSelect, CastingTypeMultiSelect} from '../../../components/input/EnumSelect';
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
 
@@ -96,17 +96,7 @@ export function SpellOverview() {
             {
                 accessorKey: 'cast',
                 header: t('spell:cast'),
-                Cell: (cell): ReactNode => {
-                    const cast: SpellCast = cell.cell.getValue();
-                    if (!cast) {
-                        return '';
-                    }
-                    if (cast['@type'] === 'TalentCast') {
-                        return (cast as TalentCast).talents.map(o => o?.name ?? '-').join(', ');
-                    } else {
-                        return (cast as TagCast).tagRequirement.tagRequirements.map(tags => tags.join(', ')).join(' ' + t('or') + ' ');
-                    }
-                },
+                Cell: (cell): ReactNode => spellCastFormatter(cell.cell.getValue(), t),
                 filterFn: (row, id, filterValue) => {
                     const cast = row.getValue<SpellCast>(id);
                     if (!cast) {

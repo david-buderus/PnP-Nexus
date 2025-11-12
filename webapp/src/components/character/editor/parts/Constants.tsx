@@ -25,7 +25,7 @@ export const TABLE_STYLE = {
 };
 
 /** The height for an empty table row */
-export const EMPTY_TABLE_ROW_HEIGHT = 20;
+export const TABLE_ROW_HEIGHT = 23;
 
 /** Returns a style matching parameters */
 export function getPartStyle(selected: boolean, empty?: boolean) {

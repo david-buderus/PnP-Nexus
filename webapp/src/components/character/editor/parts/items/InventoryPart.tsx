@@ -1,12 +1,12 @@
-import {useNode} from "@craftjs/core";
-import {NumberInput, Stack, Table} from "@mantine/core";
-import {EMPTY_TABLE_ROW_HEIGHT, getPartStyle, TABLE_STYLE} from "../Constants";
-import React, {useContext} from "react";
-import {useTranslation} from "react-i18next";
-import {PnPCharacterContext} from "../../PnPCharacterContext";
+import {useNode} from '@craftjs/core';
+import {NumberInput, Stack, Table} from '@mantine/core';
+import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import React, {useContext} from 'react';
+import {useTranslation} from 'react-i18next';
+import {PnPCharacterContext} from '../../PnPCharacterContext';
 
 
-/** Shows weapons of the character */
+/** Shows the inventory of the character */
 export const InventoryPart = ({rows, columns}: {
     rows: number;
     columns: number;
@@ -25,11 +25,11 @@ export const InventoryPart = ({rows, columns}: {
         style={getPartStyle(selected)}
     >
         <Table.Tbody>
-            <Table.Tr>
-                <Table.Th style={TABLE_STYLE} colSpan={columns}>{t("inventory")}</Table.Th>
+            <Table.Tr h={TABLE_ROW_HEIGHT}>
+                <Table.Th style={TABLE_STYLE} colSpan={columns}>{t('inventory')}</Table.Th>
             </Table.Tr>
             {Array.from({length: rows}, (_, rowIndex) =>
-                <Table.Tr h={EMPTY_TABLE_ROW_HEIGHT} key={rowIndex}>
+                <Table.Tr h={TABLE_ROW_HEIGHT} key={rowIndex}>
                     {Array.from({length: columns}, (_, colIndex) => {
                         const itemStack = character?.inventory.inventory.items[rowIndex + colIndex * rows];
 
@@ -52,14 +52,14 @@ const InventoryPartSettings = () => {
 
     return <Stack>
         <NumberInput
-            label={t("sheetEditor:numberOfRows")}
+            label={t('sheetEditor:numberOfRows')}
             value={rows}
             onChange={e => setProp(props => {
                 props.rows = Number(e);
             })}
         />
         <NumberInput
-            label={t("sheetEditor:numberOfColumns")}
+            label={t('sheetEditor:numberOfColumns')}
             value={columns}
             onChange={e => setProp(props => {
                 props.columns = Number(e);
@@ -69,7 +69,7 @@ const InventoryPartSettings = () => {
 };
 
 InventoryPart.craft = {
-    name: "inventory",
+    name: 'inventory',
     related: {
         settings: InventoryPartSettings
     }

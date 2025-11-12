@@ -38,6 +38,7 @@ export function DropdownButton({
             data-testid="main-button"
             {...props}
             style={{
+                flexGrow: 1,
                 borderTopRightRadius: 0,
                 borderBottomRightRadius: 0
             }}
@@ -52,7 +53,8 @@ export function DropdownButton({
                     style={{
                         borderTopLeftRadius: 0,
                         borderBottomLeftRadius: 0,
-                        borderLeft: 0
+                        borderLeft: 0,
+                        flexShrink: 0
                     }}
                 >
                     <FaChevronDown/>

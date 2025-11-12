@@ -96,5 +96,6 @@
   "inventory": "Inventar",
   "other": "Sonstige",
   "export": "Export",
-  "import": "Import"
+  "import": "Import",
+  "coins": "Münzen"
 }

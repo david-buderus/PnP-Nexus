@@ -2,6 +2,7 @@ package de.pnp.manager.component.character.dto;
 
 import de.pnp.manager.component.character.*;
 import de.pnp.manager.component.character.traits.ICharacterTrait;
+import de.pnp.manager.component.spell.Spell;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.bson.types.ObjectId;
@@ -24,7 +25,9 @@ public record PnPCharacterDto(
         @NotNull @Valid CharacterStatsDto stats,
         @NotNull Map<ObjectId, @NotNull @Valid TalentRollDto> talents,
         @NotNull CharacterEquipment equipment,
-        @NotNull CharacterInventory inventory
+        @NotNull CharacterInventory inventory,
+        @NotNull List<Spell> spells,
+        @NotNull Map<String, String> customFields
 ) {
     /**
      * DTO for the stats of a talent roll

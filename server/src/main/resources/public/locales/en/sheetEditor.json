@@ -26,5 +26,21 @@
   "title": "Title",
   "addTalent": "Add a Talent",
   "addEmptyRow": "Add an Empty Row",
-  "emptyRow": "Empty Row"
+  "emptyRow": "Empty Row",
+  "character-sheet": "Character Sheet",
+  "character-sheets": "Character Sheets",
+  "spellList": "Spellbook",
+  "characterDescription": "Description",
+  "currency": "Currency",
+  "showAllCurrencies": "All Currencies",
+  "withoutLabel": "No Label",
+  "oneLine": "In One Line",
+  "dragToAdd": "Drag To Add",
+  "customFields": "Custom Fields",
+  "customFieldId": "Custom ID",
+  "customFieldIdTooltip": "Fields that share their ID show the same text which is stored in the character",
+  "headers": "Headers",
+  "rows": "Rows",
+  "asCustomFieldId": "Custom ID",
+  "table": "Table"
 }

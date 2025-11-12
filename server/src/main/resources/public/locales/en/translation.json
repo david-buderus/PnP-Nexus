@@ -96,5 +96,6 @@
   "inventory": "Inventory",
   "other": "Other",
   "export": "Export",
-  "import": "Import"
+  "import": "Import",
+  "coins": "Coins"
 }

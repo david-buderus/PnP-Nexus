@@ -1,9 +1,9 @@
-import {useNode} from "@craftjs/core";
-import {Table} from "@mantine/core";
-import {getPartStyle, TABLE_STYLE} from "../Constants";
-import React, {useContext} from "react";
-import {useTranslation} from "react-i18next";
-import {PnPCharacterContext} from "../../PnPCharacterContext";
+import {useNode} from '@craftjs/core';
+import {Table} from '@mantine/core';
+import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import React, {useContext} from 'react';
+import {useTranslation} from 'react-i18next';
+import {PnPCharacterContext} from '../../PnPCharacterContext';
 
 /** Shows name and co of the character */
 export const CharacterInfo = () => {
@@ -21,20 +21,20 @@ export const CharacterInfo = () => {
         style={getPartStyle(selected)}
     >
         <Table.Tbody>
-            <Table.Tr>
-                <Table.Th style={TABLE_STYLE}>{t("name")}</Table.Th>
+            <Table.Tr h={TABLE_ROW_HEIGHT}>
+                <Table.Th style={TABLE_STYLE}>{t('name')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>{character?.description.name}</Table.Td>
             </Table.Tr>
 
-            <Table.Tr>
-                <Table.Th style={TABLE_STYLE}>{t("species")}</Table.Th>
+            <Table.Tr h={TABLE_ROW_HEIGHT}>
+                <Table.Th style={TABLE_STYLE}>{t('species')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>
-                    {character?.species.name + (character?.nation ? " / " + character.nation.name : "")}
+                    {character?.species.name + (character?.nation ? ' / ' + character.nation.name : '')}
                 </Table.Td>
             </Table.Tr>
 
-            <Table.Tr>
-                <Table.Th style={TABLE_STYLE}>{t("profession")}</Table.Th>
+            <Table.Tr h={TABLE_ROW_HEIGHT}>
+                <Table.Th style={TABLE_STYLE}>{t('profession')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>{character?.description.profession}</Table.Td>
             </Table.Tr>
         </Table.Tbody>
@@ -42,5 +42,5 @@ export const CharacterInfo = () => {
 };
 
 CharacterInfo.craft = {
-    name: "sheetEditor:characterInfo"
+    name: 'sheetEditor:characterInfo'
 };
