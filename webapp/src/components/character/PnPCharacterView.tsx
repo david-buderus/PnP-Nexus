@@ -10,6 +10,7 @@ import {FaChevronLeft} from 'react-icons/fa';
 import {FaChevronRight} from 'react-icons/fa6';
 import {countPagesOfImport, RESOLVER} from './editor/PnPCharacterSheetEditor';
 
+/** Shows the character with the help of the given sheet */
 export function PnPCharacterView({
     character, sheet
 }: {

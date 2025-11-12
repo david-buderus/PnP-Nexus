@@ -133,7 +133,6 @@ const TalentGroupSettings = () => {
     }));
     const [talents] = fetchAllTalents();
     const talentsOrder: string[] = talentIds ?? [];
-    console.log(talentsOrder);
 
     const [primaryAttributes] = fetchAllPrimaryAttributes();
     const attributeMap = toIdMap(primaryAttributes);
