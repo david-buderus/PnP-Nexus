@@ -26,7 +26,7 @@ export const SpellList = ({
         withColumnBorders
         striped
         ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
+        style={{...getPartStyle(selected), tableLayout: 'fixed'}}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>

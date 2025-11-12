@@ -25,18 +25,25 @@ export const ArmorSlots = ({withShield}: { withShield: boolean }) => {
         withColumnBorders
         striped
         ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
+        style={{...getPartStyle(selected), tableLayout: 'fixed'}}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>
-                <Table.Th style={{width: '10%', ...TABLE_STYLE}}></Table.Th>
-                <Table.Th style={{width: '15%', ...TABLE_STYLE}}>{t('name')}</Table.Th>
+                <Table.Th style={{width: 'max-content', ...TABLE_STYLE}}></Table.Th>
+                <Table.Th style={{width: '20%', ...TABLE_STYLE}}>{t('name')}</Table.Th>
                 <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('armor')}</Table.Th>
                 {itemSettings?.usingProtection ?
                     <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('protection')}</Table.Th> : null
                 }
                 <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('weight')}</Table.Th>
-                <Table.Th style={{width: '30%', ...TABLE_STYLE}}>{t('effect')}</Table.Th>
+                <Table.Th
+                    style={{
+                        width: itemSettings?.usingProtection ? '32%' : '42%',
+                        ...TABLE_STYLE
+                    }}
+                >
+                    {t('effect')}
+                </Table.Th>
             </Table.Tr>
             <ArmorSlot slot={EArmorSlot.Head}/>
             <ArmorSlot slot={EArmorSlot.Body}/>

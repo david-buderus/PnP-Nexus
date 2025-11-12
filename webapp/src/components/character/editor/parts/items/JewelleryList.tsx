@@ -23,13 +23,13 @@ export const JewelleryList = ({numberOfJewellery}: {
         withColumnBorders
         striped
         ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
+        style={{...getPartStyle(selected), tableLayout: 'fixed'}}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>
-                <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('jewellery')}</Table.Th>
-                <Table.Th style={{width: '30%', ...TABLE_STYLE}}>{t('name')}</Table.Th>
-                <Table.Th style={{width: '60%', ...TABLE_STYLE}}>{t('effect')}</Table.Th>
+                <Table.Th style={{width: '20%', ...TABLE_STYLE}}>{t('jewellery')}</Table.Th>
+                <Table.Th style={{width: '25%', ...TABLE_STYLE}}>{t('name')}</Table.Th>
+                <Table.Th style={{width: '55%', ...TABLE_STYLE}}>{t('effect')}</Table.Th>
             </Table.Tr>
             {equipmentSettings.jewelleryDefinitions.map(definition => <JewelleryLines
                 key={definition.name}

@@ -22,7 +22,8 @@ export const CharacterSheetPaper = ({
             shadow="sm"
             p="md"
             withBorder
-            className="page-break print-clean"
+            className={'page-break ' + (pageNumber === 0 ? 'print-clean-first' : 'print-clean')}
+            style={{overflow: 'hidden'}}
             {...props}
         >
             <StackPart>

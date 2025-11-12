@@ -34,7 +34,7 @@ export const CharacterInfo = () => {
             </Table.Tr>
 
             <Table.Tr h={TABLE_ROW_HEIGHT}>
-                <Table.Th style={TABLE_STYLE}>{t('profession')}</Table.Th>
+                <Table.Th style={TABLE_STYLE}>{t('crafting:profession')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>{character?.description.profession}</Table.Td>
             </Table.Tr>
         </Table.Tbody>

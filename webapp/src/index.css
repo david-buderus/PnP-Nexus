@@ -37,12 +37,18 @@
         break-after: page;
     }
 
-    .print-clean {
+    .print-clean-first {
         box-shadow: none !important;
         padding: 0 !important;
         border: none !important;
     }
-    
+
+    .print-clean {
+        box-shadow: none !important;
+        padding: 25px 0 0 0 !important;
+        border: none !important;
+    }
+
     .page-hidden {
         display: block !important;
     }
