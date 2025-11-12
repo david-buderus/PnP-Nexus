@@ -97,5 +97,8 @@
   "other": "Other",
   "export": "Export",
   "import": "Import",
-  "coins": "Coins"
+  "coins": "Coins",
+  "saveAs": "Save As...",
+  "unsavedChangesTitle": "Unsaved Changes",
+  "unsavedChangesDescription": "You have unsaved changes. Are you sure you want to leave?"
 }

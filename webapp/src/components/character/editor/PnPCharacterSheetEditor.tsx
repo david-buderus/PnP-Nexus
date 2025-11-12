@@ -8,6 +8,9 @@ import {
     ActionIcon,
     Badge,
     Button,
+    Center,
+    Divider,
+    Flex,
     Group,
     Modal,
     Stack,
@@ -47,10 +50,12 @@ import {SpellList} from './parts/spells/SpellList';
 import {CurrencyPart, SHOW_ALL_CURRENCIES} from './parts/items/CurrencyPart';
 import {CustomTablePart, EMPTY_TABLE_DEFINITION} from './parts/custom/CustomTablePart';
 import {PnPCharacterSheetContext} from '../PnPCharacterSheetContext';
+import ConfirmationDialog from '../../modal/ConfirmationDialog';
 
 const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
 
+/** All resolver used by the character sheet editor */
 export const RESOLVER: Resolver = {
     StackPart,
     FreeTextPart,
@@ -78,9 +83,10 @@ export const RESOLVER: Resolver = {
 
 /** Editor to create character sheets */
 export function PnPCharacterSheetEditor({
-    initialSheet,
+    initialSheet, onCancel
 }: {
     initialSheet?: PnPCharacterSheet;
+    onCancel: () => void;
 }) {
     const {activeUniverse} = useUniverseContext();
 
@@ -100,60 +106,72 @@ export function PnPCharacterSheetEditor({
         return <></>;
     }
 
-    return <Group wrap="nowrap" align="flex-start">
-        <PnPCharacterContext.Provider value={{character}}>
-            <PnPCharacterSheetContext.Provider value={{selectedPage}}>
-                <Editor resolver={RESOLVER}>
-                    <Stack>
-                        <Stack id="print-section">
-                            <Frame>
-                                <Element is={StackPart}>
-                                    <Element is={CharacterSheetPaper} pageNumber={0} id="page-0" canvas/>
-                                </Element>
-                            </Frame>
+    return <Center>
+        <Group wrap="nowrap" align="flex-start">
+            <PnPCharacterContext.Provider value={{character}}>
+                <PnPCharacterSheetContext.Provider value={{selectedPage}}>
+                    <Editor resolver={RESOLVER}>
+                        <Stack>
+                            {initialSheet ?
+                                <Title data-testid="name">
+                                    {initialSheet?.name ?? ''}
+                                </Title>
+                                : null}
+                            <Flex align="flex-start" wrap="nowrap" gap="md">
+                                <Stack>
+                                    <Stack id="print-section">
+                                        <Frame>
+                                            <Element is={StackPart}>
+                                                <Element is={CharacterSheetPaper} pageNumber={0} id="page-0" canvas/>
+                                            </Element>
+                                        </Frame>
+                                    </Stack>
+                                    <Group justify="space-around">
+                                        <RemovePageButton
+                                            pages={pages}
+                                            setPages={setPages}
+                                            selectedPage={selectedPage}
+                                            setSelectedPage={setSelectedPage}
+                                        />
+                                        <Group gap={0}>
+                                            <ActionIcon
+                                                style={{
+                                                    borderTopRightRadius: 0,
+                                                    borderBottomRightRadius: 0,
+                                                }}
+                                                disabled={selectedPage === 0}
+                                                onClick={() => setSelectedPage(prev => prev - 1)}
+                                            >
+                                                <FaChevronLeft/>
+                                            </ActionIcon>
+                                            <ActionIcon
+                                                style={{
+                                                    borderTopLeftRadius: 0,
+                                                    borderBottomLeftRadius: 0,
+                                                    borderLeft: 0
+                                                }}
+                                                disabled={selectedPage === pages - 1}
+                                                onClick={() => setSelectedPage(prev => prev + 1)}
+                                            >
+                                                <FaChevronRight/>
+                                            </ActionIcon>
+                                        </Group>
+                                        <AddPageButton pages={pages} setPages={setPages}/>
+                                    </Group>
+                                </Stack>
+                                <Stack w={300}>
+                                    <Toolbox/>
+                                    <SettingsPanel/>
+                                    <Divider/>
+                                    <StorageModal initialSheet={initialSheet} setPages={setPages} onCancel={onCancel}/>
+                                </Stack>
+                            </Flex>
                         </Stack>
-                        <Group justify="space-around">
-                            <RemovePageButton
-                                pages={pages}
-                                setPages={setPages}
-                                selectedPage={selectedPage}
-                                setSelectedPage={setSelectedPage}
-                            />
-                            <Group gap={0}>
-                                <ActionIcon
-                                    style={{
-                                        borderTopRightRadius: 0,
-                                        borderBottomRightRadius: 0,
-                                    }}
-                                    disabled={selectedPage === 0}
-                                    onClick={() => setSelectedPage(prev => prev - 1)}
-                                >
-                                    <FaChevronLeft/>
-                                </ActionIcon>
-                                <ActionIcon
-                                    style={{
-                                        borderTopLeftRadius: 0,
-                                        borderBottomLeftRadius: 0,
-                                        borderLeft: 0
-                                    }}
-                                    disabled={selectedPage === pages - 1}
-                                    onClick={() => setSelectedPage(prev => prev + 1)}
-                                >
-                                    <FaChevronRight/>
-                                </ActionIcon>
-                            </Group>
-                            <AddPageButton pages={pages} setPages={setPages}/>
-                        </Group>
-                    </Stack>
-                    <Stack w={300}>
-                        <Toolbox/>
-                        <SettingsPanel/>
-                        <StorageModal initialSheet={initialSheet} setPages={setPages}/>
-                    </Stack>
-                </Editor>
-            </PnPCharacterSheetContext.Provider>
-        </PnPCharacterContext.Provider>
-    </Group>;
+                    </Editor>
+                </PnPCharacterSheetContext.Provider>
+            </PnPCharacterContext.Provider>
+        </Group>
+    </Center>;
 }
 
 function RemovePageButton({selectedPage, setSelectedPage, pages, setPages}: {
@@ -424,22 +442,20 @@ function SettingsPanel() {
         <Button disabled={!selected?.isDeletable} onClick={() => actions.delete(selected.id)}>
             {t('delete')}
         </Button>
-        <Button onClick={() => {
-            actions.selectNode(null);
-            window.print();
-        }}>
-            {t('print')}
-        </Button>
     </Stack>;
 }
 
-function StorageModal({initialSheet, setPages}: {
+function StorageModal({initialSheet, setPages, onCancel}: {
     initialSheet?: PnPCharacterSheet;
     setPages: (p: number) => void;
+    onCancel: () => void;
 }) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {actions, query} = useEditor();
+
+    const [latestSave, setLatestSave] = useState<string>('');
+
     const [openedSave, {open: openSave, close: closeSave}] = useDisclosure(false);
     const [openedImport, {open: openImport, close: closeImport}] = useDisclosure(false);
     const [openedExport, {open: openExport, close: closeExport}] = useDisclosure(false);
@@ -456,13 +472,14 @@ function StorageModal({initialSheet, setPages}: {
         if (!initialSheet || !initialSheet.sheet) {
             return;
         }
+        setLatestSave(initialSheet.sheet);
         const json = atob(initialSheet.sheet);
         actions.deserialize(json);
         setPages(countPagesOfImport(JSON.parse(json)));
     }, [initialSheet]);
 
     return <Stack>
-        <Modal opened={openedSave} onClose={closeSave} maw={300}>
+        <Modal opened={openedSave} onClose={closeSave} maw={300} title={t('saveAs')}>
             <form
                 data-testid="species-form"
                 onSubmit={form.onSubmit(sheet => {
@@ -470,10 +487,12 @@ function StorageModal({initialSheet, setPages}: {
                     if (sheet.id) {
                         SHEET_API.updatePnPCharacterSheet(activeUniverse.name, sheet.id, sheet)
                             .then(closeSave)
+                            .then(() => setLatestSave(sheet.sheet))
                             .catch(handleValidationErrors(form.setErrors));
                     } else {
                         SHEET_API.insertAllPnPCharacterSheets(activeUniverse.name, [sheet])
                             .then(closeSave)
+                            .then(() => setLatestSave(sheet.sheet))
                             .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
                     }
                 })}
@@ -493,6 +512,30 @@ function StorageModal({initialSheet, setPages}: {
                 </Group>
             </form>
         </Modal>
+        <Button variant="outline" onClick={() => {
+            actions.selectNode(null);
+            window.print();
+        }}>
+            {t('print')}
+        </Button>
+        <ConfirmationDialog
+            title={t('unsavedChangesTitle')}
+            text={t('unsavedChangesDescription')}
+            onConfirmation={onCancel}
+            openNode={(open) =>
+                <Button
+                    onClick={() => {
+                        if (btoa(query.serialize()) !== latestSave) {
+                            open();
+                        } else {
+                            onCancel();
+                        }
+                    }}
+                    variant="outline"
+                >
+                    {t('cancel')}
+                </Button>}
+        />
         <DropdownButton
             label={t('save')}
             onClick={openSave}

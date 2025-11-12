@@ -16,7 +16,7 @@ export function CharacterSheetsOverview() {
     const [editMode, setEditMode] = useState<boolean>(false);
 
     if (editMode) {
-        return <PnPCharacterSheetEditor/>;
+        return <PnPCharacterSheetEditor onCancel={() => setEditMode(false)}/>;
     }
 
     return <Center>

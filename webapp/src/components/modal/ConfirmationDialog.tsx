@@ -1,11 +1,11 @@
-import { Button, Group, Modal, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { ReactNode } from "react";
-import { useTranslation } from "react-i18next";
+import {Button, Group, Modal, Text} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
+import {ReactNode} from 'react';
+import {useTranslation} from 'react-i18next';
 
 
 /** Props for the confirmation dialog */
-export interface ConfirmationDialogProps {
+export type ConfirmationDialogProps = {
     /** The title of the dialog */
     title: string;
     /** The text of the dialog */
@@ -23,8 +23,8 @@ export default function ConfirmationDialog({
     onConfirmation,
     openNode
 }: ConfirmationDialogProps) {
-    const { t } = useTranslation();
-    const [opened, { open, close }] = useDisclosure(false);
+    const {t} = useTranslation();
+    const [opened, {open, close}] = useDisclosure(false);
 
     return <>
         <Modal opened={opened} onClose={close} title={title} maw={300}>
@@ -33,13 +33,13 @@ export default function ConfirmationDialog({
             </Text>
             <Group justify="flex-end">
                 <Button autoFocus variant="outline" onClick={close}>
-                    {t("cancel")}
+                    {t('cancel')}
                 </Button>
                 <Button type="submit" onClick={() => {
                     onConfirmation();
                     close();
                 }}>
-                    {t("confirm")}
+                    {t('confirm')}
                 </Button>
             </Group>
         </Modal>
