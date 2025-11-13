@@ -1538,6 +1538,12 @@ export interface PnPCharacterDto {
     'advantageTraits': Array<NationAdvantageTraitsInner>;
     /**
      * 
+     * @type {{ [key: string]: string; }}
+     * @memberof PnPCharacterDto
+     */
+    'customFields': { [key: string]: string; };
+    /**
+     * 
      * @type {CharacterDescription}
      * @memberof PnPCharacterDto
      */
@@ -1586,6 +1592,12 @@ export interface PnPCharacterDto {
     'species': Species;
     /**
      * 
+     * @type {Array<Spell>}
+     * @memberof PnPCharacterDto
+     */
+    'spells': Array<Spell>;
+    /**
+     * 
      * @type {CharacterStatsDto}
      * @memberof PnPCharacterDto
      */
@@ -1596,6 +1608,31 @@ export interface PnPCharacterDto {
      * @memberof PnPCharacterDto
      */
     'talents': { [key: string]: TalentRollDto; };
+}
+/**
+ * 
+ * @export
+ * @interface PnPCharacterSheet
+ */
+export interface PnPCharacterSheet {
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPCharacterSheet
+     */
+    'id'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPCharacterSheet
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PnPCharacterSheet
+     */
+    'sheet': string;
 }
 /**
  * 
@@ -5946,6 +5983,40 @@ export const PnPCharacterServiceApiAxiosParamCreator = function (configuration?:
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Generates an example character
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getExampleCharacter: async (universe: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getExampleCharacter', 'universe', universe)
+            const localVarPath = `/api/{universe}/characters/example`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -5969,6 +6040,19 @@ export const PnPCharacterServiceApiFp = function(configuration?: Configuration) 
             const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.getAllCharacters']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Generates an example character
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getExampleCharacter(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getExampleCharacter(universe, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.getExampleCharacter']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -5988,6 +6072,16 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
          */
         getAllCharacters(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterDto>> {
             return localVarFp.getAllCharacters(universe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Generates an example character
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getExampleCharacter(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterDto> {
+            return localVarFp.getExampleCharacter(universe, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -6009,6 +6103,528 @@ export class PnPCharacterServiceApi extends BaseAPI {
      */
     public getAllCharacters(universe: string, options?: RawAxiosRequestConfig) {
         return PnPCharacterServiceApiFp(this.configuration).getAllCharacters(universe, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Generates an example character
+     * @param {string} universe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterServiceApi
+     */
+    public getExampleCharacter(universe: string, options?: RawAxiosRequestConfig) {
+        return PnPCharacterServiceApiFp(this.configuration).getExampleCharacter(universe, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * PnPCharacterSheetServiceApi - axios parameter creator
+ * @export
+ */
+export const PnPCharacterSheetServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAllPnPCharacterSheets: async (universe: string, ids: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAllPnPCharacterSheets', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAllPnPCharacterSheets', 'ids', ids)
+            const localVarPath = `/api/{universe}/character-sheets`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePnPCharacterSheet: async (universe: string, id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deletePnPCharacterSheet', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deletePnPCharacterSheet', 'id', id)
+            const localVarPath = `/api/{universe}/character-sheets/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllPnPCharacterSheets: async (universe: string, ids?: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getAllPnPCharacterSheets', 'universe', universe)
+            const localVarPath = `/api/{universe}/character-sheets`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPnPCharacterSheet: async (universe: string, id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getPnPCharacterSheet', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getPnPCharacterSheet', 'id', id)
+            const localVarPath = `/api/{universe}/character-sheets/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<PnPCharacterSheet>} pnPCharacterSheet 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllPnPCharacterSheets: async (universe: string, pnPCharacterSheet: Array<PnPCharacterSheet>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAllPnPCharacterSheets', 'universe', universe)
+            // verify required parameter 'pnPCharacterSheet' is not null or undefined
+            assertParamExists('insertAllPnPCharacterSheets', 'pnPCharacterSheet', pnPCharacterSheet)
+            const localVarPath = `/api/{universe}/character-sheets`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pnPCharacterSheet, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {PnPCharacterSheet} pnPCharacterSheet 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updatePnPCharacterSheet: async (universe: string, id: string, pnPCharacterSheet: PnPCharacterSheet, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('updatePnPCharacterSheet', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updatePnPCharacterSheet', 'id', id)
+            // verify required parameter 'pnPCharacterSheet' is not null or undefined
+            assertParamExists('updatePnPCharacterSheet', 'pnPCharacterSheet', pnPCharacterSheet)
+            const localVarPath = `/api/{universe}/character-sheets/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pnPCharacterSheet, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PnPCharacterSheetServiceApi - functional programming interface
+ * @export
+ */
+export const PnPCharacterSheetServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PnPCharacterSheetServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAllPnPCharacterSheets(universe: string, ids: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAllPnPCharacterSheets(universe, ids, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterSheetServiceApi.deleteAllPnPCharacterSheets']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deletePnPCharacterSheet(universe: string, id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deletePnPCharacterSheet(universe, id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterSheetServiceApi.deletePnPCharacterSheet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllPnPCharacterSheets(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPCharacterSheet>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllPnPCharacterSheets(universe, ids, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterSheetServiceApi.getAllPnPCharacterSheets']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getPnPCharacterSheet(universe: string, id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterSheet>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPnPCharacterSheet(universe, id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterSheetServiceApi.getPnPCharacterSheet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<PnPCharacterSheet>} pnPCharacterSheet 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAllPnPCharacterSheets(universe: string, pnPCharacterSheet: Array<PnPCharacterSheet>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPCharacterSheet>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAllPnPCharacterSheets(universe, pnPCharacterSheet, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterSheetServiceApi.insertAllPnPCharacterSheets']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {PnPCharacterSheet} pnPCharacterSheet 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updatePnPCharacterSheet(universe: string, id: string, pnPCharacterSheet: PnPCharacterSheet, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterSheet>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updatePnPCharacterSheet(universe, id, pnPCharacterSheet, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterSheetServiceApi.updatePnPCharacterSheet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * PnPCharacterSheetServiceApi - factory interface
+ * @export
+ */
+export const PnPCharacterSheetServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PnPCharacterSheetServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAllPnPCharacterSheets(universe: string, ids: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteAllPnPCharacterSheets(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePnPCharacterSheet(universe: string, id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deletePnPCharacterSheet(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all objects from the database
+         * @param {string} universe 
+         * @param {Array<string>} [ids] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllPnPCharacterSheets(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterSheet>> {
+            return localVarFp.getAllPnPCharacterSheets(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPnPCharacterSheet(universe: string, id: string, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterSheet> {
+            return localVarFp.getPnPCharacterSheet(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<PnPCharacterSheet>} pnPCharacterSheet 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllPnPCharacterSheets(universe: string, pnPCharacterSheet: Array<PnPCharacterSheet>, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterSheet>> {
+            return localVarFp.insertAllPnPCharacterSheets(universe, pnPCharacterSheet, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {PnPCharacterSheet} pnPCharacterSheet 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updatePnPCharacterSheet(universe: string, id: string, pnPCharacterSheet: PnPCharacterSheet, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterSheet> {
+            return localVarFp.updatePnPCharacterSheet(universe, id, pnPCharacterSheet, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * PnPCharacterSheetServiceApi - object-oriented interface
+ * @export
+ * @class PnPCharacterSheetServiceApi
+ * @extends {BaseAPI}
+ */
+export class PnPCharacterSheetServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterSheetServiceApi
+     */
+    public deleteAllPnPCharacterSheets(universe: string, ids: Array<string>, options?: RawAxiosRequestConfig) {
+        return PnPCharacterSheetServiceApiFp(this.configuration).deleteAllPnPCharacterSheets(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterSheetServiceApi
+     */
+    public deletePnPCharacterSheet(universe: string, id: string, options?: RawAxiosRequestConfig) {
+        return PnPCharacterSheetServiceApiFp(this.configuration).deletePnPCharacterSheet(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all objects from the database
+     * @param {string} universe 
+     * @param {Array<string>} [ids] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterSheetServiceApi
+     */
+    public getAllPnPCharacterSheets(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig) {
+        return PnPCharacterSheetServiceApiFp(this.configuration).getAllPnPCharacterSheets(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterSheetServiceApi
+     */
+    public getPnPCharacterSheet(universe: string, id: string, options?: RawAxiosRequestConfig) {
+        return PnPCharacterSheetServiceApiFp(this.configuration).getPnPCharacterSheet(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<PnPCharacterSheet>} pnPCharacterSheet 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterSheetServiceApi
+     */
+    public insertAllPnPCharacterSheets(universe: string, pnPCharacterSheet: Array<PnPCharacterSheet>, options?: RawAxiosRequestConfig) {
+        return PnPCharacterSheetServiceApiFp(this.configuration).insertAllPnPCharacterSheets(universe, pnPCharacterSheet, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {PnPCharacterSheet} pnPCharacterSheet 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterSheetServiceApi
+     */
+    public updatePnPCharacterSheet(universe: string, id: string, pnPCharacterSheet: PnPCharacterSheet, options?: RawAxiosRequestConfig) {
+        return PnPCharacterSheetServiceApiFp(this.configuration).updatePnPCharacterSheet(universe, id, pnPCharacterSheet, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

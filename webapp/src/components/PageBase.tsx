@@ -53,6 +53,7 @@ import axios from 'axios';
 import {PiPerson} from 'react-icons/pi';
 import {ErrorBoundary} from './ErrorBoundary';
 import {StringParam, useQueryParam, withDefault} from 'use-query-params';
+import {BsPersonVcard} from 'react-icons/bs';
 
 type UniverseContext = {
     universes: Universe[];
@@ -363,7 +364,13 @@ function generateSidebarEntries(userPermissions: UserPermissions): NavbarEntryPr
         {
             id: 'characters-menu', label: t('characters'), link: '/characters', icon: <FaPersonRays/>, subEntries: [
                 {id: 'spells-menu', label: t('spells'), link: '/spells', icon: <GiSpellBook/>},
-                {id: 'talents-menu', label: t('talents'), link: '/talents', icon: <GiSupersonicArrow/>}
+                {id: 'talents-menu', label: t('talents'), link: '/talents', icon: <GiSupersonicArrow/>},
+                {
+                    id: 'editor-menu',
+                    label: t('sheetEditor:character-sheets'),
+                    link: '/characters-editor',
+                    icon: <BsPersonVcard/>
+                }
             ]
         }
     ];

@@ -802,6 +802,245 @@
         ]
       }
     },
+    "/api/{universe}/character-sheets": {
+      "delete": {
+        "operationId": "deleteAllPnPCharacterSheets",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes all objects with the given ids from the database",
+        "tags": [
+          "pn-p-character-sheet-service"
+        ]
+      },
+      "get": {
+        "operationId": "getAllPnPCharacterSheets",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ids",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PnPCharacterSheet"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get all objects from the database",
+        "tags": [
+          "pn-p-character-sheet-service"
+        ]
+      },
+      "post": {
+        "operationId": "insertAllPnPCharacterSheets",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PnPCharacterSheet"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PnPCharacterSheet"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the objects into the database",
+        "tags": [
+          "pn-p-character-sheet-service"
+        ]
+      }
+    },
+    "/api/{universe}/character-sheets/{id}": {
+      "delete": {
+        "operationId": "deletePnPCharacterSheet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Deletes an object from the database",
+        "tags": [
+          "pn-p-character-sheet-service"
+        ]
+      },
+      "get": {
+        "operationId": "getPnPCharacterSheet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPCharacterSheet"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get an object from the database",
+        "tags": [
+          "pn-p-character-sheet-service"
+        ]
+      },
+      "put": {
+        "operationId": "updatePnPCharacterSheet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PnPCharacterSheet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPCharacterSheet"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Updates an object in the database",
+        "tags": [
+          "pn-p-character-sheet-service"
+        ]
+      }
+    },
     "/api/{universe}/characters": {
       "get": {
         "operationId": "getAllCharacters",
@@ -831,6 +1070,37 @@
           }
         },
         "summary": "Get all characters from the database",
+        "tags": [
+          "pn-p-character-service"
+        ]
+      }
+    },
+    "/api/{universe}/characters/example": {
+      "get": {
+        "operationId": "getExampleCharacter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPCharacterDto"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Generates an example character",
         "tags": [
           "pn-p-character-service"
         ]
@@ -5518,12 +5788,14 @@
       "PnPCharacterDto": {
         "required": [
           "advantageTraits",
+          "customFields",
           "description",
           "disadvantageTraits",
           "equipment",
           "inventory",
           "level",
           "species",
+          "spells",
           "stats",
           "talents"
         ],
@@ -5546,6 +5818,12 @@
                   "$ref": "#/components/schemas/TalentCharacterTrait"
                 }
               ]
+            }
+          },
+          "customFields": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
             }
           },
           "description": {
@@ -5588,6 +5866,12 @@
           "species": {
             "$ref": "#/components/schemas/Species"
           },
+          "spells": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Spell"
+            }
+          },
           "stats": {
             "$ref": "#/components/schemas/CharacterStatsDto"
           },
@@ -5596,6 +5880,24 @@
             "additionalProperties": {
               "$ref": "#/components/schemas/TalentRollDto"
             }
+          }
+        }
+      },
+      "PnPCharacterSheet": {
+        "required": [
+          "name",
+          "sheet"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "sheet": {
+            "type": "string"
           }
         }
       },

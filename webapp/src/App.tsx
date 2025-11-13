@@ -22,12 +22,14 @@ import {UniverseView} from './components/UniverseView';
 import {User} from './pages/user/user';
 import {UserPreferences} from './pages/user/preferences';
 import {Admin} from './pages/admin/admin';
-import {PnPCharacterSheetEditor} from './components/character/editor/PnPCharacterSheetEditor';
 import {NationView} from './pages/database/world/nations';
 import {ReactRouter6Adapter} from 'use-query-params/adapters/react-router-6';
 import {QueryParamProvider} from 'use-query-params';
 import {SpeciesOverview} from './pages/database/world/species-overview';
 import {SpeciesDetail} from './pages/database/world/species';
+import {CharactersOverview} from './pages/database/characters/characters-overview';
+import {CharacterSheetsOverview} from './pages/database/characters/character-sheets-overview';
+import {CharacterSheetEditor} from './pages/database/characters/character-sheet-editor';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -68,8 +70,12 @@ class App extends Component {
                                    element={<UniverseView><CraftingRecipeOverview/></UniverseView>}/>
                             <Route path="/upgrade-recipes"
                                    element={<UniverseView><UpgradeRecipeOverview/></UniverseView>}/>
-                            <Route path="/characters" element={<UniverseView><></>
-                            </UniverseView>}/>
+                            <Route path="/characters"
+                                   element={<UniverseView><CharactersOverview/> </UniverseView>}/>
+                            <Route path="/characters-editor"
+                                   element={<UniverseView><CharacterSheetsOverview/></UniverseView>}/>
+                            <Route path="/characters-editor/:sheet"
+                                   element={<UniverseView><CharacterSheetEditor/></UniverseView>}/>
                             <Route path="/spells" element={<UniverseView><SpellOverview/></UniverseView>}/>
                             <Route path="/talents" element={<UniverseView><TalentOverview/></UniverseView>}/>
                             <Route path="/species" element={<UniverseView><SpeciesOverview/></UniverseView>}/>
@@ -78,7 +84,6 @@ class App extends Component {
                             <Route path="/nations/:nation" element={<UniverseView><NationView/></UniverseView>}/>
                             <Route path="/admin" element={<Admin/>}/>
                             <Route path="/users" element={<UserOverview/>}/>
-                            <Route path="/test" element={<PnPCharacterSheetEditor/>}/>
                         </Route>
                         <Route path="/login" element={<Login/>}> </Route>
                     </Routes>

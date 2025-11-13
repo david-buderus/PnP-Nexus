@@ -21,11 +21,14 @@ const EMPTY_STYLE = {
 /** Style for tables */
 export const TABLE_STYLE = {
     padding: '3px 6px',
-    fontSize: '10px'
+    fontSize: '10px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap' as 'nowrap',
 };
 
 /** The height for an empty table row */
-export const EMPTY_TABLE_ROW_HEIGHT = 20;
+export const TABLE_ROW_HEIGHT = 23;
 
 /** Returns a style matching parameters */
 export function getPartStyle(selected: boolean, empty?: boolean) {

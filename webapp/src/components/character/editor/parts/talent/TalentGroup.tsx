@@ -1,104 +1,115 @@
-import {useNode} from "@craftjs/core";
-import {ActionIcon, Button, Card, Divider, Group, Modal, Stack, Table, TextInput} from "@mantine/core";
-import {EMPTY_TABLE_ROW_HEIGHT, getPartStyle, TABLE_STYLE} from "../Constants";
-import React, {useContext, useMemo, useState} from "react";
-import {PnPCharacterContext} from "../../PnPCharacterContext";
-import {PrimaryAttribute, Talent} from "../../../../../api";
-import {FaChevronDown, FaChevronUp, FaRegTrashCan} from "react-icons/fa6";
-import {useTranslation} from "react-i18next";
-import {useDisclosure} from "@mantine/hooks";
-import {ObjectMultiSelect, PrimaryAttributeSelect} from "../../../../input/ObjectSelect";
-import {fetchAllTalents} from "../../../../Database";
+import {useNode} from '@craftjs/core';
+import {Button, Card, Divider, Group, Modal, Stack, Table, TextInput} from '@mantine/core';
+import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import React, {useContext, useMemo, useState} from 'react';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
+import {Talent} from '../../../../../api';
+import {useTranslation} from 'react-i18next';
+import {useDisclosure} from '@mantine/hooks';
+import {ObjectMultiSelect, PrimaryAttributeSelect} from '../../../../input/ObjectSelect';
+import {fetchAllPrimaryAttributes, fetchAllTalents} from '../../../../Database';
+import {toIdMap} from '../../../../utils/Utils';
+import {AddableOrderModifier} from '../OrderModifier';
 
 /** Shows level and co of the character */
 export const TalentGroup = ({
     groupName,
-    talents,
-    firstAttribute,
-    secondAttribute,
-    thirdAttribute
+    talentIds,
+    firstAttributeId,
+    secondAttributeId,
+    thirdAttributeId
 }: {
     groupName: string;
-    talents: Talent[];
-    firstAttribute: PrimaryAttribute;
-    secondAttribute: PrimaryAttribute;
-    thirdAttribute: PrimaryAttribute;
+    talentIds?: string[];
+    firstAttributeId?: string;
+    secondAttributeId?: string;
+    thirdAttributeId?: string;
 }) => {
     const {character} = useContext(PnPCharacterContext);
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));
 
-    const attributeString = useMemo(() => {
-        let result = "";
+    const [primaryAttributes] = fetchAllPrimaryAttributes();
+    const attributeMap = toIdMap(primaryAttributes);
+    const [talents] = fetchAllTalents();
+    const talentsMap = toIdMap(talents);
 
-        if (firstAttribute) {
-            result = firstAttribute.shortName;
+    let talentOrder: Talent[] = [];
+    if (talentIds) {
+        talentOrder = talentIds.map(id => talentsMap[id]);
+    }
+
+    const attributeString = useMemo(() => {
+        let result = '';
+
+        if (firstAttributeId && attributeMap[firstAttributeId]) {
+            result = attributeMap[firstAttributeId].shortName;
         }
-        if (secondAttribute) {
-            if (firstAttribute) {
-                result += " / "
+        if (secondAttributeId && attributeMap[secondAttributeId]) {
+            if (result.length > 0) {
+                result += ' / ';
             }
-            result += secondAttribute.shortName;
+            result += attributeMap[secondAttributeId].shortName;
         }
-        if (thirdAttribute) {
-            if (firstAttribute || secondAttribute) {
-                result += " / "
+        if (thirdAttributeId && attributeMap[thirdAttributeId]) {
+            if (result.length > 0) {
+                result += ' / ';
             }
-            result += thirdAttribute.shortName;
+            result += attributeMap[thirdAttributeId].shortName;
         }
 
         return result;
 
-    }, [firstAttribute, secondAttribute, thirdAttribute]);
+    }, [firstAttributeId, secondAttributeId, thirdAttributeId, attributeMap]);
 
     return <Table
         withTableBorder
         withColumnBorders
         variant="vertical"
         ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
+        style={{...getPartStyle(selected), tableLayout: 'fixed'}}
     >
         <Table.Tbody>
-            <Table.Tr>
-                <Table.Th colSpan={2} style={{
-                    width: "40%",
+            <Table.Tr h={TABLE_ROW_HEIGHT}>
+                <Table.Th colSpan={2} h={TABLE_ROW_HEIGHT} style={{
+                    width: '40%',
                     textAlign: 'center',
                     fontWeight: 'bold',
                     ...TABLE_STYLE
                 }}>
-                    {groupName ? groupName : '???'}
+                    {groupName ?? ''}
                 </Table.Th>
-                <Table.Th style={{width: "30%", fontWeight: 'bold', textAlign: 'center', ...TABLE_STYLE}}>
+                <Table.Th style={{width: '30%', fontWeight: 'bold', textAlign: 'center', ...TABLE_STYLE}}>
                     {attributeString}
                 </Table.Th>
-                <Table.Th style={{width: "30%", fontWeight: 'bold', textAlign: 'center', ...TABLE_STYLE}}/>
+                <Table.Th style={{width: '30%', fontWeight: 'bold', textAlign: 'center', ...TABLE_STYLE}}/>
             </Table.Tr>
 
-            {talents.map((talent, index) => {
+            {talentOrder.map((talent, index) => {
                 if (!talent) {
-                    return <Table.Tr key={"empty-row-" + index} h={EMPTY_TABLE_ROW_HEIGHT}>
-                        <Table.Th style={{width: "30%", textAlign: 'center', ...TABLE_STYLE}}/>
-                        <Table.Th style={{width: "10%", textAlign: 'center', ...TABLE_STYLE}}/>
-                        <Table.Td style={{width: "30%", textAlign: 'center', ...TABLE_STYLE}}/>
-                        <Table.Td style={{width: "30%", textAlign: 'center', ...TABLE_STYLE}}/>
+                    return <Table.Tr key={'empty-row-' + index} h={TABLE_ROW_HEIGHT}>
+                        <Table.Th style={{width: '30%', textAlign: 'center', ...TABLE_STYLE}}/>
+                        <Table.Th style={{width: '10%', textAlign: 'center', ...TABLE_STYLE}}/>
+                        <Table.Td style={{width: '30%', textAlign: 'center', ...TABLE_STYLE}}/>
+                        <Table.Td style={{width: '30%', textAlign: 'center', ...TABLE_STYLE}}/>
                     </Table.Tr>;
                 }
 
-                return <Table.Tr key={talent.id}>
-                    <Table.Th style={{width: "30%", textAlign: 'center', ...TABLE_STYLE}}>{talent.name}</Table.Th>
-                    <Table.Th style={{width: "10%", textAlign: 'center', ...TABLE_STYLE}}></Table.Th>
-                    <Table.Td style={{width: "30%", textAlign: 'center', ...TABLE_STYLE}}>
+                return <Table.Tr key={talent.id} h={TABLE_ROW_HEIGHT}>
+                    <Table.Th style={{width: '30%', textAlign: 'center', ...TABLE_STYLE}}>{talent.name}</Table.Th>
+                    <Table.Th style={{width: '10%', textAlign: 'center', ...TABLE_STYLE}}></Table.Th>
+                    <Table.Td style={{width: '30%', textAlign: 'center', ...TABLE_STYLE}}>
                         {
-                            (talent.firstAttribute?.shortName ?? '??') + " / " +
-                            (talent.secondAttribute?.shortName ?? '??') + " / " +
+                            (talent.firstAttribute?.shortName ?? '??') + ' / ' +
+                            (talent.secondAttribute?.shortName ?? '??') + ' / ' +
                             (talent.thirdAttribute?.shortName ?? '??')
                         }
                     </Table.Td>
-                    <Table.Td style={{width: "30%", textAlign: 'center', ...TABLE_STYLE}}>
-                        {character?.talents[talent.id].totalValue ?? 0}
+                    <Table.Td style={{width: '30%', textAlign: 'center', ...TABLE_STYLE}}>
+                        {character?.talents[talent.id]?.totalValue ?? 0}
                     </Table.Td>
-                </Table.Tr>
+                </Table.Tr>;
             })}
         </Table.Tbody>
     </Table>;
@@ -108,131 +119,65 @@ const TalentGroupSettings = () => {
     const {t} = useTranslation();
     const {
         actions: {setProp},
-        talentsOrder,
+        talentIds,
         groupName,
-        firstAttribute,
-        secondAttribute,
-        thirdAttribute
+        firstAttributeId,
+        secondAttributeId,
+        thirdAttributeId
     } = useNode(node => ({
-        talentsOrder: node.data.props.talents,
+        talentIds: node.data.props.talentIds,
         groupName: node.data.props.groupName,
-        firstAttribute: node.data.props.firstAttribute,
-        secondAttribute: node.data.props.secondAttribute,
-        thirdAttribute: node.data.props.thirdAttribute
+        firstAttributeId: node.data.props.firstAttributeId,
+        secondAttributeId: node.data.props.secondAttributeId,
+        thirdAttributeId: node.data.props.thirdAttributeId
     }));
+    const [talents] = fetchAllTalents();
+    const talentsOrder: string[] = talentIds ?? [];
 
-    function moveUp(index: number) {
-        const copy = [...talentsOrder];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index - 1, 0, item);
-        setProp(props => {
-            props.talents = copy;
-        });
-    }
-
-    function moveDown(index: number) {
-        const copy = [...talentsOrder];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index + 1, 0, item);
-        setProp(props => {
-            props.talents = copy;
-        });
-    }
-
-    function add(talent: Talent | Talent[]) {
-        const copy = [...talentsOrder];
-        if (Array.isArray(talent)) {
-            copy.push(...talent);
-        } else {
-            copy.push(talent);
-        }
-        setProp(props => {
-            props.talents = copy;
-        });
-    }
-
-    function remove(index: number) {
-        const copy = [...talentsOrder];
-        copy.splice(index, 1)
-        setProp(props => {
-            props.talents = copy;
-        });
-    }
+    const [primaryAttributes] = fetchAllPrimaryAttributes();
+    const attributeMap = toIdMap(primaryAttributes);
 
     return <Stack>
         <TextInput
-            label={t("name")}
+            label={t('name')}
             value={groupName}
             onChange={e => {
                 setProp(props => props.groupName = e.currentTarget.value);
             }}
         />
         <PrimaryAttributeSelect
-            label={t("character:firstAttribute")}
-            value={firstAttribute}
+            label={t('character:firstAttribute')}
+            value={attributeMap[firstAttributeId]}
             onChange={a => {
-                console.log(a);
-                setProp(props => props.firstAttribute = a);
+                setProp(props => props.firstAttributeId = a?.id);
             }}
             clearable
         />
         <PrimaryAttributeSelect
-            label={t("character:secondAttribute")}
-            value={secondAttribute}
+            label={t('character:secondAttribute')}
+            value={attributeMap[secondAttributeId]}
             onChange={a => {
-                setProp(props => props.secondAttribute = a);
+                setProp(props => props.secondAttributeId = a?.id);
             }}
             clearable
         />
         <PrimaryAttributeSelect
-            label={t("character:thirdAttribute")}
-            value={thirdAttribute}
+            label={t('character:thirdAttribute')}
+            value={attributeMap[thirdAttributeId]}
             onChange={a => {
-                setProp(props => props.thirdAttribute = a);
+                setProp(props => props.thirdAttributeId = a?.id);
             }}
             clearable
         />
         <Divider/>
-        <Stack gap={1}>
-            {talentsOrder.map((attribute: PrimaryAttribute, index: number) => (
-                <Card key={attribute ? attribute.id : ("empty-row-" + index)} shadow="sm">
-                    <Group wrap="nowrap" justify="space-between">
-                        {attribute?.name ?? t("sheetEditor:emptyRow")}
-                        <Group wrap="nowrap" gap={0}>
-                            <ActionIcon
-                                variant="outline"
-                                color="red"
-                                onClick={() => remove(index)}
-                            >
-                                <FaRegTrashCan/>
-                            </ActionIcon>
-                            <ActionIcon
-                                variant="outline"
-                                disabled={index === 0}
-                                onClick={() => moveUp(index)}
-                            >
-                                <FaChevronUp/>
-                            </ActionIcon>
-                            <ActionIcon
-                                variant="outline"
-                                disabled={index === talentsOrder.length - 1}
-                                onClick={() => moveDown(index)}
-                            >
-                                <FaChevronDown/>
-                            </ActionIcon>
-                        </Group>
-                    </Group>
-                </Card>
-            ))}
-            <AddTalentDialog addTalent={add}/>
-            <Card
-                style={{cursor: "pointer"}}
-                shadow="sm"
-                onClick={() => add(null)}
-            >
-                {t("sheetEditor:addEmptyRow")}
-            </Card>
-        </Stack>
+        <AddableOrderModifier
+            order={talentsOrder}
+            setOrder={order => {
+                setProp(props => props.talentIds = order);
+            }}
+            fullList={talents}
+            addDialog={add => <AddTalentDialog addTalent={add}/>}
+        />
     </Stack>;
 };
 
@@ -247,10 +192,10 @@ function AddTalentDialog({
     const [importTalents, setImportTalents] = useState<Talent[]>([]);
 
     return <>
-        <Modal opened={opened} onClose={close} title={t("sheetEditor:addTalent")}>
+        <Modal opened={opened} onClose={close} title={t('sheetEditor:addTalent')}>
             <Stack>
                 <ObjectMultiSelect<Talent>
-                    label={t("talents")}
+                    label={t('talents')}
                     value={importTalents}
                     onChange={setImportTalents}
                     data={talents}
@@ -259,29 +204,29 @@ function AddTalentDialog({
                 />
                 <Group justify="flex-end">
                     <Button autoFocus variant="outline" onClick={close}>
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button type="submit" disabled={!importTalents} onClick={() => {
                         addTalent(importTalents);
                         close();
                     }}>
-                        {t("confirm")}
+                        {t('confirm')}
                     </Button>
                 </Group>
             </Stack>
         </Modal>
         <Card
-            style={{cursor: "pointer"}}
+            style={{cursor: 'pointer'}}
             shadow="sm"
             onClick={open}
         >
-            {t("sheetEditor:addTalent")}
+            {t('sheetEditor:addTalent')}
         </Card>
-    </>
+    </>;
 }
 
 TalentGroup.craft = {
-    name: "sheetEditor:talentGroup",
+    name: 'sheetEditor:talentGroup',
     related: {
         settings: TalentGroupSettings
     }

@@ -1,23 +1,29 @@
-import {useNode} from "@craftjs/core";
-import {ActionIcon, Card, Group, Stack, Table} from "@mantine/core";
-import {getPartStyle, TABLE_STYLE} from "../Constants";
-import React, {useContext} from "react";
-import {useTranslation} from "react-i18next";
-import {PnPCharacterContext} from "../../PnPCharacterContext";
-import {SecondaryAttribute} from "../../../../../api";
-import {FaChevronDown, FaChevronUp} from "react-icons/fa6";
+import {useNode} from '@craftjs/core';
+import {Table} from '@mantine/core';
+import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import React, {useContext} from 'react';
+import {useTranslation} from 'react-i18next';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
+import {fetchAllSecondaryAttributes} from '../../../../Database';
+import {OrderModifier} from '../OrderModifier';
+import {toIdMap} from '../../../../utils/Utils';
 
 /** Shows level and co of the character */
 export const SecondaryAttributeInfo = ({
-    attributes
+    attributesOrder
 }: {
-    attributes: SecondaryAttribute[];
+    attributesOrder?: string[]
 }) => {
     const {t} = useTranslation();
     const {character} = useContext(PnPCharacterContext);
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));
+    const [secondaryAttributes] = fetchAllSecondaryAttributes();
+    const attributeMap = toIdMap(secondaryAttributes);
+    if (!attributesOrder) {
+        attributesOrder = secondaryAttributes.map(attribute => attribute.id);
+    }
 
     return <Table
         variant="vertical"
@@ -26,21 +32,21 @@ export const SecondaryAttributeInfo = ({
         style={getPartStyle(selected)}
     >
         <Table.Tbody>
-            <Table.Tr>
-                <Table.Th style={TABLE_STYLE} colSpan={4}>{t("secondary-attributes")}</Table.Th>
+            <Table.Tr h={TABLE_ROW_HEIGHT}>
+                <Table.Th style={TABLE_STYLE} colSpan={4}>{t('secondary-attributes')}</Table.Th>
             </Table.Tr>
 
-            {attributes.map((attribute) => (
-                <Table.Tr key={attribute.id}>
-                    <Table.Th style={{width: "45%", ...TABLE_STYLE}}>{attribute.name}</Table.Th>
-                    <Table.Th style={{width: "15%", ...TABLE_STYLE}}>{attribute.shortName}</Table.Th>
+            {attributesOrder.map((id) => (
+                <Table.Tr key={id} h={TABLE_ROW_HEIGHT}>
+                    <Table.Th style={{width: '45%', ...TABLE_STYLE}}>{attributeMap[id]?.name}</Table.Th>
+                    <Table.Th style={{width: '15%', ...TABLE_STYLE}}>{attributeMap[id]?.shortName}</Table.Th>
                     <Table.Td style={(theme) => ({
-                        width: "20%",
+                        width: '20%',
                         borderRight: `1px solid ${theme.colors.gray[3]}`,
                         ...TABLE_STYLE
                     })}></Table.Td>
-                    <Table.Td style={{width: "20%", ...TABLE_STYLE}}>
-                        {character?.stats.secondaryStats[attribute.id]?.rawValue ?? 0}
+                    <Table.Td style={{width: '20%', ...TABLE_STYLE}}>
+                        {character?.stats.secondaryStats[id]?.rawValue ?? 0}
                     </Table.Td>
                 </Table.Tr>
             ))}
@@ -50,56 +56,21 @@ export const SecondaryAttributeInfo = ({
 
 const SecondaryAttributeSettings = () => {
     const {actions: {setProp}, attributesOrder} = useNode(node => ({
-        attributesOrder: node.data.props.attributes
+        attributesOrder: node.data.props.attributesOrder
     }));
+    const [secondaryAttributes] = fetchAllSecondaryAttributes();
 
-    function moveUp(index: number) {
-        const copy = [...attributesOrder];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index - 1, 0, item);
-        setProp(props => {
-            props.attributes = copy;
-        });
-    }
-
-    function moveDown(index: number) {
-        const copy = [...attributesOrder];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index + 1, 0, item);
-        setProp(props => {
-            props.attributes = copy;
-        });
-    }
-
-    return <Stack gap={1}>
-        {attributesOrder.map((attribute: SecondaryAttribute, index: number) => (
-            <Card key={attribute.id} shadow="sm">
-                <Group wrap="nowrap" justify="space-between">
-                    {attribute.name}
-                    <Group wrap="nowrap" gap={0}>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === 0}
-                            onClick={() => moveUp(index)}
-                        >
-                            <FaChevronUp/>
-                        </ActionIcon>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === attributesOrder.length - 1}
-                            onClick={() => moveDown(index)}
-                        >
-                            <FaChevronDown/>
-                        </ActionIcon>
-                    </Group>
-                </Group>
-            </Card>
-        ))}
-    </Stack>;
+    return <OrderModifier
+        currentOrder={attributesOrder}
+        setOrder={order => setProp(props => {
+            props.attributesOrder = order;
+        })}
+        fullList={secondaryAttributes}
+    />;
 };
 
 SecondaryAttributeInfo.craft = {
-    name: "sheetEditor:secondaryAttributeInfo",
+    name: 'sheetEditor:secondaryAttributeInfo',
     related: {
         settings: SecondaryAttributeSettings
     }

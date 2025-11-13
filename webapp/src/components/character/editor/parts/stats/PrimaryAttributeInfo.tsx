@@ -1,25 +1,31 @@
-import {useNode} from "@craftjs/core";
-import {ActionIcon, Card, Group, Stack, Table} from "@mantine/core";
-import {getPartStyle, TABLE_STYLE} from "../Constants";
-import React, {useContext} from "react";
-import {useTranslation} from "react-i18next";
-import {PnPCharacterContext} from "../../PnPCharacterContext";
-import {useUniverseContext} from "../../../../PageBase";
-import {PrimaryAttribute} from "../../../../../api";
-import {FaChevronDown, FaChevronUp} from "react-icons/fa6";
+import {useNode} from '@craftjs/core';
+import {Table} from '@mantine/core';
+import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import React, {useContext} from 'react';
+import {useTranslation} from 'react-i18next';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
+import {useUniverseContext} from '../../../../PageBase';
+import {fetchAllPrimaryAttributes} from '../../../../Database';
+import {OrderModifier} from '../OrderModifier';
+import {toIdMap} from '../../../../utils/Utils';
 
 /** Shows level and co of the character */
 export const PrimaryAttributeInfo = ({
-    attributes
+    attributesOrder
 }: {
-    attributes: PrimaryAttribute[]
+    attributesOrder?: string[]
 }) => {
     const {t} = useTranslation();
     const {character} = useContext(PnPCharacterContext);
     const {characterSettings} = useUniverseContext();
+    const [primaryAttributes] = fetchAllPrimaryAttributes();
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));
+    const attributeMap = toIdMap(primaryAttributes);
+    if (!attributesOrder) {
+        attributesOrder = primaryAttributes.map(attribute => attribute.id);
+    }
 
     return <Table
         variant="vertical"
@@ -29,18 +35,18 @@ export const PrimaryAttributeInfo = ({
         style={getPartStyle(selected)}
     >
         <Table.Tbody>
-            <Table.Tr>
-                <Table.Th colSpan={2} style={TABLE_STYLE}>{t("primary-attributes")}</Table.Th>
+            <Table.Tr h={TABLE_ROW_HEIGHT}>
+                <Table.Th colSpan={2} style={TABLE_STYLE}>{t('primary-attributes')}</Table.Th>
                 <Table.Th
                     style={TABLE_STYLE}>{`Min: ${characterSettings.minPrimaryAttributeValue} Max: ${characterSettings.maxPrimaryAttributeValue}`}</Table.Th>
             </Table.Tr>
 
-            {attributes.map((attribute) => (
-                <Table.Tr key={attribute.id}>
-                    <Table.Th style={TABLE_STYLE}>{attribute.name}</Table.Th>
-                    <Table.Th style={TABLE_STYLE}>{attribute.shortName}</Table.Th>
+            {attributesOrder.map((id) => (
+                <Table.Tr key={id} h={TABLE_ROW_HEIGHT}>
+                    <Table.Th style={TABLE_STYLE}>{attributeMap[id]?.name ?? ''}</Table.Th>
+                    <Table.Th style={TABLE_STYLE}>{attributeMap[id]?.shortName ?? ''}</Table.Th>
                     <Table.Td style={TABLE_STYLE}>
-                        {character?.stats.primaryStats[attribute.id]?.rawValue ?? 0}
+                        {character?.stats.primaryStats[id]?.rawValue ?? 0}
                     </Table.Td>
                 </Table.Tr>
             ))}
@@ -50,56 +56,23 @@ export const PrimaryAttributeInfo = ({
 
 const PrimaryAttributeSettings = () => {
     const {actions: {setProp}, attributesOrder} = useNode(node => ({
-        attributesOrder: node.data.props.attributes
+        attributesOrder: node.data.props.attributesOrder
     }));
+    const [primaryAttributes] = fetchAllPrimaryAttributes();
 
-    function moveUp(index: number) {
-        const copy = [...attributesOrder];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index - 1, 0, item);
-        setProp(props => {
-            props.attributes = copy;
-        });
-    }
-
-    function moveDown(index: number) {
-        const copy = [...attributesOrder];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index + 1, 0, item);
-        setProp(props => {
-            props.attributes = copy;
-        });
-    }
-
-    return <Stack gap={1}>
-        {attributesOrder.map((attribute: PrimaryAttribute, index: number) => (
-            <Card key={attribute.id} shadow="sm">
-                <Group wrap="nowrap" justify="space-between">
-                    {attribute.name}
-                    <Group wrap="nowrap" gap={0}>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === 0}
-                            onClick={() => moveUp(index)}
-                        >
-                            <FaChevronUp/>
-                        </ActionIcon>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === attributesOrder.length - 1}
-                            onClick={() => moveDown(index)}
-                        >
-                            <FaChevronDown/>
-                        </ActionIcon>
-                    </Group>
-                </Group>
-            </Card>
-        ))}
-    </Stack>;
+    return <OrderModifier
+        currentOrder={attributesOrder}
+        setOrder={order => {
+            setProp(props => {
+                props.attributesOrder = order;
+            });
+        }}
+        fullList={primaryAttributes}
+    />;
 };
 
 PrimaryAttributeInfo.craft = {
-    name: "sheetEditor:primaryAttributeInfo",
+    name: 'sheetEditor:primaryAttributeInfo',
     related: {
         settings: PrimaryAttributeSettings
     }

@@ -26,5 +26,21 @@
   "title": "Titel",
   "addTalent": "Talent hinzufügen",
   "addEmptyRow": "Leere Zeile einfügen",
-  "emptyRow": "Leere Zeile"
+  "emptyRow": "Leere Zeile",
+  "character-sheet": "Character Bogen",
+  "character-sheets": "Character Bögen",
+  "spellList": "Zauberbuch",
+  "characterDescription": "Description",
+  "currency": "Währung",
+  "showAllCurrencies": "Alle Währungen",
+  "withoutLabel": "Kein Label",
+  "oneLine": "In einer Zeile",
+  "dragToAdd": "Zum Hinzufügen ziehen",
+  "customFields": "Custom Felder",
+  "customFieldId": "Custom ID",
+  "customFieldIdTooltip": "Felder, die die selbe ID haben, zeigen den selben Text, welcher zu den Charakter gehören",
+  "headers": "Überschriften",
+  "rows": "Zeilen",
+  "asCustomFieldId": "Custom ID",
+  "table": "Tabelle"
 }

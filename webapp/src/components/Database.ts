@@ -1,5 +1,5 @@
-import {AxiosRequestConfig, AxiosResponse} from "axios";
-import {useEffect, useMemo, useState} from "react";
+import {AxiosRequestConfig, AxiosResponse} from 'axios';
+import {useEffect, useMemo, useState} from 'react';
 import {useUniverseContext} from './PageBase';
 import {
     Armor,
@@ -15,6 +15,10 @@ import {
     MaterialUsage,
     Nation,
     NationServiceApi,
+    PnPCharacterDto,
+    PnPCharacterServiceApi,
+    PnPCharacterSheet,
+    PnPCharacterSheetServiceApi,
     PrimaryAttribute,
     PrimaryAttributeServiceApi,
     SecondaryAttribute,
@@ -34,9 +38,9 @@ import {
     UpgradeRecipeServiceApi,
     UpgradeServiceApi,
     Weapon
-} from "../api";
-import {API_CONFIGURATION, SomeItem} from "./Constants";
-import {handleNetworkErrors} from "./utils/ErrorUtils";
+} from '../api';
+import {API_CONFIGURATION, SomeItem} from './Constants';
+import {handleNetworkErrors} from './utils/ErrorUtils';
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
@@ -51,6 +55,8 @@ const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
 const SPECIES_API = new SpeciesServiceApi(API_CONFIGURATION);
 const NATION_API = new NationServiceApi(API_CONFIGURATION);
+const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
+const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
 
 /** Super type of all possible resource usages */
 export type IResourceUsage = ItemUsage | MaterialUsage | CharacterResourceUsage;
@@ -62,7 +68,7 @@ export type IResource = SomeItem | Material | SecondaryAttributeDTO;
  * Fetches all objects for the given fetch method.
  * Returns the data, a refresh callback and if the data is currenlty loading.
  */
-export function fetchAll<O>(fetch: ((universe: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<O[], any>>)): [O[], () => void, boolean] {
+export function fetchAll<O>(fetch: ((universe: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<O[]>>)): [O[], () => void, boolean] {
     const {activeUniverse} = useUniverseContext();
 
     const [objects, setObjects] = useState<O[]>([]);
@@ -211,6 +217,20 @@ export function fetchAllSpecies(): [Species[], () => void, boolean] {
  */
 export function fetchAllNations(): [Nation[], () => void, boolean] {
     return fetchAll(universe => NATION_API.getAllNations(universe));
+}
+
+/**
+ * Fetches all characters.
+ */
+export function fetchAllCharacters(): [PnPCharacterDto[], () => void, boolean] {
+    return fetchAll(universe => CHARACTER_API.getAllCharacters(universe));
+}
+
+/**
+ * Fetches all character sheets.
+ */
+export function fetchAllCharacterSheets(): [PnPCharacterSheet[], () => void, boolean] {
+    return fetchAll(universe => SHEET_API.getAllPnPCharacterSheets(universe));
 }
 
 /** Fetches all possible resource for the given universe. */

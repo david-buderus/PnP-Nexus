@@ -14,6 +14,7 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * A character in the universe.
@@ -45,9 +46,11 @@ public class PnPCharacter extends DatabaseObject {
     @DBRef
     private final List<Spell> spells;
 
+    private final Map<String, String> customFields;
+
     public PnPCharacter(ObjectId id, CharacterDescription description, CharacterLevel level, Species species, Nation nation,
                         List<ICharacterTrait> advantageTraits, List<ICharacterTrait> disadvantageTraits, CharacterStats stats,
-                        CharacterTalents talents, CharacterEquipment equipment, CharacterInventory inventory, List<Spell> spells) {
+                        CharacterTalents talents, CharacterEquipment equipment, CharacterInventory inventory, List<Spell> spells, Map<String, String> customFields) {
         super(id);
         this.description = description;
         this.level = level;
@@ -60,6 +63,7 @@ public class PnPCharacter extends DatabaseObject {
         this.equipment = equipment;
         this.inventory = inventory;
         this.spells = spells;
+        this.customFields = customFields;
     }
 
     public int getTalentRoll(Talent talent) {
@@ -85,7 +89,7 @@ public class PnPCharacter extends DatabaseObject {
         }
         return Math.round(stat);
     }
-
+    
     public List<ICharacterTrait> getAllTraits() {
         Builder<ICharacterTrait> builder = ImmutableList.builder();
         builder.addAll(advantageTraits).addAll(disadvantageTraits);
@@ -153,5 +157,9 @@ public class PnPCharacter extends DatabaseObject {
 
     public CharacterLevel getLevel() {
         return level;
+    }
+
+    public Map<String, String> getCustomFields() {
+        return customFields;
     }
 }

@@ -20,5 +20,14 @@
   "simpleTrait": "Simpel",
   "talentTrait": "Talent",
   "primaryAttributeTrait": "Primäres Attribut",
-  "secondaryAttributeTrait": "Sekundäres Attribut"
+  "secondaryAttributeTrait": "Sekundäres Attribut",
+  "appearance": "Aussehen",
+  "personality": "Persönlichkeit",
+  "goals": "Ziele",
+  "deficits": "Mankos",
+  "affiliations": "Zugehörigkeiten",
+  "backstory": "Hintergrundgeschichte",
+  "level": "Level",
+  "experiencePoints": "Erfahrungspunkte",
+  "skillPoints": "Skillpunkte"
 }

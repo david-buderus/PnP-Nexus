@@ -1,9 +1,9 @@
 import {useNode} from '@craftjs/core';
 import {List, NumberInput, Stack, Switch, Table, Text} from '@mantine/core';
 import React, {useContext, useMemo} from 'react';
-import {EMPTY_TABLE_ROW_HEIGHT, getPartStyle, TABLE_STYLE} from '../Constants';
+import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
-import {PnPCharacterContext} from '../../PnPCharacterContext';
+import {PnPCharacterContext} from '../../../PnPCharacterContext';
 
 /** Part to show text */
 export const AdvantagesInfo = ({showsAdvantages, numberOfRows}: {
@@ -34,12 +34,12 @@ export const AdvantagesInfo = ({showsAdvantages, numberOfRows}: {
         style={getPartStyle(selected)}
     >
         <Table.Tbody>
-            <Table.Tr h={EMPTY_TABLE_ROW_HEIGHT + 3}>
+            <Table.Tr h={TABLE_ROW_HEIGHT + 3}>
                 <Table.Th style={TABLE_STYLE}>
                     {showsAdvantages ? t('advantages') : t('disadvantages')}
                 </Table.Th>
             </Table.Tr>
-            <Table.Tr h={EMPTY_TABLE_ROW_HEIGHT * numberOfRows}>
+            <Table.Tr h={TABLE_ROW_HEIGHT * numberOfRows}>
                 <Table.Td style={{whiteSpace: 'pre-line', textAlign: 'left', verticalAlign: 'top', ...TABLE_STYLE}}>
                     <List size="sm">
                         {entries.map((entry, index) => (

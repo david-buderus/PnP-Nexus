@@ -1,7 +1,8 @@
-import {AspectRatio, Paper} from "@mantine/core";
-import React, {ReactNode, useContext} from "react";
-import {StackPart} from "./layout/StackPart";
-import {SheetEditorContext} from "../PnPCharacterSheetEditor";
+import {AspectRatio, Paper} from '@mantine/core';
+import React, {ReactNode, useContext} from 'react';
+import {StackPart} from './layout/StackPart';
+
+import {PnPCharacterSheetContext} from '../../PnPCharacterSheetContext';
 
 /** A single page of a character sheet */
 export const CharacterSheetPaper = ({
@@ -10,18 +11,19 @@ export const CharacterSheetPaper = ({
     pageNumber: number;
     children?: ReactNode;
 }) => {
-    const {selectedPage} = useContext(SheetEditorContext);
+    const {selectedPage} = useContext(PnPCharacterSheetContext);
 
     return <AspectRatio
         ratio={1 / 1.4142}
         w="800px"
-        className={selectedPage !== pageNumber ? "page-hidden" : ""}
+        className={selectedPage !== pageNumber ? 'page-hidden' : ''}
     >
         <Paper
             shadow="sm"
             p="md"
             withBorder
-            className="page-break print-clean"
+            className={'page-break ' + (pageNumber === 0 ? 'print-clean-first' : 'print-clean')}
+            style={{overflow: 'hidden'}}
             {...props}
         >
             <StackPart>
@@ -32,7 +34,7 @@ export const CharacterSheetPaper = ({
 };
 
 CharacterSheetPaper.craft = {
-    name: "sheetEditor:page",
+    name: 'sheetEditor:page',
     rules: {
         canDelete: () => false
     }

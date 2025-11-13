@@ -96,5 +96,9 @@
   "inventory": "Inventar",
   "other": "Sonstige",
   "export": "Export",
-  "import": "Import"
+  "import": "Import",
+  "coins": "Münzen",
+  "saveAs": "Speichern unter...",
+  "unsavedChangesTitle": "Ungespeicherte Änderungen",
+  "unsavedChangesDescription": "Du hast ungespeicherte Änderungen. Bist du sicher, dass du die Seite verlassen willst?"
 }
