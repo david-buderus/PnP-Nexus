@@ -17,6 +17,7 @@ import {ReactElement, useEffect, useState} from 'react';
 import {
     AuthenticationServiceApi,
     CharacterSettings,
+    CharacterSheetSettings,
     CurrencySettings,
     EquipmentSettings,
     ItemSettings,
@@ -64,6 +65,7 @@ type UniverseContext = {
     itemSettings: ItemSettings;
     equipmentSettings: EquipmentSettings;
     characterSettings: CharacterSettings;
+    sheetSettings: CharacterSheetSettings;
     refreshSettings: () => void;
 };
 
@@ -88,6 +90,7 @@ export function PageBase() {
     const [itemSettings, setItemSettings] = useState<ItemSettings>(null);
     const [equipmentSettings, setEquipmentSettings] = useState<EquipmentSettings>(null);
     const [characterSettings, setCharacterSettings] = useState<CharacterSettings>(null);
+    const [sheetSettings, setSheetSettings] = useState<CharacterSheetSettings>(null);
     const [username, setUsername] = useState<string>(null);
     const [user, setUser] = useState<PnPUser>(null);
     const [userPreferences, setUserPreferences] = useState<PnPUserPreference>(null);
@@ -122,6 +125,7 @@ export function PageBase() {
         SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
         SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
         SETTINGS_API.getEquipmentSettings(activeUniverse.name).then(response => setEquipmentSettings(response.data));
+        SETTINGS_API.getCharacterSheetSettings(activeUniverse.name).then(response => setSheetSettings(response.data));
     }
 
     const refreshUser = () => {
@@ -149,10 +153,7 @@ export function PageBase() {
             return;
         }
         setUniverseQuery(activeUniverse.name);
-        SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
-        SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
-        SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
-        SETTINGS_API.getEquipmentSettings(activeUniverse.name).then(response => setEquipmentSettings(response.data));
+        refreshSettings();
     }, [activeUniverse]);
 
     useEffect(() => {
@@ -249,6 +250,7 @@ export function PageBase() {
                         itemSettings: itemSettings,
                         equipmentSettings: equipmentSettings,
                         characterSettings: characterSettings,
+                        sheetSettings: sheetSettings,
                         userPermissions: userPermissions,
                         userPreferences: userPreferences,
                         user: user,

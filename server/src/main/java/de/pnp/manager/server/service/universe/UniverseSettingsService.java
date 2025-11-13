@@ -1,9 +1,6 @@
 package de.pnp.manager.server.service.universe;
 
-import de.pnp.manager.component.universe.CharacterSettings;
-import de.pnp.manager.component.universe.CurrencySettings;
-import de.pnp.manager.component.universe.EquipmentSettings;
-import de.pnp.manager.component.universe.ItemSettings;
+import de.pnp.manager.component.universe.*;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
 import de.pnp.manager.server.database.universe.UniverseSettingsRepository;
@@ -12,13 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Service to access {@link UniverseSettingsRepository}.
@@ -88,6 +79,21 @@ public class UniverseSettingsService {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Update the settings", operationId = "updateEquipmentSettings")
     public void updateEquipmentSettings(@PathVariable String universe, @Valid @RequestBody EquipmentSettings settings) {
+        settingsRepository.setSettings(universe, settings);
+    }
+
+    @GetMapping("character-sheet")
+    @UniverseRead
+    @Operation(summary = "Get the settings", operationId = "getCharacterSheetSettings")
+    public CharacterSheetSettings getCharacterSheetSettings(@PathVariable String universe) {
+        return settingsRepository.getSettings(universe, CharacterSheetSettings.class);
+    }
+
+    @PutMapping("character-sheet")
+    @UniverseOwner
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update the settings", operationId = "updateCharacterSheetSettings")
+    public void updateCharacterSheetSettings(@PathVariable String universe, @Valid @RequestBody CharacterSheetSettings settings) {
         settingsRepository.setSettings(universe, settings);
     }
 }

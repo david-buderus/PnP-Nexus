@@ -3341,6 +3341,69 @@
         ]
       }
     },
+    "/api/{universe}/universe-settings/character-sheet": {
+      "get": {
+        "operationId": "getCharacterSheetSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CharacterSheetSettings"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Get the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      },
+      "put": {
+        "operationId": "updateCharacterSheetSettings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CharacterSheetSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Update the settings",
+        "tags": [
+          "universe-settings-service"
+        ]
+      }
+    },
     "/api/{universe}/universe-settings/currency": {
       "get": {
         "operationId": "getCurrencySettings",
@@ -4906,6 +4969,17 @@
           "minPrimaryAttributeValue": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "CharacterSheetSettings": {
+        "type": "object",
+        "properties": {
+          "enemySheet": {
+            "$ref": "#/components/schemas/PnPCharacterSheet"
+          },
+          "playerSheet": {
+            "$ref": "#/components/schemas/PnPCharacterSheet"
           }
         }
       },

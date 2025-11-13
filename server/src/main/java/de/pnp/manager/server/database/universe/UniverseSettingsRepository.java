@@ -1,18 +1,14 @@
 package de.pnp.manager.server.database.universe;
 
 import com.google.common.annotations.VisibleForTesting;
-import de.pnp.manager.component.universe.CharacterSettings;
-import de.pnp.manager.component.universe.CurrencySettings;
-import de.pnp.manager.component.universe.EquipmentSettings;
-import de.pnp.manager.component.universe.ItemSettings;
-import de.pnp.manager.component.universe.SettingsBase;
-import de.pnp.manager.component.universe.Universe;
+import de.pnp.manager.component.universe.*;
 import de.pnp.manager.exception.UniverseNotFoundException;
 import de.pnp.manager.server.database.MongoConfig;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 /**
  * Stores the settings of a {@link Universe}
@@ -27,17 +23,21 @@ public class UniverseSettingsRepository {
 
     @VisibleForTesting
     static final Map<Class<? extends SettingsBase>, SettingsBase> DEFAULT_SETTINGS = Map.of(
-        CharacterSettings.class, CharacterSettings.DEFAULT,
-        CurrencySettings.class, CurrencySettings.DEFAULT,
-        ItemSettings.class, ItemSettings.DEFAULT,
-        EquipmentSettings.class, EquipmentSettings.DEFAULT
+            CharacterSettings.class, CharacterSettings.DEFAULT,
+            CurrencySettings.class, CurrencySettings.DEFAULT,
+            ItemSettings.class, ItemSettings.DEFAULT,
+            EquipmentSettings.class, EquipmentSettings.DEFAULT,
+            CharacterSheetSettings.class, CharacterSheetSettings.DEFAULT
     );
 
-    @Autowired
-    private MongoConfig config;
+    private final MongoConfig config;
 
-    @Autowired
-    private UniverseRepository universeRepository;
+    private final UniverseRepository universeRepository;
+
+    public UniverseSettingsRepository(@Autowired MongoConfig config, @Autowired UniverseRepository universeRepository) {
+        this.config = config;
+        this.universeRepository = universeRepository;
+    }
 
     /**
      * Returns the settings or the default value of the settings.

@@ -76,5 +76,21 @@
   "noUniverse": "No Universe is selected",
   "pleaseSelectUniverse": "Please select a universe.",
   "createUniverseOrGetInvited": "Create a new universe or ask your Dungeon Master to invite you.",
-  "needToInvited": "Ask your Dungeon Master to invite you."
+  "needToInvited": "Ask your Dungeon Master to invite you.",
+  "completedCreationTitle": "Universe has been created",
+  "completedCreationDescription": "The next steps are:",
+  "nextStepTalents": "Create talents",
+  "nextStepCharacterSheets": "Create a character sheet for players and and one for enemies",
+  "nextStepSpeciesNations": "Create species and nations",
+  "nextStepItems": "Create items, weapons, ...",
+  "nextStepRecipes": "Create recipes for items and upgrades",
+  "nextStepSpells": "Create spells",
+  "characterSheetSettings": "Character Sheet Settings",
+  "playerSheetDescription": "The character sheet {{sheet}} is used for player characters.",
+  "noPlayerSheetDescription": "There is currently no sheet selected for player characters.",
+  "enemySheetDescription": "The character sheet {{sheet}} is used for enemies characters.",
+  "noEnemySheetDescription": "There is currently no sheet selected for enemies characters.",
+  "characterSheetSettingsModalDescription": "Select which character sheet is used to display character and enemy characters.",
+  "playerSheet": "Player Character Sheet",
+  "enemySheet": "Enemy Character Sheet"
 }

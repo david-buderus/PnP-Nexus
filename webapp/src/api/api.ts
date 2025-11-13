@@ -472,6 +472,25 @@ export interface CharacterSettings {
 /**
  * 
  * @export
+ * @interface CharacterSheetSettings
+ */
+export interface CharacterSheetSettings {
+    /**
+     * 
+     * @type {PnPCharacterSheet}
+     * @memberof CharacterSheetSettings
+     */
+    'enemySheet'?: PnPCharacterSheet;
+    /**
+     * 
+     * @type {PnPCharacterSheet}
+     * @memberof CharacterSheetSettings
+     */
+    'playerSheet'?: PnPCharacterSheet;
+}
+/**
+ * 
+ * @export
  * @interface CharacterStatsDto
  */
 export interface CharacterStatsDto {
@@ -10737,6 +10756,40 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        getCharacterSheetSettings: async (universe: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getCharacterSheetSettings', 'universe', universe)
+            const localVarPath = `/api/{universe}/universe-settings/character-sheet`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get the settings
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         getCurrencySettings: async (universe: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'universe' is not null or undefined
             assertParamExists('getCurrencySettings', 'universe', universe)
@@ -10866,6 +10919,46 @@ export const UniverseSettingsServiceApiAxiosParamCreator = function (configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(characterSettings, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update the settings
+         * @param {string} universe 
+         * @param {CharacterSheetSettings} characterSheetSettings 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCharacterSheetSettings: async (universe: string, characterSheetSettings: CharacterSheetSettings, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('updateCharacterSheetSettings', 'universe', universe)
+            // verify required parameter 'characterSheetSettings' is not null or undefined
+            assertParamExists('updateCharacterSheetSettings', 'characterSheetSettings', characterSheetSettings)
+            const localVarPath = `/api/{universe}/universe-settings/character-sheet`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(characterSheetSettings, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -11022,6 +11115,19 @@ export const UniverseSettingsServiceApiFp = function(configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async getCharacterSheetSettings(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CharacterSheetSettings>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCharacterSheetSettings(universe, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UniverseSettingsServiceApi.getCharacterSheetSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get the settings
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async getCurrencySettings(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CurrencySettings>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCurrencySettings(universe, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -11066,6 +11172,20 @@ export const UniverseSettingsServiceApiFp = function(configuration?: Configurati
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateCharacterSettings(universe, characterSettings, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UniverseSettingsServiceApi.updateCharacterSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Update the settings
+         * @param {string} universe 
+         * @param {CharacterSheetSettings} characterSheetSettings 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateCharacterSheetSettings(universe: string, characterSheetSettings: CharacterSheetSettings, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCharacterSheetSettings(universe, characterSheetSettings, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UniverseSettingsServiceApi.updateCharacterSheetSettings']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -11137,6 +11257,16 @@ export const UniverseSettingsServiceApiFactory = function (configuration?: Confi
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        getCharacterSheetSettings(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<CharacterSheetSettings> {
+            return localVarFp.getCharacterSheetSettings(universe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get the settings
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         getCurrencySettings(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<CurrencySettings> {
             return localVarFp.getCurrencySettings(universe, options).then((request) => request(axios, basePath));
         },
@@ -11170,6 +11300,17 @@ export const UniverseSettingsServiceApiFactory = function (configuration?: Confi
          */
         updateCharacterSettings(universe: string, characterSettings: CharacterSettings, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.updateCharacterSettings(universe, characterSettings, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update the settings
+         * @param {string} universe 
+         * @param {CharacterSheetSettings} characterSheetSettings 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCharacterSheetSettings(universe: string, characterSheetSettings: CharacterSheetSettings, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.updateCharacterSheetSettings(universe, characterSheetSettings, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11234,6 +11375,18 @@ export class UniverseSettingsServiceApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UniverseSettingsServiceApi
      */
+    public getCharacterSheetSettings(universe: string, options?: RawAxiosRequestConfig) {
+        return UniverseSettingsServiceApiFp(this.configuration).getCharacterSheetSettings(universe, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get the settings
+     * @param {string} universe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseSettingsServiceApi
+     */
     public getCurrencySettings(universe: string, options?: RawAxiosRequestConfig) {
         return UniverseSettingsServiceApiFp(this.configuration).getCurrencySettings(universe, options).then((request) => request(this.axios, this.basePath));
     }
@@ -11273,6 +11426,19 @@ export class UniverseSettingsServiceApi extends BaseAPI {
      */
     public updateCharacterSettings(universe: string, characterSettings: CharacterSettings, options?: RawAxiosRequestConfig) {
         return UniverseSettingsServiceApiFp(this.configuration).updateCharacterSettings(universe, characterSettings, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update the settings
+     * @param {string} universe 
+     * @param {CharacterSheetSettings} characterSheetSettings 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UniverseSettingsServiceApi
+     */
+    public updateCharacterSheetSettings(universe: string, characterSheetSettings: CharacterSheetSettings, options?: RawAxiosRequestConfig) {
+        return UniverseSettingsServiceApiFp(this.configuration).updateCharacterSheetSettings(universe, characterSheetSettings, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
