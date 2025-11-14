@@ -3,6 +3,7 @@ package de.pnp.manager.server.service.universe;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.UserUniversePermissionDTO;
+import de.pnp.manager.exception.AlreadyPersistedException;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
@@ -85,6 +86,9 @@ public class UniverseService {
     @Operation(summary = "Create a universe", operationId = "createUniverse")
     public Universe createUniverse(@AuthenticationPrincipal UserDetails userDetails,
                                    @Valid @RequestBody Universe universe) {
+        if (universe.isPersisted()) {
+            throw new AlreadyPersistedException(universe);
+        }
         Universe persistedUniverse = universeRepository.insert(universe);
         userDetailsRepository.addGrantedAuthority(userDetails.getUsername(),
                 GrantedUniverseAuthority.ownerAuthority(persistedUniverse.getId()));

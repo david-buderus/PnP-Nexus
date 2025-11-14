@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.exception.AlreadyPersistedException;
 import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
 import org.bson.types.ObjectId;
@@ -63,9 +62,6 @@ public class UniverseRepository {
      * Inserts a new {@link Universe} in the database.
      */
     public Universe insert(Universe universe) {
-        if (universe.isPersisted()) {
-            throw new AlreadyPersistedException(universe);
-        }
         return mongoTemplate.insert(universe, REPOSITORY_NAME);
     }
 

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.GrantedUniverseAuthorityDTO;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.RoleAuthorityDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.bson.types.ObjectId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -93,7 +94,7 @@ public interface IGrantedAuthorityDTO {
      */
     class GrantedUniverseAuthorityDTO implements IGrantedAuthorityDTO {
 
-        @NotBlank
+        @NotNull
         private final ObjectId universe;
 
         @NotBlank

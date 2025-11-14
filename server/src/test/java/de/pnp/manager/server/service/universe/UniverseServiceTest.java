@@ -140,8 +140,7 @@ public class UniverseServiceTest extends ServerTestBase {
             userRepository.addNewUser("test", "test",
                     List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE)));
 
-            Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
-            create(exampleUniverse);
+            Universe exampleUniverse = create(new Universe(null, "Example Universe"));
             assertThat(userRepository.loadUserByUsername("test").getAuthorities()).filteredOn(
                             auth -> auth instanceof GrantedUniverseAuthority).hasSize(1)
                     .anyMatch(auth -> ((GrantedUniverseAuthority) auth).isOwner(exampleUniverse.getId()));
@@ -291,11 +290,9 @@ public class UniverseServiceTest extends ServerTestBase {
     }
 
     private void runCreateTest() throws Exception {
-        Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
-        Universe persistedExampleUniverse = create(exampleUniverse);
-        assertThat(persistedExampleUniverse).isEqualTo(exampleUniverse);
-        assertThat(getOne(exampleUniverse.getId())).isEqualTo(exampleUniverse);
-        assertThat(getAll()).containsExactly(exampleUniverse);
+        Universe persistedExampleUniverse = create(new Universe(null, "Example Universe"));
+        assertThat(getOne(persistedExampleUniverse.getId())).isEqualTo(persistedExampleUniverse);
+        assertThat(getAll()).containsExactly(persistedExampleUniverse);
     }
 
     private void runNotAllowedCreateTest() {
