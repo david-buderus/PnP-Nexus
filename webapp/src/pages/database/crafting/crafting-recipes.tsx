@@ -127,10 +127,10 @@ function CreationDialog({
 
     function onSubmit(recipe: CraftingRecipe) {
         if (editMode) {
-            CRAFTING_API.updateCraftingRecipe(activeUniverse.name, recipe.id, addTypeAnnotationToRecipe(recipe)).then(refresh).then(close)
+            CRAFTING_API.updateCraftingRecipe(activeUniverse.id, recipe.id, addTypeAnnotationToRecipe(recipe)).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors));
         } else {
-            CRAFTING_API.insertAllCraftingRecipes(activeUniverse.name, [addTypeAnnotationToRecipe(recipe)]).then(refresh).then(close)
+            CRAFTING_API.insertAllCraftingRecipes(activeUniverse.id, [addTypeAnnotationToRecipe(recipe)]).then(refresh).then(close)
                 .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
         }
     }

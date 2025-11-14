@@ -65,21 +65,21 @@ public class UserManipulation {
      * @see PnPUserDetails#getAuthorities()
      */
     public void addReadUniverse(Universe universe) {
-        Select.from(locator.getByTestId("universe-read-rights")).select(universe.getName());
+        Select.from(locator.getByTestId("universe-read-rights")).select(universe.getId());
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
     public void addWriteUniverse(Universe universe) {
-        Select.from(locator.getByTestId("universe-write-rights")).select(universe.getName());
+        Select.from(locator.getByTestId("universe-write-rights")).select(universe.getId());
     }
 
     /**
      * @see PnPUserDetails#getAuthorities()
      */
     public void addOwnerUniverse(Universe universe) {
-        Select.from(locator.getByTestId("universe-owner-rights")).select(universe.getName());
+        Select.from(locator.getByTestId("universe-owner-rights")).select(universe.getId());
     }
 
     /**

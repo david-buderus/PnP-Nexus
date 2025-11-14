@@ -7,6 +7,7 @@ import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariabl
 import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class TestSecondaryAttributeBuilder {
         /**
          * Builder with default values.
          */
-        public TestSecondaryAttributeBuilder createAttributeBuilder(String universe) {
+        public TestSecondaryAttributeBuilder createAttributeBuilder(ObjectId universe) {
             return new TestSecondaryAttributeBuilder(universe, primaryAttributeRepository,
                     secondaryAttributeRepository);
         }
@@ -45,7 +46,7 @@ public class TestSecondaryAttributeBuilder {
     /**
      * Name of the connected universe.
      */
-    private final String universe;
+    private final ObjectId universe;
 
     private final PrimaryAttributeRepository primaryAttributeRepository;
 
@@ -63,7 +64,7 @@ public class TestSecondaryAttributeBuilder {
 
     private boolean shouldGetPersisted;
 
-    private TestSecondaryAttributeBuilder(String universe, PrimaryAttributeRepository primaryAttributeRepository,
+    private TestSecondaryAttributeBuilder(ObjectId universe, PrimaryAttributeRepository primaryAttributeRepository,
                                           SecondaryAttributeRepository secondaryAttributeRepository) {
         this.universe = universe;
         this.primaryAttributeRepository = primaryAttributeRepository;

@@ -2,10 +2,11 @@ package de.pnp.manager.webapp.database;
 
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.server.database.RepositoryBase;
+import org.bson.types.ObjectId;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Predicate;
-import org.bson.types.ObjectId;
 
 /**
  * Base class for testing overview pages for {@link RepositoryBase}.
@@ -25,17 +26,17 @@ public abstract class RepositoryOverviewTestBase<T extends DatabaseObject> exten
 
     @Override
     protected Collection<T> getTestObjects() {
-        return repository.getAll(getUniverseName());
+        return repository.getAll(getUniverseId());
     }
 
     @Override
     protected Optional<T> getPersistedObject(T object) {
-        return repository.getAll(getUniverseName()).stream().filter(o -> o.equals(object)).findFirst();
+        return repository.getAll(getUniverseId()).stream().filter(o -> o.equals(object)).findFirst();
     }
 
     @Override
     protected Optional<T> getPersistedObject(ObjectId id) {
-        return repository.get(getUniverseName(), id);
+        return repository.get(getUniverseId(), id);
     }
 
     @Override
@@ -53,9 +54,9 @@ public abstract class RepositoryOverviewTestBase<T extends DatabaseObject> exten
      */
     protected T getOriginalModifiedObject() {
         if (originalModifiedObject == null) {
-            originalModifiedObject = repository.getAll(getUniverseName()).stream().filter(getOriginalModifiedFilter())
-                .findFirst()
-                .orElseThrow();
+            originalModifiedObject = repository.getAll(getUniverseId()).stream().filter(getOriginalModifiedFilter())
+                    .findFirst()
+                    .orElseThrow();
         }
         return originalModifiedObject;
     }

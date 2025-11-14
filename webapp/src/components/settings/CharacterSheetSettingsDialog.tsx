@@ -29,13 +29,13 @@ export default function CharacterSheetSettingsDialog() {
             return;
         }
 
-        SETTINGS_API.getCharacterSheetSettings(activeUniverse.name).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
+        SETTINGS_API.getCharacterSheetSettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
     }, [activeUniverse]);
 
     return <>
         <Modal opened={opened} onClose={close} size="auto" title={t('universe:characterSheetSettings')}>
             <form
-                onSubmit={form.onSubmit(s => SETTINGS_API.updateCharacterSheetSettings(activeUniverse.name, s)
+                onSubmit={form.onSubmit(s => SETTINGS_API.updateCharacterSheetSettings(activeUniverse.id, s)
                     .then(() => {
                         refreshSettings();
                         close();

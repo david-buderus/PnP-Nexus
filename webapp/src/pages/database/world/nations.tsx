@@ -45,26 +45,26 @@ export function NationView() {
 
     useEffect(() => {
         if (selectedSpeciesQuery) {
-            SPECIES_API.getSpecies(activeUniverse.name, selectedSpeciesQuery).then(response => {
+            SPECIES_API.getSpecies(activeUniverse.id, selectedSpeciesQuery).then(response => {
                 setSpecies(response.data);
             });
         }
         if (nation) {
-            NATION_API.getNation(activeUniverse.name, nation).then(response => {
+            NATION_API.getNation(activeUniverse.id, nation).then(response => {
                 setSelected(response.data);
             });
         }
     }, [nation, selectedSpeciesQuery, setSelected, setSpecies]);
 
     function clearSelection() {
-        navigate(`/species?universe=${activeUniverse.name}`);
+        navigate(`/species?universe=${activeUniverse.id}`);
     }
 
     function clearNationSelection() {
         if (species) {
-            navigate(`/species/${selectedSpeciesQuery}?universe=${activeUniverse.name}`);
+            navigate(`/species/${selectedSpeciesQuery}?universe=${activeUniverse.id}`);
         } else {
-            navigate(`/species?universe=${activeUniverse.name}`);
+            navigate(`/species?universe=${activeUniverse.id}`);
         }
     }
 
@@ -75,15 +75,15 @@ export function NationView() {
             onSave={n => {
                 if (nation) {
                     setEditMode(false);
-                    NATION_API.getNation(activeUniverse.name, nation).then(response => {
+                    NATION_API.getNation(activeUniverse.id, nation).then(response => {
                         setSelected(response.data);
                     });
                     return;
                 }
                 if (species) {
-                    navigate(`/nations/${n.id}?universe=${activeUniverse.name}&species=${selectedSpeciesQuery}`);
+                    navigate(`/nations/${n.id}?universe=${activeUniverse.id}&species=${selectedSpeciesQuery}`);
                 } else {
-                    navigate(`/nations/${n.id}?universe=${activeUniverse.name}`);
+                    navigate(`/nations/${n.id}?universe=${activeUniverse.id}`);
                 }
             }}
             onDelete={clearNationSelection}
@@ -251,15 +251,15 @@ function NationEdit({
         data-testid="nation-form"
         onSubmit={form.onSubmit(nation => {
             if (nation.id) {
-                NATION_API.updateNation(activeUniverse.name, nation.id, nation)
+                NATION_API.updateNation(activeUniverse.id, nation.id, nation)
                     .then(response => onSave(response.data)).catch(handleValidationErrors(form.setErrors));
             } else {
-                NATION_API.insertAllNations(activeUniverse.name, [nation])
+                NATION_API.insertAllNations(activeUniverse.id, [nation])
                     .then(response => {
                         if (!selectedSpecies) {
                             return response.data[0];
                         }
-                        SPECIES_API.updateSpecies(activeUniverse.name, selectedSpecies.id, {
+                        SPECIES_API.updateSpecies(activeUniverse.id, selectedSpecies.id, {
                             ...selectedSpecies,
                             nations: selectedSpecies.nations.concat(response.data),
                         });
@@ -285,7 +285,7 @@ function NationEdit({
                         <ConfirmationDialog
                             title={t('species:deleteNation')}
                             onConfirmation={() => {
-                                NATION_API.deleteNation(activeUniverse.name, initial.id).then(onDelete);
+                                NATION_API.deleteNation(activeUniverse.id, initial.id).then(onDelete);
                             }}
                             openNode={open =>
                                 <Button variant="outline" color="red" onClick={open}>

@@ -16,6 +16,7 @@ import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.universe.UniverseRepository;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.utils.TestSpellBuilder.TestSpellBuilderFactory;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -76,7 +77,7 @@ public class BackupControllerTest {
     @AfterEach
     void tearDown() {
         for (Universe universe : universeRepository.getAll()) {
-            universeRepository.remove(universe.getName());
+            universeRepository.remove(universe.getId());
         }
         for (String username : userController.getAllUsernames()) {
             userController.removeUser(username);
@@ -85,8 +86,8 @@ public class BackupControllerTest {
 
     @Test
     void testExportAndImport(@TempDir Path tempDir) throws IOException {
-        Universe universe = new Universe("backup-controller-test", "Test-Universe");
-        String universeName = universe.getName();
+        Universe universe = new Universe(new ObjectId(), "Test-Universe");
+        ObjectId universeName = universe.getId();
         assertThat(universeRepository.insert(universe)).isNotNull();
 
         Material material = materialRepository.insert(universeName,

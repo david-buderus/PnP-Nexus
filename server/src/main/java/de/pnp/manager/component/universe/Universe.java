@@ -1,31 +1,22 @@
 package de.pnp.manager.component.universe;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.server.database.universe.UniverseRepository;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.util.Objects;
-import org.springframework.data.annotation.Id;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Objects;
 
 /**
  * The description of a universe.
  */
 @Document(UniverseRepository.REPOSITORY_NAME)
-public class Universe {
-
-    /**
-     * The unique name of this universe.
-     * <p>
-     * This will never change.
-     */
-    @Id
-    @NotBlank
-    @Pattern(regexp = "[a-z][a-z-]+[a-z]", message = "{universe.name}")
-    private final String name;
+public class Universe extends DatabaseObject {
 
     /**
      * The human-readable name of this universe.
@@ -40,21 +31,17 @@ public class Universe {
     @NotNull
     private final String description;
 
-    public Universe(String name, String displayName) {
-        this(name, displayName, "", "");
+    public Universe(ObjectId id, String displayName) {
+        this(id, displayName, "", "");
     }
 
     @PersistenceCreator
     @JsonCreator
-    public Universe(String name, String displayName, String shortDescription, String description) {
-        this.name = name;
+    public Universe(ObjectId id, String displayName, String shortDescription, String description) {
+        super(id);
         this.displayName = displayName;
         this.shortDescription = shortDescription;
         this.description = description;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getDisplayName() {
@@ -78,13 +65,13 @@ public class Universe {
             return false;
         }
         Universe universe = (Universe) o;
-        return getName().equals(universe.getName()) && getDisplayName().equals(universe.getDisplayName())
-            && getShortDescription().equals(universe.getShortDescription()) && getDescription().equals(
-            universe.getDescription());
+        return Objects.equals(getId(), universe.getId()) && getDisplayName().equals(universe.getDisplayName())
+                && getShortDescription().equals(universe.getShortDescription()) && getDescription().equals(
+                universe.getDescription());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDisplayName(), getShortDescription(), getDescription());
+        return Objects.hash(getId(), getDisplayName(), getShortDescription(), getDescription());
     }
 }

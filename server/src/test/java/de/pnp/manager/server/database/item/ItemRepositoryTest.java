@@ -1,7 +1,5 @@
 package de.pnp.manager.server.database.item;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.Armor;
@@ -10,10 +8,13 @@ import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.RepositoryTestBase;
-import java.util.Collections;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests for {@link ItemRepository}.
@@ -29,21 +30,21 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
 
     @Test
     void testInsertArmor() {
-        Material material = materialRepository.insert(getUniverseName(),
-            new Material(null, "ArmorMat", Collections.emptyList()));
+        Material material = materialRepository.insert(getUniverseId(),
+                new Material(null, "ArmorMat", Collections.emptyList()));
 
         Armor armor = createItem().withMaterial(material).buildArmor();
-        Item persistedArmor = repository.insert(getUniverseName(), armor);
+        Item persistedArmor = repository.insert(getUniverseId(), armor);
 
-        assertThat(repository.getAll(getUniverseName())).contains(armor);
-        assertThat(repository.get(getUniverseName(), armor.getName())).contains(armor);
-        assertThat(repository.get(getUniverseName(), persistedArmor.getId())).contains(armor);
+        assertThat(repository.getAll(getUniverseId())).contains(armor);
+        assertThat(repository.get(getUniverseId(), armor.getName())).contains(armor);
+        assertThat(repository.get(getUniverseId(), persistedArmor.getId())).contains(armor);
     }
 
     @Test
     void testMixedInput() {
-        Material material = materialRepository.insert(getUniverseName(),
-            new Material(null, "Mat", Collections.emptyList()));
+        Material material = materialRepository.insert(getUniverseId(),
+                new Material(null, "Mat", Collections.emptyList()));
 
         Armor armor1 = createItem().withName("A1").withMaterial(material).persist().buildArmor();
         Armor armor2 = createItem().withName("A2").withMaterial(material).persist().buildArmor();
@@ -52,19 +53,19 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
         Shield shield = createItem().withName("S1").withMaterial(material).persist().buildShield();
         createItem().withName("E1").persist().buildItem();
 
-        assertThat(repository.getAllArmor(getUniverseName())).containsExactlyInAnyOrder(armor1, armor2);
-        assertThat(repository.getAllWeapons(getUniverseName())).containsExactlyInAnyOrder(weapon);
-        assertThat(repository.getAllJewellery(getUniverseName())).containsExactlyInAnyOrder(jewellery);
-        assertThat(repository.getAllShields(getUniverseName())).containsExactlyInAnyOrder(shield);
+        assertThat(repository.getAllArmor(getUniverseId())).containsExactlyInAnyOrder(armor1, armor2);
+        assertThat(repository.getAllWeapons(getUniverseId())).containsExactlyInAnyOrder(weapon);
+        assertThat(repository.getAllJewellery(getUniverseId())).containsExactlyInAnyOrder(jewellery);
+        assertThat(repository.getAllShields(getUniverseId())).containsExactlyInAnyOrder(shield);
     }
 
     @Test
     void testMaterialLink() {
-        Material materialA = materialRepository.insert(getUniverseName(),
-            new Material(null, "Material A", Collections.emptyList()));
+        Material materialA = materialRepository.insert(getUniverseId(),
+                new Material(null, "Material A", Collections.emptyList()));
         Material materialB = new Material(null, "Material B", Collections.emptyList());
         Weapon weapon = createItem().withName("Test").withMaterial(materialA)
-            .buildWeapon();
+                .buildWeapon();
 
         testRepositoryLink(Weapon::getMaterial, materialRepository, weapon, materialA, materialB);
     }
@@ -82,7 +83,7 @@ public class ItemRepositoryTest extends RepositoryTestBase<Item, ItemRepository>
     @Override
     protected List<Item> createMultipleObjects() {
         return List.of(createItem().withName("A").buildItem(),
-            createItem().withName("B").buildItem(),
-            createItem().withName("C").buildItem());
+                createItem().withName("B").buildItem(),
+                createItem().withName("C").buildItem());
     }
 }

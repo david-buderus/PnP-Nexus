@@ -1,10 +1,5 @@
 package de.pnp.manager.server;
 
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import com.google.common.hash.Hashing;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Playwright;
@@ -18,23 +13,28 @@ import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.universe.UniverseRepository;
 import de.pnp.manager.utils.TestUtils;
 import de.pnp.manager.webapp.WebDriver;
-import java.lang.annotation.Annotation;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.parallel.ResourceAccessMode;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+
+import java.lang.annotation.Annotation;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test base for integration tests.
@@ -76,7 +76,7 @@ public abstract class ServerTestBase {
     @LocalServerPort
     private int port;
 
-    private String importPrefix;
+    private final Map<ObjectId, ObjectId> remappingUniverseIds = new HashMap<>();
 
     /**
      * Returns the baseUrl of the test server.
@@ -100,24 +100,24 @@ public abstract class ServerTestBase {
     /**
      * Returns the default universe name specified by the corresponding {@link EServerTestConfiguration}.
      */
-    protected String getUniverseName() {
-        return importPrefix + getTestServerAnnotation().value().getDefaultUniverse();
+    protected ObjectId getUniverseId() {
+        return remappingUniverseIds.get(getTestServerAnnotation().value().getDefaultUniverse());
     }
 
     /**
      * Returns the default universe specified by the corresponding {@link EServerTestConfiguration}.
      */
     protected Universe getUniverse() {
-        return universeRepository.get(getUniverseName()).orElse(null);
+        return universeRepository.get(getUniverseId()).orElse(null);
     }
 
     /**
-     * Creates a universe with the given name and displayname.
+     * Creates a universe with the given name and ID.
      * <p>
      * Automatically adds a prefix to prevent collision with other tests.
      */
-    protected Universe createUniverse(String name, String displayName) {
-        return universeRepository.insert(new Universe(importPrefix + name, displayName));
+    protected Universe createUniverse(String displayName) {
+        return universeRepository.insert(new Universe(new ObjectId(), displayName));
     }
 
     @BeforeAll
@@ -128,17 +128,16 @@ public abstract class ServerTestBase {
     }
 
     @BeforeEach
-    protected void setup(TestInfo testInfo) {
-        importPrefix = calculateImportPrefix(testInfo);
-        getTestServerAnnotation().value().setupTestData(this, importPrefix);
+    protected void setup() {
+        remappingUniverseIds.putAll(getTestServerAnnotation().value().setupTestData(this));
         if (isUiTestServer()) {
             startUiServer();
             webDriver = new WebDriver(getBaseUrl(), browser);
         }
         if (userController.getAllUsernames().isEmpty()) {
             userController.createNewUser(
-                new PnPUserCreation("admin", "admin", "admin", null,
-                    List.of(new RoleAuthorityDTO(SecurityConstants.ADMIN))));
+                    new PnPUserCreation("admin", "admin", "admin", null,
+                            List.of(new RoleAuthorityDTO(SecurityConstants.ADMIN))));
         }
     }
 
@@ -146,14 +145,14 @@ public abstract class ServerTestBase {
     protected void tearDown() {
         if (manipulatesMetadata()) {
             for (Universe universe : universeRepository.getAll()) {
-                universeRepository.remove(universe.getName());
+                universeRepository.remove(universe.getId());
             }
             for (String username : userController.getAllUsernames()) {
                 userController.removeUser(username);
             }
         } else {
-            universeRepository.getAll().stream().filter(universe -> universe.getName().startsWith(importPrefix))
-                .forEach(universe -> universeRepository.remove(universe.getName()));
+            universeRepository.getAll().stream().filter(universe -> remappingUniverseIds.containsValue(universe.getId()))
+                    .forEach(universe -> universeRepository.remove(universe.getId()));
         }
         if (isUiTestServer()) {
             stopUiServer();
@@ -173,14 +172,14 @@ public abstract class ServerTestBase {
     private void startUiServer() {
         playwright = Playwright.create(new Playwright.CreateOptions());
         BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions().setHeadless(
-            TestUtils.isRunningInCI());
+                TestUtils.isRunningInCI());
         browser = playwright.chromium().launch(launchOptions);
 
     }
 
     private boolean manipulatesMetadata() {
         List<ManipulatesMetadata> manipulatesMetadataAnnotations = getAnnotationsInClassHierarchy(
-            ManipulatesMetadata.class);
+                ManipulatesMetadata.class);
         return !manipulatesMetadataAnnotations.isEmpty();
     }
 
@@ -192,8 +191,8 @@ public abstract class ServerTestBase {
     private TestServer getTestServerAnnotation() {
         List<TestServer> testServerAnnotations = getAnnotationsInClassHierarchy(TestServer.class);
         assertThat(testServerAnnotations).size()
-            .withFailMessage("Inheritors of TestServerBase must have exactly one TestServer annotation.").isEqualTo(1);
-        return testServerAnnotations.get(0);
+                .withFailMessage("Inheritors of TestServerBase must have exactly one TestServer annotation.").isEqualTo(1);
+        return testServerAnnotations.getFirst();
     }
 
     private <A extends Annotation> List<A> getAnnotationsInClassHierarchy(Class<A> annotationClass) {
@@ -204,9 +203,5 @@ public abstract class ServerTestBase {
             currentClass = currentClass.getSuperclass();
         } while (currentClass != null);
         return testServerAnnotations;
-    }
-
-    private String calculateImportPrefix(TestInfo info) {
-        return Hashing.sha256().hashString(info.getDisplayName(), Charset.defaultCharset()).asInt() + "-";
     }
 }

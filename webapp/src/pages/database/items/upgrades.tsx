@@ -160,10 +160,10 @@ function CreationDialog({
 
     function onSubmit(upgrade: Upgrade) {
         if (editMode) {
-            UPGRADE_API.updateUpgrade(activeUniverse.name, upgrade.id, upgrade).then(refresh).then(close)
+            UPGRADE_API.updateUpgrade(activeUniverse.id, upgrade.id, upgrade).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors));
         } else {
-            UPGRADE_API.insertAllUpgrades(activeUniverse.name, [upgrade]).then(refresh).then(close)
+            UPGRADE_API.insertAllUpgrades(activeUniverse.id, [upgrade]).then(refresh).then(close)
                 .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
         }
     }

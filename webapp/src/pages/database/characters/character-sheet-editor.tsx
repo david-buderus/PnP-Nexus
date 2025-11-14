@@ -23,7 +23,7 @@ export function CharacterSheetEditor() {
         if (!sheet) {
             return;
         }
-        SHEET_API.getPnPCharacterSheet(activeUniverse.name, sheet).then(response => {
+        SHEET_API.getPnPCharacterSheet(activeUniverse.id, sheet).then(response => {
             setInitialSheet(response.data);
         });
     }, [sheet]);
@@ -59,7 +59,7 @@ function CharacterSheetView({
         if (!activeUniverse) {
             return;
         }
-        CHARACTER_API.getExampleCharacter(activeUniverse.name).then(response => setCharacter(response.data));
+        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => setCharacter(response.data));
     }, [activeUniverse]);
 
     return <Center>

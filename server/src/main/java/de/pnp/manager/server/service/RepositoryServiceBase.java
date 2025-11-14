@@ -38,7 +38,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @UniverseRead
     @RewriteOperationId
     @Operation(summary = "Get all objects from the database", operationId = "getAll")
-    public Collection<Obj> getAll(@PathVariable String universe, @RequestParam(required = false) List<ObjectId> ids) {
+    public Collection<Obj> getAll(@PathVariable ObjectId universe, @RequestParam(required = false) List<ObjectId> ids) {
         if (ids == null || ids.isEmpty()) {
             return repository.getAll(universe);
         }
@@ -49,7 +49,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @UniverseWrite
     @RewriteOperationId
     @Operation(summary = "Inserts the objects into the database", operationId = "insertAll")
-    public Collection<Obj> insertAll(@PathVariable String universe, @RequestBody List<@Valid Obj> objects) {
+    public Collection<Obj> insertAll(@PathVariable ObjectId universe, @RequestBody List<@Valid Obj> objects) {
         return repository.insertAll(universe, objects);
     }
 
@@ -58,7 +58,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @RewriteOperationId
     @Operation(summary = "Deletes all objects with the given ids from the database", operationId = "deleteAll")
-    public void deleteAll(@PathVariable String universe, @RequestParam List<ObjectId> ids) {
+    public void deleteAll(@PathVariable ObjectId universe, @RequestParam List<ObjectId> ids) {
         if (!repository.removeAll(universe, ids)) {
             throw createNotFound("Unable to find all resource with the given ids");
         }
@@ -68,7 +68,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @UniverseRead
     @RewriteOperationId
     @Operation(summary = "Get an object from the database", operationId = "get")
-    public Obj get(@PathVariable String universe, @PathVariable ObjectId id) {
+    public Obj get(@PathVariable ObjectId universe, @PathVariable ObjectId id) {
         return repository.get(universe, id)
                 .orElseThrow(() -> createNotFound("Unable to find resource with id '%s'", id));
     }
@@ -77,7 +77,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @UniverseWrite
     @RewriteOperationId
     @Operation(summary = "Updates an object in the database", operationId = "update")
-    public Obj update(@PathVariable String universe, @PathVariable ObjectId id, @RequestBody @Valid Obj object) {
+    public Obj update(@PathVariable ObjectId universe, @PathVariable ObjectId id, @RequestBody @Valid Obj object) {
         if (object.getId() != null && !Objects.equals(id, object.getId())) {
             throw new ResponseStatusException(BAD_REQUEST, "The id of the object does not match.");
         }
@@ -89,7 +89,7 @@ public abstract class RepositoryServiceBase<Obj extends DatabaseObject, Repo ext
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @RewriteOperationId
     @Operation(summary = "Deletes an object from the database", operationId = "delete")
-    public void delete(@PathVariable String universe, @PathVariable ObjectId id) {
+    public void delete(@PathVariable ObjectId universe, @PathVariable ObjectId id) {
         if (!repository.remove(universe, id)) {
             throw createNotFound("Unable to find resource with id '%s'", id);
         }

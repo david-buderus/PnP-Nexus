@@ -1,27 +1,29 @@
 package de.pnp.manager.server.controller.backup;
 
-import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
-
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.universe.UniverseRepository;
+import org.bson.BsonBinaryWriter;
+import org.bson.Document;
+import org.bson.codecs.EncoderContext;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.io.BasicOutputBuffer;
+import org.bson.types.ObjectId;
+import org.jetbrains.annotations.Nullable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.bson.BsonBinaryWriter;
-import org.bson.Document;
-import org.bson.codecs.EncoderContext;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.io.BasicOutputBuffer;
-import org.jetbrains.annotations.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+
+import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
 
 /**
  * A controller to create backups of a complete PnP-Nexus instance.
@@ -66,8 +68,8 @@ public class BackupExportController {
     private final CodecRegistry codecRegistry;
 
     public BackupExportController(@Autowired MongoClient mongoClient,
-        @Autowired MongoConfig mongoConfig,
-        @Autowired UniverseRepository universeRepository) {
+                                  @Autowired MongoConfig mongoConfig,
+                                  @Autowired UniverseRepository universeRepository) {
         this.mongoClient = mongoClient;
         this.mongoConfig = mongoConfig;
         this.universeRepository = universeRepository;
@@ -79,17 +81,17 @@ public class BackupExportController {
      * <p>
      * If the given universe list is empty or null, all universes will be exported.
      */
-    public void export(OutputStream outputStream, @Nullable Collection<String> universeNames) throws IOException {
-        if (universeNames == null || universeNames.isEmpty()) {
-            universeNames = universeRepository.getAll().stream().map(Universe::getName)
-                .toList();
+    public void export(OutputStream outputStream, @Nullable Collection<ObjectId> universeIds) throws IOException {
+        if (universeIds == null || universeIds.isEmpty()) {
+            universeIds = universeRepository.getAll().stream().map(Universe::getId)
+                    .toList();
         }
 
         EncoderContext context = EncoderContext.builder().isEncodingCollectibleDocument(true).build();
 
         try (ZipOutputStream zipOut = new ZipOutputStream(outputStream)) {
             exportMetaData(context, zipOut);
-            exportUniverses(context, zipOut, universeNames);
+            exportUniverses(context, zipOut, universeIds);
         }
     }
 
@@ -107,7 +109,7 @@ public class BackupExportController {
                 continue;
             }
             List<Document> repositoryContent = mongoConfig.mongoTemplate(METADATA_DATABASE)
-                .findAll(Document.class, repositoryName);
+                    .findAll(Document.class, repositoryName);
             Document repository = new Document();
             repository.put(REPOSITORY_CONTENT, repositoryContent);
             repository.put(REPOSITORY_NAME, repositoryName);
@@ -122,32 +124,32 @@ public class BackupExportController {
     /**
      * Exports the given universes as a zip into the given {@link OutputStream}.
      */
-    private void exportUniverses(EncoderContext context, ZipOutputStream zipOut, Collection<String> universes)
-        throws IOException {
-        for (String universe : universes) {
+    private void exportUniverses(EncoderContext context, ZipOutputStream zipOut, Collection<ObjectId> universes)
+            throws IOException {
+        for (ObjectId universe : universes) {
             if (!universeRepository.exists(universe)) {
                 throw new IllegalArgumentException("Universe " + universe + " does not exist.");
             }
             exportUniverse(zipOut, universe, mongoClient.getDatabase(DatabaseConstants.UNIVERSE_PREFIX + universe),
-                context);
+                    context);
         }
     }
 
-    private void exportUniverse(ZipOutputStream outputStream, String universe,
-        MongoDatabase universeDatabase, EncoderContext context)
-        throws IOException {
+    private void exportUniverse(ZipOutputStream outputStream, ObjectId universe,
+                                MongoDatabase universeDatabase, EncoderContext context)
+            throws IOException {
 
         ZipEntry universeEntry = new ZipEntry(universe + "/" + UNIVERSE_FILE);
         outputStream.putNextEntry(universeEntry);
         Document universeDocument = mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE)
-            .findById(universe, Document.class, UniverseRepository.REPOSITORY_NAME);
+                .findById(universe, Document.class, UniverseRepository.REPOSITORY_NAME);
         outputStream.write(encode(universeDocument, codecRegistry, context));
         outputStream.closeEntry();
 
         for (String repositoryName : universeDatabase.listCollectionNames()) {
 
             List<Document> repositoryContent = mongoConfig.universeMongoTemplate(universe)
-                .findAll(Document.class, repositoryName);
+                    .findAll(Document.class, repositoryName);
             Document repository = new Document();
             repository.put(REPOSITORY_CONTENT, repositoryContent);
             repository.put(REPOSITORY_NAME, repositoryName);

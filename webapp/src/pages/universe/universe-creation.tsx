@@ -131,7 +131,7 @@ export default function UniverseCreation() {
                                 component={Link}
                                 to={{
                                     pathname: '/',
-                                    search: `universe=${activeUniverse?.name}`
+                                    search: `universe=${activeUniverse?.id}`
                                 }}
                             >
                                 {t('done')}
@@ -149,7 +149,7 @@ function UniverseCreationStep({nextStep}: UniverseCreationStepProps) {
     const form = useForm<Universe>({
         mode: 'uncontrolled',
         initialValues: {
-            name: '',
+            id: null,
             displayName: '',
             shortDescription: '',
             description: ''
@@ -161,20 +161,11 @@ function UniverseCreationStep({nextStep}: UniverseCreationStepProps) {
         <Title order={3} ta="center">
             {t('universe:createUniverse')}
         </Title>
-        <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.createUniverse(universe).then(() =>
-            fetchUniverses().then(() => setActiveUniverse(universe)).then(nextStep)
-        ).catch(handleValidationErrors(form.setErrors)))}>
+        <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.createUniverse(universe)
+            .then(response => fetchUniverses().then(() => setActiveUniverse(response.data)).then(nextStep)
+            ).catch(handleValidationErrors(form.setErrors)))}>
             <Grid columns={2}>
-                <Grid.Col span={1}>
-                    <TextInput
-                        data-testid="name"
-                        label={t('name')}
-                        key={form.key('name')}
-                        required
-                        {...form.getInputProps('name')}
-                    />
-                </Grid.Col>
-                <Grid.Col span={1}>
+                <Grid.Col span={2}>
                     <TextInput
                         data-testid="displayName"
                         label={t('displayName')}
@@ -237,7 +228,7 @@ function ItemImporStep({nextStep, prevStep}: UniverseCreationStepProps) {
         </Text>
         <Button color="success" variant="outlined" disabled={importedMaterials || language === null} onClick={() => {
             setImportedMaterials(true);
-            UNIVERSE_CREATION_API.createDefaultMaterials(activeUniverse.name, language);
+            UNIVERSE_CREATION_API.createDefaultMaterials(activeUniverse.id, language);
         }}>
             {importedMaterials ? t('universe:successfullyImported') : t('universe:importMaterials')}
         </Button>

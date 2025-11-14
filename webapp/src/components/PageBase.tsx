@@ -106,14 +106,14 @@ export function PageBase() {
     async function fetchUniverses(): Promise<void> {
         const response = await UNIVERSE_API.getAllUniverses();
         setUniverses(response.data);
-        const paramUniverse = response.data.find(u => u.name === universeQuery);
+        const paramUniverse = response.data.find(u => u.id === universeQuery);
         if (paramUniverse !== undefined) {
             setActiveUniverse(paramUniverse);
             return;
         }
         // If no universe is selected, select the previous selected universe of the user
         if (userPreferences) {
-            const prefUniverse = response.data.find(u => u.name === userPreferences.lastSelectedUniverse);
+            const prefUniverse = response.data.find(u => u.id === userPreferences.lastSelectedUniverse);
             if (prefUniverse !== undefined) {
                 setActiveUniverse(prefUniverse);
             }
@@ -121,11 +121,11 @@ export function PageBase() {
     }
 
     function refreshSettings() {
-        SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => setCurrencySettings(response.data));
-        SETTINGS_API.getItemSettings(activeUniverse.name).then(response => setItemSettings(response.data));
-        SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => setCharacterSettings(response.data));
-        SETTINGS_API.getEquipmentSettings(activeUniverse.name).then(response => setEquipmentSettings(response.data));
-        SETTINGS_API.getCharacterSheetSettings(activeUniverse.name).then(response => setSheetSettings(response.data));
+        SETTINGS_API.getCurrencySettings(activeUniverse.id).then(response => setCurrencySettings(response.data));
+        SETTINGS_API.getItemSettings(activeUniverse.id).then(response => setItemSettings(response.data));
+        SETTINGS_API.getCharacterSettings(activeUniverse.id).then(response => setCharacterSettings(response.data));
+        SETTINGS_API.getEquipmentSettings(activeUniverse.id).then(response => setEquipmentSettings(response.data));
+        SETTINGS_API.getCharacterSheetSettings(activeUniverse.id).then(response => setSheetSettings(response.data));
     }
 
     const refreshUser = () => {
@@ -152,7 +152,7 @@ export function PageBase() {
         if (!activeUniverse) {
             return;
         }
-        setUniverseQuery(activeUniverse.name);
+        setUniverseQuery(activeUniverse.id);
         refreshSettings();
     }, [activeUniverse]);
 
@@ -176,12 +176,12 @@ export function PageBase() {
         if (username === null || userPreferences === null || activeUniverse === null) {
             return;
         }
-        if (userPreferences.lastSelectedUniverse === activeUniverse.name) {
+        if (userPreferences.lastSelectedUniverse === activeUniverse.id) {
             return;
         }
         USER_API.updateUserPreferences(username, {
             ...userPreferences,
-            lastSelectedUniverse: activeUniverse.name
+            lastSelectedUniverse: activeUniverse.id
         });
     }, [activeUniverse, userPreferences]);
 
@@ -426,9 +426,9 @@ function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchPar
             <Menu.Label>{t('universe')}</Menu.Label>
             <Menu.Item closeMenuOnClick={false}>
                 <Select
-                    data={universes?.map(universe => ({value: universe.name, label: universe.displayName})) ?? []}
-                    value={activeUniverse?.name}
-                    onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
+                    data={universes?.map(universe => ({value: universe.id, label: universe.displayName})) ?? []}
+                    value={activeUniverse?.id}
+                    onChange={id => setActiveUniverse(universes.find(u => u.id === id))}
                     placeholder={t('universe:noUniverse') + '...'}
                     disabled={universes.length === 0}
                     variant="unstyled"

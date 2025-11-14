@@ -2580,7 +2580,7 @@ export interface Universe {
      * @type {string}
      * @memberof Universe
      */
-    'name': string;
+    'id'?: string;
     /**
      * 
      * @type {string}

@@ -37,7 +37,7 @@ export function PrimaryAttributeForm({
         if (!activeUniverse) {
             return;
         }
-        PRIMARY_ATTRIBUTE_API.getAllPrimaryAttributes(activeUniverse.name).then(response => {
+        PRIMARY_ATTRIBUTE_API.getAllPrimaryAttributes(activeUniverse.id).then(response => {
             if (response.data.length > 0) {
                 form.setValues({
                     attributes: response.data.map(a => {
@@ -52,7 +52,7 @@ export function PrimaryAttributeForm({
     }, [activeUniverse]);
 
     return <form
-        onSubmit={form.onSubmit((attributes) => PRIMARY_ATTRIBUTE_API.setAllPrimaryAttributes(activeUniverse.name, attributes.attributes)
+        onSubmit={form.onSubmit((attributes) => PRIMARY_ATTRIBUTE_API.setAllPrimaryAttributes(activeUniverse.id, attributes.attributes)
             .then(onSave).catch(handleValidationErrors(form.setErrors))
         )}>
         <Table>

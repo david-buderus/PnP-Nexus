@@ -1,14 +1,14 @@
 package de.pnp.manager.component.user;
 
-import static de.pnp.manager.security.SecurityConstants.OWNER;
-import static de.pnp.manager.security.SecurityConstants.READ_ACCESS;
-import static de.pnp.manager.security.SecurityConstants.WRITE_ACCESS;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
 import de.pnp.manager.security.SecurityConstants;
-import java.util.Objects;
+import org.bson.types.ObjectId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
+
+import static de.pnp.manager.security.SecurityConstants.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * Handles universe authorities.
@@ -18,42 +18,42 @@ public class GrantedUniverseAuthority implements GrantedAuthority {
     /**
      * Creates an {@link GrantedAuthority} which grants read access to the given universe.
      */
-    public static GrantedUniverseAuthority readAuthority(String universe) {
+    public static GrantedUniverseAuthority readAuthority(ObjectId universe) {
         return new GrantedUniverseAuthority(universe, READ_ACCESS);
     }
 
     /**
      * Creates an {@link GrantedAuthority} which grants write access to the given universe.
      */
-    public static GrantedUniverseAuthority writeAuthority(String universe) {
+    public static GrantedUniverseAuthority writeAuthority(ObjectId universe) {
         return new GrantedUniverseAuthority(universe, WRITE_ACCESS);
     }
 
     /**
      * Creates an {@link GrantedAuthority} which grants owner access to the given universe.
      */
-    public static GrantedUniverseAuthority ownerAuthority(String universe) {
+    public static GrantedUniverseAuthority ownerAuthority(ObjectId universe) {
         return new GrantedUniverseAuthority(universe, OWNER);
     }
 
     /**
      * Creates an {@link GrantedAuthority} which grants the given permission to the given universe.
      */
-    public static GrantedUniverseAuthority fromPermission(String universe, String accessPermission) {
+    public static GrantedUniverseAuthority fromPermission(ObjectId universe, String accessPermission) {
         return switch (accessPermission) {
             case SecurityConstants.READ_ACCESS -> GrantedUniverseAuthority.readAuthority(universe);
             case SecurityConstants.WRITE_ACCESS -> GrantedUniverseAuthority.writeAuthority(universe);
             case SecurityConstants.OWNER -> GrantedUniverseAuthority.ownerAuthority(universe);
             default -> throw new ResponseStatusException(BAD_REQUEST,
-                "The access permission '" + accessPermission + "' is not supported.");
+                    "The access permission '" + accessPermission + "' is not supported.");
         };
     }
 
-    private final String universe;
+    private final ObjectId universe;
 
     private final String accessRight;
 
-    private GrantedUniverseAuthority(String universe, String accessRight) {
+    private GrantedUniverseAuthority(ObjectId universe, String accessRight) {
         this.universe = universe;
         this.accessRight = accessRight;
     }
@@ -61,14 +61,14 @@ public class GrantedUniverseAuthority implements GrantedAuthority {
     /**
      * Checks if this authority grants read rights for the given universe.
      */
-    public boolean canRead(String universe) {
+    public boolean canRead(ObjectId universe) {
         return this.universe.equals(universe);
     }
 
     /**
      * Checks if this authority grants write rights for the given universe.
      */
-    public boolean canWrite(String universe) {
+    public boolean canWrite(ObjectId universe) {
         if (READ_ACCESS.equals(accessRight)) {
             return false;
         }
@@ -78,14 +78,14 @@ public class GrantedUniverseAuthority implements GrantedAuthority {
     /**
      * Checks if this authority grants owner rights for the given universe.
      */
-    public boolean isOwner(String universe) {
+    public boolean isOwner(ObjectId universe) {
         return OWNER.equals(accessRight) && canRead(universe);
     }
 
     /**
      * Checks if the authority grants the given rights for the given universe;
      */
-    public boolean hasRight(String universe, String right) {
+    public boolean hasRight(ObjectId universe, String right) {
         return switch (right) {
             case READ_ACCESS -> canRead(universe);
             case WRITE_ACCESS -> canWrite(universe);
@@ -94,7 +94,7 @@ public class GrantedUniverseAuthority implements GrantedAuthority {
         };
     }
 
-    public String getUniverse() {
+    public ObjectId getUniverse() {
         return universe;
     }
 

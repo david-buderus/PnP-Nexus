@@ -48,7 +48,7 @@ export default function CurrencySettingsForm({
             return;
         }
 
-        SETTINGS_API.getCurrencySettings(activeUniverse.name).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
+        SETTINGS_API.getCurrencySettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
     }, [activeUniverse]);
 
     return <Stack align="center">
@@ -58,7 +58,7 @@ export default function CurrencySettingsForm({
         <Grid columns={2} gutter="5vw">
             <Grid.Col span={1}>
                 <form
-                    onSubmit={form.onSubmit((settings) => SETTINGS_API.updateCurrencySettings(activeUniverse.name, settings).then(onSave)
+                    onSubmit={form.onSubmit((settings) => SETTINGS_API.updateCurrencySettings(activeUniverse.id, settings).then(onSave)
                         .catch(handleValidationErrors(form.setErrors)))}>
                     <Grid columns={2}>
                         <Grid.Col span={1}>

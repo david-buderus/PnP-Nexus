@@ -51,7 +51,7 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
     @Override
     protected UpgradeRecipe getCorrectObject() {
         return new UpgradeRecipe(null, getUpgrade("Fire 1"), List.of(), "",
-                List.of(new ItemUsage(2, itemRepository.get(getUniverseName(), "Coal").orElseThrow())));
+                List.of(new ItemUsage(2, itemRepository.get(getUniverseId(), "Coal").orElseThrow())));
     }
 
     @Override
@@ -77,6 +77,6 @@ public class UpgradeRecipePageTest extends RepositoryOverviewTestBase<UpgradeRec
     }
 
     private Upgrade getUpgrade(String name) {
-        return upgradeRepository.get(getUniverseName(), Query.query(Criteria.where("name").is(name))).orElseThrow();
+        return upgradeRepository.get(getUniverseId(), Query.query(Criteria.where("name").is(name))).orElseThrow();
     }
 }

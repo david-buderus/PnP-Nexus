@@ -5,8 +5,9 @@ import de.pnp.manager.component.item.Material;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.service.RepositoryServiceBaseTest;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Tests for {@link ItemService}.
@@ -22,13 +23,13 @@ public class ItemServiceTest extends RepositoryServiceBaseTest<Item, ItemReposit
 
     @Override
     protected List<Item> createObjects() {
-        Material material = materialRepository.insert(getUniverseName(), new Material(null, "Material", List.of()));
+        Material material = materialRepository.insert(getUniverseId(), new Material(null, "Material", List.of()));
         return List.of(
-            createItem().withName("Item").buildItem(),
-            createItem().withName("Weapon").withMaterial(material).buildWeapon(),
-            createItem().withName("Shield").withMaterial(material).buildShield(),
-            createItem().withName("Armor").withMaterial(material).buildArmor(),
-            createItem().withName("Jewellery").withMaterial(material).buildJewellery()
+                createItem().withName("Item").buildItem(),
+                createItem().withName("Weapon").withMaterial(material).buildWeapon(),
+                createItem().withName("Shield").withMaterial(material).buildShield(),
+                createItem().withName("Armor").withMaterial(material).buildArmor(),
+                createItem().withName("Jewellery").withMaterial(material).buildJewellery()
         );
     }
 }

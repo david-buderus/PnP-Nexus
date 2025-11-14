@@ -62,7 +62,7 @@ export default function UniverseOverview() {
                     <ConfirmationDialog
                         title={t('universe:confirmDeletionTitle')}
                         onConfirmation={() => {
-                            UNIVERSE_API.deleteUniverse(activeUniverse.name).then(() => {
+                            UNIVERSE_API.deleteUniverse(activeUniverse.id).then(() => {
                                 setActiveUniverse(null);
                                 fetchUniverses();
                                 navigate('/');
@@ -102,7 +102,7 @@ function EditUniverseDialog() {
 
     return <>
         <Modal opened={opened} onClose={close} title={t('universe:editUniverse')}>
-            <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.updateUniverse(universe.name, universe).then(() =>
+            <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.updateUniverse(universe.id, universe).then(() =>
                 fetchUniverses().then(close)
             ).catch(handleValidationErrors(form.setErrors)))}>
                 <TextInput
@@ -498,7 +498,7 @@ function PermissionCard() {
         if (!activeUniverse) {
             setUniversePermissions([]);
         } else {
-            UNIVERSE_API.getUniversePermissions(activeUniverse.name).then(response => setUniversePermissions(response.data));
+            UNIVERSE_API.getUniversePermissions(activeUniverse.id).then(response => setUniversePermissions(response.data));
         }
     };
 
@@ -529,7 +529,7 @@ function PermissionCard() {
                         <Table.Td>
                             <ConfirmationDialog
                                 title={t('universe:confirmPermissionDeletionTitle')}
-                                onConfirmation={() => UNIVERSE_API.removeUniversePermission(activeUniverse.name, permission.displayName).then(fetchPermissions)}
+                                onConfirmation={() => UNIVERSE_API.removeUniversePermission(activeUniverse.id, permission.displayName).then(fetchPermissions)}
                                 openNode={open => <ActionIcon variant="outline" color="red" onClick={open}>
                                     <FaRegTrashCan/>
                                 </ActionIcon>}
@@ -566,7 +566,7 @@ function PermissionDialog({fetchPermissions}: { fetchPermissions: () => void; })
     return <>
         <Modal opened={opened} onClose={close} title={t('universe:addPermission')}>
             <form
-                onSubmit={form.onSubmit((values) => UNIVERSE_API.addUniversePermission(activeUniverse.name, values.displayName, values.permission).then(fetchPermissions).then(close)
+                onSubmit={form.onSubmit((values) => UNIVERSE_API.addUniversePermission(activeUniverse.id, values.displayName, values.permission).then(fetchPermissions).then(close)
                     .catch(err => {
                         if (!axios.isAxiosError(err)) {
                             return;

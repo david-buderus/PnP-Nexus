@@ -54,7 +54,7 @@ export default function EquipmentSettingsForm({
             return;
         }
 
-        SETTINGS_API.getEquipmentSettings(activeUniverse.name).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
+        SETTINGS_API.getEquipmentSettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
     }, [activeUniverse]);
 
     return <Stack align="center">
@@ -62,7 +62,7 @@ export default function EquipmentSettingsForm({
             {t('universe:characterSettings')}
         </Title>
         <form
-            onSubmit={form.onSubmit(s => SETTINGS_API.updateEquipmentSettings(activeUniverse.name, s).then(onSave)
+            onSubmit={form.onSubmit(s => SETTINGS_API.updateEquipmentSettings(activeUniverse.id, s).then(onSave)
                 .catch(handleValidationErrors(form.setErrors)))}>
             <NumberInput
                 label={t("universe:numberOfHandheld")}
@@ -184,7 +184,7 @@ function JewelleryImportModal({
                         color="success"
                         disabled={!language}
                         onClick={() => {
-                            UNIVERSE_CREATION_API.getDefaultJewelleryDefinitions(activeUniverse.name, language).then(response => {
+                            UNIVERSE_CREATION_API.getDefaultJewelleryDefinitions(activeUniverse.id, language).then(response => {
                                 setJewelleryDefinition(response.data);
                                 close();
                             }).catch((err: Error | AxiosError) => {

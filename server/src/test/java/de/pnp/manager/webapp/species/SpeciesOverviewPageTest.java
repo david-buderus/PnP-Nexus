@@ -45,8 +45,8 @@ public class SpeciesOverviewPageTest extends ServerTestBase {
 
     @Test
     void links() {
-        Collection<Species> species = speciesRepository.getAll(getUniverseName());
-        Collection<Nation> nations = nationRepository.getAll(getUniverseName());
+        Collection<Species> species = speciesRepository.getAll(getUniverseId());
+        Collection<Nation> nations = nationRepository.getAll(getUniverseId());
         List<Nation> unboundNations = nations.stream().filter(n -> species.stream().noneMatch(s -> s.getNations().contains(n))).toList();
 
         for (Species s : species) {
@@ -81,7 +81,7 @@ public class SpeciesOverviewPageTest extends ServerTestBase {
         form.add();
 
         assertThat(page.asPage().getByTestId("name")).hasText(species.getName());
-        Assertions.assertThat(speciesRepository.getAll(getUniverseName()))
+        Assertions.assertThat(speciesRepository.getAll(getUniverseId()))
                 .contains(new Species(
                         null,
                         species.getName(),

@@ -99,7 +99,7 @@ export function PnPCharacterSheetEditor({
         if (!activeUniverse) {
             return;
         }
-        CHARACTER_API.getExampleCharacter(activeUniverse.name).then(response => setCharacter(response.data));
+        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => setCharacter(response.data));
     }, [activeUniverse]);
 
     if (!character) {
@@ -485,12 +485,12 @@ function StorageModal({initialSheet, setPages, onCancel}: {
                 onSubmit={form.onSubmit(sheet => {
                     sheet.sheet = btoa(query.serialize());
                     if (sheet.id) {
-                        SHEET_API.updatePnPCharacterSheet(activeUniverse.name, sheet.id, sheet)
+                        SHEET_API.updatePnPCharacterSheet(activeUniverse.id, sheet.id, sheet)
                             .then(closeSave)
                             .then(() => setLatestSave(sheet.sheet))
                             .catch(handleValidationErrors(form.setErrors));
                     } else {
-                        SHEET_API.insertAllPnPCharacterSheets(activeUniverse.name, [sheet])
+                        SHEET_API.insertAllPnPCharacterSheets(activeUniverse.id, [sheet])
                             .then(closeSave)
                             .then(() => setLatestSave(sheet.sheet))
                             .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));

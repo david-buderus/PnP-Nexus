@@ -19,6 +19,6 @@ public abstract class UniverseTestBase extends ServerTestBase {
      * Updates the {@link SettingsBase} of the {@link Universe test universe}.
      */
     protected void updateUniverseSettings(SettingsBase settings) {
-        settingsRepository.setSettings(getUniverseName(), settings);
+        settingsRepository.setSettings(getUniverseId(), settings);
     }
 }

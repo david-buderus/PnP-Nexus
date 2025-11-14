@@ -102,10 +102,10 @@ function CreationDialog({
 
     function onSubmit(talent: Talent) {
         if (editMode) {
-            TALENT_API.updateTalent(activeUniverse.name, talent.id, talent).then(refresh).then(close)
+            TALENT_API.updateTalent(activeUniverse.id, talent.id, talent).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors));
         } else {
-            TALENT_API.insertAllTalents(activeUniverse.name, [talent]).then(refresh).then(close)
+            TALENT_API.insertAllTalents(activeUniverse.id, [talent]).then(refresh).then(close)
                 .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
         }
     }

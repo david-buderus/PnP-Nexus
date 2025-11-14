@@ -22,7 +22,7 @@ public class PageBase {
      * Select the currently active {@link Universe}.
      */
     public void selectActiveUniverse(Universe universe) {
-        Select.from(page.getByTestId("universe-selector")).select(universe.getName(), false);
+        Select.from(page.getByTestId("universe-selector")).select(universe.getId(), false);
     }
 
     /**

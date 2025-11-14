@@ -47,7 +47,7 @@ public class JewelleryPageTest extends UniquelyNamedOverviewTestBase<Item, ItemR
 
     @Override
     protected Jewellery getCorrectObject() {
-        Material iron = materialRepository.get(getUniverseName(), "Iron").orElseThrow();
+        Material iron = materialRepository.get(getUniverseId(), "Iron").orElseThrow();
         return createItemBuilder().withName("The One Ring").withMaterial(iron)
                 .withVendorPrice(154).withRarity(ERarity.GODLIKE).buildJewellery();
     }

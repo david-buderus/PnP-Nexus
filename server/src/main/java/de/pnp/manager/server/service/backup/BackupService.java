@@ -4,21 +4,18 @@ import de.pnp.manager.server.controller.backup.BackupExportController;
 import de.pnp.manager.server.controller.backup.BackupImportController;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Handles backups
@@ -36,11 +33,11 @@ public class BackupService {
     @GetMapping(path = "export", produces = "application/zip")
     @Operation(summary = "Creates a backup of the nexus", operationId = "exportBackup")
     public StreamingResponseBody exportBackup(HttpServletResponse response,
-        @RequestParam(required = false) List<String> universes) {
+                                              @RequestParam(required = false) List<ObjectId> universes) {
 
         response.setHeader(
-            HttpHeaders.CONTENT_DISPOSITION,
-            "attachment;filename=\"PnP-Nexus-" + System.currentTimeMillis() + ".zip\"");
+                HttpHeaders.CONTENT_DISPOSITION,
+                "attachment;filename=\"PnP-Nexus-" + System.currentTimeMillis() + ".zip\"");
 
         return outputStream -> exportController.export(outputStream, universes);
     }
@@ -53,7 +50,7 @@ public class BackupService {
             importController.importBackup(inputStream);
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                e.getMessage(), e);
+                    e.getMessage(), e);
         }
     }
 }

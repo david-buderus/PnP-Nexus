@@ -24,7 +24,7 @@ class TalentRepositoryTest extends RepositoryTestBase<Talent, TalentRepository> 
 
     @Test
     void testFirstAttributeLink() {
-        PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Strength", "ST"));
         Talent talent = new Talent(null, "Physical Power", tagSet("Physical"), strength, strength, strength);
         PrimaryAttribute changedStrength = new PrimaryAttribute(null, "Strength", "STR");
@@ -34,7 +34,7 @@ class TalentRepositoryTest extends RepositoryTestBase<Talent, TalentRepository> 
 
     @Test
     void testSecondAttributeLink() {
-        PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Strength", "ST"));
         Talent talent = new Talent(null, "Physical Power", tagSet("Physical"), strength, strength, strength);
         PrimaryAttribute changedStrength = new PrimaryAttribute(null, "Strength", "STR");
@@ -44,7 +44,7 @@ class TalentRepositoryTest extends RepositoryTestBase<Talent, TalentRepository> 
 
     @Test
     void testThirdAttributeLink() {
-        PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute strength = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Strength", "ST"));
         Talent talent = new Talent(null, "Physical Power", tagSet("Physical"), strength, strength, strength);
         PrimaryAttribute changedStrength = new PrimaryAttribute(null, "Strength", "STR");
@@ -54,21 +54,21 @@ class TalentRepositoryTest extends RepositoryTestBase<Talent, TalentRepository> 
 
     @Override
     protected Talent createObject() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Primary", "PRI"));
         return new Talent(null, "Climbing", tagSet("Physical"), primaryAttribute, primaryAttribute, primaryAttribute);
     }
 
     @Override
     protected Talent createSlightlyChangeObject() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Other", "OTH"));
         return new Talent(null, "Climbing", tagSet("Physical"), primaryAttribute, primaryAttribute, primaryAttribute);
     }
 
     @Override
     protected List<Talent> createMultipleObjects() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Primary", "PRI"));
         return List.of(new Talent(null, "Climbing", tagSet("Physical"), primaryAttribute, primaryAttribute, primaryAttribute),
                 new Talent(null, "Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));

@@ -61,10 +61,10 @@ export function SpeciesForm({
         data-testid="species-form"
         onSubmit={form.onSubmit(species => {
             if (species.id) {
-                SPECIES_API.updateSpecies(activeUniverse.name, species.id, species)
+                SPECIES_API.updateSpecies(activeUniverse.id, species.id, species)
                     .then(response => onSave(response.data)).catch(handleValidationErrors(form.setErrors));
             } else {
-                SPECIES_API.insertAllSpeciess(activeUniverse.name, [species])
+                SPECIES_API.insertAllSpeciess(activeUniverse.id, [species])
                     .then(response => onSave(response.data[0]))
                     .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
             }
@@ -86,7 +86,7 @@ export function SpeciesForm({
                         <ConfirmationDialog
                             title={t('species:deleteSpecies')}
                             onConfirmation={() => {
-                                SPECIES_API.deleteSpecies(activeUniverse.name, initial.id).then(onDelete);
+                                SPECIES_API.deleteSpecies(activeUniverse.id, initial.id).then(onDelete);
                             }}
                             openNode={open =>
                                 <Button variant="outline" color="red" onClick={open}>

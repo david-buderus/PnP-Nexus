@@ -1,15 +1,5 @@
 package de.pnp.manager.server.service;
 
-import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import de.pnp.manager.component.DatabaseObject;
@@ -27,9 +17,6 @@ import de.pnp.manager.utils.TestSpellBuilder;
 import de.pnp.manager.utils.TestSpellBuilder.TestSpellBuilderFactory;
 import de.pnp.manager.utils.TestUpgradeBuilder;
 import de.pnp.manager.utils.TestUpgradeBuilder.TestUpgradeBuilderFactory;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,10 +36,19 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
+import static org.assertj.core.api.Assertions.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
 @ManipulatesMetadata
 @AutoConfigureMockMvc
 public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo extends RepositoryBase<Obj>,
-    Service extends RepositoryServiceBase<Obj, Repo>> extends UniverseTestBase {
+        Service extends RepositoryServiceBase<Obj, Repo>> extends UniverseTestBase {
 
     private static final String USER = "test-user";
 
@@ -111,7 +107,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE))));
+                    PnPUserCreation.simple(USER, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE))));
         }
 
         @Test
@@ -158,7 +154,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.ownerAuthority(getUniverseName()))));
+                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.ownerAuthority(getUniverseId()))));
         }
 
         @Test
@@ -205,7 +201,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(getUniverseName()))));
+                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(getUniverseId()))));
         }
 
         @Test
@@ -252,7 +248,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(getUniverseName()))));
+                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(getUniverseId()))));
         }
 
         @Test
@@ -299,30 +295,30 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of()));
+                    new PnPUserCreation(USER, USER, USER, null, List.of()));
         }
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
         void testGetAll() {
             List<Obj> objects = createObjects();
-            Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+            Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
 
-            assertForbidden(() -> getAll(getUniverseName(), null));
-            assertForbidden(() -> getAll(getUniverseName(), Collections.emptyList()));
+            assertForbidden(() -> getAll(getUniverseId(), null));
+            assertForbidden(() -> getAll(getUniverseId(), Collections.emptyList()));
             assertForbidden(
-                () -> getAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
-                    .toList()));
+                    () -> getAll(getUniverseId(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
+                            .toList()));
         }
 
         @Test
         @WithUserDetails(value = USER, setupBefore = TestExecutionEvent.TEST_EXECUTION)
         void testGet() {
             List<Obj> objects = createObjects();
-            Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+            Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
 
             assertForbidden(
-                () -> getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId()));
+                    () -> getOne(getUniverseId(), persistedObjects.stream().findFirst().orElseThrow().getId()));
         }
 
         @Test
@@ -352,94 +348,94 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
 
     private void runGetAllTest() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
 
-        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(objects);
-        assertThat(getAll(getUniverseName(), Collections.emptyList())).containsExactlyInAnyOrderElementsOf(objects);
+        assertThat(getAll(getUniverseId(), null)).containsExactlyInAnyOrderElementsOf(objects);
+        assertThat(getAll(getUniverseId(), Collections.emptyList())).containsExactlyInAnyOrderElementsOf(objects);
 
-        assertThat(getAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
-            .toList())).containsExactlyInAnyOrderElementsOf(persistedObjects.stream().limit(2).toList());
+        assertThat(getAll(getUniverseId(), persistedObjects.stream().map(DatabaseObject::getId).limit(2)
+                .toList())).containsExactlyInAnyOrderElementsOf(persistedObjects.stream().limit(2).toList());
     }
 
     private void runGetTest() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
 
-        assertThat(getOne(getUniverseName(), persistedObjects.stream().findFirst().orElseThrow().getId())).isEqualTo(
-            objects.getFirst());
+        assertThat(getOne(getUniverseId(), persistedObjects.stream().findFirst().orElseThrow().getId())).isEqualTo(
+                objects.getFirst());
     }
 
     private void runInsertTest() throws Exception {
         List<Obj> objects = createObjects();
-        List<Obj> persistedObjects = insertAll(getUniverseName(), objects);
+        List<Obj> persistedObjects = insertAll(getUniverseId(), objects);
         assertThat(persistedObjects).isEqualTo(objects);
-        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(objects);
+        assertThat(getAll(getUniverseId(), null)).containsExactlyInAnyOrderElementsOf(objects);
     }
 
     private void runNotAllowedInsertTest() {
         List<Obj> objects = createObjects();
-        assertForbidden(() -> insertAll(getUniverseName(), objects));
-        assertThat(repository.getAll(getUniverseName())).isEmpty();
+        assertForbidden(() -> insertAll(getUniverseId(), objects));
+        assertThat(repository.getAll(getUniverseId())).isEmpty();
     }
 
     private void runDeleteAllTest() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
 
-        deleteAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList());
-        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(
-            objects.stream().skip(2).toList());
+        deleteAll(getUniverseId(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList());
+        assertThat(getAll(getUniverseId(), null)).containsExactlyInAnyOrderElementsOf(
+                objects.stream().skip(2).toList());
     }
 
     private void runNotAllowedDeleteAllTest() {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
 
         assertForbidden(
-            () -> deleteAll(getUniverseName(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList()));
-        assertThat(repository.getAll(getUniverseName())).containsExactlyInAnyOrderElementsOf(persistedObjects);
+                () -> deleteAll(getUniverseId(), persistedObjects.stream().map(DatabaseObject::getId).limit(2).toList()));
+        assertThat(repository.getAll(getUniverseId())).containsExactlyInAnyOrderElementsOf(persistedObjects);
     }
 
     private void runDeleteTest() throws Exception {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
 
         ObjectId deletedId = persistedObjects.stream().findFirst().orElseThrow().getId();
-        deleteOne(getUniverseName(), deletedId);
+        deleteOne(getUniverseId(), deletedId);
 
-        assertThat(getAll(getUniverseName(), null)).containsExactlyInAnyOrderElementsOf(
-            objects.stream().skip(1).toList());
-        assertThatThrownBy(() -> getOne(getUniverseName(), deletedId)).isInstanceOf(ResponseStatusException.class)
-            .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(getAll(getUniverseId(), null)).containsExactlyInAnyOrderElementsOf(
+                objects.stream().skip(1).toList());
+        assertThatThrownBy(() -> getOne(getUniverseId(), deletedId)).isInstanceOf(ResponseStatusException.class)
+                .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     private void runNotAllowedDeleteTest() {
         List<Obj> objects = createObjects();
-        Collection<Obj> persistedObjects = repository.insertAll(getUniverseName(), objects);
+        Collection<Obj> persistedObjects = repository.insertAll(getUniverseId(), objects);
         ObjectId deletedId = persistedObjects.stream().findFirst().orElseThrow().getId();
 
-        assertForbidden(() -> deleteOne(getUniverseName(), deletedId));
-        assertThat(repository.getAll(getUniverseName())).containsExactlyInAnyOrderElementsOf(persistedObjects);
+        assertForbidden(() -> deleteOne(getUniverseId(), deletedId));
+        assertThat(repository.getAll(getUniverseId())).containsExactlyInAnyOrderElementsOf(persistedObjects);
     }
 
     private void runUpdateTest() throws Exception {
         List<Obj> objects = createObjects();
-        Obj persistedObject = repository.insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
-            .orElseThrow();
+        Obj persistedObject = repository.insertAll(getUniverseId(), List.of(objects.get(0))).stream().findFirst()
+                .orElseThrow();
 
-        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(persistedObject);
+        assertThat(getOne(getUniverseId(), persistedObject.getId())).isEqualTo(persistedObject);
         Obj updatedObject = objects.get(1);
-        assertThat(update(getUniverseName(), persistedObject.getId(), updatedObject)).isEqualTo(updatedObject);
-        assertThat(getOne(getUniverseName(), persistedObject.getId())).isEqualTo(updatedObject);
+        assertThat(update(getUniverseId(), persistedObject.getId(), updatedObject)).isEqualTo(updatedObject);
+        assertThat(getOne(getUniverseId(), persistedObject.getId())).isEqualTo(updatedObject);
     }
 
     private void runNotAllowedUpdateTest() {
         List<Obj> objects = createObjects();
-        Obj persistedObject = repository.insertAll(getUniverseName(), List.of(objects.get(0))).stream().findFirst()
-            .orElseThrow();
+        Obj persistedObject = repository.insertAll(getUniverseId(), List.of(objects.get(0))).stream().findFirst()
+                .orElseThrow();
         Obj updatedObject = objects.get(1);
-        assertForbidden(() -> update(getUniverseName(), persistedObject.getId(), updatedObject));
-        assertThat(repository.get(getUniverseName(), persistedObject.getId()).orElseThrow()).isEqualTo(persistedObject);
+        assertForbidden(() -> update(getUniverseId(), persistedObject.getId(), updatedObject));
+        assertThat(repository.get(getUniverseId(), persistedObject.getId()).orElseThrow()).isEqualTo(persistedObject);
     }
 
     /**
@@ -448,15 +444,15 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     protected abstract List<Obj> createObjects();
 
     /**
-     * Wraps {@link RepositoryServiceBase#getAll(String, List)} in a REST call.
+     * Wraps {@link RepositoryServiceBase#getAll(ObjectId, List)} in a REST call.
      */
-    protected List<Obj> getAll(String universe, List<ObjectId> ids) throws Exception {
+    protected List<Obj> getAll(ObjectId universe, List<ObjectId> ids) throws Exception {
         LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         if (ids != null) {
             map.addAll("ids", ids.stream().map(ObjectId::toHexString).toList());
         }
         MockHttpServletResponse response = mockMvc.perform(get(basePath, universe).queryParams(map))
-            .andReturn().getResponse();
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -466,15 +462,15 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     /**
-     * Wraps {@link RepositoryServiceBase#insertAll(String, List)} in a REST call.
+     * Wraps {@link RepositoryServiceBase#insertAll(ObjectId, List)} in a REST call.
      */
-    protected List<Obj> insertAll(String universe, List<Obj> objects) throws Exception {
+    protected List<Obj> insertAll(ObjectId universe, List<Obj> objects) throws Exception {
         CollectionType collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class, objClass);
 
         MockHttpServletResponse response = mockMvc.perform(
-                post(basePath, universe).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writerFor(collectionType).writeValueAsString(objects)))
-            .andReturn().getResponse();
+                        post(basePath, universe).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writerFor(collectionType).writeValueAsString(objects)))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -484,12 +480,12 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     /**
-     * Wraps {@link RepositoryServiceBase#deleteAll(String, List)} in a REST call.
+     * Wraps {@link RepositoryServiceBase#deleteAll(ObjectId, List)} in a REST call.
      */
-    protected void deleteAll(String universe, List<ObjectId> ids) throws Exception {
+    protected void deleteAll(ObjectId universe, List<ObjectId> ids) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(delete(basePath, universe).with(csrf())
-                .queryParam("ids", ids.stream().map(ObjectId::toHexString).toArray(String[]::new)))
-            .andReturn().getResponse();
+                        .queryParam("ids", ids.stream().map(ObjectId::toHexString).toArray(String[]::new)))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -499,11 +495,11 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     /**
-     * Wraps {@link RepositoryServiceBase#get(String, ObjectId)} in a REST call.
+     * Wraps {@link RepositoryServiceBase#get(ObjectId, ObjectId)} in a REST call.
      */
-    protected Obj getOne(String universe, ObjectId id) throws Exception {
+    protected Obj getOne(ObjectId universe, ObjectId id) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(basePath + "/{id}", universe, id.toHexString()))
-            .andReturn().getResponse();
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -513,13 +509,13 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     /**
-     * Wraps {@link RepositoryServiceBase#update(String, ObjectId, DatabaseObject)} in a REST call.
+     * Wraps {@link RepositoryServiceBase#update(ObjectId, ObjectId, DatabaseObject)} in a REST call.
      */
-    protected Obj update(String universe, ObjectId id, Obj obj) throws Exception {
+    protected Obj update(ObjectId universe, ObjectId id, Obj obj) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                put(basePath + "/{id}", universe, id.toHexString()).with(csrf())
-                    .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(obj)))
-            .andReturn().getResponse();
+                        put(basePath + "/{id}", universe, id.toHexString()).with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(obj)))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -528,12 +524,12 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     }
 
     /**
-     * Wraps {@link RepositoryServiceBase#delete(String, ObjectId)} in a REST call.
+     * Wraps {@link RepositoryServiceBase#delete(ObjectId, ObjectId)} in a REST call.
      */
-    protected void deleteOne(String universe, ObjectId id) throws Exception {
+    protected void deleteOne(ObjectId universe, ObjectId id) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                delete(basePath + "/{id}", universe, id.toHexString()).with(csrf()))
-            .andReturn().getResponse();
+                        delete(basePath + "/{id}", universe, id.toHexString()).with(csrf()))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -576,27 +572,27 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
      * A helper method to create {@link TestItemBuilder}.
      */
     protected TestItemBuilder createItem() {
-        return itemBuilder.createItemBuilder(getUniverseName());
+        return itemBuilder.createItemBuilder(getUniverseId());
     }
 
     /**
      * A helper method to create {@link TestItemBuilder}.
      */
     protected TestUpgradeBuilder createUpgrade() {
-        return upgradeBuilder.createUpgradeBuilder(getUniverseName());
+        return upgradeBuilder.createUpgradeBuilder(getUniverseId());
     }
 
     /**
      * A helper method to create {@link TestSecondaryAttributeBuilder}.
      */
     protected TestSecondaryAttributeBuilder createSecondaryAttribute() {
-        return secondaryAttributeBuilder.createAttributeBuilder(getUniverseName());
+        return secondaryAttributeBuilder.createAttributeBuilder(getUniverseId());
     }
 
     /**
      * A helper method to create {@link TestSpellBuilder}.
      */
     protected TestSpellBuilder createSpell() {
-        return spellBuilder.createSpellBuilder(getUniverseName());
+        return spellBuilder.createSpellBuilder(getUniverseId());
     }
 }

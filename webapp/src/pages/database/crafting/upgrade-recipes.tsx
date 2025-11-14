@@ -126,10 +126,10 @@ function CreationDialog({
 
     function onSubmit(recipe: UpgradeRecipe) {
         if (editMode) {
-            UPGRADE_RECIPE_API.updateUpgradeRecipe(activeUniverse.name, recipe.id, addTypeAnnotationToRecipe(recipe)).then(refresh).then(close)
+            UPGRADE_RECIPE_API.updateUpgradeRecipe(activeUniverse.id, recipe.id, addTypeAnnotationToRecipe(recipe)).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors));
         } else {
-            UPGRADE_RECIPE_API.insertAllUpgradeRecipes(activeUniverse.name, [addTypeAnnotationToRecipe(recipe)]).then(refresh).then(close)
+            UPGRADE_RECIPE_API.insertAllUpgradeRecipes(activeUniverse.id, [addTypeAnnotationToRecipe(recipe)]).then(refresh).then(close)
                 .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
         }
     }

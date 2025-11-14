@@ -1,36 +1,33 @@
 package de.pnp.manager.server.controller.backup;
 
-import static de.pnp.manager.server.controller.backup.BackupExportController.METADATA_FILE;
-import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_CONTENT;
-import static de.pnp.manager.server.controller.backup.BackupExportController.REPOSITORY_NAME;
-import static de.pnp.manager.server.controller.backup.BackupExportController.UNIVERSE_FILE;
-import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
-
 import com.mongodb.client.MongoClient;
 import de.pnp.manager.server.database.DatabaseConstants;
 import de.pnp.manager.server.database.MongoConfig;
 import de.pnp.manager.server.database.universe.UniverseRepository;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.Objects;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import org.bson.BsonBinaryReader;
 import org.bson.Document;
 import org.bson.codecs.DecoderContext;
 import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileSystemUtils;
+
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import static de.pnp.manager.server.controller.backup.BackupExportController.*;
+import static org.springframework.data.mongodb.core.mapping.BasicMongoPersistentProperty.ID_FIELD_NAME;
 
 /**
  * A controller to import backups of a whole PnP-Nexus instance.
@@ -43,7 +40,7 @@ public class BackupImportController {
     private final UniverseRepository universeRepository;
 
     public BackupImportController(@Autowired MongoClient mongoClient,
-        @Autowired MongoConfig mongoConfig, @Autowired UniverseRepository universeRepository) {
+                                  @Autowired MongoConfig mongoConfig, @Autowired UniverseRepository universeRepository) {
         this.mongoConfig = mongoConfig;
         codecRegistry = mongoClient.getDatabase(DatabaseConstants.METADATA_DATABASE).getCodecRegistry();
         this.universeRepository = universeRepository;
@@ -53,21 +50,23 @@ public class BackupImportController {
      * Imports the backup in the given {@link InputStream}.
      */
     public void importBackup(InputStream inputStream) throws IOException {
-        importBackup(inputStream, null);
+        importBackup(inputStream, false);
     }
-
+    
     /**
      * Imports the backup in the given {@link InputStream}.
      * <p>
      * Should only be used by tests.
+     *
+     * @return The remapping of the ObjectIds if it was used.
      */
-    public void importBackup(InputStream inputStream, String importPrefix) throws IOException {
+    public Map<ObjectId, ObjectId> importBackup(InputStream inputStream, boolean remapUniverseIds) throws IOException {
         File tmpDir = null;
         try {
             tmpDir = Files.createTempDirectory("pnp-nexus-backup").toFile();
 
             writeZipToDir(inputStream, tmpDir);
-            importBackup(tmpDir, importPrefix);
+            return importBackup(tmpDir, remapUniverseIds);
         } finally {
             if (tmpDir != null) {
                 FileSystemUtils.deleteRecursively(tmpDir);
@@ -75,29 +74,29 @@ public class BackupImportController {
         }
     }
 
-    private void importBackup(File tmpDir, String importPrefix) throws IOException {
+    private Map<ObjectId, ObjectId> importBackup(File tmpDir, boolean remapUniverseIds) throws IOException {
         DecoderContext decoderContext = DecoderContext.builder().build();
 
         Document metadata = decode(new File(tmpDir, METADATA_FILE),
-            codecRegistry, decoderContext);
+                codecRegistry, decoderContext);
 
         EBackupVersion backupVersion = EBackupVersion.valueOf(
-            metadata.get(BackupExportController.VERSION,
-                String.class));
+                metadata.get(BackupExportController.VERSION,
+                        String.class));
         List<? extends IBackupMigration> migrations = backupVersion.getNecessaryMigrations();
 
         importMetaData(tmpDir, decoderContext, migrations);
 
-        importUniverses(tmpDir, decoderContext, migrations, importPrefix);
+        return importUniverses(tmpDir, decoderContext, migrations, remapUniverseIds);
     }
 
     private void importMetaData(File tmpDir, DecoderContext decoderContext,
-        List<? extends IBackupMigration> migrations) throws IOException {
+                                List<? extends IBackupMigration> migrations) throws IOException {
 
         MongoTemplate mongoTemplate = mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE);
 
         for (File repositoryFile : Objects.requireNonNullElse(
-            tmpDir.listFiles(BackupImportController::isRepositoryFile), new File[0])) {
+                tmpDir.listFiles(BackupImportController::isRepositoryFile), new File[0])) {
             Document repositoryDocument = decode(repositoryFile, codecRegistry, decoderContext);
             String repositoryName = repositoryDocument.getString(REPOSITORY_NAME);
             List<Document> repositoryContent = repositoryDocument.getList(REPOSITORY_CONTENT, Document.class);
@@ -111,44 +110,50 @@ public class BackupImportController {
         }
     }
 
-    private void importUniverses(File tmpDir, DecoderContext decoderContext,
-        List<? extends IBackupMigration> migrations, String importPrefix)
-        throws IOException {
+    private Map<ObjectId, ObjectId> importUniverses(File tmpDir, DecoderContext decoderContext,
+                                                    List<? extends IBackupMigration> migrations, boolean remapUniverseIds)
+            throws IOException {
+        Map<ObjectId, ObjectId> result = new HashMap<>();
+
         for (File universeFolder : Objects.requireNonNull(tmpDir.listFiles(File::isDirectory))) {
             Document universeDocument = decode(new File(universeFolder, UNIVERSE_FILE),
-                codecRegistry, decoderContext);
-            if (importPrefix != null) {
-                universeDocument.put(ID_FIELD_NAME, importPrefix + universeDocument.getString(ID_FIELD_NAME));
+                    codecRegistry, decoderContext);
+            if (remapUniverseIds) {
+                ObjectId newId = new ObjectId();
+                result.put(universeDocument.getObjectId(ID_FIELD_NAME), newId);
+                universeDocument.put(ID_FIELD_NAME, newId);
             }
             migrations.forEach(migration -> migration.migrateUniverse(universeDocument));
-            String universeName = universeDocument.getString(ID_FIELD_NAME);
+            ObjectId universeName = universeDocument.getObjectId(ID_FIELD_NAME);
 
             if (universeRepository.exists(universeName)) {
                 throw new IllegalArgumentException("Universe " + universeName + " does already exist.");
             }
 
             mongoConfig.mongoTemplate(DatabaseConstants.METADATA_DATABASE)
-                .insert(universeDocument, UniverseRepository.REPOSITORY_NAME);
+                    .insert(universeDocument, UniverseRepository.REPOSITORY_NAME);
 
             MongoTemplate mongoTemplate = mongoConfig.universeMongoTemplate(universeName);
 
             for (File repositoryFile : Objects.requireNonNull(
-                universeFolder.listFiles(file -> !UNIVERSE_FILE.equals(file.getName())))) {
+                    universeFolder.listFiles(file -> !UNIVERSE_FILE.equals(file.getName())))) {
 
                 Document repositoryDocument = decode(repositoryFile, codecRegistry, decoderContext);
                 migrations.forEach(migration -> migration.migrateRepository(repositoryDocument));
 
                 mongoTemplate.insert(repositoryDocument.getList(REPOSITORY_CONTENT, Document.class),
-                    repositoryDocument.getString(REPOSITORY_NAME));
+                        repositoryDocument.getString(REPOSITORY_NAME));
             }
         }
+
+        return result;
     }
 
     private static Document decode(File file, CodecRegistry registry, DecoderContext context)
-        throws IOException {
+            throws IOException {
         try (FileInputStream universeFileStream = new FileInputStream(file);
-            BsonBinaryReader reader = new BsonBinaryReader(
-                ByteBuffer.wrap(universeFileStream.readAllBytes()))) {
+             BsonBinaryReader reader = new BsonBinaryReader(
+                     ByteBuffer.wrap(universeFileStream.readAllBytes()))) {
             return registry.get(Document.class).decode(reader, context);
         }
     }
@@ -184,7 +189,7 @@ public class BackupImportController {
     }
 
     private static void writeFile(ZipInputStream zis, byte[] buffer, File newFile)
-        throws IOException {
+            throws IOException {
         try (FileOutputStream fos = new FileOutputStream(newFile)) {
             int len = zis.read(buffer);
             while (len > 0) {
