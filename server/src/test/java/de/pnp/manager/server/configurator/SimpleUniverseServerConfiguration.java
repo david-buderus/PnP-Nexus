@@ -35,10 +35,7 @@ public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBas
     @Override
     public Map<ObjectId, ObjectId> configure() {
         ObjectId id = new ObjectId(UNIVERSE_HEX_ID);
-        ObjectId mappedId = new ObjectId();
-        if (!universeRepository.exists(mappedId)) {
-            universeRepository.insert(new Universe(mappedId, UNIVERSE_DISPLAY_NAME));
-        }
-        return Map.of(id, mappedId);
+        Universe persisted = universeRepository.insert(new Universe(null, UNIVERSE_DISPLAY_NAME));
+        return Map.of(id, persisted.getId());
     }
 }

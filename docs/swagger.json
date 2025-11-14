@@ -6758,7 +6758,6 @@
         "required": [
           "description",
           "displayName",
-          "name",
           "shortDescription"
         ],
         "type": "object",
@@ -6771,8 +6770,7 @@
             "minLength": 3,
             "type": "string"
           },
-          "name": {
-            "pattern": "[a-z][a-z-]+[a-z]",
+          "id": {
             "type": "string"
           },
           "shortDescription": {
