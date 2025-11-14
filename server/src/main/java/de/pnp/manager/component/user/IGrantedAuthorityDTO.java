@@ -6,16 +6,19 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.GrantedUniverseAuthorityDTO;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.RoleAuthorityDTO;
 import jakarta.validation.constraints.NotBlank;
-import java.util.Objects;
+import jakarta.validation.constraints.NotNull;
+import org.bson.types.ObjectId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Objects;
 
 /**
  * DTO for {@link GrantedAuthority}.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = RoleAuthorityDTO.class, name = "Role"),
-    @JsonSubTypes.Type(value = GrantedUniverseAuthorityDTO.class, name = "UniverseAuthority"),
+        @JsonSubTypes.Type(value = RoleAuthorityDTO.class, name = "Role"),
+        @JsonSubTypes.Type(value = GrantedUniverseAuthorityDTO.class, name = "UniverseAuthority"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public interface IGrantedAuthorityDTO {
@@ -36,7 +39,7 @@ public interface IGrantedAuthorityDTO {
             return new GrantedUniverseAuthorityDTO(universeAuthority.getUniverse(), universeAuthority.getAccessRight());
         }
         throw new UnsupportedOperationException("The authority " + authority.getClass().getSimpleName() +
-            " with '" + authority.getAuthority() + "' is not supported.");
+                " with '" + authority.getAuthority() + "' is not supported.");
     }
 
     /**
@@ -91,14 +94,14 @@ public interface IGrantedAuthorityDTO {
      */
     class GrantedUniverseAuthorityDTO implements IGrantedAuthorityDTO {
 
-        @NotBlank
-        private final String universe;
+        @NotNull
+        private final ObjectId universe;
 
         @NotBlank
         private final String permission;
 
         @JsonCreator
-        public GrantedUniverseAuthorityDTO(String universe, String permission) {
+        public GrantedUniverseAuthorityDTO(ObjectId universe, String permission) {
             this.universe = universe;
             this.permission = permission;
         }
@@ -108,7 +111,7 @@ public interface IGrantedAuthorityDTO {
             return GrantedUniverseAuthority.fromPermission(getUniverse(), getPermission());
         }
 
-        public String getUniverse() {
+        public ObjectId getUniverse() {
             return universe;
         }
 
@@ -126,7 +129,7 @@ public interface IGrantedAuthorityDTO {
             }
             GrantedUniverseAuthorityDTO that = (GrantedUniverseAuthorityDTO) o;
             return Objects.equals(getUniverse(), that.getUniverse()) && Objects.equals(getPermission(),
-                that.getPermission());
+                    that.getPermission());
         }
 
         @Override

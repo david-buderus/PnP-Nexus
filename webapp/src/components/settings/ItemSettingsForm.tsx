@@ -32,7 +32,7 @@ export default function ItemSettingsForm({
             return;
         }
 
-        SETTINGS_API.getItemSettings(activeUniverse.name).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
+        SETTINGS_API.getItemSettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
     }, [activeUniverse]);
 
     return <Stack align="stretch" justify="center" maw={500}>
@@ -40,7 +40,7 @@ export default function ItemSettingsForm({
             {t('universe:itemSettings')}
         </Title>
         <form
-            onSubmit={form.onSubmit((settings) => SETTINGS_API.updateItemSettings(activeUniverse.name, {
+            onSubmit={form.onSubmit((settings) => SETTINGS_API.updateItemSettings(activeUniverse.id, {
                 ...settings
             }).then(onSave).catch(handleValidationErrors(form.setErrors)))}
         >

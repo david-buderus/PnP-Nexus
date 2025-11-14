@@ -204,13 +204,13 @@ function PermissionManipulation({authorities, setAuthorities}: {
     const {universes} = useUniverseContext();
     const universeOptions = useMemo(() => {
         return universes.map(universe => {
-            return {label: universe.displayName, value: universe.name};
+            return {label: universe.displayName, value: universe.id};
         });
     }, [universes]);
 
     function getUniverseRights(right: 'READ' | 'WRITE' | 'OWNER') {
         return authorities.filter(auth => (auth as GrantedUniverseAuthorityDTO)?.permission === right)
-            .map(auth => universes.find(opt => opt.name === (auth as GrantedUniverseAuthorityDTO).universe)).filter(auth => auth !== undefined).map(universe => universe.name);
+            .map(auth => universes.find(opt => opt.id === (auth as GrantedUniverseAuthorityDTO).universe)).filter(auth => auth !== undefined).map(universe => universe.id);
     }
 
     const [adminRights, setAdminRights] = useState<boolean>(false);

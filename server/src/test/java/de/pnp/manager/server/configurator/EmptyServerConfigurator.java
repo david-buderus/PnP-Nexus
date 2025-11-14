@@ -1,7 +1,10 @@
 package de.pnp.manager.server.configurator;
 
-import java.io.File;
+import org.bson.types.ObjectId;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.io.File;
+import java.util.Map;
 
 /**
  * Configures nothing on the server.
@@ -13,7 +16,7 @@ public class EmptyServerConfigurator extends TestServerConfiguratorBase {
     }
 
     @Override
-    public void configure(String importPrefix) {
-        // NO OP
+    public Map<ObjectId, ObjectId> configure() {
+        return Map.of();
     }
 }

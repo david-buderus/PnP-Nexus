@@ -37,7 +37,7 @@ export function SpeciesOverview() {
             }}
             onSave={s => {
                 setEditMode(false);
-                navigate(`/species/${s.id}?universe=` + activeUniverse.name);
+                navigate(`/species/${s.id}?universe=` + activeUniverse.id);
             }}
             onDelete={() => {
                 setEditMode(false);
@@ -114,7 +114,7 @@ function SpeciesList({
                         component={Link}
                         to={{
                             pathname: `/species/${s.id}`,
-                            search: `universe=${activeUniverse.name}`
+                            search: `universe=${activeUniverse.id}`
                         }}
                         data-testid={s.id}
                     >
@@ -148,7 +148,7 @@ function NationList({
                     component={Link}
                     to={{
                         pathname: `/nations/${n.id}`,
-                        search: `universe=${activeUniverse.name}` + (species ? `&species=${species.id}` : '')
+                        search: `universe=${activeUniverse.id}` + (species ? `&species=${species.id}` : '')
                     }}
                     data-testid={(species ? species.id + '/' : '') + n.id}
                 >

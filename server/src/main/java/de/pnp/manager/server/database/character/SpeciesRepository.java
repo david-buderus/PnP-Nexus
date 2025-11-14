@@ -30,7 +30,7 @@ public class SpeciesRepository extends RepositoryBase<Species> implements IUniqu
     /**
      * Removes all references to that nation from all species.
      */
-    public void removeNationReferences(String universe, List<ObjectId> nationIds) {
+    public void removeNationReferences(ObjectId universe, List<ObjectId> nationIds) {
         if (nationIds == null || nationIds.isEmpty()) {
             return;
         }

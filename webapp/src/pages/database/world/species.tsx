@@ -55,14 +55,14 @@ export function SpeciesDetail() {
     });
 
     useEffect(() => {
-        SPECIES_API.getSpecies(activeUniverse.name, species).then(response => {
+        SPECIES_API.getSpecies(activeUniverse.id, species).then(response => {
             setSelected(response.data);
             editor.commands.setContent(response.data.description);
         });
     }, []);
 
     function refresh() {
-        SPECIES_API.getSpecies(activeUniverse.name, species).then(response => {
+        SPECIES_API.getSpecies(activeUniverse.id, species).then(response => {
             setSelected(response.data);
             editor.commands.setContent(response.data.description);
         });
@@ -79,7 +79,7 @@ export function SpeciesDetail() {
                 refresh();
             }}
             onDelete={() => {
-                navigate('/species?universe=' + activeUniverse.name);
+                navigate('/species?universe=' + activeUniverse.id);
             }}
             onCancel={() => setEditMode(false)}
         />;
@@ -96,7 +96,7 @@ export function SpeciesDetail() {
                     component={Link}
                     to={{
                         pathname: `/species`,
-                        search: `universe=${activeUniverse.name}`
+                        search: `universe=${activeUniverse.id}`
                     }}
                 >
                     {t('overview')}
@@ -123,7 +123,7 @@ export function SpeciesDetail() {
                                         'data-testid': 'addNation',
                                         link: {
                                             pathname: `/nations`,
-                                            search: `universe=${activeUniverse.name}&species=${species}&edit=1`
+                                            search: `universe=${activeUniverse.id}&species=${species}&edit=1`
                                         }
                                     },
                                     {
@@ -159,7 +159,7 @@ export function SpeciesDetail() {
                                             component={Link}
                                             to={{
                                                 pathname: `/nations/${n.id}`,
-                                                search: `universe=${activeUniverse.name}&species=${species}`
+                                                search: `universe=${activeUniverse.id}&species=${species}`
                                             }}
                                             data-testid={n.id}
                                         >
@@ -247,7 +247,7 @@ function AddNationDialog({
             </Button>
             <Button
                 onClick={() => {
-                    SPECIES_API.updateSpecies(activeUniverse.name, species.id, {
+                    SPECIES_API.updateSpecies(activeUniverse.id, species.id, {
                         ...species,
                         nations: species.nations.concat([nation]),
                     }).then(close);
@@ -289,7 +289,7 @@ function DeletionNationDialog({
             </Button>
             <Button
                 onClick={() => {
-                    SPECIES_API.updateSpecies(activeUniverse.name, species.id, {
+                    SPECIES_API.updateSpecies(activeUniverse.id, species.id, {
                         ...species,
                         nations: species.nations.filter(n => !nations.some(sn => sn.id === n.id)),
                     }).then(close).then(() => setNations([]));

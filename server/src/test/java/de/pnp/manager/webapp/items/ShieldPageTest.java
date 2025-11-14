@@ -47,7 +47,7 @@ public class ShieldPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepo
 
     @Override
     protected Shield getCorrectObject() {
-        Material iron = materialRepository.get(getUniverseName(), "Iron").orElseThrow();
+        Material iron = materialRepository.get(getUniverseId(), "Iron").orElseThrow();
         return createItemBuilder().withName("Piece of Wood").withMaterial(iron).withArmor(3)
                 .withVendorPrice(154).withRarity(ERarity.EPIC).buildShield();
     }

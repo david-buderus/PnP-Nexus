@@ -28,7 +28,7 @@ public class NationRepository extends RepositoryBase<Nation> implements IUniquel
     }
 
     @Override
-    protected void onAfterDeletion(String universe, List<ObjectId> ids) {
+    protected void onAfterDeletion(ObjectId universe, List<ObjectId> ids) {
         super.onAfterDeletion(universe, ids);
         speciesRepository.removeNationReferences(universe, ids);
     }

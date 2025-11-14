@@ -1,7 +1,5 @@
 package de.pnp.manager.server.service;
 
-import static de.pnp.manager.validation.IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.component.math.IExpressionVariable;
@@ -11,23 +9,23 @@ import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
+
+import static de.pnp.manager.validation.IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
 
 /**
  * Service to create and use {@link BinaryExpressionTree} in the front-end.
@@ -42,8 +40,8 @@ public class BinaryExpressionTreeService {
 
     @PostMapping("secondary-attributes/{universe}")
     @Operation(summary = "Creates an expression for secondary attributes", operationId = "createExpressionForSecondaryAttributes")
-    public BinaryExpressionTree createExpressionForSecondaryAttributes(@PathVariable String universe,
-        @RequestBody String formula) {
+    public BinaryExpressionTree createExpressionForSecondaryAttributes(@PathVariable ObjectId universe,
+                                                                       @RequestBody String formula) {
 
         BinaryExpressionTree tree;
         try {
@@ -53,7 +51,7 @@ public class BinaryExpressionTreeService {
         }
 
         if (tree.getVariables().stream().filter(StringVariable.class::isInstance)
-            .anyMatch(v -> !ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(((StringVariable) v).variable()))) {
+                .anyMatch(v -> !ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(((StringVariable) v).variable()))) {
             throw createResponseException("expression.unknownVariable");
         }
 
@@ -89,9 +87,9 @@ public class BinaryExpressionTreeService {
         }).toList();
     }
 
-    private Set<IExpressionVariable> getPrimaryAttributeVariables(String universe) {
+    private Set<IExpressionVariable> getPrimaryAttributeVariables(ObjectId universe) {
         return primaryAttributeRepository.getAll(universe).stream().map(PrimaryAttributeVariable::new)
-            .collect(Collectors.toSet());
+                .collect(Collectors.toSet());
     }
 
     private ResponseStatusException createResponseException(String messageKey) {
@@ -111,7 +109,7 @@ public class BinaryExpressionTreeService {
         @JsonIgnore
         public Map<IExpressionVariable, Double> getVariableConstants() {
             return constants.entrySet().stream().collect(Collectors.toMap(e -> new StringVariable(e.getKey()),
-                Entry::getValue));
+                    Entry::getValue));
         }
     }
 }

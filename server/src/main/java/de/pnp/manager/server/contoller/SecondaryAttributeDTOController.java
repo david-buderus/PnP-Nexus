@@ -36,14 +36,14 @@ public class SecondaryAttributeDTOController {
     /**
      * Returns all {@link SecondaryAttributeDTO} of the given universe
      */
-    public Collection<SecondaryAttributeDTO> getAll(String universe) {
+    public Collection<SecondaryAttributeDTO> getAll(ObjectId universe) {
         return getAll(universe, null);
     }
 
     /**
      * Returns all {@link SecondaryAttributeDTO} of the given universe matching the given ids
      */
-    public Collection<SecondaryAttributeDTO> getAll(String universe, @Nullable List<ObjectId> ids) {
+    public Collection<SecondaryAttributeDTO> getAll(ObjectId universe, @Nullable List<ObjectId> ids) {
         Collection<SecondaryAttribute> attributes;
         if (ids == null || ids.isEmpty()) {
             attributes = secondaryAttributeRepository.getAll(universe);
@@ -57,7 +57,7 @@ public class SecondaryAttributeDTOController {
     /**
      * Inserts the given {@link SecondaryAttributeDTO} into the universe.
      */
-    public Collection<SecondaryAttributeDTO> insertAll(String universe,
+    public Collection<SecondaryAttributeDTO> insertAll(ObjectId universe,
                                                        List<SecondaryAttributeDTO> attributes) {
         return secondaryAttributeRepository.insertAll(universe, convert(universe, attributes)).stream()
                 .map(SecondaryAttributeDTO::from).toList();
@@ -66,14 +66,14 @@ public class SecondaryAttributeDTOController {
     /**
      * Inserts the given {@link SecondaryAttributeDTO} into the universe.
      */
-    public SecondaryAttributeDTO insert(String universe, SecondaryAttributeDTO attribute) {
+    public SecondaryAttributeDTO insert(ObjectId universe, SecondaryAttributeDTO attribute) {
         return insertAll(universe, List.of(attribute)).stream().findFirst().orElseThrow();
     }
 
     /**
      * Updates the given {@link SecondaryAttributeDTO}
      */
-    public SecondaryAttributeDTO update(String universe, SecondaryAttributeDTO attribute) {
+    public SecondaryAttributeDTO update(ObjectId universe, SecondaryAttributeDTO attribute) {
         Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
 
         SecondaryAttribute secondaryAttribute = new SecondaryAttribute(attribute.id(), attribute.name(), attribute.shortName(),
@@ -85,7 +85,7 @@ public class SecondaryAttributeDTOController {
     /**
      * Returns all supported variables of the given universe.
      */
-    public List<String> getSupportedVariables(String universe) {
+    public List<String> getSupportedVariables(ObjectId universe) {
         return Stream.concat(getPrimaryAttributeVariables(universe).stream().map(IExpressionVariable::getIdentifier),
                 IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream()).toList();
     }
@@ -93,7 +93,7 @@ public class SecondaryAttributeDTOController {
     /**
      * Converts the {@link SecondaryAttributeDTO} to {@link SecondaryAttribute}.
      */
-    public List<SecondaryAttribute> convert(String universe, List<SecondaryAttributeDTO> attributeDTOS) {
+    public List<SecondaryAttribute> convert(ObjectId universe, List<SecondaryAttributeDTO> attributeDTOS) {
         Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
         return attributeDTOS.stream().map(
                 dto -> new SecondaryAttribute(dto.id(), dto.name(), dto.shortName(), dto.consumable(),
@@ -105,7 +105,7 @@ public class SecondaryAttributeDTOController {
      * <p>
      * Contains {@link null} for DTOs which can not be converted.
      */
-    public List<@Nullable SecondaryAttribute> convertRaw(String universe, List<SecondaryAttributeDTO> attributeDTOS) {
+    public List<@Nullable SecondaryAttribute> convertRaw(ObjectId universe, List<SecondaryAttributeDTO> attributeDTOS) {
         Set<IExpressionVariable> attributeVariables = getPrimaryAttributeVariables(universe);
 
         return attributeDTOS.stream().map(
@@ -119,7 +119,7 @@ public class SecondaryAttributeDTOController {
                 }).toList();
     }
 
-    private Set<IExpressionVariable> getPrimaryAttributeVariables(String universe) {
+    private Set<IExpressionVariable> getPrimaryAttributeVariables(ObjectId universe) {
         return primaryAttributeRepository.getAll(universe).stream().map(PrimaryAttributeVariable::new)
                 .collect(Collectors.toSet());
     }

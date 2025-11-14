@@ -22,6 +22,7 @@ import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.universe.UniverseSettingsRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -39,25 +40,33 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/{universe}/universe-creation")
 public class UniverseCreationService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
 
-    @Autowired
-    private MaterialRepository materialRepository;
+    private final MaterialRepository materialRepository;
 
-    @Autowired
-    private PrimaryAttributeRepository primaryAttributeRepository;
+    private final PrimaryAttributeRepository primaryAttributeRepository;
 
-    @Autowired
-    private UniverseSettingsRepository settingsRepository;
+    private final UniverseSettingsRepository settingsRepository;
 
-    @Autowired
-    private SecondaryAttributeDTOController secondaryAttributeController;
+    private final SecondaryAttributeDTOController secondaryAttributeController;
+
+    public UniverseCreationService(
+            @Autowired ItemRepository itemRepository,
+            @Autowired MaterialRepository materialRepository,
+            @Autowired PrimaryAttributeRepository primaryAttributeRepository,
+            @Autowired UniverseSettingsRepository settingsRepository,
+            @Autowired SecondaryAttributeDTOController secondaryAttributeController) {
+        this.itemRepository = itemRepository;
+        this.materialRepository = materialRepository;
+        this.primaryAttributeRepository = primaryAttributeRepository;
+        this.settingsRepository = settingsRepository;
+        this.secondaryAttributeController = secondaryAttributeController;
+    }
 
     @GetMapping("equipment-types/jewellery-definitions")
     @UniverseOwner
     @Operation(summary = "Gets the basic armor definitions most universes need", operationId = "getDefaultJewelleryDefinitions")
-    public List<JewelleryDefinition> getDefaultJewelleryDefinitions(@PathVariable String universe,
+    public List<JewelleryDefinition> getDefaultJewelleryDefinitions(@PathVariable ObjectId universe,
                                                                     @RequestParam String language) {
         ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", Locale.of(language));
 
@@ -75,7 +84,7 @@ public class UniverseCreationService {
     @PostMapping("materials")
     @UniverseOwner
     @Operation(summary = "Creates a few basic materials most universes need", operationId = "createDefaultMaterials")
-    public void createDefaultMaterials(@PathVariable String universe, @RequestParam String language) {
+    public void createDefaultMaterials(@PathVariable ObjectId universe, @RequestParam String language) {
         ResourceBundle bundle = ResourceBundle.getBundle("universeCreation", Locale.of(language));
 
         Tag material = new Tag(bundle.getString("material"));
@@ -106,7 +115,7 @@ public class UniverseCreationService {
     @PostMapping("secondary-attribute-info")
     @UniverseOwner
     @Operation(summary = "Creates a few basic materials most universes need", operationId = "getSecondaryAttributeInfo")
-    public List<SecondaryAttributeInfo> getSecondaryAttributeInfo(@PathVariable String universe,
+    public List<SecondaryAttributeInfo> getSecondaryAttributeInfo(@PathVariable ObjectId universe,
                                                                   @RequestBody List<SecondaryAttributeDTO> attributeDTOS) {
 
         List<SecondaryAttribute> secondaryAttributes = secondaryAttributeController.convertRaw(universe, attributeDTOS);

@@ -10,15 +10,17 @@ import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.validation.IsValidExpression.EExpressionType;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.HandlerMapping;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Validator for {@link SecondaryAttribute}.
@@ -47,7 +49,7 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
             return false;
         }
         try {
-            String universe = getUniverse().orElse(null);
+            ObjectId universe = getUniverse().orElse(null);
             if (universe == null) {
                 // We don't have access to the universe
                 // We can only do a basic check
@@ -62,28 +64,28 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
         }
     }
 
-    private boolean validateSecondaryAttributeExpression(String universe, String formula)
-        throws IllegalFormulaException {
+    private boolean validateSecondaryAttributeExpression(ObjectId universe, String formula)
+            throws IllegalFormulaException {
         Set<IExpressionVariable> variables = getPrimaryAttributeVariables(universe);
         BinaryExpressionTree expression = BinaryExpressionTree.from(formula, variables);
 
         return expression.getVariables().stream()
-            .filter(StringVariable.class::isInstance)
-            .allMatch(v -> ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(
-                ((StringVariable) v).variable()));
+                .filter(StringVariable.class::isInstance)
+                .allMatch(v -> ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(
+                        ((StringVariable) v).variable()));
 
     }
 
-    private Set<IExpressionVariable> getPrimaryAttributeVariables(String universe) {
+    private Set<IExpressionVariable> getPrimaryAttributeVariables(ObjectId universe) {
         return primaryAttributeRepository.getAll(universe).stream()
-            .map(PrimaryAttributeVariable::new).collect(
-                Collectors.toSet());
+                .map(PrimaryAttributeVariable::new).collect(
+                        Collectors.toSet());
     }
 
     /**
      * Returns the corresponding universe for this validation.
      */
-    private Optional<String> getUniverse() {
+    private Optional<ObjectId> getUniverse() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
 
         if (attributes == null) {
@@ -91,11 +93,11 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
         }
 
         if (!(attributes.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE,
-            RequestAttributes.SCOPE_REQUEST) instanceof Map<?, ?> pathVariables)) {
+                RequestAttributes.SCOPE_REQUEST) instanceof Map<?, ?> pathVariables)) {
             return Optional.empty();
         }
 
-        if (pathVariables.get("universe") instanceof String s) {
+        if (pathVariables.get("universe") instanceof ObjectId s) {
             return Optional.of(s);
         }
 

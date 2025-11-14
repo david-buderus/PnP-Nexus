@@ -56,35 +56,35 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     /**
      * Returns the object with the given id.
      */
-    public Optional<E> get(String universe, ObjectId id) {
+    public Optional<E> get(ObjectId universe, ObjectId id) {
         return Optional.ofNullable(getTemplate(universe).findById(id, clazz, collectionName));
     }
 
     /**
      * Returns the object which matches the {@link Query}.
      */
-    public Optional<E> get(String universe, Query query) {
+    public Optional<E> get(ObjectId universe, Query query) {
         return Optional.ofNullable(getTemplate(universe).findOne(query, clazz, collectionName));
     }
 
     /**
      * Returns all objects in this repository.
      */
-    public Collection<E> getAll(String universe) {
+    public Collection<E> getAll(ObjectId universe) {
         return getTemplate(universe).findAll(clazz, collectionName);
     }
 
     /**
      * Returns all objects in this repository with the given ids.
      */
-    public Collection<E> getAll(String universe, Collection<ObjectId> ids) {
+    public Collection<E> getAll(ObjectId universe, Collection<ObjectId> ids) {
         return getAll(universe, Query.query(Criteria.where(ID_FIELD_NAME).in(ids)));
     }
 
     /**
      * Returns all objects in this repository which match the {@link Query}.
      */
-    public Collection<E> getAll(String universe, Query query) {
+    public Collection<E> getAll(ObjectId universe, Query query) {
         return getTemplate(universe).find(query, clazz, collectionName);
     }
 
@@ -93,7 +93,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      *
      * @throws AlreadyPersistedException if the given object {@link DatabaseObject#isPersisted() is already persisted}.
      */
-    public E insert(String universe, E object) {
+    public E insert(ObjectId universe, E object) {
         if (object.isPersisted()) {
             throw new AlreadyPersistedException(object);
         }
@@ -109,7 +109,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * @throws AlreadyPersistedException if at least one object
      *                                   {@link DatabaseObject#isPersisted() is already persisted}.
      */
-    public Collection<E> insertAll(String universe, List<E> collection) {
+    public Collection<E> insertAll(ObjectId universe, List<E> collection) {
         if (collection.stream().anyMatch(DatabaseObject::isPersisted)) {
             throw new AlreadyPersistedException(
                     collection.stream().filter(DatabaseObject::isPersisted).toList());
@@ -125,14 +125,14 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * <p>
      * The object has to have an id.
      */
-    public E update(String universe, E object) {
+    public E update(ObjectId universe, E object) {
         return update(universe, object.getId(), object);
     }
 
     /**
      * Updates the object in the database which is stored under the given id.
      */
-    public E update(String universe, ObjectId id, E object) {
+    public E update(ObjectId universe, ObjectId id, E object) {
         Preconditions.checkNotNull(id);
         onBeforePersist(universe, List.of(object));
         E persistedObject = getTemplate(universe).findAndReplace(
@@ -145,17 +145,17 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     /**
      * Updates the objects directly in the database defined by the query and update.
      * <p>
-     * This does not call {@link #onBeforePersist(String, List)} and {@link #onAfterPersist(String, List)}.
+     * This does not call {@link #onBeforePersist(ObjectId, List)} and {@link #onAfterPersist(ObjectId, List)}.
      * It should be mainly used to clean up database references.
      */
-    protected boolean updateMulti(String universe, Query query, Update update) {
+    protected boolean updateMulti(ObjectId universe, Query query, Update update) {
         return getTemplate(universe).updateMulti(query, update, clazz, collectionName).wasAcknowledged();
     }
 
     /**
      * Removes the object stored under the given id.
      */
-    public boolean remove(String universe, ObjectId id) {
+    public boolean remove(ObjectId universe, ObjectId id) {
         Preconditions.checkNotNull(id);
         DeleteResult result = getTemplate(universe).remove(Query.query(Criteria.where("_id").is(id)),
                 collectionName);
@@ -168,7 +168,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     /**
      * Removes the objects stored under the given ids.
      */
-    public boolean removeAll(String universe, Collection<ObjectId> ids) {
+    public boolean removeAll(ObjectId universe, Collection<ObjectId> ids) {
         List<E> deletedIds = getTemplate(universe).findAllAndRemove(
                 Query.query(Criteria.where("_id").in(ids)), collectionName);
         onAfterDeletion(universe, deletedIds.stream().map(DatabaseObject::getId).toList());
@@ -178,7 +178,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     /**
      * Returns the {@link MongoTemplate} to manipulate the database of the given universe.
      */
-    protected MongoTemplate getTemplate(String universe) {
+    protected MongoTemplate getTemplate(ObjectId universe) {
         if (!universeRepository.exists(universe)) {
             throw new UniverseNotFoundException(universe);
         }
@@ -188,7 +188,7 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
     /**
      * Possibility to add validations or something similar before the repository tries to persist the objects.
      */
-    protected void onBeforePersist(String universe, List<E> objects) {
+    protected void onBeforePersist(ObjectId universe, List<E> objects) {
         Set<ConstraintViolation<?>> violations = new HashSet<>();
 
         for (E object : objects) {
@@ -205,14 +205,14 @@ public abstract class RepositoryBase<E extends DatabaseObject> {
      * <p>
      * This means the objects will always have an {@link DatabaseObject#getId() id}.
      */
-    protected void onAfterPersist(String universe, List<E> objects) {
+    protected void onAfterPersist(ObjectId universe, List<E> objects) {
         // no op
     }
 
     /**
      * Possibility to add hooks or something similar after the repository has successfully deleted the object.
      */
-    protected void onAfterDeletion(String universe, List<ObjectId> ids) {
+    protected void onAfterDeletion(ObjectId universe, List<ObjectId> ids) {
         // no op
     }
 }

@@ -4,6 +4,7 @@ import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IDamageableEquipment;
 import de.pnp.manager.component.universe.ItemSettings;
 import de.pnp.manager.server.database.universe.UniverseSettingsRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +22,7 @@ public class ItemStackController {
      *
      * @return whether the {@link IDamageableEquipment equipment} is not broken and can be used.
      */
-    public boolean applyWearByUsage(String universe, IDamageableEquipment equipment, int usages) {
+    public boolean applyWearByUsage(ObjectId universe, IDamageableEquipment equipment, int usages) {
         int wearFactor = settingsRepository.getSettings(universe, ItemSettings.class).getWearFactor();
         if (wearFactor < 1) {
             return true;

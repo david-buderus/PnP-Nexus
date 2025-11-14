@@ -2,12 +2,15 @@ package de.pnp.manager.server.configurator;
 
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.universe.UniverseRepository;
-import java.io.File;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.io.File;
+import java.util.Map;
+
 /**
- * Creates an empty universe with the name {@link #UNIVERSE_NAME} if the universe is not part of the backup.
+ * Creates an empty universe with the ID {@link #UNIVERSE_HEX_ID} if the universe is not part of the backup.
  */
 @Configurable
 public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBase {
@@ -15,7 +18,7 @@ public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBas
     /**
      * The name of the test universe.
      */
-    public static final String UNIVERSE_NAME = "test-universe";
+    public static final String UNIVERSE_HEX_ID = "691704f7aaec6c2151805c8e";
 
     /**
      * The human-readable name of the test universe.
@@ -30,9 +33,9 @@ public class SimpleUniverseServerConfiguration extends TestServerConfiguratorBas
     }
 
     @Override
-    public void configure(String importPrefix) {
-        if (!universeRepository.exists(importPrefix + UNIVERSE_NAME)) {
-            universeRepository.insert(new Universe(importPrefix + UNIVERSE_NAME, UNIVERSE_DISPLAY_NAME));
-        }
+    public Map<ObjectId, ObjectId> configure() {
+        ObjectId id = new ObjectId(UNIVERSE_HEX_ID);
+        Universe persisted = universeRepository.insert(new Universe(null, UNIVERSE_DISPLAY_NAME));
+        return Map.of(id, persisted.getId());
     }
 }

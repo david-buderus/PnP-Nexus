@@ -69,7 +69,7 @@ export function SecondaryAttributeForm({
         if (!activeUniverse) {
             return;
         }
-        SIMPLE_SECONDARY_ATTRIBUTE_API.getAllSimpleSecondaryAttributes(activeUniverse.name).then(response => {
+        SIMPLE_SECONDARY_ATTRIBUTE_API.getAllSimpleSecondaryAttributes(activeUniverse.id).then(response => {
             if (response.data.length > 0) {
                 form.setValues({
                     attributes: response.data.map(a => ({
@@ -98,7 +98,7 @@ export function SecondaryAttributeForm({
     return <Grid>
         <Grid.Col span="content">
             <form
-                onSubmit={form.onSubmit((attributes) => SIMPLE_SECONDARY_ATTRIBUTE_API.setAllSimpleSecondaryAttributes(activeUniverse.name, attributes.attributes)
+                onSubmit={form.onSubmit((attributes) => SIMPLE_SECONDARY_ATTRIBUTE_API.setAllSimpleSecondaryAttributes(activeUniverse.id, attributes.attributes)
                     .then(onSave).catch(handleValidationErrors(form.setErrors))
                 )}>
                 <Table>
@@ -234,7 +234,7 @@ export function SecondaryAttributeForm({
                         loading={loadingAttributeInfos}
                         onClick={() => {
                             setLoadingAttributeInfos(true);
-                            UNIVERSE_CREATION_API.getSecondaryAttributeInfo(activeUniverse.name, form.getValues().attributes)
+                            UNIVERSE_CREATION_API.getSecondaryAttributeInfo(activeUniverse.id, form.getValues().attributes)
                                 .then(response => setAttributeInfos(response.data))
                                 .finally(() => setLoadingAttributeInfos(false));
                         }}

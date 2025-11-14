@@ -51,7 +51,7 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
     @Override
     protected Spell getCorrectObject() {
         return createSpellBuilder().withName("Fly").withEffect("Caster can fly for some time").withTier(4)
-                .withCost(manaCost(20)).withTalents(talentRepository.getByName(getUniverseName(), "Casting")
+                .withCost(manaCost(20)).withTalents(talentRepository.getByName(getUniverseId(), "Casting")
                         .toArray(new Talent[0]))
                 .withTags("Flying").build();
     }
@@ -76,6 +76,6 @@ public class SpellPageTest extends UniquelyNamedOverviewTestBase<Spell, SpellRep
 
     private List<IResourceUsage<?>> manaCost(int mana) {
         return List.of(new CharacterResourceUsage(mana,
-                secondaryAttributeRepository.get(getUniverseName(), "Mana").orElseThrow()));
+                secondaryAttributeRepository.get(getUniverseId(), "Mana").orElseThrow()));
     }
 }

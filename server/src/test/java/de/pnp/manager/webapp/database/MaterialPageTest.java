@@ -62,6 +62,6 @@ public class MaterialPageTest extends UniquelyNamedOverviewTestBase<Material, Ma
     }
 
     private Item getItem(String name) {
-        return itemRepository.get(getUniverseName(), name).orElseThrow();
+        return itemRepository.get(getUniverseId(), name).orElseThrow();
     }
 }

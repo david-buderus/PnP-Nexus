@@ -9,14 +9,16 @@ import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.server.database.TagRepository;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Repository for {@link Item items}.
@@ -39,33 +41,33 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
     /**
      * Returns all {@link Armor} in this repository.
      */
-    public Collection<Armor> getAllArmor(String universe) {
+    public Collection<Armor> getAllArmor(ObjectId universe) {
         return getAllByClass(universe, Armor.class);
     }
 
     /**
      * Returns all {@link Weapon} in this repository.
      */
-    public Collection<Weapon> getAllWeapons(String universe) {
+    public Collection<Weapon> getAllWeapons(ObjectId universe) {
         return getAllByClass(universe, Weapon.class);
     }
 
     /**
      * Returns all {@link Jewellery} in this repository.
      */
-    public Collection<Jewellery> getAllJewellery(String universe) {
+    public Collection<Jewellery> getAllJewellery(ObjectId universe) {
         return getAllByClass(universe, Jewellery.class);
     }
 
     /**
      * Returns all {@link Shield} in this repository.
      */
-    public Collection<Shield> getAllShields(String universe) {
+    public Collection<Shield> getAllShields(ObjectId universe) {
         return getAllByClass(universe, Shield.class);
     }
 
     @Override
-    protected void onAfterPersist(String universe, List<Item> objects) {
+    protected void onAfterPersist(ObjectId universe, List<Item> objects) {
         super.onAfterPersist(universe, objects);
 
         Set<Tag> newTags = new HashSet<>();
@@ -75,8 +77,8 @@ public class ItemRepository extends RepositoryBase<Item> implements IUniquelyNam
         tagRepository.saveAll(universe, newTags);
     }
 
-    private <I> Collection<I> getAllByClass(String universe, Class<I> clazz) {
+    private <I> Collection<I> getAllByClass(ObjectId universe, Class<I> clazz) {
         return getTemplate(universe).find(Query.query(Criteria.where("_class").is(clazz.getTypeName())),
-            clazz, collectionName);
+                clazz, collectionName);
     }
 }

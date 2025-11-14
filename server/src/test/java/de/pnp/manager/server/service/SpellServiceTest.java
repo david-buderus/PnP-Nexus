@@ -31,14 +31,14 @@ public class SpellServiceTest extends RepositoryServiceBaseTest<Spell, SpellRepo
 
     @Override
     protected List<Spell> createObjects() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Primary", "PRI"));
         SecondaryAttribute secondaryAttribute = createSecondaryAttribute().withName("Secondary").isConsumable()
                 .withFormula("1 * PRI").addDependency(primaryAttribute).persist().build();
 
-        Talent fireTalent = talentRepository.insert(getUniverseName(),
+        Talent fireTalent = talentRepository.insert(getUniverseId(),
                 new Talent(null, "Fire", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
-        Talent lightningTalent = talentRepository.insert(getUniverseName(),
+        Talent lightningTalent = talentRepository.insert(getUniverseId(),
                 new Talent(null, "Lightning", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
 
         return List.of(

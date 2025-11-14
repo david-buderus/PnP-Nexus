@@ -13,6 +13,7 @@ import de.pnp.manager.component.spell.ECastingType;
 import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.SpellRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +36,7 @@ public class TestSpellBuilder {
         /**
          * Builder with default values.
          */
-        public TestSpellBuilder createSpellBuilder(String universe) {
+        public TestSpellBuilder createSpellBuilder(ObjectId universe) {
             return new TestSpellBuilder(universe, spellRepository);
         }
     }
@@ -47,7 +48,7 @@ public class TestSpellBuilder {
         return new TestSpellBuilder(null, null);
     }
 
-    private final String universe;
+    private final ObjectId universe;
 
     private String name;
     private String effect;
@@ -66,7 +67,7 @@ public class TestSpellBuilder {
 
     private final SpellRepository spellRepository;
 
-    public TestSpellBuilder(String universe, SpellRepository spellRepository) {
+    public TestSpellBuilder(ObjectId universe, SpellRepository spellRepository) {
         this.universe = universe;
         this.spellRepository = spellRepository;
 

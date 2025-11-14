@@ -24,7 +24,7 @@ public class TalentServiceTest extends RepositoryServiceBaseTest<Talent, TalentR
 
     @Override
     protected List<Talent> createObjects() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Primary", "PRI"));
         return List.of(
                 new Talent(null, "Alchemy", tagSet("Knowledge"), primaryAttribute, primaryAttribute, primaryAttribute),

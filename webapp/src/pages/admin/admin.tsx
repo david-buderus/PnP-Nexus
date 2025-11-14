@@ -65,7 +65,7 @@ function BackupExport() {
     const { universes } = useUniverseContext();
 
     const [downloading, setDownloading] = useState(false);
-    const [backupUniverses, setBackupUniverses] = useState<string[]>(universes.map(u => u.name));
+    const [backupUniverses, setBackupUniverses] = useState<string[]>(universes.map(u => u.id));
     const [backupUniverseSearch, setBackupUniverseSearch] = useState('');
 
     return <Stack
@@ -84,7 +84,7 @@ function BackupExport() {
                         <Text size="xs">
                             {t("admin:downloadBackupDescription")}
                             {" ("}
-                            <Anchor onClick={() => setBackupUniverses(universes.map(u => u.name))}>
+                            <Anchor onClick={() => setBackupUniverses(universes.map(u => u.id))}>
                                 {t("admin:selectAll")}
                             </Anchor>
                             {", "}
@@ -112,13 +112,13 @@ function BackupExport() {
                     >
                         {universes.map(universe =>
                             backupUniverseSearch.length === 0
-                                || universe.name.toLowerCase().includes(backupUniverseSearch.toLowerCase())
+                                || universe.id.toLowerCase().includes(backupUniverseSearch.toLowerCase())
                                 || universe.displayName.toLowerCase().includes(backupUniverseSearch.toLowerCase()) ?
                                 <Checkbox.Card
                                     radius="md"
                                     p="md"
-                                    value={universe.name}
-                                    key={universe.name}
+                                    value={universe.id}
+                                    key={universe.id}
                                 >
                                     <Group wrap="nowrap" align="flex-start">
                                         <Checkbox.Indicator />

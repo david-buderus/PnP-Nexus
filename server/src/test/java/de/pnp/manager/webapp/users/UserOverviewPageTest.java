@@ -68,7 +68,7 @@ public class UserOverviewPageTest extends ServerTestBase {
 
     @BeforeEach
     void openUserOverviewPage() {
-        universe = createUniverse("users-test", "Test Universe");
+        universe = createUniverse("Test Universe");
         if (userRepository.getUser(ADMIN_USERNAME).isEmpty()) {
             userController.createNewUser(
                     new PnPUserCreation(ADMIN_USERNAME, ADMIN_USERNAME, ADMIN_USERNAME, "",
@@ -110,7 +110,7 @@ public class UserOverviewPageTest extends ServerTestBase {
         Optional<PnPUserDetails> userDetails = userDetailsRepository.getUser(USER_USERNAME);
         assertThat(userDetails).isPresent();
         assertThat(userDetails.get().getAuthorities()).map(a -> (GrantedAuthority) a)
-                .containsExactlyInAnyOrder(GrantedUniverseAuthority.readAuthority(universe.getName()),
+                .containsExactlyInAnyOrder(GrantedUniverseAuthority.readAuthority(universe.getId()),
                         new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE));
     }
 
@@ -173,6 +173,6 @@ public class UserOverviewPageTest extends ServerTestBase {
         Optional<PnPUserDetails> userDetails = userDetailsRepository.getUser(USER_USERNAME);
         assertThat(userDetails).isPresent();
         assertThat(userDetails.get().getAuthorities()).map(a -> (GrantedAuthority) a)
-                .containsExactlyInAnyOrder(GrantedUniverseAuthority.writeAuthority(universe.getName()));
+                .containsExactlyInAnyOrder(GrantedUniverseAuthority.writeAuthority(universe.getId()));
     }
 }

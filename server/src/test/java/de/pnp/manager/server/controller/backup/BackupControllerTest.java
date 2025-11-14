@@ -16,6 +16,7 @@ import de.pnp.manager.server.database.item.ItemRepository;
 import de.pnp.manager.server.database.universe.UniverseRepository;
 import de.pnp.manager.utils.TestItemBuilder.TestItemBuilderFactory;
 import de.pnp.manager.utils.TestSpellBuilder.TestSpellBuilderFactory;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -76,7 +77,7 @@ public class BackupControllerTest {
     @AfterEach
     void tearDown() {
         for (Universe universe : universeRepository.getAll()) {
-            universeRepository.remove(universe.getName());
+            universeRepository.remove(universe.getId());
         }
         for (String username : userController.getAllUsernames()) {
             userController.removeUser(username);
@@ -85,23 +86,23 @@ public class BackupControllerTest {
 
     @Test
     void testExportAndImport(@TempDir Path tempDir) throws IOException {
-        Universe universe = new Universe("backup-controller-test", "Test-Universe");
-        String universeName = universe.getName();
-        assertThat(universeRepository.insert(universe)).isNotNull();
+        Universe universe = universeRepository.insert(new Universe(null, "Test-Universe"));
+        assertThat(universe).isNotNull();
+        ObjectId universeId = universe.getId();
 
-        Material material = materialRepository.insert(universeName,
+        Material material = materialRepository.insert(universeId,
                 new Material(null, "Iron", List.of()));
-        Collection<Item> items = itemRepository.insertAll(universeName, List.of(
-                itemBuilder.createItemBuilder(universeName).withName("Item").buildItem(),
-                itemBuilder.createItemBuilder(universeName).withName("Weapon").withMaterial(material)
+        Collection<Item> items = itemRepository.insertAll(universeId, List.of(
+                itemBuilder.createItemBuilder(universeId).withName("Item").buildItem(),
+                itemBuilder.createItemBuilder(universeId).withName("Weapon").withMaterial(material)
                         .buildArmor()
         ));
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(universeName,
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(universeId,
                 new PrimaryAttribute(null, "Primary", "PRI"));
-        Talent talent = talentRepository.insert(universeName,
+        Talent talent = talentRepository.insert(universeId,
                 new Talent(null, "Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
-        Collection<Spell> spells = spellRepository.insertAll(universeName,
-                List.of(spellBuilder.createSpellBuilder(universeName).withName("Spell")
+        Collection<Spell> spells = spellRepository.insertAll(universeId,
+                List.of(spellBuilder.createSpellBuilder(universeId).withName("Spell")
                         .withCost(10, items.stream().findFirst().orElseThrow()).withTalents(talent).build()));
 
         File backupZip = tempDir.resolve("backup.zip").toFile();
@@ -110,17 +111,17 @@ public class BackupControllerTest {
             exportController.export(outputStream, null);
         }
 
-        assertThat(universeRepository.remove(universeName)).isTrue();
-        assertThat(universeRepository.exists(universeName)).isFalse();
+        assertThat(universeRepository.remove(universeId)).isTrue();
+        assertThat(universeRepository.exists(universeId)).isFalse();
 
         try (FileInputStream inputStream = new FileInputStream(backupZip)) {
             importController.importBackup(inputStream);
         }
 
-        assertThat(materialRepository.getAll(universeName)).containsExactly(material);
-        assertThat(itemRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(items);
-        assertThat(talentRepository.getAll(universeName)).containsExactly(talent);
-        assertThat(primaryAttributeRepository.getAll(universeName)).containsExactly(primaryAttribute);
-        assertThat(spellRepository.getAll(universeName)).containsExactlyInAnyOrderElementsOf(spells);
+        assertThat(materialRepository.getAll(universeId)).containsExactly(material);
+        assertThat(itemRepository.getAll(universeId)).containsExactlyInAnyOrderElementsOf(items);
+        assertThat(talentRepository.getAll(universeId)).containsExactly(talent);
+        assertThat(primaryAttributeRepository.getAll(universeId)).containsExactly(primaryAttribute);
+        assertThat(spellRepository.getAll(universeId)).containsExactlyInAnyOrderElementsOf(spells);
     }
 }

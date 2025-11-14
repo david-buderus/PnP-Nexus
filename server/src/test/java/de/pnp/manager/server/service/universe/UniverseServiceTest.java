@@ -1,15 +1,5 @@
 package de.pnp.manager.server.service.universe;
 
-import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
@@ -21,7 +11,7 @@ import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.universe.UniverseRepository;
-import java.util.List;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,6 +29,15 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
+import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Tests for {@link UniverseService}.
  */
@@ -49,8 +48,8 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private static final String BASE_PATH = "/api/universes";
     private static final String USER = "universe-test-user";
-    private static final String UNIVERSE_NAME = "universe-service-example-universe";
-    private static final String OTHER_UNIVERSE_NAME = "universe-service-other-universe";
+    private static final ObjectId UNIVERSE_NAME = new ObjectId("691704f7aaec6c2151805c8f");
+    private static final ObjectId OTHER_UNIVERSE_NAME = new ObjectId("691704f7aaec6c2151805c90");
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,7 +70,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE))));
+                    PnPUserCreation.simple(USER, List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE))));
         }
 
         @Test
@@ -112,9 +111,9 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER,
-                    List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE),
-                        GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME))));
+                    PnPUserCreation.simple(USER,
+                            List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE),
+                                    GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -139,13 +138,12 @@ public class UniverseServiceTest extends ServerTestBase {
         @WithMockUser(value = "test", roles = SecurityConstants.UNIVERSE_CREATOR)
         void testOwnerRole() throws Exception {
             userRepository.addNewUser("test", "test",
-                List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE)));
+                    List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE)));
 
-            Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
-            create(exampleUniverse);
+            Universe exampleUniverse = create(new Universe(null, "Example Universe"));
             assertThat(userRepository.loadUserByUsername("test").getAuthorities()).filteredOn(
-                    auth -> auth instanceof GrantedUniverseAuthority).hasSize(1)
-                .anyMatch(auth -> ((GrantedUniverseAuthority) auth).isOwner(exampleUniverse.getName()));
+                            auth -> auth instanceof GrantedUniverseAuthority).hasSize(1)
+                    .anyMatch(auth -> ((GrantedUniverseAuthority) auth).isOwner(exampleUniverse.getId()));
         }
 
         @Test
@@ -168,7 +166,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME))));
+                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -209,7 +207,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME))));
+                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -250,7 +248,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                new PnPUserCreation(USER, USER, USER, null, List.of()));
+                    new PnPUserCreation(USER, USER, USER, null, List.of()));
         }
 
         @Test
@@ -292,11 +290,9 @@ public class UniverseServiceTest extends ServerTestBase {
     }
 
     private void runCreateTest() throws Exception {
-        Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
-        Universe persistedExampleUniverse = create(exampleUniverse);
-        assertThat(persistedExampleUniverse).isEqualTo(exampleUniverse);
-        assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
-        assertThat(getAll()).containsExactly(exampleUniverse);
+        Universe persistedExampleUniverse = create(new Universe(null, "Example Universe"));
+        assertThat(getOne(persistedExampleUniverse.getId())).isEqualTo(persistedExampleUniverse);
+        assertThat(getAll()).containsExactly(persistedExampleUniverse);
     }
 
     private void runNotAllowedCreateTest() {
@@ -308,13 +304,13 @@ public class UniverseServiceTest extends ServerTestBase {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         universeRepository.insert(exampleUniverse);
 
-        assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
+        assertThat(getOne(exampleUniverse.getId())).isEqualTo(exampleUniverse);
 
-        Universe changedUniverse = new Universe(exampleUniverse.getName(), "Other Title",
-            "", "");
+        Universe changedUniverse = new Universe(exampleUniverse.getId(), "Other Title",
+                "", "");
         Universe oldUniverse = update(changedUniverse);
         assertThat(oldUniverse).isEqualTo(exampleUniverse);
-        assertThat(getOne(exampleUniverse.getName())).isEqualTo(changedUniverse);
+        assertThat(getOne(exampleUniverse.getId())).isEqualTo(changedUniverse);
         assertThat(getAll()).containsExactly(changedUniverse);
     }
 
@@ -328,16 +324,16 @@ public class UniverseServiceTest extends ServerTestBase {
     private void runDeleteTest() throws Exception {
         Universe exampleUniverse = new Universe(UNIVERSE_NAME, "Example Universe");
         universeRepository.insert(exampleUniverse);
-        assertThat(getOne(exampleUniverse.getName())).isEqualTo(exampleUniverse);
+        assertThat(getOne(exampleUniverse.getId())).isEqualTo(exampleUniverse);
 
-        deleteOne(exampleUniverse.getName());
+        deleteOne(exampleUniverse.getId());
 
         assertThat(getAll()).isEmpty();
-        assertThatThrownBy(() -> getOne(exampleUniverse.getName())).isInstanceOf(ResponseStatusException.class)
-            .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThatThrownBy(() -> getOne(exampleUniverse.getId())).isInstanceOf(ResponseStatusException.class)
+                .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(userRepository.getAllUsernames().stream()
-            .flatMap(username -> userRepository.loadUserByUsername(username).getAuthorities().stream()
-                .filter(GrantedUniverseAuthority.class::isInstance))
+                .flatMap(username -> userRepository.loadUserByUsername(username).getAuthorities().stream()
+                        .filter(GrantedUniverseAuthority.class::isInstance))
         ).noneMatch(authority -> ((GrantedUniverseAuthority) authority).getUniverse().equals(UNIVERSE_NAME));
     }
 
@@ -346,7 +342,7 @@ public class UniverseServiceTest extends ServerTestBase {
         universeRepository.insert(exampleUniverse);
 
         assertThatThrownBy(() -> deleteOne(UNIVERSE_NAME)).isInstanceOf(ResponseStatusException.class)
-            .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+                .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
     private void runGetTest() throws Exception {
@@ -409,18 +405,18 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private void hasAccessRight(String username, GrantedAuthority authority) {
         assertThat(userRepository.loadUserByUsername(username).getAuthorities()).map(a -> (GrantedAuthority) a)
-            .contains(authority);
+                .contains(authority);
     }
 
     private List<Universe> getAll() throws Exception {
         String json = mockMvc.perform(get(BASE_PATH)).andExpect(status().isOk()).andReturn()
-            .getResponse().getContentAsString();
+                .getResponse().getContentAsString();
         return objectMapper.readerForListOf(Universe.class).readValue(json);
     }
 
-    private Universe getOne(String universe) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH + "/{universe}", universe))
-            .andReturn().getResponse();
+    private Universe getOne(ObjectId universe) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH + "/{universe}", universe.toHexString()))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -431,9 +427,9 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private Universe create(Universe universe) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                post(BASE_PATH).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(universe)))
-            .andReturn().getResponse();
+                        post(BASE_PATH).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(universe)))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -444,9 +440,9 @@ public class UniverseServiceTest extends ServerTestBase {
 
     private Universe update(Universe universe) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                put(BASE_PATH + "/{universe}", universe.getName()).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(universe)))
-            .andReturn().getResponse();
+                        put(BASE_PATH + "/{universe}", universe.getId().toHexString()).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(universe)))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -454,9 +450,9 @@ public class UniverseServiceTest extends ServerTestBase {
         return objectMapper.readValue(response.getContentAsString(), Universe.class);
     }
 
-    private void deleteOne(String universe) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{universe}", universe).with(csrf()))
-            .andReturn().getResponse();
+    private void deleteOne(ObjectId universe) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{universe}", universe.toHexString()).with(csrf()))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -465,12 +461,12 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private void addPermission(String universe, String displayName, String accessPermission) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(post(BASE_PATH + "/{universe}/permission", universe)
-                .param("displayName", displayName)
-                .param("accessPermission", accessPermission)
-                .with(csrf()))
-            .andReturn().getResponse();
+    private void addPermission(ObjectId universe, String displayName, String accessPermission) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(post(BASE_PATH + "/{universe}/permission", universe.toHexString())
+                        .param("displayName", displayName)
+                        .param("accessPermission", accessPermission)
+                        .with(csrf()))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -479,11 +475,11 @@ public class UniverseServiceTest extends ServerTestBase {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private void removePermission(String universe, String displayName) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{universe}/permission", universe)
-                .param("displayName", displayName)
-                .with(csrf()))
-            .andReturn().getResponse();
+    private void removePermission(ObjectId universe, String displayName) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{universe}/permission", universe.toHexString())
+                        .param("displayName", displayName)
+                        .with(csrf()))
+                .andReturn().getResponse();
 
         if (response.getStatus() >= 300) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));

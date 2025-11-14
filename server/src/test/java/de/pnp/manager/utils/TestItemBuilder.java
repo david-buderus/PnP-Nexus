@@ -5,25 +5,21 @@ import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
-import de.pnp.manager.component.item.equipable.Armor;
-import de.pnp.manager.component.item.equipable.EArmorSlot;
-import de.pnp.manager.component.item.equipable.EquipableItem;
-import de.pnp.manager.component.item.equipable.HandheldEquipableItem;
-import de.pnp.manager.component.item.equipable.Jewellery;
-import de.pnp.manager.component.item.equipable.Shield;
-import de.pnp.manager.component.item.equipable.Weapon;
+import de.pnp.manager.component.item.equipable.*;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import jakarta.validation.constraints.NotNull;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Helper class to create {@link Item items}.
@@ -45,7 +41,7 @@ public class TestItemBuilder {
         /**
          * Builder with default values.
          */
-        public TestItemBuilder createItemBuilder(String universe) {
+        public TestItemBuilder createItemBuilder(ObjectId universe) {
             return new TestItemBuilder(universe, itemRepository, materialRepository);
         }
     }
@@ -57,7 +53,7 @@ public class TestItemBuilder {
         return new TestItemBuilder(null, null, null);
     }
 
-    private final String universe;
+    private final ObjectId universe;
 
     private String name;
     private final Set<Tag> tags;
@@ -86,8 +82,8 @@ public class TestItemBuilder {
     private final ItemRepository itemRepository;
     private final MaterialRepository materialRepository;
 
-    private TestItemBuilder(String universe, ItemRepository itemRepository,
-        MaterialRepository materialRepository) {
+    private TestItemBuilder(ObjectId universe, ItemRepository itemRepository,
+                            MaterialRepository materialRepository) {
         this.universe = universe;
         this.itemRepository = itemRepository;
         this.materialRepository = materialRepository;
@@ -296,7 +292,7 @@ public class TestItemBuilder {
      */
     public Item buildItem() {
         Item item = new Item(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-            description, note, maximumStackSize, minimumStackSize);
+                description, note, maximumStackSize, minimumStackSize);
         if (shouldGetPersisted) {
             return itemRepository.insert(universe, item);
         }
@@ -308,7 +304,7 @@ public class TestItemBuilder {
      */
     public Armor buildArmor() {
         Armor armorItem = new Armor(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-            description, note, material, upgradeSlots, armorSlot, armor, protection, weight, 1, 1);
+                description, note, material, upgradeSlots, armorSlot, armor, protection, weight, 1, 1);
         if (shouldGetPersisted) {
             return (Armor) itemRepository.insert(universe, armorItem);
         }
@@ -320,7 +316,7 @@ public class TestItemBuilder {
      */
     public Weapon buildWeapon() {
         Weapon weapon = new Weapon(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-            description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
+                description, note, material, upgradeSlots, initiativeModifier, hit, damage, dice, 1, 1);
         if (shouldGetPersisted) {
             return (Weapon) itemRepository.insert(universe, weapon);
         }
@@ -332,7 +328,7 @@ public class TestItemBuilder {
      */
     public Shield buildShield() {
         Shield shield = new Shield(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-            description, note, material, upgradeSlots, initiativeModifier, hit, dice, weight, armor, protection, 1, 1);
+                description, note, material, upgradeSlots, initiativeModifier, hit, dice, weight, armor, protection, 1, 1);
         if (shouldGetPersisted) {
             return (Shield) itemRepository.insert(universe, shield);
         }
@@ -344,7 +340,7 @@ public class TestItemBuilder {
      */
     public Jewellery buildJewellery() {
         Jewellery jewellery = new Jewellery(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-            description, note, material, upgradeSlots, 1, 1);
+                description, note, material, upgradeSlots, 1, 1);
         if (shouldGetPersisted) {
             return (Jewellery) itemRepository.insert(universe, jewellery);
         }
@@ -356,6 +352,6 @@ public class TestItemBuilder {
             return new Material(null, materialName, List.of());
         }
         return materialRepository.get(universe, materialName).orElseGet(() ->
-            materialRepository.insert(universe, new Material(null, materialName, List.of())));
+                materialRepository.insert(universe, new Material(null, materialName, List.of())));
     }
 }

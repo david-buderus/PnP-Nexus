@@ -30,10 +30,10 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Test
     void testTalentLink() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Primary", "PRI"));
 
-        Talent earthMagic = talentRepository.insert(getUniverseName(),
+        Talent earthMagic = talentRepository.insert(getUniverseId(),
                 new Talent(null, "Earth Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
         Spell spell = createSpell().withName("Wall").withEffect("Create a Wall").withAdditionalCost("10 Mana per meter")
                 .withTalents(earthMagic).build();
@@ -46,10 +46,10 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Override
     protected Spell createObject() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Primary", "PRI"));
         SecondaryAttribute mana = createSecondaryAttribute().withName("Mana").isConsumable().persist().build();
-        Talent fireMagic = talentRepository.insert(getUniverseName(),
+        Talent fireMagic = talentRepository.insert(getUniverseId(),
                 new Talent(null, "Fire Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
 
         return createSpell().withName("Fireball").withEffect("Throw a fireball").withCost(10, mana)
@@ -58,10 +58,10 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Override
     protected Spell createSlightlyChangeObject() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Other", "OT"));
         SecondaryAttribute life = createSecondaryAttribute().withName("Life").isConsumable().persist().build();
-        Talent fireMagic = talentRepository.insert(getUniverseName(),
+        Talent fireMagic = talentRepository.insert(getUniverseId(),
                 new Talent(null, "Fire Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
 
         return createSpell().withName("Big Fireball").withEffect("Throw a fireball").withCost(10, life)
@@ -70,9 +70,9 @@ public class SpellRepositoryTest extends RepositoryTestBase<Spell, SpellReposito
 
     @Override
     protected List<Spell> createMultipleObjects() {
-        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseName(),
+        PrimaryAttribute primaryAttribute = primaryAttributeRepository.insert(getUniverseId(),
                 new PrimaryAttribute(null, "Primary", "PRI"));
-        Talent earthMagic = talentRepository.insert(getUniverseName(),
+        Talent earthMagic = talentRepository.insert(getUniverseId(),
                 new Talent(null, "Earth Magic", tagSet("Magic"), primaryAttribute, primaryAttribute, primaryAttribute));
 
         return List.of(

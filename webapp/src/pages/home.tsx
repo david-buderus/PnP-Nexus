@@ -35,7 +35,7 @@ export default function Home() {
     }
 
     return <Grid>
-        {universes.map(u => <Grid.Col span={2} key={u.name}>
+        {universes.map(u => <Grid.Col span={2} key={u.id}>
             <Card
                 shadow="sm"
                 padding="xl"
@@ -43,8 +43,8 @@ export default function Home() {
                     setActiveUniverse(u);
                     navigate('/universe');
                 }}
-                key={u.name}
-                withBorder={activeUniverse?.name === u.name}
+                key={u.id}
+                withBorder={activeUniverse?.id === u.id}
             >
                 <Text fw={500} size="lg" mt="md">
                     {u.displayName}

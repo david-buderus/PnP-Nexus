@@ -82,7 +82,7 @@ export default function OverviewPage<T>({
             {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0].original)}
             <ConfirmationDialog
                 title={deletionDialogTitle}
-                onConfirmation={() => onDelete(activeUniverse?.name, table.getSelectedRowModel().flatRows.map(row => row.original))
+                onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))
                     .then(refresh).catch(handleNetworkErrors)}
                 openNode={(open) => <Button
                     data-testid="delete"

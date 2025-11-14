@@ -32,10 +32,10 @@ export function UniverseView({children}: { children: ReactNode; }) {
                 </Text>
                 <Select
                     data={universes?.map(universe => {
-                        return {value: universe.name, label: universe.displayName};
+                        return {value: universe.id, label: universe.displayName};
                     })}
-                    value={activeUniverse?.name ?? null}
-                    onChange={id => setActiveUniverse(universes.find(u => u.name === id))}
+                    value={activeUniverse?.id ?? null}
+                    onChange={id => setActiveUniverse(universes.find(u => u.id === id))}
                     searchable
                     data-testid="universe-selector"
                 />

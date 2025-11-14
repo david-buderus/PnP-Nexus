@@ -5,20 +5,18 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.bson.types.ObjectId;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
-import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
-import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
+import org.springframework.data.mongodb.core.convert.*;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Configuration for MongoDB.
@@ -35,11 +33,11 @@ public class MongoConfig {
     public MongoClient mongo() {
         ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
         MongoCredential credential = MongoCredential.createScramSha1Credential("admin", "admin",
-            "admin".toCharArray());
+                "admin".toCharArray());
         MongoClientSettings mongoClientSettings = MongoClientSettings.builder()
-            .applyConnectionString(connectionString)
-            .credential(credential)
-            .build();
+                .applyConnectionString(connectionString)
+                .credential(credential)
+                .build();
 
         return MongoClients.create(mongoClientSettings);
     }
@@ -58,8 +56,8 @@ public class MongoConfig {
     /**
      * Returns a client to manipulate the collections of a universe database.
      */
-    public MongoTemplate universeMongoTemplate(String universe) {
-        return mongoTemplate(DatabaseConstants.UNIVERSE_PREFIX + universe);
+    public MongoTemplate universeMongoTemplate(ObjectId universe) {
+        return mongoTemplate(DatabaseConstants.UNIVERSE_PREFIX + universe.toHexString());
     }
 
     private static MongoConverter createMongoConverter(MongoDatabaseFactory factory) {

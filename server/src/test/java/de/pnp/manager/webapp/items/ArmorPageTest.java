@@ -48,7 +48,7 @@ public class ArmorPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepos
 
     @Override
     protected Armor getCorrectObject() {
-        Material iron = materialRepository.get(getUniverseName(), "Iron").orElseThrow();
+        Material iron = materialRepository.get(getUniverseId(), "Iron").orElseThrow();
         return createItemBuilder().withName("Piece of Wood").withMaterial(iron).withArmor(3)
                 .withVendorPrice(154).withRarity(ERarity.EPIC).withArmorSlot(EArmorSlot.ARMS).buildArmor();
     }

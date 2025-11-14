@@ -645,10 +645,10 @@ function CreationDialog({
 
     function onSubmit(item: ItemCombination) {
         if (editMode) {
-            ITEM_API.updateItem(activeUniverse.name, item.id, item).then(refresh).then(close)
+            ITEM_API.updateItem(activeUniverse.id, item.id, item).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors));
         } else {
-            ITEM_API.insertAllItems(activeUniverse.name, [item]).then(refresh).then(close)
+            ITEM_API.insertAllItems(activeUniverse.id, [item]).then(refresh).then(close)
                 .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
         }
     }

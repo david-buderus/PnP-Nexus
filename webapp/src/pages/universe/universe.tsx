@@ -1,6 +1,6 @@
-import {useTranslation} from "react-i18next";
-import {useUniverseContext, useUserContext} from "../../components/PageBase";
-import {useNavigate} from "react-router";
+import {useTranslation} from 'react-i18next';
+import {useUniverseContext, useUserContext} from '../../components/PageBase';
+import {useNavigate} from 'react-router';
 import {
     ActionIcon,
     Autocomplete,
@@ -17,26 +17,27 @@ import {
     Textarea,
     TextInput,
     Title
-} from "@mantine/core";
-import {useDisclosure} from "@mantine/hooks";
-import ConfirmationDialog from "../../components/modal/ConfirmationDialog";
-import {PrimaryAttribute, Universe, UniverseServiceApi, UserServiceApi, UserUniversePermissionDTO} from "../../api";
-import {API_CONFIGURATION} from "../../components/Constants";
-import {useForm} from "@mantine/form";
-import {handleValidationErrors} from "../../components/utils/ErrorUtils";
-import {useEffect, useState} from "react";
-import {FaRegTrashCan} from "react-icons/fa6";
-import axios from "axios";
-import ItemSettingsForm from "../../components/settings/ItemSettingsForm";
-import CurrencySettingsForm from "../../components/settings/CurrencySettingsForm";
-import CharacterSettingsForm from "../../components/settings/CharacterSettingsForm";
-import {numberFormatter, percentageFormatter} from "../../components/utils/Formatters";
-import {probabilityForSuccesfulThrows} from "../../components/utils/DiceThrowUtils";
-import {fetchAllPrimaryAttributes, fetchAllSimpleSecondaryAttributes} from "../../components/Database";
-import {PrimaryAttributeForm} from "../../components/character/PrimaryAttributeForm";
-import {SecondaryAttributeForm} from "../../components/character/SecondaryAttributeForm";
-import {FaCheck} from "react-icons/fa";
-import EquipmentSettingsForm from "../../components/settings/EquipmentSettingsForm";
+} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
+import ConfirmationDialog from '../../components/modal/ConfirmationDialog';
+import {PrimaryAttribute, Universe, UniverseServiceApi, UserServiceApi, UserUniversePermissionDTO} from '../../api';
+import {API_CONFIGURATION} from '../../components/Constants';
+import {useForm} from '@mantine/form';
+import {handleValidationErrors} from '../../components/utils/ErrorUtils';
+import {useEffect, useState} from 'react';
+import {FaRegTrashCan} from 'react-icons/fa6';
+import axios from 'axios';
+import ItemSettingsForm from '../../components/settings/ItemSettingsForm';
+import CurrencySettingsForm from '../../components/settings/CurrencySettingsForm';
+import CharacterSettingsForm from '../../components/settings/CharacterSettingsForm';
+import {numberFormatter, percentageFormatter} from '../../components/utils/Formatters';
+import {probabilityForSuccesfulThrows} from '../../components/utils/DiceThrowUtils';
+import {fetchAllPrimaryAttributes, fetchAllSimpleSecondaryAttributes} from '../../components/Database';
+import {PrimaryAttributeForm} from '../../components/character/PrimaryAttributeForm';
+import {SecondaryAttributeForm} from '../../components/character/SecondaryAttributeForm';
+import {FaCheck} from 'react-icons/fa';
+import EquipmentSettingsForm from '../../components/settings/EquipmentSettingsForm';
+import CharacterSheetSettingsDialog from '../../components/settings/CharacterSheetSettingsDialog';
 
 const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
 const USER_API = new UserServiceApi(API_CONFIGURATION);
@@ -61,14 +62,14 @@ export default function UniverseOverview() {
                     <ConfirmationDialog
                         title={t('universe:confirmDeletionTitle')}
                         onConfirmation={() => {
-                            UNIVERSE_API.deleteUniverse(activeUniverse.name).then(() => {
+                            UNIVERSE_API.deleteUniverse(activeUniverse.id).then(() => {
                                 setActiveUniverse(null);
                                 fetchUniverses();
-                                navigate("/");
+                                navigate('/');
                             });
                         }}
                         openNode={open => <Button variant="outline" color="red" onClick={open}>
-                            {t("delete")}
+                            {t('delete')}
                         </Button>}
                     />
                     <EditUniverseDialog/>
@@ -79,6 +80,7 @@ export default function UniverseOverview() {
         <EquipmentSettingsCard/>
         <CurrencySettingsCard/>
         <CharacterSettingsCard primaryAttributes={primaryAttributes}/>
+        <CharacterSheetSettingsCard/>
         <PrimaryAttributeCard primaryAttributes={primaryAttributes}
                               refreshPrimaryAttributes={refreshPrimaryAttributes}/>
         <SecondaryAttributeCard/>
@@ -100,19 +102,19 @@ function EditUniverseDialog() {
 
     return <>
         <Modal opened={opened} onClose={close} title={t('universe:editUniverse')}>
-            <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.updateUniverse(universe.name, universe).then(() =>
+            <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.updateUniverse(universe.id, universe).then(() =>
                 fetchUniverses().then(close)
             ).catch(handleValidationErrors(form.setErrors)))}>
                 <TextInput
                     data-testid="displayName"
-                    label={t("displayName")}
+                    label={t('displayName')}
                     key={form.key('displayName')}
                     required
                     {...form.getInputProps('displayName')}
                 />
                 <Textarea
                     data-testid="shortDescription"
-                    label={t("universe:shortDescription")}
+                    label={t('universe:shortDescription')}
                     autosize
                     minRows={2}
                     key={form.key('shortDescription')}
@@ -120,7 +122,7 @@ function EditUniverseDialog() {
                 />
                 <Textarea
                     data-testid="description"
-                    label={t("description")}
+                    label={t('description')}
                     autosize
                     minRows={4}
                     key={form.key('description')}
@@ -128,16 +130,16 @@ function EditUniverseDialog() {
                 />
                 <Group justify="flex-end">
                     <Button autoFocus variant="outline" onClick={close}>
-                        {t("cancel")}
+                        {t('cancel')}
                     </Button>
                     <Button type="submit">
-                        {t("confirm")}
+                        {t('confirm')}
                     </Button>
                 </Group>
             </form>
         </Modal>
         <Button onClick={open}>
-            {t("edit")}
+            {t('edit')}
         </Button>
     </>;
 
@@ -151,26 +153,26 @@ function ItemSettingsCard() {
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
-            {t("universe:itemSettings")}
+            {t('universe:itemSettings')}
         </Title>
         {itemSettings?.wearFactor > 0 ?
             <Text ta="left">
-                {t("universe:wearFactorDescription", {"wearFactor": itemSettings.wearFactor})}
+                {t('universe:wearFactorDescription', {'wearFactor': itemSettings.wearFactor})}
             </Text>
             :
             <Text ta="left">
-                {t("universe:wearFactorDisabled")}
+                {t('universe:wearFactorDisabled')}
             </Text>
         }
         {itemSettings?.shieldUsingDice ?
             <Text ta="left">
-                {t("universe:shieldUsingDiceDescription")}
+                {t('universe:shieldUsingDiceDescription')}
             </Text>
             : null
         }
         {itemSettings?.usingProtection ?
             <Text ta="left">
-                {t("universe:usingProtectionDescription")}
+                {t('universe:usingProtectionDescription')}
             </Text>
             : null
         }
@@ -180,12 +182,12 @@ function ItemSettingsCard() {
                     close();
                     refreshSettings();
                 }}
-                onSaveText={t("save")}
+                onSaveText={t('save')}
             />
         </Modal>
         {userPermissions.isActiveUniverseOwner && <Group style={{position: 'absolute', bottom: 16, right: 16}}>
             <Button onClick={open}>
-                {t("edit")}
+                {t('edit')}
             </Button>
         </Group>}
     </Card>;
@@ -199,10 +201,10 @@ function EquipmentSettingsCard() {
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
-            {t("universe:equipmentSettings")}
+            {t('universe:equipmentSettings')}
         </Title>
         <Text ta="left">
-            {t("universe:numberOfHandheldDescription", {"number": equipmentSettings?.numberOfHandheld})}
+            {t('universe:numberOfHandheldDescription', {'number': equipmentSettings?.numberOfHandheld})}
         </Text>
         <Title order={6} ta="center" pt="md">
             {t('universe:jewelleryDefinitions')}
@@ -210,22 +212,22 @@ function EquipmentSettingsCard() {
         <Table>
             <Table.Thead>
                 <Table.Tr>
-                    <Table.Th>{t("name")}</Table.Th>
-                    <Table.Th>{t("tag")}</Table.Th>
-                    <Table.Th>{t("amount")}</Table.Th>
+                    <Table.Th>{t('name')}</Table.Th>
+                    <Table.Th>{t('tag')}</Table.Th>
+                    <Table.Th>{t('amount')}</Table.Th>
                 </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
                 {equipmentSettings?.jewelleryDefinitions.map((definition, i) => {
                     return <Table.Tr key={i}>
                         <Table.Td>
-                            {definition?.name || ""}
+                            {definition?.name || ''}
                         </Table.Td>
                         <Table.Td>
-                            {definition?.tag || ""}
+                            {definition?.tag || ''}
                         </Table.Td>
                         <Table.Td>
-                            {definition?.amount || ""}
+                            {definition?.amount || ''}
                         </Table.Td>
                     </Table.Tr>;
                 })}
@@ -237,12 +239,12 @@ function EquipmentSettingsCard() {
                     close();
                     refreshSettings();
                 }}
-                onSaveText={t("save")}
+                onSaveText={t('save')}
             />
         </Modal>
         {userPermissions.isActiveUniverseOwner && <Group style={{position: 'absolute', bottom: 16, right: 16}}>
             <Button onClick={open}>
-                {t("edit")}
+                {t('edit')}
             </Button>
         </Group>}
     </Card>;
@@ -256,18 +258,18 @@ function CurrencySettingsCard() {
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
-            {t("universe:currencySettings")}
+            {t('universe:currencySettings')}
         </Title>
         <Text ta="left">
-            {t("universe:baseCurrencyDescription", {
-                "currency": currencySettings?.baseCurrency,
-                "shortForm": currencySettings?.baseCurrencyShortForm
+            {t('universe:baseCurrencyDescription', {
+                'currency': currencySettings?.baseCurrency,
+                'shortForm': currencySettings?.baseCurrencyShortForm
             })}
-            {currencySettings?.calculationEntries.map((entry, index) => " " + t("universe:calculationCurrencyDescription", {
-                "factor": entry.factor,
-                "currency": entry.currency,
-                "shortForm": entry.currencyShortForm,
-                "prevCurrency": index === 0 ? currencySettings.baseCurrency : currencySettings.calculationEntries[index - 1].currency
+            {currencySettings?.calculationEntries.map((entry, index) => ' ' + t('universe:calculationCurrencyDescription', {
+                'factor': entry.factor,
+                'currency': entry.currency,
+                'shortForm': entry.currencyShortForm,
+                'prevCurrency': index === 0 ? currencySettings.baseCurrency : currencySettings.calculationEntries[index - 1].currency
             }))}
         </Text>
         <Modal opened={opened} onClose={close} size="auto">
@@ -276,12 +278,12 @@ function CurrencySettingsCard() {
                     close();
                     refreshSettings();
                 }}
-                onSaveText={t("save")}
+                onSaveText={t('save')}
             />
         </Modal>
         {userPermissions.isActiveUniverseOwner && <Group style={{position: 'absolute', bottom: 16, right: 16}}>
             <Button onClick={open}>
-                {t("edit")}
+                {t('edit')}
             </Button>
         </Group>}
     </Card>;
@@ -297,7 +299,7 @@ function CharacterSettingsCard({primaryAttributes}: { primaryAttributes: Primary
     if (!characterSettings) {
         return <Card shadow="md" p="md" maw={400}>
             <Title order={5} ta="center">
-                {t("universe:characterSettings")}
+                {t('universe:characterSettings')}
             </Title>
             <Skeleton height={8} radius="xl"/>
             <Skeleton height={8} mt={6} radius="xl"/>
@@ -310,22 +312,22 @@ function CharacterSettingsCard({primaryAttributes}: { primaryAttributes: Primary
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
-            {t("universe:characterSettings")}
+            {t('universe:characterSettings')}
         </Title>
         <Text ta="left">
-            {t("universe:primaryAttributeDistributionExplanation", {
-                "average": numberFormatter(characterSettings.maxPrimaryAttributeSum / attributeLength),
-                "max": numberFormatter(Math.floor(
+            {t('universe:primaryAttributeDistributionExplanation', {
+                'average': numberFormatter(characterSettings.maxPrimaryAttributeSum / attributeLength),
+                'max': numberFormatter(Math.floor(
                     (characterSettings.maxPrimaryAttributeSum - (attributeLength * characterSettings.minPrimaryAttributeValue)) /
                     (characterSettings.maxPrimaryAttributeValue - characterSettings.minPrimaryAttributeValue)
                 )),
-                "averageChance": percentageFormatter(probabilityForSuccesfulThrows(
+                'averageChance': percentageFormatter(probabilityForSuccesfulThrows(
                     characterSettings.maxPrimaryAttributeSum / attributeLength,
                     characterSettings.maxPrimaryAttributeSum / attributeLength,
                     characterSettings.maxPrimaryAttributeSum / attributeLength
                 )),
-                "highestChance": percentageFormatter(probabilityForSuccesfulThrows(characterSettings.maxPrimaryAttributeValue, characterSettings.maxPrimaryAttributeValue, characterSettings.maxPrimaryAttributeValue)),
-                "lowestChance": percentageFormatter(probabilityForSuccesfulThrows(characterSettings.minPrimaryAttributeValue, characterSettings.minPrimaryAttributeValue, characterSettings.minPrimaryAttributeValue))
+                'highestChance': percentageFormatter(probabilityForSuccesfulThrows(characterSettings.maxPrimaryAttributeValue, characterSettings.maxPrimaryAttributeValue, characterSettings.maxPrimaryAttributeValue)),
+                'lowestChance': percentageFormatter(probabilityForSuccesfulThrows(characterSettings.minPrimaryAttributeValue, characterSettings.minPrimaryAttributeValue, characterSettings.minPrimaryAttributeValue))
             })}
         </Text>
         <Modal opened={opened} onClose={close} size="auto">
@@ -334,13 +336,50 @@ function CharacterSettingsCard({primaryAttributes}: { primaryAttributes: Primary
                     close();
                     refreshSettings();
                 }}
-                onSaveText={t("save")}
+                onSaveText={t('save')}
             />
         </Modal>
         {userPermissions.isActiveUniverseOwner && <Group style={{position: 'absolute', bottom: 16, right: 16}}>
             <Button onClick={open}>
-                {t("edit")}
+                {t('edit')}
             </Button>
+        </Group>}
+    </Card>;
+}
+
+function CharacterSheetSettingsCard() {
+    const {sheetSettings} = useUniverseContext();
+    const {userPermissions} = useUserContext();
+    const {t} = useTranslation();
+
+    return <Card shadow="md" p="md" maw={400} pb={60}>
+        <Title order={5} ta="center">
+            {t('universe:characterSheetSettings')}
+        </Title>
+        {sheetSettings?.playerSheet ?
+            <Text ta="left">
+                {t('universe:playerSheetDescription', {
+                    'sheet': sheetSettings.playerSheet.name
+                })}
+            </Text>
+            :
+            <Text ta="left">
+                {t('universe:noPlayerSheetDescription')}
+            </Text>
+        }
+        {sheetSettings?.enemySheet ?
+            <Text ta="left">
+                {t('universe:enemySheetDescription', {
+                    'sheet': sheetSettings.enemySheet.name
+                })}
+            </Text>
+            :
+            <Text ta="left">
+                {t('universe:noEnemySheetDescription')}
+            </Text>
+        }
+        {userPermissions.isActiveUniverseOwner && <Group style={{position: 'absolute', bottom: 16, right: 16}}>
+            <CharacterSheetSettingsDialog/>
         </Group>}
     </Card>;
 }
@@ -355,40 +394,40 @@ function PrimaryAttributeCard({primaryAttributes, refreshPrimaryAttributes}: {
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
-            {t("primary-attributes")}
+            {t('primary-attributes')}
         </Title>
         <Table>
             <Table.Thead>
                 <Table.Tr>
-                    <Table.Th>{t("name")}</Table.Th>
-                    <Table.Th>{t("character:shortName")}</Table.Th>
+                    <Table.Th>{t('name')}</Table.Th>
+                    <Table.Th>{t('character:shortName')}</Table.Th>
                 </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
                 {primaryAttributes.map((attribute, i) => {
                     return <Table.Tr key={i}>
                         <Table.Td>
-                            {attribute?.name || ""}
+                            {attribute?.name || ''}
                         </Table.Td>
                         <Table.Td>
-                            {attribute?.shortName || ""}
+                            {attribute?.shortName || ''}
                         </Table.Td>
                     </Table.Tr>;
                 })}
             </Table.Tbody>
         </Table>
-        <Modal opened={opened} onClose={close} title={t("primary-attributes")}>
+        <Modal opened={opened} onClose={close} title={t('primary-attributes')}>
             <PrimaryAttributeForm
                 onSave={() => {
                     close();
                     refreshPrimaryAttributes();
                 }}
-                onSaveText={t("save")}
+                onSaveText={t('save')}
             />
         </Modal>
         {userPermissions.isActiveUniverseOwner && <Group style={{position: 'absolute', bottom: 16, right: 16}}>
             <Button onClick={open}>
-                {t("edit")}
+                {t('edit')}
             </Button>
         </Group>}
     </Card>;
@@ -402,28 +441,28 @@ function SecondaryAttributeCard() {
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
-            {t("secondary-attributes")}
+            {t('secondary-attributes')}
         </Title>
         <Table>
             <Table.Thead>
                 <Table.Tr>
-                    <Table.Th>{t("name")}</Table.Th>
-                    <Table.Th>{t("character:shortName")}</Table.Th>
-                    <Table.Th>{t("character:calculationFormula")}</Table.Th>
-                    <Table.Th>{t("character:consumableAttribute")}</Table.Th>
+                    <Table.Th>{t('name')}</Table.Th>
+                    <Table.Th>{t('character:shortName')}</Table.Th>
+                    <Table.Th>{t('character:calculationFormula')}</Table.Th>
+                    <Table.Th>{t('character:consumableAttribute')}</Table.Th>
                 </Table.Tr>
             </Table.Thead>
             <Table.Tbody>
                 {secondaryAttribute.map((attribute, i) => {
                     return <Table.Tr key={i}>
                         <Table.Td>
-                            {attribute?.name || ""}
+                            {attribute?.name || ''}
                         </Table.Td>
                         <Table.Td>
-                            {attribute?.shortName || ""}
+                            {attribute?.shortName || ''}
                         </Table.Td>
                         <Table.Td>
-                            {attribute?.calculationFormula || ""}
+                            {attribute?.calculationFormula || ''}
                         </Table.Td>
                         <Table.Td>
                             {attribute?.consumable ? <FaCheck/> : null}
@@ -432,18 +471,18 @@ function SecondaryAttributeCard() {
                 })}
             </Table.Tbody>
         </Table>
-        <Modal opened={opened} onClose={close} title={t("secondary-attributes")} size="auto">
+        <Modal opened={opened} onClose={close} title={t('secondary-attributes')} size="auto">
             <SecondaryAttributeForm
                 onSave={() => {
                     close();
                     refresh();
                 }}
-                onSaveText={t("save")}
+                onSaveText={t('save')}
             />
         </Modal>
         {userPermissions.isActiveUniverseOwner && <Group style={{position: 'absolute', bottom: 16, right: 16}}>
             <Button onClick={open}>
-                {t("edit")}
+                {t('edit')}
             </Button>
         </Group>}
     </Card>;
@@ -459,7 +498,7 @@ function PermissionCard() {
         if (!activeUniverse) {
             setUniversePermissions([]);
         } else {
-            UNIVERSE_API.getUniversePermissions(activeUniverse.name).then(response => setUniversePermissions(response.data));
+            UNIVERSE_API.getUniversePermissions(activeUniverse.id).then(response => setUniversePermissions(response.data));
         }
     };
 
@@ -468,13 +507,13 @@ function PermissionCard() {
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
-            {t("universe:permissions")}
+            {t('universe:permissions')}
         </Title>
         <Table>
             <Table.Thead>
                 <Table.Tr>
-                    <Table.Th>{t("displayName")}</Table.Th>
-                    <Table.Th>{t("permission")}</Table.Th>
+                    <Table.Th>{t('displayName')}</Table.Th>
+                    <Table.Th>{t('permission')}</Table.Th>
                     <Table.Th></Table.Th>
                 </Table.Tr>
             </Table.Thead>
@@ -482,15 +521,15 @@ function PermissionCard() {
                 {universePermissions.map((permission, i) => {
                     return <Table.Tr key={i}>
                         <Table.Td>
-                            {permission?.displayName || ""}
+                            {permission?.displayName || ''}
                         </Table.Td>
                         <Table.Td>
-                            {t("permission:" + permission.dto.permission.toLocaleLowerCase())}
+                            {t('permission:' + permission.dto.permission.toLocaleLowerCase())}
                         </Table.Td>
                         <Table.Td>
                             <ConfirmationDialog
-                                title={t("universe:confirmPermissionDeletionTitle")}
-                                onConfirmation={() => UNIVERSE_API.removeUniversePermission(activeUniverse.name, permission.displayName).then(fetchPermissions)}
+                                title={t('universe:confirmPermissionDeletionTitle')}
+                                onConfirmation={() => UNIVERSE_API.removeUniversePermission(activeUniverse.id, permission.displayName).then(fetchPermissions)}
                                 openNode={open => <ActionIcon variant="outline" color="red" onClick={open}>
                                     <FaRegTrashCan/>
                                 </ActionIcon>}
@@ -519,15 +558,15 @@ function PermissionDialog({fetchPermissions}: { fetchPermissions: () => void; })
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            displayName: "",
-            permission: "READ"
+            displayName: '',
+            permission: 'READ'
         }
     });
 
     return <>
         <Modal opened={opened} onClose={close} title={t('universe:addPermission')}>
             <form
-                onSubmit={form.onSubmit((values) => UNIVERSE_API.addUniversePermission(activeUniverse.name, values.displayName, values.permission).then(fetchPermissions).then(close)
+                onSubmit={form.onSubmit((values) => UNIVERSE_API.addUniversePermission(activeUniverse.id, values.displayName, values.permission).then(fetchPermissions).then(close)
                     .catch(err => {
                         if (!axios.isAxiosError(err)) {
                             return;
@@ -536,47 +575,47 @@ function PermissionDialog({fetchPermissions}: { fetchPermissions: () => void; })
                             handleValidationErrors(form.setErrors)(err);
                             return;
                         }
-                        form.setFieldError('displayName', t("user:unknownUser"));
+                        form.setFieldError('displayName', t('user:unknownUser'));
                     }))}>
                 <Stack>
                     <Autocomplete
-                        label={t("name")}
+                        label={t('name')}
                         data={displayNames}
-                        key={form.key("displayName")}
-                        {...form.getInputProps("displayName")}
+                        key={form.key('displayName')}
+                        {...form.getInputProps('displayName')}
                     />
                     <Select
-                        label={t("permission")}
+                        label={t('permission')}
                         data={[
                             {
-                                value: "READ",
-                                label: t("permission:read")
+                                value: 'READ',
+                                label: t('permission:read')
                             },
                             {
-                                value: "WRITE",
-                                label: t("permission:write")
+                                value: 'WRITE',
+                                label: t('permission:write')
                             },
                             {
-                                value: "OWNER",
-                                label: t("permission:owner")
+                                value: 'OWNER',
+                                label: t('permission:owner')
                             }
                         ]}
-                        key={form.key("permission")}
-                        {...form.getInputProps("permission")}
+                        key={form.key('permission')}
+                        {...form.getInputProps('permission')}
                     />
                     <Group justify="flex-end">
                         <Button autoFocus variant="outline" onClick={close}>
-                            {t("cancel")}
+                            {t('cancel')}
                         </Button>
                         <Button type="submit">
-                            {t("add")}
+                            {t('add')}
                         </Button>
                     </Group>
                 </Stack>
             </form>
         </Modal>
         <Button onClick={open}>
-            {t("add")}
+            {t('add')}
         </Button>
     </>;
 }

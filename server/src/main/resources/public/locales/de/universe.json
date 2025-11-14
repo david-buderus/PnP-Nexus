@@ -76,5 +76,21 @@
   "noUniverse": "Kein Universum ist ausgewählt",
   "pleaseSelectUniverse": "Bitte wähle ein Universum aus.",
   "createUniverseOrGetInvited": "Erstell ein neues Universum oder frag dein Dungeon Master nach Zugriff.",
-  "needToInvited": "Frag dein Dungeon Master nach Zugriff."
+  "needToInvited": "Frag dein Dungeon Master nach Zugriff.",
+  "completedCreationTitle": "Das Universum ist erstellt",
+  "completedCreationDescription": "Die nächsten Schritte sind:",
+  "nextStepTalents": "Erstell Talente",
+  "nextStepCharacterSheets": "Erstell ein Charakterbogen für Spieler und ein für Gegner",
+  "nextStepSpeciesNations": "Erstell Spezien und Völker",
+  "nextStepItems": "Erstell Items, Waffen, ...",
+  "nextStepRecipes": "Erstell Rezepte für Items und Verbesserungen",
+  "nextStepSpells": "Erstell Zauber",
+  "characterSheetSettings": "Charakterbogen Einstellungen",
+  "playerSheetDescription": "Der Charakterbogen {{sheet}} wird für Spieler benutzt.",
+  "noPlayerSheetDescription": "Derzeit ist kein Charakterbogen für Spieler ausgewählt.",
+  "enemySheetDescription": "Der Charakterbogen {{sheet}} wird für Gegner benutzt.",
+  "noEnemySheetDescription": "Derzeit ist kein Charakterbogen für Gegner ausgewählt.",
+  "characterSheetSettingsModalDescription": "Wähle aus welcher Charakterbogen benutzt wird um Spieler und Gegner anzuzeigen.",
+  "playerSheet": "Spieler Charakterbogen",
+  "enemySheet": "Gegner Charakterbogen"
 }

@@ -4,15 +4,16 @@ import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.IUniquelyNamedDataObject;
 import de.pnp.manager.server.database.RepositoryBase;
 import de.pnp.manager.server.database.interfaces.IUniquelyNamedRepository;
+import org.bson.types.ObjectId;
+
 import java.util.Collection;
 import java.util.Optional;
-import org.bson.types.ObjectId;
 
 /**
  * Base class for testing overview pages for {@link IUniquelyNamedRepository}.
  */
 public abstract class UniquelyNamedOverviewTestBase<T extends DatabaseObject & IUniquelyNamedDataObject,
-    R extends RepositoryBase<T> & IUniquelyNamedRepository<T>> extends OverviewTestBase<T> {
+        R extends RepositoryBase<T> & IUniquelyNamedRepository<T>> extends OverviewTestBase<T> {
 
     /**
      * The repository used for the testing.
@@ -38,14 +39,14 @@ public abstract class UniquelyNamedOverviewTestBase<T extends DatabaseObject & I
      */
     protected T getOriginalModifyObject() {
         if (originalModifyObject == null) {
-            originalModifyObject = repository.get(getUniverseName(), getEditObjectName()).orElseThrow();
+            originalModifyObject = repository.get(getUniverseId(), getEditObjectName()).orElseThrow();
         }
         return originalModifyObject;
     }
 
     @Override
     protected Collection<T> getTestObjects() {
-        return repository.getAll(getUniverseName());
+        return repository.getAll(getUniverseId());
     }
 
     @Override
@@ -55,12 +56,12 @@ public abstract class UniquelyNamedOverviewTestBase<T extends DatabaseObject & I
 
     @Override
     protected Optional<T> getPersistedObject(T object) {
-        return repository.get(getUniverseName(), object.getName());
+        return repository.get(getUniverseId(), object.getName());
     }
 
     @Override
     protected Optional<T> getPersistedObject(ObjectId id) {
-        return repository.get(getUniverseName(), id);
+        return repository.get(getUniverseId(), id);
     }
 
     @Override

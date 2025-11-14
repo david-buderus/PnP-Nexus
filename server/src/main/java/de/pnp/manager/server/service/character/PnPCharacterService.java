@@ -69,14 +69,14 @@ public class PnPCharacterService {
     @GetMapping
     @UniverseOwner
     @Operation(summary = "Get all characters from the database", operationId = "getAllCharacters")
-    public Collection<PnPCharacterDto> getAllCharacters(@PathVariable String universe) {
+    public Collection<PnPCharacterDto> getAllCharacters(@PathVariable ObjectId universe) {
         return transform(universe, List.of());
     }
 
     @GetMapping("example")
     @UniverseRead
     @Operation(summary = "Generates an example character", operationId = "getExampleCharacter")
-    public PnPCharacterDto getExampleCharacter(@PathVariable String universe) {
+    public PnPCharacterDto getExampleCharacter(@PathVariable ObjectId universe) {
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);
@@ -130,7 +130,7 @@ public class PnPCharacterService {
         ), primaryAttributes, secondaryAttributes, talents);
     }
 
-    private List<PnPCharacterDto> transform(String universe, List<PnPCharacter> characters) {
+    private List<PnPCharacterDto> transform(ObjectId universe, List<PnPCharacter> characters) {
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);

@@ -1,10 +1,12 @@
 package de.pnp.manager.server.database;
 
 import de.pnp.manager.component.character.Talent;
-import java.util.Collection;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
+
+import java.util.Collection;
 
 /**
  * Repository for {@link Talent talents}.
@@ -24,7 +26,7 @@ public class TalentRepository extends RepositoryBase<Talent> {
     /**
      * Returns all {@link Talent talents} with the given name.
      */
-    public Collection<Talent> getByName(String universe, String name) {
+    public Collection<Talent> getByName(ObjectId universe, String name) {
         return getAll(universe, Query.query(Criteria.where("name").is(name)));
     }
 }

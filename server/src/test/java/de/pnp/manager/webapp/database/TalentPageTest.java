@@ -67,7 +67,7 @@ public class TalentPageTest extends RepositoryOverviewTestBase<Talent> {
     }
 
     private PrimaryAttribute getExampleAttribute() {
-        return primaryAttributeRepository.get(getUniverseName(), "Strength").orElseThrow();
+        return primaryAttributeRepository.get(getUniverseId(), "Strength").orElseThrow();
     }
 
     @Override

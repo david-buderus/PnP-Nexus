@@ -86,10 +86,10 @@ function CreationDialog({
 
     function onSubmit(material: Material) {
         if (editMode) {
-            MATERIAL_API.updateMaterial(activeUniverse.name, material.id, material).then(refresh).then(close)
+            MATERIAL_API.updateMaterial(activeUniverse.id, material.id, material).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors));
         } else {
-            MATERIAL_API.insertAllMaterials(activeUniverse.name, [material]).then(refresh).then(close)
+            MATERIAL_API.insertAllMaterials(activeUniverse.id, [material]).then(refresh).then(close)
                 .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
         }
     }

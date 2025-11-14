@@ -5,6 +5,7 @@ import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserPreferenceRepository;
 import de.pnp.manager.server.database.UserRepository;
 import jakarta.validation.ConstraintViolationException;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
@@ -81,7 +82,7 @@ public class UserController {
     /**
      * Removes the {@link GrantedUniverseAuthority authorities} from the user.
      */
-    public void removeGrantedUniverseAuthoritiesByDisplayName(String displayName, String universe) {
+    public void removeGrantedUniverseAuthoritiesByDisplayName(String displayName, ObjectId universe) {
         Optional<PnPUser> user = userRepository.getUserByDisplayName(displayName);
         userDetailsRepository.removeGrantedUniverseAuthorities(
                 user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -91,7 +92,7 @@ public class UserController {
     /**
      * Returns all users with their access right to the given universes except admins.
      */
-    public Collection<UserUniversePermissionDTO> getAllUserWithUniversePermission(String universe) {
+    public Collection<UserUniversePermissionDTO> getAllUserWithUniversePermission(ObjectId universe) {
         Collection<PnPUserDetails> users = userDetailsRepository.getAllUsersWithUniversePermissions(
                 universe);
         Map<String, String> displayNames = userRepository.getAllUsers(
@@ -101,7 +102,7 @@ public class UserController {
                 IGrantedAuthorityDTO.from(getHighestUniverseAuthority(universe, detail.getAuthorities())))).toList();
     }
 
-    private static GrantedUniverseAuthority getHighestUniverseAuthority(String universe,
+    private static GrantedUniverseAuthority getHighestUniverseAuthority(ObjectId universe,
                                                                         Collection<? extends GrantedAuthority> authorities) {
         List<GrantedUniverseAuthority> universeAuthorities = authorities.stream()
                 .filter(GrantedUniverseAuthority.class::isInstance).map(GrantedUniverseAuthority.class::cast)

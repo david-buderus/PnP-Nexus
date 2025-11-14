@@ -1,21 +1,8 @@
 package de.pnp.manager.server.service;
 
-import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
-import de.pnp.manager.component.user.IGrantedAuthorityDTO;
-import de.pnp.manager.component.user.PnPUser;
-import de.pnp.manager.component.user.PnPUserCreation;
-import de.pnp.manager.component.user.PnPUserDetails;
+import de.pnp.manager.component.user.*;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.ManipulatesMetadata;
 import de.pnp.manager.server.ServerTestBase;
@@ -24,9 +11,7 @@ import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserRepository;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,6 +23,16 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 /**
  * Tests for {@link UserService}.
@@ -52,12 +47,12 @@ public class UserServiceTest extends ServerTestBase {
     private static final String USER_PASSWORD = "@@2QTt.ujzKmFVu*";
     private static final String OTHER_USER = "other-user";
     private static final String OTHER_USER_PASSWORD = "!w84xRx4m_4_jrvb";
-    private static final String UNIVERSE = "test-universe";
+    private static final ObjectId UNIVERSE = new ObjectId("691704f7aaec6c2151805c91");
     private static final String EMAIL = "user@test.com";
     private static final PnPUserCreation USER_CREATION = new PnPUserCreation(USER, USER_PASSWORD, USER,
-        EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.readAuthority(UNIVERSE))));
+            EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.readAuthority(UNIVERSE))));
     private static final PnPUserCreation OTHER_USER_CREATION = new PnPUserCreation(OTHER_USER, OTHER_USER_PASSWORD,
-        OTHER_USER, EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.writeAuthority(UNIVERSE))));
+            OTHER_USER, EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.writeAuthority(UNIVERSE))));
 
     @Autowired
     private MockMvc mockMvc;
@@ -92,7 +87,7 @@ public class UserServiceTest extends ServerTestBase {
             assertThat(userDetails.get().getPassword()).doesNotContain("{noop}");
             assertThat(userDetails.get().getPassword()).isNotEqualTo(OTHER_USER);
             assertThat(userDetails.get().getAuthorities()).map(GrantedUniverseAuthority.class::cast)
-                .containsExactly(GrantedUniverseAuthority.writeAuthority(UNIVERSE));
+                    .containsExactly(GrantedUniverseAuthority.writeAuthority(UNIVERSE));
         }
 
         @Test
@@ -119,7 +114,7 @@ public class UserServiceTest extends ServerTestBase {
 
             deleteOne(OTHER_USER);
             assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(OTHER_USER))
-                .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.NOT_FOUND);
+                    .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.NOT_FOUND);
         }
 
         @Test
@@ -135,7 +130,7 @@ public class UserServiceTest extends ServerTestBase {
         void testGetPermissions() throws Exception {
             userController.createNewUser(OTHER_USER_CREATION);
             assertThat(getPermissions(OTHER_USER)).containsExactlyInAnyOrderElementsOf(
-                OTHER_USER_CREATION.getAuthorities());
+                    OTHER_USER_CREATION.getAuthorities());
         }
     }
 
@@ -180,7 +175,7 @@ public class UserServiceTest extends ServerTestBase {
 
             deleteOne(USER);
             assertThatExceptionOfType(ResponseStatusException.class).isThrownBy(() -> getOne(USER))
-                .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.NOT_FOUND);
+                    .extracting(ResponseStatusException::getStatusCode).isEqualTo(HttpStatus.NOT_FOUND);
 
             assertForbidden(() -> deleteOne(OTHER_USER));
         }
@@ -202,16 +197,16 @@ public class UserServiceTest extends ServerTestBase {
             userController.createNewUser(OTHER_USER_CREATION);
 
             assertThat(getPermissions(USER)).containsExactlyInAnyOrderElementsOf(
-                USER_CREATION.getAuthorities());
+                    USER_CREATION.getAuthorities());
             assertForbidden(() -> getPermissions(OTHER_USER));
         }
     }
 
     private void createUser(PnPUserCreation userCreation) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                post(BASE_PATH).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(userCreation)))
-            .andReturn().getResponse();
+                        post(BASE_PATH).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(userCreation)))
+                .andReturn().getResponse();
 
         if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -222,7 +217,7 @@ public class UserServiceTest extends ServerTestBase {
 
     private PnPUser getOne(String username) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH + "/{username}", username))
-            .andReturn().getResponse();
+                .andReturn().getResponse();
 
         if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -233,9 +228,9 @@ public class UserServiceTest extends ServerTestBase {
 
     private void updateUser(String username, PnPUser user) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(
-                put(BASE_PATH + "/{user}", username).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(user)))
-            .andReturn().getResponse();
+                        put(BASE_PATH + "/{user}", username).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(user)))
+                .andReturn().getResponse();
 
         if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -246,7 +241,7 @@ public class UserServiceTest extends ServerTestBase {
 
     private void deleteOne(String username) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(delete(BASE_PATH + "/{username}", username).with(csrf()))
-            .andReturn().getResponse();
+                .andReturn().getResponse();
 
         if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -257,12 +252,12 @@ public class UserServiceTest extends ServerTestBase {
 
     private void updatePermissions(String username, Collection<IGrantedAuthorityDTO> authorities) throws Exception {
         CollectionType collectionType = objectMapper.getTypeFactory()
-            .constructCollectionType(List.class, IGrantedAuthorityDTO.class);
+                .constructCollectionType(List.class, IGrantedAuthorityDTO.class);
 
         MockHttpServletResponse response = mockMvc.perform(
-                post(BASE_PATH + "/{username}/permissions", username).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writerFor(collectionType).writeValueAsString(authorities)))
-            .andReturn().getResponse();
+                        post(BASE_PATH + "/{username}/permissions", username).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writerFor(collectionType).writeValueAsString(authorities)))
+                .andReturn().getResponse();
 
         if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
@@ -273,7 +268,7 @@ public class UserServiceTest extends ServerTestBase {
 
     private Collection<IGrantedAuthorityDTO> getPermissions(String username) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get(BASE_PATH + "/{username}/permissions", username))
-            .andReturn().getResponse();
+                .andReturn().getResponse();
 
         if (HttpStatus.valueOf(response.getStatus()).isError()) {
             throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));

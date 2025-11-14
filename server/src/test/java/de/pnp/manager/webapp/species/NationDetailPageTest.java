@@ -38,7 +38,7 @@ public class NationDetailPageTest extends ServerTestBase {
     void openPage() {
         SpeciesOverviewPage overviewPage = webDriver.openMainMenu("admin", "admin").openSpeciesOverviewPage();
         overviewPage.selectActiveUniverse(getUniverse());
-        Species species = speciesRepository.get(getUniverseName(), "Human").orElseThrow();
+        Species species = speciesRepository.get(getUniverseId(), "Human").orElseThrow();
         nation = species.getNations().getFirst();
         page = overviewPage.openNationPage(species, nation);
     }
@@ -65,6 +65,6 @@ public class NationDetailPageTest extends ServerTestBase {
         form.edit();
 
         page.assertDescription(newDescription);
-        Assertions.assertThat(nationRepository.get(getUniverseName(), nation.getName()).orElseThrow().getDescription()).contains(newDescription);
+        Assertions.assertThat(nationRepository.get(getUniverseId(), nation.getName()).orElseThrow().getDescription()).contains(newDescription);
     }
 }

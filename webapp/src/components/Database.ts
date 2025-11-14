@@ -79,7 +79,7 @@ export function fetchAll<O>(fetch: ((universe: string, options?: AxiosRequestCon
             return;
         }
         setLoading(true);
-        fetch(activeUniverse.name).then(response => {
+        fetch(activeUniverse.id).then(response => {
             setLoading(false);
             setObjects(response.data);
         }).catch(err => {

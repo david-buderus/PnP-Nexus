@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import de.pnp.manager.component.DatabaseObject;
+import org.bson.types.ObjectId;
 
 import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
@@ -30,6 +31,20 @@ public class Select extends ComponentBase {
      */
     public void select(String value) {
         select(value, true);
+    }
+
+    /**
+     * Selects the given value.
+     */
+    public void select(ObjectId value) {
+        select(value, true);
+    }
+
+    /**
+     * Selects the given value.
+     */
+    public void select(ObjectId value, boolean wait) {
+        select(value.toString(), wait);
     }
 
     /**

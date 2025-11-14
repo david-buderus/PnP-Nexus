@@ -1,17 +1,11 @@
 package de.pnp.manager.server.database;
 
-import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
-
 import com.mongodb.client.result.DeleteResult;
 import de.pnp.manager.component.user.GrantedUniverseAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.server.contoller.UserController;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -28,6 +22,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
+
+import static de.pnp.manager.server.database.DatabaseConstants.METADATA_DATABASE;
 
 /**
  * Repository for {@link PnPUserDetails userDetails}.
@@ -56,7 +54,7 @@ public class UserDetailsRepository implements UserDetailsService {
      */
     public Optional<PnPUserDetails> getUser(String username) {
         return Optional.ofNullable(
-            mongoTemplate.findById(username, PnPUserDetails.class, REPOSITORY_NAME));
+                mongoTemplate.findById(username, PnPUserDetails.class, REPOSITORY_NAME));
     }
 
     /**
@@ -64,7 +62,7 @@ public class UserDetailsRepository implements UserDetailsService {
      */
     public Collection<String> getAllUsernames() {
         return mongoTemplate.findAll(PnPUserDetails.class, REPOSITORY_NAME).stream().map(PnPUserDetails::getUsername)
-            .toList();
+                .toList();
     }
 
     /**
@@ -74,8 +72,8 @@ public class UserDetailsRepository implements UserDetailsService {
      */
     public void addNewUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         mongoTemplate.insert(
-            new PnPUserDetails(username, passwordEncoder.encode(password), authorities, true, true, true, true),
-            REPOSITORY_NAME);
+                new PnPUserDetails(username, passwordEncoder.encode(password), authorities, true, true, true, true),
+                REPOSITORY_NAME);
     }
 
     /**
@@ -85,7 +83,7 @@ public class UserDetailsRepository implements UserDetailsService {
      */
     public boolean removeUser(String username) {
         DeleteResult result = mongoTemplate.remove(Query.query(Criteria.where("_id").is(username)),
-            REPOSITORY_NAME);
+                REPOSITORY_NAME);
         return result.wasAcknowledged();
     }
 
@@ -96,13 +94,13 @@ public class UserDetailsRepository implements UserDetailsService {
         PnPUserDetails userDetails = loadUserByUsername(username);
         if (!passwordEncoder.matches(oldPassword, userDetails.getPassword())) {
             throw new BadCredentialsException(this.messages
-                .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+                    .getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
         mongoTemplate.findAndReplace(Query.query(Criteria.where("_id").is(username)),
-            new PnPUserDetails(username, passwordEncoder.encode(newPassword), userDetails.getAuthorities(),
-                userDetails.isAccountNonExpired(), userDetails.isAccountNonLocked(),
-                userDetails.isCredentialsNonExpired(), userDetails.isEnabled()),
-            REPOSITORY_NAME);
+                new PnPUserDetails(username, passwordEncoder.encode(newPassword), userDetails.getAuthorities(),
+                        userDetails.isAccountNonExpired(), userDetails.isAccountNonLocked(),
+                        userDetails.isCredentialsNonExpired(), userDetails.isEnabled()),
+                REPOSITORY_NAME);
     }
 
     /**
@@ -140,9 +138,9 @@ public class UserDetailsRepository implements UserDetailsService {
         UserDetails updatedUser = loadUserByUsername(username);
 
         Authentication newAuth = new UsernamePasswordAuthenticationToken(
-            updatedUser,
-            updatedUser.getPassword(),
-            updatedUser.getAuthorities()
+                updatedUser,
+                updatedUser.getPassword(),
+                updatedUser.getAuthorities()
         );
 
         SecurityContextHolder.getContext().setAuthentication(newAuth);
@@ -151,7 +149,7 @@ public class UserDetailsRepository implements UserDetailsService {
     /**
      * Removes the {@link GrantedUniverseAuthority authorities} from the user.
      */
-    public void removeGrantedUniverseAuthorities(String username, String universe) {
+    public void removeGrantedUniverseAuthorities(String username, ObjectId universe) {
         PnPUserDetails userDetails = loadUserByUsername(username);
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
 
@@ -166,23 +164,23 @@ public class UserDetailsRepository implements UserDetailsService {
 
     private void setUserGrantedAuthorities(PnPUserDetails userDetails, Collection<GrantedAuthority> authorities) {
         mongoTemplate.findAndReplace(Query.query(Criteria.where("_id").is(userDetails.getUsername())),
-            new PnPUserDetails(userDetails.getUsername(), userDetails.getPassword(), authorities,
-                userDetails.isAccountNonExpired(), userDetails.isAccountNonLocked(),
-                userDetails.isCredentialsNonExpired(), userDetails.isEnabled()),
-            REPOSITORY_NAME);
+                new PnPUserDetails(userDetails.getUsername(), userDetails.getPassword(), authorities,
+                        userDetails.isAccountNonExpired(), userDetails.isAccountNonLocked(),
+                        userDetails.isCredentialsNonExpired(), userDetails.isEnabled()),
+                REPOSITORY_NAME);
     }
 
     /**
      * Returns all users which have access to the given universes except admins.
      */
-    public Collection<PnPUserDetails> getAllUsersWithUniversePermissions(String universe) {
+    public Collection<PnPUserDetails> getAllUsersWithUniversePermissions(ObjectId universe) {
         return mongoTemplate.find(Query.query(Criteria.where("authorities.universe").is(universe)),
-            PnPUserDetails.class, REPOSITORY_NAME);
+                PnPUserDetails.class, REPOSITORY_NAME);
     }
 
     @Override
     public PnPUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return getUser(username).orElseThrow(
-            () -> new UsernameNotFoundException("User " + username + " not found."));
+                () -> new UsernameNotFoundException("User " + username + " not found."));
     }
 }

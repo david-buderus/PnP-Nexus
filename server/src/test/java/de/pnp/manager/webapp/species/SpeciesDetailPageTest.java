@@ -48,7 +48,7 @@ public class SpeciesDetailPageTest extends ServerTestBase {
     void openPage() {
         SpeciesOverviewPage overviewPage = webDriver.openMainMenu("admin", "admin").openSpeciesOverviewPage();
         overviewPage.selectActiveUniverse(getUniverse());
-        species = speciesRepository.get(getUniverseName(), "Human").orElseThrow();
+        species = speciesRepository.get(getUniverseId(), "Human").orElseThrow();
         page = overviewPage.openSpeciesPage(species);
     }
 
@@ -82,7 +82,7 @@ public class SpeciesDetailPageTest extends ServerTestBase {
         form.edit();
 
         page.assertDescription(newDescription);
-        Assertions.assertThat(speciesRepository.get(getUniverseName(), species.getName()).orElseThrow().getDescription()).contains(newDescription);
+        Assertions.assertThat(speciesRepository.get(getUniverseId(), species.getName()).orElseThrow().getDescription()).contains(newDescription);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class SpeciesDetailPageTest extends ServerTestBase {
         removalDialog.locator("[type=submit]").click();
         assertThat(page.getLink(species.getNations().getFirst())).not().isVisible();
 
-        Assertions.assertThat(speciesRepository.get(getUniverseName(), species.getName()).orElseThrow().getNations()).isEmpty();
+        Assertions.assertThat(speciesRepository.get(getUniverseId(), species.getName()).orElseThrow().getNations()).isEmpty();
     }
 
     @Test
@@ -108,17 +108,17 @@ public class SpeciesDetailPageTest extends ServerTestBase {
         new NationDetailPage(page.asPage()).assertName(nation.getName());
 
         // Get the nation with its id
-        nation = nationRepository.get(getUniverseName(), nation.getName()).orElseThrow();
+        nation = nationRepository.get(getUniverseId(), nation.getName()).orElseThrow();
 
         page.toMainMenu().openSpeciesOverviewPage().openSpeciesPage(species);
         assertThat(page.getLink(nation)).isVisible();
 
-        Assertions.assertThat(speciesRepository.get(getUniverseName(), species.getName()).orElseThrow().getNations()).contains(nation);
+        Assertions.assertThat(speciesRepository.get(getUniverseId(), species.getName()).orElseThrow().getNations()).contains(nation);
     }
 
     @Test
     void addExistingNation() {
-        Nation nation = nationRepository.get(getUniverseName(), "The Unbound").orElseThrow();
+        Nation nation = nationRepository.get(getUniverseId(), "The Unbound").orElseThrow();
 
         page.getEditButton().clickDropdown("addExistingNation");
         Locator addDialog = page.asPage().getByRole(AriaRole.DIALOG);
@@ -126,6 +126,6 @@ public class SpeciesDetailPageTest extends ServerTestBase {
         addDialog.locator("[type=submit]").click();
         assertThat(page.getLink(nation)).isVisible();
 
-        Assertions.assertThat(speciesRepository.get(getUniverseName(), species.getName()).orElseThrow().getNations()).contains(nation);
+        Assertions.assertThat(speciesRepository.get(getUniverseId(), species.getName()).orElseThrow().getNations()).contains(nation);
     }
 }

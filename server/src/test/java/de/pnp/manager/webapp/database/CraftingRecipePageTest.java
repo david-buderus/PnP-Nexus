@@ -52,7 +52,7 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
     protected CraftingRecipe getCorrectObject() {
         return new CraftingRecipe(null, "Smith", "NEW", "",
                 List.of(new IResourceUsage.ItemUsage(1, getItem("Iron Sword"))),
-                List.of(new IResourceUsage.MaterialUsage(1, materialRepository.get(getUniverseName(), "Iron").orElseThrow())));
+                List.of(new IResourceUsage.MaterialUsage(1, materialRepository.get(getUniverseId(), "Iron").orElseThrow())));
     }
 
     @Override
@@ -79,6 +79,6 @@ public class CraftingRecipePageTest extends RepositoryOverviewTestBase<CraftingR
     }
 
     private Item getItem(String name) {
-        return itemRepository.get(getUniverseName(), name).orElseThrow();
+        return itemRepository.get(getUniverseId(), name).orElseThrow();
     }
 }

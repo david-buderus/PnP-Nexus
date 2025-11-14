@@ -212,10 +212,10 @@ function CreationDialog({
 
     function onSubmit(spell: Spell) {
         if (editMode) {
-            SPELL_API.updateSpell(activeUniverse.name, spell.id, addTypeAnnotationToSpell(spell)).then(refresh).then(close)
+            SPELL_API.updateSpell(activeUniverse.id, spell.id, addTypeAnnotationToSpell(spell)).then(refresh).then(close)
                 .catch(handleValidationErrors(form.setErrors));
         } else {
-            SPELL_API.insertAllSpells(activeUniverse.name, [addTypeAnnotationToSpell(spell)]).then(refresh).then(close)
+            SPELL_API.insertAllSpells(activeUniverse.id, [addTypeAnnotationToSpell(spell)]).then(refresh).then(close)
                 .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
         }
     }

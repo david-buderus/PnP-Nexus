@@ -17,7 +17,7 @@ export interface UserPermissions {
 }
 
 function extractUniversePermissions(universePermission: GrantedUniverseAuthorityDTO, activeUniverse: Universe, userPermissions: UserPermissions) {
-  if (activeUniverse !== null && universePermission.universe === activeUniverse.name) {
+  if (activeUniverse !== null && universePermission.universe === activeUniverse.id) {
     switch (universePermission.permission) {
       case "OWNER": userPermissions.isActiveUniverseOwner = true; // Fall through
       case "WRITE": userPermissions.canWriteActiveUniverse = true; // Fall through

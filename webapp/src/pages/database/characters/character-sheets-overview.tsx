@@ -45,7 +45,7 @@ export function CharacterSheetsOverview() {
                                         component={Link}
                                         to={{
                                             pathname: `/characters-editor/${s.id}`,
-                                            search: `universe=${activeUniverse.name}`
+                                            search: `universe=${activeUniverse.id}`
                                         }}
                                         data-testid={s.id}
                                     >

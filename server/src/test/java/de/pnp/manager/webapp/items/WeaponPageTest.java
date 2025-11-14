@@ -48,7 +48,7 @@ public class WeaponPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepo
 
     @Override
     protected Weapon getCorrectObject() {
-        Material iron = materialRepository.get(getUniverseName(), "Iron").orElseThrow();
+        Material iron = materialRepository.get(getUniverseId(), "Iron").orElseThrow();
         return createItemBuilder().withName("The Stick").withMaterial(iron).withDice(Dice.simpleDice(6))
                 .withVendorPrice(154).withRarity(ERarity.EPIC).buildWeapon();
     }

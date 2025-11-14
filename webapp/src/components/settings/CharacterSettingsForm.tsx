@@ -36,14 +36,14 @@ export default function CharacterSettingsForm({
             return;
         }
 
-        SETTINGS_API.getCharacterSettings(activeUniverse.name).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
+        SETTINGS_API.getCharacterSettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
     }, [activeUniverse]);
 
     return <Stack align="center">
         <Title order={3} ta="center">
             {t('universe:characterSettings')}
         </Title>
-        <form onSubmit={form.onSubmit(s => SETTINGS_API.updateCharacterSettings(activeUniverse.name, s).then(onSave)
+        <form onSubmit={form.onSubmit(s => SETTINGS_API.updateCharacterSettings(activeUniverse.id, s).then(onSave)
             .catch(handleValidationErrors(form.setErrors)))}>
             <Grid columns={2} gutter="5vw">
                 <Grid.Col span={1}>

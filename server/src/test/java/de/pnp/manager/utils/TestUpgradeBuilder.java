@@ -7,12 +7,14 @@ import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
 import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Helper class to build {@link Upgrade}.
@@ -31,7 +33,7 @@ public class TestUpgradeBuilder {
         /**
          * Builder with default values.
          */
-        public TestUpgradeBuilder createUpgradeBuilder(String universe) {
+        public TestUpgradeBuilder createUpgradeBuilder(ObjectId universe) {
             return new TestUpgradeBuilder(universe, upgradeRepository);
         }
     }
@@ -43,7 +45,7 @@ public class TestUpgradeBuilder {
         return new TestUpgradeBuilder(null, null);
     }
 
-    private final String universe;
+    private final ObjectId universe;
 
     private String name;
 
@@ -61,7 +63,7 @@ public class TestUpgradeBuilder {
 
     private final UpgradeRepository upgradeRepository;
 
-    public TestUpgradeBuilder(String universe, UpgradeRepository upgradeRepository) {
+    public TestUpgradeBuilder(ObjectId universe, UpgradeRepository upgradeRepository) {
         this.universe = universe;
         this.upgradeRepository = upgradeRepository;
         name = "Test";
