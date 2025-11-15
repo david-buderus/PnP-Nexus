@@ -7,6 +7,9 @@ import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {EArmorSlot, ShieldEquipment} from '../../../../../api';
 import {useUniverseContext} from '../../../../PageBase';
 import {diceFormatter} from '../../../../utils/Formatters';
+import {OverflowSwitch} from '../../../../utils/OverflowSwitch';
+import {FaWeightHanging} from 'react-icons/fa6';
+import {GiCrackedShield, GiShield} from 'react-icons/gi';
 
 
 /** Shows armor of the character */
@@ -31,11 +34,17 @@ export const ArmorSlots = ({withShield}: { withShield: boolean }) => {
             <Table.Tr h={TABLE_ROW_HEIGHT}>
                 <Table.Th style={{width: 'max-content', ...TABLE_STYLE}}></Table.Th>
                 <Table.Th style={{width: '20%', ...TABLE_STYLE}}>{t('name')}</Table.Th>
-                <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('armor')}</Table.Th>
+                <Table.Th style={{width: '10%', ...TABLE_STYLE}}>
+                    <OverflowSwitch fallback={<GiShield/>}>{t('armor')}</OverflowSwitch>
+                </Table.Th>
                 {itemSettings?.usingProtection ?
-                    <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('protection')}</Table.Th> : null
+                    <Table.Th style={{width: '10%', ...TABLE_STYLE}}>
+                        <OverflowSwitch fallback={<GiCrackedShield/>}>{t('protection')}</OverflowSwitch>
+                    </Table.Th> : null
                 }
-                <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('weight')}</Table.Th>
+                <Table.Th style={{width: '10%', ...TABLE_STYLE}}>
+                    <OverflowSwitch fallback={<FaWeightHanging/>}>{t('weight')}</OverflowSwitch>
+                </Table.Th>
                 <Table.Th
                     style={{
                         width: itemSettings?.usingProtection ? '32%' : '42%',
