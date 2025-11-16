@@ -2,7 +2,7 @@ package de.pnp.manager.server.service.universe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.ManipulatesMetadata;
@@ -113,7 +113,7 @@ public class UniverseServiceTest extends ServerTestBase {
             userController.createNewUser(
                     PnPUserCreation.simple(USER,
                             List.of(new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE),
-                                    GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME))));
+                                    GrantedDatabaseObjectAuthority.ownerAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -142,8 +142,8 @@ public class UniverseServiceTest extends ServerTestBase {
 
             Universe exampleUniverse = create(new Universe(null, "Example Universe"));
             assertThat(userRepository.loadUserByUsername("test").getAuthorities()).filteredOn(
-                            auth -> auth instanceof GrantedUniverseAuthority).hasSize(1)
-                    .anyMatch(auth -> ((GrantedUniverseAuthority) auth).isOwner(exampleUniverse.getId()));
+                            auth -> auth instanceof GrantedDatabaseObjectAuthority).hasSize(1)
+                    .anyMatch(auth -> ((GrantedDatabaseObjectAuthority) auth).isOwner(exampleUniverse.getId()));
         }
 
         @Test
@@ -166,7 +166,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME))));
+                    PnPUserCreation.simple(USER, List.of(GrantedDatabaseObjectAuthority.writeAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -207,7 +207,7 @@ public class UniverseServiceTest extends ServerTestBase {
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME))));
+                    PnPUserCreation.simple(USER, List.of(GrantedDatabaseObjectAuthority.readAuthority(UNIVERSE_NAME))));
         }
 
         @Test
@@ -333,8 +333,8 @@ public class UniverseServiceTest extends ServerTestBase {
                 .extracting(e -> ((ResponseStatusException) e).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(userRepository.getAllUsernames().stream()
                 .flatMap(username -> userRepository.loadUserByUsername(username).getAuthorities().stream()
-                        .filter(GrantedUniverseAuthority.class::isInstance))
-        ).noneMatch(authority -> ((GrantedUniverseAuthority) authority).getUniverse().equals(UNIVERSE_NAME));
+                        .filter(GrantedDatabaseObjectAuthority.class::isInstance))
+        ).noneMatch(authority -> ((GrantedDatabaseObjectAuthority) authority).getObjectId().equals(UNIVERSE_NAME));
     }
 
     private void runNotAllowedDeleteTest() {
@@ -375,11 +375,11 @@ public class UniverseServiceTest extends ServerTestBase {
         userController.createNewUser(new PnPUserCreation(name, "test", name, null, List.of()));
 
         addPermission(UNIVERSE_NAME, name, SecurityConstants.READ_ACCESS);
-        hasAccessRight(name, GrantedUniverseAuthority.readAuthority(UNIVERSE_NAME));
+        hasAccessRight(name, GrantedDatabaseObjectAuthority.readAuthority(UNIVERSE_NAME));
         addPermission(UNIVERSE_NAME, name, SecurityConstants.WRITE_ACCESS);
-        hasAccessRight(name, GrantedUniverseAuthority.writeAuthority(UNIVERSE_NAME));
+        hasAccessRight(name, GrantedDatabaseObjectAuthority.writeAuthority(UNIVERSE_NAME));
         addPermission(UNIVERSE_NAME, name, SecurityConstants.OWNER);
-        hasAccessRight(name, GrantedUniverseAuthority.ownerAuthority(UNIVERSE_NAME));
+        hasAccessRight(name, GrantedDatabaseObjectAuthority.ownerAuthority(UNIVERSE_NAME));
 
         removePermission(UNIVERSE_NAME, name);
         assertThat(userRepository.loadUserByUsername(name).getAuthorities()).isEmpty();

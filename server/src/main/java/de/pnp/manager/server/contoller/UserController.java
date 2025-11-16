@@ -1,9 +1,11 @@
 package de.pnp.manager.server.contoller;
 
 import de.pnp.manager.component.user.*;
+import de.pnp.manager.exception.UniverseNotFoundException;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.UserPreferenceRepository;
 import de.pnp.manager.server.database.UserRepository;
+import de.pnp.manager.server.database.universe.UniverseRepository;
 import jakarta.validation.ConstraintViolationException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +23,23 @@ import java.util.stream.Collectors;
 @Component
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
 
-    @Autowired
-    private UserPreferenceRepository preferenceRepository;
+    private final UserPreferenceRepository preferenceRepository;
+
+    private final UniverseRepository universeRepository;
+
+    public UserController(@Autowired UserRepository userRepository,
+                          @Autowired UserDetailsRepository userDetailsRepository,
+                          @Autowired UserPreferenceRepository preferenceRepository,
+                          @Autowired UniverseRepository universeRepository) {
+        this.userRepository = userRepository;
+        this.userDetailsRepository = userDetailsRepository;
+        this.preferenceRepository = preferenceRepository;
+        this.universeRepository = universeRepository;
+    }
 
     /**
      * Creates a {@link PnPUser} with corresponding {@link PnPUserDetails}.
@@ -70,7 +81,7 @@ public class UserController {
     }
 
     /**
-     * Adds the {@link GrantedUniverseAuthority authorities} to the user.
+     * Adds the {@link GrantedDatabaseObjectAuthority authorities} to the user.
      */
     public void addGrantedAuthorityByDisplayName(String displayName, GrantedAuthority... newAuthorities) {
         Optional<PnPUser> user = userRepository.getUserByDisplayName(displayName);
@@ -80,41 +91,52 @@ public class UserController {
     }
 
     /**
-     * Removes the {@link GrantedUniverseAuthority authorities} from the user.
+     * Removes the {@link GrantedDatabaseObjectAuthority authorities} from the user.
      */
-    public void removeGrantedUniverseAuthoritiesByDisplayName(String displayName, ObjectId universe) {
+    public void removeGrantedDatabaseObjectAuthoritiesByDisplayName(String displayName, ObjectId id) {
         Optional<PnPUser> user = userRepository.getUserByDisplayName(displayName);
-        userDetailsRepository.removeGrantedUniverseAuthorities(
+        userDetailsRepository.removeGrantedDatabaseObjectAuthorities(
                 user.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "User with display name " + displayName + " not found.")).username(), universe);
+                        "User with display name " + displayName + " not found.")).username(), id);
     }
 
     /**
      * Returns all users with their access right to the given universes except admins.
+     *
+     * @throws UniverseNotFoundException if the universe does not exist
      */
-    public Collection<UserUniversePermissionDTO> getAllUserWithUniversePermission(ObjectId universe) {
-        Collection<PnPUserDetails> users = userDetailsRepository.getAllUsersWithUniversePermissions(
-                universe);
+    public Collection<UserDatabaseObjectPermissionDTO> getAllUserWithUniversePermission(ObjectId universe) {
+        if (!universeRepository.exists(universe)) {
+            throw new UniverseNotFoundException(universe);
+        }
+        return getAllUserWithDatabaseObjectPermission(universe);
+    }
+
+    /**
+     * Returns all users with their access right to the given database object except admins.
+     */
+    public Collection<UserDatabaseObjectPermissionDTO> getAllUserWithDatabaseObjectPermission(ObjectId id) {
+        Collection<PnPUserDetails> users = userDetailsRepository.getAllUsersWithDatabaseObjectPermissions(id);
         Map<String, String> displayNames = userRepository.getAllUsers(
                         users.stream().map(PnPUserDetails::getUsername).toList()).stream()
                 .collect(Collectors.toUnmodifiableMap(PnPUser::username, PnPUser::displayName));
-        return users.stream().map(detail -> new UserUniversePermissionDTO(displayNames.get(detail.getUsername()),
-                IGrantedAuthorityDTO.from(getHighestUniverseAuthority(universe, detail.getAuthorities())))).toList();
+        return users.stream().map(detail -> new UserDatabaseObjectPermissionDTO(displayNames.get(detail.getUsername()),
+                IGrantedAuthorityDTO.from(getHighestDatabaseObjectAuthority(id, detail.getAuthorities())))).toList();
     }
 
-    private static GrantedUniverseAuthority getHighestUniverseAuthority(ObjectId universe,
-                                                                        Collection<? extends GrantedAuthority> authorities) {
-        List<GrantedUniverseAuthority> universeAuthorities = authorities.stream()
-                .filter(GrantedUniverseAuthority.class::isInstance).map(GrantedUniverseAuthority.class::cast)
-                .filter(auth -> auth.getUniverse().equals(universe)).toList();
-        Optional<GrantedUniverseAuthority> owner = universeAuthorities.stream().filter(auth -> auth.isOwner(universe))
+    private static GrantedDatabaseObjectAuthority getHighestDatabaseObjectAuthority(
+            ObjectId id, Collection<? extends GrantedAuthority> authorities) {
+        List<GrantedDatabaseObjectAuthority> databaseObjectAuthorities = authorities.stream()
+                .filter(GrantedDatabaseObjectAuthority.class::isInstance).map(GrantedDatabaseObjectAuthority.class::cast)
+                .filter(auth -> auth.getObjectId().equals(id)).toList();
+        Optional<GrantedDatabaseObjectAuthority> owner = databaseObjectAuthorities.stream().filter(auth -> auth.isOwner(id))
                 .findFirst();
         if (owner.isPresent()) {
             return owner.get();
         }
-        Optional<GrantedUniverseAuthority> write = universeAuthorities.stream().filter(auth -> auth.canWrite(universe))
+        Optional<GrantedDatabaseObjectAuthority> write = databaseObjectAuthorities.stream().filter(auth -> auth.canWrite(id))
                 .findFirst();
-        return write.orElseGet(() -> universeAuthorities.stream().findFirst().orElseThrow());
+        return write.orElseGet(() -> databaseObjectAuthorities.stream().findFirst().orElseThrow());
     }
 
     /**

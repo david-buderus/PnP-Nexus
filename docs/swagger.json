@@ -423,7 +423,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserUniversePermissionDTO"
+                    "$ref": "#/components/schemas/UserDatabaseObjectPermissionDTO"
                   }
                 }
               }
@@ -678,7 +678,7 @@
                   "items": {
                     "oneOf": [
                       {
-                        "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                        "$ref": "#/components/schemas/GrantedDatabaseObjectIdAuthorityDTO"
                       },
                       {
                         "$ref": "#/components/schemas/RoleAuthorityDTO"
@@ -716,7 +716,7 @@
                 "items": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                      "$ref": "#/components/schemas/GrantedDatabaseObjectIdAuthorityDTO"
                     },
                     {
                       "$ref": "#/components/schemas/RoleAuthorityDTO"
@@ -5308,10 +5308,10 @@
           }
         ]
       },
-      "GrantedUniverseAuthorityDTO": {
+      "GrantedDatabaseObjectIdAuthorityDTO": {
         "required": [
-          "permission",
-          "universe"
+          "id",
+          "permission"
         ],
         "type": "object",
         "allOf": [
@@ -5321,10 +5321,10 @@
           {
             "type": "object",
             "properties": {
-              "permission": {
+              "id": {
                 "type": "string"
               },
-              "universe": {
+              "permission": {
                 "type": "string"
               }
             }
@@ -6007,7 +6007,7 @@
             "items": {
               "oneOf": [
                 {
-                  "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+                  "$ref": "#/components/schemas/GrantedDatabaseObjectIdAuthorityDTO"
                 },
                 {
                   "$ref": "#/components/schemas/RoleAuthorityDTO"
@@ -6877,7 +6877,7 @@
           }
         }
       },
-      "UserUniversePermissionDTO": {
+      "UserDatabaseObjectPermissionDTO": {
         "required": [
           "displayName",
           "dto"
@@ -6888,7 +6888,7 @@
             "type": "string"
           },
           "dto": {
-            "$ref": "#/components/schemas/GrantedUniverseAuthorityDTO"
+            "$ref": "#/components/schemas/GrantedDatabaseObjectIdAuthorityDTO"
           }
         }
       },

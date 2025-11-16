@@ -2,7 +2,7 @@ package de.pnp.manager.webapp.users;
 
 import com.microsoft.playwright.assertions.PlaywrightAssertions;
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.RoleAuthorityDTO;
 import de.pnp.manager.component.user.PnPUser;
 import de.pnp.manager.component.user.PnPUserCreation;
@@ -110,7 +110,7 @@ public class UserOverviewPageTest extends ServerTestBase {
         Optional<PnPUserDetails> userDetails = userDetailsRepository.getUser(USER_USERNAME);
         assertThat(userDetails).isPresent();
         assertThat(userDetails.get().getAuthorities()).map(a -> (GrantedAuthority) a)
-                .containsExactlyInAnyOrder(GrantedUniverseAuthority.readAuthority(universe.getId()),
+                .containsExactlyInAnyOrder(GrantedDatabaseObjectAuthority.readAuthority(universe.getId()),
                         new SimpleGrantedAuthority(SecurityConstants.UNIVERSE_CREATOR_ROLE));
     }
 
@@ -173,6 +173,6 @@ public class UserOverviewPageTest extends ServerTestBase {
         Optional<PnPUserDetails> userDetails = userDetailsRepository.getUser(USER_USERNAME);
         assertThat(userDetails).isPresent();
         assertThat(userDetails.get().getAuthorities()).map(a -> (GrantedAuthority) a)
-                .containsExactlyInAnyOrder(GrantedUniverseAuthority.writeAuthority(universe.getId()));
+                .containsExactlyInAnyOrder(GrantedDatabaseObjectAuthority.writeAuthority(universe.getId()));
     }
 }

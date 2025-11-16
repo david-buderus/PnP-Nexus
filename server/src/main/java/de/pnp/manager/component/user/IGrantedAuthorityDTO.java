@@ -3,7 +3,7 @@ package de.pnp.manager.component.user;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import de.pnp.manager.component.user.IGrantedAuthorityDTO.GrantedUniverseAuthorityDTO;
+import de.pnp.manager.component.user.IGrantedAuthorityDTO.GrantedDatabaseObjectIdAuthorityDTO;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.RoleAuthorityDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RoleAuthorityDTO.class, name = "Role"),
-        @JsonSubTypes.Type(value = GrantedUniverseAuthorityDTO.class, name = "UniverseAuthority"),
+        @JsonSubTypes.Type(value = GrantedDatabaseObjectIdAuthorityDTO.class, name = "DatabaseObjectAuthority"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public interface IGrantedAuthorityDTO {
@@ -35,8 +35,8 @@ public interface IGrantedAuthorityDTO {
         if (authority instanceof SimpleGrantedAuthority && authority.getAuthority().startsWith("ROLE_")) {
             return new RoleAuthorityDTO(authority.getAuthority().substring("ROLE_".length()));
         }
-        if (authority instanceof GrantedUniverseAuthority universeAuthority) {
-            return new GrantedUniverseAuthorityDTO(universeAuthority.getUniverse(), universeAuthority.getAccessRight());
+        if (authority instanceof GrantedDatabaseObjectAuthority databaseObjectAuthority) {
+            return new GrantedDatabaseObjectIdAuthorityDTO(databaseObjectAuthority.getObjectId(), databaseObjectAuthority.getAccessRight());
         }
         throw new UnsupportedOperationException("The authority " + authority.getClass().getSimpleName() +
                 " with '" + authority.getAuthority() + "' is not supported.");
@@ -45,8 +45,8 @@ public interface IGrantedAuthorityDTO {
     /**
      * Converts the given {@link GrantedAuthority} to an DTO.
      */
-    static GrantedUniverseAuthorityDTO from(GrantedUniverseAuthority universeAuthority) {
-        return new GrantedUniverseAuthorityDTO(universeAuthority.getUniverse(), universeAuthority.getAccessRight());
+    static GrantedDatabaseObjectIdAuthorityDTO from(GrantedDatabaseObjectAuthority databaseObjectAuthority) {
+        return new GrantedDatabaseObjectIdAuthorityDTO(databaseObjectAuthority.getObjectId(), databaseObjectAuthority.getAccessRight());
     }
 
     /**
@@ -90,29 +90,29 @@ public interface IGrantedAuthorityDTO {
     }
 
     /**
-     * Represents {@link GrantedUniverseAuthority}
+     * Represents {@link GrantedDatabaseObjectAuthority}
      */
-    class GrantedUniverseAuthorityDTO implements IGrantedAuthorityDTO {
+    class GrantedDatabaseObjectIdAuthorityDTO implements IGrantedAuthorityDTO {
 
         @NotNull
-        private final ObjectId universe;
+        private final ObjectId id;
 
         @NotBlank
         private final String permission;
 
         @JsonCreator
-        public GrantedUniverseAuthorityDTO(ObjectId universe, String permission) {
-            this.universe = universe;
+        public GrantedDatabaseObjectIdAuthorityDTO(ObjectId id, String permission) {
+            this.id = id;
             this.permission = permission;
         }
 
         @Override
         public GrantedAuthority convert() {
-            return GrantedUniverseAuthority.fromPermission(getUniverse(), getPermission());
+            return GrantedDatabaseObjectAuthority.fromPermission(getId(), getPermission());
         }
 
-        public ObjectId getUniverse() {
-            return universe;
+        public ObjectId getId() {
+            return id;
         }
 
         public String getPermission() {
@@ -127,14 +127,14 @@ public interface IGrantedAuthorityDTO {
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            GrantedUniverseAuthorityDTO that = (GrantedUniverseAuthorityDTO) o;
-            return Objects.equals(getUniverse(), that.getUniverse()) && Objects.equals(getPermission(),
+            GrantedDatabaseObjectIdAuthorityDTO that = (GrantedDatabaseObjectIdAuthorityDTO) o;
+            return Objects.equals(getId(), that.getId()) && Objects.equals(getPermission(),
                     that.getPermission());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(getUniverse(), getPermission());
+            return Objects.hash(getId(), getPermission());
         }
     }
 }

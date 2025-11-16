@@ -50,9 +50,9 @@ public class UserServiceTest extends ServerTestBase {
     private static final ObjectId UNIVERSE = new ObjectId("691704f7aaec6c2151805c91");
     private static final String EMAIL = "user@test.com";
     private static final PnPUserCreation USER_CREATION = new PnPUserCreation(USER, USER_PASSWORD, USER,
-            EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.readAuthority(UNIVERSE))));
+            EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedDatabaseObjectAuthority.readAuthority(UNIVERSE))));
     private static final PnPUserCreation OTHER_USER_CREATION = new PnPUserCreation(OTHER_USER, OTHER_USER_PASSWORD,
-            OTHER_USER, EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedUniverseAuthority.writeAuthority(UNIVERSE))));
+            OTHER_USER, EMAIL, List.of(IGrantedAuthorityDTO.from(GrantedDatabaseObjectAuthority.writeAuthority(UNIVERSE))));
 
     @Autowired
     private MockMvc mockMvc;
@@ -86,8 +86,8 @@ public class UserServiceTest extends ServerTestBase {
             assertThat(userDetails.get().getUsername()).isEqualTo(OTHER_USER);
             assertThat(userDetails.get().getPassword()).doesNotContain("{noop}");
             assertThat(userDetails.get().getPassword()).isNotEqualTo(OTHER_USER);
-            assertThat(userDetails.get().getAuthorities()).map(GrantedUniverseAuthority.class::cast)
-                    .containsExactly(GrantedUniverseAuthority.writeAuthority(UNIVERSE));
+            assertThat(userDetails.get().getAuthorities()).map(GrantedDatabaseObjectAuthority.class::cast)
+                    .containsExactly(GrantedDatabaseObjectAuthority.writeAuthority(UNIVERSE));
         }
 
         @Test

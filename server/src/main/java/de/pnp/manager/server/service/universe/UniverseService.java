@@ -1,8 +1,8 @@
 package de.pnp.manager.server.service.universe;
 
 import de.pnp.manager.component.universe.Universe;
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
-import de.pnp.manager.component.user.UserUniversePermissionDTO;
+import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
+import de.pnp.manager.component.user.UserDatabaseObjectPermissionDTO;
 import de.pnp.manager.exception.AlreadyPersistedException;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.security.UniverseOwner;
@@ -77,7 +77,7 @@ public class UniverseService {
             throw new ResponseStatusException(NOT_FOUND, UNIVERSE_DOES_NOT_EXIST_EXCEPTION_MESSAGE);
         }
         for (String username : userDetailsRepository.getAllUsernames()) {
-            userDetailsRepository.removeGrantedUniverseAuthorities(username, universe);
+            userDetailsRepository.removeGrantedDatabaseObjectAuthorities(username, universe);
         }
     }
 
@@ -91,7 +91,7 @@ public class UniverseService {
         }
         Universe persistedUniverse = universeRepository.insert(universe);
         userDetailsRepository.addGrantedAuthority(userDetails.getUsername(),
-                GrantedUniverseAuthority.ownerAuthority(persistedUniverse.getId()));
+                GrantedDatabaseObjectAuthority.ownerAuthority(persistedUniverse.getId()));
         return persistedUniverse;
     }
 
@@ -112,7 +112,7 @@ public class UniverseService {
     public void addPermission(@PathVariable ObjectId universe, @RequestParam @NotBlank String displayName,
                               @RequestParam(defaultValue = SecurityConstants.READ_ACCESS) String accessPermission) {
         userController.addGrantedAuthorityByDisplayName(displayName,
-                GrantedUniverseAuthority.fromPermission(universe, accessPermission));
+                GrantedDatabaseObjectAuthority.fromPermission(universe, accessPermission));
     }
 
     @DeleteMapping("{universe}/permission")
@@ -120,13 +120,13 @@ public class UniverseService {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Removes all access rights to the universe from the given user", operationId = "removeUniversePermission")
     public void removePermission(@PathVariable ObjectId universe, @RequestParam String displayName) {
-        userController.removeGrantedUniverseAuthoritiesByDisplayName(displayName, universe);
+        userController.removeGrantedDatabaseObjectAuthoritiesByDisplayName(displayName, universe);
     }
 
     @GetMapping("{universe}/permission")
     @UniverseOwner
     @Operation(summary = "List all access rights of the universe", operationId = "getUniversePermissions")
-    public Collection<UserUniversePermissionDTO> getPermissions(@PathVariable ObjectId universe) {
+    public Collection<UserDatabaseObjectPermissionDTO> getPermissions(@PathVariable ObjectId universe) {
         return userController.getAllUserWithUniversePermission(universe);
     }
 }
