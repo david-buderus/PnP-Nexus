@@ -1,6 +1,6 @@
 package de.pnp.manager.server.database;
 
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
 import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.UniverseTestBase;
@@ -27,14 +27,14 @@ public class UserDetailsRepositoryTest extends UniverseTestBase {
 
         userDetailsRepository.addNewUser("A", "A", List.of());
         userDetailsRepository.addNewUser("B", "B", List.of(new SimpleGrantedAuthority(SecurityConstants.ADMIN_ROLE)));
-        userDetailsRepository.addNewUser("C", "C", List.of(GrantedUniverseAuthority.readAuthority(getUniverseId())));
-        userDetailsRepository.addNewUser("D", "D", List.of(GrantedUniverseAuthority.writeAuthority(getUniverseId())));
-        userDetailsRepository.addNewUser("E", "E", List.of(GrantedUniverseAuthority.ownerAuthority(getUniverseId())));
-        userDetailsRepository.addNewUser("F", "F", List.of(GrantedUniverseAuthority.readAuthority(getUniverseId()),
-                GrantedUniverseAuthority.ownerAuthority(otherUniverseId)));
-        userDetailsRepository.addNewUser("G", "G", List.of(GrantedUniverseAuthority.readAuthority(otherUniverseId)));
+        userDetailsRepository.addNewUser("C", "C", List.of(GrantedDatabaseObjectAuthority.readAuthority(getUniverseId())));
+        userDetailsRepository.addNewUser("D", "D", List.of(GrantedDatabaseObjectAuthority.writeAuthority(getUniverseId())));
+        userDetailsRepository.addNewUser("E", "E", List.of(GrantedDatabaseObjectAuthority.ownerAuthority(getUniverseId())));
+        userDetailsRepository.addNewUser("F", "F", List.of(GrantedDatabaseObjectAuthority.readAuthority(getUniverseId()),
+                GrantedDatabaseObjectAuthority.ownerAuthority(otherUniverseId)));
+        userDetailsRepository.addNewUser("G", "G", List.of(GrantedDatabaseObjectAuthority.readAuthority(otherUniverseId)));
 
-        assertThat(userDetailsRepository.getAllUsersWithUniversePermissions(getUniverseId())).extracting(
+        assertThat(userDetailsRepository.getAllUsersWithDatabaseObjectPermissions(getUniverseId())).extracting(
                 PnPUserDetails::getUsername).containsExactlyInAnyOrder("C", "D", "E", "F");
     }
 }

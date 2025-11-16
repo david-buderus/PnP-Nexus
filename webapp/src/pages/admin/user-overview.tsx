@@ -1,5 +1,11 @@
 import {useTranslation} from 'react-i18next';
-import {GrantedUniverseAuthorityDTO, PnPUser, PnPUserCreation, RoleAuthorityDTO, UserServiceApi} from '../../api';
+import {
+    GrantedDatabaseObjectIdAuthorityDTO,
+    PnPUser,
+    PnPUserCreation,
+    RoleAuthorityDTO,
+    UserServiceApi
+} from '../../api';
 import {API_CONFIGURATION} from '../../components/Constants';
 import {useEffect, useMemo, useState} from 'react';
 import OverviewPage, {ExtendedColumnDef} from '../../components/OverviewPage';
@@ -197,8 +203,8 @@ function EditDialog({
 }
 
 function PermissionManipulation({authorities, setAuthorities}: {
-    authorities: (GrantedUniverseAuthorityDTO | RoleAuthorityDTO)[];
-    setAuthorities: (authorities: (GrantedUniverseAuthorityDTO | RoleAuthorityDTO)[]) => void;
+    authorities: (GrantedDatabaseObjectIdAuthorityDTO | RoleAuthorityDTO)[];
+    setAuthorities: (authorities: (GrantedDatabaseObjectIdAuthorityDTO | RoleAuthorityDTO)[]) => void;
 }) {
     const {t} = useTranslation();
     const {universes} = useUniverseContext();
@@ -209,8 +215,9 @@ function PermissionManipulation({authorities, setAuthorities}: {
     }, [universes]);
 
     function getUniverseRights(right: 'READ' | 'WRITE' | 'OWNER') {
-        return authorities.filter(auth => (auth as GrantedUniverseAuthorityDTO)?.permission === right)
-            .map(auth => universes.find(opt => opt.id === (auth as GrantedUniverseAuthorityDTO).universe)).filter(auth => auth !== undefined).map(universe => universe.id);
+        return authorities.filter(auth => (auth as GrantedDatabaseObjectIdAuthorityDTO)?.permission === right)
+            .map(auth => universes.find(opt => opt.id === (auth as GrantedDatabaseObjectIdAuthorityDTO).id))
+            .filter(auth => auth !== undefined).map(universe => universe.id);
     }
 
     const [adminRights, setAdminRights] = useState<boolean>(false);

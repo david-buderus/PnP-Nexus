@@ -892,26 +892,26 @@ export interface EquipmentUpgradeEffect {
  * @type GetPermissions200ResponseInner
  * @export
  */
-export type GetPermissions200ResponseInner = GrantedUniverseAuthorityDTO | RoleAuthorityDTO;
+export type GetPermissions200ResponseInner = GrantedDatabaseObjectIdAuthorityDTO | RoleAuthorityDTO;
 
 /**
  * 
  * @export
- * @interface GrantedUniverseAuthorityDTO
+ * @interface GrantedDatabaseObjectIdAuthorityDTO
  */
-export interface GrantedUniverseAuthorityDTO {
+export interface GrantedDatabaseObjectIdAuthorityDTO {
     /**
      * 
      * @type {string}
-     * @memberof GrantedUniverseAuthorityDTO
+     * @memberof GrantedDatabaseObjectIdAuthorityDTO
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof GrantedDatabaseObjectIdAuthorityDTO
      */
     'permission': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof GrantedUniverseAuthorityDTO
-     */
-    'universe': string;
 }
 /**
  * 
@@ -2698,21 +2698,21 @@ export interface UpgradeRecipe {
 /**
  * 
  * @export
- * @interface UserUniversePermissionDTO
+ * @interface UserDatabaseObjectPermissionDTO
  */
-export interface UserUniversePermissionDTO {
+export interface UserDatabaseObjectPermissionDTO {
     /**
      * 
      * @type {string}
-     * @memberof UserUniversePermissionDTO
+     * @memberof UserDatabaseObjectPermissionDTO
      */
     'displayName': string;
     /**
      * 
-     * @type {GrantedUniverseAuthorityDTO}
-     * @memberof UserUniversePermissionDTO
+     * @type {GrantedDatabaseObjectIdAuthorityDTO}
+     * @memberof UserDatabaseObjectPermissionDTO
      */
-    'dto': GrantedUniverseAuthorityDTO;
+    'dto': GrantedDatabaseObjectIdAuthorityDTO;
 }
 /**
  * 
@@ -10470,7 +10470,7 @@ export const UniverseServiceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUniversePermissions(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserUniversePermissionDTO>>> {
+        async getUniversePermissions(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserDatabaseObjectPermissionDTO>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getUniversePermissions(universe, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UniverseServiceApi.getUniversePermissions']?.[localVarOperationServerIndex]?.url;
@@ -10572,7 +10572,7 @@ export const UniverseServiceApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUniversePermissions(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<UserUniversePermissionDTO>> {
+        getUniversePermissions(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<UserDatabaseObjectPermissionDTO>> {
             return localVarFp.getUniversePermissions(universe, options).then((request) => request(axios, basePath));
         },
         /**

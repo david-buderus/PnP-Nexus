@@ -20,7 +20,13 @@ import {
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import ConfirmationDialog from '../../components/modal/ConfirmationDialog';
-import {PrimaryAttribute, Universe, UniverseServiceApi, UserServiceApi, UserUniversePermissionDTO} from '../../api';
+import {
+    PrimaryAttribute,
+    Universe,
+    UniverseServiceApi,
+    UserDatabaseObjectPermissionDTO,
+    UserServiceApi
+} from '../../api';
 import {API_CONFIGURATION} from '../../components/Constants';
 import {useForm} from '@mantine/form';
 import {handleValidationErrors} from '../../components/utils/ErrorUtils';
@@ -492,7 +498,7 @@ function PermissionCard() {
     const {activeUniverse} = useUniverseContext();
     const {t} = useTranslation();
 
-    const [universePermissions, setUniversePermissions] = useState<UserUniversePermissionDTO[]>([]);
+    const [universePermissions, setUniversePermissions] = useState<UserDatabaseObjectPermissionDTO[]>([]);
 
     const fetchPermissions = () => {
         if (!activeUniverse) {

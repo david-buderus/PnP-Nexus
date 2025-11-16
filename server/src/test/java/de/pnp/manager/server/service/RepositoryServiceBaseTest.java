@@ -3,7 +3,7 @@ package de.pnp.manager.server.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import de.pnp.manager.component.DatabaseObject;
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.ManipulatesMetadata;
@@ -154,7 +154,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.ownerAuthority(getUniverseId()))));
+                    PnPUserCreation.simple(USER, List.of(GrantedDatabaseObjectAuthority.ownerAuthority(getUniverseId()))));
         }
 
         @Test
@@ -201,7 +201,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.writeAuthority(getUniverseId()))));
+                    PnPUserCreation.simple(USER, List.of(GrantedDatabaseObjectAuthority.writeAuthority(getUniverseId()))));
         }
 
         @Test
@@ -248,7 +248,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         @BeforeEach
         protected void setup() {
             userController.createNewUser(
-                    PnPUserCreation.simple(USER, List.of(GrantedUniverseAuthority.readAuthority(getUniverseId()))));
+                    PnPUserCreation.simple(USER, List.of(GrantedDatabaseObjectAuthority.readAuthority(getUniverseId()))));
         }
 
         @Test

@@ -1,7 +1,7 @@
 package de.pnp.manager.server.database;
 
 import com.mongodb.client.result.DeleteResult;
-import de.pnp.manager.component.user.GrantedUniverseAuthority;
+import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
 import de.pnp.manager.component.user.PnPUserDetails;
 import de.pnp.manager.server.contoller.UserController;
@@ -112,7 +112,7 @@ public class UserDetailsRepository implements UserDetailsService {
     }
 
     /**
-     * Updates the {@link GrantedUniverseAuthority authorities} of the user.
+     * Updates the {@link GrantedDatabaseObjectAuthority authorities} of the user.
      */
     public void updateGrantedAuthority(String username, Collection<GrantedAuthority> newAuthorities) {
         PnPUserDetails userDetails = loadUserByUsername(username);
@@ -120,7 +120,7 @@ public class UserDetailsRepository implements UserDetailsService {
     }
 
     /**
-     * Adds the {@link GrantedUniverseAuthority authorities} to the user.
+     * Adds the {@link GrantedDatabaseObjectAuthority authorities} to the user.
      */
     public void addGrantedAuthority(String username, GrantedAuthority... newAuthorities) {
         PnPUserDetails userDetails = loadUserByUsername(username);
@@ -147,15 +147,15 @@ public class UserDetailsRepository implements UserDetailsService {
     }
 
     /**
-     * Removes the {@link GrantedUniverseAuthority authorities} from the user.
+     * Removes the {@link GrantedDatabaseObjectAuthority authorities} from the user.
      */
-    public void removeGrantedUniverseAuthorities(String username, ObjectId universe) {
+    public void removeGrantedDatabaseObjectAuthorities(String username, ObjectId id) {
         PnPUserDetails userDetails = loadUserByUsername(username);
         List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
 
         authorities.removeIf(auth -> {
-            if (auth instanceof GrantedUniverseAuthority universeAuthority) {
-                return universeAuthority.getUniverse().equals(universe);
+            if (auth instanceof GrantedDatabaseObjectAuthority databaseObjectAuthority) {
+                return databaseObjectAuthority.getObjectId().equals(id);
             }
             return false;
         });
@@ -171,10 +171,10 @@ public class UserDetailsRepository implements UserDetailsService {
     }
 
     /**
-     * Returns all users which have access to the given universes except admins.
+     * Returns all users which have access to the given database objects except admins.
      */
-    public Collection<PnPUserDetails> getAllUsersWithUniversePermissions(ObjectId universe) {
-        return mongoTemplate.find(Query.query(Criteria.where("authorities.universe").is(universe)),
+    public Collection<PnPUserDetails> getAllUsersWithDatabaseObjectPermissions(ObjectId id) {
+        return mongoTemplate.find(Query.query(Criteria.where("authorities.objectId").is(id)),
                 PnPUserDetails.class, REPOSITORY_NAME);
     }
 

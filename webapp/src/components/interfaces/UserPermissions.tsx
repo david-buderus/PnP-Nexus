@@ -1,4 +1,4 @@
-import {GrantedUniverseAuthorityDTO, RoleAuthorityDTO, Universe} from '../../api';
+import {GrantedDatabaseObjectIdAuthorityDTO, RoleAuthorityDTO, Universe} from '../../api';
 
 /**
  * The permissions the currently authenticated user has on the active universe.
@@ -16,8 +16,8 @@ export type UserPermissions = {
     isActiveUniverseOwner: boolean;
 }
 
-function extractUniversePermissions(universePermission: GrantedUniverseAuthorityDTO, activeUniverse: Universe, userPermissions: UserPermissions) {
-    if (activeUniverse !== null && universePermission.universe === activeUniverse.id) {
+function extractUniversePermissions(universePermission: GrantedDatabaseObjectIdAuthorityDTO, activeUniverse: Universe, userPermissions: UserPermissions) {
+    if (activeUniverse !== null && universePermission.id === activeUniverse.id) {
         switch (universePermission.permission) {
             case 'OWNER':
                 userPermissions.isActiveUniverseOwner = true; // Fall through
@@ -63,8 +63,8 @@ export function extractUserPermissions(permissions: any[], activeUniverse: Unive
 
     for (const permission of permissions) {
         switch (permission['@type']) {
-            case 'UniverseAuthority':
-                extractUniversePermissions(permission as GrantedUniverseAuthorityDTO, activeUniverse, userPermissions);
+            case 'DatabaseObjectAuthority':
+                extractUniversePermissions(permission as GrantedDatabaseObjectIdAuthorityDTO, activeUniverse, userPermissions);
                 break;
             case 'Role':
                 extractRolePermissions(permission as RoleAuthorityDTO, userPermissions);
