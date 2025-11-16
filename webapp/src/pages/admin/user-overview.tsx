@@ -153,8 +153,7 @@ function EditDialog({
             'email': ''
         }
     });
-    const [orginialAuthorities, setOrginialAuthorities] = useState([]);
-    const [editAuthorities, setEditAuthorities] = useState([]);
+    const [authorities, setAuthorities] = useState([]);
 
     useEffect(() => {
         if (!opened) {
@@ -162,13 +161,13 @@ function EditDialog({
         }
         const user = getInitial();
         form.setValues(user);
-        USER_API.getPermissions(user.username).then(response => setOrginialAuthorities(response.data));
+        USER_API.getPermissions(user.username).then(response => setAuthorities(response.data));
     }, [opened, getInitial]);
 
     return <>
         <Modal opened={opened} onClose={close} title={t('user:editUser')} maw={300}>
             <form onSubmit={form.onSubmit(user => USER_API.updateUser(user.username, user)
-                .then(() => USER_API.updatePermissions(user.username, editAuthorities))
+                .then(() => USER_API.updatePermissions(user.username, authorities))
                 .then(() => {
                     refresh();
                     close();
@@ -185,7 +184,7 @@ function EditDialog({
                     key={form.key('email')}
                     {...form.getInputProps('email')}
                 />
-                <PermissionManipulation authorities={orginialAuthorities} setAuthorities={setEditAuthorities}/>
+                <PermissionManipulation authorities={authorities} setAuthorities={setAuthorities}/>
                 <Group justify="flex-end" mt="md">
                     <Button autoFocus variant="outline" onClick={close}>
                         {t('cancel')}
@@ -220,55 +219,43 @@ function PermissionManipulation({authorities, setAuthorities}: {
             .filter(auth => auth !== undefined).map(universe => universe.id);
     }
 
-    const [adminRights, setAdminRights] = useState<boolean>(false);
-    const [universeCreationRights, setUniverseCreationRights] = useState<boolean>(false);
-    const [readRights, setReadRights] = useState([]);
-    const [writeRights, setWriteRights] = useState([]);
-    const [ownerRights, setOwnerRights] = useState([]);
+    const {
+        adminRights, universeCreationRights, readRights, writeRights, ownerRights
+    } = useMemo(() => ({
+        adminRights: authorities.find(auth => (auth as RoleAuthorityDTO)?.role === 'ADMIN') !== undefined,
+        universeCreationRights: authorities.find(auth => (auth as RoleAuthorityDTO)?.role === 'UNIVERSE_CREATOR') !== undefined,
+        readRights: getUniverseRights('READ'),
+        writeRights: getUniverseRights('WRITE'),
+        ownerRights: getUniverseRights('OWNER'),
+    }), [authorities]);
 
-    useEffect(() => {
-        setAdminRights(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === 'ADMIN') !== undefined);
-        setUniverseCreationRights(authorities.find(auth => (auth as RoleAuthorityDTO)?.role === 'UNIVERSE_CREATOR') !== undefined);
-        setReadRights(getUniverseRights('READ'));
-        setWriteRights(getUniverseRights('WRITE'));
-        setOwnerRights(getUniverseRights('OWNER'));
-    }, [authorities]);
-
-    useEffect(() => {
-        const newAuthorities = [];
-        if (adminRights) {
+    function setRole(hasRole: boolean, role: string) {
+        const newAuthorities = authorities.filter(auth => (auth as RoleAuthorityDTO)?.role !== role);
+        if (hasRole) {
             newAuthorities.push({
                 '@type': 'Role',
-                'role': 'ADMIN'
-            });
+                'role': role
+            } as RoleAuthorityDTO);
         }
-        if (!adminRights && universeCreationRights) {
-            newAuthorities.push({
-                '@type': 'Role',
-                role: 'UNIVERSE_CREATOR'
-            });
-        }
-        readRights.forEach(right => newAuthorities.push({
-            '@type': 'UniverseAuthority',
-            universe: right,
-            permission: 'READ'
-
-        }));
-        writeRights.forEach(right => newAuthorities.push({
-            '@type': 'UniverseAuthority',
-            universe: right,
-            permission: 'WRITE'
-
-        }));
-        ownerRights.forEach(right => newAuthorities.push({
-            '@type': 'UniverseAuthority',
-            universe: right,
-            permission: 'OWNER'
-
-        }));
-
         setAuthorities(newAuthorities);
-    }, [adminRights, universeCreationRights, readRights, writeRights, ownerRights]);
+    }
+
+    function setUniverseRights(universesWithPermission: string[], permission: string) {
+        const newAuthorities = authorities.filter(auth =>
+            !(
+                // Remove all universe rights with this permission
+                (auth as GrantedDatabaseObjectIdAuthorityDTO)?.permission === permission &&
+                universes.map(u => u.id).includes((auth as GrantedDatabaseObjectIdAuthorityDTO).id)
+            )
+        );
+        universesWithPermission.forEach(right => newAuthorities.push({
+            '@type': 'DatabaseObjectAuthority',
+            id: right,
+            permission: permission
+
+        } as GrantedDatabaseObjectIdAuthorityDTO));
+        setAuthorities(newAuthorities);
+    }
 
     return <>
         <Input.Label>
@@ -278,14 +265,14 @@ function PermissionManipulation({authorities, setAuthorities}: {
             <Stack gap="xs">
                 <Switch
                     checked={adminRights}
-                    onChange={event => setAdminRights(event.target.checked)}
+                    onChange={event => setRole(event.target.checked, 'ADMIN')}
                     label={t('user:adminRights')}
                     data-testid="adminRights"
                 />
                 <Switch
                     checked={universeCreationRights || adminRights}
                     disabled={adminRights}
-                    onChange={event => setUniverseCreationRights(event.target.checked)}
+                    onChange={event => setRole(event.target.checked, 'UNIVERSE_CREATOR')}
                     label={t('user:universeCreationRights')}
                     data-testid="universeCreationRights"
                 />
@@ -294,21 +281,21 @@ function PermissionManipulation({authorities, setAuthorities}: {
                 label={t('user:universeReadRights')}
                 data={universeOptions}
                 value={readRights}
-                onChange={setReadRights}
+                onChange={universesWithPermission => setUniverseRights(universesWithPermission, 'READ')}
                 data-testid="universe-read-rights"
             />
             <MultiSelect
                 label={t('user:universeWriteRights')}
                 data={universeOptions}
                 value={writeRights}
-                onChange={setWriteRights}
+                onChange={universesWithPermission => setUniverseRights(universesWithPermission, 'WRITE')}
                 data-testid="universe-write-rights"
             />
             <MultiSelect
                 label={t('user:universeOwnerRights')}
                 data={universeOptions}
                 value={ownerRights}
-                onChange={setOwnerRights}
+                onChange={universesWithPermission => setUniverseRights(universesWithPermission, 'OWNER')}
                 data-testid="universe-owner-rights"
             />
         </Paper>
