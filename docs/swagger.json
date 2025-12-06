@@ -4932,6 +4932,20 @@
           }
         }
       },
+      "CharacterOrigin": {
+        "required": [
+          "species"
+        ],
+        "type": "object",
+        "properties": {
+          "nation": {
+            "$ref": "#/components/schemas/Nation"
+          },
+          "species": {
+            "$ref": "#/components/schemas/Species"
+          }
+        }
+      },
       "CharacterResourceUsage": {
         "required": [
           "resource"
@@ -5868,7 +5882,7 @@
           "equipment",
           "inventory",
           "level",
-          "species",
+          "origin",
           "spells",
           "stats",
           "talents"
@@ -5934,11 +5948,8 @@
           "level": {
             "$ref": "#/components/schemas/CharacterLevel"
           },
-          "nation": {
-            "$ref": "#/components/schemas/Nation"
-          },
-          "species": {
-            "$ref": "#/components/schemas/Species"
+          "origin": {
+            "$ref": "#/components/schemas/CharacterOrigin"
           },
           "spells": {
             "type": "array",

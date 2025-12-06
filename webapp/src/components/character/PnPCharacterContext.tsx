@@ -1,12 +1,15 @@
 import React from 'react';
 import {PnPCharacterDto} from '../../api';
+import {UseFormReturnType} from '@mantine/form';
 
 /** Content of the context */
 export type PnPCharacterContextContent = {
-    character: PnPCharacterDto;
+    characterForm: UseFormReturnType<PnPCharacterDto>;
+    allowEdit: boolean;
 }
 
 /** Context for anything where a {@link PnPCharacterDto character} is needed */
 export const PnPCharacterContext = React.createContext<PnPCharacterContextContent>({
-    character: null
+    characterForm: null,
+    allowEdit: false
 });

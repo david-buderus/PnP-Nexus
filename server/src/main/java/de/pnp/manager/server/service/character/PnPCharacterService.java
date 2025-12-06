@@ -104,8 +104,10 @@ public class PnPCharacterService {
                 null,
                 new CharacterDescription("Name", 20, "Profession", "Male", "Backstory", "Appearance", "Personality", "Goals", "Deficits", "Affiliations"),
                 new CharacterLevel(2, 1, 0),
-                new Species(null, "Race", "Race description", true, List.of(), List.of(), List.of()),
-                null,
+                new CharacterOrigin(
+                        new Species(null, "Race", "Race description", true, List.of(), List.of(), List.of()),
+                        null
+                ),
                 List.of(
                         new SimpleCharacterTrait("Some Advantage")
                 ),
@@ -177,8 +179,7 @@ public class PnPCharacterService {
                 character.getId(),
                 character.getDescription(),
                 character.getLevel(),
-                character.getSpecies(),
-                character.getNation(),
+                character.getOrigin(),
                 character.getAdvantageTraits(),
                 character.getDisadvantageTraits(),
                 new CharacterStatsDto(primaryStats, secondaryStats),

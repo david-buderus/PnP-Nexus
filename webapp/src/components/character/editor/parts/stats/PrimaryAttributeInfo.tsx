@@ -16,7 +16,8 @@ export const PrimaryAttributeInfo = ({
     attributesOrder?: string[]
 }) => {
     const {t} = useTranslation();
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
     const {characterSettings} = useUniverseContext();
     const [primaryAttributes] = fetchAllPrimaryAttributes();
     const {connectors: {connect, drag}, selected} = useNode((state => ({

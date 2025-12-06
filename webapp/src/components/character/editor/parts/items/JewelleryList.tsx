@@ -47,7 +47,8 @@ function JewelleryLines({
     definition: JewelleryDefinition,
     numberOfJewellery: Record<string, number>
 }) {
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
 
     const number = numberOfJewellery[definition.name];
     const jewellery = useMemo(() => {

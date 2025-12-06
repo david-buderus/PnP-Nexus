@@ -31,7 +31,8 @@ function CurrencyOneLine({withoutLabel}: {
         selected: state.events.selected
     })));
     const {currencySettings} = useUniverseContext();
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
     const result = useMemo(() => currencyFormatter(currencySettings, character.inventory.coin), [character.inventory.coin]);
 
     return <Table
@@ -58,7 +59,8 @@ function CurrencyMultiLine({withoutLabel, showCurrency}: {
         selected: state.events.selected
     })));
     const {currencySettings} = useUniverseContext();
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
     const coins = useMemo(() => splitCurrency(currencySettings, character.inventory.coin),
         [currencySettings, character.inventory.coin]);
 

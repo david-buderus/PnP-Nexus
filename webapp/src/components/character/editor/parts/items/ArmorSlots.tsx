@@ -15,7 +15,8 @@ import {GiCrackedShield, GiShield} from 'react-icons/gi';
 /** Shows armor of the character */
 export const ArmorSlots = ({withShield}: { withShield: boolean }) => {
     const {t} = useTranslation();
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
     const {itemSettings} = useUniverseContext();
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
@@ -80,7 +81,8 @@ export const ArmorSlots = ({withShield}: { withShield: boolean }) => {
 
 function ArmorSlot({slot}: { slot: EArmorSlot }) {
     const {t} = useTranslation();
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
     const {itemSettings} = useUniverseContext();
 
     const armor = character?.equipment.armor[slot];

@@ -25,11 +25,7 @@ public class PnPCharacter extends DatabaseObject {
 
     private final CharacterLevel level;
 
-    @DBRef
-    private final Species species;
-
-    @DBRef
-    private final Nation nation;
+    private final CharacterOrigin origin;
 
     private final List<ICharacterTrait> advantageTraits;
 
@@ -48,14 +44,13 @@ public class PnPCharacter extends DatabaseObject {
 
     private final Map<String, String> customFields;
 
-    public PnPCharacter(ObjectId id, CharacterDescription description, CharacterLevel level, Species species, Nation nation,
+    public PnPCharacter(ObjectId id, CharacterDescription description, CharacterLevel level, CharacterOrigin origin,
                         List<ICharacterTrait> advantageTraits, List<ICharacterTrait> disadvantageTraits, CharacterStats stats,
                         CharacterTalents talents, CharacterEquipment equipment, CharacterInventory inventory, List<Spell> spells, Map<String, String> customFields) {
         super(id);
         this.description = description;
         this.level = level;
-        this.species = species;
-        this.nation = nation;
+        this.origin = origin;
         this.advantageTraits = advantageTraits;
         this.disadvantageTraits = disadvantageTraits;
         this.stats = stats;
@@ -89,13 +84,13 @@ public class PnPCharacter extends DatabaseObject {
         }
         return Math.round(stat);
     }
-    
+
     public List<ICharacterTrait> getAllTraits() {
         Builder<ICharacterTrait> builder = ImmutableList.builder();
         builder.addAll(advantageTraits).addAll(disadvantageTraits);
-        builder.addAll(species.getAdvantageTraits()).addAll(species.getDisadvantageTraits());
-        if (nation != null) {
-            builder.addAll(nation.getAdvantageTraits()).addAll(nation.getDisadvantageTraits());
+        builder.addAll(origin.species().getAdvantageTraits()).addAll(origin.species().getDisadvantageTraits());
+        if (origin.nation() != null) {
+            builder.addAll(origin.nation().getAdvantageTraits()).addAll(origin.nation().getDisadvantageTraits());
         }
         return builder.build();
     }
@@ -119,12 +114,8 @@ public class PnPCharacter extends DatabaseObject {
         return description;
     }
 
-    public Species getSpecies() {
-        return species;
-    }
-
-    public Nation getNation() {
-        return nation;
+    public CharacterOrigin getOrigin() {
+        return origin;
     }
 
     public List<ICharacterTrait> getAdvantageTraits() {

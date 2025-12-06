@@ -7,6 +7,8 @@ import {PnPCharacterSheetEditor} from '../../../components/character/editor/PnPC
 import {PnPCharacterView} from '../../../components/character/PnPCharacterView';
 import {Button, Center, Group, Stack, Title} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
+import {useForm} from '@mantine/form';
+import {EMPTY_CHARACTERS} from './characters-overview';
 
 const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
@@ -52,14 +54,16 @@ function CharacterSheetView({
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
-    const [character, setCharacter] = useState<PnPCharacterDto>(null);
+    const form = useForm<PnPCharacterDto>({
+        initialValues: EMPTY_CHARACTERS
+    });
 
 
     useEffect(() => {
         if (!activeUniverse) {
             return;
         }
-        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => setCharacter(response.data));
+        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => form.setValues(response.data));
     }, [activeUniverse]);
 
     return <Center>
@@ -79,7 +83,8 @@ function CharacterSheetView({
                 }
             </Group>
             <PnPCharacterView
-                character={character}
+                characterForm={form}
+                allowEdit={false}
                 sheet={sheet}
             />
         </Stack>

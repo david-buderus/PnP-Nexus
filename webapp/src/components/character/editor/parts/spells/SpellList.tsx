@@ -15,7 +15,8 @@ export const SpellList = ({
     numberOfRows: number;
 }) => {
     const {t} = useTranslation();
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));

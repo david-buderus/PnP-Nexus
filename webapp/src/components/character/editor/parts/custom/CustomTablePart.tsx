@@ -62,7 +62,8 @@ export const CustomTablePart = ({
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));
-    const {character} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
+    const character = characterForm.getValues();
 
     return <Table
         withTableBorder

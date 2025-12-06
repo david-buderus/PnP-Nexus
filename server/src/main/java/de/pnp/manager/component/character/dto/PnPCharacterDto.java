@@ -6,7 +6,6 @@ import de.pnp.manager.component.spell.Spell;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +17,7 @@ public record PnPCharacterDto(
         ObjectId id,
         @Valid @NotNull CharacterDescription description,
         @Valid @NotNull CharacterLevel level,
-        @DBRef @NotNull Species species,
-        @DBRef Nation nation,
+        @Valid @NotNull CharacterOrigin origin,
         @NotNull List<@Valid ICharacterTrait> advantageTraits,
         @NotNull List<@Valid ICharacterTrait> disadvantageTraits,
         @NotNull @Valid CharacterStatsDto stats,

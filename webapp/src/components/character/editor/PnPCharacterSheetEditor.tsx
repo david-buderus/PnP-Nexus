@@ -51,6 +51,7 @@ import {CurrencyPart, SHOW_ALL_CURRENCIES} from './parts/items/CurrencyPart';
 import {CustomTablePart, EMPTY_TABLE_DEFINITION} from './parts/custom/CustomTablePart';
 import {PnPCharacterSheetContext} from '../PnPCharacterSheetContext';
 import ConfirmationDialog from '../../modal/ConfirmationDialog';
+import {EMPTY_CHARACTERS} from '../../../pages/database/characters/characters-overview';
 
 const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
@@ -90,8 +91,11 @@ export function PnPCharacterSheetEditor({
 }) {
     const {activeUniverse} = useUniverseContext();
 
-    const [character, setCharacter] = useState<PnPCharacterDto>(null);
+    const form = useForm<PnPCharacterDto>({
+        initialValues: EMPTY_CHARACTERS
+    });
     const [pages, setPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedPage, setSelectedPage] = useState(0);
 
 
@@ -99,16 +103,20 @@ export function PnPCharacterSheetEditor({
         if (!activeUniverse) {
             return;
         }
-        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => setCharacter(response.data));
+        setIsLoading(true);
+        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => {
+            setIsLoading(false);
+            form.setValues(response.data);
+        });
     }, [activeUniverse]);
 
-    if (!character) {
+    if (isLoading) {
         return <></>;
     }
 
     return <Center>
         <Group wrap="nowrap" align="flex-start">
-            <PnPCharacterContext.Provider value={{character}}>
+            <PnPCharacterContext.Provider value={{characterForm: form, allowEdit: false}}>
                 <PnPCharacterSheetContext.Provider value={{selectedPage}}>
                     <Editor resolver={RESOLVER}>
                         <Stack>

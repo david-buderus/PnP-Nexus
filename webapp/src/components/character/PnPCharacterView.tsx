@@ -2,29 +2,55 @@ import {PnPCharacterDto, PnPCharacterSheet} from '../../api';
 import {PnPCharacterContext} from './PnPCharacterContext';
 import {PnPCharacterSheetContext} from './PnPCharacterSheetContext';
 import React, {useEffect, useState} from 'react';
-import {ActionIcon, Group, Stack} from '@mantine/core';
+import {ActionIcon, AspectRatio, Group, Paper, Skeleton, Stack} from '@mantine/core';
 import {Editor, Element, Frame, useEditor} from '@craftjs/core';
 import {StackPart} from './editor/parts/layout/StackPart';
 import {CharacterSheetPaper} from './editor/parts/CharacterSheetPaper';
 import {FaChevronLeft} from 'react-icons/fa';
 import {FaChevronRight} from 'react-icons/fa6';
 import {countPagesOfImport, RESOLVER} from './editor/PnPCharacterSheetEditor';
+import {UseFormReturnType} from '@mantine/form';
 
 /** Shows the character with the help of the given sheet */
 export function PnPCharacterView({
-    character, sheet
+    characterForm, allowEdit, isLoading, sheet
 }: {
-    character: PnPCharacterDto;
-    sheet: PnPCharacterSheet
+    characterForm: UseFormReturnType<PnPCharacterDto>;
+    allowEdit: boolean;
+    isLoading?: boolean;
+    sheet: PnPCharacterSheet;
 }) {
     const [selectedPage, setSelectedPage] = useState(0);
     const [pages, setPages] = useState(1);
 
-    if (!character) {
+    if (!sheet) {
         return <></>;
     }
 
-    return <PnPCharacterContext.Provider value={{character}}>
+    if (isLoading) {
+        return <AspectRatio
+            ratio={1 / 1.4142}
+            w="800px"
+        >
+            <Paper
+                shadow="sm"
+                p="md"
+                withBorder
+                style={{overflow: 'hidden'}}
+            >
+                <StackPart>
+                    <Skeleton height={8} radius="xl"/>
+                    <Skeleton height={8} mt={6} radius="xl"/>
+                    <Skeleton height={8} mt={6} radius="xl"/>
+                    <Skeleton height={8} mt={6} radius="xl"/>
+                    <Skeleton height={8} mt={6} radius="xl"/>
+                    <Skeleton height={8} mt={6} width="70%" radius="xl"/>
+                </StackPart>
+            </Paper>
+        </AspectRatio>;
+    }
+
+    return <PnPCharacterContext.Provider value={{characterForm, allowEdit}}>
         <PnPCharacterSheetContext.Provider value={{selectedPage}}>
             <Editor resolver={RESOLVER} enabled={false}>
                 <Stack>

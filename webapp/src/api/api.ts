@@ -428,6 +428,25 @@ export interface CharacterLevel {
 /**
  * 
  * @export
+ * @interface CharacterOrigin
+ */
+export interface CharacterOrigin {
+    /**
+     * 
+     * @type {Nation}
+     * @memberof CharacterOrigin
+     */
+    'nation'?: Nation;
+    /**
+     * 
+     * @type {Species}
+     * @memberof CharacterOrigin
+     */
+    'species': Species;
+}
+/**
+ * 
+ * @export
  * @interface CharacterResourceUsage
  */
 export interface CharacterResourceUsage {
@@ -1599,16 +1618,10 @@ export interface PnPCharacterDto {
     'level': CharacterLevel;
     /**
      * 
-     * @type {Nation}
+     * @type {CharacterOrigin}
      * @memberof PnPCharacterDto
      */
-    'nation'?: Nation;
-    /**
-     * 
-     * @type {Species}
-     * @memberof PnPCharacterDto
-     */
-    'species': Species;
+    'origin': CharacterOrigin;
     /**
      * 
      * @type {Array<Spell>}
