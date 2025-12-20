@@ -1,4 +1,4 @@
-import {PnPCharacterDto, PnPCharacterSheet} from '../../api';
+import {PnPCharacterDTO, PnPCharacterSheet} from '../../api';
 import {PnPCharacterContext} from './PnPCharacterContext';
 import {PnPCharacterSheetContext} from './PnPCharacterSheetContext';
 import React, {useEffect, useState} from 'react';
@@ -15,7 +15,7 @@ import {UseFormReturnType} from '@mantine/form';
 export function PnPCharacterView({
     characterForm, allowEdit, isLoading, sheet
 }: {
-    characterForm: UseFormReturnType<PnPCharacterDto>;
+    characterForm: UseFormReturnType<PnPCharacterDTO>;
     allowEdit: boolean;
     isLoading?: boolean;
     sheet: PnPCharacterSheet;

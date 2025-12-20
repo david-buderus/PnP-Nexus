@@ -139,9 +139,7 @@ function CharacterOriginSelect(props: {
                         ) : (
                             value.species.name
                         )
-                    ) : (
-                        <>Select species or nation</>
-                    )}
+                    ) : null}
                 </InputBase>
             </Combobox.Target>
 

@@ -27,11 +27,16 @@ import java.util.stream.Stream;
 public class SecondaryAttributeDTOController {
 
 
-    @Autowired
-    private PrimaryAttributeRepository primaryAttributeRepository;
+    private final PrimaryAttributeRepository primaryAttributeRepository;
 
-    @Autowired
-    private SecondaryAttributeRepository secondaryAttributeRepository;
+    private final SecondaryAttributeRepository secondaryAttributeRepository;
+
+    public SecondaryAttributeDTOController(
+            @Autowired PrimaryAttributeRepository primaryAttributeRepository,
+            @Autowired SecondaryAttributeRepository secondaryAttributeRepository) {
+        this.primaryAttributeRepository = primaryAttributeRepository;
+        this.secondaryAttributeRepository = secondaryAttributeRepository;
+    }
 
     /**
      * Returns all {@link SecondaryAttributeDTO} of the given universe

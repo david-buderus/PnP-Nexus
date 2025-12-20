@@ -7,6 +7,7 @@ import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {fetchAllSecondaryAttributes} from '../../../../Database';
 import {OrderModifier} from '../OrderModifier';
 import {toIdMap} from '../../../../utils/Utils';
+import {TableStatsInput} from '../inputs/TableStatsInput';
 
 /** Shows level and co of the character */
 export const SecondaryAttributeInfo = ({
@@ -15,8 +16,7 @@ export const SecondaryAttributeInfo = ({
     attributesOrder?: string[]
 }) => {
     const {t} = useTranslation();
-    const {characterForm} = useContext(PnPCharacterContext);
-    const character = characterForm.getValues();
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));
@@ -47,7 +47,13 @@ export const SecondaryAttributeInfo = ({
                         ...TABLE_STYLE
                     })}></Table.Td>
                     <Table.Td style={{width: '20%', ...TABLE_STYLE}}>
-                        {character?.stats.secondaryStats[id]?.rawValue ?? 0}
+                        <TableStatsInput
+                            allowDecimal={false}
+                            allowNegative={false}
+                            readOnly={!allowEdit}
+                            key={characterForm.key(`stats.secondaryStats.${id}`)}
+                            {...characterForm.getInputProps(`stats.secondaryStats.${id}`)}
+                        />
                     </Table.Td>
                 </Table.Tr>
             ))}

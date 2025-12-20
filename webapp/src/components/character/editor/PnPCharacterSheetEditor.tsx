@@ -1,6 +1,6 @@
 import {useTranslation} from 'react-i18next';
 import {useUniverseContext} from '../../PageBase';
-import {PnPCharacterDto, PnPCharacterServiceApi, PnPCharacterSheet, PnPCharacterSheetServiceApi} from '../../../api';
+import {PnPCharacterDTO, PnPCharacterSheet, PnPCharacterSheetServiceApi} from '../../../api';
 import {API_CONFIGURATION} from '../../Constants';
 import React, {useEffect, useMemo, useState} from 'react';
 import {
@@ -53,7 +53,6 @@ import {PnPCharacterSheetContext} from '../PnPCharacterSheetContext';
 import ConfirmationDialog from '../../modal/ConfirmationDialog';
 import {EMPTY_CHARACTERS} from '../../../pages/database/characters/characters-overview';
 
-const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
 
 /** All resolver used by the character sheet editor */
@@ -91,7 +90,7 @@ export function PnPCharacterSheetEditor({
 }) {
     const {activeUniverse} = useUniverseContext();
 
-    const form = useForm<PnPCharacterDto>({
+    const form = useForm<PnPCharacterDTO>({
         initialValues: EMPTY_CHARACTERS
     });
     const [pages, setPages] = useState(1);
@@ -104,7 +103,7 @@ export function PnPCharacterSheetEditor({
             return;
         }
         setIsLoading(true);
-        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => {
+        SHEET_API.getExampleCharacter(activeUniverse.id).then(response => {
             setIsLoading(false);
             form.setValues(response.data);
         });

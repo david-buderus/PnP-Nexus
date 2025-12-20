@@ -10,6 +10,7 @@ import {ObjectMultiSelect, PrimaryAttributeSelect} from '../../../../input/Objec
 import {fetchAllPrimaryAttributes, fetchAllTalents} from '../../../../Database';
 import {toIdMap} from '../../../../utils/Utils';
 import {AddableOrderModifier} from '../OrderModifier';
+import {TableTalentRollInput} from '../inputs/TableTalentRollInput';
 
 /** Shows level and co of the character */
 export const TalentGroup = ({
@@ -25,8 +26,7 @@ export const TalentGroup = ({
     secondAttributeId?: string;
     thirdAttributeId?: string;
 }) => {
-    const {characterForm} = useContext(PnPCharacterContext);
-    const character = characterForm.getValues();
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));
@@ -108,7 +108,13 @@ export const TalentGroup = ({
                         }
                     </Table.Td>
                     <Table.Td style={{width: '30%', textAlign: 'center', ...TABLE_STYLE}}>
-                        {character?.talents[talent.id]?.totalValue ?? 0}
+                        <TableTalentRollInput
+                            allowDecimal={false}
+                            allowNegative={false}
+                            readOnly={!allowEdit}
+                            key={characterForm.key(`talents.${talent.id}`)}
+                            {...characterForm.getInputProps(`talents.${talent.id}`)}
+                        />
                     </Table.Td>
                 </Table.Tr>;
             })}

@@ -8,6 +8,7 @@ import {useUniverseContext} from '../../../../PageBase';
 import {fetchAllPrimaryAttributes} from '../../../../Database';
 import {OrderModifier} from '../OrderModifier';
 import {toIdMap} from '../../../../utils/Utils';
+import {TableStatsInput} from '../inputs/TableStatsInput';
 
 /** Shows level and co of the character */
 export const PrimaryAttributeInfo = ({
@@ -16,8 +17,7 @@ export const PrimaryAttributeInfo = ({
     attributesOrder?: string[]
 }) => {
     const {t} = useTranslation();
-    const {characterForm} = useContext(PnPCharacterContext);
-    const character = characterForm.getValues();
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const {characterSettings} = useUniverseContext();
     const [primaryAttributes] = fetchAllPrimaryAttributes();
     const {connectors: {connect, drag}, selected} = useNode((state => ({
@@ -47,7 +47,15 @@ export const PrimaryAttributeInfo = ({
                     <Table.Th style={TABLE_STYLE}>{attributeMap[id]?.name ?? ''}</Table.Th>
                     <Table.Th style={TABLE_STYLE}>{attributeMap[id]?.shortName ?? ''}</Table.Th>
                     <Table.Td style={TABLE_STYLE}>
-                        {character?.stats.primaryStats[id]?.rawValue ?? 0}
+                        <TableStatsInput
+                            allowDecimal={false}
+                            allowNegative={false}
+                            readOnly={!allowEdit}
+                            min={characterSettings.minPrimaryAttributeValue}
+                            max={characterSettings.maxPrimaryAttributeValue}
+                            key={characterForm.key(`stats.primaryStats.${id}`)}
+                            {...characterForm.getInputProps(`stats.primaryStats.${id}`)}
+                        />
                     </Table.Td>
                 </Table.Tr>
             ))}

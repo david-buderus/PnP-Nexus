@@ -32,6 +32,9 @@ public class Stat {
         this.flatModifier = flatModifier;
     }
 
+    /**
+     * @return the resulting value of this stat.
+     */
     @JsonIgnore
     public int getValue() {
         return getRawValue() + getFlatModifier();

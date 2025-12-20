@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * DTO for {@link PnPCharacter}
  */
-public record PnPCharacterDto(
+public record PnPCharacterDTO(
         ObjectId id,
         @Valid @NotNull CharacterDescription description,
         @Valid @NotNull CharacterLevel level,

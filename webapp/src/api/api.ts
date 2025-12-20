@@ -1565,79 +1565,79 @@ export interface PasswordChange {
 /**
  * 
  * @export
- * @interface PnPCharacterDto
+ * @interface PnPCharacterDTO
  */
-export interface PnPCharacterDto {
+export interface PnPCharacterDTO {
     /**
      * 
      * @type {Array<NationAdvantageTraitsInner>}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'advantageTraits': Array<NationAdvantageTraitsInner>;
     /**
      * 
      * @type {{ [key: string]: string; }}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'customFields': { [key: string]: string; };
     /**
      * 
      * @type {CharacterDescription}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'description': CharacterDescription;
     /**
      * 
      * @type {Array<NationAdvantageTraitsInner>}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'disadvantageTraits': Array<NationAdvantageTraitsInner>;
     /**
      * 
      * @type {CharacterEquipment}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'equipment': CharacterEquipment;
     /**
      * 
      * @type {string}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'id'?: string;
     /**
      * 
      * @type {CharacterInventory}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'inventory': CharacterInventory;
     /**
      * 
      * @type {CharacterLevel}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'level': CharacterLevel;
     /**
      * 
      * @type {CharacterOrigin}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'origin': CharacterOrigin;
     /**
      * 
      * @type {Array<Spell>}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'spells': Array<Spell>;
     /**
      * 
      * @type {CharacterStatsDto}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'stats': CharacterStatsDto;
     /**
      * 
      * @type {{ [key: string]: TalentRollDto; }}
-     * @memberof PnPCharacterDto
+     * @memberof PnPCharacterDTO
      */
     'talents': { [key: string]: TalentRollDto; };
 }
@@ -6015,40 +6015,6 @@ export const PnPCharacterServiceApiAxiosParamCreator = function (configuration?:
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @summary Generates an example character
-         * @param {string} universe 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getExampleCharacter: async (universe: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'universe' is not null or undefined
-            assertParamExists('getExampleCharacter', 'universe', universe)
-            const localVarPath = `/api/{universe}/characters/example`
-                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -6066,23 +6032,10 @@ export const PnPCharacterServiceApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllCharacters(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPCharacterDto>>> {
+        async getAllCharacters(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPCharacterDTO>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllCharacters(universe, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.getAllCharacters']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Generates an example character
-         * @param {string} universe 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getExampleCharacter(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterDto>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getExampleCharacter(universe, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.getExampleCharacter']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -6102,18 +6055,8 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllCharacters(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterDto>> {
+        getAllCharacters(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterDTO>> {
             return localVarFp.getAllCharacters(universe, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Generates an example character
-         * @param {string} universe 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getExampleCharacter(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterDto> {
-            return localVarFp.getExampleCharacter(universe, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -6135,18 +6078,6 @@ export class PnPCharacterServiceApi extends BaseAPI {
      */
     public getAllCharacters(universe: string, options?: RawAxiosRequestConfig) {
         return PnPCharacterServiceApiFp(this.configuration).getAllCharacters(universe, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Generates an example character
-     * @param {string} universe 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof PnPCharacterServiceApi
-     */
-    public getExampleCharacter(universe: string, options?: RawAxiosRequestConfig) {
-        return PnPCharacterServiceApiFp(this.configuration).getExampleCharacter(universe, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -6264,6 +6195,40 @@ export const PnPCharacterSheetServiceApiAxiosParamCreator = function (configurat
             if (ids) {
                 localVarQueryParameter['ids'] = ids;
             }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Generates an example character
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getExampleCharacter: async (universe: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getExampleCharacter', 'universe', universe)
+            const localVarPath = `/api/{universe}/character-sheets/example-character`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
 
     
@@ -6452,6 +6417,19 @@ export const PnPCharacterSheetServiceApiFp = function(configuration?: Configurat
         },
         /**
          * 
+         * @summary Generates an example character
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getExampleCharacter(universe: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getExampleCharacter(universe, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterSheetServiceApi.getExampleCharacter']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get an object from the database
          * @param {string} universe 
          * @param {string} id 
@@ -6538,6 +6516,16 @@ export const PnPCharacterSheetServiceApiFactory = function (configuration?: Conf
         },
         /**
          * 
+         * @summary Generates an example character
+         * @param {string} universe 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getExampleCharacter(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterDTO> {
+            return localVarFp.getExampleCharacter(universe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get an object from the database
          * @param {string} universe 
          * @param {string} id 
@@ -6617,6 +6605,18 @@ export class PnPCharacterSheetServiceApi extends BaseAPI {
      */
     public getAllPnPCharacterSheets(universe: string, ids?: Array<string>, options?: RawAxiosRequestConfig) {
         return PnPCharacterSheetServiceApiFp(this.configuration).getAllPnPCharacterSheets(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Generates an example character
+     * @param {string} universe 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterSheetServiceApi
+     */
+    public getExampleCharacter(universe: string, options?: RawAxiosRequestConfig) {
+        return PnPCharacterSheetServiceApiFp(this.configuration).getExampleCharacter(universe, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

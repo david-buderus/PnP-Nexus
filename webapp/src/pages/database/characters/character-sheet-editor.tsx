@@ -1,6 +1,6 @@
 import {useParams} from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
-import {PnPCharacterDto, PnPCharacterServiceApi, PnPCharacterSheet, PnPCharacterSheetServiceApi} from '../../../api';
+import {PnPCharacterDTO, PnPCharacterSheet, PnPCharacterSheetServiceApi} from '../../../api';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import {useUniverseContext, useUserContext} from '../../../components/PageBase';
 import {PnPCharacterSheetEditor} from '../../../components/character/editor/PnPCharacterSheetEditor';
@@ -10,7 +10,6 @@ import {useTranslation} from 'react-i18next';
 import {useForm} from '@mantine/form';
 import {EMPTY_CHARACTERS} from './characters-overview';
 
-const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
 
 /** Page to show the character sheet editor */
@@ -54,7 +53,7 @@ function CharacterSheetView({
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
-    const form = useForm<PnPCharacterDto>({
+    const form = useForm<PnPCharacterDTO>({
         initialValues: EMPTY_CHARACTERS
     });
 
@@ -63,7 +62,7 @@ function CharacterSheetView({
         if (!activeUniverse) {
             return;
         }
-        CHARACTER_API.getExampleCharacter(activeUniverse.id).then(response => form.setValues(response.data));
+        SHEET_API.getExampleCharacter(activeUniverse.id).then(response => form.setValues(response.data));
     }, [activeUniverse]);
 
     return <Center>

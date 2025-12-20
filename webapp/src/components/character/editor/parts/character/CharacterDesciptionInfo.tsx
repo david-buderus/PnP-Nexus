@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {ObjectSelect} from '../../../../input/ObjectSelect';
 import {CharacterDescription} from '../../../../../api';
+import {TableTextarea} from '../inputs/TableTextarea';
 
 /** The description key with its human-readable name */
 type Description = {
@@ -18,8 +19,7 @@ export const CharacterDescriptionInfo = ({description, numberOfRows}: {
     description: Description;
     numberOfRows: number;
 }) => {
-    const {characterForm} = useContext(PnPCharacterContext);
-    const character = characterForm.getValues();
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const {connectors: {connect, drag}, selected} = useNode((state => ({
         selected: state.events.selected
     })));
@@ -36,7 +36,12 @@ export const CharacterDescriptionInfo = ({description, numberOfRows}: {
             </Table.Tr>
             <Table.Tr h={TABLE_ROW_HEIGHT * numberOfRows}>
                 <Table.Td style={{whiteSpace: 'pre-line', textAlign: 'left', verticalAlign: 'top', ...TABLE_STYLE}}>
-                    {description?.id ? character?.description[description.id] ?? '' : ''}
+                    <TableTextarea
+                        readOnly={!allowEdit}
+                        h={TABLE_ROW_HEIGHT * numberOfRows}
+                        key={characterForm.key(`description.${description.id}`)}
+                        {...characterForm.getInputProps(`description.${description.id}`)}
+                    />
                 </Table.Td>
             </Table.Tr>
         </Table.Tbody>

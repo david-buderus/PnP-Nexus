@@ -1,7 +1,7 @@
 import {useTranslation} from 'react-i18next';
 import {useMemo, useState} from 'react';
 import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
-import {Nation, PnPCharacterDto, Species} from '../../../api';
+import {Nation, PnPCharacterDTO, Species} from '../../../api';
 import {fetchAllCharacters} from '../../../components/Database';
 import {Button, Center} from '@mantine/core';
 import {useUniverseContext} from '../../../components/PageBase';
@@ -9,7 +9,7 @@ import {PnPCharacterView} from '../../../components/character/PnPCharacterView';
 import {useForm} from '@mantine/form';
 
 /** A character without any values */
-export const EMPTY_CHARACTERS: PnPCharacterDto = {
+export const EMPTY_CHARACTERS: PnPCharacterDTO = {
     description: {
         affiliations: '',
         appearance: '',
@@ -56,7 +56,7 @@ export function CharactersOverview() {
     const [allCharacters, refreshCharacters, loading] = fetchAllCharacters();
     const [editMode, setEditMode] = useState<boolean>(false);
 
-    const columns = useMemo<ExtendedColumnDef<PnPCharacterDto, any>[]>(
+    const columns = useMemo<ExtendedColumnDef<PnPCharacterDTO, any>[]>(
         () => [
             {
                 accessorKey: 'description.name',
@@ -106,7 +106,7 @@ export function CharactersOverview() {
 
 function CharacterEdit() {
     const {sheetSettings} = useUniverseContext();
-    const form = useForm<PnPCharacterDto>({
+    const form = useForm<PnPCharacterDTO>({
         initialValues: EMPTY_CHARACTERS
     });
 

@@ -15,7 +15,7 @@ import {
     MaterialUsage,
     Nation,
     NationServiceApi,
-    PnPCharacterDto,
+    PnPCharacterDTO,
     PnPCharacterServiceApi,
     PnPCharacterSheet,
     PnPCharacterSheetServiceApi,
@@ -222,7 +222,7 @@ export function fetchAllNations(): [Nation[], () => void, boolean] {
 /**
  * Fetches all characters.
  */
-export function fetchAllCharacters(): [PnPCharacterDto[], () => void, boolean] {
+export function fetchAllCharacters(): [PnPCharacterDTO[], () => void, boolean] {
     return fetchAll(universe => CHARACTER_API.getAllCharacters(universe));
 }
 

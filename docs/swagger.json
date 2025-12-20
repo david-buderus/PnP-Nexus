@@ -925,6 +925,37 @@
         ]
       }
     },
+    "/api/{universe}/character-sheets/example-character": {
+      "get": {
+        "operationId": "getExampleCharacter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPCharacterDTO"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Generates an example character",
+        "tags": [
+          "pn-p-character-sheet-service"
+        ]
+      }
+    },
     "/api/{universe}/character-sheets/{id}": {
       "delete": {
         "operationId": "deletePnPCharacterSheet",
@@ -1061,7 +1092,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/PnPCharacterDto"
+                    "$ref": "#/components/schemas/PnPCharacterDTO"
                   }
                 }
               }
@@ -1070,37 +1101,6 @@
           }
         },
         "summary": "Get all characters from the database",
-        "tags": [
-          "pn-p-character-service"
-        ]
-      }
-    },
-    "/api/{universe}/characters/example": {
-      "get": {
-        "operationId": "getExampleCharacter",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/PnPCharacterDto"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Generates an example character",
         "tags": [
           "pn-p-character-service"
         ]
@@ -5873,7 +5873,7 @@
           }
         }
       },
-      "PnPCharacterDto": {
+      "PnPCharacterDTO": {
         "required": [
           "advantageTraits",
           "customFields",
