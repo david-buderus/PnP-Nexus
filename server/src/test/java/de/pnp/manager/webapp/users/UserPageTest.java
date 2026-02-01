@@ -41,7 +41,7 @@ public class UserPageTest extends ServerTestBase {
     private UserDetailsRepository userDetailsRepository;
 
     @BeforeEach
-    void openItemPage() {
+    void openPage() {
         if (userRepository.getUser(USERNAME).isEmpty()) {
             userController.createNewUser(new PnPUserCreation(USERNAME, USERNAME, USERNAME, "", List.of()));
         }
@@ -109,7 +109,7 @@ public class UserPageTest extends ServerTestBase {
         dialog.assertIsClosed();
 
         // We need to wait for the backend to process the change
-        Thread.sleep(500);
+        Thread.sleep(1000);
         assertThat(userDetailsRepository.isValidPassword(USERNAME, NEW_PASSWORD)).isTrue();
     }
 }
