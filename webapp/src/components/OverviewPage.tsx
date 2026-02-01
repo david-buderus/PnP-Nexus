@@ -183,6 +183,7 @@ export default function OverviewPage<T>({
                                 table.getRowModel().rows.map((row) => (
                                     <Table.Tr
                                         key={row.id}
+                                        data-testid={row.original[idKey]}
                                         bg={row.getIsSelected() ? 'var(--mantine-color-blue-light)' : undefined}
                                     >
                                         {row.getVisibleCells().map((cell) => (
