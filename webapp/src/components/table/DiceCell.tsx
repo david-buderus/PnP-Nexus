@@ -1,9 +1,9 @@
-import {MRT_Cell} from "mantine-react-table";
-import {Dice} from "../../api";
-import {diceFormatter} from "../utils/Formatters";
-import {ReactNode} from "react";
+import {Dice} from '../../api';
+import {diceFormatter} from '../utils/Formatters';
+import {ReactNode} from 'react';
+import {CellContext} from '@tanstack/table-core';
 
 /** Renders a set of tags as a cell */
-export default function DiceCell({cell}: { cell: MRT_Cell<any, Dice>; }): ReactNode {
+export default function DiceCell<T>(cell: CellContext<T, Dice>): ReactNode {
     return diceFormatter(cell.getValue());
 }

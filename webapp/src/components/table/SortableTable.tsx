@@ -1,12 +1,7 @@
-import {useTranslation} from 'react-i18next';
-import {useUniverseContext, useUserContext} from './PageBase';
+import React, {useState} from 'react';
 import {Box, Button, Checkbox, Group, Menu, Paper, rem, Stack, Table, Text, TextInput} from '@mantine/core';
-import {useLocalStorage} from '@mantine/hooks';
-import ConfirmationDialog from './modal/ConfirmationDialog';
-import {AxiosResponse} from 'axios';
-import {handleNetworkErrors} from './utils/ErrorUtils';
-import React, {ReactNode, useState} from 'react';
 import {
+    ColumnDef,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
@@ -14,7 +9,6 @@ import {
     SortingState,
     useReactTable
 } from '@tanstack/react-table';
-import {ExtendedColumnDef} from './table/SortableTable';
 import {
     IconAdjustmentsHorizontal,
     IconArrowsSort,
@@ -22,44 +16,28 @@ import {
     IconSortAscending,
     IconSortDescending
 } from '@tabler/icons-react';
+import {useLocalStorage} from '@mantine/hooks';
 
-/** Props of the overview */
-export interface OverviewPageProps<T> {
-    /** A unique identifier for this overview */
-    identifier: string;
-    /** Callback to fetch data */
-    fetchData: [T[], () => void, boolean];
-    /** The columns */
+export type CustomTableProps<T extends object> = {
+    id: string;
+    data: T[];
     columns: ExtendedColumnDef<T, any>[];
-    /** Callback to create dialogs to create or edit objects */
-    manipulationDialog: (editMode: boolean, refresh: () => void, disabled: boolean, getInitial: () => T) => ReactNode;
-    /** The title of the deletion dialog */
-    deletionDialogTitle: string;
-    /** Callback for the deletion */
-    onDelete: (universe: string, objects: T[]) => Promise<AxiosResponse<void>>;
-    /** The key to get the id of the object */
-    idKey: keyof T;
 }
 
-export default function OverviewPage<T>({
-    identifier,
-    fetchData,
-    columns,
-    manipulationDialog,
-    deletionDialogTitle,
-    onDelete,
-    idKey
-}: OverviewPageProps<T>) {
-    const {t} = useTranslation();
-    const {activeUniverse} = useUniverseContext();
-    const {userPermissions} = useUserContext();
-    const [data, refresh, loading] = fetchData;
+/**
+ * An extended format of the column definition.
+ * Including a hidden parameter.
+ */
+export type ExtendedColumnDef<T, S> = {
+    /** If the column should be hidden by default */
+    defaultHidden?: boolean;
+} & ColumnDef<T, S>;
 
+export function SortableTable<T extends object>({id, data, columns}: CustomTableProps<T>) {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
-    const [rowSelection, setRowSelection] = useState({});
     const [columnVisibility, setColumnVisibility] = useLocalStorage<Record<string, boolean>>({
-        key: identifier + '-visibility',
+        key: id + '-visibility',
         defaultValue: columns.reduce<Record<string, boolean>>((rec, col) => {
             const key: string = col.id;
             rec[key] = !col.defaultHidden;
@@ -69,42 +47,21 @@ export default function OverviewPage<T>({
 
     const table = useReactTable({
         data,
-        columns: [
-            {
-                id: 'select',
-                header: ({table}) => (
-                    <Checkbox
-                        checked={table.getIsAllRowsSelected()}
-                        indeterminate={table.getIsSomeRowsSelected()}
-                        onChange={table.getToggleAllRowsSelectedHandler()}
-                    />
-                ),
-                cell: ({row}) => (
-                    <Checkbox
-                        checked={row.getIsSelected()}
-                        disabled={!row.getCanSelect()}
-                        onChange={row.getToggleSelectedHandler()}
-                    />
-                ),
-            },
-            ...columns
-        ],
+        columns,
         state: {
             sorting,
             globalFilter,
-            rowSelection,
             columnVisibility,
         },
         onSortingChange: setSorting,
         onGlobalFilterChange: setGlobalFilter,
-        onRowSelectionChange: setRowSelection,
         onColumnVisibilityChange: setColumnVisibility,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
     });
 
-    return <Stack>
+    return (
         <Paper p="md" withBorder radius="md">
             <Stack gap="md">
                 {/* Toolbar: Search & Column Visibility */}
@@ -157,7 +114,7 @@ export default function OverviewPage<T>({
                                             onClick={header.column.getToggleSortingHandler()}
                                         >
                                             <Group gap="xs" wrap="nowrap">
-                                                <Text fw={700} size="sm" component={'span'}>
+                                                <Text fw={700} size="sm">
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
                                                 </Text>
                                                 {header.column.getCanSort() && (
@@ -209,21 +166,5 @@ export default function OverviewPage<T>({
                 </Table.ScrollContainer>
             </Stack>
         </Paper>
-        {userPermissions.canWriteActiveUniverse && <Group justify="flex-end">
-            {manipulationDialog(false, refresh, false, () => undefined)}
-            {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0].original)}
-            <ConfirmationDialog
-                title={deletionDialogTitle}
-                onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))
-                    .then(refresh).catch(handleNetworkErrors)}
-                openNode={(open) => <Button
-                    data-testid="delete"
-                    disabled={table.getSelectedRowModel().flatRows.length === 0}
-                    onClick={open}
-                >
-                    {t('delete')}
-                </Button>}
-            />
-        </Group>}
-    </Stack>;
+    );
 }

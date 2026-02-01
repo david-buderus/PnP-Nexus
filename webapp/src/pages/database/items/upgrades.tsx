@@ -3,13 +3,12 @@ import {useTranslation} from 'react-i18next';
 import {
     ECalculation,
     EUpgradeEquipmentManipulator,
-    EUpgradeRestriction,
     TagRequirement,
     Upgrade,
     UpgradeEffectsInner,
     UpgradeServiceApi
 } from '../../../api';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import OverviewPage from '../../../components/OverviewPage';
 import {fetchAllUpgrades} from '../../../components/Database';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import CurrencyCell from '../../../components/table/CurrencyCell';
@@ -40,6 +39,7 @@ import {
 } from '../../../components/input/EnumSelect';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 
@@ -56,8 +56,8 @@ export function UpgradeOverview() {
             {
                 accessorKey: 'effects',
                 header: t('upgrade:effects'),
-                Cell: cell => {
-                    const effects = cell.cell.getValue<UpgradeEffectsInner[]>();
+                cell: cell => {
+                    const effects = cell.getValue<UpgradeEffectsInner[]>();
                     if (effects.length < 2) {
                         return effects[0]?.description;
                     } else {
@@ -75,21 +75,12 @@ export function UpgradeOverview() {
             {
                 accessorKey: 'restriction',
                 header: t('upgrade:restriction'),
-                filterVariant: 'select',
-                mantineFilterMultiSelectProps: {
-                    data: Object.values(EUpgradeRestriction).map(rarity => {
-                        return {
-                            label: t('enum:' + rarity.toLowerCase()),
-                            value: rarity
-                        };
-                    }),
-                },
-                Cell: cell => t('enum:' + cell.cell.getValue()?.toLowerCase())
+                cell: cell => t('enum:' + cell.cell.getValue()?.toLowerCase())
             },
             {
                 accessorKey: 'tagRequirement',
                 header: t('upgrade:tagRequirement'),
-                Cell: cell => cell.cell.getValue<TagRequirement>().tagRequirements.map(tags => tags.join(', ')).join(' ' + t('or') + ' '),
+                cell: cell => cell.getValue<TagRequirement>().tagRequirements.map(tags => tags.join(', ')).join(' ' + t('or') + ' '),
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<TagRequirement>(id).tagRequirements.some(tags => tags.some(tag => tag.includes(filterValue)));
                 }
@@ -101,7 +92,7 @@ export function UpgradeOverview() {
             {
                 accessorKey: 'vendorPrice',
                 header: t('price'),
-                Cell: CurrencyCell
+                cell: CurrencyCell
             }
         ], []);
 

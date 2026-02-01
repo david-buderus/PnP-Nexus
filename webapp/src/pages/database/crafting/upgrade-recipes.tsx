@@ -17,7 +17,7 @@ import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi} from '../../../api';
 import {fetchAllUpgradeRecipes, fetchAllUpgrades, IResourceUsage} from '../../../components/Database';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
 import {API_CONFIGURATION} from '../../../components/Constants';
@@ -25,6 +25,8 @@ import {FaRegTrashCan} from 'react-icons/fa6';
 import {ObjectMultiSelect, ObjectSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {resourceFormatter} from '../../../components/utils/Formatters';
 import {addTypeAnnotationToUsage} from './crafting-recipes';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {filterMultiNamedCell, filterNamedCell, MultiNamedCell, NamedCell} from '../../../components/table/NamedCell';
 
 const UPGRADE_RECIPE_API = new UpgradeRecipeServiceApi(API_CONFIGURATION);
 
@@ -37,12 +39,8 @@ export function UpgradeRecipeOverview() {
             {
                 accessorKey: 'upgrade',
                 header: t('upgrade'),
-                Cell: cell => {
-                    return cell.cell.getValue<Upgrade>()?.name;
-                },
-                filterFn: (row, id, filterValue) => {
-                    return row.getValue<Upgrade>(id)?.name.includes(filterValue);
-                }
+                cell: NamedCell,
+                filterFn: filterNamedCell
             },
             {
                 accessorKey: 'requirement',
@@ -51,18 +49,14 @@ export function UpgradeRecipeOverview() {
             {
                 accessorKey: 'requiredUpgrades',
                 header: t('crafting:requiredUpgrades'),
-                Cell: cell => {
-                    return cell.cell.getValue<Upgrade[]>().map(upgrade => upgrade?.name).join(', ');
-                },
-                filterFn: (row, id, filterValue) => {
-                    return row.getValue<Upgrade[]>(id).some(upgrade => upgrade?.name.includes(filterValue));
-                }
+                cell: MultiNamedCell,
+                filterFn: filterMultiNamedCell
             },
             {
                 accessorKey: 'materials',
                 header: t('materials'),
-                Cell: cell => {
-                    const items = cell.cell.getValue<IResourceUsage[]>();
+                cell: cell => {
+                    const items = cell.getValue<IResourceUsage[]>();
                     return items.map(resourceFormatter).join(', ');
                 },
                 filterFn: (row, id, filterValue) => {
