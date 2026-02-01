@@ -1,7 +1,10 @@
 package de.pnp.manager.webapp.pages;
 
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import de.pnp.manager.webapp.pages.species.SpeciesOverviewPage;
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 /**
  * Represents the main menu of the webapp.
@@ -133,7 +136,11 @@ public class MainMenu extends PageBase {
     }
 
     private void openMenu(String menu, String... submenus) {
-        page.getByTestId(menu).click();
+        Locator menuButton = page.getByTestId(menu);
+        assertThat(menuButton).isVisible();
+        if (!Boolean.parseBoolean(menuButton.getAttribute("data-expanded"))) {
+            menuButton.click();
+        }
         if (submenus.length == 0) {
             page.getByTestId(menu + "-inner").click();
         }
