@@ -1104,6 +1104,45 @@
         "tags": [
           "pn-p-character-service"
         ]
+      },
+      "post": {
+        "operationId": "recalculateEntries",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PnPCharacterDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PnPCharacterDTO"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Recalculates all entries of the character",
+        "tags": [
+          "pn-p-character-service"
+        ]
       }
     },
     "/api/{universe}/crafting-recipes": {

@@ -97,8 +97,12 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
             return Optional.empty();
         }
 
-        if (pathVariables.get("universe") instanceof ObjectId s) {
+        Object universePath = pathVariables.get("universe");
+        if (universePath instanceof ObjectId s) {
             return Optional.of(s);
+        }
+        if (universePath instanceof String s && ObjectId.isValid(s)) {
+            return Optional.of(new ObjectId(s));
         }
 
         return Optional.empty();

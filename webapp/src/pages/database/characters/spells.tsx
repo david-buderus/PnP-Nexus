@@ -21,7 +21,7 @@ import {ReactNode, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {EAction, ECastingType, Spell, SpellCast, SpellServiceApi, TagCast, Talent, TalentCast} from '../../../api';
 import {fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage} from '../../../components/Database';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
 import {API_CONFIGURATION} from '../../../components/Constants';
@@ -32,6 +32,7 @@ import TagCell from '../../../components/table/TagCell';
 import {resourceFormatter, spellCastFormatter} from '../../../components/utils/Formatters';
 import {ActionSelect, CastingTypeMultiSelect} from '../../../components/input/EnumSelect';
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 
 const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 
@@ -52,8 +53,8 @@ export function SpellOverview() {
             {
                 accessorKey: 'cost',
                 header: t('spell:cost'),
-                Cell: cell => {
-                    const items = cell.cell.getValue<IResourceUsage[]>();
+                cell: cell => {
+                    const items = cell.getValue<IResourceUsage[]>();
                     return items.map(resourceFormatter).join(', ');
                 },
                 filterFn: (row, id, filterValue) => {
@@ -75,28 +76,19 @@ export function SpellOverview() {
             {
                 accessorKey: 'action',
                 header: t('enum:action'),
-                filterVariant: 'select',
-                mantineFilterMultiSelectProps: {
-                    data: Object.values(EAction).map(action => {
-                        return {
-                            label: t('enum:' + action.toLowerCase()),
-                            value: action
-                        };
-                    }),
-                },
-                Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                cell: cell => t('enum:' + cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'tags',
                 header: t('tags'),
-                Cell: TagCell,
+                cell: TagCell,
                 filterFn: (row, id, filterValue) =>
                     row.getValue<string[]>(id).some(tag => tag.includes(filterValue))
             },
             {
                 accessorKey: 'cast',
                 header: t('spell:cast'),
-                Cell: (cell): ReactNode => spellCastFormatter(cell.cell.getValue(), t),
+                cell: (cell): ReactNode => spellCastFormatter(cell.cell.getValue(), t),
                 filterFn: (row, id, filterValue) => {
                     const cast = row.getValue<SpellCast>(id);
                     if (!cast) {
@@ -112,16 +104,7 @@ export function SpellOverview() {
             {
                 accessorKey: 'castingTypes',
                 header: t('spell:castingTypes'),
-                filterVariant: 'multi-select',
-                mantineFilterMultiSelectProps: {
-                    data: Object.values(ECastingType).map(type => {
-                        return {
-                            label: t('enum:' + type.toLowerCase()),
-                            value: type
-                        };
-                    }),
-                },
-                Cell: cell => cell.cell.getValue<ECastingType[]>()?.map(type => t('enum:' + type.toLowerCase())).join(', '),
+                cell: cell => cell.getValue<ECastingType[]>()?.map(type => t('enum:' + type.toLowerCase())).join(', '),
                 filterFn: (row, id, filterValue: ECastingType[]) =>
                     filterValue.every(val => row.getValue<ECastingType[]>(id).includes(val)),
                 defaultHidden: true
@@ -137,18 +120,22 @@ export function SpellOverview() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllSpells()}
-        columns={columns}
-        identifier="spells"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode}
-                                                                                         refresh={refresh}
-                                                                                         disabled={disabled}
-                                                                                         getInitial={getInitial}/>}
-        deletionDialogTitle={t('spell:editTitle')}
-        onDelete={(universe, spells) => SPELL_API.deleteAllSpells(universe, spells.map(spell => spell.id))}
-        idKey="id"
-    />;
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllSpells()}
+            columns={columns}
+            identifier="spells"
+            manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
+                editMode={editMode}
+                refresh={refresh}
+                disabled={disabled}
+                getInitial={getInitial}
+            />}
+            deletionDialogTitle={t('spell:editTitle')}
+            onDelete={(universe, spells) => SPELL_API.deleteAllSpells(universe, spells.map(spell => spell.id))}
+            idKey="id"
+        />
+    </Stack>;
 }
 
 function CreationDialog({

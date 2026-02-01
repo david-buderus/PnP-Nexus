@@ -5,13 +5,14 @@ import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PrimaryAttribute, Talent, TalentServiceApi} from '../../../api';
 import {fetchAllPrimaryAttributes, fetchAllTags, fetchAllTalents} from '../../../components/Database';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import {ObjectSelect} from '../../../components/input/ObjectSelect';
 import {filterNamedCell, NamedCell} from '../../../components/table/NamedCell';
 import TagCell, {filterTagCell} from '../../../components/table/TagCell';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 
 const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
 
@@ -28,25 +29,25 @@ export function TalentOverview() {
             {
                 accessorKey: 'tags',
                 header: t('tags'),
-                Cell: TagCell,
+                cell: TagCell,
                 filterFn: filterTagCell
             },
             {
                 accessorKey: 'firstAttribute',
                 header: t('character:firstAttribute'),
-                Cell: NamedCell,
+                cell: NamedCell,
                 filterFn: filterNamedCell
             },
             {
                 accessorKey: 'secondAttribute',
                 header: t('character:secondAttribute'),
-                Cell: NamedCell,
+                cell: NamedCell,
                 filterFn: filterNamedCell
             },
             {
                 accessorKey: 'thirdAttribute',
                 header: t('character:thirdAttribute'),
-                Cell: NamedCell,
+                cell: NamedCell,
                 filterFn: filterNamedCell
             }
         ], []);
@@ -55,10 +56,13 @@ export function TalentOverview() {
         fetchData={fetchAllTalents()}
         columns={columns}
         identifier="talents"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog editMode={editMode}
-                                                                                         refresh={refresh}
-                                                                                         disabled={disabled}
-                                                                                         getInitial={getInitial}/>}
+        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
+            <CreationDialog
+                editMode={editMode}
+                refresh={refresh}
+                disabled={disabled}
+                getInitial={getInitial}
+            />}
         deletionDialogTitle={t('character:talentDeletionTitle')}
         onDelete={(universe, talents) => TALENT_API.deleteAllTalents(universe, talents.map(talent => talent.id))}
         idKey="id"

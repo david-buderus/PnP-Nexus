@@ -8,10 +8,10 @@ import {
     fetchAllTags,
     fetchAllWeapons
 } from '../../../components/Database';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import OverviewPage from '../../../components/OverviewPage';
 import {useTranslation} from 'react-i18next';
 import TagCell, {filterTagCell} from '../../../components/table/TagCell';
-import {Armor, EArmorSlot, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from '../../../api';
+import {Armor, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from '../../../api';
 import CurrencyCell from '../../../components/table/CurrencyCell';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import {useDisclosure} from '@mantine/hooks';
@@ -25,6 +25,7 @@ import DiceInput from '../../../components/input/DiceInput';
 import {currencyFormatter} from '../../../components/utils/Formatters';
 import DiceCell from '../../../components/table/DiceCell';
 import {filterNamedCell, NamedCell} from '../../../components/table/NamedCell';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
@@ -56,21 +57,12 @@ export function Items() {
             {
                 accessorKey: 'rarity',
                 header: t('rarity'),
-                filterVariant: 'select',
-                mantineFilterMultiSelectProps: {
-                    data: Object.values(ERarity).map(rarity => {
-                        return {
-                            label: t('enum:' + rarity.toLowerCase()),
-                            value: rarity
-                        };
-                    }),
-                },
-                Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
                 header: t('price'),
-                Cell: CurrencyCell
+                cell: CurrencyCell
             },
             {
                 accessorKey: 'tier',
@@ -127,15 +119,13 @@ export function Weapons() {
             {
                 accessorKey: 'tags',
                 header: t('tags'),
-                Cell: TagCell,
-                filterFn: (row, id, filterValue) => {
-                    return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
-                }
+                cell: TagCell,
+                filterFn: filterTagCell
             },
             {
                 accessorKey: 'material',
                 header: t('material'),
-                Cell: NamedCell,
+                cell: NamedCell,
                 filterFn: filterNamedCell
             },
             {
@@ -145,7 +135,7 @@ export function Weapons() {
             {
                 accessorKey: 'dice',
                 header: t('dice'),
-                Cell: DiceCell
+                cell: DiceCell
             },
             {
                 accessorKey: 'hit',
@@ -166,21 +156,12 @@ export function Weapons() {
             {
                 accessorKey: 'rarity',
                 header: t('rarity'),
-                filterVariant: 'select',
-                mantineFilterMultiSelectProps: {
-                    data: Object.values(ERarity).map(rarity => {
-                        return {
-                            label: t('enum:' + rarity.toLowerCase()),
-                            value: rarity
-                        };
-                    }),
-                },
-                Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
                 header: t('price'),
-                Cell: CurrencyCell
+                cell: CurrencyCell
             },
             {
                 accessorKey: 'tier',
@@ -243,15 +224,13 @@ export function Shields() {
                 {
                     accessorKey: 'tags',
                     header: t('tags'),
-                    Cell: TagCell,
-                    filterFn: (row, id, filterValue) => {
-                        return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
-                    }
+                    cell: TagCell,
+                    filterFn: filterTagCell
                 },
                 {
                     accessorKey: 'material',
                     header: t('material'),
-                    Cell: NamedCell,
+                    cell: NamedCell,
                     filterFn: filterNamedCell
                 },
                 {
@@ -281,21 +260,12 @@ export function Shields() {
                 {
                     accessorKey: 'rarity',
                     header: t('rarity'),
-                    filterVariant: 'select',
-                    mantineFilterMultiSelectProps: {
-                        data: Object.values(ERarity).map(rarity => {
-                            return {
-                                label: t('enum:' + rarity.toLowerCase()),
-                                value: rarity
-                            };
-                        }),
-                    },
-                    Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                    cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'vendorPrice',
                     header: t('price'),
-                    Cell: CurrencyCell
+                    cell: CurrencyCell
                 },
                 {
                     accessorKey: 'tier',
@@ -337,7 +307,7 @@ export function Shields() {
                 c.splice(offset, 0, {
                     accessorKey: 'dice',
                     header: t('dice'),
-                    Cell: DiceCell
+                    cell: DiceCell
                 });
             }
 
@@ -376,30 +346,19 @@ export function ArmorOverview() {
                 {
                     accessorKey: 'tags',
                     header: t('tags'),
-                    Cell: TagCell,
-                    filterFn: (row, id, filterValue) => {
-                        return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
-                    }
+                    cell: TagCell,
+                    filterFn: filterTagCell
                 },
                 {
                     accessorKey: 'material',
                     header: t('material'),
-                    Cell: NamedCell,
+                    cell: NamedCell,
                     filterFn: filterNamedCell
                 },
                 {
                     accessorKey: 'armorSlot',
                     header: t('item:armorSlot'),
-                    filterVariant: 'select',
-                    mantineFilterMultiSelectProps: {
-                        data: Object.values(EArmorSlot).map(rarity => {
-                            return {
-                                label: t('enum:' + rarity.toLowerCase()),
-                                value: rarity
-                            };
-                        }),
-                    },
-                    Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                    cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'armor',
@@ -420,21 +379,12 @@ export function ArmorOverview() {
                 {
                     accessorKey: 'rarity',
                     header: t('rarity'),
-                    filterVariant: 'select',
-                    mantineFilterMultiSelectProps: {
-                        data: Object.values(ERarity).map(rarity => {
-                            return {
-                                label: t('enum:' + rarity.toLowerCase()),
-                                value: rarity
-                            };
-                        }),
-                    },
-                    Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                    cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
                 },
                 {
                     accessorKey: 'vendorPrice',
                     header: t('price'),
-                    Cell: CurrencyCell
+                    cell: CurrencyCell
                 },
                 {
                     accessorKey: 'tier',
@@ -505,15 +455,13 @@ export function JewelleryOverview() {
             {
                 accessorKey: 'tags',
                 header: t('tags'),
-                Cell: TagCell,
-                filterFn: (row, id, filterValue) => {
-                    return row.getValue<string[]>(id).some(tag => tag.includes(filterValue));
-                }
+                cell: TagCell,
+                filterFn: filterTagCell
             },
             {
                 accessorKey: 'material',
                 header: t('material'),
-                Cell: NamedCell,
+                cell: NamedCell,
                 filterFn: filterNamedCell
             },
             {
@@ -527,21 +475,12 @@ export function JewelleryOverview() {
             {
                 accessorKey: 'rarity',
                 header: t('rarity'),
-                filterVariant: 'select',
-                mantineFilterMultiSelectProps: {
-                    data: Object.values(ERarity).map(rarity => {
-                        return {
-                            label: t('enum:' + rarity.toLowerCase()),
-                            value: rarity
-                        };
-                    }),
-                },
-                Cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
                 header: t('price'),
-                Cell: CurrencyCell
+                cell: CurrencyCell
             },
             {
                 accessorKey: 'tier',

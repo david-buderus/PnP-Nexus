@@ -46,7 +46,6 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testAdd() {
         OverviewTable table = page.getTable();
-        table.setRowsPerPage(100);
 
         DatabaseObjectForm dialog = page.openAddDialog();
 
@@ -73,7 +72,6 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testEdit() {
         OverviewTable table = page.getTable();
-        table.setRowsPerPage(100);
 
         Assertions.assertThat(page.isEditDisabled()).isTrue();
         table.getTableRow(getModifyId().toHexString()).select();
@@ -97,7 +95,6 @@ public abstract class OverviewTestBase<T extends DatabaseObject> extends ServerT
     @Test
     void testDelete() {
         OverviewTable table = page.getTable();
-        table.setRowsPerPage(100);
 
         Collection<T> testObjects = getTestObjects();
         ObjectId modifyId = getModifyId();

@@ -110,14 +110,6 @@ public class OverviewTable {
         return table;
     }
 
-    /**
-     * Sets the number of rows showed in the table.
-     */
-    public void setRowsPerPage(int value) {
-        Select.from(table.locator("..").locator("..").getByLabel("Rows per page"))
-                .select(String.valueOf(value));
-    }
-
 
     /**
      * Represents one or multiple table rows.

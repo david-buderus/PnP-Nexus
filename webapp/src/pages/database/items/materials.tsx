@@ -5,12 +5,13 @@ import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Material, MaterialItem, MaterialServiceApi} from '../../../api';
 import {fetchAllMaterials} from '../../../components/Database';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ItemSelect} from '../../../components/input/ObjectSelect';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 
 const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
 
@@ -27,8 +28,8 @@ export function MaterialOverview() {
             {
                 accessorKey: 'items',
                 header: t('items'),
-                Cell: cell => {
-                    const items = cell.cell.getValue<MaterialItem[]>();
+                cell: cell => {
+                    const items = cell.getValue<MaterialItem[]>();
                     return items.map(item => item.amount + ' ' + item.item?.name).join(', ');
                 },
                 filterFn: (row, id, filterValue) => {

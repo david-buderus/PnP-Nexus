@@ -17,13 +17,14 @@ import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {CraftingRecipe, CraftingRecipeServiceApi, Item, ItemUsage, Material, SecondaryAttribute} from '../../../api';
 import {fetchAllCraftingRecipes, IResourceUsage} from '../../../components/Database';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
+import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ItemSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {resourceFormatter} from '../../../components/utils/Formatters';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 
 const CRAFTING_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
 
@@ -36,8 +37,8 @@ export function CraftingRecipeOverview() {
             {
                 accessorKey: 'products',
                 header: t('crafting:products'),
-                Cell: cell => {
-                    const items = cell.cell.getValue<ItemUsage[]>();
+                cell: cell => {
+                    const items = cell.getValue<ItemUsage[]>();
                     return items.map(resourceFormatter).join(', ');
                 },
                 filterFn: (row, id, filterValue) => {
@@ -59,8 +60,8 @@ export function CraftingRecipeOverview() {
             {
                 accessorKey: 'materials',
                 header: t('materials'),
-                Cell: cell => {
-                    const items = cell.cell.getValue<IResourceUsage[]>();
+                cell: cell => {
+                    const items = cell.getValue<IResourceUsage[]>();
                     return items.map(resourceFormatter).join(', ');
                 },
                 filterFn: (row, id, filterValue) => {

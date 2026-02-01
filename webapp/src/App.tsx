@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import PageBase from './components/PageBase';
 import Login from './pages/login';
 import '@mantine/core/styles.css';
-import 'mantine-react-table/styles.css';
 import '@mantine/tiptap/styles.css';
 
 import {MantineProvider} from '@mantine/core';
