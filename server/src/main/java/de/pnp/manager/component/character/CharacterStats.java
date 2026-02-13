@@ -62,14 +62,14 @@ public class CharacterStats {
      * @return the {@link Stat} for the given {@link PrimaryAttribute}
      */
     public Stat get(PrimaryAttribute attribute) {
-        return primaryStats.putIfAbsent(attribute, new Stat(0));
+        return primaryStats.computeIfAbsent(attribute, a -> new Stat(0));
     }
 
     /**
      * @return the {@link Stat} for the given {@link SecondaryAttribute}
      */
     public Stat get(SecondaryAttribute attribute) {
-        return secondaryStats.putIfAbsent(attribute, new Stat(0));
+        return secondaryStats.computeIfAbsent(attribute, a -> new Stat(0));
     }
 
     /**

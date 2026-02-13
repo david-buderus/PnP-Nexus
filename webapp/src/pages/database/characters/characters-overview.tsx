@@ -1,12 +1,14 @@
 import {useTranslation} from 'react-i18next';
 import {useMemo, useState} from 'react';
-import OverviewPage, {ExtendedColumnDef} from '../../../components/OverviewPage';
-import {Nation, PnPCharacterDTO, Species} from '../../../api';
+import OverviewPage from '../../../components/OverviewPage';
+import {Nation, PnPCharacterDTO, PnPCharacterServiceApi, Species} from '../../../api';
 import {fetchAllCharacters} from '../../../components/Database';
 import {Button, Center} from '@mantine/core';
 import {useUniverseContext} from '../../../components/PageBase';
 import {PnPCharacterView} from '../../../components/character/PnPCharacterView';
 import {useForm} from '@mantine/form';
+import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {API_CONFIGURATION} from '../../../components/Constants';
 
 /** A character without any values */
 export const EMPTY_CHARACTERS: PnPCharacterDTO = {
@@ -50,6 +52,8 @@ export const EMPTY_CHARACTERS: PnPCharacterDTO = {
     talents: {},
 };
 
+const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
+
 /** An overview over all characters */
 export function CharactersOverview() {
     const {t} = useTranslation();
@@ -65,7 +69,7 @@ export function CharactersOverview() {
             {
                 accessorKey: 'origin.species',
                 header: t('species'),
-                Cell: cell => cell.cell.getValue<Species>()?.name ?? '',
+                cell: cell => cell.getValue<Species>()?.name ?? '',
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<Species>(id)?.name.includes(filterValue);
                 }
@@ -73,7 +77,7 @@ export function CharactersOverview() {
             {
                 accessorKey: 'origin.nation',
                 header: t('nation'),
-                Cell: cell => cell.cell.getValue<Nation>()?.name ?? '',
+                cell: cell => cell.getValue<Nation>()?.name ?? '',
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<Nation>(id)?.name.includes(filterValue);
                 }
@@ -105,9 +109,18 @@ export function CharactersOverview() {
 }
 
 function CharacterEdit() {
-    const {sheetSettings} = useUniverseContext();
+    const {sheetSettings, activeUniverse} = useUniverseContext();
     const form = useForm<PnPCharacterDTO>({
-        initialValues: EMPTY_CHARACTERS
+        initialValues: EMPTY_CHARACTERS,
+        cascadeUpdates: true,
+    });
+
+    form.watch('stats.primaryStats', () => {
+        CHARACTER_API.recalculateEntries(activeUniverse.id, form.getValues()).then(response => {
+            const entries = response.data;
+            form.setFieldValue('stats.secondaryStats', entries.secondaryStats);
+            form.setFieldValue('talents', entries.talents);
+        });
     });
 
     return <Center>

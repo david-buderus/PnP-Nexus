@@ -1132,7 +1132,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PnPCharacterDTO"
+                  "$ref": "#/components/schemas/RecalculateEntries"
                 }
               }
             },
@@ -6139,6 +6139,23 @@
             }
           }
         ]
+      },
+      "RecalculateEntries": {
+        "type": "object",
+        "properties": {
+          "secondaryStats": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StatsDto"
+            }
+          },
+          "talents": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TalentRollDto"
+            }
+          }
+        }
       },
       "RoleAuthorityDTO": {
         "required": [

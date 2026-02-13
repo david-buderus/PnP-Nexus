@@ -88,7 +88,9 @@ public class PnPCharacter extends DatabaseObject {
     public List<ICharacterTrait> getAllTraits() {
         Builder<ICharacterTrait> builder = ImmutableList.builder();
         builder.addAll(advantageTraits).addAll(disadvantageTraits);
-        builder.addAll(origin.species().getAdvantageTraits()).addAll(origin.species().getDisadvantageTraits());
+        if (origin.species() != null) {
+            builder.addAll(origin.species().getAdvantageTraits()).addAll(origin.species().getDisadvantageTraits());
+        }
         if (origin.nation() != null) {
             builder.addAll(origin.nation().getAdvantageTraits()).addAll(origin.nation().getDisadvantageTraits());
         }

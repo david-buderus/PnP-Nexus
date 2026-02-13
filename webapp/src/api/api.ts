@@ -1814,6 +1814,25 @@ export interface PrimaryStatTrait {
 /**
  * 
  * @export
+ * @interface RecalculateEntries
+ */
+export interface RecalculateEntries {
+    /**
+     * 
+     * @type {{ [key: string]: StatsDto; }}
+     * @memberof RecalculateEntries
+     */
+    'secondaryStats'?: { [key: string]: StatsDto; };
+    /**
+     * 
+     * @type {{ [key: string]: TalentRollDto; }}
+     * @memberof RecalculateEntries
+     */
+    'talents'?: { [key: string]: TalentRollDto; };
+}
+/**
+ * 
+ * @export
  * @interface RoleAuthorityDTO
  */
 export interface RoleAuthorityDTO {
@@ -6086,7 +6105,7 @@ export const PnPCharacterServiceApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async recalculateEntries(universe: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterDTO>> {
+        async recalculateEntries(universe: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RecalculateEntries>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.recalculateEntries(universe, pnPCharacterDTO, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.recalculateEntries']?.[localVarOperationServerIndex]?.url;
@@ -6120,7 +6139,7 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        recalculateEntries(universe: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterDTO> {
+        recalculateEntries(universe: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig): AxiosPromise<RecalculateEntries> {
             return localVarFp.recalculateEntries(universe, pnPCharacterDTO, options).then((request) => request(axios, basePath));
         },
     };

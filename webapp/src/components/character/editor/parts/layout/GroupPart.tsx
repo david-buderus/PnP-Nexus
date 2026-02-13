@@ -1,13 +1,13 @@
-import React, {ReactNode} from "react";
-import {useNode} from "@craftjs/core";
-import {Group, Select, Stack} from "@mantine/core";
-import {getPartStyle} from "../Constants";
+import React, {ReactNode} from 'react';
+import {useNode} from '@craftjs/core';
+import {Group, Select, Stack} from '@mantine/core';
+import {getPartStyle} from '../Constants';
 
 /** A part which contains {@link Group} */
 export const GroupPart = ({children, ...props}: {
     children?: ReactNode;
-    justify?: "flex-start" | "flex-end" | "center" | "space-between";
-    align?: "flex-start" | "flex-end" | "center";
+    justify?: 'flex-start' | 'flex-end' | 'center' | 'space-between';
+    align?: 'flex-start' | 'flex-end' | 'center';
 }) => {
     const {
         connectors: {connect, drag},
@@ -39,19 +39,19 @@ const GroupSettings = () => {
             label="Justify"
             value={justify ?? 'flex-start'}
             onChange={e => setProp(props => props.justify = e)}
-            data={["flex-start", "flex-end", "center", "space-between"]}
+            data={['flex-start', 'flex-end', 'center', 'space-between']}
         />
         <Select
             label="Align"
             value={align ?? 'center'}
             onChange={e => setProp(props => props.align = e)}
-            data={["flex-start", "flex-end", "center"]}
+            data={['flex-start', 'flex-end', 'center']}
         />
     </Stack>;
 };
 
 GroupPart.craft = {
-    name: "sheetEditor:horizontal",
+    name: 'sheetEditor:horizontal',
     related: {
         settings: GroupSettings
     }

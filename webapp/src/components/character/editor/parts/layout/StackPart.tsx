@@ -1,8 +1,8 @@
-import React, {ReactNode} from "react";
-import {useNode} from "@craftjs/core";
-import {Stack} from "@mantine/core";
-import {getPartStyle} from "../Constants";
-import {MantineSpacing} from "@mantine/core/lib/core";
+import React, {ReactNode} from 'react';
+import {useNode} from '@craftjs/core';
+import {Stack} from '@mantine/core';
+import {getPartStyle} from '../Constants';
+import {MantineSpacing} from '@mantine/core/lib/core';
 
 /** A part which contains {@link Stack} */
 export const StackPart = ({children, ...props}: {
@@ -29,5 +29,5 @@ export const StackPart = ({children, ...props}: {
 };
 
 StackPart.craft = {
-    name: "sheetEditor:vertical"
+    name: 'sheetEditor:vertical'
 };

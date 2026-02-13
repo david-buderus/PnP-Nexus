@@ -36,12 +36,14 @@ export const CharacterDescriptionInfo = ({description, numberOfRows}: {
             </Table.Tr>
             <Table.Tr h={TABLE_ROW_HEIGHT * numberOfRows}>
                 <Table.Td style={{whiteSpace: 'pre-line', textAlign: 'left', verticalAlign: 'top', ...TABLE_STYLE}}>
-                    <TableTextarea
-                        readOnly={!allowEdit}
-                        h={TABLE_ROW_HEIGHT * numberOfRows}
-                        key={characterForm.key(`description.${description.id}`)}
-                        {...characterForm.getInputProps(`description.${description.id}`)}
-                    />
+                    {description !== null ?
+                        <TableTextarea
+                            readOnly={!allowEdit}
+                            h={TABLE_ROW_HEIGHT * numberOfRows}
+                            key={characterForm.key(`description.${description.id}`)}
+                            {...characterForm.getInputProps(`description.${description.id}`)}
+                        /> : null
+                    }
                 </Table.Td>
             </Table.Tr>
         </Table.Tbody>
