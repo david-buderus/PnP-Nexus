@@ -11,6 +11,15 @@ export function TableNumberInput(props: NumberInputProps) {
         styles={{
             root: {
                 width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-end', // Aligns values to the right like your example
+            },
+            wrapper: {
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
             },
             input: {
                 padding: 0,
@@ -18,17 +27,26 @@ export function TableNumberInput(props: NumberInputProps) {
                 border: 'none',
                 outline: 'none',
                 background: 'transparent',
-                width: '100%',
+                textAlign: 'right', // Aligns the raw number to the right
 
-                // 6 is the padding of the TableCells
+                // Flexible width for the input part
+                width: 'auto',
+                maxWidth: '60%',
+
                 height: TABLE_ROW_HEIGHT - 6,
                 lineHeight: `${TABLE_ROW_HEIGHT - 6}px`,
 
                 fontSize: TABLE_STYLE.fontSize,
-                overflow: TABLE_STYLE.overflow,
-                textOverflow: TABLE_STYLE.textOverflow,
-                whiteSpace: TABLE_STYLE.whiteSpace,
+                overflow: 'visible', // Prevents cutting off the total value
+                whiteSpace: 'nowrap',
             },
+            section: {
+                // Ensure the rightSection (totalValue) is aligned vertically
+                height: TABLE_ROW_HEIGHT - 6,
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: TABLE_STYLE.fontSize,
+            }
         }}
     />;
 }
