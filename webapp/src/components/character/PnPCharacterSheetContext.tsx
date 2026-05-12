@@ -2,8 +2,7 @@ import React from 'react';
 
 /** Interface for the context */
 export type PnPCharacterSheetContextContent = {
-    /** The currently selected page */
-    selectedPage: number;
+    allowEdit: boolean;
 }
 
 /** Context in sheet editor */

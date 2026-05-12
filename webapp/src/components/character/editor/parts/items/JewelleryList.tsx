@@ -1,44 +1,61 @@
-import {useNode} from '@craftjs/core';
 import {NumberInput, Stack, Table} from '@mantine/core';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {JewelleryDefinition} from '../../../../../api';
 import {useUniverseContext} from '../../../../PageBase';
+import {PageElementSettings} from '../PageElementSettings';
 
 
 /** Shows jewellery of the character */
-export const JewelleryList = ({numberOfJewellery}: {
+export function JewelleryList({numberOfJewellery, setNumberOfJewellery}: {
     numberOfJewellery: Record<string, number>;
-}) => {
+    setNumberOfJewellery: (j: Record<string, number>) => void;
+}) {
     const {t} = useTranslation();
     const {equipmentSettings} = useUniverseContext();
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
 
-    return <Table
-        withTableBorder
-        withColumnBorders
-        striped
-        ref={ref => connect(drag(ref))}
-        style={{...getPartStyle(selected), tableLayout: 'fixed'}}
-    >
-        <Table.Tbody>
-            <Table.Tr h={TABLE_ROW_HEIGHT}>
-                <Table.Th style={{width: '20%', ...TABLE_STYLE}}>{t('jewellery')}</Table.Th>
-                <Table.Th style={{width: '25%', ...TABLE_STYLE}}>{t('name')}</Table.Th>
-                <Table.Th style={{width: '55%', ...TABLE_STYLE}}>{t('effect')}</Table.Th>
-            </Table.Tr>
-            {equipmentSettings.jewelleryDefinitions.map(definition => <JewelleryLines
-                key={definition.name}
-                definition={definition}
-                numberOfJewellery={numberOfJewellery}
-            />)}
-        </Table.Tbody>
-    </Table>;
-};
+    return <>
+        <Table
+            withTableBorder
+            withColumnBorders
+            striped
+        >
+            <Table.Tbody>
+                <Table.Tr h={TABLE_ROW_HEIGHT}>
+                    <Table.Th style={{width: '20%', ...TABLE_STYLE}}>{t('jewellery')}</Table.Th>
+                    <Table.Th style={{width: '25%', ...TABLE_STYLE}}>{t('name')}</Table.Th>
+                    <Table.Th style={{width: '55%', ...TABLE_STYLE}}>{t('effect')}</Table.Th>
+                </Table.Tr>
+                {equipmentSettings.jewelleryDefinitions.map(definition => <JewelleryLines
+                    key={definition.name}
+                    definition={definition}
+                    numberOfJewellery={numberOfJewellery}
+                />)}
+            </Table.Tbody>
+        </Table>
+        <PageElementSettings>
+            <Stack>
+                {equipmentSettings.jewelleryDefinitions.map(definition =>
+                    <NumberInput
+                        key={definition.name}
+                        label={definition.name}
+                        value={numberOfJewellery[definition.name]}
+                        onChange={e => {
+                            const changed = {...numberOfJewellery};
+                            changed[definition.name] = Number(e);
+                            setNumberOfJewellery(changed);
+                        }}
+                        min={1}
+                        max={definition.amount}
+                        allowDecimal={false}
+                    />
+                )}
+            </Stack>
+        </PageElementSettings>
+    </>;
+}
 
 function JewelleryLines({
     definition,
@@ -75,35 +92,3 @@ function JewelleryLines({
         })}
     </>;
 }
-
-const JewelleryListSettings = () => {
-    const {equipmentSettings} = useUniverseContext();
-    const {actions: {setProp}, numberOfJewellery} = useNode(node => ({
-        numberOfJewellery: node.data.props.numberOfJewellery as Record<string, number>
-    }));
-
-    return <Stack>
-        {equipmentSettings.jewelleryDefinitions.map(definition =>
-            <NumberInput
-                key={definition.name}
-                label={definition.name}
-                value={numberOfJewellery[definition.name]}
-                onChange={e => setProp(props => {
-                    const changed = {...numberOfJewellery};
-                    changed[definition.name] = Number(e);
-                    props.numberOfJewellery = changed;
-                })}
-                min={1}
-                max={definition.amount}
-                allowDecimal={false}
-            />
-        )}
-    </Stack>;
-};
-
-JewelleryList.craft = {
-    name: 'sheetEditor:jewelleryList',
-    related: {
-        settings: JewelleryListSettings
-    }
-};

@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* --- Editor Base Styles --- */
+
 .btn {
     @apply font-bold py-2 px-4 rounded bg-stone-400;
 }
@@ -18,39 +20,67 @@
     @apply bg-stone-500;
 }
 
-.page-hidden {
-    display: none;
+/* Customizing the React Grid Layout interaction */
+.drag-handle {
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.drag-handle:hover {
+    border-color: #228be6 !important; /* Mantine Blue */
+    box-shadow: 0 0 0 1px #228be6;
+}
+
+/* Ensure the Resize Handle is always clickable and visible on top of absolute content */
+.react-resizable-handle {
+    z-index: 20 !important;
+    cursor: nwse-resize !important;
+}
+
+/* Optional: Add a visual hint for the resize handle */
+.react-resizable-handle::after {
+    content: "";
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    width: 5px;
+    height: 5px;
+    border-right: 2px solid #dee2e6;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.layout-read-only .react-grid-item {
+    transition: none !important;
+    border: none !important;
+}
+
+.layout-read-only .react-grid-item {
+    cursor: default !important;
+}
+
+.layout-read-only .react-grid-item:focus {
+    outline: none !important;
+}
+
+.layout-read-only .drag-handle:hover {
+    border-color: unset !important;
+    box-shadow: none;
+}
+
+/* --- Print Styles --- */
 @media print {
+    @page {
+        margin: 0;
+        size: auto;
+    }
+
+    /* Hide everything except our sheet */
     body * {
         visibility: hidden !important;
     }
 
     * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
-    .page-break {
-        page-break-after: always;
-        break-after: page;
-    }
-
-    .print-clean-first {
-        box-shadow: none !important;
-        padding: 0 !important;
-        border: none !important;
-    }
-
-    .print-clean {
-        box-shadow: none !important;
-        padding: 25px 0 0 0 !important;
-        border: none !important;
-    }
-
-    .page-hidden {
-        display: block !important;
+        -webkit-print-color-adjust: exact !important; /* Chrome, Safari, Edge */
+        print-color-adjust: exact !important; /* Firefox */
     }
 
     #print-section,
@@ -58,12 +88,60 @@
         visibility: visible !important;
     }
 
+    /* Anchor the sheet to the top left of the paper */
     #print-section {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        padding: 20px;
-        background: white;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 800px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Reset the individual boxes wrapping the pages */
+    #print-section > div {
+        position: static !important;
+        opacity: 1 !important;
+        transform: none !important;
+        display: block !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+    }
+
+    .print-width-lock {
+        width: 800px !important;
+        min-width: 800px !important;
+        display: block !important;
+    }
+
+    .page-break {
+        width: 800px !important;
+        height: 1131px !important; /* Fixed A4 Height based on 800px width */
+        border: none !important;
+        box-shadow: none !important;
+        padding: 16px !important; /* Match your Mantine 'md' padding */
+        margin: 0 !important;
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .mantine-AspectRatio-root {
+        width: 800px !important;
+        height: 1131px !important;
+    }
+
+    /* Hide UI Buttons */
+    .no-print,
+    .no-drag,
+    .react-resizable-handle,
+    .mantine-ActionIcon-root {
+        display: none !important;
+    }
+
+    /* Clean up item borders */
+    .drag-handle {
+        border: none !important;
+        background: transparent !important;
     }
 }

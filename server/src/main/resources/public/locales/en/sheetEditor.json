@@ -16,6 +16,7 @@
   "layout": "Layout",
   "premade": "Premade",
   "numberOfRows": "Number of Rows",
+  "numberOfColumns": "Number of Columns",
   "armorSlots": "Armor",
   "withShield": "With Shield",
   "stats": "Stats",

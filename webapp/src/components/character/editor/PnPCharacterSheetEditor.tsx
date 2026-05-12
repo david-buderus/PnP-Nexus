@@ -4,9 +4,8 @@ import {PnPCharacterDTO, PnPCharacterSheet, PnPCharacterSheetServiceApi} from '.
 import {API_CONFIGURATION} from '../../Constants';
 import React, {useEffect, useMemo, useState} from 'react';
 import {
-    Accordion,
     ActionIcon,
-    Badge,
+    Box,
     Button,
     Center,
     Divider,
@@ -14,72 +13,29 @@ import {
     Group,
     Modal,
     Stack,
-    Text,
     Textarea,
     TextInput,
     Title
 } from '@mantine/core';
-import {Editor, Element, Frame, Resolver, useEditor} from '@craftjs/core';
-import {StackPart} from './parts/layout/StackPart';
-import {FreeTextPart} from './parts/other/FreeTextPart';
-import {GroupPart} from './parts/layout/GroupPart';
-import {GridPart} from './parts/layout/GridPart';
 import {PnPCharacterContext} from '../PnPCharacterContext';
-import {CharacterInfo} from './parts/character/CharacterInfo';
-import {LevelInfo} from './parts/character/LevelInfo';
-import {PrimaryAttributeInfo} from './parts/stats/PrimaryAttributeInfo';
-import {SecondaryAttributeInfo} from './parts/stats/SecondaryAttributeInfo';
-import {WeaponList} from './parts/items/WeaponList';
-import {CharacterSheetPaper} from './parts/CharacterSheetPaper';
+import {CharacterSheetPaper, PnPCharacterSheetPage} from './parts/CharacterSheetPaper';
 import {FaChevronRight} from 'react-icons/fa6';
 import {FaChevronLeft} from 'react-icons/fa';
-import {ArmorSlots} from './parts/items/ArmorSlots';
-import {JewelleryList} from './parts/items/JewelleryList';
-import {InventoryPart} from './parts/items/InventoryPart';
-import {TextFieldPart} from './parts/custom/TextFieldPart';
-import {PrimaryAttributeRow} from './parts/stats/PrimaryAttributeRow';
-import {useDisclosure} from '@mantine/hooks';
-import {TitlePart} from './parts/other/TitlePart';
-import {TalentGroup} from './parts/talent/TalentGroup';
-import {CharacterDescriptionInfo} from './parts/character/CharacterDesciptionInfo';
-import {AdvantagesInfo} from './parts/character/AdvantagesInfo';
+import {useDisclosure, useListState, UseListStateHandlers} from '@mantine/hooks';
 import {useForm} from '@mantine/form';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../../utils/ErrorUtils';
 import {DropdownButton} from '../../button/DropdownButton';
-import {SpellList} from './parts/spells/SpellList';
-import {CurrencyPart, SHOW_ALL_CURRENCIES} from './parts/items/CurrencyPart';
-import {CustomTablePart, EMPTY_TABLE_DEFINITION} from './parts/custom/CustomTablePart';
 import {PnPCharacterSheetContext} from '../PnPCharacterSheetContext';
 import ConfirmationDialog from '../../modal/ConfirmationDialog';
 import {EMPTY_CHARACTERS} from '../../../pages/database/characters/characters-overview';
 
-const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
+import '/node_modules/react-grid-layout/css/styles.css';
+import '/node_modules/react-resizable/css/styles.css';
+import {Toolbox} from './Toolbox';
+import {PageElementLayout} from './parts/PageElement';
 
-/** All resolver used by the character sheet editor */
-export const RESOLVER: Resolver = {
-    StackPart,
-    FreeTextPart,
-    TextFieldPart,
-    TitlePart,
-    GroupPart,
-    GridPart,
-    CharacterInfo,
-    LevelInfo,
-    CharacterDescriptionInfo,
-    PrimaryAttributeInfo,
-    SecondaryAttributeInfo,
-    PrimaryAttributeRow,
-    WeaponList,
-    ArmorSlots,
-    JewelleryList,
-    InventoryPart,
-    TalentGroup,
-    SpellList,
-    AdvantagesInfo,
-    CurrencyPart,
-    CharacterSheetPaper,
-    CustomTablePart
-};
+
+const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
 
 /** Editor to create character sheets */
 export function PnPCharacterSheetEditor({
@@ -93,10 +49,21 @@ export function PnPCharacterSheetEditor({
     const form = useForm<PnPCharacterDTO>({
         initialValues: EMPTY_CHARACTERS
     });
-    const [pages, setPages] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedPage, setSelectedPage] = useState(0);
+    const [pages, setPages] = useListState<PnPCharacterSheetPage>([{data: [], layout: []}]);
+    const [activeDropSettings, setActiveDropSettings] = useState<Partial<PageElementLayout>>({
+        w: 4,
+        h: 2,
+        minW: 3,
+        minH: 2
+    });
 
+    function updatePage(index: number, updatedPage: Partial<PnPCharacterSheetPage>) {
+        setPages.apply((item, i) =>
+            i === index ? {...item, ...updatedPage} : item
+        );
+    }
 
     useEffect(() => {
         if (!activeUniverse) {
@@ -115,116 +82,126 @@ export function PnPCharacterSheetEditor({
 
     return <Center>
         <Group wrap="nowrap" align="flex-start">
-            <PnPCharacterContext.Provider value={{characterForm: form, allowEdit: false}}>
-                <PnPCharacterSheetContext.Provider value={{selectedPage}}>
-                    <Editor resolver={RESOLVER}>
-                        <Stack>
-                            {initialSheet ?
-                                <Title data-testid="name">
-                                    {initialSheet?.name ?? ''}
-                                </Title>
-                                : null}
-                            <Flex align="flex-start" wrap="nowrap" gap="md">
-                                <Stack>
-                                    <Stack id="print-section">
-                                        <Frame>
-                                            <Element is={StackPart}>
-                                                <Element is={CharacterSheetPaper} pageNumber={0} id="page-0" canvas/>
-                                            </Element>
-                                        </Frame>
-                                    </Stack>
-                                    <Group justify="space-around">
-                                        <RemovePageButton
-                                            pages={pages}
-                                            setPages={setPages}
-                                            selectedPage={selectedPage}
-                                            setSelectedPage={setSelectedPage}
-                                        />
-                                        <Group gap={0}>
-                                            <ActionIcon
+            <PnPCharacterSheetContext.Provider value={{allowEdit: true}}>
+                <PnPCharacterContext.Provider value={{characterForm: form, allowEdit: false}}>
+                    <Stack>
+                        {initialSheet ?
+                            <Title data-testid="name">
+                                {initialSheet?.name ?? ''}
+                            </Title>
+                            : null}
+                        <Flex align="flex-start" wrap="nowrap" gap="md">
+                            <Stack>
+                                <Box
+                                    id="print-section"
+                                    style={{
+                                        position: 'relative',
+                                        width: '100%',
+                                        minHeight: '1150px' // Height of A4 to prevent layout collapse
+                                    }}
+                                >
+                                    {pages.map((page, i) => {
+                                        const isSelected = i === selectedPage;
+                                        // Logic: Only show the current page and 2-3 pages "peeking" behind it
+                                        const distance = i - selectedPage;
+                                        const isBehind = distance > 0 && distance <= 2;
+
+                                        return (
+                                            <Box
+                                                key={i}
+                                                className="print-page-wrapper"
                                                 style={{
-                                                    borderTopRightRadius: 0,
-                                                    borderBottomRightRadius: 0,
+                                                    position: isSelected ? 'relative' : 'absolute',
+                                                    top: isSelected ? 0 : (distance * 8), // 8px vertical offset
+                                                    left: isSelected ? 0 : (distance * 4), // 4px horizontal offset
+                                                    zIndex: 90 - i,
+
+                                                    // Visual "Stack" feedback
+                                                    opacity: isSelected ? 1 : (isBehind ? 0.7 : 0),
+                                                    transition: 'all 0.3s ease-in-out',
+
+                                                    // Interaction
+                                                    pointerEvents: isSelected ? 'all' : 'none',
                                                 }}
-                                                disabled={selectedPage === 0}
-                                                onClick={() => setSelectedPage(prev => prev - 1)}
                                             >
-                                                <FaChevronLeft/>
-                                            </ActionIcon>
-                                            <ActionIcon
-                                                style={{
-                                                    borderTopLeftRadius: 0,
-                                                    borderBottomLeftRadius: 0,
-                                                    borderLeft: 0
-                                                }}
-                                                disabled={selectedPage === pages - 1}
-                                                onClick={() => setSelectedPage(prev => prev + 1)}
-                                            >
-                                                <FaChevronRight/>
-                                            </ActionIcon>
-                                        </Group>
-                                        <AddPageButton pages={pages} setPages={setPages}/>
+                                                <CharacterSheetPaper
+                                                    page={page}
+                                                    updatePage={p => updatePage(i, p)}
+                                                    pageNumber={i}
+                                                    activeDropSettings={activeDropSettings}
+                                                />
+                                            </Box>
+                                        );
+                                    })}
+                                </Box>
+                                <Group justify="space-around">
+                                    <RemovePageButton
+                                        pages={pages}
+                                        setPages={setPages}
+                                        selectedPage={selectedPage}
+                                        setSelectedPage={setSelectedPage}
+                                    />
+                                    <Group gap={0}>
+                                        <ActionIcon
+                                            style={{
+                                                borderTopRightRadius: 0,
+                                                borderBottomRightRadius: 0,
+                                            }}
+                                            disabled={selectedPage === 0}
+                                            onClick={() => setSelectedPage(prev => prev - 1)}
+                                        >
+                                            <FaChevronLeft/>
+                                        </ActionIcon>
+                                        <ActionIcon
+                                            style={{
+                                                borderTopLeftRadius: 0,
+                                                borderBottomLeftRadius: 0,
+                                                borderLeft: 0
+                                            }}
+                                            disabled={selectedPage === pages.length - 1}
+                                            onClick={() => setSelectedPage(prev => prev + 1)}
+                                        >
+                                            <FaChevronRight/>
+                                        </ActionIcon>
                                     </Group>
-                                </Stack>
-                                <Stack w={300}>
-                                    <Toolbox/>
-                                    <SettingsPanel/>
-                                    <Divider/>
-                                    <StorageModal initialSheet={initialSheet} setPages={setPages} onCancel={onCancel}/>
-                                </Stack>
-                            </Flex>
-                        </Stack>
-                    </Editor>
-                </PnPCharacterSheetContext.Provider>
-            </PnPCharacterContext.Provider>
+                                    <AddPageButton setPages={setPages}/>
+                                </Group>
+                            </Stack>
+                            <Stack w={300}>
+                                <Toolbox
+                                    setActiveDropSettings={setActiveDropSettings}
+                                />
+                                <Divider/>
+                                <StorageModal
+                                    initialSheet={initialSheet}
+                                    pages={pages}
+                                    setPages={setPages}
+                                    onCancel={onCancel}
+                                />
+                            </Stack>
+                        </Flex>
+                    </Stack>
+                </PnPCharacterContext.Provider>
+            </PnPCharacterSheetContext.Provider>
         </Group>
     </Center>;
 }
 
+
 function RemovePageButton({selectedPage, setSelectedPage, pages, setPages}: {
     selectedPage: number,
     setSelectedPage: (value: (((prevState: number) => number) | number)) => void
-    pages: number,
-    setPages: (value: (((prevState: number) => number) | number)) => void
+    pages: PnPCharacterSheetPage[],
+    setPages: UseListStateHandlers<PnPCharacterSheetPage>
 }) {
     const {t} = useTranslation();
-    const {actions, query} = useEditor();
 
     const handleRemove = () => {
-        if (pages < 2) {
+        if (pages.length < 2) {
             return;
         }
 
-        const allNodes = query.getNodes();
-        const pageId = `page-${selectedPage}`;
-
-        const targetEntry = Object.entries(allNodes).find(([, node]) => {
-            return node.data.props?.id === pageId;
-        });
-
-        if (!targetEntry) {
-            console.warn(`Node with props.id=${pageId} not found.`);
-            return;
-        }
-
-        const [nodeIdToDelete] = targetEntry;
-        actions.delete(nodeIdToDelete);
-
-        const remainingNodes = Object.entries(query.getNodes())
-            .filter(([, node]) => node.data.type === CharacterSheetPaper);
-
-        remainingNodes.forEach(([nodeId, node]) => {
-            const {pageNumber} = node.data.props;
-
-            if (pageNumber > selectedPage) {
-                actions.setProp(nodeId, props => {
-                    props.pageNumber = pageNumber - 1;
-                    props.id = `page-${pageNumber - 1}`;
-                });
-            }
-        });
-
-        setPages(prev => prev - 1);
+        setPages.remove(selectedPage);
 
         if (selectedPage > 0) {
             setSelectedPage(selectedPage - 1);
@@ -234,31 +211,20 @@ function RemovePageButton({selectedPage, setSelectedPage, pages, setPages}: {
     return <Button
         variant="outline"
         color="red"
-        disabled={pages < 2}
+        disabled={pages.length < 2}
         onClick={handleRemove}
     >
         {t('sheetEditor:removePage')}
     </Button>;
 }
 
-function AddPageButton({pages, setPages}: {
-    pages: number,
-    setPages: (value: (((prevState: number) => number) | number)) => void
+function AddPageButton({setPages}: {
+    setPages: UseListStateHandlers<PnPCharacterSheetPage>
 }) {
     const {t} = useTranslation();
-    const {actions, query} = useEditor();
 
     const handleAdd = () => {
-        const newNode = query.parseReactElement(
-            <Element
-                is={CharacterSheetPaper}
-                pageNumber={pages}
-                id={'page-' + pages}
-                canvas
-            />
-        ).toNodeTree();
-        actions.addNodeTree(newNode, 'ROOT');
-        setPages(prev => prev + 1);
+        setPages.append({data: [], layout: []});
     };
 
     return <Button onClick={handleAdd}>
@@ -266,200 +232,14 @@ function AddPageButton({pages, setPages}: {
     </Button>;
 }
 
-function Toolbox() {
-    const {t} = useTranslation();
-    const {connectors} = useEditor();
-    const {equipmentSettings} = useUniverseContext();
-
-    return <Stack>
-        <Title order={3}>
-            {t('sheetEditor:dragToAdd')}
-        </Title>
-        <Accordion>
-            <Accordion.Item value="layout">
-                <Accordion.Control>{t('sheetEditor:layout')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button ref={ref => connectors.create(ref, <Element is={StackPart} canvas/>)}>
-                            {t('sheetEditor:vertical')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <Element is={GroupPart} canvas/>)}>
-                            {t('sheetEditor:horizontal')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-            <Accordion.Item value="character">
-                <Accordion.Control>{t('character')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button ref={ref => connectors.create(ref, <CharacterInfo/>)}>
-                            {t('sheetEditor:characterInfo')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <LevelInfo/>)}>
-                            {t('sheetEditor:levelInfo')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <CharacterDescriptionInfo
-                            description={null} numberOfRows={5}/>)}>
-                            {t('sheetEditor:characterDescription')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <AdvantagesInfo
-                            showsAdvantages={true} numberOfRows={5}/>)}>
-                            {t('advantages')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-            <Accordion.Item value="stats">
-                <Accordion.Control>{t('sheetEditor:stats')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button
-                            ref={ref => connectors.create(ref, <PrimaryAttributeInfo/>)}>
-                            {t('sheetEditor:primaryAttributeInfo')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <SecondaryAttributeInfo/>)}>
-                            {t('sheetEditor:secondaryAttributeInfo')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <PrimaryAttributeRow/>)}>
-                            {t('sheetEditor:primaryAttributeRow')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-            <Accordion.Item value="items">
-                <Accordion.Control>{t('items')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button ref={ref => connectors.create(ref, <WeaponList
-                            numberOfHandheld={equipmentSettings?.numberOfHandheld} withShield={false}/>)}>
-                            {t('sheetEditor:weaponList')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <ArmorSlots
-                            withShield={false}/>)}>
-                            {t('sheetEditor:armorSlots')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <JewelleryList
-                            numberOfJewellery={equipmentSettings?.jewelleryDefinitions
-                                .reduce((acc, item) => {
-                                    acc[item.name] = item.amount;
-                                    return acc;
-                                }, {} as Record<string, number>)}/>)}>
-                            {t('sheetEditor:jewelleryList')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <InventoryPart rows={8} columns={3}/>)}>
-                            {t('inventory')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <CurrencyPart
-                            withoutLabel={false}
-                            oneLine={false}
-                            showCurrency={SHOW_ALL_CURRENCIES}
-                        />)}>
-                            {t('sheetEditor:currency')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-            <Accordion.Item value="talents">
-                <Accordion.Control>{t('talents')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button ref={ref => connectors.create(ref, <TalentGroup
-                            groupName=""
-                        />)}>
-                            {t('sheetEditor:talentGroup')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-            <Accordion.Item value="spells">
-                <Accordion.Control>{t('spells')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button ref={ref => connectors.create(ref, <SpellList numberOfRows={6}/>)}>
-                            {t('sheetEditor:spellList')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-            <Accordion.Item value="custom">
-                <Accordion.Control>{t('sheetEditor:customFields')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button
-                            ref={ref => connectors.create(ref, <TextFieldPart customId="" title="" numberOfRows={3}/>)}>
-                            {t('sheetEditor:textField')}
-                        </Button>
-                        <Button
-                            ref={ref => connectors.create(ref, <CustomTablePart definition={EMPTY_TABLE_DEFINITION}/>)}>
-                            {t('sheetEditor:table')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-            <Accordion.Item value="other">
-                <Accordion.Control>{t('other')}</Accordion.Control>
-                <Accordion.Panel>
-                    <Stack gap="xs">
-                        <Button ref={ref => connectors.create(ref, <TitlePart text="" order={1}/>)}>
-                            {t('sheetEditor:title')}
-                        </Button>
-                        <Button ref={ref => connectors.create(ref, <FreeTextPart text="" fontSize="md"/>)}>
-                            {t('sheetEditor:freeText')}
-                        </Button>
-                    </Stack>
-                </Accordion.Panel>
-            </Accordion.Item>
-        </Accordion>
-    </Stack>;
-}
-
-function SettingsPanel() {
-    const {t} = useTranslation();
-    const {actions, selected} = useEditor((state, query) => {
-        const [currentNodeId] = Array.from(state.events.selected);
-        let s;
-
-        if (currentNodeId) {
-            s = {
-                id: currentNodeId,
-                name: state.nodes[currentNodeId].data.displayName,
-                settings: state.nodes[currentNodeId].related && state.nodes[currentNodeId].related.settings,
-                isDeletable: query.node(currentNodeId).isDeletable() && state.nodes[currentNodeId].data.name !== 'CharacterSheetPaper'
-            };
-        }
-
-        return {
-            selected: s
-        };
-    });
-
-    return <Stack>
-        <Group wrap="nowrap">
-            <Text>
-                {t('sheetEditor:selected')}
-            </Text>
-            <Badge>
-                {selected?.name ? t(selected?.name) : '???'}
-            </Badge>
-        </Group>
-        {
-            selected?.settings && React.createElement(selected.settings)
-        }
-        <Button disabled={!selected?.isDeletable} onClick={() => actions.delete(selected.id)}>
-            {t('delete')}
-        </Button>
-    </Stack>;
-}
-
-function StorageModal({initialSheet, setPages, onCancel}: {
+function StorageModal({initialSheet, pages, setPages, onCancel}: {
     initialSheet?: PnPCharacterSheet;
-    setPages: (p: number) => void;
+    pages: PnPCharacterSheetPage[];
+    setPages: UseListStateHandlers<PnPCharacterSheetPage>;
     onCancel: () => void;
 }) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
-    const {actions, query} = useEditor();
 
     const [latestSave, setLatestSave] = useState<string>('');
 
@@ -481,8 +261,7 @@ function StorageModal({initialSheet, setPages, onCancel}: {
         }
         setLatestSave(initialSheet.sheet);
         const json = atob(initialSheet.sheet);
-        actions.deserialize(json);
-        setPages(countPagesOfImport(JSON.parse(json)));
+        setPages.setState(JSON.parse(json));
     }, [initialSheet]);
 
     return <Stack>
@@ -490,7 +269,7 @@ function StorageModal({initialSheet, setPages, onCancel}: {
             <form
                 data-testid="species-form"
                 onSubmit={form.onSubmit(sheet => {
-                    sheet.sheet = btoa(query.serialize());
+                    sheet.sheet = btoa(JSON.stringify(pages));
                     if (sheet.id) {
                         SHEET_API.updatePnPCharacterSheet(activeUniverse.id, sheet.id, sheet)
                             .then(closeSave)
@@ -520,7 +299,6 @@ function StorageModal({initialSheet, setPages, onCancel}: {
             </form>
         </Modal>
         <Button variant="outline" onClick={() => {
-            actions.selectNode(null);
             window.print();
         }}>
             {t('print')}
@@ -532,7 +310,7 @@ function StorageModal({initialSheet, setPages, onCancel}: {
             openNode={(open) =>
                 <Button
                     onClick={() => {
-                        if (btoa(query.serialize()) !== latestSave) {
+                        if (btoa(JSON.stringify(pages)) !== latestSave) {
                             open();
                         } else {
                             onCancel();
@@ -557,21 +335,21 @@ function StorageModal({initialSheet, setPages, onCancel}: {
                 }
             ]}
         />
-        <ImportModal setPages={setPages} opened={openedImport} close={closeImport}/>
-        <ExportModal opened={openedExport} close={closeExport}/>
+        <ImportModal pages={pages} setPages={setPages} opened={openedImport} close={closeImport}/>
+        <ExportModal pages={pages} opened={openedExport} close={closeExport}/>
     </Stack>;
 }
 
 function ExportModal({
-    opened, close,
+    opened, close, pages
 }: {
     opened: boolean;
     close: () => void;
+    pages: PnPCharacterSheetPage[];
 }) {
     const {t} = useTranslation();
-    const {query} = useEditor();
 
-    const result = useMemo(() => btoa(query.serialize()), [query, opened]);
+    const result = useMemo(() => btoa(JSON.stringify(pages)), [pages, opened]);
 
     return <Modal opened={opened} onClose={close} title={t('todo')} maw={300}>
         <Textarea readOnly value={result} rows={10}/>
@@ -586,13 +364,12 @@ function ExportModal({
 }
 
 function ImportModal({setPages, opened, close}: {
-    setPages: (p: number) => void;
+    pages: PnPCharacterSheetPage[];
+    setPages: UseListStateHandlers<PnPCharacterSheetPage>;
     opened: boolean;
     close: () => void;
 }) {
     const {t} = useTranslation();
-    const {actions} = useEditor();
-
     const [value, setValue] = useState('');
 
     return <Modal opened={opened} onClose={close} title={t('todo')} maw={300}>
@@ -610,26 +387,10 @@ function ImportModal({setPages, opened, close}: {
             <Button type="submit" onClick={() => {
                 close();
                 const json = atob(value);
-                actions.deserialize(json);
-                setPages(countPagesOfImport(JSON.parse(json)));
+                setPages.setState(JSON.parse(json));
             }}>
                 {t('import')}
             </Button>
         </Group>
     </Modal>;
-}
-
-/** Counts the number of pages in a sheet import */
-export function countPagesOfImport(nodes: any) {
-    let count = 0;
-
-    for (const nodeId in nodes) {
-        const node = nodes[nodeId];
-
-        if (node?.type?.resolvedName === 'CharacterSheetPaper') {
-            count++;
-        }
-    }
-
-    return count;
 }

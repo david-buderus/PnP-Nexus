@@ -1,18 +1,22 @@
-import {ActionIcon, Card, Group, Stack} from '@mantine/core';
-import {FaChevronDown, FaChevronUp, FaRegTrashCan} from 'react-icons/fa6';
-import React, {ReactNode, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {toIdMap} from '../../../utils/Utils';
+import {ActionIcon, Button, Divider, Group, Stack, Text} from '@mantine/core';
+import {arrayMove, SortableContext, useSortable, verticalListSortingStrategy} from '@dnd-kit/sortable';
+import {closestCenter, DndContext} from '@dnd-kit/core';
+import {CSS} from '@dnd-kit/utilities';
+import {IconGripVertical, IconMinus, IconPlus} from '@tabler/icons-react';
 import {useTranslation} from 'react-i18next';
+import {ObjectSelect} from '../../../input/ObjectSelect';
 
 /** Interface for needed attributes */
-interface Orderable {
+type Orderable = {
     /** The id of the object */
     id?: string;
     /** The name of the object */
     name: string;
 }
 
-/** Component to modify the order of a list of objects */
+/** A stack of the given elements which allows ordering */
 export function OrderModifier<T extends Orderable>({
     currentOrder, setOrder, fullList
 }: {
@@ -31,55 +35,38 @@ export function OrderModifier<T extends Orderable>({
     }, [currentOrder, fullList]);
     const mappedList = toIdMap(fullList);
 
-    function moveUp(index: number) {
-        const copy = [...order];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index - 1, 0, item);
-        setOrder(copy);
+    function handleDragEnd(event) {
+        const {active, over} = event;
+
+        if (active.id !== over.id) {
+            const oldIndex = order.indexOf(active.id);
+            const newIndex = order.indexOf(over.id);
+            setOrder(arrayMove(order, oldIndex, newIndex));
+        }
     }
 
-    function moveDown(index: number) {
-        const copy = [...order];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index + 1, 0, item);
-        setOrder(copy);
-    }
-
-    return <Stack gap={1}>
-        {order.map((id: string, index: number) => (
-            <Card key={id} shadow="sm">
-                <Group wrap="nowrap" justify="space-between">
-                    {mappedList[id].name}
-                    <Group wrap="nowrap" gap={0}>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === 0}
-                            onClick={() => moveUp(index)}
-                        >
-                            <FaChevronUp/>
-                        </ActionIcon>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === order.length - 1}
-                            onClick={() => moveDown(index)}
-                        >
-                            <FaChevronDown/>
-                        </ActionIcon>
-                    </Group>
-                </Group>
-            </Card>
-        ))}
-    </Stack>;
+    return <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={order} strategy={verticalListSortingStrategy}>
+            <Stack gap="xs">
+                {order.map(option => (
+                    <SortableLine
+                        key={mappedList[option].id}
+                        id={mappedList[option].id}
+                        title={mappedList[option].name}
+                    />
+                ))}
+            </Stack>
+        </SortableContext>
+    </DndContext>;
 }
 
-/** Component to modify the order of a list of objects */
+/** A stack of the given elements which allows ordering and adding and removing */
 export function AddableOrderModifier<T extends Orderable>({
-    order, setOrder, fullList, addDialog
+    order, setOrder, fullList
 }: {
     order: string[]
     setOrder: (s: string[]) => void;
     fullList: T[];
-    addDialog: (add: (object: T | T[]) => void) => ReactNode;
 }) {
     const {t} = useTranslation();
     const mappedList = toIdMap(fullList);
@@ -100,58 +87,91 @@ export function AddableOrderModifier<T extends Orderable>({
         setOrder(copy);
     }
 
-    function moveUp(index: number) {
-        const copy = [...order];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index - 1, 0, item);
-        setOrder(copy);
+    function handleDragEnd(event) {
+        const {active, over} = event;
+
+        if (active.id !== over.id) {
+            const oldIndex = order.indexOf(active.id);
+            const newIndex = order.indexOf(over.id);
+            setOrder(arrayMove(order, oldIndex, newIndex));
+        }
     }
 
-    function moveDown(index: number) {
-        const copy = [...order];
-        const item = copy.splice(index, 1)[0];
-        copy.splice(index + 1, 0, item);
-        setOrder(copy);
-    }
+    return <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={order} strategy={verticalListSortingStrategy}>
+            <Stack gap="xs">
+                {order.map((option, index) => (
+                    <SortableLine
+                        key={option}
+                        id={option}
+                        title={mappedList[option]?.name ?? t('sheetEditor:emptyRow')}
+                        extra={
+                            <ActionIcon
+                                size="sm"
+                                color="red"
+                                variant="outline"
+                                onClick={() => remove(index)}
+                            >
+                                <IconMinus/>
+                            </ActionIcon>
+                        }
+                    />
+                ))}
+                <Divider/>
+                <ObjectSelect
+                    data={fullList}
+                    idKey="id"
+                    labelKey="name"
+                    onChange={o => add(o)}
+                    rightSection={<IconPlus/>}
+                    comboboxProps={{withinPortal: false}}
+                />
+                <Button onClick={() => {
+                    add({id: 'empty-' + Date.now().toString(), name: ''} as T);
+                }}>
+                    {t('sheetEditor:addEmptyRow')}
+                </Button>
+            </Stack>
+        </SortableContext>
+    </DndContext>;
+}
 
-    return <Stack gap={1}>
-        {order.map((id: string, index: number) => (
-            <Card key={id ? id : ('empty-row-' + index)} shadow="sm">
-                <Group wrap="nowrap" justify="space-between">
-                    {mappedList[id]?.name ?? t('sheetEditor:emptyRow')}
-                    <Group wrap="nowrap" gap={0}>
-                        <ActionIcon
-                            variant="outline"
-                            color="red"
-                            onClick={() => remove(index)}
-                        >
-                            <FaRegTrashCan/>
-                        </ActionIcon>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === 0}
-                            onClick={() => moveUp(index)}
-                        >
-                            <FaChevronUp/>
-                        </ActionIcon>
-                        <ActionIcon
-                            variant="outline"
-                            disabled={index === order.length - 1}
-                            onClick={() => moveDown(index)}
-                        >
-                            <FaChevronDown/>
-                        </ActionIcon>
-                    </Group>
-                </Group>
-            </Card>
-        ))}
-        {addDialog(add)}
-        <Card
-            style={{cursor: 'pointer'}}
-            shadow="sm"
-            onClick={() => add(null)}
-        >
-            {t('sheetEditor:addEmptyRow')}
-        </Card>
-    </Stack>;
+function SortableLine({
+    id,
+    title,
+    extra
+}: {
+    id: string,
+    title: string,
+    extra?: React.ReactNode
+}) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging
+    } = useSortable({id});
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        zIndex: isDragging ? 100 : 'auto',
+        opacity: isDragging ? 0.5 : 1,
+        width: '100%',
+    };
+
+    return <Group
+        ref={setNodeRef}
+        style={style}
+        wrap="nowrap"
+        p="xs"
+    >
+        <Text size="sm" style={{flex: 1}}>{title}</Text>
+        {extra}
+        <div {...attributes} {...listeners} style={{cursor: 'grab', display: 'flex'}}>
+            <IconGripVertical size={18} color="gray"/>
+        </div>
+    </Group>;
 }

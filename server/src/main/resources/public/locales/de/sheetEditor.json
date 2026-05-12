@@ -16,6 +16,7 @@
   "layout": "Layout",
   "premade": "Vorgefertigt",
   "numberOfRows": "Anzahl an Zeilen",
+  "numberOfColumns": "Anzahl an Spalten",
   "armorSlots": "Rüstungen",
   "withShield": "Mit Schild",
   "stats": "Status",

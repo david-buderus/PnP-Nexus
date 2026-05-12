@@ -1,10 +1,10 @@
-import {useNode} from '@craftjs/core';
 import {ActionIcon, Group, Select, Slider, Stack, Switch, Table, TextInput, Tooltip} from '@mantine/core';
 import React, {useContext, useState} from 'react';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {FaMinus, FaPlus} from 'react-icons/fa6';
+import {PageElementSettings} from '../PageElementSettings';
 
 type CellValues = {
     content: string;
@@ -20,7 +20,8 @@ type ColumnDefinition = {
     size: number
 }
 
-type TableDefinition = {
+/** Definition of a table */
+export type TableDefinition = {
     columns: ColumnDefinition[]
     rowValues: RowValues[];
 }
@@ -54,51 +55,59 @@ export const EMPTY_TABLE_DEFINITION = {
 };
 
 /** Part to show table with custom fields */
-export const CustomTablePart = ({
-    definition
+export function CustomTable({
+    definition,
+    setDefinition
 }: {
-    definition: TableDefinition
-}) => {
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
+    definition: TableDefinition;
+    setDefinition: (d: TableDefinition) => void;
+}) {
     const {characterForm} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
 
-    return <Table
-        withTableBorder
-        striped
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
-    >
-        <Table.Tbody>
-            <Table.Tr h={TABLE_ROW_HEIGHT + 3}>
-                {definition.columns.map((column, index) => (
-                    <Table.Th style={{...TABLE_STYLE, width: `${column?.size ?? 50}%`}} key={index}>
-                        {column?.label ?? ''}
-                    </Table.Th>
-                ))}
-            </Table.Tr>
-            {definition.rowValues.map((rowValue, rowIndex) => (
-                <Table.Tr h={TABLE_ROW_HEIGHT} key={rowIndex}>
-                    {definition.columns.map((_, colIndex) => {
-                        const cell = rowValue?.cellValues[colIndex];
-
-                        return <Table.Td style={TABLE_STYLE} key={colIndex}>
-                            {(cell?.isCustomId ? character?.customFields?.[cell?.content] : cell?.content) ?? ''}
-                        </Table.Td>;
-                    })}
+    return <>
+        <Table
+            withTableBorder
+            striped
+        >
+            <Table.Tbody>
+                <Table.Tr h={TABLE_ROW_HEIGHT + 3}>
+                    {definition.columns.map((column, index) => (
+                        <Table.Th style={{...TABLE_STYLE, width: `${column?.size ?? 50}%`}} key={index}>
+                            {column?.label ?? ''}
+                        </Table.Th>
+                    ))}
                 </Table.Tr>
-            ))}
-        </Table.Tbody>
-    </Table>;
-};
+                {definition.rowValues.map((rowValue, rowIndex) => (
+                    <Table.Tr h={TABLE_ROW_HEIGHT} key={rowIndex}>
+                        {definition.columns.map((_, colIndex) => {
+                            const cell = rowValue?.cellValues[colIndex];
 
-const CustomTablePartSettings = () => {
+                            return <Table.Td style={TABLE_STYLE} key={colIndex}>
+                                {(cell?.isCustomId ? character?.customFields?.[cell?.content] : cell?.content) ?? ''}
+                            </Table.Td>;
+                        })}
+                    </Table.Tr>
+                ))}
+            </Table.Tbody>
+        </Table>
+        <PageElementSettings>
+            <CustomTablePartSettings
+                definition={definition}
+                setDefinition={setDefinition}
+            />
+        </PageElementSettings>
+    </>;
+}
+
+function CustomTablePartSettings({
+    definition,
+    setDefinition
+}: {
+    definition: TableDefinition
+    setDefinition: (d: TableDefinition) => void
+}) {
     const {t} = useTranslation();
-    const {actions: {setProp}, definition} = useNode(node => ({
-        definition: node.data.props.definition as TableDefinition
-    }));
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
     const selectedRow = definition.rowValues[selectedIndex];
 
@@ -111,14 +120,14 @@ const CustomTablePartSettings = () => {
                         size="xs"
                         variant="filled"
                         disabled={definition.columns.length < 2}
-                        onClick={() => setProp(props => props.definition = removeLastColumn(definition))}
+                        onClick={() => setDefinition(removeLastColumn(definition))}
                     >
                         <FaMinus/>
                     </ActionIcon>
                     <ActionIcon
                         size="xs"
                         variant="filled"
-                        onClick={() => setProp(props => props.definition = addEmptyColumn(definition))}
+                        onClick={() => setDefinition(addEmptyColumn(definition))}
                     >
                         <FaPlus/>
                     </ActionIcon>
@@ -134,7 +143,7 @@ const CustomTablePartSettings = () => {
                                 ...copy.columns[index],
                                 label: e.target.value
                             };
-                            setProp(props => props.definition = copy);
+                            setDefinition(copy);
                         }}
                     />
                     <Slider
@@ -150,7 +159,7 @@ const CustomTablePartSettings = () => {
                                 ...copy.columns[index],
                                 size: e
                             };
-                            setProp(props => props.definition = copy);
+                            setDefinition(copy);
                         }}
                     />
                 </React.Fragment>
@@ -175,19 +184,20 @@ const CustomTablePartSettings = () => {
                         }}
                         value={String(selectedIndex)}
                         onChange={s => setSelectedIndex(Number(s))}
+                        comboboxProps={{withinPortal: false}}
                     />
                     <ActionIcon
                         size="xs"
                         variant="filled"
                         disabled={definition.rowValues.length < 2}
-                        onClick={() => setProp(props => props.definition = removeLastRow(definition))}
+                        onClick={() => setDefinition(removeLastRow(definition))}
                     >
                         <FaMinus/>
                     </ActionIcon>
                     <ActionIcon
                         size="xs"
                         variant="filled"
-                        onClick={() => setProp(props => props.definition = addEmptyRow(definition))}
+                        onClick={() => setDefinition(addEmptyRow(definition))}
                     >
                         <FaPlus/>
                     </ActionIcon>
@@ -204,7 +214,7 @@ const CustomTablePartSettings = () => {
                                 ...cell,
                                 content: e.target.value,
                             };
-                            setProp(props => props.definition = copy);
+                            setDefinition(copy);
                         }}
                     />
                     <Tooltip label={t('sheetEditor:asCustomFieldId') + '. ' + t('sheetEditor:customFieldIdTooltip')}>
@@ -217,7 +227,7 @@ const CustomTablePartSettings = () => {
                                         ...cell,
                                         isCustomId: e.target.checked,
                                     };
-                                    setProp(props => props.definition = copy);
+                                    setDefinition(copy);
                                 }}
                             />
                         </div>
@@ -226,14 +236,7 @@ const CustomTablePartSettings = () => {
             ))}
         </Stack>
     </Stack>;
-};
-
-CustomTablePart.craft = {
-    name: 'sheetEditor:table',
-    related: {
-        settings: CustomTablePartSettings
-    }
-};
+}
 
 function copyTableDef(definition: TableDefinition): TableDefinition {
     return {

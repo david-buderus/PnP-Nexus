@@ -1,25 +1,19 @@
-import {useNode} from '@craftjs/core';
 import {Table} from '@mantine/core';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {TableNumberInput} from '../inputs/TableNumberInput';
 
 /** Shows level and co of the character */
-export const LevelInfo = () => {
+export function LevelInfo() {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
 
     return <Table
         variant="vertical"
         layout="fixed"
         withTableBorder
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -62,8 +56,4 @@ export const LevelInfo = () => {
             </Table.Tr>
         </Table.Tbody>
     </Table>;
-};
-
-LevelInfo.craft = {
-    name: 'sheetEditor:levelInfo'
-};
+}

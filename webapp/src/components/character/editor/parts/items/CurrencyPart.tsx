@@ -1,35 +1,58 @@
-import {useNode} from '@craftjs/core';
 import {Select, Stack, Switch, Table} from '@mantine/core';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {currencyFormatter} from '../../../../utils/Formatters';
 import {useUniverseContext} from '../../../../PageBase';
 import {splitCurrency} from '../../../../utils/Utils';
+import {PageElementSettings} from '../PageElementSettings';
 
 /** Constant to show all currencies */
 export const SHOW_ALL_CURRENCIES = '__ALL_CURRENCIES__';
 
 /** Shows the currency of the character */
-export const CurrencyPart = ({withoutLabel, oneLine, showCurrency}: {
+export function CurrencyPart({
+    withoutLabel,
+    oneLine,
+    showCurrency,
+    setWithoutLabel,
+    setOneLine,
+    setShowCurrency
+}: {
     withoutLabel: boolean;
     oneLine: boolean;
     showCurrency: string;
-}) => {
-    if (oneLine) {
-        return <CurrencyOneLine withoutLabel={withoutLabel}/>;
-    }
-    return <CurrencyMultiLine withoutLabel={withoutLabel} showCurrency={showCurrency}/>;
-};
+    setWithoutLabel: (b: boolean) => void;
+    setOneLine: (b: boolean) => void;
+    setShowCurrency: (s: string) => void;
+}) {
+    return <>
+        {oneLine ?
+            <CurrencyOneLine withoutLabel={withoutLabel}/>
+            :
+            <CurrencyMultiLine
+                withoutLabel={withoutLabel}
+                showCurrency={showCurrency}
+            />
+        }
+        <PageElementSettings>
+            <CurrencyPartSettings
+                withoutLabel={withoutLabel}
+                oneLine={oneLine}
+                showCurrency={showCurrency}
+                setWithoutLabel={setWithoutLabel}
+                setOneLine={setOneLine}
+                setShowCurrency={setShowCurrency}
+            />
+        </PageElementSettings>
+    </>;
+}
 
 function CurrencyOneLine({withoutLabel}: {
     withoutLabel: boolean;
 }) {
     const {t} = useTranslation();
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
     const {currencySettings} = useUniverseContext();
     const {characterForm} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
@@ -39,8 +62,6 @@ function CurrencyOneLine({withoutLabel}: {
         variant="vertical"
         layout="fixed"
         withTableBorder
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -55,9 +76,6 @@ function CurrencyMultiLine({withoutLabel, showCurrency}: {
     withoutLabel: boolean;
     showCurrency: string;
 }) {
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
     const {currencySettings} = useUniverseContext();
     const {characterForm} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
@@ -69,8 +87,6 @@ function CurrencyMultiLine({withoutLabel, showCurrency}: {
             variant="vertical"
             layout="fixed"
             withTableBorder
-            ref={ref => connect(drag(ref))}
-            style={getPartStyle(selected)}
         >
             <Table.Tbody>
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -95,8 +111,6 @@ function CurrencyMultiLine({withoutLabel, showCurrency}: {
             variant="vertical"
             layout="fixed"
             withTableBorder
-            ref={ref => connect(drag(ref))}
-            style={getPartStyle(selected)}
         >
             <Table.Tbody>
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -113,8 +127,6 @@ function CurrencyMultiLine({withoutLabel, showCurrency}: {
         variant="vertical"
         layout="fixed"
         withTableBorder
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
     >
         <Table.Tbody>
             {currencySettings.calculationEntries.map((entry, index) => {
@@ -134,14 +146,24 @@ function CurrencyMultiLine({withoutLabel, showCurrency}: {
     </Table>;
 }
 
-const CurrencyPartSettings = () => {
+function CurrencyPartSettings({
+    withoutLabel,
+    oneLine,
+    showCurrency,
+    setWithoutLabel,
+    setOneLine,
+    setShowCurrency
+}: {
+    withoutLabel: boolean;
+    oneLine: boolean;
+    showCurrency: string;
+    setWithoutLabel: (b: boolean) => void;
+    setOneLine: (b: boolean) => void;
+    setShowCurrency: (s: string) => void;
+}) {
     const {t} = useTranslation();
     const {currencySettings} = useUniverseContext();
-    const {actions: {setProp}, withoutLabel, oneLine, showCurrency} = useNode(node => ({
-        withoutLabel: node.data.props.withoutLabel,
-        oneLine: node.data.props.oneLine,
-        showCurrency: node.data.props.showCurrency
-    }));
+
     const data = useMemo(() => {
         const result = [{
             value: SHOW_ALL_CURRENCIES,
@@ -164,34 +186,19 @@ const CurrencyPartSettings = () => {
     return <Stack>
         <Switch
             label={t('sheetEditor:withoutLabel')}
-            value={withoutLabel}
-            onChange={e => setProp(props => {
-                props.withoutLabel = e.target.checked;
-            })}
+            checked={withoutLabel}
+            onChange={e => setWithoutLabel(e.target.checked)}
         />
         <Switch
             label={t('sheetEditor:oneLine')}
-            value={oneLine}
-            onChange={e => setProp(props => {
-                props.oneLine = e.target.checked;
-            })}
+            checked={oneLine}
+            onChange={e => setOneLine(e.target.checked)}
         />
         <Select
             data={data}
             value={showCurrency}
-            onChange={d => {
-                setProp(props => {
-                    props.showCurrency = d;
-                });
-            }}
+            onChange={d => setShowCurrency(d)}
             disabled={oneLine}
         />
     </Stack>;
-};
-
-CurrencyPart.craft = {
-    name: 'sheetEditor:currency',
-    related: {
-        settings: CurrencyPartSettings
-    }
-};
+}

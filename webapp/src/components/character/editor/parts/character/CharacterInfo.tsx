@@ -1,6 +1,5 @@
-import {useNode} from '@craftjs/core';
 import {Combobox, ComboboxProps, InputBase, Table, useCombobox} from '@mantine/core';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
@@ -9,19 +8,14 @@ import {CharacterOrigin} from '../../../../../api';
 import {fetchAllSpecies} from '../../../../Database';
 
 /** Shows name and co of the character */
-export const CharacterInfo = () => {
+export function CharacterInfo() {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
 
     return <Table
         variant="vertical"
         layout="fixed"
         withTableBorder
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -58,11 +52,7 @@ export const CharacterInfo = () => {
             </Table.Tr>
         </Table.Tbody>
     </Table>;
-};
-
-CharacterInfo.craft = {
-    name: 'sheetEditor:characterInfo'
-};
+}
 
 function CharacterOriginSelect(props: {
     value?: CharacterOrigin,
