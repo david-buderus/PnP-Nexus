@@ -7,6 +7,7 @@ import {AxiosResponse} from 'axios';
 import {handleNetworkErrors} from './utils/ErrorUtils';
 import React, {ReactNode, useState} from 'react';
 import {
+    Column,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
@@ -39,6 +40,8 @@ export interface OverviewPageProps<T> {
     onDelete: (universe: string, objects: T[]) => Promise<AxiosResponse<void>>;
     /** The key to get the id of the object */
     idKey: keyof T;
+    /** Modal to show if a row is clicked */
+    viewModal?: (value: T, onClose: () => void) => ReactNode;
 }
 
 export default function OverviewPage<T>({
@@ -48,13 +51,15 @@ export default function OverviewPage<T>({
     manipulationDialog,
     deletionDialogTitle,
     onDelete,
-    idKey
+    idKey,
+    viewModal = () => null
 }: OverviewPageProps<T>) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const [data, refresh, loading] = fetchData;
 
+    const [lastClicked, setLastClicked] = useState<T>(null);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [rowSelection, setRowSelection] = useState({});
@@ -72,11 +77,11 @@ export default function OverviewPage<T>({
         columns: [
             {
                 id: 'select',
-                header: ({table}) => (
+                header: ({table: t}) => (
                     <Checkbox
-                        checked={table.getIsAllRowsSelected()}
-                        indeterminate={table.getIsSomeRowsSelected()}
-                        onChange={table.getToggleAllRowsSelectedHandler()}
+                        checked={t.getIsAllRowsSelected()}
+                        indeterminate={t.getIsSomeRowsSelected()}
+                        onChange={t.getToggleAllRowsSelectedHandler()}
                     />
                 ),
                 cell: ({row}) => (
@@ -84,6 +89,7 @@ export default function OverviewPage<T>({
                         checked={row.getIsSelected()}
                         disabled={!row.getCanSelect()}
                         onChange={row.getToggleSelectedHandler()}
+                        onClick={e => e.stopPropagation()}
                     />
                 ),
             },
@@ -102,6 +108,23 @@ export default function OverviewPage<T>({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        globalFilterFn: (row, _, filterValue, addMeta) => {
+            const searchableColumns: Column<T>[] = table.getAllColumns();
+
+            return searchableColumns.some(column => {
+                const columnFilterFn = column.columnDef.filterFn;
+                const value = row.getValue(column.id);
+
+                if (typeof columnFilterFn === 'function') {
+                    return columnFilterFn(row, column.id, filterValue, addMeta);
+                }
+
+                // Fallback for columns without a custom filterFn
+                return String(value)
+                    .toLowerCase()
+                    .includes(String(filterValue).toLowerCase());
+            });
+        }
     });
 
     return <Stack>
@@ -185,6 +208,7 @@ export default function OverviewPage<T>({
                                         key={row.id}
                                         data-testid={row.original[idKey]}
                                         bg={row.getIsSelected() ? 'var(--mantine-color-blue-light)' : undefined}
+                                        onClick={() => setLastClicked(row.original)}
                                     >
                                         {row.getVisibleCells().map((cell) => (
                                             <Table.Td
@@ -226,5 +250,6 @@ export default function OverviewPage<T>({
                 </Button>}
             />
         </Group>}
+        {viewModal(lastClicked, () => setLastClicked(null))}
     </Stack>;
 }

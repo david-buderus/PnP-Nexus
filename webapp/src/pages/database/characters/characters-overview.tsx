@@ -1,70 +1,36 @@
 import {useTranslation} from 'react-i18next';
-import {useMemo, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import OverviewPage from '../../../components/OverviewPage';
-import {Nation, PnPCharacterDTO, PnPCharacterServiceApi, Species} from '../../../api';
+import {CharacterDescription, Nation, PnPCharacterDTO, PnPCharacterServiceApi, Species} from '../../../api';
 import {fetchAllCharacters} from '../../../components/Database';
-import {Button, Center} from '@mantine/core';
-import {useUniverseContext} from '../../../components/PageBase';
-import {PnPCharacterView} from '../../../components/character/PnPCharacterView';
-import {useForm} from '@mantine/form';
+import {Button} from '@mantine/core';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {API_CONFIGURATION} from '../../../components/Constants';
-
-/** A character without any values */
-export const EMPTY_CHARACTERS: PnPCharacterDTO = {
-    description: {
-        affiliations: '',
-        appearance: '',
-        backstory: '',
-        deficits: '',
-        gender: '',
-        goals: '',
-        name: '',
-        personality: '',
-        profession: ''
-    },
-    level: {},
-    origin: {
-        species: undefined,
-        nation: undefined
-    },
-    advantageTraits: [],
-    disadvantageTraits: [],
-    customFields: {},
-    equipment: {
-        armor: {},
-        jewellery: {},
-        shieldEquipment: undefined,
-        weaponEquipments: []
-    },
-    inventory: {
-        coin: 0,
-        inventory: {
-            items: [],
-            maxSize: 100
-        },
-    },
-    spells: [],
-    stats: {
-        primaryStats: {},
-        secondaryStats: {}
-    },
-    talents: {},
-};
+import {CharacterEdit} from '../../../components/character/CharacterEdit';
+import {useNavigate} from 'react-router-dom';
+import {useUniverseContext} from '../../../components/PageBase';
+import TruncatedCell from '../../../components/table/TruncatedCell';
 
 const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 
 /** An overview over all characters */
 export function CharactersOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
     const [allCharacters, refreshCharacters, loading] = fetchAllCharacters();
     const [editMode, setEditMode] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const columns = useMemo<ExtendedColumnDef<PnPCharacterDTO, any>[]>(
         () => [
             {
                 accessorKey: 'description.name',
                 header: t('name'),
+            },
+            {
+                accessorKey: 'level.level',
+                header: t('character:level'),
+                defaultHidden: true
             },
             {
                 accessorKey: 'origin.species',
@@ -77,15 +43,31 @@ export function CharactersOverview() {
             {
                 accessorKey: 'origin.nation',
                 header: t('nation'),
-                cell: cell => cell.getValue<Nation>()?.name ?? '',
+                cell: cell => cell.getValue<CharacterDescription>()?.name ?? '',
                 filterFn: (row, id, filterValue) => {
                     return row.getValue<Nation>(id)?.name.includes(filterValue);
                 }
+            },
+            {
+                accessorKey: 'description.backstory',
+                header: t('character:backstory'),
+                defaultHidden: true,
+                cell: TruncatedCell,
+                filterFn: () => false
             }
         ], []);
 
     if (editMode) {
-        return <CharacterEdit/>;
+        return <CharacterEdit
+            onCancel={() => {
+                setEditMode(false);
+                refreshCharacters();
+            }}
+            onDelete={() => {
+                setEditMode(false);
+                refreshCharacters();
+            }}
+        />;
     }
 
     return <OverviewPage
@@ -94,7 +76,8 @@ export function CharactersOverview() {
         identifier="characters"
         manipulationDialog={(editButton, _, disabled, getInitial) => {
             if (editButton) {
-                return <Button disabled={disabled}>
+                return <Button disabled={disabled}
+                               onClick={() => navigate('/characters/' + getInitial().id + '?universe=' + activeUniverse.id)}>
                     {t('edit')}
                 </Button>;
             }
@@ -103,31 +86,8 @@ export function CharactersOverview() {
             </Button>;
         }}
         deletionDialogTitle={t('spell:editTitle')}
-        onDelete={(universe, characters) => Promise.reject()}
+        onDelete={(universe, characters) =>
+            CHARACTER_API.deleteAllCharacters(universe, characters.map(c => c.id))}
         idKey="id"
     />;
-}
-
-function CharacterEdit() {
-    const {sheetSettings, activeUniverse} = useUniverseContext();
-    const form = useForm<PnPCharacterDTO>({
-        initialValues: EMPTY_CHARACTERS,
-        cascadeUpdates: true,
-    });
-
-    form.watch('stats.primaryStats', () => {
-        CHARACTER_API.recalculateEntries(activeUniverse.id, form.getValues()).then(response => {
-            const entries = response.data;
-            form.setFieldValue('stats.secondaryStats', entries.secondaryStats);
-            form.setFieldValue('talents', entries.talents);
-        });
-    });
-
-    return <Center>
-        <PnPCharacterView
-            characterForm={form}
-            allowEdit={true}
-            sheet={sheetSettings.playerSheet}
-        />
-    </Center>;
 }

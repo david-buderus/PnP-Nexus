@@ -43,5 +43,6 @@
   "headers": "Überschriften",
   "rows": "Zeilen",
   "asCustomFieldId": "Custom ID",
-  "table": "Tabelle"
+  "table": "Tabelle",
+  "deleteSheet": "Charakterbogen löschen"
 }

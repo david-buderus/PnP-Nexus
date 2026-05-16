@@ -6,6 +6,7 @@ import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {TableTextInput} from '../inputs/TableTextInput';
 import {CharacterOrigin} from '../../../../../api';
 import {fetchAllSpecies} from '../../../../Database';
+import {TableErrorIndicator} from '../inputs/TableErrorIndicator';
 
 /** Shows name and co of the character */
 export function CharacterInfo() {
@@ -34,8 +35,8 @@ export function CharacterInfo() {
                 <Table.Td style={TABLE_STYLE}>
                     <CharacterOriginSelect
                         readOnly={!allowEdit}
-                        key={characterForm.key('description.origin')}
-                        {...characterForm.getInputProps('description.origin')}
+                        key={characterForm.key('origin')}
+                        {...characterForm.getInputProps('origin')}
                     />
                 </Table.Td>
             </Table.Tr>
@@ -56,9 +57,10 @@ export function CharacterInfo() {
 
 function CharacterOriginSelect(props: {
     value?: CharacterOrigin,
-    onChange?: (v: CharacterOrigin) => void
+    onChange?: (v: CharacterOrigin) => void,
+    error?: React.ReactNode,
 } & Omit<ComboboxProps, 'onChange' | 'value'>) {
-    const {value, onChange, readOnly, ...other} = props;
+    const {value, onChange, readOnly, error, ...other} = props;
     const [data] = fetchAllSpecies();
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
@@ -84,7 +86,7 @@ function CharacterOriginSelect(props: {
         return null;
     };
 
-    return (
+    return <TableErrorIndicator label={error}>
         <Combobox
             store={combobox}
             onOptionSubmit={id => onChange(parse(id))}
@@ -127,7 +129,7 @@ function CharacterOriginSelect(props: {
                         value.nation ? (
                             `${value.species.name} / ${value.nation.name}`
                         ) : (
-                            value.species.name
+                            value.species?.name
                         )
                     ) : null}
                 </InputBase>
@@ -166,5 +168,5 @@ function CharacterOriginSelect(props: {
                 </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
-    );
+    </TableErrorIndicator>;
 }

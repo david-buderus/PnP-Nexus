@@ -8,6 +8,7 @@ import {toIdMap} from '../../../../utils/Utils';
 import {TableStatsInput} from '../inputs/TableStatsInput';
 import {PageElementSettings} from '../PageElementSettings';
 import {OrderModifier} from '../OrderModifier';
+import {TableNumberInput} from '../inputs/TableNumberInput';
 
 /** Shows level and co of the character */
 export function SecondaryAttributeInfo({
@@ -28,6 +29,7 @@ export function SecondaryAttributeInfo({
         <Table
             variant="vertical"
             withTableBorder
+            layout="fixed"
         >
             <Table.Tbody>
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -42,12 +44,19 @@ export function SecondaryAttributeInfo({
                             width: '20%',
                             borderRight: `1px solid ${theme.colors.gray[3]}`,
                             ...TABLE_STYLE
-                        })}></Table.Td>
+                        })}>
+                            <TableNumberInput
+                                allowDecimal={false}
+                                readOnly={!allowEdit}
+                                key={characterForm.key(`stats.secondaryStats.${id}.flatModifier`)}
+                                {...characterForm.getInputProps(`stats.secondaryStats.${id}.flatModifier`)}
+                            />
+                        </Table.Td>
                         <Table.Td style={{width: '20%', ...TABLE_STYLE}}>
                             <TableStatsInput
                                 allowDecimal={false}
                                 allowNegative={false}
-                                readOnly={!allowEdit}
+                                readOnly={true}
                                 key={characterForm.key(`stats.secondaryStats.${id}`)}
                                 {...characterForm.getInputProps(`stats.secondaryStats.${id}`)}
                             />

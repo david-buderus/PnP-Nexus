@@ -2,7 +2,7 @@ package de.pnp.manager.component.inventory.equipment;
 
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
 
 /**
  * Represents an {@link IDefensiveItem} that can be held and used.
@@ -19,7 +19,7 @@ public abstract class DefensiveEquipment<I extends IDefensiveItem> extends Damag
      */
     public int getArmor() {
         return Math.max(0, (int) Math.ceil(
-                applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability()));
+                applyItemEffects(EItemEquipmentManipulator.ARMOR, getItem().getArmor()) * getRelativeDurability()));
     }
 
     /**
@@ -27,7 +27,7 @@ public abstract class DefensiveEquipment<I extends IDefensiveItem> extends Damag
      * {@link #getUpgrades() upgrades}.
      */
     public int getMaxArmor() {
-        return Math.max(0, applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getArmor()));
+        return Math.max(0, applyItemEffects(EItemEquipmentManipulator.ARMOR, getItem().getArmor()));
     }
 
     /**
@@ -35,7 +35,7 @@ public abstract class DefensiveEquipment<I extends IDefensiveItem> extends Damag
      * {@link #getUpgrades() upgrades}.
      */
     public int getMaxProtection() {
-        return Math.max(0, applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getProtection()));
+        return Math.max(0, applyItemEffects(EItemEquipmentManipulator.ARMOR, getItem().getProtection()));
     }
 
     /**
@@ -43,7 +43,7 @@ public abstract class DefensiveEquipment<I extends IDefensiveItem> extends Damag
      * {@link #getUpgrades() upgrades}.
      */
     public int getProtection() {
-        return Math.max(0, applyUpgradeEffects(EUpgradeEquipmentManipulator.ARMOR, getItem().getProtection()));
+        return Math.max(0, applyItemEffects(EItemEquipmentManipulator.ARMOR, getItem().getProtection()));
     }
 
     /**
@@ -52,7 +52,7 @@ public abstract class DefensiveEquipment<I extends IDefensiveItem> extends Damag
      */
     public int getWeight() {
         return Math.round(
-                applyUpgradeEffects(EUpgradeEquipmentManipulator.WEIGHT, getItem().getWeight()) * getRelativeDurability());
+                applyItemEffects(EItemEquipmentManipulator.WEIGHT, getItem().getWeight()) * getRelativeDurability());
     }
 
     @Override

@@ -4,14 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Streams;
 import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IEquipment;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
-import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
+import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentItemEffect;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -54,7 +55,7 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
      * Returns {@link EquipableItem#getUpgradeSlots()} in regard to the {@link #upgrades}.
      */
     public int getUpgradeSlots() {
-        return applyUpgradeEffects(EUpgradeEquipmentManipulator.SLOTS, getItem().getUpgradeSlots());
+        return applyItemEffects(EItemEquipmentManipulator.SLOTS, getItem().getUpgradeSlots());
     }
 
     /**
@@ -95,29 +96,30 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
     /**
      * Applies the effects of the {@link #upgrades} to the value.
      */
-    protected int applyUpgradeEffects(EUpgradeEquipmentManipulator manipulator, int value) {
-        return Math.round(applyUpgradeEffects(manipulator, (float) value));
+    protected int applyItemEffects(EItemEquipmentManipulator manipulator, int value) {
+        return Math.round(applyItemEffects(manipulator, (float) value));
     }
 
     /**
      * Applies the effects of the {@link #upgrades} to the value.
      */
-    protected float applyUpgradeEffects(EUpgradeEquipmentManipulator manipulator, float value) {
-        List<EquipmentUpgradeEffect> upgradeEffects = getUpgrades().stream()
-                .flatMap(upgrade -> upgrade.getEffects().stream())
-                .filter(EquipmentUpgradeEffect.class::isInstance).map(EquipmentUpgradeEffect.class::cast)
-                .toList();
-        List<EquipmentUpgradeEffect> additiveEffects = upgradeEffects.stream()
+    protected float applyItemEffects(EItemEquipmentManipulator manipulator, float value) {
+        List<EquipmentItemEffect> effects = Streams.concat(
+                getItem().getEffects().stream(),
+                getUpgrades().stream().flatMap(upgrade -> upgrade.getEffects().stream())
+        ).filter(EquipmentItemEffect.class::isInstance).map(EquipmentItemEffect.class::cast).toList();
+        
+        List<EquipmentItemEffect> additiveEffects = effects.stream()
                 .filter(effect -> effect.getCalculation() == ECalculation.ADDITIVE)
                 .toList();
-        List<EquipmentUpgradeEffect> multiplicativeEffects = upgradeEffects.stream()
+        List<EquipmentItemEffect> multiplicativeEffects = effects.stream()
                 .filter(effect -> effect.getCalculation() == ECalculation.MULTIPLICATIVE)
                 .toList();
 
-        for (EquipmentUpgradeEffect effect : additiveEffects) {
+        for (EquipmentItemEffect effect : additiveEffects) {
             value = effect.apply(manipulator, value);
         }
-        for (EquipmentUpgradeEffect effect : multiplicativeEffects) {
+        for (EquipmentItemEffect effect : multiplicativeEffects) {
             value = effect.apply(manipulator, value);
         }
 

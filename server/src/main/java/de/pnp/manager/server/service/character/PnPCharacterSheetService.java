@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -84,9 +83,9 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
 
         CharacterStats stats = new CharacterStats(
                 primaryAttributes.stream()
-                        .collect(Collectors.toMap(Function.identity(), a -> new Stat(5))),
+                        .collect(Collectors.toMap(PrimaryAttribute::getId, a -> new Stat(5))),
                 secondaryAttributes.stream()
-                        .collect(Collectors.toMap(Function.identity(), a -> new Stat(2)))
+                        .collect(Collectors.toMap(SecondaryAttribute::getId, a -> new Stat(2)))
         );
         stats.recalculateSecondaryStats(primaryAttributes, secondaryAttributes);
 
@@ -96,13 +95,13 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
         if (!settings.getJewelleryDefinitions().isEmpty()) {
             EquipmentSettings.JewelleryDefinition definition = settings.getJewelleryDefinitions().getFirst();
             jewellery.put(definition.name(), List.of(new Equipment<>(1,
-                    new Jewellery(null, "Jewellery", Set.of(Tag.from(definition.tag())), "", "", ERarity.COMMON, 200, 1, "", "", null, 1, 1, 1)
+                    new Jewellery(null, "Jewellery", Set.of(Tag.from(definition.tag())), "", List.of(), ERarity.COMMON, 200, 1, "", "", null, 1, 1, 1)
             )));
         }
 
         return controller.convert(universe, new PnPCharacter(
                 null,
-                new CharacterDescription("Name", 20, "Profession", "Male", "Backstory", "Appearance", "Personality", "Goals", "Deficits", "Affiliations"),
+                new CharacterDescription("Name", "Profession", "Male", "Backstory", "Appearance", "Personality", "Goals", "Deficits", "Affiliations"),
                 new CharacterLevel(2, 1, 0),
                 new CharacterOrigin(
                         new Species(null, "Race", "Race description", true, List.of(), List.of(), List.of()),
@@ -115,15 +114,15 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
                         new StatTrait.SecondaryStatTrait(ECalculation.MULTIPLICATIVE, 10, secondaryAttributes.stream().findFirst().orElseThrow(), "Some Disadvantage")
                 ),
                 stats,
-                new CharacterTalents(talent.stream().collect(Collectors.toMap(t -> t, t -> 2))),
+                new CharacterTalents(talent.stream().collect(Collectors.toMap(Talent::getId, t -> 2))),
                 new CharacterEquipment(
-                        List.of(new WeaponEquipment(1, new Weapon(null, "Weapon", Set.of(), "", "", ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, 1, Dice.simpleDice(6), 1, 1), 0)),
-                        new ShieldEquipment(1, new Shield(null, "Shield", Set.of(), "", "", ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, Dice.simpleDice(6), 1, 1, 2, 1, 1), 0),
-                        Map.of(EArmorSlot.BODY, new ArmorEquipment(1, new Armor(null, "Body", Set.of(), "", "", ERarity.COMMON, 100, 1, "", "", null, 1, EArmorSlot.BODY, 3, 2, 1, 1, 1), 0)),
+                        List.of(new WeaponEquipment(1, new Weapon(null, "Weapon", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, 1, Dice.simpleDice(6), 1, 1), 0)),
+                        new ShieldEquipment(1, new Shield(null, "Shield", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, Dice.simpleDice(6), 1, 1, 2, 1, 1), 0),
+                        Map.of(EArmorSlot.BODY, new ArmorEquipment(1, new Armor(null, "Body", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 1, EArmorSlot.BODY, 3, 2, 1, 1, 1), 0)),
                         jewellery
                 ),
                 new CharacterInventory(new Inventory(100, List.of(
-                        new ItemStack<>(5, new Item(null, "Item", Set.of(), "", "", ERarity.COMMON, 54, 2, "", "", 100, 0))
+                        new ItemStack<>(5, new Item(null, "Item", Set.of(), "", List.of(), ERarity.COMMON, 54, 2, "", "", 100, 0))
                 )), 52135),
                 List.of(
                         new Spell(null, "Spell", "Effect", List.of(new IResourceUsage.MaterialUsage(1, new Material(null, "Material", List.of()))), "Other Cost", 1, 1, EAction.ACTION, new Spell.TalentCast(talent.stream().toList()), EnumSet.of(ECastingType.SOMATIC), 2, Set.of(), "Counter")

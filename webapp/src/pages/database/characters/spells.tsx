@@ -19,7 +19,17 @@ import {useForm} from '@mantine/form';
 import {randomId, useDisclosure} from '@mantine/hooks';
 import {ReactNode, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {EAction, ECastingType, Spell, SpellCast, SpellServiceApi, TagCast, Talent, TalentCast} from '../../../api';
+import {
+    CraftingRecipeMaterialsInner,
+    EAction,
+    ECastingType,
+    Spell,
+    SpellCast,
+    SpellServiceApi,
+    TagCast,
+    Talent,
+    TalentCast
+} from '../../../api';
 import {fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
@@ -356,7 +366,7 @@ function CreationDialog({
                                         amount: 0,
                                         resource: null,
                                         key: randomId()
-                                    })
+                                    } as CraftingRecipeMaterialsInner)
                                 }
                                 mt="md"
                                 data-testid="cost-add"

@@ -27,6 +27,9 @@ export function PrimaryAttributeInfo({
         attributesOrder = primaryAttributes.map(attribute => attribute.id);
     }
 
+    const sum = Object.values(characterForm.values.stats.primaryStats)
+        .map(s => s.rawValue).reduce((a, b) => a + b, 0);
+
     return <>
         <Table
             variant="vertical"
@@ -36,8 +39,9 @@ export function PrimaryAttributeInfo({
             <Table.Tbody>
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
                     <Table.Th colSpan={2} style={TABLE_STYLE}>{t('primary-attributes')}</Table.Th>
-                    <Table.Th
-                        style={TABLE_STYLE}>{`Min: ${characterSettings.minPrimaryAttributeValue} Max: ${characterSettings.maxPrimaryAttributeValue}`}</Table.Th>
+                    <Table.Th style={TABLE_STYLE}>
+                        {`Min: ${characterSettings.minPrimaryAttributeValue} Max: ${sum} / ${characterSettings.maxPrimaryAttributeValue}`}
+                    </Table.Th>
                 </Table.Tr>
 
                 {attributesOrder.map((id) => (

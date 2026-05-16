@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.MoreObjects;
 import de.pnp.manager.component.ECalculation;
 import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 /**
  * An effect which directly changes the stats of the given equipment.
  */
-public class EquipmentUpgradeEffect extends UpgradeEffect {
+public class EquipmentItemEffect extends ItemEffect {
 
     /**
      * The value used for manipulation.
@@ -19,11 +20,11 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
     private final float value;
 
     /**
-     * Which value this {@link UpgradeEffect} manipulates.
+     * Which value this {@link ItemEffect} manipulates.
      */
     @NotNull
     @JsonProperty
-    private final EUpgradeEquipmentManipulator upgradeManipulator;
+    private final EItemEquipmentManipulator upgradeManipulator;
 
     /**
      * How the value gets manipulated.
@@ -32,8 +33,8 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
     @JsonProperty
     private final ECalculation calculation;
 
-    public EquipmentUpgradeEffect(String description, float value, EUpgradeEquipmentManipulator upgradeManipulator,
-        ECalculation calculation) {
+    public EquipmentItemEffect(String description, float value, EItemEquipmentManipulator upgradeManipulator,
+                               ECalculation calculation) {
         super(description);
         this.value = value;
         this.upgradeManipulator = upgradeManipulator;
@@ -41,10 +42,10 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
     }
 
     /**
-     * Applies the effect of this {@link UpgradeEffect}, if the given {@link EUpgradeEquipmentManipulator} is compatible
+     * Applies the effect of this {@link ItemEffect}, if the given {@link EItemEquipmentManipulator} is compatible
      * with this upgrade.
      */
-    public float apply(EUpgradeEquipmentManipulator manipulator, float value) {
+    public float apply(EItemEquipmentManipulator manipulator, float value) {
         if (manipulator != upgradeManipulator) {
             return value;
         }
@@ -69,9 +70,9 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
         if (!super.equals(o)) {
             return false;
         }
-        EquipmentUpgradeEffect that = (EquipmentUpgradeEffect) o;
+        EquipmentItemEffect that = (EquipmentItemEffect) o;
         return Float.compare(that.value, value) == 0 && upgradeManipulator == that.upgradeManipulator
-            && getCalculation() == that.getCalculation();
+                && getCalculation() == that.getCalculation();
     }
 
     @Override
@@ -82,10 +83,10 @@ public class EquipmentUpgradeEffect extends UpgradeEffect {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("value", value)
-            .add("upgradeManipulator", upgradeManipulator)
-            .add("calculation", calculation)
-            .add("description", description)
-            .toString();
+                .add("value", value)
+                .add("upgradeManipulator", upgradeManipulator)
+                .add("calculation", calculation)
+                .add("description", description)
+                .toString();
     }
 }

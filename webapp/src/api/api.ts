@@ -49,10 +49,10 @@ export interface Armor {
     'description': string;
     /**
      * 
-     * @type {string}
+     * @type {Array<ArmorEffectsInner>}
      * @memberof Armor
      */
-    'effect': string;
+    'effects': Array<ArmorEffectsInner>;
     /**
      * 
      * @type {string}
@@ -141,17 +141,17 @@ export interface Armor {
 
 
 /**
+ * @type ArmorEffectsInner
+ * @export
+ */
+export type ArmorEffectsInner = EquipmentItemEffect | SimpleItemEffect;
+
+/**
  * 
  * @export
  * @interface ArmorEquipment
  */
 export interface ArmorEquipment {
-    /**
-     * 
-     * @type {number}
-     * @memberof ArmorEquipment
-     */
-    'amount'?: number;
     /**
      * 
      * @type {Armor}
@@ -295,12 +295,6 @@ export interface CharacterDescription {
      * @memberof CharacterDescription
      */
     'affiliations': string;
-    /**
-     * 
-     * @type {number}
-     * @memberof CharacterDescription
-     */
-    'age'?: number;
     /**
      * 
      * @type {string}
@@ -717,6 +711,25 @@ export type ECastingType = typeof ECastingType[keyof typeof ECastingType];
  * @enum {string}
  */
 
+export const EItemEquipmentManipulator = {
+    Slots: 'SLOTS',
+    Damage: 'DAMAGE',
+    Hit: 'HIT',
+    Initiative: 'INITIATIVE',
+    Armor: 'ARMOR',
+    Weight: 'WEIGHT',
+    Protection: 'PROTECTION'
+} as const;
+
+export type EItemEquipmentManipulator = typeof EItemEquipmentManipulator[keyof typeof EItemEquipmentManipulator];
+
+
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
 export const ERarity = {
     Common: 'COMMON',
     Uncommon: 'UNCOMMON',
@@ -727,26 +740,6 @@ export const ERarity = {
 } as const;
 
 export type ERarity = typeof ERarity[keyof typeof ERarity];
-
-
-/**
- * 
- * @export
- * @enum {string}
- */
-
-export const EUpgradeEquipmentManipulator = {
-    Slots: 'SLOTS',
-    Damage: 'DAMAGE',
-    Hit: 'HIT',
-    Initiative: 'INITIATIVE',
-    Armor: 'ARMOR',
-    Weight: 'WEIGHT',
-    Protection: 'PROTECTION',
-    Dice: 'DICE'
-} as const;
-
-export type EUpgradeEquipmentManipulator = typeof EUpgradeEquipmentManipulator[keyof typeof EUpgradeEquipmentManipulator];
 
 
 /**
@@ -775,12 +768,6 @@ export type EUpgradeRestriction = typeof EUpgradeRestriction[keyof typeof EUpgra
  * @interface Equipment
  */
 export interface Equipment {
-    /**
-     * 
-     * @type {number}
-     * @memberof Equipment
-     */
-    'amount'?: number;
     /**
      * 
      * @type {IEquipableItem}
@@ -815,15 +802,42 @@ export interface Equipment {
 /**
  * 
  * @export
- * @interface EquipmentJewellery
+ * @interface EquipmentItemEffect
  */
-export interface EquipmentJewellery {
+export interface EquipmentItemEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof EquipmentItemEffect
+     */
+    'description': string;
+    /**
+     * 
+     * @type {ECalculation}
+     * @memberof EquipmentItemEffect
+     */
+    'calculation': ECalculation;
+    /**
+     * 
+     * @type {EItemEquipmentManipulator}
+     * @memberof EquipmentItemEffect
+     */
+    'upgradeManipulator': EItemEquipmentManipulator;
     /**
      * 
      * @type {number}
-     * @memberof EquipmentJewellery
+     * @memberof EquipmentItemEffect
      */
-    'amount'?: number;
+    'value': number;
+}
+
+
+/**
+ * 
+ * @export
+ * @interface EquipmentJewellery
+ */
+export interface EquipmentJewellery {
     /**
      * 
      * @type {Jewellery}
@@ -874,39 +888,6 @@ export interface EquipmentSettings {
      */
     'numberOfHandheld'?: number;
 }
-/**
- * 
- * @export
- * @interface EquipmentUpgradeEffect
- */
-export interface EquipmentUpgradeEffect {
-    /**
-     * 
-     * @type {string}
-     * @memberof EquipmentUpgradeEffect
-     */
-    'description': string;
-    /**
-     * 
-     * @type {ECalculation}
-     * @memberof EquipmentUpgradeEffect
-     */
-    'calculation': ECalculation;
-    /**
-     * 
-     * @type {EUpgradeEquipmentManipulator}
-     * @memberof EquipmentUpgradeEffect
-     */
-    'upgradeManipulator': EUpgradeEquipmentManipulator;
-    /**
-     * 
-     * @type {number}
-     * @memberof EquipmentUpgradeEffect
-     */
-    'value': number;
-}
-
-
 /**
  * @type GetPermissions200ResponseInner
  * @export
@@ -959,10 +940,10 @@ export interface IEquipableItem {
     'description'?: string;
     /**
      * 
-     * @type {string}
+     * @type {Array<ArmorEffectsInner>}
      * @memberof IEquipableItem
      */
-    'effect'?: string;
+    'effects': Array<ArmorEffectsInner>;
     /**
      * 
      * @type {number}
@@ -1021,111 +1002,6 @@ export interface IEquipableItem {
      * 
      * @type {number}
      * @memberof IEquipableItem
-     */
-    'vendorPrice'?: number;
-}
-
-
-/**
- * 
- * @export
- * @interface IOffensiveItem
- */
-export interface IOffensiveItem {
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'damage'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {Dice}
-     * @memberof IOffensiveItem
-     */
-    'dice'?: Dice;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'effect'?: string;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'hit'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'initiative'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'maximumStackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'minimumStackSize'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'note'?: string;
-    /**
-     * 
-     * @type {ERarity}
-     * @memberof IOffensiveItem
-     */
-    'rarity'?: ERarity;
-    /**
-     * 
-     * @type {string}
-     * @memberof IOffensiveItem
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof IOffensiveItem
-     */
-    'tags'?: Array<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'tier'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IOffensiveItem
      */
     'vendorPrice'?: number;
 }
@@ -1151,11 +1027,61 @@ export interface Inventory {
     'maxSize'?: number;
 }
 /**
+ * 
+ * @export
+ * @interface InventoryAddRequest
+ */
+export interface InventoryAddRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof InventoryAddRequest
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {Inventory}
+     * @memberof InventoryAddRequest
+     */
+    'inventory': Inventory;
+    /**
+     * 
+     * @type {Item}
+     * @memberof InventoryAddRequest
+     */
+    'item': Item;
+}
+/**
  * @type InventoryItemsInner
  * @export
  */
 export type InventoryItemsInner = ArmorEquipment | Equipment | ItemStackItem | ShieldEquipment | WeaponEquipment;
 
+/**
+ * 
+ * @export
+ * @interface InventoryRemoveRequest
+ */
+export interface InventoryRemoveRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof InventoryRemoveRequest
+     */
+    'amount'?: number;
+    /**
+     * 
+     * @type {Inventory}
+     * @memberof InventoryRemoveRequest
+     */
+    'inventory': Inventory;
+    /**
+     * 
+     * @type {Item}
+     * @memberof InventoryRemoveRequest
+     */
+    'item': Item;
+}
 /**
  * 
  * @export
@@ -1170,10 +1096,10 @@ export interface Item {
     'description': string;
     /**
      * 
-     * @type {string}
+     * @type {Array<ArmorEffectsInner>}
      * @memberof Item
      */
-    'effect': string;
+    'effects': Array<ArmorEffectsInner>;
     /**
      * 
      * @type {string}
@@ -1240,6 +1166,19 @@ export interface Item {
 /**
  * 
  * @export
+ * @interface ItemEffect
+ */
+export interface ItemEffect {
+    /**
+     * 
+     * @type {string}
+     * @memberof ItemEffect
+     */
+    'description': string;
+}
+/**
+ * 
+ * @export
  * @interface ItemSettings
  */
 export interface ItemSettings {
@@ -1268,12 +1207,6 @@ export interface ItemSettings {
  * @interface ItemStackItem
  */
 export interface ItemStackItem {
-    /**
-     * 
-     * @type {number}
-     * @memberof ItemStackItem
-     */
-    'amount'?: number;
     /**
      * 
      * @type {Item}
@@ -1320,10 +1253,10 @@ export interface Jewellery {
     'description': string;
     /**
      * 
-     * @type {string}
+     * @type {Array<ArmorEffectsInner>}
      * @memberof Jewellery
      */
-    'effect': string;
+    'effects': Array<ArmorEffectsInner>;
     /**
      * 
      * @type {string}
@@ -1822,6 +1755,12 @@ export interface RecalculateEntries {
      * @type {{ [key: string]: StatsDto; }}
      * @memberof RecalculateEntries
      */
+    'primaryStats'?: { [key: string]: StatsDto; };
+    /**
+     * 
+     * @type {{ [key: string]: StatsDto; }}
+     * @memberof RecalculateEntries
+     */
     'secondaryStats'?: { [key: string]: StatsDto; };
     /**
      * 
@@ -2007,10 +1946,10 @@ export interface Shield {
     'dice': Dice;
     /**
      * 
-     * @type {string}
+     * @type {Array<ArmorEffectsInner>}
      * @memberof Shield
      */
-    'effect': string;
+    'effects': Array<ArmorEffectsInner>;
     /**
      * 
      * @type {number}
@@ -2118,12 +2057,6 @@ export interface Shield {
 export interface ShieldEquipment {
     /**
      * 
-     * @type {number}
-     * @memberof ShieldEquipment
-     */
-    'amount'?: number;
-    /**
-     * 
      * @type {Shield}
      * @memberof ShieldEquipment
      */
@@ -2229,13 +2162,13 @@ export interface SimpleCharacterTrait {
 /**
  * 
  * @export
- * @interface SimpleUpgradeEffect
+ * @interface SimpleItemEffect
  */
-export interface SimpleUpgradeEffect {
+export interface SimpleItemEffect {
     /**
      * 
      * @type {string}
-     * @memberof SimpleUpgradeEffect
+     * @memberof SimpleItemEffect
      */
     'description': string;
 }
@@ -2628,10 +2561,10 @@ export interface Universe {
 export interface Upgrade {
     /**
      * 
-     * @type {Array<UpgradeEffectsInner>}
+     * @type {Array<ArmorEffectsInner>}
      * @memberof Upgrade
      */
-    'effects': Array<UpgradeEffectsInner>;
+    'effects': Array<ArmorEffectsInner>;
     /**
      * 
      * @type {string}
@@ -2670,25 +2603,6 @@ export interface Upgrade {
     'vendorPrice': number;
 }
 
-
-/**
- * 
- * @export
- * @interface UpgradeEffect
- */
-export interface UpgradeEffect {
-    /**
-     * 
-     * @type {string}
-     * @memberof UpgradeEffect
-     */
-    'description': string;
-}
-/**
- * @type UpgradeEffectsInner
- * @export
- */
-export type UpgradeEffectsInner = EquipmentUpgradeEffect | SimpleUpgradeEffect;
 
 /**
  * 
@@ -2785,10 +2699,10 @@ export interface Weapon {
     'dice': Dice;
     /**
      * 
-     * @type {string}
+     * @type {Array<ArmorEffectsInner>}
      * @memberof Weapon
      */
-    'effect': string;
+    'effects': Array<ArmorEffectsInner>;
     /**
      * 
      * @type {number}
@@ -2884,16 +2798,10 @@ export interface Weapon {
 export interface WeaponEquipment {
     /**
      * 
-     * @type {number}
+     * @type {Weapon}
      * @memberof WeaponEquipment
      */
-    'amount'?: number;
-    /**
-     * 
-     * @type {IOffensiveItem}
-     * @memberof WeaponEquipment
-     */
-    'item': IOffensiveItem;
+    'item': Weapon;
     /**
      * 
      * @type {number}
@@ -4079,6 +3987,258 @@ export class CraftingRecipeServiceApi extends BaseAPI {
      */
     public updateCraftingRecipe(universe: string, id: string, craftingRecipe: CraftingRecipe, options?: RawAxiosRequestConfig) {
         return CraftingRecipeServiceApiFp(this.configuration).updateCraftingRecipe(universe, id, craftingRecipe, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * InventoryServiceApi - axios parameter creator
+ * @export
+ */
+export const InventoryServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Inserts the given stack into the inventory
+         * @param {InventoryAddRequest} inventoryAddRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        add: async (inventoryAddRequest: InventoryAddRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inventoryAddRequest' is not null or undefined
+            assertParamExists('add', 'inventoryAddRequest', inventoryAddRequest)
+            const localVarPath = `/api/inventories/add`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(inventoryAddRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Checks if the given stack can fit into the inventory
+         * @param {InventoryAddRequest} inventoryAddRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        hasSpaceFor: async (inventoryAddRequest: InventoryAddRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inventoryAddRequest' is not null or undefined
+            assertParamExists('hasSpaceFor', 'inventoryAddRequest', inventoryAddRequest)
+            const localVarPath = `/api/inventories/space`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(inventoryAddRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Removes the given stack from the inventory
+         * @param {InventoryRemoveRequest} inventoryRemoveRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        remove: async (inventoryRemoveRequest: InventoryRemoveRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'inventoryRemoveRequest' is not null or undefined
+            assertParamExists('remove', 'inventoryRemoveRequest', inventoryRemoveRequest)
+            const localVarPath = `/api/inventories/remove`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(inventoryRemoveRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * InventoryServiceApi - functional programming interface
+ * @export
+ */
+export const InventoryServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = InventoryServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Inserts the given stack into the inventory
+         * @param {InventoryAddRequest} inventoryAddRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async add(inventoryAddRequest: InventoryAddRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Inventory>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.add(inventoryAddRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InventoryServiceApi.add']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Checks if the given stack can fit into the inventory
+         * @param {InventoryAddRequest} inventoryAddRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async hasSpaceFor(inventoryAddRequest: InventoryAddRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.hasSpaceFor(inventoryAddRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InventoryServiceApi.hasSpaceFor']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Removes the given stack from the inventory
+         * @param {InventoryRemoveRequest} inventoryRemoveRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async remove(inventoryRemoveRequest: InventoryRemoveRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Inventory>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.remove(inventoryRemoveRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['InventoryServiceApi.remove']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * InventoryServiceApi - factory interface
+ * @export
+ */
+export const InventoryServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = InventoryServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Inserts the given stack into the inventory
+         * @param {InventoryAddRequest} inventoryAddRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        add(inventoryAddRequest: InventoryAddRequest, options?: RawAxiosRequestConfig): AxiosPromise<Inventory> {
+            return localVarFp.add(inventoryAddRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Checks if the given stack can fit into the inventory
+         * @param {InventoryAddRequest} inventoryAddRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        hasSpaceFor(inventoryAddRequest: InventoryAddRequest, options?: RawAxiosRequestConfig): AxiosPromise<boolean> {
+            return localVarFp.hasSpaceFor(inventoryAddRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Removes the given stack from the inventory
+         * @param {InventoryRemoveRequest} inventoryRemoveRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        remove(inventoryRemoveRequest: InventoryRemoveRequest, options?: RawAxiosRequestConfig): AxiosPromise<Inventory> {
+            return localVarFp.remove(inventoryRemoveRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * InventoryServiceApi - object-oriented interface
+ * @export
+ * @class InventoryServiceApi
+ * @extends {BaseAPI}
+ */
+export class InventoryServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Inserts the given stack into the inventory
+     * @param {InventoryAddRequest} inventoryAddRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InventoryServiceApi
+     */
+    public add(inventoryAddRequest: InventoryAddRequest, options?: RawAxiosRequestConfig) {
+        return InventoryServiceApiFp(this.configuration).add(inventoryAddRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Checks if the given stack can fit into the inventory
+     * @param {InventoryAddRequest} inventoryAddRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InventoryServiceApi
+     */
+    public hasSpaceFor(inventoryAddRequest: InventoryAddRequest, options?: RawAxiosRequestConfig) {
+        return InventoryServiceApiFp(this.configuration).hasSpaceFor(inventoryAddRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Removes the given stack from the inventory
+     * @param {InventoryRemoveRequest} inventoryRemoveRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InventoryServiceApi
+     */
+    public remove(inventoryRemoveRequest: InventoryRemoveRequest, options?: RawAxiosRequestConfig) {
+        return InventoryServiceApiFp(this.configuration).remove(inventoryRemoveRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -6002,6 +6162,85 @@ export const PnPCharacterServiceApiAxiosParamCreator = function (configuration?:
     return {
         /**
          * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAllCharacters: async (universe: string, ids: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteAllCharacters', 'universe', universe)
+            // verify required parameter 'ids' is not null or undefined
+            assertParamExists('deleteAllCharacters', 'ids', ids)
+            const localVarPath = `/api/{universe}/characters`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (ids) {
+                localVarQueryParameter['ids'] = ids;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteCharacter: async (universe: string, id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('deleteCharacter', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteCharacter', 'id', id)
+            const localVarPath = `/api/{universe}/characters/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get all characters from the database
          * @param {string} universe 
          * @param {*} [options] Override http request option.
@@ -6036,6 +6275,84 @@ export const PnPCharacterServiceApiAxiosParamCreator = function (configuration?:
         },
         /**
          * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCharacter: async (universe: string, id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('getCharacter', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getCharacter', 'id', id)
+            const localVarPath = `/api/{universe}/characters/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<PnPCharacterDTO>} pnPCharacterDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllCharacters: async (universe: string, pnPCharacterDTO: Array<PnPCharacterDTO>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('insertAllCharacters', 'universe', universe)
+            // verify required parameter 'pnPCharacterDTO' is not null or undefined
+            assertParamExists('insertAllCharacters', 'pnPCharacterDTO', pnPCharacterDTO)
+            const localVarPath = `/api/{universe}/characters`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pnPCharacterDTO, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Recalculates all entries of the character
          * @param {string} universe 
          * @param {PnPCharacterDTO} pnPCharacterDTO 
@@ -6047,7 +6364,7 @@ export const PnPCharacterServiceApiAxiosParamCreator = function (configuration?:
             assertParamExists('recalculateEntries', 'universe', universe)
             // verify required parameter 'pnPCharacterDTO' is not null or undefined
             assertParamExists('recalculateEntries', 'pnPCharacterDTO', pnPCharacterDTO)
-            const localVarPath = `/api/{universe}/characters`
+            const localVarPath = `/api/{universe}/characters/recalculate`
                 .replace(`{${"universe"}}`, encodeURIComponent(String(universe)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -6057,6 +6374,50 @@ export const PnPCharacterServiceApiAxiosParamCreator = function (configuration?:
             }
 
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(pnPCharacterDTO, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {PnPCharacterDTO} pnPCharacterDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCharacter: async (universe: string, id: string, pnPCharacterDTO: PnPCharacterDTO, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'universe' is not null or undefined
+            assertParamExists('updateCharacter', 'universe', universe)
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateCharacter', 'id', id)
+            // verify required parameter 'pnPCharacterDTO' is not null or undefined
+            assertParamExists('updateCharacter', 'pnPCharacterDTO', pnPCharacterDTO)
+            const localVarPath = `/api/{universe}/characters/{id}`
+                .replace(`{${"universe"}}`, encodeURIComponent(String(universe)))
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -6086,6 +6447,34 @@ export const PnPCharacterServiceApiFp = function(configuration?: Configuration) 
     return {
         /**
          * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteAllCharacters(universe: string, ids: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteAllCharacters(universe, ids, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.deleteAllCharacters']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteCharacter(universe: string, id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCharacter(universe, id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.deleteCharacter']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get all characters from the database
          * @param {string} universe 
          * @param {*} [options] Override http request option.
@@ -6095,6 +6484,34 @@ export const PnPCharacterServiceApiFp = function(configuration?: Configuration) 
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllCharacters(universe, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.getAllCharacters']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCharacter(universe: string, id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCharacter(universe, id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.getCharacter']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<PnPCharacterDTO>} pnPCharacterDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async insertAllCharacters(universe: string, pnPCharacterDTO: Array<PnPCharacterDTO>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PnPCharacterDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.insertAllCharacters(universe, pnPCharacterDTO, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.insertAllCharacters']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -6111,6 +6528,21 @@ export const PnPCharacterServiceApiFp = function(configuration?: Configuration) 
             const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.recalculateEntries']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {PnPCharacterDTO} pnPCharacterDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateCharacter(universe: string, id: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PnPCharacterDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCharacter(universe, id, pnPCharacterDTO, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PnPCharacterServiceApi.updateCharacter']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -6123,6 +6555,28 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
     return {
         /**
          * 
+         * @summary Deletes all objects with the given ids from the database
+         * @param {string} universe 
+         * @param {Array<string>} ids 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteAllCharacters(universe: string, ids: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteAllCharacters(universe, ids, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Deletes an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteCharacter(universe: string, id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteCharacter(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get all characters from the database
          * @param {string} universe 
          * @param {*} [options] Override http request option.
@@ -6130,6 +6584,28 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
          */
         getAllCharacters(universe: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterDTO>> {
             return localVarFp.getAllCharacters(universe, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get an object from the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCharacter(universe: string, id: string, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterDTO> {
+            return localVarFp.getCharacter(universe, id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Inserts the objects into the database
+         * @param {string} universe 
+         * @param {Array<PnPCharacterDTO>} pnPCharacterDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        insertAllCharacters(universe: string, pnPCharacterDTO: Array<PnPCharacterDTO>, options?: RawAxiosRequestConfig): AxiosPromise<Array<PnPCharacterDTO>> {
+            return localVarFp.insertAllCharacters(universe, pnPCharacterDTO, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6142,6 +6618,18 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
         recalculateEntries(universe: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig): AxiosPromise<RecalculateEntries> {
             return localVarFp.recalculateEntries(universe, pnPCharacterDTO, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary Updates an object in the database
+         * @param {string} universe 
+         * @param {string} id 
+         * @param {PnPCharacterDTO} pnPCharacterDTO 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCharacter(universe: string, id: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig): AxiosPromise<PnPCharacterDTO> {
+            return localVarFp.updateCharacter(universe, id, pnPCharacterDTO, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -6152,6 +6640,32 @@ export const PnPCharacterServiceApiFactory = function (configuration?: Configura
  * @extends {BaseAPI}
  */
 export class PnPCharacterServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deletes all objects with the given ids from the database
+     * @param {string} universe 
+     * @param {Array<string>} ids 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterServiceApi
+     */
+    public deleteAllCharacters(universe: string, ids: Array<string>, options?: RawAxiosRequestConfig) {
+        return PnPCharacterServiceApiFp(this.configuration).deleteAllCharacters(universe, ids, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Deletes an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterServiceApi
+     */
+    public deleteCharacter(universe: string, id: string, options?: RawAxiosRequestConfig) {
+        return PnPCharacterServiceApiFp(this.configuration).deleteCharacter(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Get all characters from the database
@@ -6166,6 +6680,32 @@ export class PnPCharacterServiceApi extends BaseAPI {
 
     /**
      * 
+     * @summary Get an object from the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterServiceApi
+     */
+    public getCharacter(universe: string, id: string, options?: RawAxiosRequestConfig) {
+        return PnPCharacterServiceApiFp(this.configuration).getCharacter(universe, id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Inserts the objects into the database
+     * @param {string} universe 
+     * @param {Array<PnPCharacterDTO>} pnPCharacterDTO 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterServiceApi
+     */
+    public insertAllCharacters(universe: string, pnPCharacterDTO: Array<PnPCharacterDTO>, options?: RawAxiosRequestConfig) {
+        return PnPCharacterServiceApiFp(this.configuration).insertAllCharacters(universe, pnPCharacterDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Recalculates all entries of the character
      * @param {string} universe 
      * @param {PnPCharacterDTO} pnPCharacterDTO 
@@ -6175,6 +6715,20 @@ export class PnPCharacterServiceApi extends BaseAPI {
      */
     public recalculateEntries(universe: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig) {
         return PnPCharacterServiceApiFp(this.configuration).recalculateEntries(universe, pnPCharacterDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Updates an object in the database
+     * @param {string} universe 
+     * @param {string} id 
+     * @param {PnPCharacterDTO} pnPCharacterDTO 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PnPCharacterServiceApi
+     */
+    public updateCharacter(universe: string, id: string, pnPCharacterDTO: PnPCharacterDTO, options?: RawAxiosRequestConfig) {
+        return PnPCharacterServiceApiFp(this.configuration).updateCharacter(universe, id, pnPCharacterDTO, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

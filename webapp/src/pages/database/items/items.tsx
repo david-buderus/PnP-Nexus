@@ -26,9 +26,13 @@ import {currencyFormatter} from '../../../components/utils/Formatters';
 import DiceCell from '../../../components/table/DiceCell';
 import {filterNamedCell, NamedCell} from '../../../components/table/NamedCell';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {ItemCardModal} from '../../../components/items/ItemCard';
+import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
+import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
-type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
+
+export type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
 
 /** Overview over all items */
 export function Items() {
@@ -43,7 +47,7 @@ export function Items() {
             {
                 accessorKey: 'tags',
                 header: t('tags'),
-                Cell: TagCell,
+                cell: TagCell,
                 filterFn: filterTagCell
             },
             {
@@ -51,13 +55,15 @@ export function Items() {
                 header: t('requirement'),
             },
             {
-                accessorKey: 'effect',
-                header: t('effect'),
+                accessorKey: 'effects',
+                header: t('upgrade:effects'),
+                cell: ItemEffectsCell,
+                filterFn: filterItemEffectsCell
             },
             {
                 accessorKey: 'rarity',
                 header: t('rarity'),
-                cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                cell: cell => t('enum:' + cell.cell.getValue()?.toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
@@ -103,6 +109,7 @@ export function Items() {
         deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
+        viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
 }
 
@@ -192,6 +199,7 @@ export function Weapons() {
             }
         ], []);
 
+
     return <OverviewPage
         fetchData={fetchAllWeapons()}
         columns={columns}
@@ -206,6 +214,7 @@ export function Weapons() {
         deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
+        viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
 }
 
@@ -328,6 +337,7 @@ export function Shields() {
         deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
+        viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
 }
 
@@ -439,6 +449,7 @@ export function ArmorOverview() {
         deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
+        viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
 }
 
@@ -525,6 +536,7 @@ export function JewelleryOverview() {
         deletionDialogTitle={t('item:confirmDeletionTitle')}
         onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
         idKey="id"
+        viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
 }
 
@@ -554,7 +566,7 @@ function CreationDialog({
         initialValues: {
             '@type': initialType,
             description: '',
-            effect: '',
+            effects: [],
             maximumStackSize: initialType === 'Item' ? 100 : 1,
             minimumStackSize: initialType === 'Item' ? 0 : 1,
             name: '',
@@ -698,11 +710,7 @@ function CreationDialog({
                             {...form.getInputProps('initiative')}
                         />
                     </Group> : null}
-                <Textarea
-                    label={t('effect')}
-                    key={form.key('effect')}
-                    {...form.getInputProps('effect')}
-                />
+                <ItemEffectForm form={form} path="effects"/>
                 <Textarea
                     label={t('description')}
                     key={form.key('description')}
@@ -780,3 +788,4 @@ function CreationDialog({
         </Button>
     </>;
 }
+

@@ -4,19 +4,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.google.common.base.MoreObjects;
 
 /**
- * A simple {@link UpgradeEffect} which only has a description.
+ * A simple {@link ItemEffect} which only has a description.
  */
-public class SimpleUpgradeEffect extends UpgradeEffect {
+public class SimpleItemEffect extends ItemEffect {
 
     @JsonCreator
-    public SimpleUpgradeEffect(String description) {
+    public SimpleItemEffect(String description) {
         super(description);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("description", description)
-            .toString();
+                .add("description", description)
+                .toString();
     }
 }

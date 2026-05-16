@@ -5,7 +5,7 @@ import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.character.stats.Stat;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.bson.types.ObjectId;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,13 +17,11 @@ import java.util.stream.Collectors;
  */
 public class CharacterStats {
 
-    @DBRef
-    private final Map<PrimaryAttribute, Stat> primaryStats;
+    private final Map<ObjectId, Stat> primaryStats;
 
-    @DBRef
-    private final Map<SecondaryAttribute, Stat> secondaryStats;
+    private final Map<ObjectId, Stat> secondaryStats;
 
-    public CharacterStats(Map<PrimaryAttribute, Stat> primaryStats, Map<SecondaryAttribute, Stat> secondaryStats) {
+    public CharacterStats(Map<ObjectId, Stat> primaryStats, Map<ObjectId, Stat> secondaryStats) {
         this.primaryStats = new HashMap<>(primaryStats);
         this.secondaryStats = new HashMap<>(secondaryStats);
     }
@@ -62,14 +60,14 @@ public class CharacterStats {
      * @return the {@link Stat} for the given {@link PrimaryAttribute}
      */
     public Stat get(PrimaryAttribute attribute) {
-        return primaryStats.computeIfAbsent(attribute, a -> new Stat(0));
+        return primaryStats.computeIfAbsent(attribute.getId(), a -> new Stat(0));
     }
 
     /**
      * @return the {@link Stat} for the given {@link SecondaryAttribute}
      */
     public Stat get(SecondaryAttribute attribute) {
-        return secondaryStats.computeIfAbsent(attribute, a -> new Stat(0));
+        return secondaryStats.computeIfAbsent(attribute.getId(), a -> new Stat(0));
     }
 
     /**
@@ -80,7 +78,7 @@ public class CharacterStats {
                 .collect(Collectors.toMap(PrimaryAttributeVariable::new, e -> (double) get(e).getRawValue()));
 
         for (SecondaryAttribute secondaryAttribute : secondaryAttributes) {
-            secondaryStats.put(secondaryAttribute, new Stat(
+            secondaryStats.put(secondaryAttribute.getId(), new Stat(
                             (int) Math.round(secondaryAttribute.getCalculationFormula().calculate(primaryAttributeVariables)),
                             get(secondaryAttribute).getFlatModifier()
                     )

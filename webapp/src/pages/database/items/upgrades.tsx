@@ -1,49 +1,25 @@
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {
-    ECalculation,
-    EUpgradeEquipmentManipulator,
-    TagRequirement,
-    Upgrade,
-    UpgradeEffectsInner,
-    UpgradeServiceApi
-} from '../../../api';
+import {TagRequirement, Upgrade, UpgradeServiceApi} from '../../../api';
 import OverviewPage from '../../../components/OverviewPage';
 import {fetchAllUpgrades} from '../../../components/Database';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import CurrencyCell from '../../../components/table/CurrencyCell';
-import {
-    ActionIcon,
-    Box,
-    Button,
-    Group,
-    Input,
-    List,
-    Modal,
-    NumberInput,
-    Paper,
-    Select,
-    Stack,
-    TextInput,
-    Tooltip
-} from '@mantine/core';
+import {Button, Group, Modal, NumberInput, TextInput} from '@mantine/core';
 import {useUniverseContext} from '../../../components/PageBase';
-import {useForm, UseFormReturnType} from '@mantine/form';
-import {randomId, useDisclosure} from '@mantine/hooks';
+import {useForm} from '@mantine/form';
+import {useDisclosure} from '@mantine/hooks';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
 import {currencyFormatter} from '../../../components/utils/Formatters';
-import {
-    CalculationSelect,
-    UpgradeEquipmentManipulatorSelect,
-    UpgradeRestrictionSelect
-} from '../../../components/input/EnumSelect';
-import {FaRegTrashCan} from 'react-icons/fa6';
+import {UpgradeRestrictionSelect} from '../../../components/input/EnumSelect';
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
+import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
 
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 
-/** Overview over all upgades */
+/** Overview over all upgrades */
 export function UpgradeOverview() {
     const {t} = useTranslation();
 
@@ -56,21 +32,8 @@ export function UpgradeOverview() {
             {
                 accessorKey: 'effects',
                 header: t('upgrade:effects'),
-                cell: cell => {
-                    const effects = cell.getValue<UpgradeEffectsInner[]>();
-                    if (effects.length < 2) {
-                        return effects[0]?.description;
-                    } else {
-                        return <List>
-                            {effects.map((effect, index) => <List.Item key={index}>
-                                {effect.description}
-                            </List.Item>)}
-                        </List>;
-                    }
-                },
-                filterFn: (row, id, filterValue) => {
-                    return row.getValue<UpgradeEffectsInner[]>(id).some(effect => effect.description.includes(filterValue));
-                }
+                cell: ItemEffectsCell,
+                filterFn: filterItemEffectsCell
             },
             {
                 accessorKey: 'restriction',
@@ -187,7 +150,7 @@ function CreationDialog({
                     {...form.getInputProps('slots')}
                     allowDecimal={false}
                 />
-                <Effect form={form}/>
+                <ItemEffectForm form={form} path="effects"/>
                 <Group grow align="flex-start">
                     <NumberInput
                         label={t('price')}
@@ -215,93 +178,4 @@ function CreationDialog({
             {editMode ? t('edit') : t('add')}
         </Button>
     </>;
-}
-
-function Effect({
-    form
-}: {
-    form: UseFormReturnType<Upgrade, (values: Upgrade) => Upgrade>;
-}) {
-    const {t} = useTranslation();
-
-    return <Stack gap={0}>
-        <Input.Label>
-            {t('upgrade:effects')}
-        </Input.Label>
-        <Stack gap="xs">
-            {form.getValues().effects.map((effect, index) =>
-                <Stack key={'effect-' + index} gap={0}>
-                    <Paper shadow="md" p="sm">
-                        <Select
-                            data={[
-                                {value: 'SimpleUpgradeEffect', label: t('upgrade:simpleEffect')},
-                                {value: 'EquipmentUpgradeEffect', label: t('upgrade:equipmentEffect')}
-                            ]}
-                            key={form.key(`effects.${index}.@type`)}
-                            {...form.getInputProps(`effects.${index}.@type`)}
-                        />
-                        {effect['@type'] === 'EquipmentUpgradeEffect' ? <>
-                            <UpgradeEquipmentManipulatorSelect
-                                label={t('upgrade:upgradeManipulator')}
-                                key={form.key(`effects.${index}.upgradeManipulator`)}
-                                {...form.getInputProps(`effects.${index}.upgradeManipulator`)}
-                            />
-                            <Group wrap="nowrap">
-                                <CalculationSelect
-                                    label={t('upgrade:calculation')}
-                                    key={form.key(`effects.${index}.calculation`)}
-                                    {...form.getInputProps(`effects.${index}.calculation`)}
-                                />
-                                <NumberInput
-                                    label={t('value')}
-                                    key={form.key(`effects.${index}.value`)}
-                                    {...form.getInputProps(`effects.${index}.value`)}
-                                />
-                            </Group>
-                        </> : null}
-                        <Group wrap="nowrap">
-                            <Box
-                                style={{flex: 1}}
-                            >
-                                <TextInput
-                                    label={t('description')}
-                                    key={form.key(`effects.${index}.description`)}
-                                    {...form.getInputProps(`effects.${index}.description`)}
-                                />
-                            </Box>
-                            <ActionIcon
-                                variant="outline"
-                                color="red"
-                                size="input-sm"
-                                onClick={() => form.removeListItem('effects', index)}
-                                mt={20}
-                                data-testid={'effects-sub-' + index}
-                            >
-                                <FaRegTrashCan/>
-                            </ActionIcon>
-                        </Group>
-                    </Paper>
-                </Stack>
-            )}
-        </Stack>
-        <Tooltip label={form.errors['effects']} disabled={!form.errors['effects']}>
-            <Button
-                onClick={() =>
-                    form.insertListItem('effects', {
-                        '@type': 'SimpleUpgradeEffect',
-                        description: '',
-                        upgradeManipulator: EUpgradeEquipmentManipulator.Damage,
-                        calculation: ECalculation.Additive,
-                        value: 0,
-                        key: randomId()
-                    })
-                }
-                mt="md"
-                color={form.errors['effects'] ? 'red' : undefined}
-                data-testid={'effects-add'}
-            >
-                {t('upgrade:addEffect')}
-            </Button>
-        </Tooltip>
-    </Stack>;
 }

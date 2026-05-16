@@ -56,7 +56,7 @@ public class ArmorPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepos
     @Override
     protected Armor getEditedObject() {
         Armor armor = (Armor) getOriginalModifyObject();
-        return new Armor(null, "Other Helmet", armor.getTags(), armor.getRequirement(), armor.getEffect(),
+        return new Armor(null, "Other Helmet", armor.getTags(), armor.getRequirement(), armor.getEffects(),
                 armor.getRarity(), 302, armor.getTier(), "A fancy helmet", armor.getNote(),
                 armor.getMaterial(), armor.getUpgradeSlots(), armor.getArmorSlot(), armor.getArmor(),
                 armor.getProtection(), armor.getWeight(), armor.getMaximumStackSize(), armor.getMinimumStackSize());

@@ -10,8 +10,6 @@ import java.util.List;
 public enum EBackupVersion implements IBackupMigration {
     VERSION_1;
 
-    // GrantedUniverseAuthority
-
     /**
      * The current version of the backup, created by the current version.
      */

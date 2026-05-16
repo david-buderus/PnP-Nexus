@@ -86,22 +86,22 @@ public class PnPCharacterDTOConverter {
 
     private CharacterStats convert(CharacterStatsDto characterStatsDto, Collection<PrimaryAttribute> primaryAttributes,
                                    Collection<SecondaryAttribute> secondaryAttributes) {
-        Map<PrimaryAttribute, Stat> primaryStats = new HashMap<>();
-        Map<SecondaryAttribute, Stat> secondaryStats = new HashMap<>();
+        Map<ObjectId, Stat> primaryStats = new HashMap<>();
+        Map<ObjectId, Stat> secondaryStats = new HashMap<>();
 
         for (PrimaryAttribute primaryAttribute : primaryAttributes) {
             CharacterStatsDto.StatsDto stats = characterStatsDto.primaryStats().get(primaryAttribute.getId());
             if (stats == null) {
                 continue;
             }
-            primaryStats.put(primaryAttribute, new Stat(stats.rawValue(), stats.flatModifier()));
+            primaryStats.put(primaryAttribute.getId(), new Stat(stats.rawValue(), stats.flatModifier()));
         }
         for (SecondaryAttribute secondaryAttribute : secondaryAttributes) {
             CharacterStatsDto.StatsDto stats = characterStatsDto.secondaryStats().get(secondaryAttribute.getId());
             if (stats == null) {
                 continue;
             }
-            secondaryStats.put(secondaryAttribute, new Stat(stats.rawValue(), stats.flatModifier()));
+            secondaryStats.put(secondaryAttribute.getId(), new Stat(stats.rawValue(), stats.flatModifier()));
         }
 
         CharacterStats characterStats = new CharacterStats(primaryStats, secondaryStats);
@@ -126,7 +126,7 @@ public class PnPCharacterDTOConverter {
     /**
      * Converts a {@link List} of {@link PnPCharacter} to a {@link List} of {@link PnPCharacterDTO}
      */
-    public List<PnPCharacterDTO> convert(ObjectId universe, List<PnPCharacter> characters) {
+    public List<PnPCharacterDTO> convert(ObjectId universe, Collection<PnPCharacter> characters) {
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);

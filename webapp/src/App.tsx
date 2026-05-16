@@ -29,6 +29,7 @@ import {SpeciesDetail} from './pages/database/world/species';
 import {CharactersOverview} from './pages/database/characters/characters-overview';
 import {CharacterSheetsOverview} from './pages/database/characters/character-sheets-overview';
 import {CharacterSheetEditor} from './pages/database/characters/character-sheet-editor';
+import {CharacterEditor} from './pages/database/characters/character-editor';
 
 /** The entry point of the webapp */
 class App extends Component {
@@ -71,6 +72,8 @@ class App extends Component {
                                    element={<UniverseView><UpgradeRecipeOverview/></UniverseView>}/>
                             <Route path="/characters"
                                    element={<UniverseView><CharactersOverview/> </UniverseView>}/>
+                            <Route path="/characters/:character"
+                                   element={<UniverseView><CharacterEditor/> </UniverseView>}/>
                             <Route path="/characters-editor"
                                    element={<UniverseView><CharacterSheetsOverview/></UniverseView>}/>
                             <Route path="/characters-editor/:sheet"

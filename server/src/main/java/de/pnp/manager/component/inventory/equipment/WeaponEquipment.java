@@ -4,15 +4,15 @@ import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipmen
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IOffensiveItem;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
 
 /**
  * Represents an {@link IOffensiveItem} that can be held and used.
  */
-public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> implements
-    IHandheldEquipment {
+public class WeaponEquipment extends DamageableEquipment<Weapon> implements
+        IHandheldEquipment {
 
-    public WeaponEquipment(float stackSize, IOffensiveItem item, int wear) {
+    public WeaponEquipment(float stackSize, Weapon item, int wear) {
         super(stackSize, item, wear);
     }
 
@@ -29,17 +29,17 @@ public class WeaponEquipment extends DamageableEquipment<IOffensiveItem> impleme
      * {@link #getUpgrades() upgrades}.
      */
     public int getMaxDamage() {
-        return Math.max(0, applyUpgradeEffects(EUpgradeEquipmentManipulator.DAMAGE, getItem().getDamage()));
+        return Math.max(0, applyItemEffects(EItemEquipmentManipulator.DAMAGE, getItem().getDamage()));
     }
 
     @Override
     public int getHit() {
-        return applyUpgradeEffects(EUpgradeEquipmentManipulator.HIT, getItem().getHit());
+        return applyItemEffects(EItemEquipmentManipulator.HIT, getItem().getHit());
     }
 
     @Override
     public float getInitiative() {
-        return applyUpgradeEffects(EUpgradeEquipmentManipulator.INITIATIVE, getItem().getInitiative());
+        return applyItemEffects(EItemEquipmentManipulator.INITIATIVE, getItem().getInitiative());
     }
 
     @Override

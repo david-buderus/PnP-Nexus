@@ -4,11 +4,14 @@ import de.pnp.manager.Tag;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.bson.types.ObjectId;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.bson.types.ObjectId;
 
 /**
  * Armor in the universe.
@@ -42,11 +45,11 @@ public class Armor extends EquipableItem implements IDefensiveItem {
     @PositiveOrZero
     protected final float weight;
 
-    public Armor(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
-        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
-        EArmorSlot armorSlot, int armor, int protection, float weight, int maximumStackSize, int minimumStackSize) {
-        super(id, name, tags, requirement, effect, rarity, vendorPrice, tier, description, note, material,
-            upgradeSlots, maximumStackSize, minimumStackSize);
+    public Armor(ObjectId id, String name, Set<Tag> tags, String requirement, List<ItemEffect> effects, ERarity rarity,
+                 int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+                 EArmorSlot armorSlot, int armor, int protection, float weight, int maximumStackSize, int minimumStackSize) {
+        super(id, name, tags, requirement, effects, rarity, vendorPrice, tier, description, note, material,
+                upgradeSlots, maximumStackSize, minimumStackSize);
         this.armorSlot = armorSlot;
         this.armor = armor;
         this.protection = protection;
@@ -82,7 +85,7 @@ public class Armor extends EquipableItem implements IDefensiveItem {
         }
         Armor armor1 = (Armor) o;
         return getArmor() == armor1.getArmor() && getProtection() == armor1.getProtection()
-            && Float.compare(armor1.getWeight(), getWeight()) == 0 && getArmorSlot() == armor1.getArmorSlot();
+                && Float.compare(armor1.getWeight(), getWeight()) == 0 && getArmorSlot() == armor1.getArmorSlot();
     }
 
     @Override

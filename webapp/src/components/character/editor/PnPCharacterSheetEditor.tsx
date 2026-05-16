@@ -17,7 +17,7 @@ import {
     TextInput,
     Title
 } from '@mantine/core';
-import {PnPCharacterContext} from '../PnPCharacterContext';
+import {PnPCharacterContext, useEmptyCharacter} from '../PnPCharacterContext';
 import {CharacterSheetPaper, PnPCharacterSheetPage} from './parts/CharacterSheetPaper';
 import {FaChevronRight} from 'react-icons/fa6';
 import {FaChevronLeft} from 'react-icons/fa';
@@ -27,12 +27,13 @@ import {handleDatabaseInsertErrors, handleValidationErrors} from '../../utils/Er
 import {DropdownButton} from '../../button/DropdownButton';
 import {PnPCharacterSheetContext} from '../PnPCharacterSheetContext';
 import ConfirmationDialog from '../../modal/ConfirmationDialog';
-import {EMPTY_CHARACTERS} from '../../../pages/database/characters/characters-overview';
 
 import '/node_modules/react-grid-layout/css/styles.css';
 import '/node_modules/react-resizable/css/styles.css';
 import {Toolbox} from './Toolbox';
 import {PageElementLayout} from './parts/PageElement';
+import {loadCharacterSheet} from '../PnPCharacterView';
+import {useNavigate} from 'react-router-dom';
 
 
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
@@ -45,10 +46,12 @@ export function PnPCharacterSheetEditor({
     onCancel: () => void;
 }) {
     const {activeUniverse} = useUniverseContext();
+    const emptyCharacter = useEmptyCharacter();
 
     const form = useForm<PnPCharacterDTO>({
-        initialValues: EMPTY_CHARACTERS
+        initialValues: emptyCharacter
     });
+
     const [isLoading, setIsLoading] = useState(false);
     const [selectedPage, setSelectedPage] = useState(0);
     const [pages, setPages] = useListState<PnPCharacterSheetPage>([{data: [], layout: []}]);
@@ -240,6 +243,7 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
 }) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
+    const navigate = useNavigate();
 
     const [latestSave, setLatestSave] = useState<string>('');
 
@@ -260,8 +264,7 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
             return;
         }
         setLatestSave(initialSheet.sheet);
-        const json = atob(initialSheet.sheet);
-        setPages.setState(JSON.parse(json));
+        setPages.setState(loadCharacterSheet(initialSheet.sheet));
     }, [initialSheet]);
 
     return <Stack>
@@ -303,6 +306,33 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
         }}>
             {t('print')}
         </Button>
+        <DropdownButton
+            label={t('save')}
+            onClick={openSave}
+            dropdownItems={[
+                {
+                    label: t('import'),
+                    onClick: openImport
+                },
+                {
+                    label: t('export'),
+                    onClick: openExport
+                }
+            ]}
+        />
+        {initialSheet?.id !== undefined ?
+            <ConfirmationDialog
+                title={t('sheetEditor:deleteSheet')}
+                onConfirmation={() => {
+                    SHEET_API.deletePnPCharacterSheet(activeUniverse.id, initialSheet.id).then(() => navigate('/characters-editor?universe=' + activeUniverse.id));
+                }}
+                openNode={open =>
+                    <Button variant="outline" color="red" onClick={open}>
+                        {t('delete')}
+                    </Button>
+                }
+            /> : null
+        }
         <ConfirmationDialog
             title={t('unsavedChangesTitle')}
             text={t('unsavedChangesDescription')}
@@ -318,22 +348,8 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
                     }}
                     variant="outline"
                 >
-                    {t('cancel')}
+                    {t('close')}
                 </Button>}
-        />
-        <DropdownButton
-            label={t('save')}
-            onClick={openSave}
-            dropdownItems={[
-                {
-                    label: t('import'),
-                    onClick: openImport
-                },
-                {
-                    label: t('export'),
-                    onClick: openExport
-                }
-            ]}
         />
         <ImportModal pages={pages} setPages={setPages} opened={openedImport} close={closeImport}/>
         <ExportModal pages={pages} opened={openedExport} close={closeExport}/>
@@ -386,8 +402,7 @@ function ImportModal({setPages, opened, close}: {
             </Button>
             <Button type="submit" onClick={() => {
                 close();
-                const json = atob(value);
-                setPages.setState(JSON.parse(json));
+                setPages.setState(loadCharacterSheet(value));
             }}>
                 {t('import')}
             </Button>

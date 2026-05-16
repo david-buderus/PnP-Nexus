@@ -5,11 +5,14 @@ import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IOffensiveItem;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.bson.types.ObjectId;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.bson.types.ObjectId;
 
 /**
  * A concrete weapon in the universe.
@@ -23,12 +26,11 @@ public class Weapon extends HandheldEquipableItem implements IOffensiveItem {
     @PositiveOrZero
     protected final int damage;
 
-    public Weapon(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
-        ERarity rarity,
-        int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
-        float initiative, int hit, int damage, Dice dice, int maximumStackSize, int minimumStackSize) {
-        super(id, name, tags, requirement, effect, rarity, vendorPrice, tier, description, note, material,
-            upgradeSlots, initiative, hit, dice, maximumStackSize, minimumStackSize);
+    public Weapon(ObjectId id, String name, Set<Tag> tags, String requirement, List<ItemEffect> effects,
+                  ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+                  float initiative, int hit, int damage, Dice dice, int maximumStackSize, int minimumStackSize) {
+        super(id, name, tags, requirement, effects, rarity, vendorPrice, tier, description, note, material,
+                upgradeSlots, initiative, hit, dice, maximumStackSize, minimumStackSize);
         this.damage = damage;
     }
 

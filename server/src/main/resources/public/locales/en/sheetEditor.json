@@ -43,5 +43,6 @@
   "headers": "Headers",
   "rows": "Rows",
   "asCustomFieldId": "Custom ID",
-  "table": "Table"
+  "table": "Table",
+  "deleteSheet": "Delete character sheet"
 }

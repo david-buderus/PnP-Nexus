@@ -85,7 +85,7 @@ export function PnPCharacterView({
                             >
                                 <CharacterSheetPaper
                                     page={page}
-                                    updatePage={_ => {
+                                    updatePage={() => {
                                         // Empty
                                     }}
                                     pageNumber={i}
@@ -133,9 +133,27 @@ function Controls({sheet, setPages}: {
         if (!sheet || !sheet.sheet) {
             return;
         }
-        const json = atob(sheet.sheet);
-        setPages.setState(JSON.parse(json));
+        setPages.setState(loadCharacterSheet(sheet.sheet));
     }, [sheet]);
 
     return <></>;
+}
+
+/** Loads a character sheet from a stored string */
+export function loadCharacterSheet(sheet: string): PnPCharacterSheetPage[] {
+    const json = atob(sheet);
+    const pages = JSON.parse(json);
+    if (!isCharacterSheet(pages)) {
+        console.error('The given character sheet is malformed.');
+        return [{
+            data: [],
+            layout: []
+        }];
+    }
+    return pages;
+}
+
+function isCharacterSheet(sheet: any): sheet is PnPCharacterSheetPage[] {
+    return Array.isArray(sheet) &&
+        sheet.every(page => Array.isArray(page.data) && Array.isArray(page.layout));
 }

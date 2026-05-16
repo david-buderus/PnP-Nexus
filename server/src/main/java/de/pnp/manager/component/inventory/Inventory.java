@@ -1,5 +1,6 @@
 package de.pnp.manager.component.inventory;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.item.Item;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Inventory {
 
     private final List<ItemStack<? extends Item>> items;
 
+    @JsonCreator
     public Inventory(int maxSize, List<ItemStack<? extends Item>> items) {
         this.maxSize = maxSize;
         this.items = items;
@@ -57,6 +59,29 @@ public class Inventory {
             items.add(itemStack);
         }
         return true;
+    }
+
+    /**
+     * Removes an item from the inventory.
+     */
+    public void removeItem(Item item, float amount) {
+        float remaining = amount;
+
+        List<ItemStack<? extends Item>> itemsToRemove = new ArrayList<>();
+
+        for (ItemStack<? extends Item> stack : items) {
+            if (Objects.equals(stack.getItem(), item)) {
+                if (remaining >= stack.getStackSize()) {
+                    itemsToRemove.add(stack);
+                    remaining -= stack.getStackSize();
+                } else {
+                    remaining -= stack.subtractAmount(remaining);
+                }
+            }
+        }
+        for (ItemStack<? extends Item> toRemove : itemsToRemove) {
+            items.remove(toRemove);
+        }
     }
 
     public int getMaxSize() {

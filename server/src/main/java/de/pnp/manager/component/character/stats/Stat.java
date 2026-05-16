@@ -1,6 +1,8 @@
 package de.pnp.manager.component.character.stats;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.PersistenceCreator;
 
 /**
  * A single stat of a character.
@@ -15,6 +17,8 @@ public class Stat {
         this(rawValue, 0);
     }
 
+    @JsonCreator
+    @PersistenceCreator
     public Stat(int rawValue, int flatModifier) {
         this.rawValue = rawValue;
         this.flatModifier = flatModifier;

@@ -2,7 +2,7 @@ package de.pnp.manager.component.inventory.equipment;
 
 import de.pnp.manager.component.inventory.equipment.interfaces.IHandheldEquipment;
 import de.pnp.manager.component.item.equipable.Shield;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
 
 /**
  * Represents an {@link Shield} that can be held and used.
@@ -15,11 +15,11 @@ public class ShieldEquipment extends DefensiveEquipment<Shield> implements IHand
 
     @Override
     public int getHit() {
-        return applyUpgradeEffects(EUpgradeEquipmentManipulator.HIT, getItem().getHit());
+        return applyItemEffects(EItemEquipmentManipulator.HIT, getItem().getHit());
     }
 
     @Override
     public float getInitiative() {
-        return applyUpgradeEffects(EUpgradeEquipmentManipulator.INITIATIVE, getItem().getInitiative());
+        return applyItemEffects(EItemEquipmentManipulator.INITIATIVE, getItem().getInitiative());
     }
 }

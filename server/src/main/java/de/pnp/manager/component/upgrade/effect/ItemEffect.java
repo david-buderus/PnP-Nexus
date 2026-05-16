@@ -4,17 +4,18 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import de.pnp.manager.component.upgrade.Upgrade;
 import jakarta.validation.constraints.NotBlank;
+
 import java.util.Objects;
 
 /**
  * Represents an effect of an {@link Upgrade}.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = SimpleUpgradeEffect.class, name = "SimpleUpgradeEffect"),
-    @JsonSubTypes.Type(value = EquipmentUpgradeEffect.class, name = "EquipmentUpgradeEffect")
+        @JsonSubTypes.Type(value = SimpleItemEffect.class, name = "SimpleItemEffect"),
+        @JsonSubTypes.Type(value = EquipmentItemEffect.class, name = "EquipmentItemEffect")
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-public abstract class UpgradeEffect {
+public abstract class ItemEffect {
 
     /**
      * A human-readable description of the effect.
@@ -22,7 +23,7 @@ public abstract class UpgradeEffect {
     @NotBlank
     protected final String description;
 
-    protected UpgradeEffect(String description) {
+    protected ItemEffect(String description) {
         this.description = description;
     }
 
@@ -38,7 +39,7 @@ public abstract class UpgradeEffect {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        UpgradeEffect that = (UpgradeEffect) o;
+        ItemEffect that = (ItemEffect) o;
         return Objects.equals(getDescription(), that.getDescription());
     }
 

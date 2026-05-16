@@ -1,14 +1,14 @@
-import {useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
 import {PnPCharacterDTO, PnPCharacterSheet, PnPCharacterSheetServiceApi} from '../../../api';
 import {API_CONFIGURATION} from '../../../components/Constants';
 import {useUniverseContext, useUserContext} from '../../../components/PageBase';
 import {PnPCharacterSheetEditor} from '../../../components/character/editor/PnPCharacterSheetEditor';
 import {PnPCharacterView} from '../../../components/character/PnPCharacterView';
-import {Button, Center, Group, Stack, Title} from '@mantine/core';
+import {Anchor, Breadcrumbs, Button, Center, Group, Stack, Title} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
 import {useForm} from '@mantine/form';
-import {EMPTY_CHARACTERS} from './characters-overview';
+import {useEmptyCharacter} from '../../../components/character/PnPCharacterContext';
 
 const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
 
@@ -53,10 +53,10 @@ function CharacterSheetView({
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
+    const emptyCharacter = useEmptyCharacter();
     const form = useForm<PnPCharacterDTO>({
-        initialValues: EMPTY_CHARACTERS
+        initialValues: emptyCharacter
     });
-
 
     useEffect(() => {
         if (!activeUniverse) {
@@ -67,6 +67,20 @@ function CharacterSheetView({
 
     return <Center>
         <Stack>
+            <Breadcrumbs>
+                <Anchor
+                    component={Link}
+                    to={{
+                        pathname: `/characters-editor`,
+                        search: `universe=${activeUniverse.id}`
+                    }}
+                >
+                    {t('overview')}
+                </Anchor>
+                <Anchor>
+                    {sheet?.name ?? ''}
+                </Anchor>
+            </Breadcrumbs>
             <Group justify="space-between">
                 <Title data-testid="name">
                     {sheet?.name ?? ''}

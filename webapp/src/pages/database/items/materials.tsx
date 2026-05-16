@@ -155,7 +155,7 @@ function CreationDialog({
                                 amount: 0,
                                 item: null,
                                 key: randomId()
-                            })
+                            } as MaterialItem)
                         }
                         mt="md"
                         color={form.errors['items'] ? 'red' : undefined}

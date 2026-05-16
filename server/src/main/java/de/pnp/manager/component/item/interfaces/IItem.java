@@ -10,7 +10,10 @@ import de.pnp.manager.component.item.equipable.Armor;
 import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
+import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,7 +47,8 @@ public interface IItem {
     /**
      * The effect of this item.
      */
-    String getEffect();
+    @NotNull
+    List<ItemEffect> getEffects();
 
     /**
      * The rarity of this item.

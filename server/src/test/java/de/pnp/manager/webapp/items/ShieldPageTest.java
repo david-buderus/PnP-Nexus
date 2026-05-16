@@ -55,7 +55,7 @@ public class ShieldPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepo
     @Override
     protected Shield getEditedObject() {
         Shield shield = (Shield) getOriginalModifyObject();
-        return new Shield(null, "Towershield", shield.getTags(), shield.getRequirement(), shield.getEffect(),
+        return new Shield(null, "Towershield", shield.getTags(), shield.getRequirement(), shield.getEffects(),
                 shield.getRarity(), 302, shield.getTier(), "A big shield", shield.getNote(),
                 shield.getMaterial(), shield.getUpgradeSlots(), shield.getInitiative(), shield.getHit(),
                 shield.getDice(), shield.getWeight(), shield.getArmor(), shield.getProtection(),
