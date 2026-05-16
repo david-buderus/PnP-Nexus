@@ -77,7 +77,7 @@ export function ItemCard({
 
             {/* Effect & Description */}
             <Stack gap="xs">
-                {item.effects ? (
+                {(item.effects && item.effects.length > 0) ? (
                     <Box>
                         <Text size="xs" fw={700} c="dimmed">{t('upgrade:effects')}</Text>
                         <List size="sm">

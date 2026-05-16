@@ -1,14 +1,15 @@
-import {ActionIcon, NumberInput, Popover, Stack, Table} from '@mantine/core';
+import {ActionIcon, Group, NumberInput, Popover, Stack, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {PageElementSettings} from '../PageElementSettings';
-import {IconMoneybagPlus} from '@tabler/icons-react';
+import {IconCircleMinus, IconCirclePlus, IconMoneybagPlus} from '@tabler/icons-react';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
-import {addItemToInventory} from '../../../../utils/InventoryUtils';
+import {addItemToInventory, removeItemFromInventory} from '../../../../utils/InventoryUtils';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
-import {ItemStack} from '../../../../Constants';
+import {ItemStack, SomeItem} from '../../../../Constants';
+import {fetchAllItems} from '../../../../Database';
 
 
 /** Shows the inventory of the character */
@@ -45,7 +46,55 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                 key={colIndex}
                                 onClick={allowEdit ? () => setLastClicked(itemStack ?? null) : null}
                             >
-                                {itemStack ? `${itemStack.stackSize}x ${itemStack.item.name}` : ''}
+                                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                                    {itemStack ? (
+                                        <Text
+                                            size={TABLE_STYLE.fontSize}
+                                            truncate="end"
+                                            style={{flex: 1, minWidth: 0}}
+                                        >
+                                            {`${itemStack.stackSize}x ${itemStack.item.name}`}
+                                        </Text>
+                                    ) : null}
+                                    {itemStack ?
+                                        <Group wrap="nowrap" gap={1} style={{flexShrink: 0}}>
+                                            <ActionIcon
+                                                variant="subtle"
+                                                size={TABLE_ROW_HEIGHT - 8}
+                                                className="no-drag"
+                                                onClick={e => {
+                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 1)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
+                                                    e.stopPropagation();
+                                                }}
+                                                onContextMenu={e => {
+                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 5)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
+                                                    e.preventDefault();
+                                                }}
+                                            >
+                                                <IconCirclePlus size={14}/>
+                                            </ActionIcon>
+                                            <ActionIcon
+                                                variant="subtle"
+                                                size={TABLE_ROW_HEIGHT - 8}
+                                                className="no-drag"
+                                                onClick={e => {
+                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 1)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
+                                                    e.stopPropagation();
+                                                }}
+                                                onContextMenu={e => {
+                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 5)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
+                                                    e.preventDefault();
+                                                }}
+                                            >
+                                                <IconCircleMinus color="red" size={14}/>
+                                            </ActionIcon>
+                                        </Group>
+                                        : null}
+                                </Group>
                             </Table.Td>;
                         })}
                     </Table.Tr>
@@ -73,6 +122,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
 
 function ItemAdditionPopover() {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const [items] = fetchAllItems();
 
     if (!allowEdit) {
         return null;
@@ -97,6 +147,7 @@ function ItemAdditionPopover() {
             </Popover.Target>
             <Popover.Dropdown>
                 <ItemSearchCard
+                    items={items}
                     onSelect={item =>
                         addItemToInventory(characterForm.values.inventory.inventory, item.item, item.amount)
                             .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))}

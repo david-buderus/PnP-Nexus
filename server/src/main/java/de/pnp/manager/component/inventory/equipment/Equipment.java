@@ -3,6 +3,7 @@ package de.pnp.manager.component.inventory.equipment;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import de.pnp.manager.component.ECalculation;
@@ -108,7 +109,7 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
                 getItem().getEffects().stream(),
                 getUpgrades().stream().flatMap(upgrade -> upgrade.getEffects().stream())
         ).filter(EquipmentItemEffect.class::isInstance).map(EquipmentItemEffect.class::cast).toList();
-        
+
         List<EquipmentItemEffect> additiveEffects = effects.stream()
                 .filter(effect -> effect.getCalculation() == ECalculation.ADDITIVE)
                 .toList();
@@ -124,5 +125,13 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
         }
 
         return value;
+    }
+
+    @Override
+    public boolean canStack(ItemStack<?> other) {
+        if (!super.canStack(other)) {
+            return false;
+        }
+        return Objects.equal(upgrades, ((Equipment<?>) other).getUpgrades());
     }
 }

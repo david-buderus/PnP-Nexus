@@ -1,12 +1,17 @@
-import {NumberInput, Stack, Table} from '@mantine/core';
+import {ActionIcon, Group, NumberInput, Popover, Stack, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {JewelleryDefinition} from '../../../../../api';
+import {ItemStackServiceApi, Jewellery, JewelleryDefinition} from '../../../../../api';
 import {useUniverseContext} from '../../../../PageBase';
 import {PageElementSettings} from '../PageElementSettings';
+import {fetchAllJewllery} from '../../../../Database';
+import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
+import {ItemSearchCard} from '../../../../items/ItemSearchCard';
+import {API_CONFIGURATION} from '../../../../Constants';
 
+const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
 /** Shows jewellery of the character */
 export function JewelleryList({numberOfJewellery, setNumberOfJewellery}: {
@@ -79,7 +84,7 @@ function JewelleryLines({
     return <>
         {jewellery.map((j, index) => {
 
-            let effect = j?.item.effect ?? '';
+            let effect = j?.item.effects.map(e => e.description).join(',') ?? '';
             if (j?.upgradeSlots > 0) {
                 effect += ` ${j.remainingUpgradeSlots}/${j.upgradeSlots} ${j.upgrades.map(u => u.name).join(', ')}`;
             }
@@ -87,8 +92,75 @@ function JewelleryLines({
             return <Table.Tr key={index} h={TABLE_ROW_HEIGHT}>
                 <Table.Td style={TABLE_STYLE}>{definition.name + (number > 1 ? ` ${index + 1}` : '')}</Table.Td>
                 <Table.Td style={TABLE_STYLE}>{j?.item.name ?? ''}</Table.Td>
-                <Table.Td style={TABLE_STYLE}>{effect}</Table.Td>
+                <Table.Td style={TABLE_STYLE}>
+                    <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                        <Text
+                            size={TABLE_STYLE.fontSize}
+                            truncate="end"
+                            style={{flex: 1, minWidth: 0}}
+                        >
+                            {effect}
+                        </Text>
+                        {j ?
+                            <ActionIcon
+                                variant="subtle"
+                                size={TABLE_ROW_HEIGHT - 8}
+                                className="no-drag"
+                                style={{flexShrink: 0}}
+                                onClick={e => {
+                                    characterForm.removeListItem(`equipment.jewellery.${definition.name}`, index);
+                                    e.stopPropagation();
+                                }}
+                            >
+                                <IconCircleMinus color="red" size={14}/>
+                            </ActionIcon> :
+                            <JewelleryAdditionPopover name={definition.name} tag={definition.tag}/>
+                        }
+                    </Group>
+                </Table.Td>
             </Table.Tr>;
         })}
     </>;
+}
+
+function JewelleryAdditionPopover({name, tag}: {
+    name: string;
+    tag: string;
+}) {
+    const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const [items] = fetchAllJewllery();
+    const filtered = useMemo(() => items.filter(i => i.tags.includes(tag)), [items, tag]);
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return (
+        <Popover position="bottom" withArrow shadow="md">
+            <Popover.Target>
+                <ActionIcon
+                    variant="subtle"
+                    size={TABLE_ROW_HEIGHT - 8}
+                    className="no-drag"
+                >
+                    <IconCirclePlus size={14}/>
+                </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <ItemSearchCard
+                    items={filtered}
+                    onSelect={item =>
+                        STACK_SERVICE.createJewellery({item: item.item as Jewellery, stackSize: 1})
+                            .then(response => {
+                                if (!characterForm.values.equipment.jewellery[name]) {
+                                    characterForm.setFieldValue(`equipment.jewellery.${name}`, [response.data]);
+                                } else {
+                                    characterForm.insertListItem(`equipment.jewellery.${name}`, response.data);
+                                }
+                            })
+                    }
+                />
+            </Popover.Dropdown>
+        </Popover>
+    );
 }

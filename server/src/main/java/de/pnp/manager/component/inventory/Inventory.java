@@ -33,7 +33,7 @@ public class Inventory {
         float remaining = itemStack.getStackSize();
 
         for (ItemStack<?> stack : items) {
-            if (Objects.equals(stack.getItem(), itemStack.getItem())) {
+            if (stack.canStack(itemStack)) {
                 remaining -= maxStackSize - stack.getStackSize();
             }
         }
@@ -51,7 +51,7 @@ public class Inventory {
         float remaining = itemStack.getStackSize();
 
         for (ItemStack<?> stack : items) {
-            if (Objects.equals(stack.getItem(), itemStack.getItem())) {
+            if (stack.canStack(itemStack)) {
                 remaining -= stack.addAmount(remaining);
             }
         }

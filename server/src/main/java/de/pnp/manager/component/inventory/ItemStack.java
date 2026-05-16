@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Floats;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
@@ -11,6 +12,10 @@ import de.pnp.manager.component.inventory.equipment.Equipment;
 import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.equipable.Armor;
+import de.pnp.manager.component.item.equipable.Jewellery;
+import de.pnp.manager.component.item.equipable.Shield;
+import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -96,5 +101,35 @@ public class ItemStack<I extends IItem> {
 
     public I getItem() {
         return item;
+    }
+
+    /**
+     * Returns if the other item stack could be stacked onto this one.
+     * This ignores size limits and only checks if the stacks are theoretically compatible.
+     */
+    public boolean canStack(ItemStack<?> other) {
+        if (other == null || other.getClass() != this.getClass()) {
+            return false;
+        }
+        return Objects.equal(item, other.getItem());
+    }
+
+    /**
+     * Creates the matching {@link ItemStack} from the given {@link Item}
+     */
+    public static ItemStack<? extends Item> from(Item item, float stackSize) {
+        if (item instanceof Weapon weapon) {
+            return new WeaponEquipment(stackSize, weapon, 0);
+        }
+        if (item instanceof Shield shield) {
+            return new ShieldEquipment(stackSize, shield, 0);
+        }
+        if (item instanceof Armor armor) {
+            return new ArmorEquipment(stackSize, armor, 0);
+        }
+        if (item instanceof Jewellery jewellery) {
+            return new Equipment<>(stackSize, jewellery);
+        }
+        return new ItemStack<>(stackSize, item);
     }
 }

@@ -1,16 +1,22 @@
-import {Switch, Table} from '@mantine/core';
+import {ActionIcon, Group, Popover, Switch, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
-import React, {useContext} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {EArmorSlot, ShieldEquipment} from '../../../../../api';
+import {Armor, ArmorEquipment, EArmorSlot, ItemStackServiceApi, Shield, ShieldEquipment} from '../../../../../api';
 import {useUniverseContext} from '../../../../PageBase';
 import {diceFormatter} from '../../../../utils/Formatters';
 import {OverflowSwitch} from '../../../../utils/OverflowSwitch';
 import {FaWeightHanging} from 'react-icons/fa6';
 import {GiCrackedShield, GiShield} from 'react-icons/gi';
 import {PageElementSettings} from '../PageElementSettings';
+import {fetchAllArmor, fetchAllShields} from '../../../../Database';
+import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
+import {ItemSearchCard} from '../../../../items/ItemSearchCard';
+import {API_CONFIGURATION} from '../../../../Constants';
+import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 
+const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
 /** Shows armor of the character */
 export function ArmorSlots({withShield, setWithShield}: {
@@ -18,9 +24,11 @@ export function ArmorSlots({withShield, setWithShield}: {
     setWithShield: (b: boolean) => void;
 }) {
     const {t} = useTranslation();
-    const {characterForm} = useContext(PnPCharacterContext);
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
     const {itemSettings} = useUniverseContext();
+
+    const [lastClicked, setLastClicked] = useState<ArmorEquipment | ShieldEquipment>(null);
 
     const shield = character?.equipment.shieldEquipment;
 
@@ -29,6 +37,7 @@ export function ArmorSlots({withShield, setWithShield}: {
             withTableBorder
             withColumnBorders
             striped
+            layout="fixed"
         >
             <Table.Tbody>
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -54,13 +63,16 @@ export function ArmorSlots({withShield, setWithShield}: {
                         {t('effect')}
                     </Table.Th>
                 </Table.Tr>
-                <ArmorSlot slot={EArmorSlot.Head}/>
-                <ArmorSlot slot={EArmorSlot.Body}/>
-                <ArmorSlot slot={EArmorSlot.Arms}/>
-                <ArmorSlot slot={EArmorSlot.Legs}/>
+                <ArmorSlot slot={EArmorSlot.Head} setLastClicked={setLastClicked}/>
+                <ArmorSlot slot={EArmorSlot.Body} setLastClicked={setLastClicked}/>
+                <ArmorSlot slot={EArmorSlot.Arms} setLastClicked={setLastClicked}/>
+                <ArmorSlot slot={EArmorSlot.Legs} setLastClicked={setLastClicked}/>
                 {withShield ?
                     <>
-                        <Table.Tr h={TABLE_ROW_HEIGHT}>
+                        <Table.Tr
+                            h={TABLE_ROW_HEIGHT}
+                            onClick={allowEdit ? () => setLastClicked(shield ?? null) : null}
+                        >
                             <Table.Td style={TABLE_STYLE}>{t('shield')}</Table.Td>
                             <Table.Td style={TABLE_STYLE}>{shield?.item.name ?? ''}</Table.Td>
                             <Table.Td style={TABLE_STYLE}>{formatStat(shield?.armor, shield?.item.armor)}</Table.Td>
@@ -69,7 +81,32 @@ export function ArmorSlots({withShield, setWithShield}: {
                                     style={TABLE_STYLE}>{formatStat(shield?.protection, shield?.item.protection)}</Table.Td> : null
                             }
                             <Table.Td style={TABLE_STYLE}>{formatStat(shield?.weight, shield?.item.weight)}</Table.Td>
-                            <Table.Td style={TABLE_STYLE}>{shield?.item.effect ?? ''}</Table.Td>
+                            <Table.Td style={TABLE_STYLE}>
+                                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                                    <Text
+                                        size={TABLE_STYLE.fontSize}
+                                        truncate="end"
+                                        style={{flex: 1, minWidth: 0}}
+                                    >
+                                        {shield?.item.effects.map(e => e.description).join(',') ?? ''}
+                                    </Text>
+                                    {shield ?
+                                        <ActionIcon
+                                            variant="subtle"
+                                            size={TABLE_ROW_HEIGHT - 8}
+                                            className="no-drag"
+                                            style={{flexShrink: 0}}
+                                            onClick={e => {
+                                                characterForm.setFieldValue('equipment.shieldEquipment', null);
+                                                e.stopPropagation();
+                                            }}
+                                        >
+                                            <IconCircleMinus color="red" size={14}/>
+                                        </ActionIcon> :
+                                        <ShieldAdditionPopover/>
+                                    }
+                                </Group>
+                            </Table.Td>
                         </Table.Tr>
                         <ShieldExtraLine shield={shield}/>
                     </>
@@ -83,19 +120,26 @@ export function ArmorSlots({withShield, setWithShield}: {
                 onChange={e => setWithShield(e.target.checked)}
             />
         </PageElementSettings>
+        <ItemStackCardModal stack={lastClicked} onClose={() => setLastClicked(null)}/>
     </>;
 }
 
-function ArmorSlot({slot}: { slot: EArmorSlot }) {
+function ArmorSlot({slot, setLastClicked}: {
+    slot: EArmorSlot,
+    setLastClicked: (equipment: ArmorEquipment | ShieldEquipment) => void
+}) {
     const {t} = useTranslation();
-    const {characterForm} = useContext(PnPCharacterContext);
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
     const {itemSettings} = useUniverseContext();
 
     const armor = character?.equipment.armor[slot];
 
     return <>
-        <Table.Tr h={TABLE_ROW_HEIGHT}>
+        <Table.Tr
+            h={TABLE_ROW_HEIGHT}
+            onClick={allowEdit ? () => setLastClicked(armor ?? null) : null}
+        >
             <Table.Td style={TABLE_STYLE}>{t('enum:' + slot.toLowerCase())}</Table.Td>
             <Table.Td style={TABLE_STYLE}>{armor?.item.name ?? ''}</Table.Td>
             <Table.Td style={TABLE_STYLE}>{formatStat(armor?.armor, armor?.item.armor)}</Table.Td>
@@ -103,7 +147,32 @@ function ArmorSlot({slot}: { slot: EArmorSlot }) {
                 <Table.Td style={TABLE_STYLE}>{formatStat(armor?.protection, armor?.item.protection)}</Table.Td> : null
             }
             <Table.Td style={TABLE_STYLE}>{formatStat(armor?.weight, armor?.item.weight)}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{armor?.item.effect ?? ''}</Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                    <Text
+                        size={TABLE_STYLE.fontSize}
+                        truncate="end"
+                        style={{flex: 1, minWidth: 0}}
+                    >
+                        {armor?.item.effects.map(e => e.description).join(',') ?? ''}
+                    </Text>
+                    {armor ?
+                        <ActionIcon
+                            variant="subtle"
+                            size={TABLE_ROW_HEIGHT - 8}
+                            className="no-drag"
+                            style={{flexShrink: 0}}
+                            onClick={e => {
+                                characterForm.setFieldValue(`equipment.armor.${slot}`, null);
+                                e.stopPropagation();
+                            }}
+                        >
+                            <IconCircleMinus color="red" size={14}/>
+                        </ActionIcon> :
+                        <ArmorAdditionPopover slot={slot}/>
+                    }
+                </Group>
+            </Table.Td>
         </Table.Tr>
         <Table.Tr h={TABLE_ROW_HEIGHT}>
             <Table.Td style={TABLE_STYLE} colSpan={itemSettings?.usingProtection ? 6 : 5}>
@@ -130,7 +199,7 @@ function ShieldExtraLine({shield}: { shield: ShieldEquipment }) {
     if (shield.initiative !== 0 && shield.item.initiative !== 0) {
         description += ` ${t('initiative')}: ` + formatStat(shield.initiative, shield.item.initiative);
     }
-    if (shield.item.dice.dices) {
+    if (shield.item.dice.dices && shield.item.dice.dices.length > 0) {
         description += ` ${t('dice')}: ` + diceFormatter(shield.item.dice);
     }
     description += ' ' + shield.upgrades.map(u => u.name).join(', ');
@@ -150,4 +219,70 @@ function formatStat(current: number, base: number) {
         return current;
     }
     return `${current} (${base})`;
+}
+
+function ArmorAdditionPopover({slot}: { slot: EArmorSlot }) {
+    const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const [items] = fetchAllArmor();
+    const filtered = useMemo(() => items.filter(i => i.armorSlot === slot), [items, slot]);
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return (
+        <Popover position="bottom" withArrow shadow="md">
+            <Popover.Target>
+                <ActionIcon
+                    variant="subtle"
+                    size={TABLE_ROW_HEIGHT - 8}
+                    className="no-drag"
+                >
+                    <IconCirclePlus size={14}/>
+                </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <ItemSearchCard
+                    items={filtered}
+                    onSelect={item =>
+                        STACK_SERVICE.createArmor({item: item.item as Armor, stackSize: 1})
+                            .then(response => characterForm.setFieldValue(`equipment.armor.${slot}`, response.data))
+                    }
+                />
+            </Popover.Dropdown>
+        </Popover>
+    );
+}
+
+/** Popover to add a shield */
+export function ShieldAdditionPopover() {
+    const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const [items] = fetchAllShields();
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return (
+        <Popover position="bottom" withArrow shadow="md">
+            <Popover.Target>
+                <ActionIcon
+                    variant="subtle"
+                    size={TABLE_ROW_HEIGHT - 8}
+                    className="no-drag"
+                >
+                    <IconCirclePlus size={14}/>
+                </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <ItemSearchCard
+                    items={items}
+                    onSelect={item =>
+                        STACK_SERVICE.createShield({item: item.item as Shield, stackSize: 1})
+                            .then(response => characterForm.setFieldValue('equipment.shieldEquipment', response.data))
+                    }
+                />
+            </Popover.Dropdown>
+        </Popover>
+    );
 }

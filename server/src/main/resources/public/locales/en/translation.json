@@ -102,5 +102,7 @@
   "coins": "Coins",
   "saveAs": "Save As...",
   "unsavedChangesTitle": "Unsaved Changes",
-  "unsavedChangesDescription": "You have unsaved changes. Are you sure you want to leave?"
+  "unsavedChangesDescription": "You have unsaved changes. Are you sure you want to leave?",
+  "showMore": "Show more...",
+  "showLess": "Show less..."
 }

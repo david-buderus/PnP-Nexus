@@ -321,6 +321,177 @@
         ]
       }
     },
+    "/api/itemstack": {
+      "post": {
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemStackRequestObject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ItemStackItem"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ArmorEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Equipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ShieldEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/WeaponEquipment"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Creates the matching item stack for the given item",
+        "tags": [
+          "item-stack-service"
+        ]
+      }
+    },
+    "/api/itemstack/armor": {
+      "post": {
+        "operationId": "createArmor",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemStackRequestArmor"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArmorEquipment"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Creates the matching item stack for the given item",
+        "tags": [
+          "item-stack-service"
+        ]
+      }
+    },
+    "/api/itemstack/jewellery": {
+      "post": {
+        "operationId": "createJewellery",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemStackRequestJewellery"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EquipmentJewellery"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Creates the matching item stack for the given item",
+        "tags": [
+          "item-stack-service"
+        ]
+      }
+    },
+    "/api/itemstack/shield": {
+      "post": {
+        "operationId": "createShield",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemStackRequestShield"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShieldEquipment"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Creates the matching item stack for the given item",
+        "tags": [
+          "item-stack-service"
+        ]
+      }
+    },
+    "/api/itemstack/weapon": {
+      "post": {
+        "operationId": "createWeapon",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemStackRequestWeapon"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeaponEquipment"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Creates the matching item stack for the given item",
+        "tags": [
+          "item-stack-service"
+        ]
+      }
+    },
     "/api/universes": {
       "get": {
         "operationId": "getAllUniverses",
@@ -5939,6 +6110,81 @@
         "properties": {
           "item": {
             "$ref": "#/components/schemas/Item"
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "ItemStackRequestArmor": {
+        "required": [
+          "item"
+        ],
+        "type": "object",
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Armor"
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "ItemStackRequestJewellery": {
+        "required": [
+          "item"
+        ],
+        "type": "object",
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Jewellery"
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "ItemStackRequestObject": {
+        "required": [
+          "item"
+        ],
+        "type": "object",
+        "properties": {
+          "item": {
+            "type": "object"
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "ItemStackRequestShield": {
+        "required": [
+          "item"
+        ],
+        "type": "object",
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Shield"
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
+      "ItemStackRequestWeapon": {
+        "required": [
+          "item"
+        ],
+        "type": "object",
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Weapon"
           },
           "stackSize": {
             "type": "number",

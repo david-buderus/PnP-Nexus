@@ -583,6 +583,12 @@ export interface CraftingRecipe {
 export type CraftingRecipeMaterialsInner = CharacterResourceUsage | ItemUsage | MaterialUsage;
 
 /**
+ * @type Create200Response
+ * @export
+ */
+export type Create200Response = ArmorEquipment | Equipment | ItemStackItem | ShieldEquipment | WeaponEquipment;
+
+/**
  * 
  * @export
  * @interface CurrencyCalculationEntry
@@ -1015,10 +1021,10 @@ export interface IEquipableItem {
 export interface Inventory {
     /**
      * 
-     * @type {Array<InventoryItemsInner>}
+     * @type {Array<Create200Response>}
      * @memberof Inventory
      */
-    'items'?: Array<InventoryItemsInner>;
+    'items'?: Array<Create200Response>;
     /**
      * 
      * @type {number}
@@ -1051,12 +1057,6 @@ export interface InventoryAddRequest {
      */
     'item': Item;
 }
-/**
- * @type InventoryItemsInner
- * @export
- */
-export type InventoryItemsInner = ArmorEquipment | Equipment | ItemStackItem | ShieldEquipment | WeaponEquipment;
-
 /**
  * 
  * @export
@@ -1217,6 +1217,101 @@ export interface ItemStackItem {
      * 
      * @type {number}
      * @memberof ItemStackItem
+     */
+    'stackSize'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ItemStackRequestArmor
+ */
+export interface ItemStackRequestArmor {
+    /**
+     * 
+     * @type {Armor}
+     * @memberof ItemStackRequestArmor
+     */
+    'item': Armor;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackRequestArmor
+     */
+    'stackSize'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ItemStackRequestJewellery
+ */
+export interface ItemStackRequestJewellery {
+    /**
+     * 
+     * @type {Jewellery}
+     * @memberof ItemStackRequestJewellery
+     */
+    'item': Jewellery;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackRequestJewellery
+     */
+    'stackSize'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ItemStackRequestObject
+ */
+export interface ItemStackRequestObject {
+    /**
+     * 
+     * @type {object}
+     * @memberof ItemStackRequestObject
+     */
+    'item': object;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackRequestObject
+     */
+    'stackSize'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ItemStackRequestShield
+ */
+export interface ItemStackRequestShield {
+    /**
+     * 
+     * @type {Shield}
+     * @memberof ItemStackRequestShield
+     */
+    'item': Shield;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackRequestShield
+     */
+    'stackSize'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ItemStackRequestWeapon
+ */
+export interface ItemStackRequestWeapon {
+    /**
+     * 
+     * @type {Weapon}
+     * @memberof ItemStackRequestWeapon
+     */
+    'item': Weapon;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackRequestWeapon
      */
     'stackSize'?: number;
 }
@@ -5025,6 +5120,400 @@ export class ItemServiceApi extends BaseAPI {
      */
     public updateItem(universe: string, id: string, item: Item, options?: RawAxiosRequestConfig) {
         return ItemServiceApiFp(this.configuration).updateItem(universe, id, item, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ItemStackServiceApi - axios parameter creator
+ * @export
+ */
+export const ItemStackServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestObject} itemStackRequestObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        create: async (itemStackRequestObject: ItemStackRequestObject, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemStackRequestObject' is not null or undefined
+            assertParamExists('create', 'itemStackRequestObject', itemStackRequestObject)
+            const localVarPath = `/api/itemstack`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemStackRequestObject, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestArmor} itemStackRequestArmor 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createArmor: async (itemStackRequestArmor: ItemStackRequestArmor, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemStackRequestArmor' is not null or undefined
+            assertParamExists('createArmor', 'itemStackRequestArmor', itemStackRequestArmor)
+            const localVarPath = `/api/itemstack/armor`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemStackRequestArmor, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestJewellery} itemStackRequestJewellery 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createJewellery: async (itemStackRequestJewellery: ItemStackRequestJewellery, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemStackRequestJewellery' is not null or undefined
+            assertParamExists('createJewellery', 'itemStackRequestJewellery', itemStackRequestJewellery)
+            const localVarPath = `/api/itemstack/jewellery`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemStackRequestJewellery, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestShield} itemStackRequestShield 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createShield: async (itemStackRequestShield: ItemStackRequestShield, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemStackRequestShield' is not null or undefined
+            assertParamExists('createShield', 'itemStackRequestShield', itemStackRequestShield)
+            const localVarPath = `/api/itemstack/shield`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemStackRequestShield, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestWeapon} itemStackRequestWeapon 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWeapon: async (itemStackRequestWeapon: ItemStackRequestWeapon, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'itemStackRequestWeapon' is not null or undefined
+            assertParamExists('createWeapon', 'itemStackRequestWeapon', itemStackRequestWeapon)
+            const localVarPath = `/api/itemstack/weapon`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(itemStackRequestWeapon, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ItemStackServiceApi - functional programming interface
+ * @export
+ */
+export const ItemStackServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ItemStackServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestObject} itemStackRequestObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async create(itemStackRequestObject: ItemStackRequestObject, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Create200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.create(itemStackRequestObject, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ItemStackServiceApi.create']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestArmor} itemStackRequestArmor 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createArmor(itemStackRequestArmor: ItemStackRequestArmor, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ArmorEquipment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createArmor(itemStackRequestArmor, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ItemStackServiceApi.createArmor']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestJewellery} itemStackRequestJewellery 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createJewellery(itemStackRequestJewellery: ItemStackRequestJewellery, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EquipmentJewellery>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createJewellery(itemStackRequestJewellery, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ItemStackServiceApi.createJewellery']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestShield} itemStackRequestShield 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createShield(itemStackRequestShield: ItemStackRequestShield, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ShieldEquipment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createShield(itemStackRequestShield, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ItemStackServiceApi.createShield']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestWeapon} itemStackRequestWeapon 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createWeapon(itemStackRequestWeapon: ItemStackRequestWeapon, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<WeaponEquipment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createWeapon(itemStackRequestWeapon, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ItemStackServiceApi.createWeapon']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ItemStackServiceApi - factory interface
+ * @export
+ */
+export const ItemStackServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ItemStackServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestObject} itemStackRequestObject 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        create(itemStackRequestObject: ItemStackRequestObject, options?: RawAxiosRequestConfig): AxiosPromise<Create200Response> {
+            return localVarFp.create(itemStackRequestObject, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestArmor} itemStackRequestArmor 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createArmor(itemStackRequestArmor: ItemStackRequestArmor, options?: RawAxiosRequestConfig): AxiosPromise<ArmorEquipment> {
+            return localVarFp.createArmor(itemStackRequestArmor, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestJewellery} itemStackRequestJewellery 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createJewellery(itemStackRequestJewellery: ItemStackRequestJewellery, options?: RawAxiosRequestConfig): AxiosPromise<EquipmentJewellery> {
+            return localVarFp.createJewellery(itemStackRequestJewellery, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestShield} itemStackRequestShield 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createShield(itemStackRequestShield: ItemStackRequestShield, options?: RawAxiosRequestConfig): AxiosPromise<ShieldEquipment> {
+            return localVarFp.createShield(itemStackRequestShield, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Creates the matching item stack for the given item
+         * @param {ItemStackRequestWeapon} itemStackRequestWeapon 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createWeapon(itemStackRequestWeapon: ItemStackRequestWeapon, options?: RawAxiosRequestConfig): AxiosPromise<WeaponEquipment> {
+            return localVarFp.createWeapon(itemStackRequestWeapon, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ItemStackServiceApi - object-oriented interface
+ * @export
+ * @class ItemStackServiceApi
+ * @extends {BaseAPI}
+ */
+export class ItemStackServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Creates the matching item stack for the given item
+     * @param {ItemStackRequestObject} itemStackRequestObject 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemStackServiceApi
+     */
+    public create(itemStackRequestObject: ItemStackRequestObject, options?: RawAxiosRequestConfig) {
+        return ItemStackServiceApiFp(this.configuration).create(itemStackRequestObject, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates the matching item stack for the given item
+     * @param {ItemStackRequestArmor} itemStackRequestArmor 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemStackServiceApi
+     */
+    public createArmor(itemStackRequestArmor: ItemStackRequestArmor, options?: RawAxiosRequestConfig) {
+        return ItemStackServiceApiFp(this.configuration).createArmor(itemStackRequestArmor, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates the matching item stack for the given item
+     * @param {ItemStackRequestJewellery} itemStackRequestJewellery 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemStackServiceApi
+     */
+    public createJewellery(itemStackRequestJewellery: ItemStackRequestJewellery, options?: RawAxiosRequestConfig) {
+        return ItemStackServiceApiFp(this.configuration).createJewellery(itemStackRequestJewellery, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates the matching item stack for the given item
+     * @param {ItemStackRequestShield} itemStackRequestShield 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemStackServiceApi
+     */
+    public createShield(itemStackRequestShield: ItemStackRequestShield, options?: RawAxiosRequestConfig) {
+        return ItemStackServiceApiFp(this.configuration).createShield(itemStackRequestShield, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Creates the matching item stack for the given item
+     * @param {ItemStackRequestWeapon} itemStackRequestWeapon 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ItemStackServiceApi
+     */
+    public createWeapon(itemStackRequestWeapon: ItemStackRequestWeapon, options?: RawAxiosRequestConfig) {
+        return ItemStackServiceApiFp(this.configuration).createWeapon(itemStackRequestWeapon, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

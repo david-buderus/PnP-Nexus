@@ -1,13 +1,20 @@
-import {NumberInput, Stack, Switch, Table} from '@mantine/core';
+import {ActionIcon, Group, NumberInput, Popover, Stack, Switch, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {diceFormatter} from '../../../../utils/Formatters';
-import {ShieldEquipment} from '../../../../../api';
+import {ItemStackServiceApi, ShieldEquipment, Weapon, WeaponEquipment} from '../../../../../api';
 import {useUniverseContext} from '../../../../PageBase';
 import {PageElementSettings} from '../PageElementSettings';
+import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
+import {fetchAllWeapons} from '../../../../Database';
+import {ItemSearchCard} from '../../../../items/ItemSearchCard';
+import {ItemStackCardModal} from '../../../../items/ItemStackCard';
+import {API_CONFIGURATION} from '../../../../Constants';
+import {ShieldAdditionPopover} from './ArmorSlots';
 
+const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
 /** Shows weapons of the character */
 export function WeaponList({
@@ -22,7 +29,7 @@ export function WeaponList({
     setWithShield: (b: boolean) => void;
 }) {
     const {t} = useTranslation();
-    const {characterForm} = useContext(PnPCharacterContext);
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
 
     const weapons = useMemo(() => {
@@ -32,6 +39,8 @@ export function WeaponList({
         return w;
     }, [character.equipment, numberOfHandheld]);
     const shield = character?.equipment.shieldEquipment;
+
+    const [lastClicked, setLastClicked] = useState<WeaponEquipment | ShieldEquipment>(null);
 
     return <>
         <Table
@@ -59,7 +68,11 @@ export function WeaponList({
                                 <Table.Td style={TABLE_STYLE}></Table.Td>
                                 <Table.Td style={TABLE_STYLE}></Table.Td>
                                 <Table.Td style={TABLE_STYLE}></Table.Td>
-                                <Table.Td style={TABLE_STYLE}></Table.Td>
+                                <Table.Td style={TABLE_STYLE}>
+                                    <Group justify="flex-end">
+                                        <WeaponAdditionPopover/>
+                                    </Group>
+                                </Table.Td>
                             </Table.Tr>,
                             <Table.Tr key={index + '-upgrades'} h={TABLE_ROW_HEIGHT}>
                                 <Table.Td style={TABLE_STYLE} colSpan={7}/>
@@ -68,15 +81,42 @@ export function WeaponList({
                     }
 
                     return [
-                        <Table.Tr key={index + '-stats'} h={TABLE_ROW_HEIGHT}>
+                        <Table.Tr
+                            key={index + '-stats'}
+                            h={TABLE_ROW_HEIGHT}
+                            onClick={allowEdit ? () => setLastClicked(weapon) : null}
+                        >
                             <Table.Td style={TABLE_STYLE}>{weapon.item.name}</Table.Td>
                             <Table.Td style={TABLE_STYLE}>{weapon.item.tags.join(', ')}</Table.Td>
-                            <Table.Td
-                                style={TABLE_STYLE}>{formatStat(weapon.initiative, weapon.item.initiative)}</Table.Td>
+                            <Table.Td style={TABLE_STYLE}>
+                                {formatStat(weapon.initiative, weapon.item.initiative)}
+                            </Table.Td>
                             <Table.Td style={TABLE_STYLE}>{formatStat(weapon.hit, weapon.item.hit)}</Table.Td>
                             <Table.Td style={TABLE_STYLE}>{diceFormatter(weapon.item.dice)}</Table.Td>
                             <Table.Td style={TABLE_STYLE}>{formatStat(weapon.damage, weapon.item.damage)}</Table.Td>
-                            <Table.Td style={TABLE_STYLE}>{weapon.item.effect}</Table.Td>
+                            <Table.Td style={TABLE_STYLE}>
+                                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                                    <Text
+                                        size={TABLE_STYLE.fontSize}
+                                        truncate="end"
+                                        style={{flex: 1, minWidth: 0}}
+                                    >
+                                        {weapon.item.effects.map(e => e.description).join(',')}
+                                    </Text>
+                                    <ActionIcon
+                                        variant="subtle"
+                                        size={TABLE_ROW_HEIGHT - 8}
+                                        className="no-drag"
+                                        style={{flexShrink: 0}}
+                                        onClick={e => {
+                                            characterForm.removeListItem('equipment.weaponEquipments', index);
+                                            e.stopPropagation();
+                                        }}
+                                    >
+                                        <IconCircleMinus color="red" size={14}/>
+                                    </ActionIcon>
+                                </Group>
+                            </Table.Td>
                         </Table.Tr>,
                         <Table.Tr key={index + '-upgrades'} h={TABLE_ROW_HEIGHT}>
                             <Table.Td colSpan={7} style={TABLE_STYLE}>
@@ -95,7 +135,30 @@ export function WeaponList({
                             <Table.Td style={TABLE_STYLE}>{formatStat(shield?.hit, shield?.item.hit)}</Table.Td>
                             <Table.Td style={TABLE_STYLE}>{diceFormatter(shield?.item.dice)}</Table.Td>
                             <Table.Td style={TABLE_STYLE}>{formatStat(shield?.armor, shield?.item.armor)}</Table.Td>
-                            <Table.Td style={TABLE_STYLE}>{shield?.item.effect ?? ''}</Table.Td>
+                            <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                                <Text
+                                    size={TABLE_STYLE.fontSize}
+                                    truncate="end"
+                                    style={{flex: 1, minWidth: 0}}
+                                >
+                                    {shield?.item.effects.map(e => e.description).join(',') ?? ''}
+                                </Text>
+                                {shield ?
+                                    <ActionIcon
+                                        variant="subtle"
+                                        size={TABLE_ROW_HEIGHT - 8}
+                                        className="no-drag"
+                                        style={{flexShrink: 0}}
+                                        onClick={e => {
+                                            characterForm.setFieldValue('equipment.shieldEquipment', null);
+                                            e.stopPropagation();
+                                        }}
+                                    >
+                                        <IconCircleMinus color="red" size={14}/>
+                                    </ActionIcon> :
+                                    <ShieldAdditionPopover/>
+                                }
+                            </Group>
                         </Table.Tr>
                         <ShieldExtraLine shield={shield}/>
                     </>
@@ -118,6 +181,7 @@ export function WeaponList({
                 />
             </Stack>
         </PageElementSettings>
+        <ItemStackCardModal stack={lastClicked} onClose={() => setLastClicked(null)}/>
     </>;
 }
 
@@ -152,4 +216,36 @@ function formatStat(current: number, base: number) {
         return current;
     }
     return `${current} (${base})`;
+}
+
+function WeaponAdditionPopover() {
+    const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const [items] = fetchAllWeapons();
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return (
+        <Popover position="bottom" withArrow shadow="md">
+            <Popover.Target>
+                <ActionIcon
+                    variant="subtle"
+                    size={TABLE_ROW_HEIGHT - 8}
+                    className="no-drag"
+                >
+                    <IconCirclePlus size={14}/>
+                </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <ItemSearchCard
+                    items={items}
+                    onSelect={item =>
+                        STACK_SERVICE.createWeapon({item: item.item as Weapon, stackSize: 1})
+                            .then(response => characterForm.insertListItem('equipment.weaponEquipments', response.data))
+                    }
+                />
+            </Popover.Dropdown>
+        </Popover>
+    );
 }

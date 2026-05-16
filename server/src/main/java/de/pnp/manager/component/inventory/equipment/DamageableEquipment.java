@@ -1,6 +1,8 @@
 package de.pnp.manager.component.inventory.equipment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Objects;
+import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IDamageableEquipment;
 import de.pnp.manager.component.item.interfaces.IDamageableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
@@ -43,4 +45,13 @@ public abstract class DamageableEquipment<I extends IDamageableItem & IEquipable
      * Returns the maximal durability.
      */
     public abstract int getMaxDurability();
+
+
+    @Override
+    public boolean canStack(ItemStack<?> other) {
+        if (!super.canStack(other)) {
+            return false;
+        }
+        return Objects.equal(wear, ((DamageableEquipment<?>) other).wear);
+    }
 }

@@ -11,3 +11,12 @@ export async function addItemToInventory(inventory: Inventory, item: SomeItem, a
         amount: amount,
     }).then(response => response.data);
 }
+
+/** Removes an item from the inventory */
+export async function removeItemFromInventory(inventory: Inventory, item: SomeItem, amount: number): Promise<Inventory> {
+    return INVENTORY_SERVICE.remove({
+        inventory: inventory,
+        item: item,
+        amount: amount,
+    }).then(response => response.data);
+}
