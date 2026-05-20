@@ -16,6 +16,7 @@ import TagRequirementsInput from '../../../components/input/TagRequirementsInput
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
 import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
+import {UpgradeCardModal} from '../../../components/items/UpgradeCard';
 
 const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
 
@@ -73,6 +74,7 @@ export function UpgradeOverview() {
         deletionDialogTitle={t('upgrade:upgradeDeletionTitle')}
         onDelete={(universe, upgrades) => UPGRADE_API.deleteAllUpgrades(universe, upgrades.map(upgrade => upgrade.id))}
         idKey="id"
+        viewModal={(upgrade, onClose) => <UpgradeCardModal upgrade={upgrade} onClose={onClose}/>}
     />;
 }
 

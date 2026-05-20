@@ -95,6 +95,13 @@ public class Equipment<E extends IEquipableItem> extends ItemStack<E> implements
     }
 
     /**
+     * Removes an {@link Upgrade} from the equipment.
+     */
+    public void removeUpgrade(Upgrade upgrade) {
+        upgrades.remove(upgrade);
+    }
+
+    /**
      * Applies the effects of the {@link #upgrades} to the value.
      */
     protected int applyItemEffects(EItemEquipmentManipulator manipulator, int value) {

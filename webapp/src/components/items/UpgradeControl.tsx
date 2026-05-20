@@ -1,0 +1,117 @@
+import {Box, Card, Group, ScrollArea, Stack, Text, TextInput} from '@mantine/core';
+import {useTranslation} from 'react-i18next';
+import React, {useMemo, useState} from 'react';
+import {fetchAllUpgrades} from '../Database';
+import {SomeEquipment} from '../Constants';
+import {UpgradeCard} from './UpgradeCard';
+import {Upgrade} from '../../api';
+import {removeUpgradeFromEquipment, upgradeEquipment} from '../utils/InventoryUtils';
+import {IconCheck} from '@tabler/icons-react';
+
+/**
+ * Form to control upgrades on equipment.
+ */
+export function UpgradeControl<E extends SomeEquipment>({
+    equipment, onChange
+}: {
+    equipment: E;
+    onChange: (equipment: E) => void;
+}) {
+    const [upgrades] = fetchAllUpgrades();
+    const {t} = useTranslation();
+
+    const [filterValue, setFilterValue] = useState('');
+
+    const sortedUpgrades = useMemo(() =>
+            equipment.upgrades.map(u => ({used: true, upgrade: u})).concat(upgrades
+                .filter(upgrade => upgrade.name.toLowerCase().includes(filterValue.toLowerCase()))
+                .filter(upgrade => !equipment.upgrades.map(u => u.id).includes(upgrade.id))
+                .map(u => ({used: false, upgrade: u}))),
+        [filterValue, upgrades, equipment]);
+
+    function onClick(upgrade: Upgrade, used: boolean) {
+        if (used) {
+            removeUpgradeFromEquipment(equipment, upgrade).then(onChange);
+        } else {
+            upgradeEquipment(equipment, upgrade).then(onChange);
+        }
+    }
+
+    return <Card miw={1264}>
+        <Stack>
+            <Group justify="space-between">
+                <TextInput
+                    label={t('search')}
+                    value={filterValue}
+                    onChange={(e) => setFilterValue(e.target.value)}
+                />
+                <Text>
+                    {t('upgradeSlots') + ': ' + equipment.remainingUpgradeSlots + '/' + equipment.upgradeSlots}
+                </Text>
+            </Group>
+            <ScrollArea.Autosize type="auto" mah={500}>
+                <Stack gap={1}>
+                    <Group mih={300} align="flex-start">
+                        {sortedUpgrades.slice(0, 3).map(u => <EquippedUpgradeCard
+                            key={u.upgrade.id}
+                            upgrade={u.upgrade}
+                            used={u.used}
+                            onClick={() => onClick(u.upgrade, u.used)}
+                            equipment={equipment}
+                        />)}
+                    </Group>
+                    {sortedUpgrades.length > 3 ?
+                        <Group mih={300} align="flex-start">
+                            {sortedUpgrades.slice(3, 6).map(u => <EquippedUpgradeCard
+                                key={u.upgrade.id}
+                                upgrade={u.upgrade}
+                                used={u.used}
+                                onClick={() => onClick(u.upgrade, u.used)}
+                                equipment={equipment}
+                            />)}
+                        </Group>
+                        : null
+                    }
+                    {sortedUpgrades.length > 6 ?
+                        <Group mih={300} align="flex-start">
+                            {sortedUpgrades.slice(6, 9).map(u => <EquippedUpgradeCard
+                                key={u.upgrade.id}
+                                upgrade={u.upgrade}
+                                used={u.used}
+                                onClick={() => onClick(u.upgrade, u.used)}
+                                equipment={equipment}
+                            />)}
+                        </Group>
+                        : null
+                    }
+                </Stack>
+            </ScrollArea.Autosize>
+        </Stack>
+    </Card>;
+}
+
+function EquippedUpgradeCard({
+    used, upgrade, onClick, equipment
+}: {
+    used: boolean;
+    upgrade: Upgrade;
+    onClick: () => void;
+    equipment: SomeEquipment;
+}) {
+    return <Box pos="relative">
+        <UpgradeCard
+            upgrade={upgrade}
+            onClick={onClick}
+            enoughSlots={used || upgrade.slots <= equipment.remainingUpgradeSlots}
+        />
+        {used ? <IconCheck
+            style={{
+                position: 'absolute',
+                bottom: 4,
+                right: 8,
+                zIndex: 1,
+            }}
+            color="green"
+        /> : null}
+    </Box>;
+}

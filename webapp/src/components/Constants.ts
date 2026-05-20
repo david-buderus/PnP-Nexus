@@ -26,6 +26,9 @@ export type ItemStack = ArmorEquipment | Equipment | ItemStackItem | ShieldEquip
 /** All item effect classes */
 export type SomeItemEffect = ItemEffect | EquipmentItemEffect;
 
+/** All equipment classes */
+export type SomeEquipment = ArmorEquipment | Equipment | ShieldEquipment | WeaponEquipment;
+
 /** The api configuration which should be used by all APIs */
 export const API_CONFIGURATION = new Configuration({
     basePath: window.location.origin

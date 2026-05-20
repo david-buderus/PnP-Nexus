@@ -10,6 +10,7 @@
   "simpleEffect": "Simple",
   "equipmentEffect": "Equipment",
   "upgradeManipulator": "Changes",
+  "slot": "Upgrade-Slot",
   "slots": "Upgrade-Slots",
   "damage": "Damage",
   "hit": "Hit",

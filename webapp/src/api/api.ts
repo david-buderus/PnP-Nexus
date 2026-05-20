@@ -2739,6 +2739,44 @@ export interface UpgradeRecipe {
 /**
  * 
  * @export
+ * @interface UpgradeRemovalRequestEquipment
+ */
+export interface UpgradeRemovalRequestEquipment {
+    /**
+     * 
+     * @type {Equipment}
+     * @memberof UpgradeRemovalRequestEquipment
+     */
+    'equipment': Equipment;
+    /**
+     * 
+     * @type {Upgrade}
+     * @memberof UpgradeRemovalRequestEquipment
+     */
+    'upgrade': Upgrade;
+}
+/**
+ * 
+ * @export
+ * @interface UpgradeRequestEquipment
+ */
+export interface UpgradeRequestEquipment {
+    /**
+     * 
+     * @type {Equipment}
+     * @memberof UpgradeRequestEquipment
+     */
+    'equipment': Equipment;
+    /**
+     * 
+     * @type {Upgrade}
+     * @memberof UpgradeRequestEquipment
+     */
+    'upgrade': Upgrade;
+}
+/**
+ * 
+ * @export
  * @interface UserDatabaseObjectPermissionDTO
  */
 export interface UserDatabaseObjectPermissionDTO {
@@ -12631,6 +12669,187 @@ export class UniverseSettingsServiceApi extends BaseAPI {
      */
     public updateItemSettings(universe: string, itemSettings: ItemSettings, options?: RawAxiosRequestConfig) {
         return UniverseSettingsServiceApiFp(this.configuration).updateItemSettings(universe, itemSettings, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * UpgradeItemServiceApi - axios parameter creator
+ * @export
+ */
+export const UpgradeItemServiceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Upgrades the given equipment
+         * @param {UpgradeRequestEquipment} upgradeRequestEquipment 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addUpgrade: async (upgradeRequestEquipment: UpgradeRequestEquipment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'upgradeRequestEquipment' is not null or undefined
+            assertParamExists('addUpgrade', 'upgradeRequestEquipment', upgradeRequestEquipment)
+            const localVarPath = `/api/upgrade-item/add`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRequestEquipment, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Remove an upgrades from the given equipment
+         * @param {UpgradeRemovalRequestEquipment} upgradeRemovalRequestEquipment 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUpgrade: async (upgradeRemovalRequestEquipment: UpgradeRemovalRequestEquipment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'upgradeRemovalRequestEquipment' is not null or undefined
+            assertParamExists('removeUpgrade', 'upgradeRemovalRequestEquipment', upgradeRemovalRequestEquipment)
+            const localVarPath = `/api/upgrade-item/remove`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRemovalRequestEquipment, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UpgradeItemServiceApi - functional programming interface
+ * @export
+ */
+export const UpgradeItemServiceApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UpgradeItemServiceApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Upgrades the given equipment
+         * @param {UpgradeRequestEquipment} upgradeRequestEquipment 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addUpgrade(upgradeRequestEquipment: UpgradeRequestEquipment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Equipment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addUpgrade(upgradeRequestEquipment, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UpgradeItemServiceApi.addUpgrade']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Remove an upgrades from the given equipment
+         * @param {UpgradeRemovalRequestEquipment} upgradeRemovalRequestEquipment 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeUpgrade(upgradeRemovalRequestEquipment: UpgradeRemovalRequestEquipment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Equipment>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeUpgrade(upgradeRemovalRequestEquipment, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UpgradeItemServiceApi.removeUpgrade']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * UpgradeItemServiceApi - factory interface
+ * @export
+ */
+export const UpgradeItemServiceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UpgradeItemServiceApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Upgrades the given equipment
+         * @param {UpgradeRequestEquipment} upgradeRequestEquipment 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addUpgrade(upgradeRequestEquipment: UpgradeRequestEquipment, options?: RawAxiosRequestConfig): AxiosPromise<Equipment> {
+            return localVarFp.addUpgrade(upgradeRequestEquipment, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Remove an upgrades from the given equipment
+         * @param {UpgradeRemovalRequestEquipment} upgradeRemovalRequestEquipment 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeUpgrade(upgradeRemovalRequestEquipment: UpgradeRemovalRequestEquipment, options?: RawAxiosRequestConfig): AxiosPromise<Equipment> {
+            return localVarFp.removeUpgrade(upgradeRemovalRequestEquipment, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UpgradeItemServiceApi - object-oriented interface
+ * @export
+ * @class UpgradeItemServiceApi
+ * @extends {BaseAPI}
+ */
+export class UpgradeItemServiceApi extends BaseAPI {
+    /**
+     * 
+     * @summary Upgrades the given equipment
+     * @param {UpgradeRequestEquipment} upgradeRequestEquipment 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeItemServiceApi
+     */
+    public addUpgrade(upgradeRequestEquipment: UpgradeRequestEquipment, options?: RawAxiosRequestConfig) {
+        return UpgradeItemServiceApiFp(this.configuration).addUpgrade(upgradeRequestEquipment, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Remove an upgrades from the given equipment
+     * @param {UpgradeRemovalRequestEquipment} upgradeRemovalRequestEquipment 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof UpgradeItemServiceApi
+     */
+    public removeUpgrade(upgradeRemovalRequestEquipment: UpgradeRemovalRequestEquipment, options?: RawAxiosRequestConfig) {
+        return UpgradeItemServiceApiFp(this.configuration).removeUpgrade(upgradeRemovalRequestEquipment, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

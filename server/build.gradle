@@ -89,6 +89,24 @@ openApiGenerate {
     typeMappings.set(Map.of("set", "Array"))
 }
 
+tasks.register('generateAllOpenApi') {
+    group = 'openapi'
+    description = 'Forces regeneration of OpenAPI docs and generates the client/server code.'
+
+    dependsOn 'generateOpenApiDocs'
+    dependsOn 'openApiGenerate'
+}
+
+project.afterEvaluate {
+    tasks.named('openApiGenerate').configure {
+        mustRunAfter 'generateOpenApiDocs'
+    }
+
+    tasks.named('generateOpenApiDocs').configure {
+        outputs.upToDateWhen { false }
+    }
+}
+
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 tasks.register("generateJavaClient", GenerateTask) {

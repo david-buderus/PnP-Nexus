@@ -1,4 +1,4 @@
-package de.pnp.manager.server.service.character;
+package de.pnp.manager.server.service.item;
 
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;

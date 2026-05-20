@@ -11,8 +11,10 @@ import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {fetchAllWeapons} from '../../../../Database';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
-import {API_CONFIGURATION} from '../../../../Constants';
+import {API_CONFIGURATION, SomeEquipment} from '../../../../Constants';
 import {ShieldAdditionPopover} from './ArmorSlots';
+import {GiMagicAxe} from 'react-icons/gi';
+import {UpgradeControl} from '../../../../items/UpgradeControl';
 
 const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
@@ -103,18 +105,29 @@ export function WeaponList({
                                     >
                                         {weapon.item.effects.map(e => e.description).join(',')}
                                     </Text>
-                                    <ActionIcon
-                                        variant="subtle"
-                                        size={TABLE_ROW_HEIGHT - 8}
-                                        className="no-drag"
+                                    <Group
+                                        wrap="nowrap"
+                                        gap={1}
                                         style={{flexShrink: 0}}
-                                        onClick={e => {
-                                            characterForm.removeListItem('equipment.weaponEquipments', index);
-                                            e.stopPropagation();
-                                        }}
+                                        onClick={e => e.stopPropagation()}
                                     >
-                                        <IconCircleMinus color="red" size={14}/>
-                                    </ActionIcon>
+                                        <UpgradePopover
+                                            equipment={weapon}
+                                            onChange={w => characterForm.replaceListItem('equipment.weaponEquipments', index, w)}
+                                        />
+                                        <ActionIcon
+                                            variant="subtle"
+                                            size={TABLE_ROW_HEIGHT - 8}
+                                            className="no-drag"
+                                            style={{flexShrink: 0}}
+                                            onClick={e => {
+                                                characterForm.removeListItem('equipment.weaponEquipments', index);
+                                                e.stopPropagation();
+                                            }}
+                                        >
+                                            <IconCircleMinus color="red" size={14}/>
+                                        </ActionIcon>
+                                    </Group>
                                 </Group>
                             </Table.Td>
                         </Table.Tr>,
@@ -245,6 +258,40 @@ function WeaponAdditionPopover() {
                             .then(response => characterForm.insertListItem('equipment.weaponEquipments', response.data))
                     }
                 />
+            </Popover.Dropdown>
+        </Popover>
+    );
+}
+
+function UpgradePopover<E extends SomeEquipment>({
+    equipment, onChange
+}: {
+    equipment: E;
+    onChange: (equipment: E) => void;
+}) {
+    const {allowEdit} = useContext(PnPCharacterContext);
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return (
+        <Popover
+            position="bottom"
+            withArrow
+            shadow="md"
+        >
+            <Popover.Target>
+                <ActionIcon
+                    variant="subtle"
+                    size={TABLE_ROW_HEIGHT - 8}
+                    className="no-drag"
+                >
+                    <GiMagicAxe size={14}/>
+                </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <UpgradeControl equipment={equipment} onChange={onChange}/>
             </Popover.Dropdown>
         </Popover>
     );

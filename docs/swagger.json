@@ -740,6 +740,68 @@
         ]
       }
     },
+    "/api/upgrade-item/add": {
+      "post": {
+        "operationId": "addUpgrade",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpgradeRequestEquipment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Upgrades the given equipment",
+        "tags": [
+          "upgrade-item-service"
+        ]
+      }
+    },
+    "/api/upgrade-item/remove": {
+      "post": {
+        "operationId": "removeUpgrade",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpgradeRemovalRequestEquipment"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Remove an upgrades from the given equipment",
+        "tags": [
+          "upgrade-item-service"
+        ]
+      }
+    },
     "/api/users": {
       "delete": {
         "operationId": "removeUsers",
@@ -7490,6 +7552,36 @@
           },
           "requirement": {
             "type": "string"
+          },
+          "upgrade": {
+            "$ref": "#/components/schemas/Upgrade"
+          }
+        }
+      },
+      "UpgradeRemovalRequestEquipment": {
+        "required": [
+          "equipment",
+          "upgrade"
+        ],
+        "type": "object",
+        "properties": {
+          "equipment": {
+            "$ref": "#/components/schemas/Equipment"
+          },
+          "upgrade": {
+            "$ref": "#/components/schemas/Upgrade"
+          }
+        }
+      },
+      "UpgradeRequestEquipment": {
+        "required": [
+          "equipment",
+          "upgrade"
+        ],
+        "type": "object",
+        "properties": {
+          "equipment": {
+            "$ref": "#/components/schemas/Equipment"
           },
           "upgrade": {
             "$ref": "#/components/schemas/Upgrade"

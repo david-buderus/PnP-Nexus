@@ -1,9 +1,10 @@
-import {Badge, Box, Card, Divider, Grid, Group, List, Modal, Progress, Stack, Text} from '@mantine/core';
+import {Badge, Box, Card, Divider, Grid, Group, HoverCard, List, Modal, Progress, Stack, Text} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
 import {currencyFormatter, diceFormatter, getRarityColor} from '../utils/Formatters';
 import {useUniverseContext} from '../PageBase';
 import {ArmorEquipment, Equipment, ItemStackItem, ShieldEquipment, WeaponEquipment} from '../../api';
 import {ItemStack} from '../Constants';
+import {UpgradeCard} from './UpgradeCard';
 
 type ItemStackCombination =
     ItemStackItem
@@ -109,7 +110,14 @@ export function ItemStackCard({
                     </Text>
                     <Group gap={4}>
                         {combItemStack.upgrades.map((u, i) => (
-                            <Badge key={i} size="xs" variant="dot" color="blue">{u.name}</Badge>
+                            <HoverCard key={i}>
+                                <HoverCard.Target>
+                                    <Badge size="xs" variant="dot" color="blue">{u.name}</Badge>
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown p={0}>
+                                    <UpgradeCard upgrade={u}/>
+                                </HoverCard.Dropdown>
+                            </HoverCard>
                         ))}
                     </Group>
                 </Box>
