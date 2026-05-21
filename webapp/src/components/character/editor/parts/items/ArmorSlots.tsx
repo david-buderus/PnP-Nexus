@@ -15,6 +15,7 @@ import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {API_CONFIGURATION} from '../../../../Constants';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
+import {UpgradePopover} from '../../../../items/UpgradeControl';
 
 const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
@@ -157,18 +158,29 @@ function ArmorSlot({slot, setLastClicked}: {
                         {armor?.item.effects.map(e => e.description).join(',') ?? ''}
                     </Text>
                     {armor ?
-                        <ActionIcon
-                            variant="subtle"
-                            size={TABLE_ROW_HEIGHT - 8}
-                            className="no-drag"
+
+                        <Group
+                            wrap="nowrap"
+                            gap={1}
                             style={{flexShrink: 0}}
-                            onClick={e => {
-                                characterForm.setFieldValue(`equipment.armor.${slot}`, null);
-                                e.stopPropagation();
-                            }}
+                            onClick={e => e.stopPropagation()}
                         >
-                            <IconCircleMinus color="red" size={14}/>
-                        </ActionIcon> :
+                            <UpgradePopover
+                                equipment={armor}
+                                onChange={a => characterForm.setFieldValue(`equipment.armor.${slot}`, a)}
+                            />
+                            <ActionIcon
+                                variant="subtle"
+                                size={TABLE_ROW_HEIGHT - 8}
+                                className="no-drag"
+                                style={{flexShrink: 0}}
+                                onClick={e => {
+                                    characterForm.setFieldValue(`equipment.armor.${slot}`, null);
+                                }}
+                            >
+                                <IconCircleMinus color="red" size={14}/>
+                            </ActionIcon>
+                        </Group> :
                         <ArmorAdditionPopover slot={slot}/>
                     }
                 </Group>

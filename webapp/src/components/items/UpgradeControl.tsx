@@ -1,17 +1,55 @@
-import {Box, Card, Group, ScrollArea, Stack, Text, TextInput} from '@mantine/core';
+import {ActionIcon, Box, Card, Group, Popover, ScrollArea, Stack, Text, TextInput} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
-import React, {useMemo, useState} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {fetchAllUpgrades} from '../Database';
 import {SomeEquipment} from '../Constants';
 import {UpgradeCard} from './UpgradeCard';
 import {Upgrade} from '../../api';
 import {removeUpgradeFromEquipment, upgradeEquipment} from '../utils/InventoryUtils';
 import {IconCheck} from '@tabler/icons-react';
+import {PnPCharacterContext} from '../character/PnPCharacterContext';
+import {TABLE_ROW_HEIGHT} from '../character/editor/parts/Constants';
+import {GiMagicAxe} from 'react-icons/gi';
+
 
 /**
- * Form to control upgrades on equipment.
+ * Popover to control upgrades on equipment.
  */
-export function UpgradeControl<E extends SomeEquipment>({
+export function UpgradePopover<E extends SomeEquipment>({
+    equipment, onChange
+}: {
+    equipment: E;
+    onChange: (equipment: E) => void;
+}) {
+    const {allowEdit} = useContext(PnPCharacterContext);
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return (
+        <Popover
+            position="bottom"
+            withArrow
+            shadow="md"
+        >
+            <Popover.Target>
+                <ActionIcon
+                    variant="subtle"
+                    size={TABLE_ROW_HEIGHT - 8}
+                    className="no-drag"
+                >
+                    <GiMagicAxe size={14}/>
+                </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <UpgradeControl equipment={equipment} onChange={onChange}/>
+            </Popover.Dropdown>
+        </Popover>
+    );
+}
+
+function UpgradeControl<E extends SomeEquipment>({
     equipment, onChange
 }: {
     equipment: E;

@@ -11,10 +11,9 @@ import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {fetchAllWeapons} from '../../../../Database';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
-import {API_CONFIGURATION, SomeEquipment} from '../../../../Constants';
+import {API_CONFIGURATION} from '../../../../Constants';
 import {ShieldAdditionPopover} from './ArmorSlots';
-import {GiMagicAxe} from 'react-icons/gi';
-import {UpgradeControl} from '../../../../items/UpgradeControl';
+import {UpgradePopover} from '../../../../items/UpgradeControl';
 
 const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
@@ -263,36 +262,3 @@ function WeaponAdditionPopover() {
     );
 }
 
-function UpgradePopover<E extends SomeEquipment>({
-    equipment, onChange
-}: {
-    equipment: E;
-    onChange: (equipment: E) => void;
-}) {
-    const {allowEdit} = useContext(PnPCharacterContext);
-
-    if (!allowEdit) {
-        return null;
-    }
-
-    return (
-        <Popover
-            position="bottom"
-            withArrow
-            shadow="md"
-        >
-            <Popover.Target>
-                <ActionIcon
-                    variant="subtle"
-                    size={TABLE_ROW_HEIGHT - 8}
-                    className="no-drag"
-                >
-                    <GiMagicAxe size={14}/>
-                </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown>
-                <UpgradeControl equipment={equipment} onChange={onChange}/>
-            </Popover.Dropdown>
-        </Popover>
-    );
-}

@@ -1,15 +1,17 @@
 import {ActionIcon, Group, NumberInput, Popover, Stack, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {ItemStackServiceApi, Jewellery, JewelleryDefinition} from '../../../../../api';
+import {EquipmentJewellery, ItemStackServiceApi, Jewellery, JewelleryDefinition} from '../../../../../api';
 import {useUniverseContext} from '../../../../PageBase';
 import {PageElementSettings} from '../PageElementSettings';
 import {fetchAllJewllery} from '../../../../Database';
 import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {API_CONFIGURATION} from '../../../../Constants';
+import {UpgradePopover} from '../../../../items/UpgradeControl';
+import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 
 const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
@@ -69,7 +71,7 @@ function JewelleryLines({
     definition: JewelleryDefinition,
     numberOfJewellery: Record<string, number>
 }) {
-    const {characterForm} = useContext(PnPCharacterContext);
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
 
     const number = numberOfJewellery[definition.name];
@@ -81,6 +83,8 @@ function JewelleryLines({
         return w;
     }, [character.equipment, number]);
 
+    const [lastClicked, setLastClicked] = useState<EquipmentJewellery>(null);
+
     return <>
         {jewellery.map((j, index) => {
 
@@ -89,7 +93,11 @@ function JewelleryLines({
                 effect += ` ${j.remainingUpgradeSlots}/${j.upgradeSlots} ${j.upgrades.map(u => u.name).join(', ')}`;
             }
 
-            return <Table.Tr key={index} h={TABLE_ROW_HEIGHT}>
+            return <Table.Tr
+                key={index}
+                h={TABLE_ROW_HEIGHT}
+                onClick={allowEdit ? () => setLastClicked(j ?? null) : null}
+            >
                 <Table.Td style={TABLE_STYLE}>{definition.name + (number > 1 ? ` ${index + 1}` : '')}</Table.Td>
                 <Table.Td style={TABLE_STYLE}>{j?.item.name ?? ''}</Table.Td>
                 <Table.Td style={TABLE_STYLE}>
@@ -102,24 +110,32 @@ function JewelleryLines({
                             {effect}
                         </Text>
                         {j ?
-                            <ActionIcon
-                                variant="subtle"
-                                size={TABLE_ROW_HEIGHT - 8}
-                                className="no-drag"
+                            <Group
+                                wrap="nowrap"
+                                gap={1}
                                 style={{flexShrink: 0}}
-                                onClick={e => {
-                                    characterForm.removeListItem(`equipment.jewellery.${definition.name}`, index);
-                                    e.stopPropagation();
-                                }}
+                                onClick={e => e.stopPropagation()}
                             >
-                                <IconCircleMinus color="red" size={14}/>
-                            </ActionIcon> :
+                                <UpgradePopover
+                                    equipment={j}
+                                    onChange={e => characterForm.replaceListItem(`equipment.jewellery.${definition.name}`, index, e)}
+                                />
+                                <ActionIcon
+                                    variant="subtle"
+                                    size={TABLE_ROW_HEIGHT - 8}
+                                    className="no-drag"
+                                    onClick={() => characterForm.removeListItem(`equipment.jewellery.${definition.name}`, index)}
+                                >
+                                    <IconCircleMinus color="red" size={14}/>
+                                </ActionIcon>
+                            </Group> :
                             <JewelleryAdditionPopover name={definition.name} tag={definition.tag}/>
                         }
                     </Group>
                 </Table.Td>
             </Table.Tr>;
         })}
+        <ItemStackCardModal stack={lastClicked} onClose={() => setLastClicked(null)}/>
     </>;
 }
 
