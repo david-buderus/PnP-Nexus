@@ -364,16 +364,16 @@ export interface CharacterEquipment {
     'jewellery': { [key: string]: Array<EquipmentJewellery>; };
     /**
      * 
-     * @type {ShieldEquipment}
+     * @type {Array<ShieldEquipment>}
      * @memberof CharacterEquipment
      */
-    'shieldEquipment': ShieldEquipment;
+    'shields': Array<ShieldEquipment>;
     /**
      * 
      * @type {Array<WeaponEquipment>}
      * @memberof CharacterEquipment
      */
-    'weaponEquipments': Array<WeaponEquipment>;
+    'weapons': Array<WeaponEquipment>;
 }
 /**
  * 

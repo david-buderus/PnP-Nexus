@@ -120,8 +120,8 @@ export function Toolbox({
                             unselectable="on"
                             onDragStart={createDragFunction({
                                 type: 'WEAPON_LIST',
-                                numberOfHandheld: equipmentSettings?.numberOfHandheld ?? 2,
-                                withShield: false
+                                numberOfWeapons: equipmentSettings?.numberOfHandheld ?? 2,
+                                numberOfShields: 0
                             }, {minW: 3, minH: 3, w: 12, h: 3})}
                         >
                             {t('sheetEditor:weaponList')}
@@ -132,7 +132,7 @@ export function Toolbox({
                             unselectable="on"
                             onDragStart={createDragFunction({
                                 type: 'ARMOR_SLOTS',
-                                withShield: false
+                                numberOfShieldRows: 0
                             }, {minW: 5, minH: 8, w: 6, h: 8})}
                         >
                             {t('sheetEditor:armorSlots')}

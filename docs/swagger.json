@@ -5439,8 +5439,8 @@
         "required": [
           "armor",
           "jewellery",
-          "shieldEquipment",
-          "weaponEquipments"
+          "shields",
+          "weapons"
         ],
         "type": "object",
         "properties": {
@@ -5459,10 +5459,13 @@
               }
             }
           },
-          "shieldEquipment": {
-            "$ref": "#/components/schemas/ShieldEquipment"
+          "shields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShieldEquipment"
+            }
           },
-          "weaponEquipments": {
+          "weapons": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/WeaponEquipment"

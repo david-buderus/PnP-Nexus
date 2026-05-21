@@ -40,11 +40,11 @@ export type PageElementData = {
     attributesOrder?: string[]
 } | {
     type: 'WEAPON_LIST';
-    numberOfHandheld: number;
-    withShield: boolean;
+    numberOfWeapons: number;
+    numberOfShields: number;
 } | {
     type: 'ARMOR_SLOTS';
-    withShield: boolean;
+    numberOfShieldRows: number;
 } | {
     type: 'JEWELLERY_LIST';
     numberOfJewellery: Record<string, number>;
@@ -134,15 +134,15 @@ export function PageElement({
             />;
         case 'WEAPON_LIST':
             return <WeaponList
-                numberOfHandheld={data.numberOfHandheld}
-                withShield={data.withShield}
-                setNumberOfHandheld={n => setData({...data, numberOfHandheld: n})}
-                setWithShield={b => setData({...data, withShield: b})}
+                numberOfWeapons={data.numberOfWeapons}
+                numberOfShields={data.numberOfShields}
+                setNumberOfWeapons={n => setData({...data, numberOfWeapons: n})}
+                setNumberOfShields={b => setData({...data, numberOfShields: b})}
             />;
         case 'ARMOR_SLOTS':
             return <ArmorSlots
-                withShield={data.withShield}
-                setWithShield={b => setData({...data, withShield: b})}
+                numberOfShieldRows={data.numberOfShieldRows}
+                setNumberOfShieldRows={n => setData({...data, numberOfShieldRows: n})}
             />;
         case 'JEWELLERY_LIST':
             return <JewelleryList

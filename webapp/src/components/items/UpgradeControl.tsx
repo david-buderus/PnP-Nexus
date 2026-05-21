@@ -10,6 +10,7 @@ import {IconCheck} from '@tabler/icons-react';
 import {PnPCharacterContext} from '../character/PnPCharacterContext';
 import {TABLE_ROW_HEIGHT} from '../character/editor/parts/Constants';
 import {GiMagicAxe} from 'react-icons/gi';
+import {getPossibleUpgradeRestriction} from '../utils/UpgradeUtils';
 
 
 /**
@@ -64,6 +65,7 @@ function UpgradeControl<E extends SomeEquipment>({
             equipment.upgrades.map(u => ({used: true, upgrade: u})).concat(upgrades
                 .filter(upgrade => upgrade.name.toLowerCase().includes(filterValue.toLowerCase()))
                 .filter(upgrade => !equipment.upgrades.map(u => u.id).includes(upgrade.id))
+                .filter(upgrade => getPossibleUpgradeRestriction(equipment.item['@type']).includes(upgrade.restriction))
                 .map(u => ({used: false, upgrade: u}))),
         [filterValue, upgrades, equipment]);
 

@@ -20,12 +20,12 @@ import java.util.Optional;
 public class CharacterEquipment {
 
     @NotNull
-    @JsonProperty("weaponEquipments")
-    private final List<WeaponEquipment> weaponEquipments;
+    @JsonProperty("weapons")
+    private final List<WeaponEquipment> weapons;
 
     @NotNull
-    @JsonProperty("shieldEquipment")
-    private final ShieldEquipment shieldEquipment;
+    @JsonProperty("shields")
+    private final List<ShieldEquipment> shields;
 
     @NotNull
     @JsonProperty("armor")
@@ -35,20 +35,20 @@ public class CharacterEquipment {
     @JsonProperty("jewellery")
     private final Map<String, List<Equipment<Jewellery>>> jewellery;
 
-    public CharacterEquipment(List<WeaponEquipment> weaponEquipments, ShieldEquipment shieldEquipment, Map<EArmorSlot, ArmorEquipment> armor,
-                              Map<String, List<Equipment<Jewellery>>> jewellery) {
-        this.weaponEquipments = weaponEquipments;
-        this.shieldEquipment = shieldEquipment;
+    public CharacterEquipment(List<WeaponEquipment> weapons, List<ShieldEquipment> shields, Map<EArmorSlot,
+            ArmorEquipment> armor, Map<String, List<Equipment<Jewellery>>> jewellery) {
+        this.weapons = weapons;
+        this.shields = shields;
         this.armor = armor;
         this.jewellery = jewellery;
     }
 
-    public List<WeaponEquipment> getWeaponEquipments() {
-        return weaponEquipments;
+    public List<WeaponEquipment> getWeapons() {
+        return weapons;
     }
 
-    public ShieldEquipment getShieldEquipment() {
-        return shieldEquipment;
+    public List<ShieldEquipment> getShields() {
+        return shields;
     }
 
     public Optional<ArmorEquipment> getArmor(EArmorSlot slot) {

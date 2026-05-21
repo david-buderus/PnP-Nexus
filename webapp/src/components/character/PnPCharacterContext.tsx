@@ -16,7 +16,7 @@ export const PnPCharacterContext = React.createContext<PnPCharacterContextConten
     allowEdit: false
 });
 
-
+/** Returns an empty character */
 export function useEmptyCharacter(): PnPCharacterDTO {
     const {characterSettings} = useUniverseContext();
     const [primaryAttributes] = fetchAllPrimaryAttributes();
@@ -41,8 +41,8 @@ export function useEmptyCharacter(): PnPCharacterDTO {
         equipment: {
             armor: {},
             jewellery: {},
-            shieldEquipment: undefined,
-            weaponEquipments: []
+            weapons: [],
+            shields: []
         },
         inventory: {
             coin: 0,

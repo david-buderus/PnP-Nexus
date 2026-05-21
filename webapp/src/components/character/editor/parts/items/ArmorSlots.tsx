@@ -1,4 +1,4 @@
-import {ActionIcon, Group, Popover, Switch, Table, Text} from '@mantine/core';
+import {ActionIcon, Group, NumberInput, Popover, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -20,18 +20,23 @@ import {UpgradePopover} from '../../../../items/UpgradeControl';
 const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
 
 /** Shows armor of the character */
-export function ArmorSlots({withShield, setWithShield}: {
-    withShield: boolean;
-    setWithShield: (b: boolean) => void;
+export function ArmorSlots({numberOfShieldRows, setNumberOfShieldRows}: {
+    numberOfShieldRows: number;
+    setNumberOfShieldRows: (n: number) => void;
 }) {
     const {t} = useTranslation();
-    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {characterForm} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
     const {itemSettings} = useUniverseContext();
 
     const [lastClicked, setLastClicked] = useState<ArmorEquipment | ShieldEquipment>(null);
 
-    const shield = character?.equipment.shieldEquipment;
+    const shields = useMemo(() => {
+        const s = [...character.equipment.shields];
+        s.length = numberOfShieldRows;
+        s.fill(null, character.equipment.shields.length);
+        return s;
+    }, [character.equipment, numberOfShieldRows]);
 
     return <>
         <Table
@@ -68,57 +73,22 @@ export function ArmorSlots({withShield, setWithShield}: {
                 <ArmorSlot slot={EArmorSlot.Body} setLastClicked={setLastClicked}/>
                 <ArmorSlot slot={EArmorSlot.Arms} setLastClicked={setLastClicked}/>
                 <ArmorSlot slot={EArmorSlot.Legs} setLastClicked={setLastClicked}/>
-                {withShield ?
-                    <>
-                        <Table.Tr
-                            h={TABLE_ROW_HEIGHT}
-                            onClick={allowEdit ? () => setLastClicked(shield ?? null) : null}
-                        >
-                            <Table.Td style={TABLE_STYLE}>{t('shield')}</Table.Td>
-                            <Table.Td style={TABLE_STYLE}>{shield?.item.name ?? ''}</Table.Td>
-                            <Table.Td style={TABLE_STYLE}>{formatStat(shield?.armor, shield?.item.armor)}</Table.Td>
-                            {itemSettings?.usingProtection ?
-                                <Table.Td
-                                    style={TABLE_STYLE}>{formatStat(shield?.protection, shield?.item.protection)}</Table.Td> : null
-                            }
-                            <Table.Td style={TABLE_STYLE}>{formatStat(shield?.weight, shield?.item.weight)}</Table.Td>
-                            <Table.Td style={TABLE_STYLE}>
-                                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
-                                    <Text
-                                        size={TABLE_STYLE.fontSize}
-                                        truncate="end"
-                                        style={{flex: 1, minWidth: 0}}
-                                    >
-                                        {shield?.item.effects.map(e => e.description).join(',') ?? ''}
-                                    </Text>
-                                    {shield ?
-                                        <ActionIcon
-                                            variant="subtle"
-                                            size={TABLE_ROW_HEIGHT - 8}
-                                            className="no-drag"
-                                            style={{flexShrink: 0}}
-                                            onClick={e => {
-                                                characterForm.setFieldValue('equipment.shieldEquipment', null);
-                                                e.stopPropagation();
-                                            }}
-                                        >
-                                            <IconCircleMinus color="red" size={14}/>
-                                        </ActionIcon> :
-                                        <ShieldAdditionPopover/>
-                                    }
-                                </Group>
-                            </Table.Td>
-                        </Table.Tr>
-                        <ShieldExtraLine shield={shield}/>
-                    </>
-                    : null}
+                {shields.map((shield, index) => <ShieldRow
+                    key={index}
+                    shield={shield}
+                    index={index}
+                    setLastClicked={setLastClicked}
+                    numberOfShieldRows={numberOfShieldRows}
+                />)}
             </Table.Tbody>
         </Table>
         <PageElementSettings>
-            <Switch
-                label={t('sheetEditor:withShield')}
-                checked={withShield}
-                onChange={e => setWithShield(e.target.checked)}
+            <NumberInput
+                label={t('sheetEditor:numberOfShields')}
+                value={numberOfShieldRows}
+                onChange={e => setNumberOfShieldRows(Number(e))}
+                min={0}
+                allowDecimal={false}
             />
         </PageElementSettings>
         <ItemStackCardModal stack={lastClicked} onClose={() => setLastClicked(null)}/>
@@ -127,7 +97,7 @@ export function ArmorSlots({withShield, setWithShield}: {
 
 function ArmorSlot({slot, setLastClicked}: {
     slot: EArmorSlot,
-    setLastClicked: (equipment: ArmorEquipment | ShieldEquipment) => void
+    setLastClicked: (equipment: ArmorEquipment) => void
 }) {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
@@ -158,7 +128,6 @@ function ArmorSlot({slot, setLastClicked}: {
                         {armor?.item.effects.map(e => e.description).join(',') ?? ''}
                     </Text>
                     {armor ?
-
                         <Group
                             wrap="nowrap"
                             gap={1}
@@ -174,9 +143,7 @@ function ArmorSlot({slot, setLastClicked}: {
                                 size={TABLE_ROW_HEIGHT - 8}
                                 className="no-drag"
                                 style={{flexShrink: 0}}
-                                onClick={e => {
-                                    characterForm.setFieldValue(`equipment.armor.${slot}`, null);
-                                }}
+                                onClick={() => characterForm.setFieldValue(`equipment.armor.${slot}`, null)}
                             >
                                 <IconCircleMinus color="red" size={14}/>
                             </ActionIcon>
@@ -192,6 +159,72 @@ function ArmorSlot({slot, setLastClicked}: {
             </Table.Td>
         </Table.Tr>
     </>;
+}
+
+function ShieldRow({
+    shield, index, setLastClicked, numberOfShieldRows
+}: {
+    shield: ShieldEquipment;
+    index: number;
+    setLastClicked: (equipment: ShieldEquipment) => void;
+    numberOfShieldRows: number;
+}) {
+    const {t} = useTranslation();
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {itemSettings} = useUniverseContext();
+
+    return [
+        <Table.Tr
+            h={TABLE_ROW_HEIGHT}
+            onClick={allowEdit ? () => setLastClicked(shield ?? null) : null}
+        >
+            <Table.Td style={TABLE_STYLE}>
+                {t('shield') + (numberOfShieldRows > 1 ? ` ${index + 1}` : '')}
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>{shield?.item.name ?? ''}</Table.Td>
+            <Table.Td style={TABLE_STYLE}>{formatStat(shield?.armor, shield?.item.armor)}</Table.Td>
+            {itemSettings?.usingProtection ?
+                <Table.Td
+                    style={TABLE_STYLE}>{formatStat(shield?.protection, shield?.item.protection)}</Table.Td> : null
+            }
+            <Table.Td style={TABLE_STYLE}>{formatStat(shield?.weight, shield?.item.weight)}</Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                    <Text
+                        size={TABLE_STYLE.fontSize}
+                        truncate="end"
+                        style={{flex: 1, minWidth: 0}}
+                    >
+                        {shield?.item.effects.map(e => e.description).join(',') ?? ''}
+                    </Text>
+                    {shield ?
+                        <Group
+                            wrap="nowrap"
+                            gap={1}
+                            style={{flexShrink: 0}}
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <UpgradePopover
+                                equipment={shield}
+                                onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
+                            />
+                            <ActionIcon
+                                variant="subtle"
+                                size={TABLE_ROW_HEIGHT - 8}
+                                className="no-drag"
+                                style={{flexShrink: 0}}
+                                onClick={() => characterForm.removeListItem('equipment.shields', index)}
+                            >
+                                <IconCircleMinus color="red" size={14}/>
+                            </ActionIcon>
+                        </Group> :
+                        <ShieldAdditionPopover/>
+                    }
+                </Group>
+            </Table.Td>
+        </Table.Tr>,
+        <ShieldExtraLine shield={shield}/>
+    ];
 }
 
 function ShieldExtraLine({shield}: { shield: ShieldEquipment }) {
@@ -291,7 +324,7 @@ export function ShieldAdditionPopover() {
                     items={items}
                     onSelect={item =>
                         STACK_SERVICE.createShield({item: item.item as Shield, stackSize: 1})
-                            .then(response => characterForm.setFieldValue('equipment.shieldEquipment', response.data))
+                            .then(response => characterForm.insertListItem('equipment.shields', response.data))
                     }
                 />
             </Popover.Dropdown>
