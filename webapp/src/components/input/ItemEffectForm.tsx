@@ -17,16 +17,18 @@ import {
 } from '@mantine/core';
 import {CalculationSelect, UpgradeEquipmentManipulatorSelect} from './EnumSelect';
 import {FaRegTrashCan} from 'react-icons/fa6';
-import {ECalculation, EItemEquipmentManipulator} from '../../api';
+import {ECalculation, EItemEquipmentManipulator, EUpgradeRestriction} from '../../api';
 import {randomId} from '@mantine/hooks';
 
 /** A form for item effects */
 export function ItemEffectForm<T>({
     form,
-    path
+    path,
+    restrictions
 }: {
     form: UseFormReturnType<T>;
     path: string;
+    restrictions: EUpgradeRestriction[];
 }) {
     const {t} = useTranslation();
 
@@ -54,6 +56,7 @@ export function ItemEffectForm<T>({
                                     label={t('upgrade:upgradeManipulator')}
                                     key={form.key(`${path}.${index}.upgradeManipulator`)}
                                     {...form.getInputProps(`${path}.${index}.upgradeManipulator`)}
+                                    restrictions={restrictions}
                                 />
                                 <Group wrap="nowrap">
                                     <CalculationSelect

@@ -347,7 +347,7 @@
                       "$ref": "#/components/schemas/ArmorEquipment"
                     },
                     {
-                      "$ref": "#/components/schemas/Equipment"
+                      "$ref": "#/components/schemas/JewelleryEquipment"
                     },
                     {
                       "$ref": "#/components/schemas/ShieldEquipment"
@@ -417,7 +417,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/EquipmentJewellery"
+                  "$ref": "#/components/schemas/JewelleryEquipment"
                 }
               }
             },
@@ -747,7 +747,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpgradeRequestEquipment"
+                "$ref": "#/components/schemas/UpgradeRequestEquipableItemItemStack"
               }
             }
           },
@@ -758,7 +758,23 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ItemStack"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ArmorEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/JewelleryEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ShieldEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/WeaponEquipment"
+                    }
+                  ]
                 }
               }
             },
@@ -778,7 +794,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpgradeRemovalRequestEquipment"
+                "$ref": "#/components/schemas/UpgradeRemovalRequestEquipableItemItemStack"
               }
             }
           },
@@ -789,7 +805,23 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment"
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ItemStack"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ArmorEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/JewelleryEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ShieldEquipment"
+                    },
+                    {
+                      "$ref": "#/components/schemas/WeaponEquipment"
+                    }
+                  ]
                 }
               }
             },
@@ -5321,20 +5353,6 @@
                 "type": "number",
                 "format": "float"
               },
-              "remainingUpgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgrades": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
-              },
               "wear": {
                 "type": "number",
                 "format": "float"
@@ -5455,7 +5473,7 @@
             "additionalProperties": {
               "type": "array",
               "items": {
-                "$ref": "#/components/schemas/EquipmentJewellery"
+                "$ref": "#/components/schemas/JewelleryEquipment"
               }
             }
           },
@@ -5775,40 +5793,6 @@
           "ARMOR"
         ]
       },
-      "Equipment": {
-        "required": [
-          "item",
-          "upgrades"
-        ],
-        "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/ItemStackItem"
-          },
-          {
-            "type": "object",
-            "properties": {
-              "item": {
-                "$ref": "#/components/schemas/IEquipableItem"
-              },
-              "remainingUpgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgrades": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
-              }
-            }
-          }
-        ]
-      },
       "EquipmentItemEffect": {
         "required": [
           "calculation",
@@ -5837,36 +5821,6 @@
             }
           }
         ]
-      },
-      "EquipmentJewellery": {
-        "required": [
-          "item",
-          "upgrades"
-        ],
-        "type": "object",
-        "properties": {
-          "item": {
-            "$ref": "#/components/schemas/Jewellery"
-          },
-          "remainingUpgradeSlots": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "stackSize": {
-            "type": "number",
-            "format": "float"
-          },
-          "upgradeSlots": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upgrades": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Upgrade"
-            }
-          }
-        }
       },
       "EquipmentSettings": {
         "required": [
@@ -5920,7 +5874,13 @@
           }
         }
       },
-      "IEquipableItem": {
+      "IExpressionVariable": {
+        "type": "object"
+      },
+      "IGrantedAuthorityDTO": {
+        "type": "object"
+      },
+      "IItem": {
         "required": [
           "effects"
         ],
@@ -5983,12 +5943,6 @@
           }
         }
       },
-      "IExpressionVariable": {
-        "type": "object"
-      },
-      "IGrantedAuthorityDTO": {
-        "type": "object"
-      },
       "IResourceUsageObject": {
         "type": "object"
       },
@@ -6009,7 +5963,7 @@
                   "$ref": "#/components/schemas/ArmorEquipment"
                 },
                 {
-                  "$ref": "#/components/schemas/Equipment"
+                  "$ref": "#/components/schemas/JewelleryEquipment"
                 },
                 {
                   "$ref": "#/components/schemas/ShieldEquipment"
@@ -6076,65 +6030,23 @@
           "requirement",
           "tags",
           "tier",
+          "upgradeSlots",
           "vendorPrice"
         ],
         "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/IItem"
           },
-          "effects": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/EquipmentItemEffect"
-                },
-                {
-                  "$ref": "#/components/schemas/SimpleItemEffect"
-                }
-              ]
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
             }
-          },
-          "id": {
-            "type": "string"
-          },
-          "maximumStackSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "minimumStackSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "note": {
-            "type": "string"
-          },
-          "rarity": {
-            "$ref": "#/components/schemas/ERarity"
-          },
-          "requirement": {
-            "type": "string"
-          },
-          "tags": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "tier": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
           }
-        }
+        ]
       },
       "ItemEffect": {
         "required": [
@@ -6167,18 +6079,79 @@
           }
         }
       },
+      "ItemStack": {
+        "required": [
+          "item",
+          "upgrades"
+        ],
+        "type": "object",
+        "properties": {
+          "item": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Armor"
+              },
+              {
+                "$ref": "#/components/schemas/Item"
+              },
+              {
+                "$ref": "#/components/schemas/Jewellery"
+              },
+              {
+                "$ref": "#/components/schemas/Shield"
+              },
+              {
+                "$ref": "#/components/schemas/Weapon"
+              }
+            ]
+          },
+          "remainingUpgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "stackSize": {
+            "type": "number",
+            "format": "float"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "upgrades": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Upgrade"
+            }
+          }
+        }
+      },
       "ItemStackItem": {
         "required": [
-          "item"
+          "item",
+          "upgrades"
         ],
         "type": "object",
         "properties": {
           "item": {
             "$ref": "#/components/schemas/Item"
           },
+          "remainingUpgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
           "stackSize": {
             "type": "number",
             "format": "float"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "upgrades": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Upgrade"
+            }
           }
         }
       },
@@ -6379,6 +6352,26 @@
             "type": "string"
           }
         }
+      },
+      "JewelleryEquipment": {
+        "required": [
+          "item",
+          "upgrades"
+        ],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ItemStackItem"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "item": {
+                "$ref": "#/components/schemas/Jewellery"
+              }
+            }
+          }
+        ]
       },
       "Material": {
         "required": [
@@ -7052,20 +7045,6 @@
                 "type": "number",
                 "format": "float"
               },
-              "remainingUpgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgrades": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
-              },
               "wear": {
                 "type": "number",
                 "format": "float"
@@ -7561,7 +7540,7 @@
           }
         }
       },
-      "UpgradeRemovalRequestEquipment": {
+      "UpgradeRemovalRequestEquipableItemItemStack": {
         "required": [
           "equipment",
           "upgrade"
@@ -7569,14 +7548,30 @@
         "type": "object",
         "properties": {
           "equipment": {
-            "$ref": "#/components/schemas/Equipment"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ItemStack"
+              },
+              {
+                "$ref": "#/components/schemas/ArmorEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/JewelleryEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/ShieldEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/WeaponEquipment"
+              }
+            ]
           },
           "upgrade": {
             "$ref": "#/components/schemas/Upgrade"
           }
         }
       },
-      "UpgradeRequestEquipment": {
+      "UpgradeRequestEquipableItemItemStack": {
         "required": [
           "equipment",
           "upgrade"
@@ -7584,7 +7579,23 @@
         "type": "object",
         "properties": {
           "equipment": {
-            "$ref": "#/components/schemas/Equipment"
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ItemStack"
+              },
+              {
+                "$ref": "#/components/schemas/ArmorEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/JewelleryEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/ShieldEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/WeaponEquipment"
+              }
+            ]
           },
           "upgrade": {
             "$ref": "#/components/schemas/Upgrade"
@@ -7761,20 +7772,6 @@
               "relativeDurability": {
                 "type": "number",
                 "format": "float"
-              },
-              "remainingUpgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgradeSlots": {
-                "type": "integer",
-                "format": "int32"
-              },
-              "upgrades": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/Upgrade"
-                }
               },
               "wear": {
                 "type": "number",

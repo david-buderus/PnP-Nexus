@@ -86,5 +86,10 @@ public interface IItem {
      * A {@code minimumStackSize} of {@code 0} is interpreted as minimum stackSize {@code > 0}.
      */
     int getMinimumStackSize();
+
+    /**
+     * The number of upgrade slots of the underlying item.
+     */
+    int getUpgradeSlots();
 }
 

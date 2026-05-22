@@ -293,7 +293,7 @@ public class TestItemBuilder {
      */
     public Item buildItem() {
         Item item = new Item(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-                description, note, maximumStackSize, minimumStackSize);
+                description, note, maximumStackSize, minimumStackSize, upgradeSlots);
         if (shouldGetPersisted) {
             return itemRepository.insert(universe, item);
         }

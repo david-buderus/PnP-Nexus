@@ -1,9 +1,9 @@
 package de.pnp.manager.component.inventory.equipment.interfaces;
 
 /**
- * Represents {@link IEquipment} that can be damaged.
+ * Represents equipment that can be damaged.
  */
-public interface IDamageableEquipment extends IEquipment {
+public interface IDamageableEquipment {
 
     /**
      * Applies wear to the equipment.

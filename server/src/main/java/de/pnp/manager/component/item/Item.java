@@ -121,9 +121,16 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     @PositiveOrZero
     protected final int minimumStackSize;
 
+    /**
+     * The amount of upgrades this item can hold.
+     */
+    @NotNull
+    @PositiveOrZero
+    protected final int upgradeSlots;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
     public Item(ObjectId id, String name, Set<Tag> tags, String requirement, List<ItemEffect> effects, ERarity rarity,
-                int vendorPrice, int tier, String description, String note, int maximumStackSize, int minimumStackSize) {
+                int vendorPrice, int tier, String description, String note, int maximumStackSize, int minimumStackSize, int upgradeSlots) {
         super(id);
         this.name = name;
         this.tags = tags;
@@ -136,6 +143,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         this.note = note;
         this.maximumStackSize = maximumStackSize;
         this.minimumStackSize = minimumStackSize;
+        this.upgradeSlots = upgradeSlots;
     }
 
     @Override
@@ -196,6 +204,11 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     }
 
     @Override
+    public int getUpgradeSlots() {
+        return upgradeSlots;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -210,7 +223,8 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
                 && Objects.equals(getName(), item.getName()) && Objects.equals(getTags(), item.getTags())
                 && Objects.equals(getRequirement(), item.getRequirement()) && Objects.equals(getEffects(),
                 item.getEffects()) && getRarity() == item.getRarity() && Objects.equals(getDescription(),
-                item.getDescription()) && Objects.equals(getNote(), item.getNote());
+                item.getDescription()) && Objects.equals(getNote(), item.getNote())
+                && getUpgradeSlots() == item.getUpgradeSlots();
     }
 
     @Override
@@ -233,6 +247,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
                 .add("note", note)
                 .add("maximumStackSize", maximumStackSize)
                 .add("minimumStackSize", minimumStackSize)
+                .add("upgradeSlots", upgradeSlots)
                 .toString();
     }
 }

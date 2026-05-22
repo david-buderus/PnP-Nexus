@@ -2,11 +2,10 @@ package de.pnp.manager.component.character;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
-import de.pnp.manager.component.inventory.equipment.Equipment;
+import de.pnp.manager.component.inventory.equipment.JewelleryEquipment;
 import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.equipable.EArmorSlot;
-import de.pnp.manager.component.item.equipable.Jewellery;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * The {@link Equipment} of a {@link PnPCharacter}.
+ * The equipment of a {@link PnPCharacter}.
  */
 public class CharacterEquipment {
 
@@ -33,10 +32,10 @@ public class CharacterEquipment {
 
     @NotNull
     @JsonProperty("jewellery")
-    private final Map<String, List<Equipment<Jewellery>>> jewellery;
+    private final Map<String, List<JewelleryEquipment>> jewellery;
 
     public CharacterEquipment(List<WeaponEquipment> weapons, List<ShieldEquipment> shields, Map<EArmorSlot,
-            ArmorEquipment> armor, Map<String, List<Equipment<Jewellery>>> jewellery) {
+            ArmorEquipment> armor, Map<String, List<JewelleryEquipment>> jewellery) {
         this.weapons = weapons;
         this.shields = shields;
         this.armor = armor;
@@ -55,7 +54,7 @@ public class CharacterEquipment {
         return Optional.ofNullable(armor.get(slot));
     }
 
-    public List<Equipment<Jewellery>> getJewellery(String slot) {
+    public List<JewelleryEquipment> getJewellery(String slot) {
         return jewellery.putIfAbsent(slot, new ArrayList<>());
     }
 }

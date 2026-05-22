@@ -8,7 +8,7 @@ import {IconCircleMinus, IconCirclePlus, IconMoneybagPlus} from '@tabler/icons-r
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {addItemToInventory, removeItemFromInventory} from '../../../../utils/InventoryUtils';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
-import {ItemStack, SomeItem} from '../../../../Constants';
+import {SomeItem, SomeItemStack} from '../../../../Constants';
 import {fetchAllItems} from '../../../../Database';
 
 
@@ -23,7 +23,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
 
-    const [lastClicked, setLastClicked] = useState<ItemStack>(null);
+    const [lastClicked, setLastClicked] = useState<SomeItemStack>(null);
 
     return <>
         <Table

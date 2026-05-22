@@ -12,10 +12,10 @@ import jakarta.validation.constraints.PositiveOrZero;
  * Represents an {@link IDamageableItem} that can be held and used.
  */
 public abstract class DamageableEquipment<I extends IDamageableItem & IEquipableItem> extends
-        Equipment<I> implements IDamageableEquipment {
+        ItemStack<I> implements IDamageableEquipment {
 
     /**
-     * The current wear of this {@link Equipment}.
+     * The current wear of this {@link IEquipableItem}.
      */
     @PositiveOrZero
     @JsonProperty("wear")
@@ -38,6 +38,9 @@ public abstract class DamageableEquipment<I extends IDamageableItem & IEquipable
 
     @Override
     public float getRelativeDurability() {
+        if (getMaxDurability() == 0) {
+            return 1 - wear;
+        }
         return Math.max(0, (getMaxDurability() - wear) / getMaxDurability());
     }
 

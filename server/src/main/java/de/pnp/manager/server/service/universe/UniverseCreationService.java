@@ -94,16 +94,16 @@ public class UniverseCreationService {
 
         Item ironIngot = itemRepository.insert(universe,
                 new Item(null, bundle.getString("iron_ingot"), Set.of(material, ingot), "", List.of(), ERarity.COMMON, 100, 1,
-                        bundle.getString("iron_ingot_description"), "", 100, 0));
+                        bundle.getString("iron_ingot_description"), "", 100, 0, 0));
         itemRepository.insert(universe,
                 new Item(null, bundle.getString("iron_ore"), Set.of(material, ore), "", List.of(), ERarity.COMMON, 30, 1,
-                        bundle.getString("iron_ore_description"), "", 100, 0));
+                        bundle.getString("iron_ore_description"), "", 100, 0, 0));
         Item woodPlank = itemRepository.insert(universe,
                 new Item(null, bundle.getString("wood_plank"), Set.of(material, wood), "", List.of(), ERarity.COMMON, 10, 1,
-                        bundle.getString("wood_plank_description"), "", 100, 0));
+                        bundle.getString("wood_plank_description"), "", 100, 0, 0));
         Item rawWood = itemRepository.insert(universe,
                 new Item(null, bundle.getString("raw_wood"), Set.of(material, wood), "", List.of(), ERarity.COMMON, 3, 1,
-                        bundle.getString("raw_wood_description"), "", 100, 0));
+                        bundle.getString("raw_wood_description"), "", 100, 0, 0));
 
         materialRepository.insertAll(universe, List.of(
                 new Material(null, bundle.getString("iron"), List.of(new MaterialItem(1, ironIngot))),

@@ -6,29 +6,36 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Streams;
 import com.google.common.primitives.Floats;
+import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
-import de.pnp.manager.component.inventory.equipment.Equipment;
+import de.pnp.manager.component.inventory.equipment.JewelleryEquipment;
 import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.Item;
-import de.pnp.manager.component.item.equipable.Armor;
-import de.pnp.manager.component.item.equipable.Jewellery;
-import de.pnp.manager.component.item.equipable.Shield;
-import de.pnp.manager.component.item.equipable.Weapon;
+import de.pnp.manager.component.item.equipable.*;
 import de.pnp.manager.component.item.interfaces.IItem;
+import de.pnp.manager.component.upgrade.Upgrade;
+import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentItemEffect;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents an {@link Item} that can be held and used.
  */
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = Equipment.class, name = "Equipment"),
         @JsonSubTypes.Type(value = ShieldEquipment.class, name = "ShieldEquipment"),
         @JsonSubTypes.Type(value = ArmorEquipment.class, name = "ArmorEquipment"),
         @JsonSubTypes.Type(value = WeaponEquipment.class, name = "WeaponEquipment"),
+        @JsonSubTypes.Type(value = JewelleryEquipment.class, name = "JewelleryEquipment"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 public class ItemStack<I extends IItem> {
@@ -46,12 +53,24 @@ public class ItemStack<I extends IItem> {
     @DBRef
     private final I item;
 
-    @JsonCreator
+    /**
+     * The {@link Upgrade upgrades} of the {@link IItem}.
+     */
+    @DBRef
+    @NotNull
+    private Collection<Upgrade> upgrades;
+
     public ItemStack(float stackSize, I item) {
+        this(stackSize, item, new ArrayList<>());
+    }
+
+    @JsonCreator
+    public ItemStack(float stackSize, I item, Collection<Upgrade> upgrades) {
         Preconditions.checkArgument(stackSize >= item.getMinimumStackSize() && stackSize <= item.getMaximumStackSize(),
                 "The stackSize '%s' is forbidden for the item '%s.'", stackSize, item.getName());
         this.stackSize = stackSize;
         this.item = item;
+        this.upgrades = upgrades;
     }
 
     /**
@@ -95,12 +114,87 @@ public class ItemStack<I extends IItem> {
         return change;
     }
 
+    /**
+     * Returns {@link EquipableItem#getUpgradeSlots()} in regard to the {@link #upgrades}.
+     */
+    public int getUpgradeSlots() {
+        return applyItemEffects(EItemEquipmentManipulator.SLOTS, getItem().getUpgradeSlots());
+    }
+
+    /**
+     * Returns the amount of {@link EquipableItem#getUpgradeSlots() upgrade slots} which are not in use.
+     */
+    public int getRemainingUpgradeSlots() {
+        return getUpgradeSlots() - getUpgrades().stream().mapToInt(Upgrade::getSlots).sum();
+    }
+
+    /**
+     * Sets the {@link #upgrades} of the equipment.
+     */
+    public void setUpgrades(Collection<Upgrade> upgrades) {
+        this.upgrades = upgrades;
+    }
+
+    /**
+     * Adds an {@link Upgrade} to the equipment.
+     */
+    public void addUpgrade(Upgrade upgrade) {
+        Preconditions.checkArgument(upgrade.getSlots() <= getRemainingUpgradeSlots(),
+                "The required '%s' slots of the upgrades exceed the capacity of the item '%s'.",
+                upgrade.getSlots() + getUpgradeSlots(), getItem().getName());
+        upgrades.add(upgrade);
+    }
+
+    /**
+     * Removes an {@link Upgrade} from the equipment.
+     */
+    public void removeUpgrade(Upgrade upgrade) {
+        upgrades.remove(upgrade);
+    }
+
+    /**
+     * Applies the effects of the {@link #upgrades} to the value.
+     */
+    protected int applyItemEffects(EItemEquipmentManipulator manipulator, int value) {
+        return Math.round(applyItemEffects(manipulator, (float) value));
+    }
+
+    /**
+     * Applies the effects of the {@link #upgrades} to the value.
+     */
+    protected float applyItemEffects(EItemEquipmentManipulator manipulator, float value) {
+        List<EquipmentItemEffect> effects = Streams.concat(
+                getItem().getEffects().stream(),
+                getUpgrades().stream().flatMap(upgrade -> upgrade.getEffects().stream())
+        ).filter(EquipmentItemEffect.class::isInstance).map(EquipmentItemEffect.class::cast).toList();
+
+        List<EquipmentItemEffect> additiveEffects = effects.stream()
+                .filter(effect -> effect.getCalculation() == ECalculation.ADDITIVE)
+                .toList();
+        List<EquipmentItemEffect> multiplicativeEffects = effects.stream()
+                .filter(effect -> effect.getCalculation() == ECalculation.MULTIPLICATIVE)
+                .toList();
+
+        for (EquipmentItemEffect effect : additiveEffects) {
+            value = effect.apply(manipulator, value);
+        }
+        for (EquipmentItemEffect effect : multiplicativeEffects) {
+            value = effect.apply(manipulator, value);
+        }
+
+        return value;
+    }
+
     public float getStackSize() {
         return stackSize;
     }
 
     public I getItem() {
         return item;
+    }
+
+    public Collection<Upgrade> getUpgrades() {
+        return Collections.unmodifiableCollection(upgrades);
     }
 
     /**
@@ -111,7 +205,7 @@ public class ItemStack<I extends IItem> {
         if (other == null || other.getClass() != this.getClass()) {
             return false;
         }
-        return Objects.equal(item, other.getItem());
+        return Objects.equal(item, other.getItem()) && Objects.equal(upgrades, other.getUpgrades());
     }
 
     /**
@@ -128,7 +222,7 @@ public class ItemStack<I extends IItem> {
             return new ArmorEquipment(stackSize, armor, 0);
         }
         if (item instanceof Jewellery jewellery) {
-            return new Equipment<>(stackSize, jewellery);
+            return new JewelleryEquipment(stackSize, jewellery);
         }
         return new ItemStack<>(stackSize, item);
     }

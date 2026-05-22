@@ -152,7 +152,11 @@ function CreationDialog({
                     {...form.getInputProps('slots')}
                     allowDecimal={false}
                 />
-                <ItemEffectForm form={form} path="effects"/>
+                <ItemEffectForm
+                    form={form}
+                    path="effects"
+                    restrictions={[form.values.restriction]}
+                />
                 <Group grow align="flex-start">
                     <NumberInput
                         label={t('price')}

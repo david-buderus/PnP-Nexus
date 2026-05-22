@@ -2,12 +2,12 @@ import {
     Armor,
     ArmorEquipment,
     Configuration,
-    Equipment,
     EquipmentItemEffect,
     Item,
     ItemEffect,
-    ItemStackItem,
+    ItemStack,
     Jewellery,
+    JewelleryEquipment,
     Shield,
     ShieldEquipment,
     Weapon,
@@ -21,13 +21,13 @@ export type ItemClass = 'Item' | 'Weapon' | 'Shield' | 'Armor' | 'Jewellery';
 export type SomeItem = Item | Weapon | Shield | Armor | Jewellery;
 
 /** All possible item stack classes */
-export type ItemStack = ArmorEquipment | Equipment | ItemStackItem | ShieldEquipment | WeaponEquipment;
+export type SomeItemStack = ArmorEquipment | JewelleryEquipment | ItemStack | ShieldEquipment | WeaponEquipment;
 
 /** All item effect classes */
 export type SomeItemEffect = ItemEffect | EquipmentItemEffect;
 
 /** All equipment classes */
-export type SomeEquipment = ArmorEquipment | Equipment | ShieldEquipment | WeaponEquipment;
+export type SomeEquipment = ArmorEquipment | JewelleryEquipment | ShieldEquipment | WeaponEquipment;
 
 /** The api configuration which should be used by all APIs */
 export const API_CONFIGURATION = new Configuration({

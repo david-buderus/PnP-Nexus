@@ -2,23 +2,23 @@ import {Badge, Box, Card, Divider, Grid, Group, HoverCard, List, Modal, Progress
 import {useTranslation} from 'react-i18next';
 import {currencyFormatter, diceFormatter, getRarityColor} from '../utils/Formatters';
 import {useUniverseContext} from '../PageBase';
-import {ArmorEquipment, Equipment, ItemStackItem, ShieldEquipment, WeaponEquipment} from '../../api';
-import {ItemStack} from '../Constants';
+import {ArmorEquipment, ItemStack, JewelleryEquipment, ShieldEquipment, WeaponEquipment} from '../../api';
+import {SomeItemStack} from '../Constants';
 import {UpgradeCard} from './UpgradeCard';
 
 type ItemStackCombination =
-    ItemStackItem
+    ItemStack
     & Partial<WeaponEquipment>
     & Partial<ShieldEquipment>
     & Partial<ArmorEquipment>
-    & Partial<Equipment>;
+    & Partial<JewelleryEquipment>;
 
 /** Visualizes a single item stack */
 export function ItemStackCard({
     stack,
     onClick
 }: {
-    stack: ItemStack;
+    stack: SomeItemStack;
     onClick?: () => void;
 }) {
     const {t} = useTranslation();
@@ -170,7 +170,7 @@ export function ItemStackCard({
  *  Opens if the item is not null.
  */
 export function ItemStackCardModal({stack, onClose}: {
-    stack: ItemStack;
+    stack: SomeItemStack;
     onClose: () => void;
 }) {
     return <Modal

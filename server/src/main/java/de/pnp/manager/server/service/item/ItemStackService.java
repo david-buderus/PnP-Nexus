@@ -2,7 +2,7 @@ package de.pnp.manager.server.service.item;
 
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
-import de.pnp.manager.component.inventory.equipment.Equipment;
+import de.pnp.manager.component.inventory.equipment.JewelleryEquipment;
 import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.Item;
@@ -54,8 +54,8 @@ public class ItemStackService {
 
     @PostMapping("jewellery")
     @Operation(summary = "Creates the matching item stack for the given item", operationId = "createJewellery")
-    public Equipment<Jewellery> createJewellery(@RequestBody @Valid ItemStackRequest<Jewellery> request) {
-        return new Equipment<>(request.stackSize, request.item);
+    public JewelleryEquipment createJewellery(@RequestBody @Valid ItemStackRequest<Jewellery> request) {
+        return new JewelleryEquipment(request.stackSize, request.item);
     }
 
     /**

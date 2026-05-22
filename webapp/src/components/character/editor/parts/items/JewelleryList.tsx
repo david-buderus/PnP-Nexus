@@ -3,7 +3,7 @@ import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {EquipmentJewellery, ItemStackServiceApi, Jewellery, JewelleryDefinition} from '../../../../../api';
+import {ItemStackServiceApi, Jewellery, JewelleryDefinition, JewelleryEquipment} from '../../../../../api';
 import {useUniverseContext} from '../../../../PageBase';
 import {PageElementSettings} from '../PageElementSettings';
 import {fetchAllJewllery} from '../../../../Database';
@@ -83,7 +83,7 @@ function JewelleryLines({
         return w;
     }, [character.equipment, number]);
 
-    const [lastClicked, setLastClicked] = useState<EquipmentJewellery>(null);
+    const [lastClicked, setLastClicked] = useState<JewelleryEquipment>(null);
 
     return <>
         {jewellery.map((j, index) => {

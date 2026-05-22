@@ -13,7 +13,7 @@ import {useTranslation} from 'react-i18next';
 import TagCell, {filterTagCell} from '../../../components/table/TagCell';
 import {Armor, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from '../../../api';
 import CurrencyCell from '../../../components/table/CurrencyCell';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {API_CONFIGURATION, ItemClass} from '../../../components/Constants';
 import {useDisclosure} from '@mantine/hooks';
 import {Button, Group, Modal, NumberInput, Select, TagsInput, Textarea, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
@@ -29,6 +29,7 @@ import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {ItemCardModal} from '../../../components/items/ItemCard';
 import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
 import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
+import {getPossibleUpgradeRestriction} from '../../../components/utils/UpgradeUtils';
 
 const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
 
@@ -77,6 +78,10 @@ export function Items() {
             {
                 accessorKey: 'description',
                 header: t('description'),
+            },
+            {
+                accessorKey: 'upgradeSlots',
+                header: t('upgradeSlots'),
             },
             {
                 accessorKey: 'note',
@@ -585,7 +590,7 @@ function CreationDialog({
             dice: {dices: []}
         }
     });
-    const itemType = form.getValues()['@type'];
+    const itemType = form.getValues()['@type'] as ItemClass;
 
     useEffect(() => {
         if (!editMode || !opened) {
@@ -710,19 +715,22 @@ function CreationDialog({
                             {...form.getInputProps('initiative')}
                         />
                     </Group> : null}
-                <ItemEffectForm form={form} path="effects"/>
+                <ItemEffectForm
+                    form={form}
+                    path="effects"
+                    restrictions={getPossibleUpgradeRestriction(itemType)}
+                />
                 <Textarea
                     label={t('description')}
                     key={form.key('description')}
                     {...form.getInputProps('description')}
                 />
-                {['Weapon', 'Shield', 'Armor', 'Jewellery'].includes(itemType) ?
-                    <NumberInput
-                        label={t('upgradeSlots')}
-                        key={form.key('upgradeSlots')}
-                        {...form.getInputProps('upgradeSlots')}
-                        allowDecimal={false}
-                    /> : null}
+                <NumberInput
+                    label={t('upgradeSlots')}
+                    key={form.key('upgradeSlots')}
+                    {...form.getInputProps('upgradeSlots')}
+                    allowDecimal={false}
+                />
                 <Group grow align="flex-start">
                     <RaritySelect
                         label={t('rarity')}

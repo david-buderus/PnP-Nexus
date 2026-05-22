@@ -9,6 +9,8 @@ import {
     ERarity,
     EUpgradeRestriction
 } from '../../api';
+import {getPossibleUpgradeManipulators} from '../utils/UpgradeUtils';
+import {useMemo} from 'react';
 
 /** Props needed for the select */
 interface EnumSelectProps<E> extends Omit<SelectProps, 'value' | 'onChange' | 'data'> {
@@ -75,15 +77,19 @@ export function UpgradeRestrictionSelect({value, onChange, ...rest}: EnumSelectP
 export function UpgradeEquipmentManipulatorSelect({
     value,
     onChange,
+    restrictions,
     ...rest
-}: EnumSelectProps<EItemEquipmentManipulator>) {
+}: {
+    restrictions: EUpgradeRestriction[]
+} & EnumSelectProps<EItemEquipmentManipulator>) {
     const {t} = useTranslation();
+    const values = useMemo(() => Array.from(getPossibleUpgradeManipulators(restrictions).values()), [restrictions]);
 
     return <Select
         label={t('upgrade:upgradeManipulator')}
         value={value}
         onChange={onChange}
-        data={Object.values(EItemEquipmentManipulator).map(slot => {
+        data={values.map(slot => {
             return {value: slot, label: t('enum:' + slot.toLowerCase())};
         })}
         {...rest}

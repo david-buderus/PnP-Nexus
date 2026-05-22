@@ -15,7 +15,7 @@ import de.pnp.manager.component.character.traits.StatTrait;
 import de.pnp.manager.component.inventory.Inventory;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
-import de.pnp.manager.component.inventory.equipment.Equipment;
+import de.pnp.manager.component.inventory.equipment.JewelleryEquipment;
 import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.ERarity;
@@ -92,10 +92,10 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
 
         Optional<Talent> talent = talents.stream().findFirst();
 
-        Map<String, List<Equipment<Jewellery>>> jewellery = new HashMap<>();
+        Map<String, List<JewelleryEquipment>> jewellery = new HashMap<>();
         if (!settings.getJewelleryDefinitions().isEmpty()) {
             EquipmentSettings.JewelleryDefinition definition = settings.getJewelleryDefinitions().getFirst();
-            jewellery.put(definition.name(), List.of(new Equipment<>(1,
+            jewellery.put(definition.name(), List.of(new JewelleryEquipment(1,
                     new Jewellery(null, "Jewellery", Set.of(Tag.from(definition.tag())), "", List.of(), ERarity.COMMON, 200, 1, "", "", null, 1, 1, 1)
             )));
         }
@@ -123,7 +123,7 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
                         jewellery
                 ),
                 new CharacterInventory(new Inventory(100, List.of(
-                        new ItemStack<>(5, new Item(null, "Item", Set.of(), "", List.of(), ERarity.COMMON, 54, 2, "", "", 100, 0))
+                        new ItemStack<>(5, new Item(null, "Item", Set.of(), "", List.of(), ERarity.COMMON, 54, 2, "", "", 100, 0, 0))
                 )), 52135),
                 List.of(
                         new Spell(null, "Spell", "Effect", List.of(new IResourceUsage.MaterialUsage(1, new Material(null, "Material", List.of()))), "Other Cost", 1, 1, EAction.ACTION, new Spell.TalentCast(talent.stream().toList()), EnumSet.of(ECastingType.SOMATIC), 2, Set.of(), "Counter")
