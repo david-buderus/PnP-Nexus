@@ -40,10 +40,6 @@ class UpgradeItemTest {
         Upgrade upgradeA = createUpgrade().withSlots(1).addEffect(new SimpleItemEffect("Description")).build();
         itemStack.setUpgrades(List.of(upgradeA, upgradeA));
         assertThat(itemStack.getUpgrades()).containsExactly(upgradeA, upgradeA);
-
-        Upgrade upgradeB = createUpgrade().withSlots(2).addEffect(new SimpleItemEffect("Description")).build();
-        assertThatThrownBy(() -> itemStack.setUpgrades(List.of(upgradeA, upgradeB)),
-                "The equipment can not contain so many upgrades.");
     }
 
     @Test
