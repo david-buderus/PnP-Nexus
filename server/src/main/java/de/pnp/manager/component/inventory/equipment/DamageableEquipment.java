@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IDamageableEquipment;
+import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.interfaces.IDamageableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -11,7 +12,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 /**
  * Represents an {@link IDamageableItem} that can be held and used.
  */
-public abstract class DamageableEquipment<I extends IDamageableItem & IEquipableItem> extends
+public abstract class DamageableEquipment<I extends EquipableItem & IDamageableItem> extends
         ItemStack<I> implements IDamageableEquipment {
 
     /**

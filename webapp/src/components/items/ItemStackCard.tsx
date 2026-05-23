@@ -1,10 +1,10 @@
-import {Badge, Box, Card, Divider, Grid, Group, HoverCard, List, Modal, Progress, Stack, Text} from '@mantine/core';
+import {Badge, Box, Card, Divider, Grid, Group, List, Modal, Progress, Stack, Text} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
 import {currencyFormatter, diceFormatter, getRarityColor} from '../utils/Formatters';
 import {useUniverseContext} from '../PageBase';
 import {ArmorEquipment, ItemStack, JewelleryEquipment, ShieldEquipment, WeaponEquipment} from '../../api';
 import {SomeItemStack} from '../Constants';
-import {UpgradeCard} from './UpgradeCard';
+import {UpgradeHoverCard} from './UpgradeCard';
 
 type ItemStackCombination =
     ItemStack
@@ -44,38 +44,42 @@ export function ItemStackCard({
             style={{cursor: onClick ? 'pointer' : 'default'}}
         >
             {/* Header */}
-            <Group justify="space-between" mb="xs" align="flex-start">
+            <Group justify="space-between" align="stretch">
                 <Stack gap={0}>
                     <Group gap="xs">
                         <Text fw={700} size="xl">{stackPrefix + baseItem.name}</Text>
                     </Group>
-                    <Text size="xs" c="dimmed">
+                    <Text size="xs" c="dimmed" mb="xs">
                         {
                             (itemType.toLowerCase() !== 'armor' ? t(itemType.toLowerCase()) : t('enum:' + (stack as ArmorEquipment).armorSlot?.toLowerCase())) + ' • ' +
                             (baseItem.material ? ' ' + baseItem['material'].name + ' • ' : '') +
                             t('tier') + ' ' + baseItem.tier
                         }
                     </Text>
-                </Stack>
-                <Badge color={getRarityColor(baseItem.rarity)} variant="light">
-                    {t('enum:' + baseItem.rarity.toLowerCase())}
-                </Badge>
-            </Group>
 
-            {/* Tags */}
-            {(baseItem.tags && baseItem.tags.length > 0) ? (
-                <Group gap={5} mb="md">
-                    {baseItem.tags.map((tag) => (
-                        <Badge key={tag} variant="outline" size="xs" color="gray">{tag}</Badge>
-                    ))}
-                </Group>
-            ) : null}
+                    {/* Tags */}
+                    {(baseItem.tags && baseItem.tags.length > 0) ? (
+                        <Group gap={5} mb="md">
+                            {baseItem.tags.map((tag) => (
+                                <Badge key={tag} variant="outline" size="xs" color="gray">{tag}</Badge>
+                            ))}
+                        </Group>
+                    ) : null}
+                </Stack>
+                <Stack justify="space-between">
+                    <Badge color={getRarityColor(baseItem.rarity)} variant="light">
+                        {t('enum:' + baseItem.rarity.toLowerCase())}
+                    </Badge>
+                    <UpgradeSlotBadge itemStack={combItemStack}/>
+                </Stack>
+            </Group>
 
             {/* Durability/Wear Bar (If applicable) */}
             {(itemSettings.wearFactor > 0 && combItemStack.relativeDurability !== undefined) ? (
                 <Box mb="md">
-                    <Text size="xs" c="dimmed"
-                          mb={2}>{t('durability')}: {Math.round(combItemStack.relativeDurability * 100)}%</Text>
+                    <Text size="xs" c="dimmed" mb={2}>
+                        {t('durability')}: {Math.round(combItemStack.relativeDurability * 100)}%
+                    </Text>
                     <Progress
                         value={combItemStack.relativeDurability * 100}
                         size="xs"
@@ -88,18 +92,24 @@ export function ItemStackCard({
 
             {/* Dynamic Stats Grid - Using values from Stack, falling back to Item */}
             <Grid grow mb="md" gutter="xs">
-                <Stat label={t('armor')} current={combItemStack.armor}
-                      max={combItemStack.maxArmor}/>
-                <Stat label={t('protection')} current={combItemStack.protection}
-                      max={combItemStack.maxProtection}/>
+                <Stat
+                    label={t('armor')}
+                    current={combItemStack.armor}
+                    max={combItemStack.maxArmor}
+                />
+                <Stat
+                    label={t('protection')}
+                    current={combItemStack.protection}
+                    max={combItemStack.maxProtection}
+                />
                 <Stat label={t('weight')} current={combItemStack.weight ?? baseItem.weight}/>
                 <Stat label={t('damage')} current={combItemStack.damage} max={combItemStack.maxDamage}/>
                 <Stat label={t('dice')} current={diceFormatter(baseItem.dice)}/>
                 <Stat label={t('hit')} current={combItemStack.hit ?? baseItem.hit}/>
-                <Stat label={t('initiative')}
-                      current={combItemStack.initiative ?? baseItem.initiative}/>
-                <Stat label={t('upgradeSlots')} current={combItemStack.remainingUpgradeSlots}
-                      max={combItemStack.upgradeSlots}/>
+                <Stat
+                    label={t('initiative')}
+                    current={combItemStack.initiative ?? baseItem.initiative}
+                />
             </Grid>
 
             {/* Upgrades Section */}
@@ -110,14 +120,11 @@ export function ItemStackCard({
                     </Text>
                     <Group gap={4}>
                         {combItemStack.upgrades.map((u, i) => (
-                            <HoverCard key={i}>
-                                <HoverCard.Target>
-                                    <Badge size="xs" variant="dot" color="blue">{u.name}</Badge>
-                                </HoverCard.Target>
-                                <HoverCard.Dropdown p={0}>
-                                    <UpgradeCard upgrade={u}/>
-                                </HoverCard.Dropdown>
-                            </HoverCard>
+                            <UpgradeHoverCard
+                                key={i}
+                                upgrade={u}
+                                target={<Badge size="xs" variant="dot" color="blue">{u.name}</Badge>}
+                            />
                         ))}
                     </Group>
                 </Box>
@@ -206,14 +213,38 @@ function Stat({
         <Grid.Col span={6}>
             <Text size="xs" c="dimmed" fw={700} tt="uppercase">{label}</Text>
             <Group gap={4} align="baseline">
-                <Text size="sm" fw={max && current < max ? 600 : 400}
-                      c={max && current < max ? 'orange.8' : 'inherit'}>
+                <Text
+                    size="sm"
+                    fw={max && current < max ? 600 : 400}
+                    c={max && current < max ? 'orange.8' : 'inherit'}
+                >
                     {current}
                 </Text>
-                {max && max !== current && (
-                    <Text size="xs" c="dimmed">/ {max}</Text>
-                )}
+                {(max && max !== current) ? <Text size="xs" c="dimmed">/ {max}</Text> : null}
             </Group>
         </Grid.Col>
     );
+}
+
+function UpgradeSlotBadge({itemStack}: { itemStack: ItemStackCombination }) {
+    const {t} = useTranslation();
+    const current = itemStack.remainingUpgradeSlots;
+    const max = itemStack.upgradeSlots;
+
+    return <Stack gap={1} mb="xs" mr="xs">
+        <Text size="xs" c="dimmed" ta="right">
+            {t('upgradeSlots')}
+        </Text>
+        <Group gap={4} align="baseline" justify="flex-end">
+            <Text
+                size="xs"
+                fw={max && current < max ? 600 : 400}
+                c={max && current < max ? 'orange.8' : 'inherit'}
+                ta="right"
+            >
+                {current}
+            </Text>
+            {(max && max !== current) ? <Text size="xs" c="dimmed" ta="right">/ {max}</Text> : null}
+        </Group>
+    </Stack>;
 }

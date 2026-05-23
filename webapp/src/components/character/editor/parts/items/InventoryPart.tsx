@@ -8,8 +8,9 @@ import {IconCircleMinus, IconCirclePlus, IconMoneybagPlus} from '@tabler/icons-r
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {addItemToInventory, removeItemFromInventory} from '../../../../utils/InventoryUtils';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
-import {SomeItem, SomeItemStack} from '../../../../Constants';
+import {SomeItemStack} from '../../../../Constants';
 import {fetchAllItems} from '../../../../Database';
+import {UpgradePopover} from '../../../../items/UpgradeControl';
 
 
 /** Shows the inventory of the character */
@@ -39,7 +40,8 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                 {Array.from({length: rows}, (_, rowIndex) =>
                     <Table.Tr h={TABLE_ROW_HEIGHT} key={rowIndex}>
                         {Array.from({length: columns}, (__, colIndex) => {
-                            const itemStack = character?.inventory.inventory.items[rowIndex + colIndex * rows];
+                            const itemIndex = rowIndex + colIndex * rows;
+                            const itemStack = character?.inventory.inventory.items[itemIndex];
 
                             return <Table.Td
                                 style={{width: `${100 / columns}%`, ...TABLE_STYLE}}
@@ -57,21 +59,28 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                         </Text>
                                     ) : null}
                                     {itemStack ?
-                                        <Group wrap="nowrap" gap={1} style={{flexShrink: 0}}>
+                                        <Group
+                                            wrap="nowrap"
+                                            gap={1}
+                                            style={{flexShrink: 0}}
+                                            onClick={e => e.stopPropagation()}
+                                        >
+                                            <UpgradePopover
+                                                item={itemStack}
+                                                onChange={i => characterForm.replaceListItem('inventory.inventory.items', itemIndex, i)}
+                                            />
                                             <ActionIcon
                                                 variant="subtle"
                                                 size={TABLE_ROW_HEIGHT - 8}
                                                 className="no-drag"
-                                                onClick={e => {
-                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 1)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
-                                                    e.stopPropagation();
-                                                }}
-                                                onContextMenu={e => {
-                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 5)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
-                                                    e.preventDefault();
-                                                }}
+                                                onClick={() =>
+                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item, 1)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
+                                                }
+                                                onContextMenu={() =>
+                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item, 5)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
+                                                }
                                             >
                                                 <IconCirclePlus size={14}/>
                                             </ActionIcon>
@@ -79,16 +88,14 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 variant="subtle"
                                                 size={TABLE_ROW_HEIGHT - 8}
                                                 className="no-drag"
-                                                onClick={e => {
-                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 1)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
-                                                    e.stopPropagation();
-                                                }}
-                                                onContextMenu={e => {
-                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item as SomeItem, 5)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory));
-                                                    e.preventDefault();
-                                                }}
+                                                onClick={() =>
+                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item, 1)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
+                                                }
+                                                onContextMenu={() =>
+                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item, 5)
+                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
+                                                }
                                             >
                                                 <IconCircleMinus color="red" size={14}/>
                                             </ActionIcon>

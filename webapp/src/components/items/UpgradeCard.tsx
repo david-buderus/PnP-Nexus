@@ -1,8 +1,9 @@
-import {Badge, Box, Card, Divider, Group, List, Modal, Stack, Text} from '@mantine/core';
+import {Badge, Box, Card, Divider, Group, HoverCard, List, Modal, Stack, Text} from '@mantine/core';
 import {currencyFormatter} from '../utils/Formatters';
 import {useUniverseContext} from '../PageBase';
 import {TagRequirement, Upgrade} from '../../api';
 import {useTranslation} from 'react-i18next';
+import React from 'react';
 
 type UpgradeCardProps = {
     upgrade: Upgrade;
@@ -12,14 +13,9 @@ type UpgradeCardProps = {
 
 /** Visualizes a single item upgrade */
 export function UpgradeCard({upgrade, onClick, enoughSlots = true}: UpgradeCardProps) {
-    const {t} = useTranslation();
-    const {currencySettings} = useUniverseContext();
-
     if (!upgrade) {
         return null;
     }
-
-    const formattedTags = formatTagRequirements(upgrade.tagRequirement);
 
     return (
         <Card
@@ -33,64 +29,98 @@ export function UpgradeCard({upgrade, onClick, enoughSlots = true}: UpgradeCardP
                 cursor: onClick ? 'pointer' : 'default',
             }}
         >
-            {/* Header: Name and Restriction */}
-            <Group justify="space-between" mb="xs" align="flex-start">
-                <Stack gap={0}>
-                    <Text fw={700} size="xl">{upgrade.name || t('item:unnamed')}</Text>
-                    <Text size="xs" c="dimmed">
-                        {t('upgrade:restriction')}: {t('enum:' + upgrade.restriction.toLowerCase())}
-                    </Text>
-                </Stack>
-                <Badge color={enoughSlots ? 'blue' : 'red'} variant="light" size="md">
-                    {upgrade.slots} {upgrade.slots === 1 ? t('upgrade:slot') : t('upgrade:slots')}
-                </Badge>
-            </Group>
-
-            {/* Tag Requirements (if any exist) */}
-            {formattedTags ? (
-                <Group gap={5} mb="md">
-                    <Text size="xs" c="dimmed" fw={500}>{t('upgrade:tagRequirement')}:</Text>
-                    <Badge variant="outline" size="xs">
-                        {formattedTags}
-                    </Badge>
-                </Group>
-            ) : null}
-
-            <Divider variant="dashed" mb="sm"/>
-
-            {/* Effects List */}
-            <Stack gap="xs" style={{flexGrow: 1}}>
-                {upgrade.effects && upgrade.effects.length > 0 ? (
-                    <Box>
-                        <Text size="xs" fw={700} c="dimmed">{t('upgrade:effects')}</Text>
-                        <List size="sm">
-                            {upgrade.effects.map((effect, index) => (
-                                <List.Item key={index}>
-                                    {effect.description}
-                                </List.Item>
-                            ))}
-                        </List>
-                    </Box>
-                ) : (
-                    <Text size="sm" c="dimmed" fs="italic">
-                        {t('upgrade:no_effects')}
-                    </Text>
-                )}
-            </Stack>
-
-            <Divider mb="sm" mt="sm"/>
-
-            {/* Footer: Price */}
-            <Group justify="space-between" align="flex-end">
-                <Stack gap={0}>
-                    <Text size="xs" c="dimmed" fw={700}>{t('price')}</Text>
-                    <Text fw={500} size="sm">
-                        {currencyFormatter(currencySettings, upgrade.vendorPrice)}
-                    </Text>
-                </Stack>
-            </Group>
+            <UpgradeCardContent upgrade={upgrade} enoughSlots={enoughSlots}/>
         </Card>
     );
+}
+
+/** Visualizes a single item upgrade as hover card */
+export function UpgradeHoverCard({upgrade, target, enoughSlots = true}: {
+    upgrade: Upgrade;
+    target: React.ReactNode;
+    enoughSlots?: boolean;
+}) {
+    return <HoverCard
+        shadow="sm"
+        radius="md"
+    >
+        <HoverCard.Target>
+            {target}
+        </HoverCard.Target>
+        <HoverCard.Dropdown p={0}>
+            <Box w={400} p="lg">
+                <UpgradeCardContent upgrade={upgrade} enoughSlots={enoughSlots}/>
+            </Box>
+        </HoverCard.Dropdown>
+    </HoverCard>;
+}
+
+function UpgradeCardContent({upgrade, enoughSlots}: {
+    upgrade: Upgrade;
+    enoughSlots?: boolean;
+}) {
+    const {t} = useTranslation();
+    const {currencySettings} = useUniverseContext();
+    const formattedTags = formatTagRequirements(upgrade.tagRequirement);
+
+    return <>
+        {/* Header: Name and Restriction */}
+        <Group justify="space-between" mb="xs" align="flex-start">
+            <Stack gap={0}>
+                <Text fw={700} size="xl">{upgrade.name || t('item:unnamed')}</Text>
+                <Text size="xs" c="dimmed">
+                    {t('upgrade:restriction')}: {t('enum:' + upgrade.restriction.toLowerCase())}
+                </Text>
+            </Stack>
+            <Badge color={enoughSlots ? 'blue' : 'red'} variant="light" size="md">
+                {upgrade.slots} {upgrade.slots === 1 ? t('upgrade:slot') : t('upgrade:slots')}
+            </Badge>
+        </Group>
+
+        {/* Tag Requirements (if any exist) */}
+        {formattedTags ? (
+            <Group gap={5} mb="md">
+                <Text size="xs" c="dimmed" fw={500}>{t('upgrade:tagRequirement')}:</Text>
+                <Badge variant="outline" size="xs">
+                    {formattedTags}
+                </Badge>
+            </Group>
+        ) : null}
+
+        <Divider variant="dashed" mb="sm"/>
+
+        {/* Effects List */}
+        <Stack gap="xs" style={{flexGrow: 1}}>
+            {upgrade.effects && upgrade.effects.length > 0 ? (
+                <Box>
+                    <Text size="xs" fw={700} c="dimmed">{t('upgrade:effects')}</Text>
+                    <List size="sm">
+                        {upgrade.effects.map((effect, index) => (
+                            <List.Item key={index}>
+                                {effect.description}
+                            </List.Item>
+                        ))}
+                    </List>
+                </Box>
+            ) : (
+                <Text size="sm" c="dimmed" fs="italic">
+                    {t('upgrade:no_effects')}
+                </Text>
+            )}
+        </Stack>
+
+        <Divider mb="sm" mt="sm"/>
+
+        {/* Footer: Price */}
+        <Group justify="space-between" align="flex-end">
+            <Stack gap={0}>
+                <Text size="xs" c="dimmed" fw={700}>{t('price')}</Text>
+                <Text fw={500} size="sm">
+                    {currencyFormatter(currencySettings, upgrade.vendorPrice)}
+                </Text>
+            </Stack>
+        </Group>
+    </>;
 }
 
 /**

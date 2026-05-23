@@ -25,7 +25,7 @@ public class Inventory {
     /**
      * Checks if the inventory has enough space left for the given stack.
      */
-    public boolean hasSpaceFor(ItemStack<?> itemStack) {
+    public boolean hasSpaceFor(ItemStack<? extends Item> itemStack) {
         if (items.size() < maxSize - 1) {
             return true;
         }

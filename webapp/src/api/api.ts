@@ -867,87 +867,6 @@ export interface ICharacterTrait {
 /**
  * 
  * @export
- * @interface IItem
- */
-export interface IItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof IItem
-     */
-    'description'?: string;
-    /**
-     * 
-     * @type {Array<ArmorEffectsInner>}
-     * @memberof IItem
-     */
-    'effects': Array<ArmorEffectsInner>;
-    /**
-     * 
-     * @type {number}
-     * @memberof IItem
-     */
-    'maximumStackSize'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IItem
-     */
-    'minimumStackSize'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof IItem
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof IItem
-     */
-    'note'?: string;
-    /**
-     * 
-     * @type {ERarity}
-     * @memberof IItem
-     */
-    'rarity'?: ERarity;
-    /**
-     * 
-     * @type {string}
-     * @memberof IItem
-     */
-    'requirement'?: string;
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof IItem
-     */
-    'tags'?: Array<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof IItem
-     */
-    'tier'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IItem
-     */
-    'upgradeSlots'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof IItem
-     */
-    'vendorPrice'?: number;
-}
-
-
-/**
- * 
- * @export
  * @interface Inventory
  */
 export interface Inventory {
@@ -1034,6 +953,12 @@ export interface Item {
     'effects': Array<ArmorEffectsInner>;
     /**
      * 
+     * @type {string}
+     * @memberof Item
+     */
+    'id'?: string;
+    /**
+     * 
      * @type {number}
      * @memberof Item
      */
@@ -1092,12 +1017,6 @@ export interface Item {
      * @memberof Item
      */
     'vendorPrice': number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Item
-     */
-    'id'?: string;
 }
 
 
@@ -1147,10 +1066,10 @@ export interface ItemSettings {
 export interface ItemStack {
     /**
      * 
-     * @type {ItemStackItem}
+     * @type {Item}
      * @memberof ItemStack
      */
-    'item': ItemStackItem;
+    'item': Item;
     /**
      * 
      * @type {number}
@@ -1177,11 +1096,42 @@ export interface ItemStack {
     'upgrades': Array<Upgrade>;
 }
 /**
- * @type ItemStackItem
+ * 
  * @export
+ * @interface ItemStackItem
  */
-export type ItemStackItem = Armor | Item | Jewellery | Shield | Weapon;
-
+export interface ItemStackItem {
+    /**
+     * 
+     * @type {Item}
+     * @memberof ItemStackItem
+     */
+    'item': Item;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackItem
+     */
+    'remainingUpgradeSlots'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackItem
+     */
+    'stackSize'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof ItemStackItem
+     */
+    'upgradeSlots'?: number;
+    /**
+     * 
+     * @type {Array<Upgrade>}
+     * @memberof ItemStackItem
+     */
+    'upgrades': Array<Upgrade>;
+}
 /**
  * 
  * @export
@@ -2738,38 +2688,38 @@ export interface UpgradeRecipe {
 /**
  * 
  * @export
- * @interface UpgradeRemovalRequestEquipableItemItemStack
+ * @interface UpgradeRemovalRequestItemStack
  */
-export interface UpgradeRemovalRequestEquipableItemItemStack {
+export interface UpgradeRemovalRequestItemStack {
     /**
      * 
      * @type {AddUpgrade200Response}
-     * @memberof UpgradeRemovalRequestEquipableItemItemStack
+     * @memberof UpgradeRemovalRequestItemStack
      */
-    'equipment': AddUpgrade200Response;
+    'item': AddUpgrade200Response;
     /**
      * 
      * @type {Upgrade}
-     * @memberof UpgradeRemovalRequestEquipableItemItemStack
+     * @memberof UpgradeRemovalRequestItemStack
      */
     'upgrade': Upgrade;
 }
 /**
  * 
  * @export
- * @interface UpgradeRequestEquipableItemItemStack
+ * @interface UpgradeRequestItemStack
  */
-export interface UpgradeRequestEquipableItemItemStack {
+export interface UpgradeRequestItemStack {
     /**
      * 
      * @type {AddUpgrade200Response}
-     * @memberof UpgradeRequestEquipableItemItemStack
+     * @memberof UpgradeRequestItemStack
      */
-    'equipment': AddUpgrade200Response;
+    'item': AddUpgrade200Response;
     /**
      * 
      * @type {Upgrade}
-     * @memberof UpgradeRequestEquipableItemItemStack
+     * @memberof UpgradeRequestItemStack
      */
     'upgrade': Upgrade;
 }
@@ -12682,13 +12632,13 @@ export const UpgradeItemServiceApiAxiosParamCreator = function (configuration?: 
         /**
          * 
          * @summary Upgrades the given equipment
-         * @param {UpgradeRequestEquipableItemItemStack} upgradeRequestEquipableItemItemStack 
+         * @param {UpgradeRequestItemStack} upgradeRequestItemStack 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addUpgrade: async (upgradeRequestEquipableItemItemStack: UpgradeRequestEquipableItemItemStack, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'upgradeRequestEquipableItemItemStack' is not null or undefined
-            assertParamExists('addUpgrade', 'upgradeRequestEquipableItemItemStack', upgradeRequestEquipableItemItemStack)
+        addUpgrade: async (upgradeRequestItemStack: UpgradeRequestItemStack, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'upgradeRequestItemStack' is not null or undefined
+            assertParamExists('addUpgrade', 'upgradeRequestItemStack', upgradeRequestItemStack)
             const localVarPath = `/api/upgrade-item/add`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12708,7 +12658,7 @@ export const UpgradeItemServiceApiAxiosParamCreator = function (configuration?: 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRequestEquipableItemItemStack, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRequestItemStack, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12718,13 +12668,13 @@ export const UpgradeItemServiceApiAxiosParamCreator = function (configuration?: 
         /**
          * 
          * @summary Remove an upgrades from the given equipment
-         * @param {UpgradeRemovalRequestEquipableItemItemStack} upgradeRemovalRequestEquipableItemItemStack 
+         * @param {UpgradeRemovalRequestItemStack} upgradeRemovalRequestItemStack 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        removeUpgrade: async (upgradeRemovalRequestEquipableItemItemStack: UpgradeRemovalRequestEquipableItemItemStack, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'upgradeRemovalRequestEquipableItemItemStack' is not null or undefined
-            assertParamExists('removeUpgrade', 'upgradeRemovalRequestEquipableItemItemStack', upgradeRemovalRequestEquipableItemItemStack)
+        removeUpgrade: async (upgradeRemovalRequestItemStack: UpgradeRemovalRequestItemStack, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'upgradeRemovalRequestItemStack' is not null or undefined
+            assertParamExists('removeUpgrade', 'upgradeRemovalRequestItemStack', upgradeRemovalRequestItemStack)
             const localVarPath = `/api/upgrade-item/remove`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -12744,7 +12694,7 @@ export const UpgradeItemServiceApiAxiosParamCreator = function (configuration?: 
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRemovalRequestEquipableItemItemStack, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(upgradeRemovalRequestItemStack, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -12764,12 +12714,12 @@ export const UpgradeItemServiceApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Upgrades the given equipment
-         * @param {UpgradeRequestEquipableItemItemStack} upgradeRequestEquipableItemItemStack 
+         * @param {UpgradeRequestItemStack} upgradeRequestItemStack 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addUpgrade(upgradeRequestEquipableItemItemStack: UpgradeRequestEquipableItemItemStack, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AddUpgrade200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addUpgrade(upgradeRequestEquipableItemItemStack, options);
+        async addUpgrade(upgradeRequestItemStack: UpgradeRequestItemStack, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AddUpgrade200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addUpgrade(upgradeRequestItemStack, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UpgradeItemServiceApi.addUpgrade']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12777,12 +12727,12 @@ export const UpgradeItemServiceApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Remove an upgrades from the given equipment
-         * @param {UpgradeRemovalRequestEquipableItemItemStack} upgradeRemovalRequestEquipableItemItemStack 
+         * @param {UpgradeRemovalRequestItemStack} upgradeRemovalRequestItemStack 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async removeUpgrade(upgradeRemovalRequestEquipableItemItemStack: UpgradeRemovalRequestEquipableItemItemStack, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AddUpgrade200Response>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.removeUpgrade(upgradeRemovalRequestEquipableItemItemStack, options);
+        async removeUpgrade(upgradeRemovalRequestItemStack: UpgradeRemovalRequestItemStack, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AddUpgrade200Response>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeUpgrade(upgradeRemovalRequestItemStack, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UpgradeItemServiceApi.removeUpgrade']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -12800,22 +12750,22 @@ export const UpgradeItemServiceApiFactory = function (configuration?: Configurat
         /**
          * 
          * @summary Upgrades the given equipment
-         * @param {UpgradeRequestEquipableItemItemStack} upgradeRequestEquipableItemItemStack 
+         * @param {UpgradeRequestItemStack} upgradeRequestItemStack 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addUpgrade(upgradeRequestEquipableItemItemStack: UpgradeRequestEquipableItemItemStack, options?: RawAxiosRequestConfig): AxiosPromise<AddUpgrade200Response> {
-            return localVarFp.addUpgrade(upgradeRequestEquipableItemItemStack, options).then((request) => request(axios, basePath));
+        addUpgrade(upgradeRequestItemStack: UpgradeRequestItemStack, options?: RawAxiosRequestConfig): AxiosPromise<AddUpgrade200Response> {
+            return localVarFp.addUpgrade(upgradeRequestItemStack, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Remove an upgrades from the given equipment
-         * @param {UpgradeRemovalRequestEquipableItemItemStack} upgradeRemovalRequestEquipableItemItemStack 
+         * @param {UpgradeRemovalRequestItemStack} upgradeRemovalRequestItemStack 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        removeUpgrade(upgradeRemovalRequestEquipableItemItemStack: UpgradeRemovalRequestEquipableItemItemStack, options?: RawAxiosRequestConfig): AxiosPromise<AddUpgrade200Response> {
-            return localVarFp.removeUpgrade(upgradeRemovalRequestEquipableItemItemStack, options).then((request) => request(axios, basePath));
+        removeUpgrade(upgradeRemovalRequestItemStack: UpgradeRemovalRequestItemStack, options?: RawAxiosRequestConfig): AxiosPromise<AddUpgrade200Response> {
+            return localVarFp.removeUpgrade(upgradeRemovalRequestItemStack, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -12830,25 +12780,25 @@ export class UpgradeItemServiceApi extends BaseAPI {
     /**
      * 
      * @summary Upgrades the given equipment
-     * @param {UpgradeRequestEquipableItemItemStack} upgradeRequestEquipableItemItemStack 
+     * @param {UpgradeRequestItemStack} upgradeRequestItemStack 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UpgradeItemServiceApi
      */
-    public addUpgrade(upgradeRequestEquipableItemItemStack: UpgradeRequestEquipableItemItemStack, options?: RawAxiosRequestConfig) {
-        return UpgradeItemServiceApiFp(this.configuration).addUpgrade(upgradeRequestEquipableItemItemStack, options).then((request) => request(this.axios, this.basePath));
+    public addUpgrade(upgradeRequestItemStack: UpgradeRequestItemStack, options?: RawAxiosRequestConfig) {
+        return UpgradeItemServiceApiFp(this.configuration).addUpgrade(upgradeRequestItemStack, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Remove an upgrades from the given equipment
-     * @param {UpgradeRemovalRequestEquipableItemItemStack} upgradeRemovalRequestEquipableItemItemStack 
+     * @param {UpgradeRemovalRequestItemStack} upgradeRemovalRequestItemStack 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof UpgradeItemServiceApi
      */
-    public removeUpgrade(upgradeRemovalRequestEquipableItemItemStack: UpgradeRemovalRequestEquipableItemItemStack, options?: RawAxiosRequestConfig) {
-        return UpgradeItemServiceApiFp(this.configuration).removeUpgrade(upgradeRemovalRequestEquipableItemItemStack, options).then((request) => request(this.axios, this.basePath));
+    public removeUpgrade(upgradeRemovalRequestItemStack: UpgradeRemovalRequestItemStack, options?: RawAxiosRequestConfig) {
+        return UpgradeItemServiceApiFp(this.configuration).removeUpgrade(upgradeRemovalRequestItemStack, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

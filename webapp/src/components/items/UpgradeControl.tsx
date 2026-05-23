@@ -2,25 +2,25 @@ import {ActionIcon, Box, Card, Group, Popover, ScrollArea, Stack, Text, TextInpu
 import {useTranslation} from 'react-i18next';
 import React, {useContext, useMemo, useState} from 'react';
 import {fetchAllUpgrades} from '../Database';
-import {SomeEquipment} from '../Constants';
+import {SomeItemStack} from '../Constants';
 import {UpgradeCard} from './UpgradeCard';
 import {Upgrade} from '../../api';
-import {removeUpgradeFromEquipment, upgradeEquipment} from '../utils/InventoryUtils';
 import {IconCheck} from '@tabler/icons-react';
 import {PnPCharacterContext} from '../character/PnPCharacterContext';
 import {TABLE_ROW_HEIGHT} from '../character/editor/parts/Constants';
 import {GiMagicAxe} from 'react-icons/gi';
 import {getPossibleUpgradeRestriction} from '../utils/UpgradeUtils';
+import {removeUpgradeFromItem, upgradeItem} from '../utils/InventoryUtils';
 
 
 /**
- * Popover to control upgrades on equipment.
+ * Popover to control upgrades on items.
  */
-export function UpgradePopover<E extends SomeEquipment>({
-    equipment, onChange
+export function UpgradePopover<I extends SomeItemStack>({
+    item, onChange
 }: {
-    equipment: E;
-    onChange: (equipment: E) => void;
+    item: I;
+    onChange: (item: I) => void;
 }) {
     const {allowEdit} = useContext(PnPCharacterContext);
 
@@ -44,17 +44,17 @@ export function UpgradePopover<E extends SomeEquipment>({
                 </ActionIcon>
             </Popover.Target>
             <Popover.Dropdown>
-                <UpgradeControl equipment={equipment} onChange={onChange}/>
+                <UpgradeControl item={item} onChange={onChange}/>
             </Popover.Dropdown>
         </Popover>
     );
 }
 
-function UpgradeControl<E extends SomeEquipment>({
-    equipment, onChange
+function UpgradeControl<I extends SomeItemStack>({
+    item, onChange
 }: {
-    equipment: E;
-    onChange: (equipment: E) => void;
+    item: I;
+    onChange: (item: I) => void;
 }) {
     const [upgrades] = fetchAllUpgrades();
     const {t} = useTranslation();
@@ -62,18 +62,18 @@ function UpgradeControl<E extends SomeEquipment>({
     const [filterValue, setFilterValue] = useState('');
 
     const sortedUpgrades = useMemo(() =>
-            equipment.upgrades.map(u => ({used: true, upgrade: u})).concat(upgrades
+            item.upgrades.map(u => ({used: true, upgrade: u})).concat(upgrades
                 .filter(upgrade => upgrade.name.toLowerCase().includes(filterValue.toLowerCase()))
-                .filter(upgrade => !equipment.upgrades.map(u => u.id).includes(upgrade.id))
-                .filter(upgrade => getPossibleUpgradeRestriction(equipment.item['@type']).includes(upgrade.restriction))
+                .filter(upgrade => !item.upgrades.map(u => u.id).includes(upgrade.id))
+                .filter(upgrade => getPossibleUpgradeRestriction(item.item['@type']).includes(upgrade.restriction))
                 .map(u => ({used: false, upgrade: u}))),
-        [filterValue, upgrades, equipment]);
+        [filterValue, upgrades, item]);
 
     function onClick(upgrade: Upgrade, used: boolean) {
         if (used) {
-            removeUpgradeFromEquipment(equipment, upgrade).then(onChange);
+            removeUpgradeFromItem(item, upgrade).then(onChange);
         } else {
-            upgradeEquipment(equipment, upgrade).then(onChange);
+            upgradeItem(item, upgrade).then(onChange);
         }
     }
 
@@ -86,7 +86,7 @@ function UpgradeControl<E extends SomeEquipment>({
                     onChange={(e) => setFilterValue(e.target.value)}
                 />
                 <Text>
-                    {t('upgradeSlots') + ': ' + equipment.remainingUpgradeSlots + '/' + equipment.upgradeSlots}
+                    {t('upgradeSlots') + ': ' + item.remainingUpgradeSlots + '/' + item.upgradeSlots}
                 </Text>
             </Group>
             <ScrollArea.Autosize type="auto" mah={500}>
@@ -97,7 +97,7 @@ function UpgradeControl<E extends SomeEquipment>({
                             upgrade={u.upgrade}
                             used={u.used}
                             onClick={() => onClick(u.upgrade, u.used)}
-                            equipment={equipment}
+                            item={item}
                         />)}
                     </Group>
                     {sortedUpgrades.length > 3 ?
@@ -107,7 +107,7 @@ function UpgradeControl<E extends SomeEquipment>({
                                 upgrade={u.upgrade}
                                 used={u.used}
                                 onClick={() => onClick(u.upgrade, u.used)}
-                                equipment={equipment}
+                                item={item}
                             />)}
                         </Group>
                         : null
@@ -119,7 +119,7 @@ function UpgradeControl<E extends SomeEquipment>({
                                 upgrade={u.upgrade}
                                 used={u.used}
                                 onClick={() => onClick(u.upgrade, u.used)}
-                                equipment={equipment}
+                                item={item}
                             />)}
                         </Group>
                         : null
@@ -131,18 +131,18 @@ function UpgradeControl<E extends SomeEquipment>({
 }
 
 function EquippedUpgradeCard({
-    used, upgrade, onClick, equipment
+    used, upgrade, onClick, item
 }: {
     used: boolean;
     upgrade: Upgrade;
     onClick: () => void;
-    equipment: SomeEquipment;
+    item: SomeItemStack;
 }) {
     return <Box pos="relative">
         <UpgradeCard
             upgrade={upgrade}
             onClick={onClick}
-            enoughSlots={used || upgrade.slots <= equipment.remainingUpgradeSlots}
+            enoughSlots={used || upgrade.slots <= item.remainingUpgradeSlots}
         />
         {used ? <IconCheck
             style={{

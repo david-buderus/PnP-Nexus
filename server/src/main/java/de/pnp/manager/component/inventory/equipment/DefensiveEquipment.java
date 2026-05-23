@@ -1,13 +1,14 @@
 package de.pnp.manager.component.inventory.equipment;
 
 import de.pnp.manager.component.item.Item;
+import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
 
 /**
  * Represents an {@link IDefensiveItem} that can be held and used.
  */
-public abstract class DefensiveEquipment<I extends IDefensiveItem> extends DamageableEquipment<I> {
+public abstract class DefensiveEquipment<I extends EquipableItem & IDefensiveItem> extends DamageableEquipment<I> {
 
     protected DefensiveEquipment(float stackSize, I item, int wear) {
         super(stackSize, item, wear);

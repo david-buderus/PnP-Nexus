@@ -34,6 +34,7 @@ import java.util.Set;
  * A concrete item in the universe.
  */
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = Item.class, name = "Item"),
         @JsonSubTypes.Type(value = Weapon.class, name = "Weapon"),
         @JsonSubTypes.Type(value = Shield.class, name = "Shield"),
         @JsonSubTypes.Type(value = Armor.class, name = "Armor"),

@@ -135,7 +135,7 @@ function ArmorSlot({slot, setLastClicked}: {
                             onClick={e => e.stopPropagation()}
                         >
                             <UpgradePopover
-                                equipment={armor}
+                                item={armor}
                                 onChange={a => characterForm.setFieldValue(`equipment.armor.${slot}`, a)}
                             />
                             <ActionIcon
@@ -176,6 +176,7 @@ function ShieldRow({
     return [
         <Table.Tr
             h={TABLE_ROW_HEIGHT}
+            key="details-row"
             onClick={allowEdit ? () => setLastClicked(shield ?? null) : null}
         >
             <Table.Td style={TABLE_STYLE}>
@@ -205,7 +206,7 @@ function ShieldRow({
                             onClick={e => e.stopPropagation()}
                         >
                             <UpgradePopover
-                                equipment={shield}
+                                item={shield}
                                 onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
                             />
                             <ActionIcon
@@ -223,7 +224,7 @@ function ShieldRow({
                 </Group>
             </Table.Td>
         </Table.Tr>,
-        <ShieldExtraLine shield={shield}/>
+        <ShieldExtraLine key="info-row" shield={shield}/>
     ];
 }
 

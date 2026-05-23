@@ -747,7 +747,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpgradeRequestEquipableItemItemStack"
+                "$ref": "#/components/schemas/UpgradeRequestItemStack"
               }
             }
           },
@@ -794,7 +794,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpgradeRemovalRequestEquipableItemItemStack"
+                "$ref": "#/components/schemas/UpgradeRemovalRequestItemStack"
               }
             }
           },
@@ -5880,69 +5880,6 @@
       "IGrantedAuthorityDTO": {
         "type": "object"
       },
-      "IItem": {
-        "required": [
-          "effects"
-        ],
-        "type": "object",
-        "properties": {
-          "description": {
-            "type": "string"
-          },
-          "effects": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/EquipmentItemEffect"
-                },
-                {
-                  "$ref": "#/components/schemas/SimpleItemEffect"
-                }
-              ]
-            }
-          },
-          "maximumStackSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "minimumStackSize": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "note": {
-            "type": "string"
-          },
-          "rarity": {
-            "$ref": "#/components/schemas/ERarity"
-          },
-          "requirement": {
-            "type": "string"
-          },
-          "tags": {
-            "uniqueItems": true,
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "tier": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "upgradeSlots": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "vendorPrice": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
       "IResourceUsageObject": {
         "type": "object"
       },
@@ -6034,19 +5971,66 @@
           "vendorPrice"
         ],
         "type": "object",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/IItem"
+        "properties": {
+          "description": {
+            "type": "string"
           },
-          {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              }
+          "effects": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/EquipmentItemEffect"
+                },
+                {
+                  "$ref": "#/components/schemas/SimpleItemEffect"
+                }
+              ]
             }
+          },
+          "id": {
+            "type": "string"
+          },
+          "maximumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minimumStackSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "rarity": {
+            "$ref": "#/components/schemas/ERarity"
+          },
+          "requirement": {
+            "type": "string"
+          },
+          "tags": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tier": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "upgradeSlots": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vendorPrice": {
+            "type": "integer",
+            "format": "int32"
           }
-        ]
+        }
       },
       "ItemEffect": {
         "required": [
@@ -6087,23 +6071,7 @@
         "type": "object",
         "properties": {
           "item": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/Armor"
-              },
-              {
-                "$ref": "#/components/schemas/Item"
-              },
-              {
-                "$ref": "#/components/schemas/Jewellery"
-              },
-              {
-                "$ref": "#/components/schemas/Shield"
-              },
-              {
-                "$ref": "#/components/schemas/Weapon"
-              }
-            ]
+            "$ref": "#/components/schemas/Item"
           },
           "remainingUpgradeSlots": {
             "type": "integer",
@@ -7540,14 +7508,14 @@
           }
         }
       },
-      "UpgradeRemovalRequestEquipableItemItemStack": {
+      "UpgradeRemovalRequestItemStack": {
         "required": [
-          "equipment",
+          "item",
           "upgrade"
         ],
         "type": "object",
         "properties": {
-          "equipment": {
+          "item": {
             "oneOf": [
               {
                 "$ref": "#/components/schemas/ItemStack"
@@ -7571,14 +7539,14 @@
           }
         }
       },
-      "UpgradeRequestEquipableItemItemStack": {
+      "UpgradeRequestItemStack": {
         "required": [
-          "equipment",
+          "item",
           "upgrade"
         ],
         "type": "object",
         "properties": {
-          "equipment": {
+          "item": {
             "oneOf": [
               {
                 "$ref": "#/components/schemas/ItemStack"

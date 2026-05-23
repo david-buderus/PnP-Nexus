@@ -120,7 +120,7 @@ function EmptyRow({
     isWeapon: boolean;
 }) {
     return [
-        <Table.Tr h={TABLE_ROW_HEIGHT}>
+        <Table.Tr key="details-row" h={TABLE_ROW_HEIGHT}>
             <Table.Td style={TABLE_STYLE}/>
             <Table.Td style={TABLE_STYLE}/>
             <Table.Td style={TABLE_STYLE}/>
@@ -136,7 +136,7 @@ function EmptyRow({
                 </Group>
             </Table.Td>
         </Table.Tr>,
-        <Table.Tr h={TABLE_ROW_HEIGHT}>
+        <Table.Tr key="info-row" h={TABLE_ROW_HEIGHT}>
             <Table.Td style={TABLE_STYLE} colSpan={7}/>
         </Table.Tr>
     ];
@@ -183,7 +183,7 @@ function WeaponRow({
                         onClick={e => e.stopPropagation()}
                     >
                         <UpgradePopover
-                            equipment={weapon}
+                            item={weapon}
                             onChange={w => characterForm.replaceListItem('equipment.weapons', index, w)}
                         />
                         <ActionIcon
@@ -246,7 +246,7 @@ function ShieldRow({
                         onClick={e => e.stopPropagation()}
                     >
                         <UpgradePopover
-                            equipment={shield}
+                            item={shield}
                             onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
                         />
                         <ActionIcon

@@ -117,7 +117,7 @@ function JewelleryLines({
                                 onClick={e => e.stopPropagation()}
                             >
                                 <UpgradePopover
-                                    equipment={j}
+                                    item={j}
                                     onChange={e => characterForm.replaceListItem(`equipment.jewellery.${definition.name}`, index, e)}
                                 />
                                 <ActionIcon

@@ -15,7 +15,6 @@ import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.equipable.*;
-import de.pnp.manager.component.item.interfaces.IItem;
 import de.pnp.manager.component.upgrade.Upgrade;
 import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentItemEffect;
@@ -32,13 +31,14 @@ import java.util.List;
  * Represents an {@link Item} that can be held and used.
  */
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = ItemStack.class, name = "ItemStack"),
         @JsonSubTypes.Type(value = ShieldEquipment.class, name = "ShieldEquipment"),
         @JsonSubTypes.Type(value = ArmorEquipment.class, name = "ArmorEquipment"),
         @JsonSubTypes.Type(value = WeaponEquipment.class, name = "WeaponEquipment"),
         @JsonSubTypes.Type(value = JewelleryEquipment.class, name = "JewelleryEquipment"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-public class ItemStack<I extends IItem> {
+public class ItemStack<I extends Item> {
 
     /**
      * The amount of the {@link #item} this {@link ItemStack} holds.
@@ -54,7 +54,7 @@ public class ItemStack<I extends IItem> {
     private final I item;
 
     /**
-     * The {@link Upgrade upgrades} of the {@link IItem}.
+     * The {@link Upgrade upgrades} of the {@link Item}.
      */
     @DBRef
     @NotNull
@@ -66,8 +66,6 @@ public class ItemStack<I extends IItem> {
 
     @JsonCreator
     public ItemStack(float stackSize, I item, Collection<Upgrade> upgrades) {
-        Preconditions.checkArgument(stackSize >= item.getMinimumStackSize() && stackSize <= item.getMaximumStackSize(),
-                "The stackSize '%s' is forbidden for the item '%s.'", stackSize, item.getName());
         this.stackSize = stackSize;
         this.item = item;
         this.upgrades = upgrades;

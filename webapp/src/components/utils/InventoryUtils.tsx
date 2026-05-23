@@ -1,4 +1,4 @@
-import {API_CONFIGURATION, SomeEquipment, SomeItem} from '../Constants';
+import {API_CONFIGURATION, SomeItem, SomeItemStack} from '../Constants';
 import {Inventory, InventoryServiceApi, Upgrade, UpgradeItemServiceApi} from '../../api';
 
 const INVENTORY_SERVICE = new InventoryServiceApi(API_CONFIGURATION);
@@ -25,9 +25,9 @@ export async function removeItemFromInventory(inventory: Inventory, item: SomeIt
 /**
  * Upgrades the given item and returns it.
  */
-export async function upgradeEquipment<T extends SomeEquipment>(equipment: T, upgrade: Upgrade): Promise<T> {
+export async function upgradeItem<T extends SomeItemStack>(item: T, upgrade: Upgrade): Promise<T> {
     return UPGRADE_SERVICE.addUpgrade({
-        equipment: equipment,
+        item: item,
         upgrade: upgrade
     }).then(response => response.data as T);
 }
@@ -35,9 +35,9 @@ export async function upgradeEquipment<T extends SomeEquipment>(equipment: T, up
 /**
  * Removes the upgrades from the given item and returns it.
  */
-export async function removeUpgradeFromEquipment<T extends SomeEquipment>(equipment: T, upgrade: Upgrade): Promise<T> {
+export async function removeUpgradeFromItem<T extends SomeItemStack>(item: T, upgrade: Upgrade): Promise<T> {
     return UPGRADE_SERVICE.removeUpgrade({
-        equipment: equipment,
+        item: item,
         upgrade: upgrade
     }).then(response => response.data as T);
 }
