@@ -24,7 +24,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 public class InventoryService {
 
     @PostMapping("add")
-    @Operation(summary = "Inserts the given stack into the inventory", operationId = "add")
+    @Operation(summary = "Inserts the given stack into the inventory", operationId = "addItemToInventory")
     public Inventory add(@RequestBody @Validated InventoryAddRequest request) {
         ItemStack<? extends Item> itemStack = ItemStack.from(request.item, request.amount);
         if (!request.inventory.addItem(itemStack)) {
@@ -34,14 +34,14 @@ public class InventoryService {
     }
 
     @PostMapping("space")
-    @Operation(summary = "Checks if the given stack can fit into the inventory", operationId = "hasSpaceFor")
+    @Operation(summary = "Checks if the given stack can fit into the inventory", operationId = "hasSpaceForInInventory")
     public boolean hasSpaceFor(@RequestBody @Validated InventoryAddRequest request) {
         ItemStack<? extends Item> itemStack = ItemStack.from(request.item, request.amount);
         return request.inventory.hasSpaceFor(itemStack);
     }
 
     @PostMapping("remove")
-    @Operation(summary = "Removes the given stack from the inventory", operationId = "remove")
+    @Operation(summary = "Removes the given stack from the inventory", operationId = "removeItemFromInventory")
     public Inventory remove(@RequestBody @Validated InventoryRemoveRequest request) {
         request.inventory.removeItem(request.item, request.amount);
         return request.inventory;

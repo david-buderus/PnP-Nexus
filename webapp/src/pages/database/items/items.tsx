@@ -11,14 +11,18 @@ import {
 import OverviewPage from '../../../components/OverviewPage';
 import {useTranslation} from 'react-i18next';
 import TagCell, {filterTagCell} from '../../../components/table/TagCell';
-import {Armor, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from '../../../api';
+import {Armor, ERarity, Item, Jewellery, Material, Shield, Universe, Weapon} from '../../../api/model';
 import CurrencyCell from '../../../components/table/CurrencyCell';
-import {API_CONFIGURATION, ItemClass} from '../../../components/Constants';
+import {ItemClass} from '../../../components/Constants';
 import {useDisclosure} from '@mantine/hooks';
 import {Button, Group, Modal, NumberInput, Select, TagsInput, Textarea, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {ObjectSelect} from '../../../components/input/ObjectSelect';
 import {ArmorSlotSelect, RaritySelect} from '../../../components/input/EnumSelect';
 import DiceInput from '../../../components/input/DiceInput';
@@ -30,9 +34,19 @@ import {ItemCardModal} from '../../../components/items/ItemCard';
 import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
 import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
 import {getPossibleUpgradeRestriction} from '../../../components/utils/UpgradeUtils';
+import {QueryClient, useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllArmorQueryKey,
+    getGetAllItemsQueryKey,
+    getGetAllJewelleryQueryKey,
+    getGetAllShieldsQueryKey,
+    getGetAllWeaponsQueryKey,
+    useDeleteAllItems,
+    useInsertAllItems,
+    useUpdateItem
+} from '../../../api/item-service/item-service';
 
-const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
-
+/** Combination of all items */
 export type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
 
 /** Overview over all items */
@@ -100,6 +114,8 @@ export function Items() {
             }
         ], []);
 
+    const deleteItems = useDeleteItems();
+
     return <OverviewPage
         fetchData={fetchAllItems()}
         columns={columns}
@@ -107,12 +123,14 @@ export function Items() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
             initialType="Item"
             editMode={editMode}
-            refresh={refresh}
             disabled={disabled}
             getInitial={getInitial}
         />}
         deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        onDelete={(universe, items) => deleteItems({
+            universe: universe,
+            params: {ids: items.map(item => item.id)}
+        })}
         idKey="id"
         viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
@@ -204,6 +222,7 @@ export function Weapons() {
             }
         ], []);
 
+    const deleteItems = useDeleteItems();
 
     return <OverviewPage
         fetchData={fetchAllWeapons()}
@@ -212,12 +231,14 @@ export function Weapons() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
             initialType="Weapon"
             editMode={editMode}
-            refresh={refresh}
             disabled={disabled}
             getInitial={getInitial}
         />}
         deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        onDelete={(universe, items) => deleteItems({
+            universe: universe,
+            params: {ids: items.map(item => item.id)}
+        })}
         idKey="id"
         viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
@@ -328,6 +349,8 @@ export function Shields() {
             return c;
         }, []);
 
+    const deleteItems = useDeleteItems();
+
     return <OverviewPage
         fetchData={fetchAllShields()}
         columns={columns}
@@ -335,12 +358,14 @@ export function Shields() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
             initialType="Shield"
             editMode={editMode}
-            refresh={refresh}
             disabled={disabled}
             getInitial={getInitial}
         />}
         deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        onDelete={(universe, items) => deleteItems({
+            universe: universe,
+            params: {ids: items.map(item => item.id)}
+        })}
         idKey="id"
         viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
@@ -440,6 +465,8 @@ export function ArmorOverview() {
             return c;
         }, []);
 
+    const deleteItems = useDeleteItems();
+
     return <OverviewPage
         fetchData={fetchAllArmor()}
         columns={columns}
@@ -447,12 +474,14 @@ export function ArmorOverview() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
             initialType="Armor"
             editMode={editMode}
-            refresh={refresh}
             disabled={disabled}
             getInitial={getInitial}
         />}
         deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        onDelete={(universe, items) => deleteItems({
+            universe: universe,
+            params: {ids: items.map(item => item.id)}
+        })}
         idKey="id"
         viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
@@ -527,6 +556,8 @@ export function JewelleryOverview() {
             }
         ], []);
 
+    const deleteItems = useDeleteItems();
+
     return <OverviewPage
         fetchData={fetchAllJewllery()}
         columns={columns}
@@ -534,12 +565,14 @@ export function JewelleryOverview() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
             initialType="Jewellery"
             editMode={editMode}
-            refresh={refresh}
             disabled={disabled}
             getInitial={getInitial}
         />}
         deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
+        onDelete={(universe, items) => deleteItems({
+            universe: universe,
+            params: {ids: items.map(item => item.id)}
+        })}
         idKey="id"
         viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
     />;
@@ -548,17 +581,16 @@ export function JewelleryOverview() {
 function CreationDialog({
     initialType,
     editMode,
-    refresh,
     disabled,
     getInitial
 }: {
     initialType: string;
     editMode: boolean,
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => Item;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse, itemSettings, currencySettings} = useUniverseContext();
     const [tags] = fetchAllTags();
     const [materials] = fetchAllMaterials();
@@ -576,7 +608,7 @@ function CreationDialog({
             minimumStackSize: initialType === 'Item' ? 0 : 1,
             name: '',
             note: '',
-            rarity: ERarity.Common,
+            rarity: ERarity.COMMON,
             requirement: '',
             tags: [],
             tier: 1,
@@ -590,7 +622,7 @@ function CreationDialog({
             dice: {dices: []}
         }
     });
-    const itemType = form.getValues()['@type'] as ItemClass;
+    const itemType = form.values['@type'] as ItemClass;
 
     useEffect(() => {
         if (!editMode || !opened) {
@@ -599,13 +631,31 @@ function CreationDialog({
         form.setValues(getInitial());
     }, [opened, getInitial, editMode]);
 
+    const {mutateAsync: updateItem} = useUpdateItem({
+        mutation: {
+            onSuccess: () => createInvalidateQueries(queryClient, activeUniverse).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertItems} = useInsertAllItems({
+        mutation: {
+            onSuccess: () => createInvalidateQueries(queryClient, activeUniverse).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     function onSubmit(item: ItemCombination) {
         if (editMode) {
-            ITEM_API.updateItem(activeUniverse.id, item.id, item).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateItem({
+                universe: activeUniverse.id,
+                id: item.id,
+                data: item
+            });
         } else {
-            ITEM_API.insertAllItems(activeUniverse.id, [item]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertItems({
+                universe: activeUniverse.id,
+                data: [item]
+            });
         }
     }
 
@@ -795,5 +845,27 @@ function CreationDialog({
             {editMode ? t('edit') : t('add')}
         </Button>
     </>;
+}
+
+function useDeleteItems() {
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const {mutate} = useDeleteAllItems({
+        mutation: {
+            onSuccess: () => createInvalidateQueries(queryClient, activeUniverse),
+            onError: handleNetworkErrors
+        }
+    });
+
+    return mutate;
+}
+
+async function createInvalidateQueries(queryClient: QueryClient, activeUniverse: Universe): Promise<void> {
+    await queryClient.invalidateQueries({queryKey: getGetAllItemsQueryKey(activeUniverse.id)});
+    await queryClient.invalidateQueries({queryKey: getGetAllWeaponsQueryKey(activeUniverse.id)});
+    await queryClient.invalidateQueries({queryKey: getGetAllShieldsQueryKey(activeUniverse.id)});
+    await queryClient.invalidateQueries({queryKey: getGetAllArmorQueryKey(activeUniverse.id)});
+    return queryClient.invalidateQueries({queryKey: getGetAllJewelleryQueryKey(activeUniverse.id)});
 }
 

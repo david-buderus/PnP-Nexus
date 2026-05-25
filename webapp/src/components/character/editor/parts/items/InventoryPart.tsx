@@ -6,11 +6,14 @@ import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {PageElementSettings} from '../PageElementSettings';
 import {IconCircleMinus, IconCirclePlus, IconMoneybagPlus} from '@tabler/icons-react';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
-import {addItemToInventory, removeItemFromInventory} from '../../../../utils/InventoryUtils';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 import {SomeItemStack} from '../../../../Constants';
 import {fetchAllItems} from '../../../../Database';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
+import {
+    useAddItemToInventory,
+    useRemoveItemFromInventory
+} from '../../../../../api/inventory-service/inventory-service';
 
 
 /** Shows the inventory of the character */
@@ -25,6 +28,17 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
     const character = characterForm.getValues();
 
     const [lastClicked, setLastClicked] = useState<SomeItemStack>(null);
+
+    const {mutate: addItemToInventory} = useAddItemToInventory({
+        mutation: {
+            onSuccess: response => characterForm.setFieldValue('inventory.inventory', response.data)
+        }
+    });
+    const {mutate: removeItemFromInventory} = useRemoveItemFromInventory({
+        mutation: {
+            onSuccess: response => characterForm.setFieldValue('inventory.inventory', response.data)
+        }
+    });
 
     return <>
         <Table
@@ -73,14 +87,20 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 variant="subtle"
                                                 size={TABLE_ROW_HEIGHT - 8}
                                                 className="no-drag"
-                                                onClick={() =>
-                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item, 1)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
-                                                }
-                                                onContextMenu={() =>
-                                                    addItemToInventory(characterForm.values.inventory.inventory, itemStack.item, 5)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
-                                                }
+                                                onClick={() => addItemToInventory({
+                                                    data: {
+                                                        inventory: characterForm.values.inventory.inventory,
+                                                        item: itemStack.item,
+                                                        amount: 1,
+                                                    }
+                                                })}
+                                                onContextMenu={() => addItemToInventory({
+                                                    data: {
+                                                        inventory: characterForm.values.inventory.inventory,
+                                                        item: itemStack.item,
+                                                        amount: 1,
+                                                    }
+                                                })}
                                             >
                                                 <IconCirclePlus size={14}/>
                                             </ActionIcon>
@@ -88,14 +108,20 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 variant="subtle"
                                                 size={TABLE_ROW_HEIGHT - 8}
                                                 className="no-drag"
-                                                onClick={() =>
-                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item, 1)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
-                                                }
-                                                onContextMenu={() =>
-                                                    removeItemFromInventory(characterForm.values.inventory.inventory, itemStack.item, 5)
-                                                        .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))
-                                                }
+                                                onClick={() => removeItemFromInventory({
+                                                    data: {
+                                                        inventory: characterForm.values.inventory.inventory,
+                                                        item: itemStack.item,
+                                                        amount: 1,
+                                                    }
+                                                })}
+                                                onContextMenu={() => removeItemFromInventory({
+                                                    data: {
+                                                        inventory: characterForm.values.inventory.inventory,
+                                                        item: itemStack.item,
+                                                        amount: 1,
+                                                    }
+                                                })}
                                             >
                                                 <IconCircleMinus color="red" size={14}/>
                                             </ActionIcon>
@@ -130,6 +156,11 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
 function ItemAdditionPopover() {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
     const [items] = fetchAllItems();
+    const {mutate: addItemToInventory} = useAddItemToInventory({
+        mutation: {
+            onSuccess: response => characterForm.setFieldValue('inventory.inventory', response.data)
+        }
+    });
 
     if (!allowEdit) {
         return null;
@@ -155,9 +186,13 @@ function ItemAdditionPopover() {
             <Popover.Dropdown>
                 <ItemSearchCard
                     items={items}
-                    onSelect={item =>
-                        addItemToInventory(characterForm.values.inventory.inventory, item.item, item.amount)
-                            .then(inventory => characterForm.setFieldValue('inventory.inventory', inventory))}
+                    onSelect={item => addItemToInventory({
+                        data: {
+                            inventory: characterForm.values.inventory.inventory,
+                            item: item.item,
+                            amount: item.amount,
+                        }
+                    })}
                 />
             </Popover.Dropdown>
         </Popover>

@@ -3,19 +3,14 @@ import {useUniverseContext, useUserContext} from '../components/PageBase';
 import {Link, useNavigate, useSearchParams} from 'react-router-dom';
 import {Card, Flex, Grid, Stack, Text, Title} from '@mantine/core';
 import {FaPlus} from 'react-icons/fa6';
-import {useEffect} from 'react';
 
-
+/** Home view */
 export default function Home() {
     const {t} = useTranslation();
     const [searchParams] = useSearchParams();
-    const {universes, fetchUniverses, setActiveUniverse, activeUniverse} = useUniverseContext();
+    const {universes, activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        fetchUniverses();
-    }, []);
 
     if (universes.length === 0 && !userPermissions.canCreateUniverses) {
         return <Flex
@@ -40,8 +35,7 @@ export default function Home() {
                 shadow="sm"
                 padding="xl"
                 onClick={() => {
-                    setActiveUniverse(u);
-                    navigate('/universe');
+                    navigate('/universe?universe=' + u.id);
                 }}
                 key={u.id}
                 withBorder={activeUniverse?.id === u.id}

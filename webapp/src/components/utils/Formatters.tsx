@@ -1,4 +1,4 @@
-import {CurrencySettings, Dice, ERarity, SpellCast, TagCast, TalentCast} from '../../api';
+import {CurrencySettings, Dice, ERarity, SpellCast, TagCast, TalentCast} from '../../api/model';
 import {IResourceUsage} from '../Database';
 import {TFunction} from 'i18next';
 import {splitCurrency} from './Utils';
@@ -107,17 +107,17 @@ export function spellCastFormatter(cast: SpellCast, t: TFunction<'translation', 
  */
 export function getRarityColor(rarity: ERarity) {
     switch (rarity) {
-        case ERarity.Common:
+        case ERarity.COMMON:
             return 'gray';
-        case ERarity.Uncommon:
+        case ERarity.UNCOMMON:
             return 'green';
-        case ERarity.Rare:
+        case ERarity.RARE:
             return 'blue';
-        case ERarity.Epic:
+        case ERarity.EPIC:
             return 'purple';
-        case ERarity.Legendary:
+        case ERarity.LEGENDARY:
             return 'orange';
-        case ERarity.Godlike:
+        case ERarity.GODLIKE:
             return 'red';
         default:
             return 'white';

@@ -15,22 +15,40 @@ import {useForm} from '@mantine/form';
 import {randomId, useDisclosure} from '@mantine/hooks';
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {CraftingRecipe, CraftingRecipeServiceApi, Item, ItemUsage, Material, SecondaryAttribute} from '../../../api';
+import {CraftingRecipe, Item, ItemUsage, Material, SecondaryAttribute} from '../../../api/model';
 import {fetchAllCraftingRecipes, IResourceUsage} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ItemSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {resourceFormatter} from '../../../components/utils/Formatters';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllCraftingRecipesQueryKey,
+    useDeleteAllCraftingRecipes,
+    useInsertAllCraftingRecipes,
+    useUpdateCraftingRecipe
+} from '../../../api/crafting-recipe-service/crafting-recipe-service';
 
-const CRAFTING_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
 
 /** Overview over all crafting recipes */
 export function CraftingRecipeOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const {mutateAsync: deleteRecipes} = useDeleteAllCraftingRecipes({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllCraftingRecipesQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<CraftingRecipe, any>[]>(
         () => [
@@ -77,28 +95,29 @@ export function CraftingRecipeOverview() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) =>
             <CreationDialog
                 editMode={editMode}
-                refresh={refresh}
                 disabled={disabled}
                 getInitial={getInitial}
             />}
         deletionDialogTitle={t('crafting:craftingRecipeDeletionTitle')}
-        onDelete={(universe, recipes) => CRAFTING_API.deleteAllCraftingRecipes(universe, recipes.map(recipe => recipe.id))}
+        onDelete={(universe, recipes) => deleteRecipes({
+            universe: universe,
+            params: {ids: recipes.map(recipe => recipe.id)}
+        })}
         idKey="id"
     />;
 }
 
 function CreationDialog({
     editMode,
-    refresh,
     disabled,
     getInitial
 }: {
     editMode: boolean,
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => CraftingRecipe;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
 
     const [opened, {open, close}] = useDisclosure(false);
@@ -126,13 +145,31 @@ function CreationDialog({
         form.setValues(getInitial());
     }, [opened, getInitial, editMode]);
 
+    const {mutateAsync: updateRecipe} = useUpdateCraftingRecipe({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllCraftingRecipesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertRecipes} = useInsertAllCraftingRecipes({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllCraftingRecipesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     function onSubmit(recipe: CraftingRecipe) {
         if (editMode) {
-            CRAFTING_API.updateCraftingRecipe(activeUniverse.id, recipe.id, addTypeAnnotationToRecipe(recipe)).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateRecipe({
+                universe: activeUniverse.id,
+                id: recipe.id,
+                data: addTypeAnnotationToRecipe(recipe)
+            });
         } else {
-            CRAFTING_API.insertAllCraftingRecipes(activeUniverse.id, [addTypeAnnotationToRecipe(recipe)]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertRecipes({
+                universe: activeUniverse.id,
+                data: [addTypeAnnotationToRecipe(recipe)]
+            });
         }
     }
 

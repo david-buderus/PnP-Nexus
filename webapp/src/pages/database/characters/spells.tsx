@@ -20,21 +20,23 @@ import {randomId, useDisclosure} from '@mantine/hooks';
 import {ReactNode, useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {
-    CraftingRecipeMaterialsInner,
     EAction,
     ECastingType,
     Spell,
     SpellCast,
-    SpellServiceApi,
+    type SpellCostItem,
     TagCast,
     Talent,
     TalentCast
-} from '../../../api';
+} from '../../../api/model';
 import {fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ObjectMultiSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {addTypeAnnotationToUsage} from '../crafting/crafting-recipes';
@@ -43,12 +45,28 @@ import {resourceFormatter, spellCastFormatter} from '../../../components/utils/F
 import {ActionSelect, CastingTypeMultiSelect} from '../../../components/input/EnumSelect';
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {useQueryClient} from '@tanstack/react-query';
+import {getGetAllSpeciessQueryKey} from '../../../api/species-service/species-service';
+import {
+    getGetAllSpellsQueryKey,
+    useDeleteAllSpells,
+    useInsertAllSpells,
+    useUpdateSpell
+} from '../../../api/spell-service/spell-service';
 
-const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 
 /** Overview over all spells */
 export function SpellOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const {mutateAsync: deleteSpells} = useDeleteAllSpells({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpellsQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<Spell, any>[]>(
         () => [
@@ -137,12 +155,14 @@ export function SpellOverview() {
             identifier="spells"
             manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
                 editMode={editMode}
-                refresh={refresh}
                 disabled={disabled}
                 getInitial={getInitial}
             />}
             deletionDialogTitle={t('spell:editTitle')}
-            onDelete={(universe, spells) => SPELL_API.deleteAllSpells(universe, spells.map(spell => spell.id))}
+            onDelete={(universe, spells) => deleteSpells({
+                universe: universe,
+                params: {ids: spells.map(spell => spell.id)}
+            })}
             idKey="id"
         />
     </Stack>;
@@ -150,16 +170,15 @@ export function SpellOverview() {
 
 function CreationDialog({
     editMode,
-    refresh,
     disabled,
     getInitial
 }: {
     editMode: boolean,
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => Spell;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [talents] = fetchAllTalents();
     const [tags] = fetchAllTags();
@@ -183,7 +202,7 @@ function CreationDialog({
                 }
             } as TalentCast,
             tier: 1,
-            action: EAction.Action,
+            action: EAction.ACTION,
             castingTypes: [],
             countermeasures: '',
             cooldown: 1
@@ -207,13 +226,31 @@ function CreationDialog({
         });
     }, [opened, getInitial, editMode]);
 
+    const {mutateAsync: updateSpell} = useUpdateSpell({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertSpells} = useInsertAllSpells({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     function onSubmit(spell: Spell) {
         if (editMode) {
-            SPELL_API.updateSpell(activeUniverse.id, spell.id, addTypeAnnotationToSpell(spell)).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateSpell({
+                universe: activeUniverse.id,
+                id: spell.id,
+                data: addTypeAnnotationToSpell(spell)
+            });
         } else {
-            SPELL_API.insertAllSpells(activeUniverse.id, [addTypeAnnotationToSpell(spell)]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertSpells({
+                universe: activeUniverse.id,
+                data: [addTypeAnnotationToSpell(spell)]
+            });
         }
     }
 
@@ -366,7 +403,7 @@ function CreationDialog({
                                         amount: 0,
                                         resource: null,
                                         key: randomId()
-                                    } as CraftingRecipeMaterialsInner)
+                                    } as SpellCostItem)
                                 }
                                 mt="md"
                                 data-testid="cost-add"

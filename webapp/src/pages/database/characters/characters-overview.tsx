@@ -1,21 +1,26 @@
 import {useTranslation} from 'react-i18next';
 import React, {useMemo, useState} from 'react';
 import OverviewPage from '../../../components/OverviewPage';
-import {CharacterDescription, Nation, PnPCharacterDTO, PnPCharacterServiceApi, Species} from '../../../api';
+import {CharacterDescription, Nation, PnPCharacterDTO, Species} from '../../../api/model';
 import {fetchAllCharacters} from '../../../components/Database';
 import {Button} from '@mantine/core';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
-import {API_CONFIGURATION} from '../../../components/Constants';
 import {CharacterEdit} from '../../../components/character/CharacterEdit';
 import {useNavigate} from 'react-router-dom';
 import {useUniverseContext} from '../../../components/PageBase';
 import TruncatedCell from '../../../components/table/TruncatedCell';
+import {handleNetworkErrors} from '../../../components/utils/ErrorUtils';
+import {
+    getGetAllCharactersQueryKey,
+    useDeleteAllCharacters
+} from '../../../api/pn-p-character-service/pn-p-character-service';
+import {useQueryClient} from '@tanstack/react-query';
 
-const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 
 /** An overview over all characters */
 export function CharactersOverview() {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [allCharacters, refreshCharacters, loading] = fetchAllCharacters();
     const [editMode, setEditMode] = useState<boolean>(false);
@@ -70,14 +75,23 @@ export function CharactersOverview() {
         />;
     }
 
+    const {mutateAsync: deleteCharacters} = useDeleteAllCharacters({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllCharactersQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
+
     return <OverviewPage
         fetchData={[allCharacters, refreshCharacters, loading]}
         columns={columns}
         identifier="characters"
         manipulationDialog={(editButton, _, disabled, getInitial) => {
             if (editButton) {
-                return <Button disabled={disabled}
-                               onClick={() => navigate('/characters/' + getInitial().id + '?universe=' + activeUniverse.id)}>
+                return <Button
+                    disabled={disabled}
+                    onClick={() => navigate('/characters/' + getInitial().id + '?universe=' + activeUniverse.id)}
+                >
                     {t('edit')}
                 </Button>;
             }
@@ -86,8 +100,12 @@ export function CharactersOverview() {
             </Button>;
         }}
         deletionDialogTitle={t('spell:editTitle')}
-        onDelete={(universe, characters) =>
-            CHARACTER_API.deleteAllCharacters(universe, characters.map(c => c.id))}
+        onDelete={(universe, characters) => deleteCharacters({
+            universe: universe,
+            params: {
+                ids: characters.map(c => c.id)
+            }
+        })}
         idKey="id"
     />;
 }

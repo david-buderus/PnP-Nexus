@@ -1,7 +1,7 @@
 import {Badge, Box, Card, Divider, Group, HoverCard, List, Modal, Stack, Text} from '@mantine/core';
 import {currencyFormatter} from '../utils/Formatters';
 import {useUniverseContext} from '../PageBase';
-import {TagRequirement, Upgrade} from '../../api';
+import {TagRequirement, Upgrade} from '../../api/model';
 import {useTranslation} from 'react-i18next';
 import React from 'react';
 

@@ -1,7 +1,6 @@
 import {useTranslation} from 'react-i18next';
 import {useUniverseContext} from '../../PageBase';
-import {PnPCharacterDTO, PnPCharacterSheet, PnPCharacterSheetServiceApi} from '../../../api';
-import {API_CONFIGURATION} from '../../Constants';
+import {PnPCharacterDTO, PnPCharacterSheet} from '../../../api/model';
 import React, {useEffect, useMemo, useState} from 'react';
 import {
     ActionIcon,
@@ -23,7 +22,7 @@ import {FaChevronRight} from 'react-icons/fa6';
 import {FaChevronLeft} from 'react-icons/fa';
 import {useDisclosure, useListState, UseListStateHandlers} from '@mantine/hooks';
 import {useForm} from '@mantine/form';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../utils/ErrorUtils';
+import {handleDatabaseInsertErrors, handleNetworkErrors, handleValidationErrors} from '../../utils/ErrorUtils';
 import {DropdownButton} from '../../button/DropdownButton';
 import {PnPCharacterSheetContext} from '../PnPCharacterSheetContext';
 import ConfirmationDialog from '../../modal/ConfirmationDialog';
@@ -34,9 +33,14 @@ import {Toolbox} from './Toolbox';
 import {PageElementLayout} from './parts/PageElement';
 import {loadCharacterSheet} from '../PnPCharacterView';
 import {useNavigate} from 'react-router-dom';
-
-
-const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
+import {
+    getGetAllPnPCharacterSheetsQueryKey,
+    useDeletePnPCharacterSheet,
+    useGetExampleCharacter,
+    useInsertAllPnPCharacterSheets,
+    useUpdatePnPCharacterSheet
+} from '../../../api/pn-p-character-sheet-service/pn-p-character-sheet-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /** Editor to create character sheets */
 export function PnPCharacterSheetEditor({
@@ -52,7 +56,6 @@ export function PnPCharacterSheetEditor({
         initialValues: emptyCharacter
     });
 
-    const [isLoading, setIsLoading] = useState(false);
     const [selectedPage, setSelectedPage] = useState(0);
     const [pages, setPages] = useListState<PnPCharacterSheetPage>([{data: [], layout: []}]);
     const [activeDropSettings, setActiveDropSettings] = useState<Partial<PageElementLayout>>({
@@ -61,23 +64,22 @@ export function PnPCharacterSheetEditor({
         minW: 3,
         minH: 2
     });
+    const {
+        data: exampleResponse,
+        isLoading
+    } = useGetExampleCharacter(activeUniverse?.id, {query: {enabled: Boolean(activeUniverse?.id)}});
+    useEffect(() => {
+        if (!exampleResponse) {
+            return;
+        }
+        form.setValues(exampleResponse.data);
+    }, [exampleResponse]);
 
     function updatePage(index: number, updatedPage: Partial<PnPCharacterSheetPage>) {
         setPages.apply((item, i) =>
             i === index ? {...item, ...updatedPage} : item
         );
     }
-
-    useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
-        setIsLoading(true);
-        SHEET_API.getExampleCharacter(activeUniverse.id).then(response => {
-            setIsLoading(false);
-            form.setValues(response.data);
-        });
-    }, [activeUniverse]);
 
     if (isLoading) {
         return <></>;
@@ -242,6 +244,7 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
     onCancel: () => void;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const navigate = useNavigate();
 
@@ -267,6 +270,36 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
         setPages.setState(loadCharacterSheet(initialSheet.sheet));
     }, [initialSheet]);
 
+    const {mutate: updateSheet} = useUpdatePnPCharacterSheet({
+        mutation: {
+            onSuccess: response =>
+                queryClient.invalidateQueries({queryKey: getGetAllPnPCharacterSheetsQueryKey(activeUniverse.id)})
+                    .then(() => {
+                        closeSave();
+                        setLatestSave(response.data.sheet);
+                    }),
+            onError: handleValidationErrors(form.setErrors),
+        }
+    });
+    const {mutate: insertSheet} = useInsertAllPnPCharacterSheets({
+        mutation: {
+            onSuccess: response =>
+                queryClient.invalidateQueries({queryKey: getGetAllPnPCharacterSheetsQueryKey(activeUniverse.id)})
+                    .then(() => {
+                        closeSave();
+                        setLatestSave(response.data[0].sheet);
+                    }),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)),
+        }
+    });
+    const {mutate: deleteSheet} = useDeletePnPCharacterSheet({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllPnPCharacterSheetsQueryKey(activeUniverse.id)})
+                .then(() => navigate('/characters-editor?universe=' + activeUniverse.id)),
+            onError: handleNetworkErrors,
+        }
+    });
+
     return <Stack>
         <Modal opened={openedSave} onClose={closeSave} maw={300} title={t('saveAs')}>
             <form
@@ -274,15 +307,16 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
                 onSubmit={form.onSubmit(sheet => {
                     sheet.sheet = btoa(JSON.stringify(pages));
                     if (sheet.id) {
-                        SHEET_API.updatePnPCharacterSheet(activeUniverse.id, sheet.id, sheet)
-                            .then(closeSave)
-                            .then(() => setLatestSave(sheet.sheet))
-                            .catch(handleValidationErrors(form.setErrors));
+                        updateSheet({
+                            universe: activeUniverse.id,
+                            id: sheet.id,
+                            data: sheet
+                        });
                     } else {
-                        SHEET_API.insertAllPnPCharacterSheets(activeUniverse.id, [sheet])
-                            .then(closeSave)
-                            .then(() => setLatestSave(sheet.sheet))
-                            .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+                        insertSheet({
+                            universe: activeUniverse.id,
+                            data: [sheet]
+                        });
                     }
                 })}
             >
@@ -323,9 +357,10 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
         {initialSheet?.id !== undefined ?
             <ConfirmationDialog
                 title={t('sheetEditor:deleteSheet')}
-                onConfirmation={() => {
-                    SHEET_API.deletePnPCharacterSheet(activeUniverse.id, initialSheet.id).then(() => navigate('/characters-editor?universe=' + activeUniverse.id));
-                }}
+                onConfirmation={() => deleteSheet({
+                    universe: activeUniverse.id,
+                    id: initialSheet.id
+                })}
                 openNode={open =>
                     <Button variant="outline" color="red" onClick={open}>
                         {t('delete')}

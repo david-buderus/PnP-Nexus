@@ -3,8 +3,6 @@ import {useUniverseContext, useUserContext} from './PageBase';
 import {Box, Button, Checkbox, Group, Menu, Paper, rem, Stack, Table, Text, TextInput} from '@mantine/core';
 import {useLocalStorage} from '@mantine/hooks';
 import ConfirmationDialog from './modal/ConfirmationDialog';
-import {AxiosResponse} from 'axios';
-import {handleNetworkErrors} from './utils/ErrorUtils';
 import React, {ReactNode, useState} from 'react';
 import {
     Column,
@@ -37,7 +35,7 @@ export interface OverviewPageProps<T> {
     /** The title of the deletion dialog */
     deletionDialogTitle: string;
     /** Callback for the deletion */
-    onDelete: (universe: string, objects: T[]) => Promise<AxiosResponse<void>>;
+    onDelete: (universe: string, objects: T[]) => void;
     /** The key to get the id of the object */
     idKey: keyof T;
     /** Modal to show if a row is clicked */
@@ -57,7 +55,7 @@ export default function OverviewPage<T>({
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
-    const [data, refresh, loading] = fetchData;
+    const [data, refresh] = fetchData;
 
     const [lastClicked, setLastClicked] = useState<T>(null);
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -236,11 +234,10 @@ export default function OverviewPage<T>({
         </Paper>
         {userPermissions.canWriteActiveUniverse && <Group justify="flex-end">
             {manipulationDialog(false, refresh, false, () => undefined)}
-            {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0].original)}
+            {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0]?.original)}
             <ConfirmationDialog
                 title={deletionDialogTitle}
-                onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))
-                    .then(refresh).catch(handleNetworkErrors)}
+                onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))}
                 openNode={(open) => <Button
                     data-testid="delete"
                     disabled={table.getSelectedRowModel().flatRows.length === 0}

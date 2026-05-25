@@ -2,7 +2,7 @@ import {Badge, Box, Card, Divider, Grid, Group, List, Modal, Progress, Stack, Te
 import {useTranslation} from 'react-i18next';
 import {currencyFormatter, diceFormatter, getRarityColor} from '../utils/Formatters';
 import {useUniverseContext} from '../PageBase';
-import {ArmorEquipment, ItemStack, JewelleryEquipment, ShieldEquipment, WeaponEquipment} from '../../api';
+import {ArmorEquipment, ItemStack, JewelleryEquipment, ShieldEquipment, WeaponEquipment} from '../../api/model';
 import {SomeItemStack} from '../Constants';
 import {UpgradeHoverCard} from './UpgradeCard';
 

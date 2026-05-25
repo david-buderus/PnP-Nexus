@@ -1,62 +1,52 @@
-import {AxiosRequestConfig, AxiosResponse} from 'axios';
-import {useEffect, useMemo, useState} from 'react';
 import {useUniverseContext} from './PageBase';
 import {
     Armor,
     CharacterResourceUsage,
     CraftingRecipe,
-    CraftingRecipeServiceApi,
     Item,
-    ItemServiceApi,
     ItemUsage,
     Jewellery,
     Material,
-    MaterialServiceApi,
     MaterialUsage,
     Nation,
-    NationServiceApi,
     PnPCharacterDTO,
-    PnPCharacterServiceApi,
     PnPCharacterSheet,
-    PnPCharacterSheetServiceApi,
     PrimaryAttribute,
-    PrimaryAttributeServiceApi,
     SecondaryAttribute,
     SecondaryAttributeDTO,
-    SecondaryAttributeServiceApi,
     Shield,
-    SimpleSecondaryAttributeServiceApi,
     Species,
-    SpeciesServiceApi,
     Spell,
-    SpellServiceApi,
-    TagServiceApi,
     Talent,
-    TalentServiceApi,
     Upgrade,
     UpgradeRecipe,
-    UpgradeRecipeServiceApi,
-    UpgradeServiceApi,
     Weapon
-} from '../api';
-import {API_CONFIGURATION, SomeItem} from './Constants';
-import {handleNetworkErrors} from './utils/ErrorUtils';
-
-const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
-const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
-const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
-const SIMPLE_SECONDARY_ATTRIBUTE_API = new SimpleSecondaryAttributeServiceApi(API_CONFIGURATION);
-const SECONDARY_ATTRIBUTE_API = new SecondaryAttributeServiceApi(API_CONFIGURATION);
-const TAG_API = new TagServiceApi(API_CONFIGURATION);
-const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
-const CRAFTING_RECIPE_API = new CraftingRecipeServiceApi(API_CONFIGURATION);
-const UPGRADE_RECIPE_API = new UpgradeRecipeServiceApi(API_CONFIGURATION);
-const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
-const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
-const SPECIES_API = new SpeciesServiceApi(API_CONFIGURATION);
-const NATION_API = new NationServiceApi(API_CONFIGURATION);
-const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
-const SHEET_API = new PnPCharacterSheetServiceApi(API_CONFIGURATION);
+} from '../api/model';
+import {SomeItem} from './Constants';
+import {
+    useGetAllArmor,
+    useGetAllItems,
+    useGetAllJewellery,
+    useGetAllShields,
+    useGetAllWeapons
+} from '../api/item-service/item-service';
+import {useGetAllMaterials} from '../api/material-service/material-service';
+import {useGetAllPrimaryAttributes} from '../api/primary-attribute-service/primary-attribute-service';
+import {
+    useGetAllSimpleSecondaryAttributes,
+    useGetAllSupportedVariables
+} from '../api/simple-secondary-attribute-service/simple-secondary-attribute-service';
+import {useGetAllSecondaryAttributes} from '../api/secondary-attribute-service/secondary-attribute-service';
+import {useGetAllTags} from '../api/tag-service/tag-service';
+import {useGetAllUpgrades} from '../api/upgrade-service/upgrade-service';
+import {useGetAllCraftingRecipes} from '../api/crafting-recipe-service/crafting-recipe-service';
+import {useGetAllUpgradeRecipes} from '../api/upgrade-recipe-service/upgrade-recipe-service';
+import {useGetAllTalents} from '../api/talent-service/talent-service';
+import {useGetAllSpells} from '../api/spell-service/spell-service';
+import {useGetAllSpeciess} from '../api/species-service/species-service';
+import {useGetAllNations} from '../api/nation-service/nation-service';
+import {useGetAllCharacters} from '../api/pn-p-character-service/pn-p-character-service';
+import {useGetAllPnPCharacterSheets} from '../api/pn-p-character-sheet-service/pn-p-character-sheet-service';
 
 /** Super type of all possible resource usages */
 export type IResourceUsage = ItemUsage | MaterialUsage | CharacterResourceUsage;
@@ -64,192 +54,192 @@ export type IResourceUsage = ItemUsage | MaterialUsage | CharacterResourceUsage;
 /** Super type of all possible resources */
 export type IResource = SomeItem | Material | SecondaryAttributeDTO;
 
+type GetAllQueryHook<T> = (
+    universeId: string | undefined,
+    params?: any,
+    options?: { query?: { enabled?: boolean } }
+) => {
+    data?: { data?: T[] };
+    refetch: () => void;
+    isLoading: boolean;
+};
+
+type GetAllUnfilteredQueryHook<T> = (
+    universeId: string | undefined,
+    options?: { query?: { enabled?: boolean } }
+) => {
+    data?: { data?: T[] };
+    refetch: () => void;
+    isLoading: boolean;
+};
+
 /**
  * Fetches all objects for the given fetch method.
  * Returns the data, a refresh callback and if the data is currenlty loading.
  */
-export function fetchAll<O>(fetch: ((universe: string, options?: AxiosRequestConfig) => Promise<AxiosResponse<O[]>>)): [O[], () => void, boolean] {
+function fetchAll<O>(useQueryHook: GetAllQueryHook<O>): [O[], () => void, boolean] {
     const {activeUniverse} = useUniverseContext();
 
-    const [objects, setObjects] = useState<O[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const {data, refetch, isLoading} = useQueryHook(
+        activeUniverse?.id,
+        {},
+        {query: {enabled: Boolean(activeUniverse?.id)}}
+    );
 
-    function refresh() {
-        if (!activeUniverse) {
-            return;
-        }
-        setLoading(true);
-        fetch(activeUniverse.id).then(response => {
-            setLoading(false);
-            setObjects(response.data);
-        }).catch(err => {
-            setLoading(false);
-            handleNetworkErrors()(err);
-        });
-    }
+    return [data?.data ?? [], refetch, isLoading];
+}
 
-    useEffect(refresh, [activeUniverse]);
+/**
+ * Fetches all objects for the given fetch method.
+ * Returns the data, a refresh callback and if the data is currenlty loading.
+ */
+function fetchAllUnfiltered<O>(useQueryHook: GetAllUnfilteredQueryHook<O>): [O[], () => void, boolean] {
+    const {activeUniverse} = useUniverseContext();
 
-    return [objects, refresh, loading];
+    const {data, refetch, isLoading} = useQueryHook(
+        activeUniverse?.id,
+        {query: {enabled: Boolean(activeUniverse?.id)}}
+    );
+
+    return [data?.data ?? [], refetch, isLoading];
 }
 
 /**
  * Fetches all items.
  */
 export function fetchAllItems(): [Item[], () => void, boolean] {
-    return fetchAll(universe => ITEM_API.getAllItems(universe));
+    return fetchAll(useGetAllItems);
 }
 
 /**
  * Fetches all weapons.
  */
 export function fetchAllWeapons(): [Weapon[], () => void, boolean] {
-    return fetchAll(universe => ITEM_API.getAllWeapons(universe));
+    return fetchAllUnfiltered(useGetAllWeapons);
 }
 
 /**
  * Fetches all shields.
  */
 export function fetchAllShields(): [Shield[], () => void, boolean] {
-    return fetchAll(universe => ITEM_API.getAllShields(universe));
+    return fetchAllUnfiltered(useGetAllShields);
 }
 
 /**
  * Fetches all armor.
  */
 export function fetchAllArmor(): [Armor[], () => void, boolean] {
-    return fetchAll(universe => ITEM_API.getAllArmor(universe));
+    return fetchAllUnfiltered(useGetAllArmor);
 }
 
 /**
  * Fetches all jewellery.
  */
 export function fetchAllJewllery(): [Jewellery[], () => void, boolean] {
-    return fetchAll(universe => ITEM_API.getAllJewellery(universe));
+    return fetchAllUnfiltered(useGetAllJewellery);
 }
 
 /**
  * Fetches all materials.
  */
 export function fetchAllMaterials(): [Material[], () => void, boolean] {
-    return fetchAll(universe => MATERIAL_API.getAllMaterials(universe));
+    return fetchAll(useGetAllMaterials);
 }
 
 /**
  * Fetches all primary attributes.
  */
 export function fetchAllPrimaryAttributes(): [PrimaryAttribute[], () => void, boolean] {
-    return fetchAll(universe => PRIMARY_ATTRIBUTE_API.getAllPrimaryAttributes(universe));
+    return fetchAll(useGetAllPrimaryAttributes);
 }
 
 /**
  * Fetches all secondary attributes.
  */
 export function fetchAllSimpleSecondaryAttributes(): [SecondaryAttributeDTO[], () => void, boolean] {
-    return fetchAll(universe => SIMPLE_SECONDARY_ATTRIBUTE_API.getAllSimpleSecondaryAttributes(universe));
+    return fetchAll(useGetAllSimpleSecondaryAttributes);
 }
 
 /**
  * Fetches all secondary attributes.
  */
 export function fetchAllSecondaryAttributes(): [SecondaryAttribute[], () => void, boolean] {
-    return fetchAll(universe => SECONDARY_ATTRIBUTE_API.getAllSecondaryAttributes(universe));
+    return fetchAll(useGetAllSecondaryAttributes);
 }
 
 /**
  * Fetches all known tags.
  */
 export function fetchAllTags(): [string[], () => void, boolean] {
-    return fetchAll(universe => TAG_API.getAllTags(universe));
+    return fetchAllUnfiltered(useGetAllTags);
 }
 
 /**
  * Fetches all upgrades.
  */
 export function fetchAllUpgrades(): [Upgrade[], () => void, boolean] {
-    return fetchAll(universe => UPGRADE_API.getAllUpgrades(universe));
+    return fetchAll(useGetAllUpgrades);
 }
 
 /**
  * Fetches all variables supported by the secondary attributes.
  */
 export function fetchSupportedSecondaryAttributeVariables(): [string[], () => void, boolean] {
-    return fetchAll(universe => SIMPLE_SECONDARY_ATTRIBUTE_API.getAllSupportedVariables(universe));
+    return fetchAllUnfiltered(useGetAllSupportedVariables);
 }
 
 /**
  * Fetches all crafting recipes.
  */
 export function fetchAllCraftingRecipes(): [CraftingRecipe[], () => void, boolean] {
-    return fetchAll(universe => CRAFTING_RECIPE_API.getAllCraftingRecipes(universe));
+    return fetchAll(useGetAllCraftingRecipes);
 }
 
 /**
  * Fetches all upgrade recipes.
  */
 export function fetchAllUpgradeRecipes(): [UpgradeRecipe[], () => void, boolean] {
-    return fetchAll(universe => UPGRADE_RECIPE_API.getAllUpgradeRecipes(universe));
+    return fetchAll(useGetAllUpgradeRecipes);
 }
 
 /**
  * Fetches all spells.
  */
 export function fetchAllTalents(): [Talent[], () => void, boolean] {
-    return fetchAll(universe => TALENT_API.getAllTalents(universe));
+    return fetchAll(useGetAllTalents);
 }
 
 /**
  * Fetches all spells.
  */
 export function fetchAllSpells(): [Spell[], () => void, boolean] {
-    return fetchAll(universe => SPELL_API.getAllSpells(universe));
+    return fetchAll(useGetAllSpells);
 }
 
 /**
  * Fetches all species.
  */
 export function fetchAllSpecies(): [Species[], () => void, boolean] {
-    return fetchAll(universe => SPECIES_API.getAllSpeciess(universe));
+    return fetchAll(useGetAllSpeciess);
 }
 
 /**
  * Fetches all species.
  */
 export function fetchAllNations(): [Nation[], () => void, boolean] {
-    return fetchAll(universe => NATION_API.getAllNations(universe));
+    return fetchAll(useGetAllNations);
 }
 
 /**
  * Fetches all characters.
  */
 export function fetchAllCharacters(): [PnPCharacterDTO[], () => void, boolean] {
-    return fetchAll(universe => CHARACTER_API.getAllCharacters(universe));
+    return fetchAllUnfiltered(useGetAllCharacters);
 }
 
 /**
  * Fetches all character sheets.
  */
 export function fetchAllCharacterSheets(): [PnPCharacterSheet[], () => void, boolean] {
-    return fetchAll(universe => SHEET_API.getAllPnPCharacterSheets(universe));
+    return fetchAll(useGetAllPnPCharacterSheets);
 }
-
-/** Fetches all possible resource for the given universe. */
-export function fetchAllResources(): [IResource[], () => void, boolean] {
-    const [items, refreshItems, loadingItems] = fetchAllItems();
-    const [materials, refreshMaterials, loadingMaterials] = fetchAllMaterials();
-    const [attributes, refreshAttributes, loadingAttributes] = fetchAllSimpleSecondaryAttributes();
-
-    const resources: IResource[] = useMemo(() => {
-        return [].concat(items).concat(materials).concat(attributes.filter(attribute => attribute.consumable));
-    }, [items, materials, attributes]);
-
-    const loading: boolean = useMemo(() => {
-        return loadingItems || loadingMaterials || loadingAttributes;
-    }, [loadingItems, loadingMaterials, loadingAttributes]);
-
-    return [resources, () => {
-        refreshItems();
-        refreshMaterials();
-        refreshAttributes();
-    }, loading];
-} 

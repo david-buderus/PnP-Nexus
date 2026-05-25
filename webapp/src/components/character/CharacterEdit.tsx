@@ -1,4 +1,4 @@
-import {PnPCharacterDTO, PnPCharacterServiceApi, StatsDto} from '../../api';
+import {PnPCharacterDTO, StatsDto} from '../../api/model';
 import {useTranslation} from 'react-i18next';
 import {useUniverseContext} from '../PageBase';
 import {useEmptyCharacter} from './PnPCharacterContext';
@@ -6,12 +6,18 @@ import {useForm} from '@mantine/form';
 import React, {useEffect} from 'react';
 import {useDebouncedCallback} from '@mantine/hooks';
 import {Anchor, Breadcrumbs, Button, Center, Group, Stack} from '@mantine/core';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../utils/ErrorUtils';
+import {handleDatabaseInsertErrors, handleNetworkErrors, handleValidationErrors} from '../utils/ErrorUtils';
 import {PnPCharacterView} from './PnPCharacterView';
 import ConfirmationDialog from '../modal/ConfirmationDialog';
-import {API_CONFIGURATION} from '../Constants';
-
-const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
+import {
+    getGetAllCharactersQueryKey,
+    getGetCharacterQueryKey,
+    useDeleteCharacter,
+    useInsertAllCharacters,
+    useRecalculateEntries,
+    useUpdateCharacter
+} from '../../api/pn-p-character-service/pn-p-character-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /** Allows to edit the given character */
 export function CharacterEdit({
@@ -32,6 +38,7 @@ export function CharacterEdit({
     onDelete?: () => void;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {sheetSettings, activeUniverse} = useUniverseContext();
     const emptyCharacter = useEmptyCharacter();
 
@@ -44,32 +51,37 @@ export function CharacterEdit({
         form.initialize(character ?? emptyCharacter);
         form.resetDirty();
     }, [character, emptyCharacter]);
-    useEffect(() => {
 
-    }, [character]);
+    const {mutate: recalculateEntries} = useRecalculateEntries({
+        mutation: {
+            onSuccess: response => {
+                const values = form.getValues();
+                const entries = response.data;
 
-    const handleStatsChange = useDebouncedCallback(async () => {
-        const values = form.getValues();
-        const response = await CHARACTER_API.recalculateEntries(activeUniverse.id, values);
-        const entries = response.data;
+                Object.entries(entries.primaryStats).forEach(([key, value]) => {
+                    if (values.stats.primaryStats[key]) {
+                        form.setFieldValue(`stats.primaryStats.${key}.totalValue`, value.totalValue);
+                    } else {
+                        form.setFieldValue(`stats.primaryStats.${key}`, value);
+                    }
+                });
 
-        Object.entries(entries.primaryStats).forEach(([key, value]) => {
-            if (values.stats.primaryStats[key]) {
-                form.setFieldValue(`stats.primaryStats.${key}.totalValue`, value.totalValue);
-            } else {
-                form.setFieldValue(`stats.primaryStats.${key}`, value);
-            }
-        });
+                Object.entries(entries.secondaryStats).forEach(([key, value]) => {
+                    if (values.stats.primaryStats[key]) {
+                        form.setFieldValue(`stats.secondaryStats.${key}.rawValue`, value.totalValue);
+                        form.setFieldValue(`stats.secondaryStats.${key}.totalValue`, value.totalValue);
+                    } else {
+                        form.setFieldValue(`stats.secondaryStats.${key}`, value);
+                    }
+                });
+                form.setFieldValue('talents', entries.talents);
+            },
+            onError: handleNetworkErrors
+        }
+    });
 
-        Object.entries(entries.secondaryStats).forEach(([key, value]) => {
-            if (values.stats.primaryStats[key]) {
-                form.setFieldValue(`stats.secondaryStats.${key}.rawValue`, value.totalValue);
-                form.setFieldValue(`stats.secondaryStats.${key}.totalValue`, value.totalValue);
-            } else {
-                form.setFieldValue(`stats.secondaryStats.${key}`, value);
-            }
-        });
-        form.setFieldValue('talents', entries.talents);
+    const handleStatsChange = useDebouncedCallback(() => {
+        recalculateEntries({universe: activeUniverse.id, data: form.values});
     }, 100);
 
     form.watch('stats.primaryStats', event => {
@@ -83,6 +95,33 @@ export function CharacterEdit({
             return;
         }
         handleStatsChange();
+    });
+
+    const {mutate: updateCharacter} = useUpdateCharacter({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetCharacterQueryKey(activeUniverse.id, form.values.id)
+            }).then(() => queryClient.invalidateQueries({
+                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
+            })).then(() => form.resetDirty()).then(onSave),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutate: insertCharacter} = useInsertAllCharacters({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
+            }).then(() => form.resetDirty()).then(onSave),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+    const {mutate: deleteCharacter} = useDeleteCharacter({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
+            }).then(onDelete),
+            onError: handleNetworkErrors
+        }
     });
 
     return <Center>
@@ -113,15 +152,16 @@ export function CharacterEdit({
             <form
                 onSubmit={form.onSubmit(c => {
                     if (c.id) {
-                        CHARACTER_API.updateCharacter(activeUniverse.id, c.id, c)
-                            .then(() => form.resetDirty())
-                            .then(onSave)
-                            .catch(handleValidationErrors(form.setErrors));
+                        updateCharacter({
+                            universe: activeUniverse.id,
+                            id: c.id,
+                            data: c
+                        });
                     } else {
-                        CHARACTER_API.insertAllCharacters(activeUniverse.id, [c])
-                            .then(() => form.resetDirty())
-                            .then(onSave)
-                            .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+                        insertCharacter({
+                            universe: activeUniverse.id,
+                            data: [c]
+                        });
                     }
                 })}
             >
@@ -138,9 +178,10 @@ export function CharacterEdit({
                         {character?.id !== undefined ?
                             <ConfirmationDialog
                                 title={t('sheetEditor:deleteSheet')}
-                                onConfirmation={() => {
-                                    CHARACTER_API.deleteCharacter(activeUniverse.id, character.id).then(onDelete);
-                                }}
+                                onConfirmation={() => deleteCharacter({
+                                    universe: activeUniverse.id,
+                                    id: character.id
+                                })}
                                 openNode={open =>
                                     <Button variant="outline" color="red" onClick={open}>
                                         {t('delete')}

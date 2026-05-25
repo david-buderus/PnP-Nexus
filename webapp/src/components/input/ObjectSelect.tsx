@@ -11,10 +11,10 @@ import {
 import {MdRefresh} from 'react-icons/md';
 import {useTranslation} from 'react-i18next';
 import {useMemo} from 'react';
-import {PrimaryAttribute, SecondaryAttribute, Talent} from '../../api';
+import {PrimaryAttribute, SecondaryAttribute, Talent} from '../../api/model';
 
 /** Props for the select */
-export interface ObjectSelectProps<O> extends Omit<SelectProps, "data" | "onChange" | "value"> {
+export interface ObjectSelectProps<O> extends Omit<SelectProps, 'data' | 'onChange' | 'value'> {
     /** The data of the select */
     data: O[];
     /** The current value of the select */
@@ -28,7 +28,7 @@ export interface ObjectSelectProps<O> extends Omit<SelectProps, "data" | "onChan
 }
 
 /** Props for the multiselect */
-export interface ObjectMultiSelectProps<O> extends Omit<MultiSelectProps, "data" | "onChange" | "value"> {
+export interface ObjectMultiSelectProps<O> extends Omit<MultiSelectProps, 'data' | 'onChange' | 'value'> {
     /** The data of the select */
     data: O[];
     /** The current value of the select */
@@ -78,7 +78,7 @@ export function ObjectMultiSelect<O>(props: ObjectMultiSelectProps<O>) {
 }
 
 /** Props for the select */
-export interface ObjectSelectWithRefreshProps<O> extends Omit<SelectProps, "data" | "onChange" | "value"> {
+export interface ObjectSelectWithRefreshProps<O> extends Omit<SelectProps, 'data' | 'onChange' | 'value'> {
     /** The data of the select */
     data: O[];
     /** Refreshed the loaded data */
@@ -97,7 +97,7 @@ export interface ObjectSelectWithRefreshProps<O> extends Omit<SelectProps, "data
 
 
 function ObjectSelectWithRefresh<O>({
-    data, refresh, loading, idKey, labelKey, label, error, description, required, size = "sm", ...props
+    data, refresh, loading, idKey, labelKey, label, error, description, required, size = 'sm', ...props
 }: ObjectSelectWithRefreshProps<O>) {
     return <Input.Wrapper
         label={label}
@@ -119,7 +119,7 @@ function ObjectSelectWithRefresh<O>({
                 onClick={refresh}
                 loading={loading}
                 variant="outline"
-                size={"input-" + size}
+                size={'input-' + size}
                 style={{flexShrink: 0}}
             >
                 <MdRefresh/>
@@ -129,7 +129,7 @@ function ObjectSelectWithRefresh<O>({
 }
 
 /** Select over all items of a universe */
-export function ItemSelect(props: Omit<ObjectSelectProps<SomeItem>, "data" | "idKey" | "labelKey">) {
+export function ItemSelect(props: Omit<ObjectSelectProps<SomeItem>, 'data' | 'idKey' | 'labelKey'>) {
     const [items, refresh, loading] = fetchAllItems();
 
     return <ObjectSelectWithRefresh
@@ -143,7 +143,7 @@ export function ItemSelect(props: Omit<ObjectSelectProps<SomeItem>, "data" | "id
 }
 
 /** Select over all talent of a universe */
-export function TalentSelect(props: Omit<ObjectSelectProps<Talent>, "data" | "idKey" | "labelKey">) {
+export function TalentSelect(props: Omit<ObjectSelectProps<Talent>, 'data' | 'idKey' | 'labelKey'>) {
     const [talents, refresh, loading] = fetchAllTalents();
 
     return <ObjectSelectWithRefresh
@@ -157,7 +157,7 @@ export function TalentSelect(props: Omit<ObjectSelectProps<Talent>, "data" | "id
 }
 
 /** Select over all primary attributes of a universe */
-export function PrimaryAttributeSelect(props: Omit<ObjectSelectProps<PrimaryAttribute>, "data" | "idKey" | "labelKey">) {
+export function PrimaryAttributeSelect(props: Omit<ObjectSelectProps<PrimaryAttribute>, 'data' | 'idKey' | 'labelKey'>) {
     const [attributes, refresh, loading] = fetchAllPrimaryAttributes();
 
     return <ObjectSelectWithRefresh
@@ -171,7 +171,7 @@ export function PrimaryAttributeSelect(props: Omit<ObjectSelectProps<PrimaryAttr
 }
 
 /** Select over all secondary attributes of a universe */
-export function SecondaryAttributeSelect(props: Omit<ObjectSelectProps<SecondaryAttribute>, "data" | "idKey" | "labelKey">) {
+export function SecondaryAttributeSelect(props: Omit<ObjectSelectProps<SecondaryAttribute>, 'data' | 'idKey' | 'labelKey'>) {
     const [attributes, refresh, loading] = fetchAllSecondaryAttributes();
 
     return <ObjectSelectWithRefresh
@@ -190,9 +190,9 @@ export function ResourceSelect({
     onChange,
     label,
     error,
-    size = "sm",
+    size = 'sm',
     ...rest
-}: Omit<ObjectSelectProps<IResource>, "data" | "idKey" | "labelKey">) {
+}: Omit<ObjectSelectProps<IResource>, 'data' | 'idKey' | 'labelKey'>) {
     const {t} = useTranslation();
     const [items, refreshItems, loadingItems] = fetchAllItems();
     const [materials, refreshMaterials, loadingMaterials] = fetchAllMaterials();
@@ -218,7 +218,7 @@ export function ResourceSelect({
             <Select
                 data={[
                     {
-                        group: t("items"),
+                        group: t('items'),
                         items: items.map(item => {
                             return {
                                 value: item.id,
@@ -227,7 +227,7 @@ export function ResourceSelect({
                         })
                     },
                     {
-                        group: t("materials"),
+                        group: t('materials'),
                         items: materials.map(material => {
                             return {
                                 value: material.id,
@@ -236,7 +236,7 @@ export function ResourceSelect({
                         })
                     },
                     {
-                        group: t("attributes"),
+                        group: t('attributes'),
                         items: attributes.map(attribute => {
                             return {
                                 value: attribute.id,
@@ -259,7 +259,7 @@ export function ResourceSelect({
                     refreshAttributes();
                 }}
                 loading={loading}
-                size={"input-" + size}
+                size={'input-' + size}
                 variant="outline"
             >
                 <MdRefresh/>

@@ -2,20 +2,23 @@ import {useEffect} from 'react';
 import {useUniverseContext} from '../PageBase';
 import {useTranslation} from 'react-i18next';
 import {useForm} from '@mantine/form';
-import {CharacterSheetSettings, PnPCharacterSheet, UniverseSettingsServiceApi} from '../../api';
+import {CharacterSheetSettings, PnPCharacterSheet} from '../../api/model';
 import {Button, Group, Modal, Stack, Text} from '@mantine/core';
-import {API_CONFIGURATION} from '../Constants';
-import {handleNetworkErrors, handleValidationErrors} from '../utils/ErrorUtils';
+import {handleValidationErrors} from '../utils/ErrorUtils';
 import {fetchAllCharacterSheets} from '../Database';
 import {useDisclosure} from '@mantine/hooks';
 import {ObjectSelect} from '../input/ObjectSelect';
-
-const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
+import {
+    getGetCharacterSheetSettingsQueryKey,
+    useUpdateCharacterSheetSettings
+} from '../../api/universe-settings-service/universe-settings-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /** Settings dialog for character sheets */
 export default function CharacterSheetSettingsDialog() {
     const {t} = useTranslation();
-    const {activeUniverse, sheetSettings, refreshSettings} = useUniverseContext();
+    const queryClient = useQueryClient();
+    const {activeUniverse, sheetSettings} = useUniverseContext();
     const [sheets] = fetchAllCharacterSheets();
     const [opened, {open, close}] = useDisclosure(false);
 
@@ -25,21 +28,22 @@ export default function CharacterSheetSettingsDialog() {
     });
 
     useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
+        form.setInitialValues(sheetSettings);
+        form.setValues(sheetSettings);
+    }, [sheetSettings]);
 
-        SETTINGS_API.getCharacterSheetSettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
-    }, [activeUniverse]);
+    const {mutateAsync: updateCharacterSheetSettings} = useUpdateCharacterSheetSettings({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetCharacterSheetSettingsQueryKey(activeUniverse.id)})
+        }
+    });
 
     return <>
         <Modal opened={opened} onClose={close} size="auto" title={t('universe:characterSheetSettings')}>
             <form
-                onSubmit={form.onSubmit(s => SETTINGS_API.updateCharacterSheetSettings(activeUniverse.id, s)
-                    .then(() => {
-                        refreshSettings();
-                        close();
-                    }).catch(handleValidationErrors(form.setErrors)))}>
+                onSubmit={form.onSubmit(s => updateCharacterSheetSettings({universe: activeUniverse.id, data: s})
+                    .then(() => close()).catch(handleValidationErrors(form.setErrors)))}
+            >
                 <Stack>
                     <Text>
                         {t('universe:characterSheetSettingsModalDescription')}

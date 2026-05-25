@@ -25,7 +25,7 @@ public class UpgradeItemService {
 
 
     @PostMapping("add")
-    @Operation(summary = "Upgrades the given equipment", operationId = "addUpgrade")
+    @Operation(summary = "Upgrades the given equipment", operationId = "addUpgradeToItem")
     public <I extends ItemStack<? extends Item>> I upgrade(@RequestBody @Valid UpgradeRequest<I> request) {
         I item = request.item;
         Upgrade upgrade = request.upgrade;
@@ -40,7 +40,7 @@ public class UpgradeItemService {
     }
 
     @PostMapping("remove")
-    @Operation(summary = "Remove an upgrades from the given equipment", operationId = "removeUpgrade")
+    @Operation(summary = "Remove an upgrades from the given equipment", operationId = "removeUpgradeFromItem")
     public <I extends ItemStack<? extends Item>> I remove(@RequestBody @Valid UpgradeRemovalRequest<I> request) {
         I equipment = request.item;
         equipment.removeUpgrade(request.upgrade);

@@ -4,18 +4,17 @@ import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {diceFormatter} from '../../../../utils/Formatters';
-import {ItemStackServiceApi, ShieldEquipment, Weapon, WeaponEquipment} from '../../../../../api';
+import {ShieldEquipment, Weapon, WeaponEquipment} from '../../../../../api/model';
 import {useUniverseContext} from '../../../../PageBase';
 import {PageElementSettings} from '../PageElementSettings';
 import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {fetchAllWeapons} from '../../../../Database';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
-import {API_CONFIGURATION} from '../../../../Constants';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
 import {ShieldAdditionPopover} from './ArmorSlots';
-
-const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
+import {useCreateWeapon} from '../../../../../api/item-stack-service/item-stack-service';
+import {handleNetworkErrors} from '../../../../utils/ErrorUtils';
 
 /** Shows weapons of the character */
 export function WeaponList({
@@ -221,6 +220,7 @@ function ShieldRow({
     return [
         <Table.Tr
             h={TABLE_ROW_HEIGHT}
+            key={'details-row-' + index}
             onClick={allowEdit ? () => setLastClicked(shield) : null}
         >
             <Table.Td style={TABLE_STYLE}>{shield?.item.name ?? ''}</Table.Td>
@@ -262,7 +262,7 @@ function ShieldRow({
                 </Group>
             </Table.Td>
         </Table.Tr>,
-        <ShieldExtraLine shield={shield}/>
+        <ShieldExtraLine key={'info-row-' + index} shield={shield}/>
     ];
 }
 
@@ -302,6 +302,12 @@ function formatStat(current: number, base: number) {
 function WeaponAdditionPopover() {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
     const [items] = fetchAllWeapons();
+    const {mutate: createWeapon} = useCreateWeapon({
+        mutation: {
+            onSuccess: response => characterForm.insertListItem('equipment.weapons', response.data),
+            onError: handleNetworkErrors
+        }
+    });
 
     if (!allowEdit) {
         return null;
@@ -321,10 +327,9 @@ function WeaponAdditionPopover() {
             <Popover.Dropdown>
                 <ItemSearchCard
                     items={items}
-                    onSelect={item =>
-                        STACK_SERVICE.createWeapon({item: item.item as Weapon, stackSize: 1})
-                            .then(response => characterForm.insertListItem('equipment.weapons', response.data))
-                    }
+                    onSelect={item => createWeapon({
+                        data: {item: item.item as Weapon, stackSize: 1}
+                    })}
                 />
             </Popover.Dropdown>
         </Popover>

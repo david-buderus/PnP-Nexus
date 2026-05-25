@@ -8,7 +8,7 @@ import {
     EItemEquipmentManipulator,
     ERarity,
     EUpgradeRestriction
-} from '../../api';
+} from '../../api/model';
 import {getPossibleUpgradeManipulators} from '../utils/UpgradeUtils';
 import {useMemo} from 'react';
 

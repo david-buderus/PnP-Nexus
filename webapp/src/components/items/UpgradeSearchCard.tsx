@@ -1,7 +1,7 @@
 import {Card, Group, ScrollArea, Stack, TextInput} from '@mantine/core';
 import {useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Upgrade} from '../../api';
+import {Upgrade} from '../../api/model';
 import {UpgradeCard} from './UpgradeCard';
 
 /** Search with amount for items */

@@ -4,13 +4,13 @@ import React, {useContext, useMemo, useState} from 'react';
 import {fetchAllUpgrades} from '../Database';
 import {SomeItemStack} from '../Constants';
 import {UpgradeCard} from './UpgradeCard';
-import {Upgrade} from '../../api';
+import {Upgrade} from '../../api/model';
 import {IconCheck} from '@tabler/icons-react';
 import {PnPCharacterContext} from '../character/PnPCharacterContext';
 import {TABLE_ROW_HEIGHT} from '../character/editor/parts/Constants';
 import {GiMagicAxe} from 'react-icons/gi';
 import {getPossibleUpgradeRestriction} from '../utils/UpgradeUtils';
-import {removeUpgradeFromItem, upgradeItem} from '../utils/InventoryUtils';
+import {useAddUpgradeToItem, useRemoveUpgradeFromItem} from '../../api/upgrade-item-service/upgrade-item-service';
 
 
 /**
@@ -58,7 +58,16 @@ function UpgradeControl<I extends SomeItemStack>({
 }) {
     const [upgrades] = fetchAllUpgrades();
     const {t} = useTranslation();
-
+    const {mutate: addUpgrade} = useAddUpgradeToItem({
+        mutation: {
+            onSuccess: response => onChange(response.data as I)
+        }
+    });
+    const {mutate: removeUpgrade} = useRemoveUpgradeFromItem({
+        mutation: {
+            onSuccess: response => onChange(response.data as I)
+        }
+    });
     const [filterValue, setFilterValue] = useState('');
 
     const sortedUpgrades = useMemo(() =>
@@ -71,9 +80,9 @@ function UpgradeControl<I extends SomeItemStack>({
 
     function onClick(upgrade: Upgrade, used: boolean) {
         if (used) {
-            removeUpgradeFromItem(item, upgrade).then(onChange);
+            removeUpgrade({data: {item: item, upgrade: upgrade}});
         } else {
-            upgradeItem(item, upgrade).then(onChange);
+            addUpgrade({data: {item: item, upgrade: upgrade}});
         }
     }
 

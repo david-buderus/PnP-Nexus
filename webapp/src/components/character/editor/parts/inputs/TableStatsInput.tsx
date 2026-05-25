@@ -1,5 +1,5 @@
 import {NumberInput, NumberInputProps} from '@mantine/core';
-import {StatsDto} from '../../../../../api';
+import {StatsDto} from '../../../../../api/model';
 import {TableNumberInput} from './TableNumberInput';
 
 /**

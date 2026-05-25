@@ -3,21 +3,38 @@ import {useForm} from '@mantine/form';
 import {randomId, useDisclosure} from '@mantine/hooks';
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Material, MaterialItem, MaterialServiceApi} from '../../../api';
+import {Material, MaterialItem} from '../../../api/model';
 import {fetchAllMaterials} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ItemSelect} from '../../../components/input/ObjectSelect';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
-
-const MATERIAL_API = new MaterialServiceApi(API_CONFIGURATION);
+import {
+    getGetAllMaterialsQueryKey,
+    useDeleteAllMaterials,
+    useInsertAllMaterials,
+    useUpdateMaterial
+} from '../../../api/material-service/material-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /** Overview over all materials */
 export function MaterialOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const {mutateAsync: deleteMaterial} = useDeleteAllMaterials({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllMaterialsQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<Material, any>[]>(
         () => [
@@ -45,28 +62,29 @@ export function MaterialOverview() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) =>
             <CreationDialog
                 editMode={editMode}
-                refresh={refresh}
                 disabled={disabled}
                 getInitial={getInitial}
             />}
         deletionDialogTitle={t('item:materialDeletionTitle')}
-        onDelete={(universe, materials) => MATERIAL_API.deleteAllMaterials(universe, materials.map(material => material.id))}
+        onDelete={(universe, materials) => deleteMaterial({
+            universe: universe,
+            params: {ids: materials.map(material => material.id)}
+        })}
         idKey="id"
     />;
 }
 
 function CreationDialog({
     editMode,
-    refresh,
     disabled,
     getInitial
 }: {
     editMode: boolean,
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => Material;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
 
     const [opened, {open, close}] = useDisclosure(false);
@@ -85,13 +103,31 @@ function CreationDialog({
         form.setValues(getInitial());
     }, [opened, getInitial, editMode]);
 
+    const {mutateAsync: updateMaterial} = useUpdateMaterial({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllMaterialsQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertMaterials} = useInsertAllMaterials({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllMaterialsQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     function onSubmit(material: Material) {
         if (editMode) {
-            MATERIAL_API.updateMaterial(activeUniverse.id, material.id, material).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateMaterial({
+                universe: activeUniverse.id,
+                id: material.id,
+                data: material
+            });
         } else {
-            MATERIAL_API.insertAllMaterials(activeUniverse.id, [material]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertMaterials({
+                universe: activeUniverse.id,
+                data: [material]
+            });
         }
     }
 

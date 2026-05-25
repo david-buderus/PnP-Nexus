@@ -1,12 +1,9 @@
 import {useNavigate, useParams} from 'react-router-dom';
 import {useUniverseContext} from '../../../components/PageBase';
-import React, {useEffect, useState} from 'react';
-import {PnPCharacterDTO, PnPCharacterServiceApi} from '../../../api';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import React from 'react';
 import {CharacterEdit} from '../../../components/character/CharacterEdit';
+import {useGetCharacter} from '../../../api/pn-p-character-service/pn-p-character-service';
 
-
-const CHARACTER_API = new PnPCharacterServiceApi(API_CONFIGURATION);
 
 /** Page to show the character sheet editor */
 export function CharacterEditor() {
@@ -14,16 +11,9 @@ export function CharacterEditor() {
     const {activeUniverse} = useUniverseContext();
     const navigate = useNavigate();
 
-    const [initialCharacter, setInitialCharacter] = useState<PnPCharacterDTO>(null);
-
-    useEffect(() => {
-        if (!character) {
-            return;
-        }
-        CHARACTER_API.getCharacter(activeUniverse.id, character).then(response => {
-            setInitialCharacter(response.data);
-        });
-    }, [character]);
+    const initialCharacter = useGetCharacter(activeUniverse.id, character, {
+        query: {enabled: Boolean(character)}
+    }).data?.data ?? null;
 
     return <CharacterEdit
         character={initialCharacter}

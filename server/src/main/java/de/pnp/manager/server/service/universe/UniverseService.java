@@ -95,11 +95,11 @@ public class UniverseService {
         return persistedUniverse;
     }
 
-    @PutMapping("{universe}")
+    @PutMapping("{universeId}")
     @UniverseOwner
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
-    public Universe updateUniverse(@PathVariable ObjectId universe, @Valid @RequestBody Universe newUniverse) {
-        if (!Objects.equals(newUniverse.getId(), universe)) {
+    public Universe updateUniverse(@PathVariable ObjectId universeId, @Valid @RequestBody Universe newUniverse) {
+        if (!Objects.equals(newUniverse.getId(), universeId)) {
             throw new ResponseStatusException(BAD_REQUEST, "The universe path does not match the given universe name");
         }
         return universeRepository.update(newUniverse);

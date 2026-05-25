@@ -1,4 +1,4 @@
-import {PrimaryStatTrait, SecondaryStatTrait, SimpleCharacterTrait, TalentCharacterTrait} from '../../api';
+import {PrimaryStatTrait, SecondaryStatTrait, SimpleCharacterTrait, TalentCharacterTrait} from '../../api/model';
 import {ActionIcon, Box, Button, Card, Group, NumberInput, Select, Stack, Textarea} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
 import {UseFormReturnType} from '@mantine/form';

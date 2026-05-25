@@ -1,13 +1,8 @@
-import {ReactNode, useEffect, useState} from "react";
-import {useUniverseContext, useUserContext} from "../PageBase";
-import {useTranslation} from "react-i18next";
-import {useForm} from "@mantine/form";
-import {
-    EquipmentSettings,
-    JewelleryDefinition,
-    UniverseCreationServiceApi,
-    UniverseSettingsServiceApi
-} from "../../api";
+import {ReactNode, useEffect, useState} from 'react';
+import {useUniverseContext, useUserContext} from '../PageBase';
+import {useTranslation} from 'react-i18next';
+import {useForm} from '@mantine/form';
+import {EquipmentSettings, JewelleryDefinition} from '../../api/model';
 import {
     ActionIcon,
     Alert,
@@ -21,18 +16,20 @@ import {
     Text,
     TextInput,
     Title
-} from "@mantine/core";
-import {randomId, useDisclosure} from "@mantine/hooks";
-import {FaRegTrashCan} from "react-icons/fa6";
-import {API_CONFIGURATION} from "../Constants";
-import {handleNetworkErrors, handleValidationErrors} from "../utils/ErrorUtils";
-import LanguageSelect from "../input/LanguageSelect";
-import axios, {AxiosError} from "axios";
+} from '@mantine/core';
+import {randomId, useDisclosure} from '@mantine/hooks';
+import {FaRegTrashCan} from 'react-icons/fa6';
+import {handleValidationErrors} from '../utils/ErrorUtils';
+import LanguageSelect from '../input/LanguageSelect';
+import axios from 'axios';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {
+    getGetEquipmentSettingsQueryKey,
+    useUpdateEquipmentSettings
+} from '../../api/universe-settings-service/universe-settings-service';
+import {getDefaultJewelleryDefinitions} from '../../api/universe-creation-service/universe-creation-service';
 
-
-const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
-const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
-
+/** Form for equipment settings */
 export default function EquipmentSettingsForm({
     onSave, onSaveText, alternativeButton
 }: {
@@ -41,51 +38,56 @@ export default function EquipmentSettingsForm({
     alternativeButton?: ReactNode;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse, equipmentSettings} = useUniverseContext();
     const form = useForm<EquipmentSettings>({
         mode: 'controlled',
         initialValues: equipmentSettings
     });
 
-    const settings = form.getValues();
-
     useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
+        form.setInitialValues(equipmentSettings);
+        form.setValues(equipmentSettings);
+    }, [equipmentSettings]);
 
-        SETTINGS_API.getEquipmentSettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
-    }, [activeUniverse]);
+    const {mutateAsync: updateEquipmentSettings} = useUpdateEquipmentSettings({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetEquipmentSettingsQueryKey(activeUniverse.id)})
+        }
+    });
+
+    const settings = form.getValues();
 
     return <Stack align="center">
         <Title order={3} ta="center">
             {t('universe:characterSettings')}
         </Title>
         <form
-            onSubmit={form.onSubmit(s => SETTINGS_API.updateEquipmentSettings(activeUniverse.id, s).then(onSave)
-                .catch(handleValidationErrors(form.setErrors)))}>
+            onSubmit={form.onSubmit(s => updateEquipmentSettings({universe: activeUniverse.id, data: s})
+                .then(onSave).catch(handleValidationErrors(form.setErrors)))}
+        >
             <NumberInput
-                label={t("universe:numberOfHandheld")}
-                key={form.key("numberOfHandheld")}
-                {...form.getInputProps("numberOfHandheld")}
+                label={t('universe:numberOfHandheld')}
+                key={form.key('numberOfHandheld')}
+                {...form.getInputProps('numberOfHandheld')}
                 allowDecimal={false}
             />
             <Stack pt="lg">
                 <Title order={5} ta="center">
                     {t('universe:jewelleryDefinitions')}
                 </Title>
-                <Text ta='center'>
-                    {t("universe:jewelleryDefinitionsExplanation")}
-                    {" "}
+                <Text ta="center">
+                    {t('universe:jewelleryDefinitionsExplanation')}
+                    {' '}
                     <JewelleryImportModal
-                        setJewelleryDefinition={definitions => form.setFieldValue("jewelleryDefinitions", definitions)}/>
+                        setJewelleryDefinition={definitions => form.setFieldValue('jewelleryDefinitions', definitions)}/>
                 </Text>
                 <Table>
                     <Table.Thead>
                         <Table.Tr>
-                            <Table.Th>{t("name")}</Table.Th>
-                            <Table.Th>{t("tag")}</Table.Th>
-                            <Table.Th>{t("amount")}</Table.Th>
+                            <Table.Th>{t('name')}</Table.Th>
+                            <Table.Th>{t('tag')}</Table.Th>
+                            <Table.Th>{t('amount')}</Table.Th>
                             <Table.Th></Table.Th>
                         </Table.Tr>
                     </Table.Thead>
@@ -125,17 +127,22 @@ export default function EquipmentSettingsForm({
                     </Table.Tbody>
                     {settings.jewelleryDefinitions.length === 0 ?
                         <Table.Caption c="dimmed" ta="center">
-                            {t("nothing-here")}
+                            {t('nothing-here')}
                         </Table.Caption> : null}
                 </Table>
                 <Group justify="flex-end">
                     <Button
                         mt="md"
                         onClick={() =>
-                            form.insertListItem('jewelleryDefinitions', {name: '', tag: '', amount: 1, key: randomId()})
+                            form.insertListItem('jewelleryDefinitions', {
+                                name: '',
+                                tag: '',
+                                amount: 1,
+                                key: randomId()
+                            } as JewelleryDefinition)
                         }
                     >
-                        {t("universe:addAnotherJewelleryDefinition")}
+                        {t('universe:addAnotherJewelleryDefinition')}
                     </Button>
                 </Group>
             </Stack>
@@ -164,17 +171,33 @@ function JewelleryImportModal({
     const [language, setLanguage] = useState<string>(userPreferences?.language ?? null);
     const [error, setError] = useState(false);
 
+    const {mutate: importDefaults} = useMutation({
+        mutationFn: (variables: { universeId: string; language: string }) =>
+            getDefaultJewelleryDefinitions(variables.universeId, {language: variables.language}),
+
+        onSuccess: response => {
+            setError(false);
+            setJewelleryDefinition(response.data);
+            close();
+        },
+        onError: err => {
+            if (axios.isAxiosError(err) && err.response?.status === 400) {
+                setError(true);
+            }
+        }
+    });
+
     return (
         <>
-            <Modal opened={opened} onClose={close} title={t("universe:jewelleryImportTitle")}>
-                <Text ta='left'>
-                    {t("universe:jewelleryDefinitionsExplanation")}
+            <Modal opened={opened} onClose={close} title={t('universe:jewelleryImportTitle')}>
+                <Text ta="left">
+                    {t('universe:jewelleryDefinitionsExplanation')}
                 </Text>
                 <LanguageSelect
                     value={language}
                     onChange={setLanguage}
                 />
-                {error && <Alert variant="light" color="red" title={t("universe:importMissingRequirements")}/>}
+                {error && <Alert variant="light" color="red" title={t('universe:importMissingRequirements')}/>}
                 <Group pt="md" justify="flex-end">
                     <Button data-testid="dialog-cancel" autoFocus onClick={close}>
                         {t('cancel')}
@@ -183,24 +206,14 @@ function JewelleryImportModal({
                         variant="contained"
                         color="success"
                         disabled={!language}
-                        onClick={() => {
-                            UNIVERSE_CREATION_API.getDefaultJewelleryDefinitions(activeUniverse.id, language).then(response => {
-                                setJewelleryDefinition(response.data);
-                                close();
-                            }).catch((err: Error | AxiosError) => {
-                                if (!axios.isAxiosError(err)) {
-                                    return;
-                                }
-                                if (err.response.status !== 400) {
-                                    return;
-                                }
-                                setError(true);
-                            });
-                        }}>{t('universe:importDefaults')}</Button>
+                        onClick={() => importDefaults({universeId: activeUniverse.id, language: language})}
+                    >
+                        {t('universe:importDefaults')}
+                    </Button>
                 </Group>
             </Modal>
             <Anchor onClick={open}>
-                {t("universe:importDefaultJewelleryDefinitions")}
+                {t('universe:importDefaultJewelleryDefinitions')}
             </Anchor>
         </>
     );

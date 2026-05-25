@@ -1,7 +1,6 @@
 import {
     Armor,
     ArmorEquipment,
-    Configuration,
     EquipmentItemEffect,
     Item,
     ItemEffect,
@@ -12,7 +11,7 @@ import {
     ShieldEquipment,
     Weapon,
     WeaponEquipment
-} from '../api';
+} from '../api/model';
 
 /** The possible identifier for each item class */
 export type ItemClass = 'Item' | 'Weapon' | 'Shield' | 'Armor' | 'Jewellery';
@@ -28,8 +27,3 @@ export type SomeItemEffect = ItemEffect | EquipmentItemEffect;
 
 /** All equipment classes */
 export type SomeEquipment = ArmorEquipment | JewelleryEquipment | ShieldEquipment | WeaponEquipment;
-
-/** The api configuration which should be used by all APIs */
-export const API_CONFIGURATION = new Configuration({
-    basePath: window.location.origin
-});

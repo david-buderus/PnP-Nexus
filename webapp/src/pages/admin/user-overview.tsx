@@ -1,40 +1,41 @@
 import {useTranslation} from 'react-i18next';
-import {
-    GrantedDatabaseObjectIdAuthorityDTO,
-    PnPUser,
-    PnPUserCreation,
-    RoleAuthorityDTO,
-    UserServiceApi
-} from '../../api';
-import {API_CONFIGURATION} from '../../components/Constants';
+import {GrantedDatabaseObjectIdAuthorityDTO, PnPUser, PnPUserCreation, RoleAuthorityDTO,} from '../../api/model';
 import {useEffect, useMemo, useState} from 'react';
-import OverviewPage, {ExtendedColumnDef} from '../../components/OverviewPage';
+import OverviewPage from '../../components/OverviewPage';
 import {Button, Group, Input, Modal, MultiSelect, Paper, PasswordInput, Stack, Switch, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {useDisclosure} from '@mantine/hooks';
-import {handleValidationErrors} from '../../components/utils/ErrorUtils';
+import {handleNetworkErrors, handleValidationErrors} from '../../components/utils/ErrorUtils';
 import {useUniverseContext} from '../../components/PageBase';
+import {ExtendedColumnDef} from '../../components/table/SortableTable';
+import {
+    getGetAllUsersQueryKey,
+    getGetPermissionsQueryKey,
+    getGetUserQueryKey,
+    useCreateUser,
+    useGetAllUsers,
+    useGetPermissions,
+    useRemoveUsers,
+    useUpdatePermissions,
+    useUpdateUser
+} from '../../api/user-service/user-service';
+import {useQueryClient} from '@tanstack/react-query';
 
-const USER_API = new UserServiceApi(API_CONFIGURATION);
 
 /** Admin overview over all users */
 export function UserOverview() {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
 
-    const [users, setUsers] = useState<PnPUser[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const {data, isLoading} = useGetAllUsers();
+    const users = data?.data ?? [];
 
-    const refresh = () => {
-        setLoading(true);
-        USER_API.getAllUsers().then(response => {
-            setLoading(false);
-            setUsers(response.data);
-        });
-    };
-
-    useEffect(() => {
-        refresh();
-    }, []);
+    const {mutate: deleteUsers} = useRemoveUsers({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUsersQueryKey()}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<PnPUser, any>[]>(
         () => [
@@ -53,30 +54,34 @@ export function UserOverview() {
         ], []);
 
     return <OverviewPage
-        fetchData={[users, refresh, loading]}
+        fetchData={[users, () => {
+        }, isLoading]}
         columns={columns}
         identifier="users"
         manipulationDialog={(editMode, refreshCallback, disabled, getInitial) => {
             if (editMode) {
-                return <EditDialog refresh={refreshCallback} disabled={disabled} getInitial={getInitial}/>;
+                return <EditDialog disabled={disabled} getInitial={getInitial}/>;
             } else {
-                return <CreationDialog refresh={refreshCallback} disabled={disabled}/>;
+                return <CreationDialog disabled={disabled}/>;
             }
         }}
         deletionDialogTitle={t('user:confirmDeleteUser')}
-        onDelete={(_, usersToDelete) => USER_API.removeUsers(usersToDelete.map(user => user.username))}
+        onDelete={(_, usersToDelete) => deleteUsers({
+            params: {
+                usernames: usersToDelete.map(user => user.username)
+            }
+        })}
         idKey="username"
     />;
 }
 
 function CreationDialog({
-    refresh,
     disabled
 }: {
-    refresh: () => void;
     disabled: boolean;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
 
     const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<PnPUserCreation>({
@@ -88,10 +93,16 @@ function CreationDialog({
         }
     });
 
+    const {mutate: createUser} = useCreateUser({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUsersQueryKey()}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+
     return <>
         <Modal opened={opened} onClose={close} title={t('user:createUser')} maw={300}>
-            <form onSubmit={form.onSubmit(user => USER_API.createUser(user).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors)))}
+            <form onSubmit={form.onSubmit(user => createUser({data: user}))}
             >
                 <TextInput
                     label={t('username')}
@@ -135,15 +146,14 @@ function CreationDialog({
 }
 
 function EditDialog({
-    refresh,
     disabled,
     getInitial
 }: {
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => PnPUser;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
 
     const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<PnPUser>({
@@ -154,26 +164,44 @@ function EditDialog({
         }
     });
     const [authorities, setAuthorities] = useState([]);
+    const {data: permissionResponse} = useGetPermissions(getInitial()?.username, {
+        query: {enabled: Boolean(getInitial()?.username)}
+    });
+
+    const {mutate: updatePermissions} = useUpdatePermissions({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetPermissionsQueryKey(getInitial().username)}),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+
+    const {mutate: updateUser} = useUpdateUser({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUsersQueryKey()})
+                .then(() => queryClient.invalidateQueries({queryKey: getGetUserQueryKey(getInitial().username)}))
+                .then(() => updatePermissions({
+                    username: getInitial().username,
+                    data: authorities
+                }))
+                .then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
 
     useEffect(() => {
         if (!opened) {
             return;
         }
-        const user = getInitial();
-        form.setValues(user);
-        USER_API.getPermissions(user.username).then(response => setAuthorities(response.data));
-    }, [opened, getInitial]);
+        form.setValues(getInitial());
+        setAuthorities(permissionResponse?.data ?? []);
+    }, [opened, getInitial, permissionResponse]);
 
     return <>
         <Modal opened={opened} onClose={close} title={t('user:editUser')} maw={300}>
-            <form onSubmit={form.onSubmit(user => USER_API.updateUser(user.username, user)
-                .then(() => USER_API.updatePermissions(user.username, authorities))
-                .then(() => {
-                    refresh();
-                    close();
-                })
-                .catch(handleValidationErrors(form.setErrors)))}
-            >
+            <form onSubmit={form.onSubmit(user => updateUser({
+                username: user.username,
+                data: user
+            }))}>
                 <TextInput
                     label={t('displayName')}
                     key={form.key('displayName')}

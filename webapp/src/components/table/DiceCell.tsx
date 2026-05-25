@@ -1,4 +1,4 @@
-import {Dice} from '../../api';
+import {Dice} from '../../api/model';
 import {diceFormatter} from '../utils/Formatters';
 import {ReactNode} from 'react';
 import {CellContext} from '@tanstack/table-core';

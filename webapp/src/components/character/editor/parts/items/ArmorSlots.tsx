@@ -3,7 +3,7 @@ import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {Armor, ArmorEquipment, EArmorSlot, ItemStackServiceApi, Shield, ShieldEquipment} from '../../../../../api';
+import {Armor, ArmorEquipment, EArmorSlot, Shield, ShieldEquipment} from '../../../../../api/model';
 import {useUniverseContext} from '../../../../PageBase';
 import {diceFormatter} from '../../../../utils/Formatters';
 import {OverflowSwitch} from '../../../../utils/OverflowSwitch';
@@ -13,11 +13,10 @@ import {PageElementSettings} from '../PageElementSettings';
 import {fetchAllArmor, fetchAllShields} from '../../../../Database';
 import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
-import {API_CONFIGURATION} from '../../../../Constants';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
-
-const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
+import {useCreateArmor, useCreateShield} from '../../../../../api/item-stack-service/item-stack-service';
+import {handleNetworkErrors} from '../../../../utils/ErrorUtils';
 
 /** Shows armor of the character */
 export function ArmorSlots({numberOfShieldRows, setNumberOfShieldRows}: {
@@ -69,10 +68,10 @@ export function ArmorSlots({numberOfShieldRows, setNumberOfShieldRows}: {
                         {t('effect')}
                     </Table.Th>
                 </Table.Tr>
-                <ArmorSlot slot={EArmorSlot.Head} setLastClicked={setLastClicked}/>
-                <ArmorSlot slot={EArmorSlot.Body} setLastClicked={setLastClicked}/>
-                <ArmorSlot slot={EArmorSlot.Arms} setLastClicked={setLastClicked}/>
-                <ArmorSlot slot={EArmorSlot.Legs} setLastClicked={setLastClicked}/>
+                <ArmorSlot slot={EArmorSlot.HEAD} setLastClicked={setLastClicked}/>
+                <ArmorSlot slot={EArmorSlot.BODY} setLastClicked={setLastClicked}/>
+                <ArmorSlot slot={EArmorSlot.ARMS} setLastClicked={setLastClicked}/>
+                <ArmorSlot slot={EArmorSlot.LEGS} setLastClicked={setLastClicked}/>
                 {shields.map((shield, index) => <ShieldRow
                     key={index}
                     shield={shield}
@@ -176,7 +175,7 @@ function ShieldRow({
     return [
         <Table.Tr
             h={TABLE_ROW_HEIGHT}
-            key="details-row"
+            key={'details-row-' + index}
             onClick={allowEdit ? () => setLastClicked(shield ?? null) : null}
         >
             <Table.Td style={TABLE_STYLE}>
@@ -224,7 +223,7 @@ function ShieldRow({
                 </Group>
             </Table.Td>
         </Table.Tr>,
-        <ShieldExtraLine key="info-row" shield={shield}/>
+        <ShieldExtraLine key={'info-row-' + index} shield={shield}/>
     ];
 }
 
@@ -271,6 +270,12 @@ function ArmorAdditionPopover({slot}: { slot: EArmorSlot }) {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
     const [items] = fetchAllArmor();
     const filtered = useMemo(() => items.filter(i => i.armorSlot === slot), [items, slot]);
+    const {mutate: createArmor} = useCreateArmor({
+        mutation: {
+            onSuccess: response => characterForm.setFieldValue(`equipment.armor.${slot}`, response.data),
+            onError: handleNetworkErrors
+        }
+    });
 
     if (!allowEdit) {
         return null;
@@ -290,10 +295,9 @@ function ArmorAdditionPopover({slot}: { slot: EArmorSlot }) {
             <Popover.Dropdown>
                 <ItemSearchCard
                     items={filtered}
-                    onSelect={item =>
-                        STACK_SERVICE.createArmor({item: item.item as Armor, stackSize: 1})
-                            .then(response => characterForm.setFieldValue(`equipment.armor.${slot}`, response.data))
-                    }
+                    onSelect={item => createArmor({
+                        data: {item: item.item as Armor, stackSize: 1}
+                    })}
                 />
             </Popover.Dropdown>
         </Popover>
@@ -304,10 +308,17 @@ function ArmorAdditionPopover({slot}: { slot: EArmorSlot }) {
 export function ShieldAdditionPopover() {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
     const [items] = fetchAllShields();
+    const {mutate: createShield} = useCreateShield({
+        mutation: {
+            onSuccess: response => characterForm.insertListItem('equipment.shields', response.data),
+            onError: handleNetworkErrors
+        }
+    });
 
     if (!allowEdit) {
         return null;
     }
+
 
     return (
         <Popover position="bottom" withArrow shadow="md">
@@ -323,10 +334,11 @@ export function ShieldAdditionPopover() {
             <Popover.Dropdown>
                 <ItemSearchCard
                     items={items}
-                    onSelect={item =>
-                        STACK_SERVICE.createShield({item: item.item as Shield, stackSize: 1})
-                            .then(response => characterForm.insertListItem('equipment.shields', response.data))
-                    }
+                    onSelect={item => createShield({
+                        data: {
+                            item: item.item as Shield, stackSize: 1
+                        }
+                    })}
                 />
             </Popover.Dropdown>
         </Popover>

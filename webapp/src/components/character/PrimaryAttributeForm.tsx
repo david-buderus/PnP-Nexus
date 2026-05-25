@@ -2,14 +2,15 @@ import {ActionIcon, Button, Group, Table, TextInput} from '@mantine/core';
 import {randomId} from '@mantine/hooks';
 import {ReactNode, useEffect} from 'react';
 import {FaRegTrashCan} from 'react-icons/fa6';
-import {handleNetworkErrors, handleValidationErrors} from '../utils/ErrorUtils';
+import {handleValidationErrors} from '../utils/ErrorUtils';
 import {useTranslation} from 'react-i18next';
 import {useUniverseContext} from '../PageBase';
-import {PrimaryAttribute, PrimaryAttributeServiceApi} from '../../api';
+import {PrimaryAttribute} from '../../api/model';
 import {useForm} from '@mantine/form';
-import {API_CONFIGURATION} from '../Constants';
-
-const PRIMARY_ATTRIBUTE_API = new PrimaryAttributeServiceApi(API_CONFIGURATION);
+import {fetchAllPrimaryAttributes} from '../Database';
+import {getGetItemSettingsQueryKey} from '../../api/universe-settings-service/universe-settings-service';
+import {useSetAllPrimaryAttributes} from '../../api/primary-attribute-service/primary-attribute-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /** A form to adjust all primary attributes */
 export function PrimaryAttributeForm({
@@ -20,6 +21,7 @@ export function PrimaryAttributeForm({
     alternativeButton?: ReactNode;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
 
     const form = useForm<{
@@ -33,28 +35,36 @@ export function PrimaryAttributeForm({
         }
     });
 
+    const [attributes] = fetchAllPrimaryAttributes();
+
     useEffect(() => {
         if (!activeUniverse) {
             return;
         }
-        PRIMARY_ATTRIBUTE_API.getAllPrimaryAttributes(activeUniverse.id).then(response => {
-            if (response.data.length > 0) {
-                form.setValues({
-                    attributes: response.data.map(a => {
-                        return {
-                            ...a,
-                            key: randomId()
-                        };
-                    })
-                });
-            }
-        }).catch(handleNetworkErrors);
-    }, [activeUniverse]);
+        if (attributes.length > 0) {
+            form.setValues({
+                attributes: attributes.map(a => {
+                    return {
+                        ...a,
+                        key: randomId()
+                    };
+                })
+            });
+        }
+    }, [attributes]);
+
+    const {mutate: setAttributes} = useSetAllPrimaryAttributes({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetItemSettingsQueryKey(activeUniverse.id)}).then(onSave),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
 
     return <form
-        onSubmit={form.onSubmit((attributes) => PRIMARY_ATTRIBUTE_API.setAllPrimaryAttributes(activeUniverse.id, attributes.attributes)
-            .then(onSave).catch(handleValidationErrors(form.setErrors))
-        )}>
+        onSubmit={form.onSubmit(a => setAttributes({
+            universe: activeUniverse.id,
+            data: a.attributes
+        }))}>
         <Table>
             <Table.Thead>
                 <Table.Tr>

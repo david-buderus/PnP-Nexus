@@ -1,5 +1,5 @@
 import {NumberInput, NumberInputProps} from '@mantine/core';
-import {TalentRollDto} from '../../../../../api';
+import {TalentRollDto} from '../../../../../api/model';
 import {TableNumberInput} from './TableNumberInput';
 
 /**

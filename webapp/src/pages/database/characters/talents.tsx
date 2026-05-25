@@ -3,22 +3,40 @@ import {useForm} from '@mantine/form';
 import {useDisclosure} from '@mantine/hooks';
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {PrimaryAttribute, Talent, TalentServiceApi} from '../../../api';
+import {PrimaryAttribute, Talent} from '../../../api/model';
 import {fetchAllPrimaryAttributes, fetchAllTags, fetchAllTalents} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {ObjectSelect} from '../../../components/input/ObjectSelect';
 import {filterNamedCell, NamedCell} from '../../../components/table/NamedCell';
 import TagCell, {filterTagCell} from '../../../components/table/TagCell';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllTalentsQueryKey,
+    useDeleteAllTalents,
+    useInsertAllTalents,
+    useUpdateTalent
+} from '../../../api/talent-service/talent-service';
 
-const TALENT_API = new TalentServiceApi(API_CONFIGURATION);
 
 /** Overview over all talents */
 export function TalentOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const {mutateAsync: deleteTalents} = useDeleteAllTalents({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllTalentsQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<Talent, any>[]>(
         () => [
@@ -59,28 +77,29 @@ export function TalentOverview() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) =>
             <CreationDialog
                 editMode={editMode}
-                refresh={refresh}
                 disabled={disabled}
                 getInitial={getInitial}
             />}
         deletionDialogTitle={t('character:talentDeletionTitle')}
-        onDelete={(universe, talents) => TALENT_API.deleteAllTalents(universe, talents.map(talent => talent.id))}
+        onDelete={(universe, talents) => deleteTalents({
+            universe: universe,
+            params: {ids: talents.map(talent => talent.id)}
+        })}
         idKey="id"
     />;
 }
 
 function CreationDialog({
     editMode,
-    refresh,
     disabled,
     getInitial
 }: {
     editMode: boolean,
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => Talent;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [attributes] = fetchAllPrimaryAttributes();
     const [tags] = fetchAllTags();
@@ -104,13 +123,31 @@ function CreationDialog({
         form.setValues(getInitial());
     }, [opened, getInitial, editMode]);
 
+    const {mutateAsync: updateTalent} = useUpdateTalent({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllTalentsQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertTalents} = useInsertAllTalents({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllTalentsQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     function onSubmit(talent: Talent) {
         if (editMode) {
-            TALENT_API.updateTalent(activeUniverse.id, talent.id, talent).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateTalent({
+                universe: activeUniverse.id,
+                id: talent.id,
+                data: talent,
+            });
         } else {
-            TALENT_API.insertAllTalents(activeUniverse.id, [talent]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertTalents({
+                universe: activeUniverse.id,
+                data: [talent]
+            });
         }
     }
 

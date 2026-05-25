@@ -3,7 +3,7 @@ import React, {useContext} from 'react';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {CharacterDescription} from '../../../../../api';
+import {CharacterDescription} from '../../../../../api/model';
 import {TableTextarea} from '../inputs/TableTextarea';
 import {PageElementSettings} from '../PageElementSettings';
 import {ObjectSelect} from '../../../../input/ObjectSelect';

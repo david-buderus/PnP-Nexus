@@ -3,17 +3,16 @@ import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {ItemStackServiceApi, Jewellery, JewelleryDefinition, JewelleryEquipment} from '../../../../../api';
+import {Jewellery, JewelleryDefinition, JewelleryEquipment} from '../../../../../api/model';
 import {useUniverseContext} from '../../../../PageBase';
 import {PageElementSettings} from '../PageElementSettings';
 import {fetchAllJewllery} from '../../../../Database';
 import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
-import {API_CONFIGURATION} from '../../../../Constants';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
-
-const STACK_SERVICE = new ItemStackServiceApi(API_CONFIGURATION);
+import {useCreateJewellery} from '../../../../../api/item-stack-service/item-stack-service';
+import {handleNetworkErrors} from '../../../../utils/ErrorUtils';
 
 /** Shows jewellery of the character */
 export function JewelleryList({numberOfJewellery, setNumberOfJewellery}: {
@@ -146,6 +145,18 @@ function JewelleryAdditionPopover({name, tag}: {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
     const [items] = fetchAllJewllery();
     const filtered = useMemo(() => items.filter(i => i.tags.includes(tag)), [items, tag]);
+    const {mutate: createJewellery} = useCreateJewellery({
+        mutation: {
+            onSuccess: response => {
+                if (!characterForm.values.equipment.jewellery[name]) {
+                    characterForm.setFieldValue(`equipment.jewellery.${name}`, [response.data]);
+                } else {
+                    characterForm.insertListItem(`equipment.jewellery.${name}`, response.data);
+                }
+            },
+            onError: handleNetworkErrors
+        }
+    });
 
     if (!allowEdit) {
         return null;
@@ -165,16 +176,9 @@ function JewelleryAdditionPopover({name, tag}: {
             <Popover.Dropdown>
                 <ItemSearchCard
                     items={filtered}
-                    onSelect={item =>
-                        STACK_SERVICE.createJewellery({item: item.item as Jewellery, stackSize: 1})
-                            .then(response => {
-                                if (!characterForm.values.equipment.jewellery[name]) {
-                                    characterForm.setFieldValue(`equipment.jewellery.${name}`, [response.data]);
-                                } else {
-                                    characterForm.insertListItem(`equipment.jewellery.${name}`, response.data);
-                                }
-                            })
-                    }
+                    onSelect={item => createJewellery({
+                        data: {item: item.item as Jewellery, stackSize: 1}
+                    })}
                 />
             </Popover.Dropdown>
         </Popover>

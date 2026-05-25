@@ -1,19 +1,19 @@
 import {ItemClass} from '../Constants';
-import {EItemEquipmentManipulator, EUpgradeRestriction} from '../../api';
+import {EItemEquipmentManipulator, EUpgradeRestriction} from '../../api/model';
 
 /** Get allowed restrictions for the given item class */
 export function getPossibleUpgradeRestriction(itemClass: ItemClass): EUpgradeRestriction[] {
     switch (itemClass) {
         case 'Item':
-            return [EUpgradeRestriction.Item];
+            return [EUpgradeRestriction.ITEM];
         case 'Weapon':
-            return [EUpgradeRestriction.Weapon, EUpgradeRestriction.Handheld, EUpgradeRestriction.Equipment, EUpgradeRestriction.Item];
+            return [EUpgradeRestriction.WEAPON, EUpgradeRestriction.HANDHELD, EUpgradeRestriction.EQUIPMENT, EUpgradeRestriction.ITEM];
         case 'Shield':
-            return [EUpgradeRestriction.Shield, EUpgradeRestriction.DefensiveItem, EUpgradeRestriction.Handheld, EUpgradeRestriction.Equipment, EUpgradeRestriction.Item];
+            return [EUpgradeRestriction.SHIELD, EUpgradeRestriction.DEFENSIVE_ITEM, EUpgradeRestriction.HANDHELD, EUpgradeRestriction.EQUIPMENT, EUpgradeRestriction.ITEM];
         case 'Armor':
-            return [EUpgradeRestriction.Armor, EUpgradeRestriction.DefensiveItem, EUpgradeRestriction.Equipment, EUpgradeRestriction.Item];
+            return [EUpgradeRestriction.ARMOR, EUpgradeRestriction.DEFENSIVE_ITEM, EUpgradeRestriction.EQUIPMENT, EUpgradeRestriction.ITEM];
         case 'Jewellery':
-            return [EUpgradeRestriction.Equipment, EUpgradeRestriction.Item];
+            return [EUpgradeRestriction.EQUIPMENT, EUpgradeRestriction.ITEM];
         default:
             return [];
     }
@@ -24,33 +24,33 @@ export function getPossibleUpgradeRestriction(itemClass: ItemClass): EUpgradeRes
  */
 export function getPossibleUpgradeManipulators(restrictions: EUpgradeRestriction[]): Set<EItemEquipmentManipulator> {
     const manipulators = new Set<EItemEquipmentManipulator>();
-    manipulators.add(EItemEquipmentManipulator.Slots);
+    manipulators.add(EItemEquipmentManipulator.SLOTS);
 
-    if (restrictions.includes(EUpgradeRestriction.Weapon)) {
-        manipulators.add(EItemEquipmentManipulator.Damage);
-        manipulators.add(EItemEquipmentManipulator.Hit);
-        manipulators.add(EItemEquipmentManipulator.Initiative);
+    if (restrictions.includes(EUpgradeRestriction.WEAPON)) {
+        manipulators.add(EItemEquipmentManipulator.DAMAGE);
+        manipulators.add(EItemEquipmentManipulator.HIT);
+        manipulators.add(EItemEquipmentManipulator.INITIATIVE);
     }
-    if (restrictions.includes(EUpgradeRestriction.DefensiveItem)) {
-        manipulators.add(EItemEquipmentManipulator.Armor);
-        manipulators.add(EItemEquipmentManipulator.Weight);
-        manipulators.add(EItemEquipmentManipulator.Protection);
+    if (restrictions.includes(EUpgradeRestriction.DEFENSIVE_ITEM)) {
+        manipulators.add(EItemEquipmentManipulator.ARMOR);
+        manipulators.add(EItemEquipmentManipulator.WEIGHT);
+        manipulators.add(EItemEquipmentManipulator.PROTECTION);
     }
-    if (restrictions.includes(EUpgradeRestriction.Shield)) {
-        manipulators.add(EItemEquipmentManipulator.Armor);
-        manipulators.add(EItemEquipmentManipulator.Weight);
-        manipulators.add(EItemEquipmentManipulator.Protection);
-        manipulators.add(EItemEquipmentManipulator.Hit);
-        manipulators.add(EItemEquipmentManipulator.Initiative);
+    if (restrictions.includes(EUpgradeRestriction.SHIELD)) {
+        manipulators.add(EItemEquipmentManipulator.ARMOR);
+        manipulators.add(EItemEquipmentManipulator.WEIGHT);
+        manipulators.add(EItemEquipmentManipulator.PROTECTION);
+        manipulators.add(EItemEquipmentManipulator.HIT);
+        manipulators.add(EItemEquipmentManipulator.INITIATIVE);
     }
-    if (restrictions.includes(EUpgradeRestriction.Handheld)) {
-        manipulators.add(EItemEquipmentManipulator.Hit);
-        manipulators.add(EItemEquipmentManipulator.Initiative);
+    if (restrictions.includes(EUpgradeRestriction.HANDHELD)) {
+        manipulators.add(EItemEquipmentManipulator.HIT);
+        manipulators.add(EItemEquipmentManipulator.INITIATIVE);
     }
-    if (restrictions.includes(EUpgradeRestriction.Armor)) {
-        manipulators.add(EItemEquipmentManipulator.Armor);
-        manipulators.add(EItemEquipmentManipulator.Weight);
-        manipulators.add(EItemEquipmentManipulator.Protection);
+    if (restrictions.includes(EUpgradeRestriction.ARMOR)) {
+        manipulators.add(EItemEquipmentManipulator.ARMOR);
+        manipulators.add(EItemEquipmentManipulator.WEIGHT);
+        manipulators.add(EItemEquipmentManipulator.PROTECTION);
     }
 
     return manipulators;

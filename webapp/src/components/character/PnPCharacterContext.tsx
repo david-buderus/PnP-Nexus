@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {PnPCharacterDTO} from '../../api';
+import {PnPCharacterDTO} from '../../api/model';
 import {UseFormReturnType} from '@mantine/form';
 import {useUniverseContext} from '../PageBase';
 import {fetchAllPrimaryAttributes} from '../Database';

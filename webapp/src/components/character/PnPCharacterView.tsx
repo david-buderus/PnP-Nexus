@@ -1,4 +1,4 @@
-import {PnPCharacterDTO, PnPCharacterSheet} from '../../api';
+import {PnPCharacterDTO, PnPCharacterSheet} from '../../api/model';
 import {PnPCharacterContext} from './PnPCharacterContext';
 import {PnPCharacterSheetContext} from './PnPCharacterSheetContext';
 import React, {useEffect, useState} from 'react';

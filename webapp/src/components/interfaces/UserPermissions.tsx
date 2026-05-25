@@ -1,4 +1,4 @@
-import {GrantedDatabaseObjectIdAuthorityDTO, RoleAuthorityDTO, Universe} from '../../api';
+import {GrantedDatabaseObjectIdAuthorityDTO, RoleAuthorityDTO, Universe} from '../../api/model';
 
 /**
  * The permissions the currently authenticated user has on the active universe.

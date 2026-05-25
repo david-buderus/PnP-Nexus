@@ -4,7 +4,7 @@ import React, {useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {TableTextInput} from '../inputs/TableTextInput';
-import {CharacterOrigin} from '../../../../../api';
+import {CharacterOrigin} from '../../../../../api/model';
 import {fetchAllSpecies} from '../../../../Database';
 import {TableErrorIndicator} from '../inputs/TableErrorIndicator';
 

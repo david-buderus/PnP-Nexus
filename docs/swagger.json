@@ -230,7 +230,7 @@
     },
     "/api/inventories/add": {
       "post": {
-        "operationId": "add",
+        "operationId": "addItemToInventory",
         "requestBody": {
           "content": {
             "application/json": {
@@ -261,7 +261,7 @@
     },
     "/api/inventories/remove": {
       "post": {
-        "operationId": "remove",
+        "operationId": "removeItemFromInventory",
         "requestBody": {
           "content": {
             "application/json": {
@@ -292,7 +292,7 @@
     },
     "/api/inventories/space": {
       "post": {
-        "operationId": "hasSpaceFor",
+        "operationId": "hasSpaceForInInventory",
         "requestBody": {
           "content": {
             "application/json": {
@@ -545,6 +545,47 @@
         ]
       }
     },
+    "/api/universes/{universeId}": {
+      "put": {
+        "operationId": "updateUniverse",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universeId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Universe"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Universe"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Update a universe",
+        "tags": [
+          "universe-service"
+        ]
+      }
+    },
     "/api/universes/{universe}": {
       "delete": {
         "operationId": "deleteUniverse",
@@ -593,45 +634,6 @@
           }
         },
         "summary": "Get a universe",
-        "tags": [
-          "universe-service"
-        ]
-      },
-      "put": {
-        "operationId": "updateUniverse",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "universe",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Universe"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/Universe"
-                }
-              }
-            },
-            "description": "OK"
-          }
-        },
-        "summary": "Update a universe",
         "tags": [
           "universe-service"
         ]
@@ -742,7 +744,7 @@
     },
     "/api/upgrade-item/add": {
       "post": {
-        "operationId": "addUpgrade",
+        "operationId": "addUpgradeToItem",
         "requestBody": {
           "content": {
             "application/json": {
@@ -789,7 +791,7 @@
     },
     "/api/upgrade-item/remove": {
       "post": {
-        "operationId": "removeUpgrade",
+        "operationId": "removeUpgradeFromItem",
         "requestBody": {
           "content": {
             "application/json": {
@@ -6605,7 +6607,7 @@
         "type": "object",
         "properties": {
           "displayName": {
-            "maxLength": 2147483647,
+            "maxLength": 30,
             "minLength": 3,
             "type": "string"
           },

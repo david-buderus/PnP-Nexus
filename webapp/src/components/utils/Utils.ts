@@ -1,5 +1,5 @@
 import {useMemo} from 'react';
-import {CurrencySettings} from '../../api';
+import {CurrencySettings} from '../../api/model';
 
 /** A type with an ID */
 type WithId = {

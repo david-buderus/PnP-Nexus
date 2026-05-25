@@ -1,15 +1,18 @@
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {TagRequirement, Upgrade, UpgradeServiceApi} from '../../../api';
+import {TagRequirement, Upgrade} from '../../../api/model';
 import OverviewPage from '../../../components/OverviewPage';
 import {fetchAllUpgrades} from '../../../components/Database';
-import {API_CONFIGURATION} from '../../../components/Constants';
 import CurrencyCell from '../../../components/table/CurrencyCell';
 import {Button, Group, Modal, NumberInput, TextInput} from '@mantine/core';
 import {useUniverseContext} from '../../../components/PageBase';
 import {useForm} from '@mantine/form';
 import {useDisclosure} from '@mantine/hooks';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {currencyFormatter} from '../../../components/utils/Formatters';
 import {UpgradeRestrictionSelect} from '../../../components/input/EnumSelect';
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
@@ -17,12 +20,26 @@ import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
 import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
 import {UpgradeCardModal} from '../../../components/items/UpgradeCard';
-
-const UPGRADE_API = new UpgradeServiceApi(API_CONFIGURATION);
+import {useDeleteAllMaterials} from '../../../api/material-service/material-service';
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllUpgradesQueryKey,
+    useInsertAllUpgrades,
+    useUpdateUpgrade
+} from '../../../api/upgrade-service/upgrade-service';
 
 /** Overview over all upgrades */
 export function UpgradeOverview() {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
+    const {activeUniverse} = useUniverseContext();
+
+    const {mutateAsync: deleteUpgrade} = useDeleteAllMaterials({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradesQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<Upgrade, any>[]>(
         () => [
@@ -67,12 +84,14 @@ export function UpgradeOverview() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) =>
             <CreationDialog
                 editMode={editMode}
-                refresh={refresh}
                 disabled={disabled}
                 getInitial={getInitial}
             />}
         deletionDialogTitle={t('upgrade:upgradeDeletionTitle')}
-        onDelete={(universe, upgrades) => UPGRADE_API.deleteAllUpgrades(universe, upgrades.map(upgrade => upgrade.id))}
+        onDelete={(universe, upgrades) => deleteUpgrade({
+            universe: universe,
+            params: {ids: upgrades.map(upgrade => upgrade.id)}
+        })}
         idKey="id"
         viewModal={(upgrade, onClose) => <UpgradeCardModal upgrade={upgrade} onClose={onClose}/>}
     />;
@@ -80,16 +99,15 @@ export function UpgradeOverview() {
 
 function CreationDialog({
     editMode,
-    refresh,
     disabled,
     getInitial
 }: {
     editMode: boolean,
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => Upgrade;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse, currencySettings} = useUniverseContext();
 
     const [opened, {open, close}] = useDisclosure(false);
@@ -114,13 +132,31 @@ function CreationDialog({
         form.setValues(getInitial());
     }, [opened, getInitial, editMode]);
 
+    const {mutateAsync: updateUpgrade} = useUpdateUpgrade({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertUpgrades} = useInsertAllUpgrades({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     function onSubmit(upgrade: Upgrade) {
         if (editMode) {
-            UPGRADE_API.updateUpgrade(activeUniverse.id, upgrade.id, upgrade).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateUpgrade({
+                universe: activeUniverse.id,
+                id: upgrade.id,
+                data: upgrade
+            });
         } else {
-            UPGRADE_API.insertAllUpgrades(activeUniverse.id, [upgrade]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertUpgrades({
+                universe: activeUniverse.id,
+                data: [upgrade]
+            });
         }
     }
 

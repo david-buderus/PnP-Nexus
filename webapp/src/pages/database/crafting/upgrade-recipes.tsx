@@ -15,24 +15,41 @@ import {useForm} from '@mantine/form';
 import {randomId, useDisclosure} from '@mantine/hooks';
 import {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi} from '../../../api';
+import {Upgrade, UpgradeRecipe} from '../../../api/model';
 import {fetchAllUpgradeRecipes, fetchAllUpgrades, IResourceUsage} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ObjectMultiSelect, ObjectSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {resourceFormatter} from '../../../components/utils/Formatters';
 import {addTypeAnnotationToUsage} from './crafting-recipes';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {filterMultiNamedCell, filterNamedCell, MultiNamedCell, NamedCell} from '../../../components/table/NamedCell';
-
-const UPGRADE_RECIPE_API = new UpgradeRecipeServiceApi(API_CONFIGURATION);
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllUpgradeRecipesQueryKey,
+    useDeleteAllUpgradeRecipes,
+    useInsertAllUpgradeRecipes,
+    useUpdateUpgradeRecipe
+} from '../../../api/upgrade-recipe-service/upgrade-recipe-service';
 
 /** Overview over all upgrade recipes */
 export function UpgradeRecipeOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const {mutateAsync: deleteRecipes} = useDeleteAllUpgradeRecipes({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradeRecipesQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<UpgradeRecipe, any>[]>(
         () => [
@@ -72,28 +89,29 @@ export function UpgradeRecipeOverview() {
         manipulationDialog={(editMode, refresh, disabled, getInitial) =>
             <CreationDialog
                 editMode={editMode}
-                refresh={refresh}
                 disabled={disabled}
                 getInitial={getInitial}
             />}
         deletionDialogTitle={t('crafting:upgradeRecipeDeletionTitle')}
-        onDelete={(universe, recipes) => UPGRADE_RECIPE_API.deleteAllUpgradeRecipes(universe, recipes.map(recipe => recipe.id))}
+        onDelete={(universe, recipes) => deleteRecipes({
+            universe: universe,
+            params: {ids: recipes.map(recipe => recipe.id)}
+        })}
         idKey="id"
     />;
 }
 
 function CreationDialog({
     editMode,
-    refresh,
     disabled,
     getInitial
 }: {
     editMode: boolean,
-    refresh: () => void;
     disabled: boolean;
     getInitial: () => UpgradeRecipe;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [upgrades] = fetchAllUpgrades();
 
@@ -118,13 +136,31 @@ function CreationDialog({
         form.setValues(getInitial());
     }, [opened, getInitial, editMode]);
 
+    const {mutateAsync: updateRecipe} = useUpdateUpgradeRecipe({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradeRecipesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertRecipes} = useInsertAllUpgradeRecipes({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradeRecipesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     function onSubmit(recipe: UpgradeRecipe) {
         if (editMode) {
-            UPGRADE_RECIPE_API.updateUpgradeRecipe(activeUniverse.id, recipe.id, addTypeAnnotationToRecipe(recipe)).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateRecipe({
+                universe: activeUniverse.id,
+                id: recipe.id,
+                data: addTypeAnnotationToRecipe(recipe)
+            });
         } else {
-            UPGRADE_RECIPE_API.insertAllUpgradeRecipes(activeUniverse.id, [addTypeAnnotationToRecipe(recipe)]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertRecipes({
+                universe: activeUniverse.id,
+                data: [addTypeAnnotationToRecipe(recipe)]
+            });
         }
     }
 

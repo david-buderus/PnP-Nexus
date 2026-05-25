@@ -20,19 +20,10 @@ import {
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import ConfirmationDialog from '../../components/modal/ConfirmationDialog';
-import {
-    PrimaryAttribute,
-    Universe,
-    UniverseServiceApi,
-    UserDatabaseObjectPermissionDTO,
-    UserServiceApi
-} from '../../api';
-import {API_CONFIGURATION} from '../../components/Constants';
+import {PrimaryAttribute, Universe} from '../../api/model';
 import {useForm} from '@mantine/form';
 import {handleValidationErrors} from '../../components/utils/ErrorUtils';
-import {useEffect, useState} from 'react';
 import {FaRegTrashCan} from 'react-icons/fa6';
-import axios from 'axios';
 import ItemSettingsForm from '../../components/settings/ItemSettingsForm';
 import CurrencySettingsForm from '../../components/settings/CurrencySettingsForm';
 import CharacterSettingsForm from '../../components/settings/CharacterSettingsForm';
@@ -44,16 +35,35 @@ import {SecondaryAttributeForm} from '../../components/character/SecondaryAttrib
 import {FaCheck} from 'react-icons/fa';
 import EquipmentSettingsForm from '../../components/settings/EquipmentSettingsForm';
 import CharacterSheetSettingsDialog from '../../components/settings/CharacterSheetSettingsDialog';
-
-const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
-const USER_API = new UserServiceApi(API_CONFIGURATION);
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllUniversesQueryKey,
+    getGetUniversePermissionsQueryKey,
+    useAddUniversePermission,
+    useDeleteUniverse,
+    useGetUniversePermissions,
+    useRemoveUniversePermission,
+    useUpdateUniverse
+} from '../../api/universe-service/universe-service';
+import {useGetDisplayNames} from '../../api/user-service/user-service';
 
 export default function UniverseOverview() {
-    const {activeUniverse, fetchUniverses, setActiveUniverse} = useUniverseContext();
-    const {userPermissions} = useUserContext();
-    const [primaryAttributes, refreshPrimaryAttributes] = fetchAllPrimaryAttributes();
+    const {activeUniverse, setActiveUniverse} = useUniverseContext();
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
+    const {userPermissions} = useUserContext();
+    const [primaryAttributes] = fetchAllPrimaryAttributes();
     const navigate = useNavigate();
+
+
+    const {mutateAsync: deleteUniverse} = useDeleteUniverse({
+        mutation: {
+            onSuccess: () => {
+                setActiveUniverse(null);
+                return queryClient.invalidateQueries({queryKey: getGetAllUniversesQueryKey()});
+            }
+        }
+    });
 
     return <SimpleGrid cols={4}>
         <Card shadow="md" p="md" maw={400} pb={60}>
@@ -67,13 +77,9 @@ export default function UniverseOverview() {
                 <Group style={{position: 'absolute', bottom: 16, right: 16}}>
                     <ConfirmationDialog
                         title={t('universe:confirmDeletionTitle')}
-                        onConfirmation={() => {
-                            UNIVERSE_API.deleteUniverse(activeUniverse.id).then(() => {
-                                setActiveUniverse(null);
-                                fetchUniverses();
-                                navigate('/');
-                            });
-                        }}
+                        onConfirmation={() =>
+                            deleteUniverse({universe: activeUniverse.id}).then(() => navigate('/'))
+                        }
                         openNode={open => <Button variant="outline" color="red" onClick={open}>
                             {t('delete')}
                         </Button>}
@@ -87,8 +93,7 @@ export default function UniverseOverview() {
         <CurrencySettingsCard/>
         <CharacterSettingsCard primaryAttributes={primaryAttributes}/>
         <CharacterSheetSettingsCard/>
-        <PrimaryAttributeCard primaryAttributes={primaryAttributes}
-                              refreshPrimaryAttributes={refreshPrimaryAttributes}/>
+        <PrimaryAttributeCard primaryAttributes={primaryAttributes}/>
         <SecondaryAttributeCard/>
         {userPermissions.isActiveUniverseOwner &&
             <PermissionCard/>}
@@ -97,9 +102,16 @@ export default function UniverseOverview() {
 
 function EditUniverseDialog() {
     const {t} = useTranslation();
-    const {activeUniverse, fetchUniverses} = useUniverseContext();
+    const queryClient = useQueryClient();
+    const {activeUniverse} = useUniverseContext();
 
     const [opened, {open, close}] = useDisclosure(false);
+
+    const {mutateAsync: updateUniverse} = useUpdateUniverse({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUniversesQueryKey()})
+        }
+    });
 
     const form = useForm<Universe>({
         mode: 'uncontrolled',
@@ -108,9 +120,10 @@ function EditUniverseDialog() {
 
     return <>
         <Modal opened={opened} onClose={close} title={t('universe:editUniverse')}>
-            <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.updateUniverse(universe.id, universe).then(() =>
-                fetchUniverses().then(close)
-            ).catch(handleValidationErrors(form.setErrors)))}>
+            <form onSubmit={form.onSubmit((universe) => updateUniverse({
+                universeId: universe.id,
+                data: universe
+            }).then(close).catch(handleValidationErrors(form.setErrors)))}>
                 <TextInput
                     data-testid="displayName"
                     label={t('displayName')}
@@ -152,7 +165,7 @@ function EditUniverseDialog() {
 }
 
 function ItemSettingsCard() {
-    const {itemSettings, refreshSettings} = useUniverseContext();
+    const {itemSettings} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const {t} = useTranslation();
     const [opened, {open, close}] = useDisclosure(false);
@@ -184,10 +197,7 @@ function ItemSettingsCard() {
         }
         <Modal opened={opened} onClose={close}>
             <ItemSettingsForm
-                onSave={() => {
-                    close();
-                    refreshSettings();
-                }}
+                onSave={close}
                 onSaveText={t('save')}
             />
         </Modal>
@@ -200,7 +210,7 @@ function ItemSettingsCard() {
 }
 
 function EquipmentSettingsCard() {
-    const {equipmentSettings, refreshSettings} = useUniverseContext();
+    const {equipmentSettings} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const {t} = useTranslation();
     const [opened, {open, close}] = useDisclosure(false);
@@ -241,10 +251,7 @@ function EquipmentSettingsCard() {
         </Table>
         <Modal opened={opened} onClose={close}>
             <EquipmentSettingsForm
-                onSave={() => {
-                    close();
-                    refreshSettings();
-                }}
+                onSave={close}
                 onSaveText={t('save')}
             />
         </Modal>
@@ -257,7 +264,7 @@ function EquipmentSettingsCard() {
 }
 
 function CurrencySettingsCard() {
-    const {currencySettings, refreshSettings} = useUniverseContext();
+    const {currencySettings} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const {t} = useTranslation();
     const [opened, {open, close}] = useDisclosure(false);
@@ -280,10 +287,7 @@ function CurrencySettingsCard() {
         </Text>
         <Modal opened={opened} onClose={close} size="auto">
             <CurrencySettingsForm
-                onSave={() => {
-                    close();
-                    refreshSettings();
-                }}
+                onSave={close}
                 onSaveText={t('save')}
             />
         </Modal>
@@ -296,7 +300,7 @@ function CurrencySettingsCard() {
 }
 
 function CharacterSettingsCard({primaryAttributes}: { primaryAttributes: PrimaryAttribute[]; }) {
-    const {characterSettings, refreshSettings} = useUniverseContext();
+    const {characterSettings} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const {t} = useTranslation();
     const attributeLength = primaryAttributes.length;
@@ -338,10 +342,7 @@ function CharacterSettingsCard({primaryAttributes}: { primaryAttributes: Primary
         </Text>
         <Modal opened={opened} onClose={close} size="auto">
             <CharacterSettingsForm
-                onSave={() => {
-                    close();
-                    refreshSettings();
-                }}
+                onSave={close}
                 onSaveText={t('save')}
             />
         </Modal>
@@ -390,9 +391,8 @@ function CharacterSheetSettingsCard() {
     </Card>;
 }
 
-function PrimaryAttributeCard({primaryAttributes, refreshPrimaryAttributes}: {
+function PrimaryAttributeCard({primaryAttributes}: {
     primaryAttributes: PrimaryAttribute[],
-    refreshPrimaryAttributes: () => void;
 }) {
     const {userPermissions} = useUserContext();
     const {t} = useTranslation();
@@ -424,10 +424,7 @@ function PrimaryAttributeCard({primaryAttributes, refreshPrimaryAttributes}: {
         </Table>
         <Modal opened={opened} onClose={close} title={t('primary-attributes')}>
             <PrimaryAttributeForm
-                onSave={() => {
-                    close();
-                    refreshPrimaryAttributes();
-                }}
+                onSave={close}
                 onSaveText={t('save')}
             />
         </Modal>
@@ -496,20 +493,18 @@ function SecondaryAttributeCard() {
 
 function PermissionCard() {
     const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
     const {t} = useTranslation();
 
-    const [universePermissions, setUniversePermissions] = useState<UserDatabaseObjectPermissionDTO[]>([]);
+    const universePermissions = useGetUniversePermissions(activeUniverse.id).data?.data ?? [];
 
-    const fetchPermissions = () => {
-        if (!activeUniverse) {
-            setUniversePermissions([]);
-        } else {
-            UNIVERSE_API.getUniversePermissions(activeUniverse.id).then(response => setUniversePermissions(response.data));
+    const {mutate: removeUniversePermission} = useRemoveUniversePermission({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetUniversePermissionsQueryKey(activeUniverse.id),
+            })
         }
-    };
-
-    useEffect(fetchPermissions, [activeUniverse]);
-
+    });
 
     return <Card shadow="md" p="md" maw={400} pb={60}>
         <Title order={5} ta="center">
@@ -535,7 +530,10 @@ function PermissionCard() {
                         <Table.Td>
                             <ConfirmationDialog
                                 title={t('universe:confirmPermissionDeletionTitle')}
-                                onConfirmation={() => UNIVERSE_API.removeUniversePermission(activeUniverse.id, permission.displayName).then(fetchPermissions)}
+                                onConfirmation={() => removeUniversePermission({
+                                    universe: activeUniverse.id,
+                                    params: {displayName: permission.displayName}
+                                })}
                                 openNode={open => <ActionIcon variant="outline" color="red" onClick={open}>
                                     <FaRegTrashCan/>
                                 </ActionIcon>}
@@ -546,20 +544,17 @@ function PermissionCard() {
             </Table.Tbody>
         </Table>
         <Group style={{position: 'absolute', bottom: 16, right: 16}}>
-            <PermissionDialog fetchPermissions={fetchPermissions}/>
+            <PermissionDialog/>
         </Group>
     </Card>;
 }
 
-function PermissionDialog({fetchPermissions}: { fetchPermissions: () => void; }) {
+function PermissionDialog() {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [opened, {open, close}] = useDisclosure(false);
-    const [displayNames, setDisplayNames] = useState<string[]>([]);
-
-    useEffect(() => {
-        USER_API.getDisplayNames().then(response => setDisplayNames(response.data));
-    }, []);
+    const displayNames = useGetDisplayNames().data?.data;
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -569,20 +564,28 @@ function PermissionDialog({fetchPermissions}: { fetchPermissions: () => void; })
         }
     });
 
+    const {mutate: addUniversePermission} = useAddUniversePermission({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetUniversePermissionsQueryKey(activeUniverse.id),
+            }).then(close),
+            onError: err => {
+                if (err.response.status !== 404) {
+                    handleValidationErrors(form.setErrors)(err);
+                    return;
+                }
+                form.setFieldError('displayName', t('user:unknownUser'));
+            }
+        }
+    });
+
     return <>
         <Modal opened={opened} onClose={close} title={t('universe:addPermission')}>
             <form
-                onSubmit={form.onSubmit((values) => UNIVERSE_API.addUniversePermission(activeUniverse.id, values.displayName, values.permission).then(fetchPermissions).then(close)
-                    .catch(err => {
-                        if (!axios.isAxiosError(err)) {
-                            return;
-                        }
-                        if (err.response.status !== 404) {
-                            handleValidationErrors(form.setErrors)(err);
-                            return;
-                        }
-                        form.setFieldError('displayName', t('user:unknownUser'));
-                    }))}>
+                onSubmit={form.onSubmit((values) => addUniversePermission({
+                    universe: activeUniverse.id,
+                    params: {displayName: values.displayName, accessPermission: values.permission}
+                }))}>
                 <Stack>
                     <Autocomplete
                         label={t('name')}

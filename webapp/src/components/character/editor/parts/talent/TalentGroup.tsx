@@ -2,7 +2,7 @@ import {Divider, Stack, Table, TextInput} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo} from 'react';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
-import {Talent} from '../../../../../api';
+import {Talent} from '../../../../../api/model';
 import {useTranslation} from 'react-i18next';
 import {PrimaryAttributeSelect} from '../../../../input/ObjectSelect';
 import {fetchAllPrimaryAttributes, fetchAllTalents} from '../../../../Database';

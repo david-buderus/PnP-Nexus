@@ -7,9 +7,11 @@ import de.pnp.manager.EJvmFlag;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.user.IGrantedAuthorityDTO.RoleAuthorityDTO;
 import de.pnp.manager.component.user.PnPUserCreation;
+import de.pnp.manager.component.user.PnPUserPreference;
 import de.pnp.manager.security.SecurityConstants;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.contoller.UserController;
+import de.pnp.manager.server.database.UserPreferenceRepository;
 import de.pnp.manager.server.database.universe.UniverseRepository;
 import de.pnp.manager.utils.TestUtils;
 import de.pnp.manager.webapp.WebDriver;
@@ -53,6 +55,9 @@ public abstract class ServerTestBase {
      */
     @Autowired
     protected UserController userController;
+
+    @Autowired
+    private UserPreferenceRepository userPreferenceRepository;
 
     @Autowired
     private AutowireCapableBeanFactory beanFactory;
@@ -138,6 +143,9 @@ public abstract class ServerTestBase {
             userController.createNewUser(
                     new PnPUserCreation("admin", "admin", "admin", null,
                             List.of(new RoleAuthorityDTO(SecurityConstants.ADMIN))));
+        } else {
+            // Reset preferences
+            userController.getAllUsernames().forEach(user -> userPreferenceRepository.updateUser(new PnPUserPreference(user, null, null)));
         }
     }
 

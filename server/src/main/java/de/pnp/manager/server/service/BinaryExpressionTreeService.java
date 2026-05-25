@@ -35,8 +35,11 @@ import static de.pnp.manager.validation.IsValidExpressionValidator.ALLOWED_SECON
 @RequestMapping("/api/expressions")
 public class BinaryExpressionTreeService {
 
-    @Autowired
-    private PrimaryAttributeRepository primaryAttributeRepository;
+    private final PrimaryAttributeRepository primaryAttributeRepository;
+
+    public BinaryExpressionTreeService(@Autowired PrimaryAttributeRepository primaryAttributeRepository) {
+        this.primaryAttributeRepository = primaryAttributeRepository;
+    }
 
     @PostMapping("secondary-attributes/{universe}")
     @Operation(summary = "Creates an expression for secondary attributes", operationId = "createExpressionForSecondaryAttributes")

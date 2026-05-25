@@ -1,5 +1,5 @@
 import {ActionIcon, Box, Button, Group, Input, Stack, TagsInput, Text, Tooltip} from '@mantine/core';
-import {TagRequirement} from '../../api';
+import {TagRequirement} from '../../api/model';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {fetchAllTags} from '../Database';
 import {MdOutlineHelpOutline} from 'react-icons/md';
