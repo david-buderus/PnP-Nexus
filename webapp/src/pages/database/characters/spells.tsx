@@ -46,7 +46,6 @@ import {ActionSelect, CastingTypeMultiSelect} from '../../../components/input/En
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {useQueryClient} from '@tanstack/react-query';
-import {getGetAllSpeciessQueryKey} from '../../../api/species-service/species-service';
 import {
     getGetAllSpellsQueryKey,
     useDeleteAllSpells,
@@ -228,13 +227,13 @@ function CreationDialog({
 
     const {mutateAsync: updateSpell} = useUpdateSpell({
         mutation: {
-            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)}).then(close),
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpellsQueryKey(activeUniverse.id)}).then(close),
             onError: handleValidationErrors(form.setErrors)
         }
     });
     const {mutateAsync: insertSpells} = useInsertAllSpells({
         mutation: {
-            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)}).then(close),
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpellsQueryKey(activeUniverse.id)}).then(close),
             onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
         }
     });

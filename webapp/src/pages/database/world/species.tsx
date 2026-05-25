@@ -62,7 +62,7 @@ export function SpeciesDetail() {
         if (selected) {
             editor.commands.setContent(selected.description);
         }
-    }, [species]);
+    }, [selected]);
 
     const [openedAddition, {open: openAddition, close: closeAddition}] = useDisclosure(false);
     const [openedDeletion, {open: openDeletion, close: closeDeletion}] = useDisclosure(false);

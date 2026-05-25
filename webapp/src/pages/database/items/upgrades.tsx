@@ -20,10 +20,10 @@ import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
 import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
 import {UpgradeCardModal} from '../../../components/items/UpgradeCard';
-import {useDeleteAllMaterials} from '../../../api/material-service/material-service';
 import {useQueryClient} from '@tanstack/react-query';
 import {
     getGetAllUpgradesQueryKey,
+    useDeleteAllUpgrades,
     useInsertAllUpgrades,
     useUpdateUpgrade
 } from '../../../api/upgrade-service/upgrade-service';
@@ -34,7 +34,7 @@ export function UpgradeOverview() {
     const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
 
-    const {mutateAsync: deleteUpgrade} = useDeleteAllMaterials({
+    const {mutateAsync: deleteUpgrade} = useDeleteAllUpgrades({
         mutation: {
             onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradesQueryKey(activeUniverse.id)}),
             onError: handleNetworkErrors

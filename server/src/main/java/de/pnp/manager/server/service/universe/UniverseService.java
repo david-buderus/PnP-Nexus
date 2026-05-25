@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collection;
 import java.util.Objects;
 
+import static de.pnp.manager.security.SecurityConstants.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -96,7 +97,7 @@ public class UniverseService {
     }
 
     @PutMapping("{universeId}")
-    @UniverseOwner
+    @PreAuthorize("hasRole('" + ADMIN + "') || hasPermission(#universeId, '" + UNIVERSE_TARGET_ID + "', '" + OWNER + "')")
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
     public Universe updateUniverse(@PathVariable ObjectId universeId, @Valid @RequestBody Universe newUniverse) {
         if (!Objects.equals(newUniverse.getId(), universeId)) {
