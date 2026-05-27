@@ -31,8 +31,14 @@ import {CharacterSheetsOverview} from './pages/database/characters/character-she
 import {CharacterSheetEditor} from './pages/database/characters/character-sheet-editor';
 import {CharacterEditor} from './pages/database/characters/character-editor';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {QueryCache} from '@tanstack/query-core';
+import {handleNetworkErrors} from './components/utils/ErrorUtils';
 
-const QUERY_CLIENT = new QueryClient();
+const QUERY_CLIENT = new QueryClient({
+    queryCache: new QueryCache({
+        onError: handleNetworkErrors
+    })
+});
 
 /** The entry point of the webapp */
 class App extends Component {

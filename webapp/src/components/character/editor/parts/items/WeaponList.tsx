@@ -175,26 +175,28 @@ function WeaponRow({
                     >
                         {weapon.item.effects.map(e => e.description).join(',')}
                     </Text>
-                    <Group
-                        wrap="nowrap"
-                        gap={1}
-                        style={{flexShrink: 0}}
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <UpgradePopover
-                            item={weapon}
-                            onChange={w => characterForm.replaceListItem('equipment.weapons', index, w)}
-                        />
-                        <ActionIcon
-                            variant="subtle"
-                            size={TABLE_ROW_HEIGHT - 8}
-                            className="no-drag"
+                    {allowEdit ?
+                        <Group
+                            wrap="nowrap"
+                            gap={1}
                             style={{flexShrink: 0}}
-                            onClick={() => characterForm.removeListItem('equipment.weapons', index)}
+                            onClick={e => e.stopPropagation()}
                         >
-                            <IconCircleMinus color="red" size={14}/>
-                        </ActionIcon>
-                    </Group>
+                            <UpgradePopover
+                                item={weapon}
+                                onChange={w => characterForm.replaceListItem('equipment.weapons', index, w)}
+                            />
+                            <ActionIcon
+                                variant="subtle"
+                                size={TABLE_ROW_HEIGHT - 8}
+                                className="no-drag"
+                                style={{flexShrink: 0}}
+                                onClick={() => characterForm.removeListItem('equipment.weapons', index)}
+                            >
+                                <IconCircleMinus color="red" size={14}/>
+                            </ActionIcon>
+                        </Group> : null
+                    }
                 </Group>
             </Table.Td>
         </Table.Tr>,
@@ -239,26 +241,28 @@ function ShieldRow({
                     >
                         {shield?.item.effects.map(e => e.description).join(',') ?? ''}
                     </Text>
-                    <Group
-                        wrap="nowrap"
-                        gap={1}
-                        style={{flexShrink: 0}}
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <UpgradePopover
-                            item={shield}
-                            onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
-                        />
-                        <ActionIcon
-                            variant="subtle"
-                            size={TABLE_ROW_HEIGHT - 8}
-                            className="no-drag"
+                    {allowEdit ?
+                        <Group
+                            wrap="nowrap"
+                            gap={1}
                             style={{flexShrink: 0}}
-                            onClick={() => characterForm.removeListItem('equipment.shields', index)}
+                            onClick={e => e.stopPropagation()}
                         >
-                            <IconCircleMinus color="red" size={14}/>
-                        </ActionIcon>
-                    </Group>
+                            <UpgradePopover
+                                item={shield}
+                                onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
+                            />
+                            <ActionIcon
+                                variant="subtle"
+                                size={TABLE_ROW_HEIGHT - 8}
+                                className="no-drag"
+                                style={{flexShrink: 0}}
+                                onClick={() => characterForm.removeListItem('equipment.shields', index)}
+                            >
+                                <IconCircleMinus color="red" size={14}/>
+                            </ActionIcon>
+                        </Group> : null
+                    }
                 </Group>
             </Table.Td>
         </Table.Tr>,

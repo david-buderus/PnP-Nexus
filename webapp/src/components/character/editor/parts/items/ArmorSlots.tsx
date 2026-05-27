@@ -127,26 +127,28 @@ function ArmorSlot({slot, setLastClicked}: {
                         {armor?.item.effects.map(e => e.description).join(',') ?? ''}
                     </Text>
                     {armor ?
-                        <Group
-                            wrap="nowrap"
-                            gap={1}
-                            style={{flexShrink: 0}}
-                            onClick={e => e.stopPropagation()}
-                        >
-                            <UpgradePopover
-                                item={armor}
-                                onChange={a => characterForm.setFieldValue(`equipment.armor.${slot}`, a)}
-                            />
-                            <ActionIcon
-                                variant="subtle"
-                                size={TABLE_ROW_HEIGHT - 8}
-                                className="no-drag"
+                        allowEdit ?
+                            <Group
+                                wrap="nowrap"
+                                gap={1}
                                 style={{flexShrink: 0}}
-                                onClick={() => characterForm.setFieldValue(`equipment.armor.${slot}`, null)}
+                                onClick={e => e.stopPropagation()}
                             >
-                                <IconCircleMinus color="red" size={14}/>
-                            </ActionIcon>
-                        </Group> :
+                                <UpgradePopover
+                                    item={armor}
+                                    onChange={a => characterForm.setFieldValue(`equipment.armor.${slot}`, a)}
+                                />
+                                <ActionIcon
+                                    variant="subtle"
+                                    size={TABLE_ROW_HEIGHT - 8}
+                                    className="no-drag"
+                                    style={{flexShrink: 0}}
+                                    onClick={() => characterForm.setFieldValue(`equipment.armor.${slot}`, null)}
+                                >
+                                    <IconCircleMinus color="red" size={14}/>
+                                </ActionIcon>
+                            </Group> : null
+                        :
                         <ArmorAdditionPopover slot={slot}/>
                     }
                 </Group>
@@ -198,26 +200,28 @@ function ShieldRow({
                         {shield?.item.effects.map(e => e.description).join(',') ?? ''}
                     </Text>
                     {shield ?
-                        <Group
-                            wrap="nowrap"
-                            gap={1}
-                            style={{flexShrink: 0}}
-                            onClick={e => e.stopPropagation()}
-                        >
-                            <UpgradePopover
-                                item={shield}
-                                onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
-                            />
-                            <ActionIcon
-                                variant="subtle"
-                                size={TABLE_ROW_HEIGHT - 8}
-                                className="no-drag"
+                        allowEdit ?
+                            <Group
+                                wrap="nowrap"
+                                gap={1}
                                 style={{flexShrink: 0}}
-                                onClick={() => characterForm.removeListItem('equipment.shields', index)}
+                                onClick={e => e.stopPropagation()}
                             >
-                                <IconCircleMinus color="red" size={14}/>
-                            </ActionIcon>
-                        </Group> :
+                                <UpgradePopover
+                                    item={shield}
+                                    onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
+                                />
+                                <ActionIcon
+                                    variant="subtle"
+                                    size={TABLE_ROW_HEIGHT - 8}
+                                    className="no-drag"
+                                    style={{flexShrink: 0}}
+                                    onClick={() => characterForm.removeListItem('equipment.shields', index)}
+                                >
+                                    <IconCircleMinus color="red" size={14}/>
+                                </ActionIcon>
+                            </Group> : null
+                        :
                         <ShieldAdditionPopover/>
                     }
                 </Group>

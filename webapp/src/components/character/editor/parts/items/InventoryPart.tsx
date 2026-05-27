@@ -72,7 +72,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                             {`${itemStack.stackSize}x ${itemStack.item.name}`}
                                         </Text>
                                     ) : null}
-                                    {itemStack ?
+                                    {itemStack && allowEdit ?
                                         <Group
                                             wrap="nowrap"
                                             gap={1}

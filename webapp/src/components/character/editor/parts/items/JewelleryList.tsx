@@ -109,25 +109,27 @@ function JewelleryLines({
                             {effect}
                         </Text>
                         {j ?
-                            <Group
-                                wrap="nowrap"
-                                gap={1}
-                                style={{flexShrink: 0}}
-                                onClick={e => e.stopPropagation()}
-                            >
-                                <UpgradePopover
-                                    item={j}
-                                    onChange={e => characterForm.replaceListItem(`equipment.jewellery.${definition.name}`, index, e)}
-                                />
-                                <ActionIcon
-                                    variant="subtle"
-                                    size={TABLE_ROW_HEIGHT - 8}
-                                    className="no-drag"
-                                    onClick={() => characterForm.removeListItem(`equipment.jewellery.${definition.name}`, index)}
+                            allowEdit ?
+                                <Group
+                                    wrap="nowrap"
+                                    gap={1}
+                                    style={{flexShrink: 0}}
+                                    onClick={e => e.stopPropagation()}
                                 >
-                                    <IconCircleMinus color="red" size={14}/>
-                                </ActionIcon>
-                            </Group> :
+                                    <UpgradePopover
+                                        item={j}
+                                        onChange={e => characterForm.replaceListItem(`equipment.jewellery.${definition.name}`, index, e)}
+                                    />
+                                    <ActionIcon
+                                        variant="subtle"
+                                        size={TABLE_ROW_HEIGHT - 8}
+                                        className="no-drag"
+                                        onClick={() => characterForm.removeListItem(`equipment.jewellery.${definition.name}`, index)}
+                                    >
+                                        <IconCircleMinus color="red" size={14}/>
+                                    </ActionIcon>
+                                </Group> : null
+                            :
                             <JewelleryAdditionPopover name={definition.name} tag={definition.tag}/>
                         }
                     </Group>

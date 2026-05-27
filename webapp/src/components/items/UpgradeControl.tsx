@@ -28,26 +28,24 @@ export function UpgradePopover<I extends SomeItemStack>({
         return null;
     }
 
-    return (
-        <Popover
-            position="bottom"
-            withArrow
-            shadow="md"
-        >
-            <Popover.Target>
-                <ActionIcon
-                    variant="subtle"
-                    size={TABLE_ROW_HEIGHT - 8}
-                    className="no-drag"
-                >
-                    <GiMagicAxe size={14}/>
-                </ActionIcon>
-            </Popover.Target>
-            <Popover.Dropdown>
-                <UpgradeControl item={item} onChange={onChange}/>
-            </Popover.Dropdown>
-        </Popover>
-    );
+    return <Popover
+        position="bottom"
+        withArrow
+        shadow="md"
+    >
+        <Popover.Target>
+            <ActionIcon
+                variant="subtle"
+                size={TABLE_ROW_HEIGHT - 8}
+                className="no-drag"
+            >
+                <GiMagicAxe size={14}/>
+            </ActionIcon>
+        </Popover.Target>
+        <Popover.Dropdown>
+            <UpgradeControl item={item} onChange={onChange}/>
+        </Popover.Dropdown>
+    </Popover>;
 }
 
 function UpgradeControl<I extends SomeItemStack>({

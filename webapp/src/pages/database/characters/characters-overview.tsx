@@ -62,6 +62,13 @@ export function CharactersOverview() {
             }
         ], []);
 
+    const {mutateAsync: deleteCharacters} = useDeleteAllCharacters({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllCharactersQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
+
     if (editMode) {
         return <CharacterEdit
             onCancel={() => {
@@ -74,13 +81,6 @@ export function CharactersOverview() {
             }}
         />;
     }
-
-    const {mutateAsync: deleteCharacters} = useDeleteAllCharacters({
-        mutation: {
-            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllCharactersQueryKey(activeUniverse.id)}),
-            onError: handleNetworkErrors
-        }
-    });
 
     return <OverviewPage
         fetchData={[allCharacters, refreshCharacters, loading]}

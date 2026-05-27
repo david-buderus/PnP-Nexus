@@ -7,8 +7,12 @@ import {
     ItemStack,
     Jewellery,
     JewelleryEquipment,
+    PrimaryStatTrait,
+    SecondaryStatTrait,
     Shield,
     ShieldEquipment,
+    SimpleCharacterTrait,
+    TalentCharacterTrait,
     Weapon,
     WeaponEquipment
 } from '../api/model';
@@ -27,3 +31,6 @@ export type SomeItemEffect = ItemEffect | EquipmentItemEffect;
 
 /** All equipment classes */
 export type SomeEquipment = ArmorEquipment | JewelleryEquipment | ShieldEquipment | WeaponEquipment;
+
+/** All character trait classes */
+export type SomeCharacterTrait = PrimaryStatTrait | SecondaryStatTrait | SimpleCharacterTrait | TalentCharacterTrait;

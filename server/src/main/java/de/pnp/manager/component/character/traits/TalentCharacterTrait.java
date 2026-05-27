@@ -52,4 +52,12 @@ public class TalentCharacterTrait implements ICharacterTrait {
         }
         return rollModifier + " " + talent.getName();
     }
+
+    public Talent getTalent() {
+        return talent;
+    }
+
+    public int getRollModifier() {
+        return rollModifier;
+    }
 }

@@ -96,6 +96,12 @@ export function CharacterEdit({
         }
         handleStatsChange();
     });
+    form.watch('advantageTraits', () => {
+        handleStatsChange();
+    });
+    form.watch('disadvantageTraits', () => {
+        handleStatsChange();
+    });
 
     const {mutate: updateCharacter} = useUpdateCharacter({
         mutation: {
