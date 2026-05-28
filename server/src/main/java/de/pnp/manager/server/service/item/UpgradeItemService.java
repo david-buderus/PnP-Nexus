@@ -46,8 +46,12 @@ public class UpgradeItemService {
     @PostMapping("remove")
     @Operation(summary = "Remove an upgrades from the given equipment", operationId = "removeUpgradeFromItem")
     public <I extends ItemStack<? extends Item>> I remove(@RequestBody @Valid UpgradeRemovalRequest<I> request) {
+        ResourceBundle bundle = ResourceBundle.getBundle("upgrade", LocaleContextHolder.getLocale());
         I equipment = request.item;
         equipment.removeUpgrade(request.upgrade);
+        if (equipment.getRemainingUpgradeSlots() < 0) {
+            throw new ResponseStatusException(BAD_REQUEST, bundle.getString("not_enough_slots"));
+        }
         return equipment;
     }
 

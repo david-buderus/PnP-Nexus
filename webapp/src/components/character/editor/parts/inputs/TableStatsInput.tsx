@@ -12,7 +12,6 @@ export function TableStatsInput(props: {
 } & Omit<NumberInputProps, 'value' | 'onChange' | 'defaultValue'>) {
     const {value, onChange, defaultValue, ...rest} = props;
 
-    // We calculate the display for the total value here
     const totalDisplay = value?.totalValue !== undefined && value?.rawValue !== value?.totalValue ? ` (${value.totalValue})` : '';
 
     return <TableNumberInput

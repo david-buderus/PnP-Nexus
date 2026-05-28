@@ -75,7 +75,14 @@ export function CharacterEdit({
                         form.setFieldValue(`stats.secondaryStats.${key}`, value);
                     }
                 });
-                form.setFieldValue('talents', entries.talents);
+
+                Object.entries(entries.talents).forEach(([key, value]) => {
+                    if (values.talents[key]) {
+                        form.setFieldValue(`talents.${key}.totalValue`, value.totalValue);
+                    } else {
+                        form.setFieldValue(`talents.${key}`, value);
+                    }
+                });
             },
             onError: handleNetworkErrors
         }
@@ -101,6 +108,12 @@ export function CharacterEdit({
         handleStatsChange();
     });
     form.watch('disadvantageTraits', () => {
+        handleStatsChange();
+    });
+    form.watch('talents', () => {
+        handleStatsChange();
+    });
+    form.watch('equipment', () => {
         handleStatsChange();
     });
 
