@@ -18,6 +18,7 @@ import {
     useUpdateCharacter
 } from '../../api/pn-p-character-service/pn-p-character-service';
 import {useQueryClient} from '@tanstack/react-query';
+import {notifications} from '@mantine/notifications';
 
 /** Allows to edit the given character */
 export function CharacterEdit({
@@ -110,7 +111,14 @@ export function CharacterEdit({
             }).then(() => queryClient.invalidateQueries({
                 queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
             })).then(() => form.resetDirty()).then(onSave),
-            onError: handleValidationErrors(form.setErrors)
+            onError: error => {
+                handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
+                notifications.show({
+                    title: t('error:validationFailedNotification'),
+                    message: t('error:validationFailedMessage', {'type': t('character')}),
+                    color: 'red'
+                });
+            }
         }
     });
     const {mutate: insertCharacter} = useInsertAllCharacters({
@@ -118,7 +126,13 @@ export function CharacterEdit({
             onSuccess: () => queryClient.invalidateQueries({
                 queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
             }).then(() => form.resetDirty()).then(onSave),
-            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+            onError: error => {
+                handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
+                notifications.show({
+                    title: t('error:validationFailedNotification'),
+                    message: t('error:validationFailedMessage', {'type': t('character')}),
+                });
+            }
         }
     });
     const {mutate: deleteCharacter} = useDeleteCharacter({

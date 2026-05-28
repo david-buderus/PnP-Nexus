@@ -1,4 +1,4 @@
-import {ActionIcon, Box, Group, List, Popover, Stack, Switch, Table, Text, Tooltip} from '@mantine/core';
+import {ActionIcon, Box, Group, List, Popover, Switch, Table, Text} from '@mantine/core';
 import React, {useContext, useMemo} from 'react';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
@@ -74,7 +74,7 @@ export function AdvantagesInfo({showsAdvantages, setShowsAdvantages}: {
                                 </List.Item>
                             )}
                             {entries.map((entry, index) => {
-                                const errors = collectErrors(path + '.' + index, characterForm.errors);
+                                const errors = hasErrors(path + '.' + index, characterForm.errors);
 
                                 return <List.Item
                                     key={'character-' + index}
@@ -84,24 +84,14 @@ export function AdvantagesInfo({showsAdvantages, setShowsAdvantages}: {
                                     }}
                                 >
                                     <Group align="flex-start" wrap="nowrap" style={{width: '100%'}}>
-                                        <Tooltip label={
-                                            <Stack gap="xs">
-                                                {errors.map(([key, errorMessage]) => (
-                                                    <Text key={key} size="xs">
-                                                        {errorMessage}
-                                                    </Text>
-                                                ))}
-                                            </Stack>
-                                        } disabled={errors.length == 0}>
-                                            <Text
-                                                size="sm"
-                                                truncate="end"
-                                                style={{flex: 1, minWidth: 0}}
-                                                c={errors.length > 0 ? 'red' : undefined}
-                                            >
-                                                {entry.description ? entry.description : t('nothing-here')}
-                                            </Text>
-                                        </Tooltip>
+                                        <Text
+                                            size="sm"
+                                            truncate="end"
+                                            style={{flex: 1, minWidth: 0}}
+                                            c={errors ? 'red' : undefined}
+                                        >
+                                            {entry.description ? entry.description : t('nothing-here')}
+                                        </Text>
                                         {allowEdit ?
                                             <Group
                                                 wrap="nowrap"
@@ -213,8 +203,8 @@ function TraitEditPopover({showsAdvantages, index}: { showsAdvantages: boolean; 
     </Popover>;
 }
 
-function collectErrors(path: string, errors: FormErrors) {
+function hasErrors(path: string, errors: FormErrors) {
     return Object.entries(errors).filter(([key]) =>
         key === path || key.startsWith(`${path}.`)
-    );
+    ).length > 0;
 }

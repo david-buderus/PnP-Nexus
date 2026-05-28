@@ -23,5 +23,6 @@
   "tagRequirement": "Voraussetzungen",
   "tagRequirementTooltip": "Ein Item kann eine Verbesserung bekommen, wenn es alle Tags von einer der folgenden Zeilen hat.",
   "noRequirements": "Die Verbesserung hat keine Voraussetzungen",
-  "addTagRequirement": "Füg eine Voraussetzung hinzu"
+  "addTagRequirement": "Füg eine Voraussetzung hinzu",
+  "notApplicable": "Verbesserung ist nicht anwendbar"
 }

@@ -11,6 +11,8 @@ import {TABLE_ROW_HEIGHT} from '../character/editor/parts/Constants';
 import {GiMagicAxe} from 'react-icons/gi';
 import {getPossibleUpgradeRestriction} from '../utils/UpgradeUtils';
 import {useAddUpgradeToItem, useRemoveUpgradeFromItem} from '../../api/upgrade-item-service/upgrade-item-service';
+import {notifications} from '@mantine/notifications';
+import {handleNetworkErrors} from '../utils/ErrorUtils';
 
 
 /**
@@ -58,7 +60,18 @@ function UpgradeControl<I extends SomeItemStack>({
     const {t} = useTranslation();
     const {mutate: addUpgrade} = useAddUpgradeToItem({
         mutation: {
-            onSuccess: response => onChange(response.data as I)
+            onSuccess: response => onChange(response.data as I),
+            onError: error => {
+                if (error.response.status !== 400) {
+                    handleNetworkErrors()(error);
+                    return;
+                }
+                notifications.show({
+                    title: t('upgrade:notApplicable'),
+                    message: String(error.response.data['detail']),
+                    color: 'red'
+                });
+            }
         }
     });
     const {mutate: removeUpgrade} = useRemoveUpgradeFromItem({

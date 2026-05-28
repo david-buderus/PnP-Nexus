@@ -23,5 +23,6 @@
   "tagRequirement": "Requirements",
   "tagRequirementTooltip": "An item can only receive an upgrade if it has all tags in one of the following rows.",
   "noRequirements": "The upgrade has no requirements",
-  "addTagRequirement": "Add a requirement"
+  "addTagRequirement": "Add a requirement",
+  "notApplicable": "Upgrade is not applicable"
 }

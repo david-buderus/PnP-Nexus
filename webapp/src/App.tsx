@@ -4,6 +4,7 @@ import PageBase from './components/PageBase';
 import Login from './pages/login';
 import '@mantine/core/styles.css';
 import '@mantine/tiptap/styles.css';
+import '@mantine/notifications/styles.css';
 
 import {MantineProvider} from '@mantine/core';
 import Home from './pages/home';
@@ -33,6 +34,7 @@ import {CharacterEditor} from './pages/database/characters/character-editor';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import {QueryCache} from '@tanstack/query-core';
 import {handleNetworkErrors} from './components/utils/ErrorUtils';
+import {Notifications} from '@mantine/notifications';
 
 const QUERY_CLIENT = new QueryClient({
     queryCache: new QueryCache({
@@ -45,6 +47,7 @@ class App extends Component {
     override render() {
         return (
             <MantineProvider defaultColorScheme="auto">
+                <Notifications/>
                 <QueryClientProvider client={QUERY_CLIENT}>
                     <Router>
                         <style>{`
