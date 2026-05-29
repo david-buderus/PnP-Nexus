@@ -1,11 +1,16 @@
-import {NumberInput, Table} from '@mantine/core';
+import {ActionIcon, Group, NumberInput, Popover, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
-import React, {useContext, useMemo} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {resourceFormatter, spellCastFormatter} from '../../../../utils/Formatters';
 import {resizeArray} from '../../../../utils/Utils';
 import {PageElementSettings} from '../PageElementSettings';
+import {fetchAllSpells} from '../../../../Database';
+import {SpellSearchCard} from '../../../../spells/SpellSearchCard';
+import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
+import {Spell} from '../../../../../api/model';
+import {SpellCardModal} from '../../../../spells/SpellCard';
 
 
 /** Shows the spells of the character */
@@ -16,16 +21,18 @@ export function SpellList({
     setNumberOfRows: (n: number) => void;
 }) {
     const {t} = useTranslation();
-    const {characterForm} = useContext(PnPCharacterContext);
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
     const spells = useMemo(() => resizeArray(character.spells, numberOfRows), [character.spells, numberOfRows]);
+
+    const [lastClicked, setLastClicked] = useState<Spell>(null);
 
     return <>
         <Table
             withTableBorder
             withColumnBorders
             striped
-            style={{tableLayout: 'fixed'}}
+            layout="fixed"
         >
             <Table.Tbody>
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -44,20 +51,58 @@ export function SpellList({
                             <Table.Td style={TABLE_STYLE}/>
                             <Table.Td style={TABLE_STYLE}/>
                             <Table.Td style={TABLE_STYLE}/>
-                            <Table.Td style={TABLE_STYLE}/>
+                            <Table.Td style={TABLE_STYLE}>
+                                <Group justify="flex-end">
+                                    <SpellAdditionPopover/>
+                                </Group>
+                            </Table.Td>
                         </Table.Tr>;
                     }
-                    return <Table.Tr key={index} h={TABLE_ROW_HEIGHT}>
+                    return <Table.Tr
+                        key={index}
+                        h={TABLE_ROW_HEIGHT}
+                        onClick={allowEdit ? () => setLastClicked(spell) : null}
+                    >
                         <Table.Td style={TABLE_STYLE}>{spell.name}</Table.Td>
                         <Table.Td style={TABLE_STYLE}>{spell.effect}</Table.Td>
                         <Table.Td style={TABLE_STYLE}>{spell.castTime}</Table.Td>
                         <Table.Td style={TABLE_STYLE}>{spell.cooldown}</Table.Td>
-                        <Table.Td style={TABLE_STYLE}>{spell.cost?.map(resourceFormatter)?.join(', ') ?? ''}</Table.Td>
-                        <Table.Td style={TABLE_STYLE}>{spellCastFormatter(spell.cast, t)}</Table.Td>
+                        <Table.Td style={TABLE_STYLE}>
+                            {spell.cost?.map(resourceFormatter)?.join(', ') ?? ''}
+                        </Table.Td>
+                        <Table.Td style={TABLE_STYLE}>
+                            <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                                <Text
+                                    size={TABLE_STYLE.fontSize}
+                                    truncate="end"
+                                    style={{flex: 1, minWidth: 0}}
+                                >
+                                    {spellCastFormatter(spell.cast, t)}
+                                </Text>
+                                {allowEdit ?
+                                    <ActionIcon
+                                        variant="subtle"
+                                        size={TABLE_ROW_HEIGHT - 8}
+                                        className="no-drag"
+                                        style={{flexShrink: 0}}
+                                        onClick={e => {
+                                            characterForm.removeListItem('spells', index);
+                                            e.stopPropagation();
+                                        }}
+                                    >
+                                        <IconCircleMinus color="red" size={14}/>
+                                    </ActionIcon> : null
+                                }
+                            </Group>
+                        </Table.Td>
                     </Table.Tr>;
                 })}
             </Table.Tbody>
         </Table>
+        <SpellCardModal
+            spell={lastClicked}
+            onClose={() => setLastClicked(null)}
+        />
         <PageElementSettings>
             <NumberInput
                 label={t('sheetEditor:numberOfRows')}
@@ -68,4 +113,35 @@ export function SpellList({
             />
         </PageElementSettings>
     </>;
+}
+
+function SpellAdditionPopover() {
+    const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const [spells] = fetchAllSpells();
+    const filteredSpells = useMemo(() => spells.filter(spell => !characterForm.values.spells.includes(spell)),
+        [spells, characterForm.values.spells]);
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return (
+        <Popover position="bottom" withArrow shadow="md">
+            <Popover.Target>
+                <ActionIcon
+                    variant="subtle"
+                    size={TABLE_ROW_HEIGHT - 8}
+                    className="no-drag"
+                >
+                    <IconCirclePlus size={14}/>
+                </ActionIcon>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <SpellSearchCard
+                    spells={filteredSpells}
+                    onSelect={spell => characterForm.insertListItem('spells', spell)}
+                />
+            </Popover.Dropdown>
+        </Popover>
+    );
 }

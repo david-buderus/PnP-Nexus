@@ -140,7 +140,11 @@ export function ItemCardModal({item, onClose}: {
     </Modal>;
 }
 
-function Stat({label, value}: { label: string; value: string | number | undefined }) {
+/**
+ * Displays a stat.
+ * Needs to be in a Grid.
+ */
+export function Stat({label, value}: { label: string; value: string | number | undefined }) {
     if (value === undefined || value === '') {
         return null;
     }

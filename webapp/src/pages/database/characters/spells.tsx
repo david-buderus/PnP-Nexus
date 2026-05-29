@@ -52,6 +52,7 @@ import {
     useInsertAllSpells,
     useUpdateSpell
 } from '../../../api/spell-service/spell-service';
+import {SpellCardModal} from '../../../components/spells/SpellCard';
 
 
 /** Overview over all spells */
@@ -163,6 +164,7 @@ export function SpellOverview() {
                 params: {ids: spells.map(spell => spell.id)}
             })}
             idKey="id"
+            viewModal={(spell, onClose) => <SpellCardModal spell={spell} onClose={onClose}/>}
         />
     </Stack>;
 }
