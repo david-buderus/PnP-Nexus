@@ -32,6 +32,7 @@ export function TableTextInput(props: TextInputProps) {
                     overflow: TABLE_STYLE.overflow,
                     textOverflow: TABLE_STYLE.textOverflow,
                     whiteSpace: TABLE_STYLE.whiteSpace,
+                    ...otherProps?.styles?.['input']
                 },
             }}
         />
