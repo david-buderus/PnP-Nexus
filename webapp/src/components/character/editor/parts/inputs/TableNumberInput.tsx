@@ -17,6 +17,7 @@ export function TableNumberInput(props: NumberInputProps) {
                     width: '100%',
                     display: 'flex',
                     justifyContent: 'flex-end',
+                    ...otherProps?.styles?.['root'],
                 },
                 wrapper: {
                     width: '100%',
@@ -24,6 +25,7 @@ export function TableNumberInput(props: NumberInputProps) {
                     flexDirection: 'row',
                     justifyContent: 'flex-end',
                     alignItems: 'center',
+                    ...otherProps?.styles?.['wrapper'],
                 },
                 input: {
                     padding: 0,
@@ -43,6 +45,7 @@ export function TableNumberInput(props: NumberInputProps) {
                     fontSize: TABLE_STYLE.fontSize,
                     overflow: 'visible', // Prevents cutting off the total value
                     whiteSpace: 'nowrap',
+                    ...otherProps?.styles?.['input'],
                 },
                 section: {
                     // Ensure the rightSection (totalValue) is aligned vertically
@@ -50,6 +53,7 @@ export function TableNumberInput(props: NumberInputProps) {
                     display: 'flex',
                     alignItems: 'center',
                     fontSize: TABLE_STYLE.fontSize,
+                    ...otherProps?.styles?.['section'],
                 }
             }}
         />

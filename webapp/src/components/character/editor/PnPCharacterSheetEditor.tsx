@@ -35,6 +35,7 @@ import {loadCharacterSheet} from '../PnPCharacterView';
 import {useNavigate} from 'react-router-dom';
 import {
     getGetAllPnPCharacterSheetsQueryKey,
+    getGetPnPCharacterSheetQueryKey,
     useDeletePnPCharacterSheet,
     useGetExampleCharacter,
     useInsertAllPnPCharacterSheets,
@@ -274,6 +275,7 @@ function StorageModal({initialSheet, pages, setPages, onCancel}: {
         mutation: {
             onSuccess: response =>
                 queryClient.invalidateQueries({queryKey: getGetAllPnPCharacterSheetsQueryKey(activeUniverse.id)})
+                    .then(() => queryClient.invalidateQueries({queryKey: getGetPnPCharacterSheetQueryKey(activeUniverse.id, response.data.id)}))
                     .then(() => {
                         closeSave();
                         setLatestSave(response.data.sheet);

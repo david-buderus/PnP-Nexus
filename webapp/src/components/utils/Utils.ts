@@ -49,14 +49,7 @@ export function splitCurrency(currencySettings: CurrencySettings, amount: number
         return result;
     }
 
-    const calculationSteps: number[] = [1];
-
-    for (const entry of currencySettings.calculationEntries) {
-        if (entry.factor <= 0) {
-            continue;
-        }
-        calculationSteps.unshift(calculationSteps[0] * (entry.factor ?? 1));
-    }
+    const calculationSteps: number[] = getCurrencyCalculationSteps(currencySettings);
 
     let remainingAmount = amount;
 
@@ -74,4 +67,18 @@ export function splitCurrency(currencySettings: CurrencySettings, amount: number
     }
 
     return result;
+}
+
+/** Returns an array which contains the factor for each coin to the base coin */
+export function getCurrencyCalculationSteps(currencySettings: CurrencySettings) {
+    const calculationSteps: number[] = [1];
+
+    for (const entry of currencySettings.calculationEntries) {
+        if (entry.factor <= 0) {
+            continue;
+        }
+        calculationSteps.unshift(calculationSteps[0] * (entry.factor ?? 1));
+    }
+
+    return calculationSteps;
 }

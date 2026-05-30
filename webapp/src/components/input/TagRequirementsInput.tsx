@@ -5,7 +5,7 @@ import {fetchAllTags} from '../Database';
 import {MdOutlineHelpOutline} from 'react-icons/md';
 
 /** Props of the tag requirement input */
-interface TagRequirementsInputProps {
+type TagRequirementsInputProps = {
     /** The current value */
     value?: TagRequirement;
     /** The change callback */

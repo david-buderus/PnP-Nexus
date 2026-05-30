@@ -13,10 +13,10 @@ import {CurrencyPart} from './items/CurrencyPart';
 import {TalentGroup} from './talent/TalentGroup';
 import {SpellList} from './spells/SpellList';
 import {FreeTextPart} from './other/FreeTextPart';
-import {TitleOrder} from '@mantine/core/lib/components/Title/Title';
 import {TitlePart} from './other/TitlePart';
 import {CustomText} from './custom/CustomText';
 import {CustomTable, TableDefinition} from './custom/CustomTable';
+import {TitleOrder} from '@mantine/core';
 
 /** Data of a page element */
 export type PageElementData = {

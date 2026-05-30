@@ -1,7 +1,6 @@
-import {Group, NumberInput, Stack, TextInput, Title} from '@mantine/core';
+import {Group, NumberInput, Stack, TextInput, Title, TitleOrder} from '@mantine/core';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {TitleOrder} from '@mantine/core/lib/components/Title/Title';
 import {PageElementSettings} from '../PageElementSettings';
 
 /** Part to show text */
