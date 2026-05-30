@@ -166,8 +166,8 @@ export function CharacterEdit({
                             data={sortedSheets.map(s => {
                                 return {
                                     value: s.id,
-                                    label: s.name + (s.id === sheetSettings.playerSheet?.id ? ' (' + t('universe:playerSheet') + ')'
-                                        : s.id === sheetSettings.enemySheet?.id ? ' (' + t('universe:enemySheet') + ')' : '')
+                                    label: s.name + (s.id === sheetSettings?.playerSheet?.id ? ' (' + t('universe:playerSheet') + ')'
+                                        : s.id === sheetSettings?.enemySheet?.id ? ' (' + t('universe:enemySheet') + ')' : '')
                                 };
                             })}
                             value={selectedSheet?.id}
