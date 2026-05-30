@@ -1,11 +1,11 @@
-import {PnPCharacterDTO, StatsDto} from '../../api/model';
+import {PnPCharacterDTO, PnPCharacterSheet, StatsDto, Universe} from '../../api/model';
 import {useTranslation} from 'react-i18next';
 import {useUniverseContext} from '../PageBase';
 import {useEmptyCharacter} from './PnPCharacterContext';
-import {useForm} from '@mantine/form';
-import React, {useEffect} from 'react';
+import {useForm, UseFormReturnType} from '@mantine/form';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useDebouncedCallback} from '@mantine/hooks';
-import {Anchor, Breadcrumbs, Button, Center, Group, Stack} from '@mantine/core';
+import {Anchor, Breadcrumbs, Button, Center, Group, Select, Stack} from '@mantine/core';
 import {handleDatabaseInsertErrors, handleNetworkErrors, handleValidationErrors} from '../utils/ErrorUtils';
 import {PnPCharacterView} from './PnPCharacterView';
 import ConfirmationDialog from '../modal/ConfirmationDialog';
@@ -19,6 +19,7 @@ import {
 } from '../../api/pn-p-character-service/pn-p-character-service';
 import {useQueryClient} from '@tanstack/react-query';
 import {notifications} from '@mantine/notifications';
+import {fetchAllCharacterSheets} from '../Database';
 
 /** Allows to edit the given character */
 export function CharacterEdit({
@@ -42,6 +43,23 @@ export function CharacterEdit({
     const queryClient = useQueryClient();
     const {sheetSettings, activeUniverse} = useUniverseContext();
     const emptyCharacter = useEmptyCharacter();
+    const [selectedSheet, setSelectedSheet] = useState<PnPCharacterSheet>(null);
+    const [sheets] = fetchAllCharacterSheets();
+
+    const sortedSheets = useMemo(() => [
+        sheetSettings?.playerSheet,
+        sheetSettings?.enemySheet,
+        ...sheets.filter(s =>
+            s.id !== sheetSettings?.playerSheet?.id
+            && s.id !== sheetSettings?.enemySheet?.id
+        ),
+    ].filter(s => Boolean(s)), [sheetSettings, sheets]);
+    useEffect(() => {
+        if (sortedSheets.length === 0) {
+            return;
+        }
+        setSelectedSheet(sortedSheets[0]);
+    }, [sortedSheets]);
 
     const form = useForm<PnPCharacterDTO>({
         initialValues: character ?? emptyCharacter,
@@ -53,6 +71,153 @@ export function CharacterEdit({
         form.resetDirty();
     }, [character, emptyCharacter]);
 
+    useCharacterChangeListener(form, activeUniverse);
+
+    const {mutate: updateCharacter} = useUpdateCharacter({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetCharacterQueryKey(activeUniverse.id, form.values.id)
+            }).then(() => queryClient.invalidateQueries({
+                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
+            })).then(() => form.resetDirty()).then(onSave),
+            onError: error => {
+                handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
+                notifications.show({
+                    title: t('error:validationFailedNotification'),
+                    message: t('error:validationFailedMessage', {'type': t('character')}),
+                    color: 'red'
+                });
+            }
+        }
+    });
+    const {mutate: insertCharacter} = useInsertAllCharacters({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
+            }).then(() => form.resetDirty()).then(onSave),
+            onError: error => {
+                handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
+                notifications.show({
+                    title: t('error:validationFailedNotification'),
+                    message: t('error:validationFailedMessage', {'type': t('character')}),
+                    color: 'red'
+                });
+            }
+        }
+    });
+    const {mutate: deleteCharacter} = useDeleteCharacter({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
+            }).then(onDelete),
+            onError: handleNetworkErrors
+        }
+    });
+
+    return <Center>
+        <Stack>
+            <Breadcrumbs>
+                <ConfirmationDialog
+                    title={t('unsavedChangesTitle')}
+                    text={t('unsavedChangesDescription')}
+                    onConfirmation={onCancel}
+                    openNode={(open) =>
+                        <Anchor
+                            onClick={() => {
+                                if (form.isDirty()) {
+                                    open();
+                                } else {
+                                    onCancel();
+                                }
+                            }}
+                            variant="outline"
+                        >
+                            {t('overview')}
+                        </Anchor>}
+                />
+                <Anchor>
+                    {character?.description?.name ?? ''}
+                </Anchor>
+            </Breadcrumbs>
+            <form
+                onSubmit={form.onSubmit(c => {
+                    if (c.id) {
+                        updateCharacter({
+                            universe: activeUniverse.id,
+                            id: c.id,
+                            data: c
+                        });
+                    } else {
+                        insertCharacter({
+                            universe: activeUniverse.id,
+                            data: [c]
+                        });
+                    }
+                })}
+            >
+                <Group wrap="nowrap" align="flex-start">
+                    <PnPCharacterView
+                        characterForm={form}
+                        allowEdit={true}
+                        sheet={selectedSheet}
+                    />
+                    <Stack>
+                        <Select
+                            data={sortedSheets.map(s => {
+                                return {
+                                    value: s.id,
+                                    label: s.name + (s.id === sheetSettings.playerSheet?.id ? ' (' + t('universe:playerSheet') + ')'
+                                        : s.id === sheetSettings.enemySheet?.id ? ' (' + t('universe:enemySheet') + ')' : '')
+                                };
+                            })}
+                            value={selectedSheet?.id}
+                            onChange={v => setSelectedSheet(sortedSheets.find(s => s?.id === v) ?? null)}
+                            searchable
+                        />
+                        <Button type="submit">
+                            {t('save')}
+                        </Button>
+                        {character?.id !== undefined ?
+                            <ConfirmationDialog
+                                title={t('sheetEditor:deleteSheet')}
+                                onConfirmation={() => deleteCharacter({
+                                    universe: activeUniverse.id,
+                                    id: character.id
+                                })}
+                                openNode={open =>
+                                    <Button variant="outline" color="red" onClick={open}>
+                                        {t('delete')}
+                                    </Button>
+                                }
+                            /> : null
+                        }
+                        <ConfirmationDialog
+                            title={t('unsavedChangesTitle')}
+                            text={t('unsavedChangesDescription')}
+                            onConfirmation={onCancel}
+                            openNode={(open) =>
+                                <Button
+                                    onClick={() => {
+                                        if (form.isDirty()) {
+                                            open();
+                                        } else {
+                                            onCancel();
+                                        }
+                                    }}
+                                    variant="outline"
+                                >
+                                    {t('close')}
+                                </Button>}
+                        />
+                    </Stack>
+                </Group>
+            </form>
+        </Stack>
+    </Center>;
+}
+
+
+function useCharacterChangeListener(form: UseFormReturnType<PnPCharacterDTO>, activeUniverse: Universe) {
     const {mutate: recalculateEntries} = useRecalculateEntries({
         mutation: {
             onSuccess: response => {
@@ -116,135 +281,6 @@ export function CharacterEdit({
     form.watch('equipment', () => {
         handleStatsChange();
     });
-
-    const {mutate: updateCharacter} = useUpdateCharacter({
-        mutation: {
-            onSuccess: () => queryClient.invalidateQueries({
-                queryKey: getGetCharacterQueryKey(activeUniverse.id, form.values.id)
-            }).then(() => queryClient.invalidateQueries({
-                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
-            })).then(() => form.resetDirty()).then(onSave),
-            onError: error => {
-                handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
-                notifications.show({
-                    title: t('error:validationFailedNotification'),
-                    message: t('error:validationFailedMessage', {'type': t('character')}),
-                    color: 'red'
-                });
-            }
-        }
-    });
-    const {mutate: insertCharacter} = useInsertAllCharacters({
-        mutation: {
-            onSuccess: () => queryClient.invalidateQueries({
-                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
-            }).then(() => form.resetDirty()).then(onSave),
-            onError: error => {
-                handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
-                notifications.show({
-                    title: t('error:validationFailedNotification'),
-                    message: t('error:validationFailedMessage', {'type': t('character')}),
-                });
-            }
-        }
-    });
-    const {mutate: deleteCharacter} = useDeleteCharacter({
-        mutation: {
-            onSuccess: () => queryClient.invalidateQueries({
-                queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
-            }).then(onDelete),
-            onError: handleNetworkErrors
-        }
-    });
-
-    return <Center>
-        <Stack>
-            <Breadcrumbs>
-                <ConfirmationDialog
-                    title={t('unsavedChangesTitle')}
-                    text={t('unsavedChangesDescription')}
-                    onConfirmation={onCancel}
-                    openNode={(open) =>
-                        <Anchor
-                            onClick={() => {
-                                if (form.isDirty()) {
-                                    open();
-                                } else {
-                                    onCancel();
-                                }
-                            }}
-                            variant="outline"
-                        >
-                            {t('overview')}
-                        </Anchor>}
-                />
-                <Anchor>
-                    {character?.description?.name ?? ''}
-                </Anchor>
-            </Breadcrumbs>
-            <form
-                onSubmit={form.onSubmit(c => {
-                    if (c.id) {
-                        updateCharacter({
-                            universe: activeUniverse.id,
-                            id: c.id,
-                            data: c
-                        });
-                    } else {
-                        insertCharacter({
-                            universe: activeUniverse.id,
-                            data: [c]
-                        });
-                    }
-                })}
-            >
-                <Group wrap="nowrap" align="flex-start">
-                    <PnPCharacterView
-                        characterForm={form}
-                        allowEdit={true}
-                        sheet={sheetSettings?.playerSheet}
-                    />
-                    <Stack>
-                        <Button type="submit">
-                            {t('save')}
-                        </Button>
-                        {character?.id !== undefined ?
-                            <ConfirmationDialog
-                                title={t('sheetEditor:deleteSheet')}
-                                onConfirmation={() => deleteCharacter({
-                                    universe: activeUniverse.id,
-                                    id: character.id
-                                })}
-                                openNode={open =>
-                                    <Button variant="outline" color="red" onClick={open}>
-                                        {t('delete')}
-                                    </Button>
-                                }
-                            /> : null
-                        }
-                        <ConfirmationDialog
-                            title={t('unsavedChangesTitle')}
-                            text={t('unsavedChangesDescription')}
-                            onConfirmation={onCancel}
-                            openNode={(open) =>
-                                <Button
-                                    onClick={() => {
-                                        if (form.isDirty()) {
-                                            open();
-                                        } else {
-                                            onCancel();
-                                        }
-                                    }}
-                                    variant="outline"
-                                >
-                                    {t('close')}
-                                </Button>}
-                        />
-                    </Stack>
-                </Group>
-            </form>
-        </Stack>
-    </Center>;
 }
 
 function haveStatsChange(prevValues: Record<string, StatsDto>, values: Record<string, StatsDto>): boolean {

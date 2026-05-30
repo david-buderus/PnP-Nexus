@@ -49,7 +49,7 @@ export default function CharacterSheetSettingsDialog() {
                         {t('universe:characterSheetSettingsModalDescription')}
                     </Text>
                     <ObjectSelect<PnPCharacterSheet>
-                        label={t('playerSheet')}
+                        label={t('universe:playerSheet')}
                         key={form.key('playerSheet')}
                         {...form.getInputProps('playerSheet')}
                         data={sheets}
@@ -57,7 +57,7 @@ export default function CharacterSheetSettingsDialog() {
                         labelKey="name"
                     />
                     <ObjectSelect<PnPCharacterSheet>
-                        label={t('enemySheet')}
+                        label={t('universe:enemySheet')}
                         key={form.key('enemySheet')}
                         {...form.getInputProps('enemySheet')}
                         data={sheets}

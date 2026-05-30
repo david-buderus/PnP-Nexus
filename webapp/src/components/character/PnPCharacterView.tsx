@@ -22,7 +22,17 @@ export function PnPCharacterView({
     const [pages, setPages] = useListState<PnPCharacterSheetPage>([{data: [], layout: []}]);
 
     if (!sheet) {
-        return <></>;
+        return <AspectRatio
+            ratio={1 / 1.4142}
+            w="800px"
+        >
+            <Paper
+                shadow="sm"
+                p="md"
+                withBorder
+                style={{overflow: 'hidden'}}
+            />
+        </AspectRatio>;
     }
 
     if (isLoading) {
