@@ -5,12 +5,14 @@
  * OpenAPI spec version: v0
  */
 import type { CharacterEquipmentArmor } from './characterEquipmentArmor';
-import type { CharacterEquipmentJewellery } from './characterEquipmentJewellery';
 import type { ShieldEquipment } from './shieldEquipment';
 import type { WeaponEquipment } from './weaponEquipment';
+import type { CharacterEquipmentJewellery } from './characterEquipmentJewellery';
 
 export interface CharacterEquipment {
   armor: CharacterEquipmentArmor;
+  fallbackShields: ShieldEquipment[];
+  fallbackWeapons: WeaponEquipment[];
   jewellery: CharacterEquipmentJewellery;
   shields: ShieldEquipment[];
   weapons: WeaponEquipment[];

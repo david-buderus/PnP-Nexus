@@ -40,8 +40,9 @@ export type PageElementData = {
     attributesOrder?: string[]
 } | {
     type: 'WEAPON_LIST';
-    numberOfWeapons: number;
-    numberOfShields: number;
+    numberOfRows: number;
+    numberOfFallbackRows: number;
+    showShields: boolean;
 } | {
     type: 'ARMOR_SLOTS';
     numberOfShieldRows: number;
@@ -134,10 +135,12 @@ export function PageElement({
             />;
         case 'WEAPON_LIST':
             return <WeaponList
-                numberOfWeapons={data.numberOfWeapons}
-                numberOfShields={data.numberOfShields}
-                setNumberOfWeapons={n => setData({...data, numberOfWeapons: n})}
-                setNumberOfShields={b => setData({...data, numberOfShields: b})}
+                numberOfRows={data.numberOfRows}
+                numberOfFallbackRows={data.numberOfFallbackRows}
+                showShields={data.showShields}
+                setNumberOfRows={n => setData({...data, numberOfRows: n})}
+                setNumberOfFallbackRows={n => setData({...data, numberOfFallbackRows: n})}
+                setShowShields={b => setData({...data, showShields: b})}
             />;
         case 'ARMOR_SLOTS':
             return <ArmorSlots

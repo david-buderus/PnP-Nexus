@@ -40,7 +40,7 @@ export function PrimaryAttributeInfo({
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
                     <Table.Th colSpan={2} style={TABLE_STYLE}>{t('primary-attributes')}</Table.Th>
                     <Table.Th style={TABLE_STYLE}>
-                        {`Min: ${characterSettings.minPrimaryAttributeValue} Max: ${sum} / ${characterSettings.maxPrimaryAttributeValue}`}
+                        {`Min: ${characterSettings?.minPrimaryAttributeValue ?? 0} Max: ${sum} / ${characterSettings?.maxPrimaryAttributeValue ?? 0}`}
                     </Table.Th>
                 </Table.Tr>
 

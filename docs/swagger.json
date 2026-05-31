@@ -5458,6 +5458,8 @@
       "CharacterEquipment": {
         "required": [
           "armor",
+          "fallbackShields",
+          "fallbackWeapons",
           "jewellery",
           "shields",
           "weapons"
@@ -5468,6 +5470,18 @@
             "type": "object",
             "additionalProperties": {
               "$ref": "#/components/schemas/ArmorEquipment"
+            }
+          },
+          "fallbackShields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ShieldEquipment"
+            }
+          },
+          "fallbackWeapons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WeaponEquipment"
             }
           },
           "jewellery": {

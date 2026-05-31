@@ -120,8 +120,9 @@ export function Toolbox({
                             unselectable="on"
                             onDragStart={createDragFunction({
                                 type: 'WEAPON_LIST',
-                                numberOfWeapons: equipmentSettings?.numberOfHandheld ?? 2,
-                                numberOfShields: 0
+                                numberOfRows: 2,
+                                numberOfFallbackRows: 1,
+                                showShields: false
                             }, {minW: 3, minH: 3, w: 12, h: 3})}
                         >
                             {t('sheetEditor:weaponList')}

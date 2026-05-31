@@ -42,7 +42,9 @@ export function useEmptyCharacter(): PnPCharacterDTO {
             armor: {},
             jewellery: {},
             weapons: [],
-            shields: []
+            fallbackWeapons: [],
+            shields: [],
+            fallbackShields: []
         },
         inventory: {
             coin: 0,

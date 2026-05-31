@@ -118,7 +118,9 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
                 new CharacterTalents(talent.stream().collect(Collectors.toMap(Talent::getId, t -> 2))),
                 new CharacterEquipment(
                         List.of(new WeaponEquipment(1, new Weapon(null, "Weapon", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, 1, Dice.simpleDice(6), 1, 1), 0)),
+                        List.of(new WeaponEquipment(1, new Weapon(null, "Fallback Weapon", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, 1, Dice.simpleDice(6), 1, 1), 0)),
                         List.of(new ShieldEquipment(1, new Shield(null, "Shield", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, Dice.simpleDice(6), 1, 1, 2, 1, 1), 0)),
+                        List.of(new ShieldEquipment(1, new Shield(null, "Fallback Shield", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 2, 1, 0, Dice.simpleDice(6), 1, 1, 2, 1, 1), 0)),
                         Map.of(EArmorSlot.BODY, new ArmorEquipment(1, new Armor(null, "Body", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 1, EArmorSlot.BODY, 3, 2, 1, 1, 1), 0)),
                         jewellery
                 ),

@@ -254,7 +254,7 @@ export function PageBase() {
 }
 
 /** Props for a navbar entry */
-interface NavbarEntryProps {
+type NavbarEntryProps = {
     /** The id of the entry */
     id: string;
     /** The label shown */
@@ -423,6 +423,7 @@ function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchPar
                     disabled={universes.length === 0}
                     variant="unstyled"
                     searchable
+                    comboboxProps={{withinPortal: false}}
                 />
             </Menu.Item>
             <Menu.Label>{t('preferences')}</Menu.Label>

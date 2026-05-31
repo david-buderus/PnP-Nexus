@@ -1,50 +1,39 @@
-import {ActionIcon, Group, NumberInput, Popover, Stack, Table, Text} from '@mantine/core';
+import {ActionIcon, Group, NumberInput, Popover, Stack, Switch, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {diceFormatter} from '../../../../utils/Formatters';
-import {ShieldEquipment, Weapon, WeaponEquipment} from '../../../../../api/model';
+import {Shield, ShieldEquipment, Weapon, WeaponEquipment} from '../../../../../api/model';
 import {useUniverseContext} from '../../../../PageBase';
 import {PageElementSettings} from '../PageElementSettings';
 import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
-import {fetchAllWeapons} from '../../../../Database';
+import {fetchAllShields, fetchAllWeapons} from '../../../../Database';
 import {ItemSearchCard} from '../../../../items/ItemSearchCard';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
-import {ShieldAdditionPopover} from './ArmorSlots';
-import {useCreateWeapon} from '../../../../../api/item-stack-service/item-stack-service';
+import {useCreateShield, useCreateWeapon} from '../../../../../api/item-stack-service/item-stack-service';
 import {handleNetworkErrors} from '../../../../utils/ErrorUtils';
 
 /** Shows weapons of the character */
 export function WeaponList({
-    numberOfWeapons,
-    numberOfShields,
-    setNumberOfWeapons,
-    setNumberOfShields,
+    numberOfRows,
+    numberOfFallbackRows,
+    setNumberOfRows,
+    setNumberOfFallbackRows,
+    showShields,
+    setShowShields
 }: {
-    numberOfWeapons: number;
-    numberOfShields: number;
-    setNumberOfWeapons: (n: number) => void;
-    setNumberOfShields: (n: number) => void;
+    numberOfRows: number;
+    numberOfFallbackRows: number;
+    setNumberOfRows: (n: number) => void;
+    setNumberOfFallbackRows: (n: number) => void;
+    showShields: boolean;
+    setShowShields: (b: boolean) => void;
 }) {
     const {t} = useTranslation();
     const {characterForm} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
-
-    const weapons = useMemo(() => {
-        const w = [...character.equipment.weapons];
-        w.length = numberOfWeapons;
-        w.fill(null, character.equipment.weapons.length);
-        return w;
-    }, [character.equipment, numberOfWeapons]);
-
-    const shields = useMemo(() => {
-        const s = [...character.equipment.shields];
-        s.length = numberOfShields;
-        s.fill(null, character.equipment.shields.length);
-        return s;
-    }, [character.equipment, numberOfShields]);
 
     const [lastClicked, setLastClicked] = useState<WeaponEquipment | ShieldEquipment>(null);
 
@@ -64,45 +53,48 @@ export function WeaponList({
                     <Table.Th style={{width: '10%', ...TABLE_STYLE}}>{t('damage')}</Table.Th>
                     <Table.Th style={{width: '30%', ...TABLE_STYLE}}>{t('effect')}</Table.Th>
                 </Table.Tr>
-                {weapons.map((weapon, index) => {
-                    if (!weapon) {
-                        return <EmptyRow key={'weapon-' + index} isWeapon={true}/>;
-                    }
-                    return <WeaponRow
-                        key={'weapon-' + index}
-                        index={index}
-                        weapon={weapon}
-                        setLastClicked={setLastClicked}
-                    />;
-                })}
-                {shields.map((shield, index) => {
-                    if (!shield) {
-                        return <EmptyRow key={'shield-' + index} isWeapon={false}/>;
-                    }
-                    return <ShieldRow
-                        key={'shield-' + index}
-                        index={index}
-                        shield={shield}
-                        setLastClicked={setLastClicked}
-                    />;
-                })}
+                <HandHeldRows
+                    weapons={character?.equipment?.weapons ?? []}
+                    shields={showShields ? character?.equipment?.shields ?? [] : []}
+                    totalRows={numberOfRows}
+                    weaponPath="weapons"
+                    shieldPath="shields"
+                    setLastClicked={setLastClicked}
+                    highlightLastRow={numberOfFallbackRows > 0}
+                    showShields={showShields}
+                />
+                <HandHeldRows
+                    weapons={character?.equipment?.fallbackWeapons ?? []}
+                    shields={showShields ? character?.equipment?.fallbackShields ?? [] : []}
+                    totalRows={numberOfFallbackRows}
+                    weaponPath="fallbackWeapons"
+                    shieldPath="fallbackShields"
+                    setLastClicked={setLastClicked}
+                    highlightLastRow={false}
+                    showShields={showShields}
+                />
             </Table.Tbody>
         </Table>
         <PageElementSettings>
             <Stack>
                 <NumberInput
-                    label={t('sheetEditor:numberOfWeapons')}
-                    value={numberOfWeapons}
-                    onChange={e => setNumberOfWeapons(Number(e))}
+                    label={t('sheetEditor:numberOfRows')}
+                    value={numberOfRows}
+                    onChange={e => setNumberOfRows(Number(e))}
                     min={1}
                     allowDecimal={false}
                 />
                 <NumberInput
-                    label={t('sheetEditor:numberOfShields')}
-                    value={numberOfShields}
-                    onChange={e => setNumberOfShields(Number(e))}
+                    label={t('sheetEditor:numberOfFallbackRows')}
+                    value={numberOfFallbackRows}
+                    onChange={e => setNumberOfFallbackRows(Number(e))}
                     min={0}
                     allowDecimal={false}
+                />
+                <Switch
+                    label={t('sheetEditor:showShields')}
+                    checked={showShields}
+                    onChange={e => setShowShields(e.target.checked)}
                 />
             </Stack>
         </PageElementSettings>
@@ -113,10 +105,80 @@ export function WeaponList({
     </>;
 }
 
-function EmptyRow({
-    isWeapon
+function HandHeldRows({
+    weapons,
+    shields,
+    totalRows,
+    weaponPath,
+    shieldPath,
+    setLastClicked,
+    highlightLastRow,
+    showShields
 }: {
-    isWeapon: boolean;
+    weapons: WeaponEquipment[];
+    shields: ShieldEquipment[];
+    totalRows: number;
+    weaponPath: 'weapons' | 'fallbackWeapons';
+    shieldPath: 'shields' | 'fallbackShields';
+    setLastClicked: (w: WeaponEquipment | ShieldEquipment) => void;
+    highlightLastRow: boolean;
+    showShields: boolean;
+}) {
+    const data = useTableData(weapons, shields, totalRows);
+
+    return data.map((row, index) => {
+        const highlightRow = highlightLastRow && (index === data.length - 1);
+        if (!row) {
+            return <EmptyRow
+                key={row.id}
+                weaponPath={weaponPath}
+                shieldPath={shieldPath}
+                highlightRow={highlightRow}
+                showShields={showShields}
+            />;
+        }
+        switch (row.type) {
+            case 'WEAPON':
+                return <WeaponRow
+                    key={row.id}
+                    index={row.originalIndex}
+                    weapon={row.data as WeaponEquipment}
+                    setLastClicked={setLastClicked}
+                    path={weaponPath}
+                    highlightRow={highlightRow}
+                />;
+            case 'SHIELD':
+                return <ShieldRow
+                    key={row.id}
+                    index={row.originalIndex}
+                    shield={row.data as ShieldEquipment}
+                    setLastClicked={setLastClicked}
+                    path={shieldPath}
+                    highlightRow={highlightRow}
+                />;
+            case 'EMPTY':
+            default:
+                return <EmptyRow
+                    key={row.id}
+                    weaponPath={weaponPath}
+                    shieldPath={shieldPath}
+                    highlightRow={highlightRow}
+                    showShields={showShields}
+                />;
+        }
+    });
+}
+
+function EmptyRow({
+    weaponPath,
+    shieldPath,
+    highlightRow,
+    showShields,
+}: {
+    weaponPath: 'weapons' | 'fallbackWeapons';
+    shieldPath: 'shields' | 'fallbackShields';
+    highlightRow: boolean;
+    showShields: boolean;
 }) {
     return [
         <Table.Tr key="details-row" h={TABLE_ROW_HEIGHT}>
@@ -128,14 +190,17 @@ function EmptyRow({
             <Table.Td style={TABLE_STYLE}/>
             <Table.Td style={TABLE_STYLE}>
                 <Group justify="flex-end">
-                    {isWeapon ?
-                        <WeaponAdditionPopover/> :
-                        <ShieldAdditionPopover/>
-                    }
+                    <AdditionPopover weaponPath={weaponPath} shieldPath={shieldPath} showShields={showShields}/>
                 </Group>
             </Table.Td>
         </Table.Tr>,
-        <Table.Tr key="info-row" h={TABLE_ROW_HEIGHT}>
+        <Table.Tr
+            key="info-row"
+            h={TABLE_ROW_HEIGHT}
+            style={highlightRow ? {
+                borderBottom: '3px solid var(--mantine-color-gray-4)',
+            } : undefined}
+        >
             <Table.Td style={TABLE_STYLE} colSpan={7}/>
         </Table.Tr>
     ];
@@ -144,11 +209,15 @@ function EmptyRow({
 function WeaponRow({
     index,
     weapon,
-    setLastClicked
+    setLastClicked,
+    path,
+    highlightRow,
 }: {
     index: number;
     weapon: WeaponEquipment;
     setLastClicked: (w: WeaponEquipment) => void;
+    path: 'weapons' | 'fallbackWeapons';
+    highlightRow: boolean;
 }) {
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
 
@@ -184,14 +253,14 @@ function WeaponRow({
                         >
                             <UpgradePopover
                                 item={weapon}
-                                onChange={w => characterForm.replaceListItem('equipment.weapons', index, w)}
+                                onChange={w => characterForm.replaceListItem('equipment.' + path, index, w)}
                             />
                             <ActionIcon
                                 variant="subtle"
                                 size={TABLE_ROW_HEIGHT - 8}
                                 className="no-drag"
                                 style={{flexShrink: 0}}
-                                onClick={() => characterForm.removeListItem('equipment.weapons', index)}
+                                onClick={() => characterForm.removeListItem('equipment.' + path, index)}
                             >
                                 <IconCircleMinus color="red" size={14}/>
                             </ActionIcon>
@@ -200,7 +269,13 @@ function WeaponRow({
                 </Group>
             </Table.Td>
         </Table.Tr>,
-        <Table.Tr key={index + '-upgrades'} h={TABLE_ROW_HEIGHT}>
+        <Table.Tr
+            key={index + '-upgrades'}
+            h={TABLE_ROW_HEIGHT}
+            style={highlightRow ? {
+                borderBottom: '3px solid var(--mantine-color-gray-4)',
+            } : undefined}
+        >
             <Table.Td colSpan={7} style={TABLE_STYLE}>
                 {`${weapon.remainingUpgradeSlots}/${weapon.upgradeSlots} ${weapon.upgrades.map(u => u.name).join(', ')}`}
             </Table.Td>
@@ -211,11 +286,15 @@ function WeaponRow({
 function ShieldRow({
     index,
     shield,
-    setLastClicked
+    setLastClicked,
+    path,
+    highlightRow
 }: {
     index: number;
     shield: ShieldEquipment;
     setLastClicked: (s: ShieldEquipment) => void;
+    path: 'shields' | 'fallbackShields';
+    highlightRow: boolean;
 }) {
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
 
@@ -250,14 +329,14 @@ function ShieldRow({
                         >
                             <UpgradePopover
                                 item={shield}
-                                onChange={s => characterForm.replaceListItem('equipment.shields', index, s)}
+                                onChange={s => characterForm.replaceListItem('equipment.' + path, index, s)}
                             />
                             <ActionIcon
                                 variant="subtle"
                                 size={TABLE_ROW_HEIGHT - 8}
                                 className="no-drag"
                                 style={{flexShrink: 0}}
-                                onClick={() => characterForm.removeListItem('equipment.shields', index)}
+                                onClick={() => characterForm.removeListItem('equipment.' + path, index)}
                             >
                                 <IconCircleMinus color="red" size={14}/>
                             </ActionIcon>
@@ -266,11 +345,16 @@ function ShieldRow({
                 </Group>
             </Table.Td>
         </Table.Tr>,
-        <ShieldExtraLine key={'info-row-' + index} shield={shield}/>
+        <ShieldExtraLine key={'info-row-' + index} shield={shield} highlightRow={highlightRow}/>
     ];
 }
 
-function ShieldExtraLine({shield}: { shield: ShieldEquipment }) {
+function ShieldExtraLine({
+    shield, highlightRow
+}: {
+    shield: ShieldEquipment;
+    highlightRow: boolean;
+}) {
     const {t} = useTranslation();
     const {itemSettings} = useUniverseContext();
 
@@ -289,7 +373,12 @@ function ShieldExtraLine({shield}: { shield: ShieldEquipment }) {
     }
     description += ' ' + shield.upgrades.map(u => u.name).join(', ');
 
-    return <Table.Tr h={TABLE_ROW_HEIGHT}>
+    return <Table.Tr
+        h={TABLE_ROW_HEIGHT}
+        style={highlightRow ? {
+            borderBottom: '3px solid var(--mantine-color-gray-4)',
+        } : undefined}
+    >
         <Table.Td colSpan={7} style={TABLE_STYLE}>
             {description}
         </Table.Td>
@@ -303,12 +392,34 @@ function formatStat(current: number, base: number) {
     return `${current} (${base})`;
 }
 
-function WeaponAdditionPopover() {
+function AdditionPopover({
+    weaponPath,
+    shieldPath,
+    showShields
+}: {
+    weaponPath: 'weapons' | 'fallbackWeapons';
+    shieldPath: 'shields' | 'fallbackShields';
+    showShields: boolean;
+}) {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
-    const [items] = fetchAllWeapons();
+    const [weapons] = fetchAllWeapons();
+    const [shields] = fetchAllShields();
+    const items = useMemo(() => {
+        if (showShields) {
+            return [...weapons, ...shields];
+        }
+        return weapons;
+    }, [weapons, shields, showShields]);
+
     const {mutate: createWeapon} = useCreateWeapon({
         mutation: {
-            onSuccess: response => characterForm.insertListItem('equipment.weapons', response.data),
+            onSuccess: response => characterForm.insertListItem('equipment.' + weaponPath, response.data),
+            onError: handleNetworkErrors
+        }
+    });
+    const {mutate: createShield} = useCreateShield({
+        mutation: {
+            onSuccess: response => characterForm.insertListItem('equipment.' + shieldPath, response.data),
             onError: handleNetworkErrors
         }
     });
@@ -331,12 +442,65 @@ function WeaponAdditionPopover() {
             <Popover.Dropdown>
                 <ItemSearchCard
                     items={items}
-                    onSelect={item => createWeapon({
-                        data: {item: item.item as Weapon, stackSize: 1}
-                    })}
+                    onSelect={item => {
+                        if (item.item['@type'] === 'Weapon') {
+                            createWeapon({
+                                data: {item: item.item as Weapon, stackSize: 1}
+                            });
+                        } else {
+                            createShield({
+                                data: {item: item.item as Shield, stackSize: 1}
+                            });
+                        }
+                    }}
                 />
             </Popover.Dropdown>
         </Popover>
     );
 }
 
+type CombinedRow = {
+    id: string;
+    type: 'WEAPON' | 'SHIELD' | 'EMPTY';
+    originalIndex: number | null;
+    data: WeaponEquipment | ShieldEquipment;
+}
+
+function useTableData(weapons: WeaponEquipment[], shields: ShieldEquipment[], totalRows: number): CombinedRow[] {
+    return useMemo(() => {
+        const combined: CombinedRow[] = [];
+
+        weapons.forEach((weapon, index) => {
+            combined.push({
+                id: `W-${index}-${weapon?.item?.id || 'empty'}`,
+                type: 'WEAPON',
+                originalIndex: index,
+                data: weapon,
+            });
+        });
+
+        shields.forEach((shield, index) => {
+            combined.push({
+                id: `S-${index}-${shield?.item?.id || 'empty'}`,
+                type: 'SHIELD',
+                originalIndex: index,
+                data: shield,
+            });
+        });
+
+        if (combined.length > totalRows) {
+            return combined.slice(0, totalRows);
+        }
+
+        while (combined.length < totalRows) {
+            combined.push({
+                id: `empty-${combined.length}`,
+                type: 'EMPTY',
+                originalIndex: null,
+                data: null,
+            });
+        }
+
+        return combined;
+    }, [weapons, shields, totalRows]);
+}
