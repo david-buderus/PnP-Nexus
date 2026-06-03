@@ -1,13 +1,14 @@
 package de.pnp.manager.component.inventory.equipment;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
 import de.pnp.manager.component.inventory.ItemStack;
 import de.pnp.manager.component.inventory.equipment.interfaces.IDamageableEquipment;
 import de.pnp.manager.component.item.equipable.EquipableItem;
 import de.pnp.manager.component.item.interfaces.IDamageableItem;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.util.Objects;
 
 /**
  * Represents an {@link IDamageableItem} that can be held and used.
@@ -56,6 +57,23 @@ public abstract class DamageableEquipment<I extends EquipableItem & IDamageableI
         if (!super.canStack(other)) {
             return false;
         }
-        return Objects.equal(wear, ((DamageableEquipment<?>) other).wear);
+        return Float.compare(wear, ((DamageableEquipment<?>) other).wear) == 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        DamageableEquipment<?> that = (DamageableEquipment<?>) o;
+        return Float.compare(wear, that.wear) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), wear);
     }
 }

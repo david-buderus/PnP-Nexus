@@ -50,29 +50,49 @@ export function AdvantagesInfo({showsAdvantages, setShowsAdvantages}: {
                 <Table.Tr>
                     <Table.Td
                         style={{whiteSpace: 'pre-line', textAlign: 'left', verticalAlign: 'top', ...TABLE_STYLE}}>
+
+                        {speciesTraits.map((entry, index) =>
+                            <>
+                                <Text size="sm">
+                                    {t('species')}
+                                </Text>
+                                <List size="sm">
+                                    <List.Item key={'species-' + index}>
+                                        <Text
+                                            size="sm"
+                                            truncate="end"
+                                            style={{flex: 1, minWidth: 0}}
+                                        >
+                                            {entry.description}
+                                        </Text>
+                                    </List.Item>
+                                </List>
+                            </>
+                        )}
+                        {nationTraits.map((entry, index) =>
+                            <>
+                                <Text size="sm">
+                                    {t('nation')}
+                                </Text>
+                                <List size="sm">
+                                    <List.Item key={'nation-' + index}>
+                                        <Text
+                                            size="sm"
+                                            truncate="end"
+                                            style={{flex: 1, minWidth: 0}}
+                                        >
+                                            {entry.description}
+                                        </Text>
+                                    </List.Item>
+                                </List>
+                            </>
+                        )}
+                        {entries.length > 0 ?
+                            <Text size="sm">
+                                {t('character')}
+                            </Text> : null
+                        }
                         <List size="sm">
-                            {speciesTraits.map((entry, index) =>
-                                <List.Item key={'species-' + index}>
-                                    <Text
-                                        size="sm"
-                                        truncate="end"
-                                        style={{flex: 1, minWidth: 0}}
-                                    >
-                                        {entry.description}
-                                    </Text>
-                                </List.Item>
-                            )}
-                            {nationTraits.map((entry, index) =>
-                                <List.Item key={'nation-' + index}>
-                                    <Text
-                                        size="sm"
-                                        truncate="end"
-                                        style={{flex: 1, minWidth: 0}}
-                                    >
-                                        {entry.description}
-                                    </Text>
-                                </List.Item>
-                            )}
                             {entries.map((entry, index) => {
                                 const errors = hasErrors(path + '.' + index, characterForm.errors);
 

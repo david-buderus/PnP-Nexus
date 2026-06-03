@@ -5,9 +5,10 @@
  * OpenAPI spec version: v0
  */
 import type { Inventory } from './inventory';
-import type { InventoryRemoveRequestItemStack } from './inventoryRemoveRequestItemStack';
+import type { Item } from './item';
 
-export interface InventoryRemoveRequest {
+export interface InventoryItemAddRequest {
+  amount?: number;
   inventory: Inventory;
-  itemStack: InventoryRemoveRequestItemStack;
+  item: Item;
 }

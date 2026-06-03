@@ -5,7 +5,7 @@ import de.pnp.manager.component.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * An inventory.
@@ -19,14 +19,14 @@ public class Inventory {
     @JsonCreator
     public Inventory(int maxSize, List<ItemStack<? extends Item>> items) {
         this.maxSize = maxSize;
-        this.items = items;
+        this.items = items.stream().map(ItemStack::clone).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
      * Checks if the inventory has enough space left for the given stack.
      */
     public boolean hasSpaceFor(ItemStack<? extends Item> itemStack) {
-        if (items.size() < maxSize - 1) {
+        if (items.size() < maxSize) {
             return true;
         }
         float maxStackSize = itemStack.getItem().getMaximumStackSize();
@@ -48,14 +48,19 @@ public class Inventory {
         if (!hasSpaceFor(itemStack)) {
             return false;
         }
+        itemStack = itemStack.clone();
         float remaining = itemStack.getStackSize();
 
         for (ItemStack<?> stack : items) {
             if (stack.canStack(itemStack)) {
                 remaining -= stack.addAmount(remaining);
             }
+            if (Float.compare(remaining, 0) == 0) {
+                break;
+            }
         }
         if (remaining > 0) {
+            itemStack.setAmount(remaining);
             items.add(itemStack);
         }
         return true;
@@ -64,18 +69,21 @@ public class Inventory {
     /**
      * Removes an item from the inventory.
      */
-    public void removeItem(Item item, float amount) {
-        float remaining = amount;
+    public void removeItem(ItemStack<? extends Item> itemStack) {
+        float remaining = itemStack.getStackSize();
 
         List<ItemStack<? extends Item>> itemsToRemove = new ArrayList<>();
 
         for (ItemStack<? extends Item> stack : items) {
-            if (Objects.equals(stack.getItem(), item)) {
+            if (stack.canStack(itemStack)) {
                 if (remaining >= stack.getStackSize()) {
                     itemsToRemove.add(stack);
                     remaining -= stack.getStackSize();
                 } else {
                     remaining -= stack.subtractAmount(remaining);
+                }
+                if (Float.compare(remaining, 0) == 0) {
+                    break;
                 }
             }
         }

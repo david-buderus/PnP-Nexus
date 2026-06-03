@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
 import com.google.common.primitives.Floats;
@@ -22,10 +22,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Represents an {@link Item} that can be held and used.
@@ -38,7 +35,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = JewelleryEquipment.class, name = "JewelleryEquipment"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-public class ItemStack<I extends Item> {
+public class ItemStack<I extends Item> implements Cloneable {
 
     /**
      * The amount of the {@link #item} this {@link ItemStack} holds.
@@ -203,7 +200,7 @@ public class ItemStack<I extends Item> {
         if (other == null || other.getClass() != this.getClass()) {
             return false;
         }
-        return Objects.equal(item, other.getItem()) && Objects.equal(upgrades, other.getUpgrades());
+        return Objects.equals(item, other.getItem()) && Objects.equals(upgrades, other.upgrades);
     }
 
     /**
@@ -223,5 +220,42 @@ public class ItemStack<I extends Item> {
             return new JewelleryEquipment(stackSize, jewellery);
         }
         return new ItemStack<>(stackSize, item);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ItemStack<?> itemStack = (ItemStack<?>) o;
+        return Float.compare(stackSize, itemStack.stackSize) == 0
+                && Objects.equals(item, itemStack.item)
+                && Objects.equals(upgrades, itemStack.upgrades);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stackSize, item, upgrades);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public ItemStack<I> clone() {
+        try {
+            ItemStack<I> clone = (ItemStack<I>) super.clone();
+            clone.setUpgrades(new ArrayList<>(upgrades));
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("stackSize", stackSize)
+                .add("item", item)
+                .add("upgrades", upgrades)
+                .toString();
     }
 }

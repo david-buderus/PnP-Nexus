@@ -23,8 +23,8 @@ import type {
 
 import type {
   Inventory,
-  InventoryAddRequest,
-  InventoryRemoveRequest
+  InventoryItemAddRequest,
+  InventoryItemStackRequest
 } from '.././model';
 
 
@@ -32,24 +32,24 @@ import type {
 
 
 /**
- * @summary Inserts the given stack into the inventory
+ * @summary Inserts the given item into the inventory
  */
 export const addItemToInventory = (
-    inventoryAddRequest: InventoryAddRequest, options?: AxiosRequestConfig
+    inventoryItemAddRequest: InventoryItemAddRequest, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<Inventory>> => {
     
     
     return axios.post(
-      `/api/inventories/add`,
-      inventoryAddRequest,options
+      `/api/inventories/add/item`,
+      inventoryItemAddRequest,options
     );
   }
 
 
 
 export const getAddItemToInventoryMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addItemToInventory>>, TError,{data: InventoryAddRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof addItemToInventory>>, TError,{data: InventoryAddRequest}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addItemToInventory>>, TError,{data: InventoryItemAddRequest}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof addItemToInventory>>, TError,{data: InventoryItemAddRequest}, TContext> => {
 
 const mutationKey = ['addItemToInventory'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -61,7 +61,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addItemToInventory>>, {data: InventoryAddRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addItemToInventory>>, {data: InventoryItemAddRequest}> = (props) => {
           const {data} = props ?? {};
 
           return  addItemToInventory(data,axiosOptions)
@@ -73,18 +73,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type AddItemToInventoryMutationResult = NonNullable<Awaited<ReturnType<typeof addItemToInventory>>>
-    export type AddItemToInventoryMutationBody = InventoryAddRequest
+    export type AddItemToInventoryMutationBody = InventoryItemAddRequest
     export type AddItemToInventoryMutationError = AxiosError<unknown>
 
     /**
- * @summary Inserts the given stack into the inventory
+ * @summary Inserts the given item into the inventory
  */
 export const useAddItemToInventory = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addItemToInventory>>, TError,{data: InventoryAddRequest}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addItemToInventory>>, TError,{data: InventoryItemAddRequest}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof addItemToInventory>>,
         TError,
-        {data: InventoryAddRequest},
+        {data: InventoryItemAddRequest},
         TContext
       > => {
 
@@ -93,24 +93,85 @@ export const useAddItemToInventory = <TError = AxiosError<unknown>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Inserts the given stack into the inventory
+ */
+export const addItemStackToInventory = (
+    inventoryItemStackRequest: InventoryItemStackRequest, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Inventory>> => {
+    
+    
+    return axios.post(
+      `/api/inventories/add/stack`,
+      inventoryItemStackRequest,options
+    );
+  }
+
+
+
+export const getAddItemStackToInventoryMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addItemStackToInventory>>, TError,{data: InventoryItemStackRequest}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof addItemStackToInventory>>, TError,{data: InventoryItemStackRequest}, TContext> => {
+
+const mutationKey = ['addItemStackToInventory'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addItemStackToInventory>>, {data: InventoryItemStackRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  addItemStackToInventory(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddItemStackToInventoryMutationResult = NonNullable<Awaited<ReturnType<typeof addItemStackToInventory>>>
+    export type AddItemStackToInventoryMutationBody = InventoryItemStackRequest
+    export type AddItemStackToInventoryMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Inserts the given stack into the inventory
+ */
+export const useAddItemStackToInventory = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addItemStackToInventory>>, TError,{data: InventoryItemStackRequest}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof addItemStackToInventory>>,
+        TError,
+        {data: InventoryItemStackRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getAddItemStackToInventoryMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Removes the given stack from the inventory
  */
 export const removeItemFromInventory = (
-    inventoryRemoveRequest: InventoryRemoveRequest, options?: AxiosRequestConfig
+    inventoryItemStackRequest: InventoryItemStackRequest, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<Inventory>> => {
     
     
     return axios.post(
       `/api/inventories/remove`,
-      inventoryRemoveRequest,options
+      inventoryItemStackRequest,options
     );
   }
 
 
 
 export const getRemoveItemFromInventoryMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeItemFromInventory>>, TError,{data: InventoryRemoveRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof removeItemFromInventory>>, TError,{data: InventoryRemoveRequest}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeItemFromInventory>>, TError,{data: InventoryItemStackRequest}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof removeItemFromInventory>>, TError,{data: InventoryItemStackRequest}, TContext> => {
 
 const mutationKey = ['removeItemFromInventory'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -122,7 +183,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeItemFromInventory>>, {data: InventoryRemoveRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeItemFromInventory>>, {data: InventoryItemStackRequest}> = (props) => {
           const {data} = props ?? {};
 
           return  removeItemFromInventory(data,axiosOptions)
@@ -134,18 +195,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RemoveItemFromInventoryMutationResult = NonNullable<Awaited<ReturnType<typeof removeItemFromInventory>>>
-    export type RemoveItemFromInventoryMutationBody = InventoryRemoveRequest
+    export type RemoveItemFromInventoryMutationBody = InventoryItemStackRequest
     export type RemoveItemFromInventoryMutationError = AxiosError<unknown>
 
     /**
  * @summary Removes the given stack from the inventory
  */
 export const useRemoveItemFromInventory = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeItemFromInventory>>, TError,{data: InventoryRemoveRequest}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeItemFromInventory>>, TError,{data: InventoryItemStackRequest}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof removeItemFromInventory>>,
         TError,
-        {data: InventoryRemoveRequest},
+        {data: InventoryItemStackRequest},
         TContext
       > => {
 
@@ -154,24 +215,24 @@ export const useRemoveItemFromInventory = <TError = AxiosError<unknown>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * @summary Checks if the given stack can fit into the inventory
+ * @summary Checks if the given item can fit into the inventory
  */
 export const hasSpaceForInInventory = (
-    inventoryAddRequest: InventoryAddRequest, options?: AxiosRequestConfig
+    inventoryItemAddRequest: InventoryItemAddRequest, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<boolean>> => {
     
     
     return axios.post(
-      `/api/inventories/space`,
-      inventoryAddRequest,options
+      `/api/inventories/space/item`,
+      inventoryItemAddRequest,options
     );
   }
 
 
 
 export const getHasSpaceForInInventoryMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForInInventory>>, TError,{data: InventoryAddRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForInInventory>>, TError,{data: InventoryAddRequest}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForInInventory>>, TError,{data: InventoryItemAddRequest}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForInInventory>>, TError,{data: InventoryItemAddRequest}, TContext> => {
 
 const mutationKey = ['hasSpaceForInInventory'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -183,7 +244,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof hasSpaceForInInventory>>, {data: InventoryAddRequest}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof hasSpaceForInInventory>>, {data: InventoryItemAddRequest}> = (props) => {
           const {data} = props ?? {};
 
           return  hasSpaceForInInventory(data,axiosOptions)
@@ -195,22 +256,83 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type HasSpaceForInInventoryMutationResult = NonNullable<Awaited<ReturnType<typeof hasSpaceForInInventory>>>
-    export type HasSpaceForInInventoryMutationBody = InventoryAddRequest
+    export type HasSpaceForInInventoryMutationBody = InventoryItemAddRequest
     export type HasSpaceForInInventoryMutationError = AxiosError<unknown>
 
     /**
- * @summary Checks if the given stack can fit into the inventory
+ * @summary Checks if the given item can fit into the inventory
  */
 export const useHasSpaceForInInventory = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForInInventory>>, TError,{data: InventoryAddRequest}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForInInventory>>, TError,{data: InventoryItemAddRequest}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof hasSpaceForInInventory>>,
         TError,
-        {data: InventoryAddRequest},
+        {data: InventoryItemAddRequest},
         TContext
       > => {
 
       const mutationOptions = getHasSpaceForInInventoryMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Checks if the given stack can fit into the inventory
+ */
+export const hasSpaceForStackInInventory = (
+    inventoryItemStackRequest: InventoryItemStackRequest, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<boolean>> => {
+    
+    
+    return axios.post(
+      `/api/inventories/space/stack`,
+      inventoryItemStackRequest,options
+    );
+  }
+
+
+
+export const getHasSpaceForStackInInventoryMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForStackInInventory>>, TError,{data: InventoryItemStackRequest}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForStackInInventory>>, TError,{data: InventoryItemStackRequest}, TContext> => {
+
+const mutationKey = ['hasSpaceForStackInInventory'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof hasSpaceForStackInInventory>>, {data: InventoryItemStackRequest}> = (props) => {
+          const {data} = props ?? {};
+
+          return  hasSpaceForStackInInventory(data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type HasSpaceForStackInInventoryMutationResult = NonNullable<Awaited<ReturnType<typeof hasSpaceForStackInInventory>>>
+    export type HasSpaceForStackInInventoryMutationBody = InventoryItemStackRequest
+    export type HasSpaceForStackInInventoryMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Checks if the given stack can fit into the inventory
+ */
+export const useHasSpaceForStackInInventory = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof hasSpaceForStackInInventory>>, TError,{data: InventoryItemStackRequest}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof hasSpaceForStackInInventory>>,
+        TError,
+        {data: InventoryItemStackRequest},
+        TContext
+      > => {
+
+      const mutationOptions = getHasSpaceForStackInInventoryMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

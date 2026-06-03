@@ -5,9 +5,9 @@
  * OpenAPI spec version: v0
  */
 import type { Inventory } from './inventory';
-import type { InventoryRemoveRequestItemStack } from './inventoryRemoveRequestItemStack';
+import type { InventoryItemStackRequestItemStack } from './inventoryItemStackRequestItemStack';
 
-export interface InventoryRemoveRequest {
+export interface InventoryItemStackRequest {
   inventory: Inventory;
-  itemStack: InventoryRemoveRequestItemStack;
+  itemStack: InventoryItemStackRequestItemStack;
 }

@@ -11,6 +11,7 @@ import {SomeItemStack} from '../../../../Constants';
 import {fetchAllItems} from '../../../../Database';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
 import {
+    useAddItemStackToInventory,
     useAddItemToInventory,
     useRemoveItemFromInventory
 } from '../../../../../api/inventory-service/inventory-service';
@@ -29,7 +30,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
 
     const [lastClicked, setLastClicked] = useState<SomeItemStack>(null);
 
-    const {mutate: addItemToInventory} = useAddItemToInventory({
+    const {mutate: addItemStackToInventory} = useAddItemStackToInventory({
         mutation: {
             onSuccess: response => characterForm.setFieldValue('inventory.inventory', response.data)
         }
@@ -87,18 +88,22 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 variant="subtle"
                                                 size={TABLE_ROW_HEIGHT - 8}
                                                 className="no-drag"
-                                                onClick={() => addItemToInventory({
+                                                onClick={() => addItemStackToInventory({
                                                     data: {
                                                         inventory: characterForm.values.inventory.inventory,
-                                                        item: itemStack.item,
-                                                        amount: 1,
+                                                        itemStack: {
+                                                            ...itemStack,
+                                                            stackSize: 1
+                                                        }
                                                     }
                                                 })}
-                                                onContextMenu={() => addItemToInventory({
+                                                onContextMenu={() => addItemStackToInventory({
                                                     data: {
                                                         inventory: characterForm.values.inventory.inventory,
-                                                        item: itemStack.item,
-                                                        amount: 1,
+                                                        itemStack: {
+                                                            ...itemStack,
+                                                            stackSize: 5
+                                                        }
                                                     }
                                                 })}
                                             >
@@ -111,15 +116,19 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 onClick={() => removeItemFromInventory({
                                                     data: {
                                                         inventory: characterForm.values.inventory.inventory,
-                                                        item: itemStack.item,
-                                                        amount: 1,
+                                                        itemStack: {
+                                                            ...itemStack,
+                                                            stackSize: 1
+                                                        }
                                                     }
                                                 })}
                                                 onContextMenu={() => removeItemFromInventory({
                                                     data: {
                                                         inventory: characterForm.values.inventory.inventory,
-                                                        item: itemStack.item,
-                                                        amount: 1,
+                                                        itemStack: {
+                                                            ...itemStack,
+                                                            stackSize: 5
+                                                        }
                                                     }
                                                 })}
                                             >

@@ -228,14 +228,45 @@
         ]
       }
     },
-    "/api/inventories/add": {
+    "/api/inventories/add/item": {
       "post": {
         "operationId": "addItemToInventory",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InventoryAddRequest"
+                "$ref": "#/components/schemas/InventoryItemAddRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Inventory"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Inserts the given item into the inventory",
+        "tags": [
+          "inventory-service"
+        ]
+      }
+    },
+    "/api/inventories/add/stack": {
+      "post": {
+        "operationId": "addItemStackToInventory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InventoryItemStackRequest"
               }
             }
           },
@@ -266,7 +297,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InventoryRemoveRequest"
+                "$ref": "#/components/schemas/InventoryItemStackRequest"
               }
             }
           },
@@ -290,14 +321,45 @@
         ]
       }
     },
-    "/api/inventories/space": {
+    "/api/inventories/space/item": {
       "post": {
         "operationId": "hasSpaceForInInventory",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InventoryAddRequest"
+                "$ref": "#/components/schemas/InventoryItemAddRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Checks if the given item can fit into the inventory",
+        "tags": [
+          "inventory-service"
+        ]
+      }
+    },
+    "/api/inventories/space/stack": {
+      "post": {
+        "operationId": "hasSpaceForStackInInventory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InventoryItemStackRequest"
               }
             }
           },
@@ -5933,7 +5995,7 @@
           }
         }
       },
-      "InventoryAddRequest": {
+      "InventoryItemAddRequest": {
         "required": [
           "inventory",
           "item"
@@ -5952,22 +6014,34 @@
           }
         }
       },
-      "InventoryRemoveRequest": {
+      "InventoryItemStackRequest": {
         "required": [
           "inventory",
-          "item"
+          "itemStack"
         ],
         "type": "object",
         "properties": {
-          "amount": {
-            "type": "number",
-            "format": "float"
-          },
           "inventory": {
             "$ref": "#/components/schemas/Inventory"
           },
-          "item": {
-            "$ref": "#/components/schemas/Item"
+          "itemStack": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ItemStackItem"
+              },
+              {
+                "$ref": "#/components/schemas/ArmorEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/JewelleryEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/ShieldEquipment"
+              },
+              {
+                "$ref": "#/components/schemas/WeaponEquipment"
+              }
+            ]
           }
         }
       },
