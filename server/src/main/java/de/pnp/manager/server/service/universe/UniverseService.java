@@ -44,14 +44,19 @@ public class UniverseService {
      */
     public static final String UNIVERSE_DOES_NOT_EXIST_EXCEPTION_MESSAGE = "Universe does not exist.";
 
-    @Autowired
-    private UniverseRepository universeRepository;
+    private final UniverseRepository universeRepository;
 
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
 
-    @Autowired
-    private UserController userController;
+    private final UserController userController;
+
+    public UniverseService(@Autowired UniverseRepository universeRepository,
+                           @Autowired UserDetailsRepository userDetailsRepository,
+                           @Autowired UserController userController) {
+        this.universeRepository = universeRepository;
+        this.userDetailsRepository = userDetailsRepository;
+        this.userController = userController;
+    }
 
     @GetMapping
     @PostFilter("hasRole('" + SecurityConstants.ADMIN + "') || hasPermission(filterObject, '"

@@ -1,6 +1,7 @@
 package de.pnp.manager.component.attributes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.pnp.manager.component.IDTOWithId;
 import de.pnp.manager.validation.IsValidExpression;
 import de.pnp.manager.validation.IsValidExpression.EExpressionType;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +20,8 @@ import java.util.Objects;
  */
 public record SecondaryAttributeDTO(@Id ObjectId id, @Indexed(unique = true) @NotBlank String name,
                                     @NotBlank String shortName, @NotNull boolean consumable,
-                                    @NotNull @IsValidExpression(expressionType = EExpressionType.SECONDARY_ATTRIBUTE_EXPRESSION) String calculationFormula) {
+                                    @NotNull @IsValidExpression(expressionType = EExpressionType.SECONDARY_ATTRIBUTE_EXPRESSION) String calculationFormula)
+        implements IDTOWithId {
 
     /**
      * Checks whether this object is already persisted in a database.

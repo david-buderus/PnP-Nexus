@@ -91,6 +91,10 @@ export function PageBase() {
     const [universeQuery, setUniverseQuery] = useQueryParam('universe', withDefault(StringParam, null));
 
     const universes = useGetAllUniverses().data?.data ?? [];
+    if (!Array.isArray(universes)) {
+        location.reload();
+        return null;
+    }
 
     const username = useGetUsername().data?.data ?? null;
     const user = useGetUser(username, {query: {enabled: username !== null}}).data?.data ?? null;
@@ -104,7 +108,7 @@ export function PageBase() {
     }, [userPreferences, i18n]);
 
     const activeUniverse = useMemo(() => {
-        if (universes.length === 0) {
+        if (!universes || universes.length === 0) {
             return null;
         }
 

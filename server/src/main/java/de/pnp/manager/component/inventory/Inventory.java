@@ -5,6 +5,7 @@ import de.pnp.manager.component.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -101,5 +102,19 @@ public class Inventory {
      */
     public List<ItemStack<? extends Item>> getItems() {
         return new ArrayList<>(items);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Inventory inventory = (Inventory) o;
+        return maxSize == inventory.maxSize && Objects.equals(items, inventory.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(maxSize, items);
     }
 }

@@ -103,6 +103,8 @@
   "saveAs": "Save As...",
   "unsavedChangesTitle": "Unsaved Changes",
   "unsavedChangesDescription": "You have unsaved changes. Are you sure you want to leave?",
+  "saveSuccessful": "Save Successful",
+  "saveSuccessfulMessage": "The {{type}} was saved successfully.",
   "showMore": "Show more...",
   "showLess": "Show less...",
   "durability": "Durability"

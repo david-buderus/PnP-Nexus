@@ -107,5 +107,6 @@ export function CharactersOverview() {
             }
         })}
         idKey="id"
+        manipulationWithReadAccess={true}
     />;
 }

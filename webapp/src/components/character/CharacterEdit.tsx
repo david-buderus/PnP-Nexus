@@ -79,7 +79,11 @@ export function CharacterEdit({
                 queryKey: getGetCharacterQueryKey(activeUniverse.id, form.values.id)
             }).then(() => queryClient.invalidateQueries({
                 queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
-            })).then(() => form.resetDirty()).then(onSave),
+            })).then(() => form.resetDirty()).then(() => notifications.show({
+                title: t('saveSuccessful'),
+                message: t('saveSuccessfulMessage', {'type': t('character')}),
+                color: 'green'
+            })).then(onSave),
             onError: error => {
                 handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
                 notifications.show({
@@ -94,7 +98,12 @@ export function CharacterEdit({
         mutation: {
             onSuccess: () => queryClient.invalidateQueries({
                 queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
-            }).then(() => form.resetDirty()).then(onSave),
+            }).then(() => form.resetDirty()).then(() => form.resetDirty())
+                .then(() => notifications.show({
+                    title: t('saveSuccessful'),
+                    message: t('saveSuccessfulMessage', {'type': t('character')}),
+                    color: 'green'
+                })).then(onSave),
             onError: error => {
                 handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))(error);
                 notifications.show({

@@ -1,5 +1,6 @@
 package de.pnp.manager.component.character.dto;
 
+import de.pnp.manager.component.IDTOWithId;
 import de.pnp.manager.component.character.*;
 import de.pnp.manager.component.character.traits.ICharacterTrait;
 import de.pnp.manager.component.spell.Spell;
@@ -26,7 +27,7 @@ public record PnPCharacterDTO(
         @NotNull CharacterInventory inventory,
         @NotNull List<Spell> spells,
         @NotNull Map<String, String> customFields
-) {
+) implements IDTOWithId {
     /**
      * DTO for the stats of a talent roll
      */

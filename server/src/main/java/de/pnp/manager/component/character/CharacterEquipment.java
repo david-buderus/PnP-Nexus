@@ -8,10 +8,7 @@ import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.equipable.EArmorSlot;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * The equipment of a {@link PnPCharacter}.
@@ -82,5 +79,21 @@ public class CharacterEquipment {
      */
     public List<JewelleryEquipment> getJewellery(String slot) {
         return jewellery.putIfAbsent(slot, new ArrayList<>());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CharacterEquipment that = (CharacterEquipment) o;
+        return Objects.equals(weapons, that.weapons) && Objects.equals(fallbackWeapons, that.fallbackWeapons)
+                && Objects.equals(shields, that.shields) && Objects.equals(fallbackShields, that.fallbackShields)
+                && Objects.equals(armor, that.armor) && Objects.equals(jewellery, that.jewellery);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(weapons, fallbackWeapons, shields, fallbackShields, armor, jewellery);
     }
 }

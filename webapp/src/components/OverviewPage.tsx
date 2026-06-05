@@ -40,6 +40,8 @@ export interface OverviewPageProps<T> {
     idKey: keyof T;
     /** Modal to show if a row is clicked */
     viewModal?: (value: T, onClose: () => void) => ReactNode;
+    /** If read access to the universe is enough to edit objects */
+    manipulationWithReadAccess?: boolean;
 }
 
 export default function OverviewPage<T>({
@@ -50,7 +52,8 @@ export default function OverviewPage<T>({
     deletionDialogTitle,
     onDelete,
     idKey,
-    viewModal = () => null
+    viewModal = () => null,
+    manipulationWithReadAccess = false
 }: OverviewPageProps<T>) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
@@ -232,21 +235,22 @@ export default function OverviewPage<T>({
                 </Table.ScrollContainer>
             </Stack>
         </Paper>
-        {userPermissions.canWriteActiveUniverse && <Group justify="flex-end">
-            {manipulationDialog(false, refresh, false, () => undefined)}
-            {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0]?.original)}
-            <ConfirmationDialog
-                title={deletionDialogTitle}
-                onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))}
-                openNode={(open) => <Button
-                    data-testid="delete"
-                    disabled={table.getSelectedRowModel().flatRows.length === 0}
-                    onClick={open}
-                >
-                    {t('delete')}
-                </Button>}
-            />
-        </Group>}
+        {(manipulationWithReadAccess && userPermissions.canReadActiveUniverse) || userPermissions.canWriteActiveUniverse ?
+            <Group justify="flex-end">
+                {manipulationDialog(false, refresh, false, () => undefined)}
+                {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0]?.original)}
+                <ConfirmationDialog
+                    title={deletionDialogTitle}
+                    onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))}
+                    openNode={(open) => <Button
+                        data-testid="delete"
+                        disabled={table.getSelectedRowModel().flatRows.length === 0}
+                        onClick={open}
+                    >
+                        {t('delete')}
+                    </Button>}
+                />
+            </Group> : null}
         {viewModal(lastClicked, () => setLastClicked(null))}
     </Stack>;
 }

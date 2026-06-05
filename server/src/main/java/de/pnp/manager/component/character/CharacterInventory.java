@@ -2,6 +2,8 @@ package de.pnp.manager.component.character;
 
 import de.pnp.manager.component.inventory.Inventory;
 
+import java.util.Objects;
+
 /**
  * The inventory of a {@link PnPCharacter}.
  */
@@ -26,5 +28,19 @@ public class CharacterInventory {
 
     public void setCoin(int coin) {
         this.coin = coin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CharacterInventory that = (CharacterInventory) o;
+        return coin == that.coin && Objects.equals(inventory, that.inventory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(inventory, coin);
     }
 }

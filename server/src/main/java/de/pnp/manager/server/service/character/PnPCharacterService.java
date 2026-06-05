@@ -3,16 +3,20 @@ package de.pnp.manager.server.service.character;
 import de.pnp.manager.component.character.PnPCharacter;
 import de.pnp.manager.component.character.dto.CharacterStatsDto;
 import de.pnp.manager.component.character.dto.PnPCharacterDTO;
-import de.pnp.manager.security.UniverseOwner;
-import de.pnp.manager.security.UniverseRead;
-import de.pnp.manager.security.UniverseWrite;
+import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
+import de.pnp.manager.security.*;
 import de.pnp.manager.server.contoller.PnPCharacterDTOConverter;
+import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.character.PnPCharacterRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static de.pnp.manager.security.SecurityConstants.DATABASE_OBJECT_TARGET_ID;
+import static de.pnp.manager.security.SecurityConstants.OWNER;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -34,17 +40,21 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class PnPCharacterService {
 
     private final PnPCharacterDTOConverter converter;
-
     private final PnPCharacterRepository repository;
+    private final UserDetailsRepository userDetailsRepository;
 
 
-    public PnPCharacterService(@Autowired PnPCharacterDTOConverter converter, @Autowired PnPCharacterRepository repository) {
+    public PnPCharacterService(@Autowired PnPCharacterDTOConverter converter,
+                               @Autowired PnPCharacterRepository repository,
+                               @Autowired UserDetailsRepository userDetailsRepository) {
         this.converter = converter;
         this.repository = repository;
+        this.userDetailsRepository = userDetailsRepository;
     }
 
     @GetMapping
-    @UniverseOwner
+    @UniverseRead
+    @PostFilter(UniverseOwner.AUTHORIZE_CONSTANT + " || hasPermission(filterObject, '" + SecurityConstants.READ_ACCESS + "')")
     @Operation(summary = "Get all characters from the database", operationId = "getAllCharacters")
     public Collection<PnPCharacterDTO> getAllCharacters(@PathVariable ObjectId universe) {
         Collection<PnPCharacter> all = repository.getAll(universe);
@@ -52,25 +62,38 @@ public class PnPCharacterService {
     }
 
     @PostMapping
-    @UniverseWrite
-    @Operation(summary = "Inserts the objects into the database", operationId = "insertAllCharacters")
-    public Collection<PnPCharacterDTO> insertAll(@PathVariable ObjectId universe, @RequestBody List<@Valid PnPCharacterDTO> objects) {
+    @UniverseRead
+    @Operation(summary = "Inserts the objects into the database", operationId = "insertCharacters")
+    public Collection<PnPCharacterDTO> insertAll(@AuthenticationPrincipal UserDetails userDetails,
+                                                 @PathVariable ObjectId universe,
+                                                 @RequestBody List<@Valid PnPCharacterDTO> objects) {
         List<PnPCharacter> toInsert = converter.convertFromDto(universe, objects);
-        return converter.convert(universe, repository.insertAll(universe, toInsert));
+        Collection<PnPCharacter> inserted = repository.insertAll(universe, toInsert);
+        for (PnPCharacter character : inserted) {
+            userDetailsRepository.addGrantedAuthority(userDetails.getUsername(),
+                    GrantedDatabaseObjectAuthority.ownerAuthority(character.getId()));
+        }
+        return converter.convert(universe, inserted);
     }
 
     @DeleteMapping
-    @UniverseWrite
+    @PreAuthorize(UniverseOwner.AUTHORIZE_CONSTANT + " || (" + UniverseRead.AUTHORIZE_CONSTANT + "&& hasPermission(#ids, \"" + DATABASE_OBJECT_TARGET_ID + "\", \"" + OWNER + "\"))")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Deletes all objects with the given ids from the database", operationId = "deleteAllCharacters")
     public void deleteAll(@PathVariable ObjectId universe, @RequestParam List<ObjectId> ids) {
-        if (!repository.removeAll(universe, ids)) {
+        boolean removedAll = repository.removeAll(universe, ids);
+        for (String username : userDetailsRepository.getAllUsernames()) {
+            for (ObjectId id : ids) {
+                userDetailsRepository.removeGrantedDatabaseObjectAuthorities(username, id);
+            }
+        }
+        if (!removedAll) {
             throw createNotFound("Unable to find all resource with the given ids");
         }
     }
 
     @GetMapping("{id}")
-    @UniverseRead
+    @DatabaseObjectRead
     @Operation(summary = "Get an object from the database", operationId = "getCharacter")
     public PnPCharacterDTO get(@PathVariable ObjectId universe, @PathVariable ObjectId id) {
         PnPCharacter character = repository.get(universe, id)
@@ -79,7 +102,7 @@ public class PnPCharacterService {
     }
 
     @PutMapping("{id}")
-    @UniverseWrite
+    @DatabaseObjectWrite
     @Operation(summary = "Updates an object in the database", operationId = "updateCharacter")
     public PnPCharacterDTO update(@PathVariable ObjectId universe, @PathVariable ObjectId id, @RequestBody @Valid PnPCharacterDTO object) {
         if (object.id() != null && !Objects.equals(id, object.id())) {
@@ -89,12 +112,15 @@ public class PnPCharacterService {
     }
 
     @DeleteMapping("{id}")
-    @UniverseWrite
+    @DatabaseObjectOwner
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Deletes an object from the database", operationId = "deleteCharacter")
     public void delete(@PathVariable ObjectId universe, @PathVariable ObjectId id) {
         if (!repository.remove(universe, id)) {
             throw createNotFound("Unable to find resource with id '%s'", id);
+        }
+        for (String username : userDetailsRepository.getAllUsernames()) {
+            userDetailsRepository.removeGrantedDatabaseObjectAuthorities(username, id);
         }
     }
 
