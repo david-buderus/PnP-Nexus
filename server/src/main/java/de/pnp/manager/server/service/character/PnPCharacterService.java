@@ -63,7 +63,7 @@ public class PnPCharacterService {
 
     @PostMapping
     @UniverseRead
-    @Operation(summary = "Inserts the objects into the database", operationId = "insertCharacters")
+    @Operation(summary = "Inserts the objects into the database", operationId = "insertAllCharacters")
     public Collection<PnPCharacterDTO> insertAll(@AuthenticationPrincipal UserDetails userDetails,
                                                  @PathVariable ObjectId universe,
                                                  @RequestBody List<@Valid PnPCharacterDTO> objects) {
