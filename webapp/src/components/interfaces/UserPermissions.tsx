@@ -14,6 +14,8 @@ export type UserPermissions = {
     canWriteActiveUniverse: boolean;
     /** User is the owner of the currently selected universe */
     isActiveUniverseOwner: boolean;
+    /** All object permissions this user has */
+    objectPermissions: Record<string, string>;
 }
 
 function extractUniversePermissions(universePermission: GrantedDatabaseObjectIdAuthorityDTO, activeUniverse: Universe, userPermissions: UserPermissions) {
@@ -58,13 +60,16 @@ export function extractUserPermissions(permissions: any[], activeUniverse: Unive
         canCreateUniverses: false,
         canReadActiveUniverse: false,
         canWriteActiveUniverse: false,
-        isActiveUniverseOwner: false
+        isActiveUniverseOwner: false,
+        objectPermissions: {}
     };
 
     for (const permission of permissions) {
         switch (permission['@type']) {
             case 'DatabaseObjectAuthority':
-                extractUniversePermissions(permission as GrantedDatabaseObjectIdAuthorityDTO, activeUniverse, userPermissions);
+                const objectPermission = permission as GrantedDatabaseObjectIdAuthorityDTO;
+                extractUniversePermissions(objectPermission, activeUniverse, userPermissions);
+                userPermissions.objectPermissions[objectPermission.id] = objectPermission.permission;
                 break;
             case 'Role':
                 extractRolePermissions(permission as RoleAuthorityDTO, userPermissions);
@@ -75,4 +80,32 @@ export function extractUserPermissions(permissions: any[], activeUniverse: Unive
     }
 
     return userPermissions;
+}
+
+/**
+ * If the user has edit rights for the given id.
+ */
+export function hasWriteRights(userPermissions: UserPermissions, id: string): boolean {
+    if (userPermissions.isAdmin || userPermissions.isActiveUniverseOwner) {
+        return true;
+    }
+    const permission = userPermissions.objectPermissions[id];
+    if (!permission) {
+        return false;
+    }
+    return permission === 'OWNER' || permission === 'WRITE';
+}
+
+/**
+ * If the user has owner rights for the given id.
+ */
+export function hasOwnerRights(userPermissions: UserPermissions, id: string): boolean {
+    if (userPermissions.isAdmin || userPermissions.isActiveUniverseOwner) {
+        return true;
+    }
+    const permission = userPermissions.objectPermissions[id];
+    if (!permission) {
+        return false;
+    }
+    return permission === 'OWNER';
 }

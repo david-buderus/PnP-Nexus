@@ -23,7 +23,8 @@ import {
     IconSortDescending,
     IconTrash
 } from '@tabler/icons-react';
-import {useContextMenu} from 'mantine-contextmenu';
+import {ContextMenuItemOptions, useContextMenu} from 'mantine-contextmenu';
+import {hasOwnerRights, hasWriteRights} from './interfaces/UserPermissions';
 
 /** Props of the overview */
 export interface OverviewPageProps<T> {
@@ -46,7 +47,9 @@ export interface OverviewPageProps<T> {
     /** Modal to show if a row is clicked */
     viewModal?: (value: T, onClose: () => void) => ReactNode;
     /** If read access to the universe is enough to edit objects */
-    manipulationWithReadAccess?: boolean;
+    manipulationWithObjectsRights?: boolean;
+    /** Extra entries that should be shown in the context menu */
+    additionalContextMenuEntries?: (data: T) => ContextMenuItemOptions[];
 }
 
 /** A table with add- and edit-button */
@@ -60,7 +63,8 @@ export default function OverviewPage<T>({
     onAdd,
     idKey,
     viewModal = () => null,
-    manipulationWithReadAccess = false,
+    manipulationWithObjectsRights = false,
+    additionalContextMenuEntries = () => []
 }: OverviewPageProps<T>) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
@@ -224,13 +228,15 @@ export default function OverviewPage<T>({
                                                 icon: <IconEdit size={16}/>,
                                                 title: t('edit'),
                                                 onClick: () => onEdit(row.original),
-                                            },
-                                            {
+                                                disabled: !((manipulationWithObjectsRights && hasWriteRights(userPermissions, row.original[idKey] as string)) || userPermissions.canWriteActiveUniverse)
+                                            }, {
                                                 key: 'delete',
                                                 icon: <IconTrash size={16} color="red"/>,
                                                 title: t('delete'),
                                                 onClick: () => onDelete(activeUniverse?.id, [row.original]),
+                                                disabled: !((manipulationWithObjectsRights && hasOwnerRights(userPermissions, row.original[idKey] as string)) || userPermissions.canWriteActiveUniverse)
                                             },
+                                            ...additionalContextMenuEntries(row.original)
                                         ])}
                                     >
                                         {row.getVisibleCells().map((cell) => (
@@ -257,7 +263,7 @@ export default function OverviewPage<T>({
                 </Table.ScrollContainer>
             </Stack>
         </Paper>
-        {(manipulationWithReadAccess && userPermissions.canReadActiveUniverse) || userPermissions.canWriteActiveUniverse ?
+        {(manipulationWithObjectsRights && userPermissions.canReadActiveUniverse) || userPermissions.canWriteActiveUniverse ?
             <Group justify="flex-end">
                 <Button
                     data-testid={'add'}
@@ -268,7 +274,8 @@ export default function OverviewPage<T>({
                 <Button
                     data-testid={'edit'}
                     onClick={() => onEdit(table.getSelectedRowModel().flatRows[0]?.original)}
-                    disabled={table.getSelectedRowModel().flatRows.length !== 1}
+                    disabled={table.getSelectedRowModel().flatRows.length !== 1 ||
+                        (manipulationWithObjectsRights && !hasWriteRights(userPermissions, table.getSelectedRowModel().flatRows[0].original[idKey] as string))}
                 >
                     {t('edit')}
                 </Button>
@@ -277,7 +284,8 @@ export default function OverviewPage<T>({
                     onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))}
                     openNode={(open) => <Button
                         data-testid="delete"
-                        disabled={table.getSelectedRowModel().flatRows.length === 0}
+                        disabled={table.getSelectedRowModel().flatRows.length === 0 ||
+                            (manipulationWithObjectsRights && table.getSelectedRowModel().flatRows.some(v => !hasOwnerRights(userPermissions, v.original[idKey] as string)))}
                         onClick={open}
                     >
                         {t('delete')}

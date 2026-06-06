@@ -31,9 +31,12 @@ import type {
 } from 'axios';
 
 import type {
+  AddCharacterPermissionParams,
   DeleteAllCharactersParams,
   PnPCharacterDTO,
-  RecalculateEntries
+  RecalculateEntries,
+  RemoveCharacterPermissionParams,
+  UserDatabaseObjectPermissionDTO
 } from '.././model';
 
 
@@ -533,6 +536,230 @@ export const useUpdateCharacter = <TError = AxiosError<unknown>,
       > => {
 
       const mutationOptions = getUpdateCharacterMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Removes all access rights to the character from the given user
+ */
+export const removeCharacterPermission = (
+    universe: string,
+    id: string,
+    params: RemoveCharacterPermissionParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
+    
+    
+    return axios.delete(
+      `/api/${universe}/characters/${id}/permissions`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+export const getRemoveCharacterPermissionMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeCharacterPermission>>, TError,{universe: string;id: string;params: RemoveCharacterPermissionParams}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof removeCharacterPermission>>, TError,{universe: string;id: string;params: RemoveCharacterPermissionParams}, TContext> => {
+
+const mutationKey = ['removeCharacterPermission'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeCharacterPermission>>, {universe: string;id: string;params: RemoveCharacterPermissionParams}> = (props) => {
+          const {universe,id,params} = props ?? {};
+
+          return  removeCharacterPermission(universe,id,params,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveCharacterPermissionMutationResult = NonNullable<Awaited<ReturnType<typeof removeCharacterPermission>>>
+    
+    export type RemoveCharacterPermissionMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Removes all access rights to the character from the given user
+ */
+export const useRemoveCharacterPermission = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeCharacterPermission>>, TError,{universe: string;id: string;params: RemoveCharacterPermissionParams}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof removeCharacterPermission>>,
+        TError,
+        {universe: string;id: string;params: RemoveCharacterPermissionParams},
+        TContext
+      > => {
+
+      const mutationOptions = getRemoveCharacterPermissionMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary List all access rights of the object
+ */
+export const getCharacterPermissions = (
+    universe: string,
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<UserDatabaseObjectPermissionDTO[]>> => {
+    
+    
+    return axios.get(
+      `/api/${universe}/characters/${id}/permissions`,options
+    );
+  }
+
+
+
+
+export const getGetCharacterPermissionsQueryKey = (universe?: string,
+    id?: string,) => {
+    return [
+    `/api/${universe}/characters/${id}/permissions`
+    ] as const;
+    }
+
+    
+export const getGetCharacterPermissionsQueryOptions = <TData = Awaited<ReturnType<typeof getCharacterPermissions>>, TError = AxiosError<unknown>>(universe: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterPermissions>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetCharacterPermissionsQueryKey(universe,id);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCharacterPermissions>>> = ({ signal }) => getCharacterPermissions(universe,id, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(universe && id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCharacterPermissions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetCharacterPermissionsQueryResult = NonNullable<Awaited<ReturnType<typeof getCharacterPermissions>>>
+export type GetCharacterPermissionsQueryError = AxiosError<unknown>
+
+
+export function useGetCharacterPermissions<TData = Awaited<ReturnType<typeof getCharacterPermissions>>, TError = AxiosError<unknown>>(
+ universe: string,
+    id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterPermissions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCharacterPermissions>>,
+          TError,
+          Awaited<ReturnType<typeof getCharacterPermissions>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCharacterPermissions<TData = Awaited<ReturnType<typeof getCharacterPermissions>>, TError = AxiosError<unknown>>(
+ universe: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterPermissions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCharacterPermissions>>,
+          TError,
+          Awaited<ReturnType<typeof getCharacterPermissions>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCharacterPermissions<TData = Awaited<ReturnType<typeof getCharacterPermissions>>, TError = AxiosError<unknown>>(
+ universe: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterPermissions>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all access rights of the object
+ */
+
+export function useGetCharacterPermissions<TData = Awaited<ReturnType<typeof getCharacterPermissions>>, TError = AxiosError<unknown>>(
+ universe: string,
+    id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterPermissions>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetCharacterPermissionsQueryOptions(universe,id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * @summary Add the given access right to the given user
+ */
+export const addCharacterPermission = (
+    universe: string,
+    id: string,
+    params: AddCharacterPermissionParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
+    
+    
+    return axios.post(
+      `/api/${universe}/characters/${id}/permissions`,undefined,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+export const getAddCharacterPermissionMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addCharacterPermission>>, TError,{universe: string;id: string;params: AddCharacterPermissionParams}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof addCharacterPermission>>, TError,{universe: string;id: string;params: AddCharacterPermissionParams}, TContext> => {
+
+const mutationKey = ['addCharacterPermission'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addCharacterPermission>>, {universe: string;id: string;params: AddCharacterPermissionParams}> = (props) => {
+          const {universe,id,params} = props ?? {};
+
+          return  addCharacterPermission(universe,id,params,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddCharacterPermissionMutationResult = NonNullable<Awaited<ReturnType<typeof addCharacterPermission>>>
+    
+    export type AddCharacterPermissionMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Add the given access right to the given user
+ */
+export const useAddCharacterPermission = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addCharacterPermission>>, TError,{universe: string;id: string;params: AddCharacterPermissionParams}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof addCharacterPermission>>,
+        TError,
+        {universe: string;id: string;params: AddCharacterPermissionParams},
+        TContext
+      > => {
+
+      const mutationOptions = getAddCharacterPermissionMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

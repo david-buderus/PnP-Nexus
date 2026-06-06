@@ -1,6 +1,6 @@
 import {PnPCharacterDTO, PnPCharacterSheet, StatsDto, Universe} from '../../api/model';
 import {useTranslation} from 'react-i18next';
-import {useUniverseContext} from '../PageBase';
+import {useUniverseContext, useUserContext} from '../PageBase';
 import {useEmptyCharacter} from './PnPCharacterContext';
 import {useForm, UseFormReturnType} from '@mantine/form';
 import React, {useEffect, useMemo, useState} from 'react';
@@ -20,6 +20,7 @@ import {
 import {useQueryClient} from '@tanstack/react-query';
 import {notifications} from '@mantine/notifications';
 import {fetchAllCharacterSheets} from '../Database';
+import {getGetPermissionsQueryKey} from '../../api/user-service/user-service';
 
 /** Allows to edit the given character */
 export function CharacterEdit({
@@ -42,6 +43,7 @@ export function CharacterEdit({
     const {t} = useTranslation();
     const queryClient = useQueryClient();
     const {sheetSettings, activeUniverse} = useUniverseContext();
+    const {user} = useUserContext();
     const emptyCharacter = useEmptyCharacter();
     const [selectedSheet, setSelectedSheet] = useState<PnPCharacterSheet>(null);
     const [sheets] = fetchAllCharacterSheets();
@@ -96,9 +98,12 @@ export function CharacterEdit({
     });
     const {mutate: insertCharacter} = useInsertAllCharacters({
         mutation: {
-            onSuccess: () => queryClient.invalidateQueries({
+            onSuccess: response => queryClient.invalidateQueries({
                 queryKey: getGetAllCharactersQueryKey(activeUniverse.id)
-            }).then(() => form.resetDirty()).then(() => form.resetDirty())
+            }).then(() => queryClient.invalidateQueries({
+                queryKey: getGetPermissionsQueryKey(user.username)
+            })).then(() => form.setFieldValue('id', response.data[0].id))
+                .then(() => form.resetDirty())
                 .then(() => notifications.show({
                     title: t('saveSuccessful'),
                     message: t('saveSuccessfulMessage', {'type': t('character')}),

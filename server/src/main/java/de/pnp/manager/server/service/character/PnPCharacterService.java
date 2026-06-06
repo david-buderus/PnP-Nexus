@@ -4,12 +4,15 @@ import de.pnp.manager.component.character.PnPCharacter;
 import de.pnp.manager.component.character.dto.CharacterStatsDto;
 import de.pnp.manager.component.character.dto.PnPCharacterDTO;
 import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
+import de.pnp.manager.component.user.UserDatabaseObjectPermissionDTO;
 import de.pnp.manager.security.*;
 import de.pnp.manager.server.contoller.PnPCharacterDTOConverter;
+import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.character.PnPCharacterRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,14 +45,16 @@ public class PnPCharacterService {
     private final PnPCharacterDTOConverter converter;
     private final PnPCharacterRepository repository;
     private final UserDetailsRepository userDetailsRepository;
-
+    private final UserController userController;
 
     public PnPCharacterService(@Autowired PnPCharacterDTOConverter converter,
                                @Autowired PnPCharacterRepository repository,
-                               @Autowired UserDetailsRepository userDetailsRepository) {
+                               @Autowired UserDetailsRepository userDetailsRepository,
+                               @Autowired UserController userController) {
         this.converter = converter;
         this.repository = repository;
         this.userDetailsRepository = userDetailsRepository;
+        this.userController = userController;
     }
 
     @GetMapping
@@ -130,6 +135,35 @@ public class PnPCharacterService {
     public RecalculateEntries recalculateEntries(@PathVariable ObjectId universe, @RequestBody PnPCharacterDTO character) {
         PnPCharacterDTO dto = converter.recalculateEntries(universe, character);
         return new RecalculateEntries(dto.stats().primaryStats(), dto.stats().secondaryStats(), dto.talents());
+    }
+
+    @GetMapping("{id}/permissions")
+    @DatabaseObjectOwner
+    @Operation(summary = "List all access rights of the object", operationId = "getCharacterPermissions")
+    public Collection<UserDatabaseObjectPermissionDTO> getObjectPermissions(@PathVariable ObjectId universe, @PathVariable ObjectId id) {
+        repository.get(universe, id).orElseThrow(() -> createNotFound("Unable to find character with id '%s'", id));
+        return userController.getAllUserWithDatabaseObjectPermission(id);
+    }
+
+    @PostMapping("{id}/permissions")
+    @DatabaseObjectOwner
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Add the given access right to the given user", operationId = "addCharacterPermission")
+    public void addPermission(@PathVariable ObjectId universe, @PathVariable ObjectId id,
+                              @RequestParam @NotBlank String displayName,
+                              @RequestParam(defaultValue = SecurityConstants.READ_ACCESS) String accessPermission) {
+        repository.get(universe, id).orElseThrow(() -> createNotFound("Unable to find character with id '%s'", id));
+        userController.addGrantedAuthorityByDisplayName(displayName,
+                GrantedDatabaseObjectAuthority.fromPermission(id, accessPermission));
+    }
+
+    @DeleteMapping("{id}/permissions")
+    @DatabaseObjectOwner
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Removes all access rights to the character from the given user", operationId = "removeCharacterPermission")
+    public void removePermission(@PathVariable ObjectId universe, @PathVariable ObjectId id, @RequestParam String displayName) {
+        repository.get(universe, id).orElseThrow(() -> createNotFound("Unable to find character with id '%s'", id));
+        userController.removeGrantedDatabaseObjectAuthoritiesByDisplayName(displayName, id);
     }
 
     /**

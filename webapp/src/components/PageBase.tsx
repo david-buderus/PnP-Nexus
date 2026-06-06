@@ -144,7 +144,8 @@ export function PageBase() {
                 canCreateUniverses: false,
                 canReadActiveUniverse: false,
                 canWriteActiveUniverse: false,
-                isActiveUniverseOwner: false
+                isActiveUniverseOwner: false,
+                objectPermissions: {}
             };
         }
         return extractUserPermissions(permissionsResponse.data, activeUniverse);

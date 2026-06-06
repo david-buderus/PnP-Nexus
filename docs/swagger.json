@@ -1763,6 +1763,133 @@
         ]
       }
     },
+    "/api/{universe}/characters/{id}/permissions": {
+      "delete": {
+        "operationId": "removeCharacterPermission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "displayName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Removes all access rights to the character from the given user",
+        "tags": [
+          "pn-p-character-service"
+        ]
+      },
+      "get": {
+        "operationId": "getCharacterPermissions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDatabaseObjectPermissionDTO"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "List all access rights of the object",
+        "tags": [
+          "pn-p-character-service"
+        ]
+      },
+      "post": {
+        "operationId": "addCharacterPermission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "displayName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "accessPermission",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "READ"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "summary": "Add the given access right to the given user",
+        "tags": [
+          "pn-p-character-service"
+        ]
+      }
+    },
     "/api/{universe}/crafting-recipes": {
       "delete": {
         "operationId": "deleteAllCraftingRecipes",

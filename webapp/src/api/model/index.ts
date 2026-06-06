@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 
+export * from './addCharacterPermissionParams';
 export * from './addUniversePermissionParams';
 export * from './addUpgradeToItem200';
 export * from './armor';
@@ -142,6 +143,8 @@ export * from './recalculateEntries';
 export * from './recalculateEntriesPrimaryStats';
 export * from './recalculateEntriesSecondaryStats';
 export * from './recalculateEntriesTalents';
+export * from './removeCharacterPermissionParams';
+export * from './removeUniversePermission1Params';
 export * from './removeUniversePermissionParams';
 export * from './removeUpgradeFromItem200';
 export * from './removeUsersParams';

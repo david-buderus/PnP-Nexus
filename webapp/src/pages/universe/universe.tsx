@@ -554,7 +554,7 @@ function PermissionDialog() {
     const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [opened, {open, close}] = useDisclosure(false);
-    const displayNames = useGetDisplayNames().data?.data;
+    const displayNames = useGetDisplayNames().data?.data ?? [];
 
     const form = useForm({
         mode: 'uncontrolled',

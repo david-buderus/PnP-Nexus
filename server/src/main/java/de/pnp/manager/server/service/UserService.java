@@ -34,17 +34,20 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequestMapping("/api/users")
 public class UserService {
 
-    @Autowired
-    private UserController userController;
+    private final UserController userController;
+    private final UserRepository userRepository;
+    private final UserDetailsRepository userDetailsRepository;
+    private final UserPreferenceRepository preferenceRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
-
-    @Autowired
-    private UserPreferenceRepository preferenceRepository;
+    public UserService(@Autowired UserController userController,
+                       @Autowired UserRepository userRepository,
+                       @Autowired UserDetailsRepository userDetailsRepository,
+                       @Autowired UserPreferenceRepository preferenceRepository) {
+        this.userController = userController;
+        this.userRepository = userRepository;
+        this.userDetailsRepository = userDetailsRepository;
+        this.preferenceRepository = preferenceRepository;
+    }
 
     @GetMapping("display-names")
     @Operation(summary = "Get all display names", operationId = "getDisplayNames")
@@ -123,8 +126,7 @@ public class UserService {
     @PreAuthorize("#username == authentication.name")
     @Operation(summary = "Gets the user preferences", operationId = "getUserPreferences")
     public PnPUserPreference getPreferences(@PathVariable String username) {
-        return preferenceRepository.getPreference(username)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "User " + username + " not found."));
+        return preferenceRepository.getPreference(username).orElse(new PnPUserPreference(username, null, null));
     }
 
     @PutMapping("{username}/preferences")
