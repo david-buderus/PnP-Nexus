@@ -17,10 +17,13 @@ import {ExtendedColumnDef} from './table/SortableTable';
 import {
     IconAdjustmentsHorizontal,
     IconArrowsSort,
+    IconEdit,
     IconSearch,
     IconSortAscending,
-    IconSortDescending
+    IconSortDescending,
+    IconTrash
 } from '@tabler/icons-react';
+import {useContextMenu} from 'mantine-contextmenu';
 
 /** Props of the overview */
 export interface OverviewPageProps<T> {
@@ -30,12 +33,14 @@ export interface OverviewPageProps<T> {
     fetchData: [T[], () => void, boolean];
     /** The columns */
     columns: ExtendedColumnDef<T, any>[];
-    /** Callback to create dialogs to create or edit objects */
-    manipulationDialog: (editMode: boolean, refresh: () => void, disabled: boolean, getInitial: () => T) => ReactNode;
     /** The title of the deletion dialog */
     deletionDialogTitle: string;
     /** Callback for the deletion */
     onDelete: (universe: string, objects: T[]) => void;
+    /** Callback for the deletion */
+    onEdit: (object: T) => void;
+    /** Callback for the deletion */
+    onAdd: () => void;
     /** The key to get the id of the object */
     idKey: keyof T;
     /** Modal to show if a row is clicked */
@@ -44,21 +49,24 @@ export interface OverviewPageProps<T> {
     manipulationWithReadAccess?: boolean;
 }
 
+/** A table with add- and edit-button */
 export default function OverviewPage<T>({
     identifier,
     fetchData,
     columns,
-    manipulationDialog,
     deletionDialogTitle,
     onDelete,
+    onEdit,
+    onAdd,
     idKey,
     viewModal = () => null,
-    manipulationWithReadAccess = false
+    manipulationWithReadAccess = false,
 }: OverviewPageProps<T>) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
-    const [data, refresh] = fetchData;
+    const {showContextMenu} = useContextMenu();
+    const [data] = fetchData;
 
     const [lastClicked, setLastClicked] = useState<T>(null);
     const [sorting, setSorting] = useState<SortingState>([]);
@@ -78,11 +86,11 @@ export default function OverviewPage<T>({
         columns: [
             {
                 id: 'select',
-                header: ({table: t}) => (
+                header: ({table: ta}) => (
                     <Checkbox
-                        checked={t.getIsAllRowsSelected()}
-                        indeterminate={t.getIsSomeRowsSelected()}
-                        onChange={t.getToggleAllRowsSelectedHandler()}
+                        checked={ta.getIsAllRowsSelected()}
+                        indeterminate={ta.getIsSomeRowsSelected()}
+                        onChange={ta.getToggleAllRowsSelectedHandler()}
                     />
                 ),
                 cell: ({row}) => (
@@ -210,6 +218,20 @@ export default function OverviewPage<T>({
                                         data-testid={row.original[idKey]}
                                         bg={row.getIsSelected() ? 'var(--mantine-color-blue-light)' : undefined}
                                         onClick={() => setLastClicked(row.original)}
+                                        onContextMenu={showContextMenu([
+                                            {
+                                                key: 'edit',
+                                                icon: <IconEdit size={16}/>,
+                                                title: t('edit'),
+                                                onClick: () => onEdit(row.original),
+                                            },
+                                            {
+                                                key: 'delete',
+                                                icon: <IconTrash size={16} color="red"/>,
+                                                title: t('delete'),
+                                                onClick: () => onDelete(activeUniverse?.id, [row.original]),
+                                            },
+                                        ])}
                                     >
                                         {row.getVisibleCells().map((cell) => (
                                             <Table.Td
@@ -237,8 +259,19 @@ export default function OverviewPage<T>({
         </Paper>
         {(manipulationWithReadAccess && userPermissions.canReadActiveUniverse) || userPermissions.canWriteActiveUniverse ?
             <Group justify="flex-end">
-                {manipulationDialog(false, refresh, false, () => undefined)}
-                {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0]?.original)}
+                <Button
+                    data-testid={'add'}
+                    onClick={onAdd}
+                >
+                    {t('add')}
+                </Button>
+                <Button
+                    data-testid={'edit'}
+                    onClick={() => onEdit(table.getSelectedRowModel().flatRows[0]?.original)}
+                    disabled={table.getSelectedRowModel().flatRows.length !== 1}
+                >
+                    {t('edit')}
+                </Button>
                 <ConfirmationDialog
                     title={deletionDialogTitle}
                     onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))}

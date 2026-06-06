@@ -1,7 +1,7 @@
-import {Button, Group, Modal, TagsInput, TextInput} from '@mantine/core';
+import {Button, Group, Modal, Stack, TagsInput, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {useDisclosure} from '@mantine/hooks';
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PrimaryAttribute, Talent} from '../../../api/model';
 import {fetchAllPrimaryAttributes, fetchAllTags, fetchAllTalents} from '../../../components/Database';
@@ -30,6 +30,9 @@ export function TalentOverview() {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const queryClient = useQueryClient();
+
+    const [toEdit, setToEdit] = useState<Talent>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
 
     const {mutateAsync: deleteTalents} = useDeleteAllTalents({
         mutation: {
@@ -70,33 +73,35 @@ export function TalentOverview() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllTalents()}
-        columns={columns}
-        identifier="talents"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
-            <CreationDialog
-                editMode={editMode}
-                disabled={disabled}
-                getInitial={getInitial}
-            />}
-        deletionDialogTitle={t('character:talentDeletionTitle')}
-        onDelete={(universe, talents) => deleteTalents({
-            universe: universe,
-            params: {ids: talents.map(talent => talent.id)}
-        })}
-        idKey="id"
-    />;
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllTalents()}
+            columns={columns}
+            idKey="id"
+            identifier="talents"
+            deletionDialogTitle={t('character:talentDeletionTitle')}
+            onDelete={(universe, talents) => deleteTalents({
+                universe: universe,
+                params: {ids: talents.map(talent => talent.id)}
+            })}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} talent={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} talent={toEdit}/>
+    </Stack>;
 }
 
 function CreationDialog({
     editMode,
-    disabled,
-    getInitial
+    opened,
+    close,
+    talent
 }: {
     editMode: boolean,
-    disabled: boolean;
-    getInitial: () => Talent;
+    opened: boolean,
+    close: () => void
+    talent: Talent
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
@@ -104,7 +109,6 @@ function CreationDialog({
     const [attributes] = fetchAllPrimaryAttributes();
     const [tags] = fetchAllTags();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Talent>({
         mode: 'controlled',
         initialValues: {
@@ -117,11 +121,12 @@ function CreationDialog({
     });
 
     useEffect(() => {
-        if (!editMode || !opened) {
+        if (!talent) {
             return;
         }
-        form.setValues(getInitial());
-    }, [opened, getInitial, editMode]);
+        form.setValues(talent);
+        form.setInitialValues(talent);
+    }, [talent]);
 
     const {mutateAsync: updateTalent} = useUpdateTalent({
         mutation: {
@@ -136,73 +141,68 @@ function CreationDialog({
         }
     });
 
-    function onSubmit(talent: Talent) {
+    function onSubmit(t: Talent) {
         if (editMode) {
             return updateTalent({
                 universe: activeUniverse.id,
-                id: talent.id,
-                data: talent,
+                id: t.id,
+                data: t,
             });
         } else {
             return insertTalents({
                 universe: activeUniverse.id,
-                data: [talent]
+                data: [t]
             });
         }
     }
 
-    return <>
-        <Modal opened={opened} onClose={close}
-               title={editMode ? t('character:talentEditTitle') : t('character:talentCreationTitle')} maw={300}>
-            <form onSubmit={form.onSubmit(onSubmit)}>
-                <TextInput
-                    label={t('name')}
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
-                <TagsInput
-                    label={t('tags')}
-                    data={tags}
-                    clearable
-                    key={form.key('tags')}
-                    {...form.getInputProps('tags')}
-                />
-                <ObjectSelect<PrimaryAttribute>
-                    label={t('character:firstAttribute')}
-                    key={form.key('firstAttribute')}
-                    {...form.getInputProps('firstAttribute')}
-                    data={attributes}
-                    idKey="id"
-                    labelKey="name"
-                />
-                <ObjectSelect<PrimaryAttribute>
-                    label={t('character:secondAttribute')}
-                    key={form.key('secondAttribute')}
-                    {...form.getInputProps('secondAttribute')}
-                    data={attributes}
-                    idKey="id"
-                    labelKey="name"
-                />
-                <ObjectSelect<PrimaryAttribute>
-                    label={t('character:thirdAttribute')}
-                    key={form.key('thirdAttribute')}
-                    {...form.getInputProps('thirdAttribute')}
-                    data={attributes}
-                    idKey="id"
-                    labelKey="name"
-                />
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {editMode ? t('edit') : t('add')}
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
-        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
-            {editMode ? t('edit') : t('add')}
-        </Button>
-    </>;
+    return <Modal opened={opened} onClose={close}
+                  title={editMode ? t('character:talentEditTitle') : t('character:talentCreationTitle')} maw={300}>
+        <form onSubmit={form.onSubmit(onSubmit)}>
+            <TextInput
+                label={t('name')}
+                key={form.key('name')}
+                {...form.getInputProps('name')}
+            />
+            <TagsInput
+                label={t('tags')}
+                data={tags}
+                clearable
+                key={form.key('tags')}
+                {...form.getInputProps('tags')}
+            />
+            <ObjectSelect<PrimaryAttribute>
+                label={t('character:firstAttribute')}
+                key={form.key('firstAttribute')}
+                {...form.getInputProps('firstAttribute')}
+                data={attributes}
+                idKey="id"
+                labelKey="name"
+            />
+            <ObjectSelect<PrimaryAttribute>
+                label={t('character:secondAttribute')}
+                key={form.key('secondAttribute')}
+                {...form.getInputProps('secondAttribute')}
+                data={attributes}
+                idKey="id"
+                labelKey="name"
+            />
+            <ObjectSelect<PrimaryAttribute>
+                label={t('character:thirdAttribute')}
+                key={form.key('thirdAttribute')}
+                {...form.getInputProps('thirdAttribute')}
+                data={attributes}
+                idKey="id"
+                labelKey="name"
+            />
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {editMode ? t('edit') : t('add')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }

@@ -1,7 +1,7 @@
 import {ActionIcon, Button, Group, Input, Modal, NumberInput, Stack, Text, TextInput, Tooltip} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {randomId, useDisclosure} from '@mantine/hooks';
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Material, MaterialItem} from '../../../api/model';
 import {fetchAllMaterials} from '../../../components/Database';
@@ -29,6 +29,9 @@ export function MaterialOverview() {
     const {activeUniverse} = useUniverseContext();
     const queryClient = useQueryClient();
 
+    const [toEdit, setToEdit] = useState<Material>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
+
     const {mutateAsync: deleteMaterial} = useDeleteAllMaterials({
         mutation: {
             onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllMaterialsQueryKey(activeUniverse.id)}),
@@ -55,39 +58,40 @@ export function MaterialOverview() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllMaterials()}
-        columns={columns}
-        identifier="materials"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
-            <CreationDialog
-                editMode={editMode}
-                disabled={disabled}
-                getInitial={getInitial}
-            />}
-        deletionDialogTitle={t('item:materialDeletionTitle')}
-        onDelete={(universe, materials) => deleteMaterial({
-            universe: universe,
-            params: {ids: materials.map(material => material.id)}
-        })}
-        idKey="id"
-    />;
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllMaterials()}
+            columns={columns}
+            idKey="id"
+            identifier="materials"
+            deletionDialogTitle={t('item:materialDeletionTitle')}
+            onDelete={(universe, materials) => deleteMaterial({
+                universe: universe,
+                params: {ids: materials.map(material => material.id)}
+            })}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} material={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} material={toEdit}/>
+    </Stack>;
 }
 
 function CreationDialog({
     editMode,
-    disabled,
-    getInitial
+    opened,
+    close,
+    material
 }: {
     editMode: boolean,
-    disabled: boolean;
-    getInitial: () => Material;
+    opened: boolean,
+    close: () => void
+    material: Material
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Material>({
         mode: 'controlled',
         initialValues: {
@@ -97,11 +101,12 @@ function CreationDialog({
     });
 
     useEffect(() => {
-        if (!editMode || !opened) {
+        if (!material) {
             return;
         }
-        form.setValues(getInitial());
-    }, [opened, getInitial, editMode]);
+        form.setValues(material);
+        form.setInitialValues(material);
+    }, [material]);
 
     const {mutateAsync: updateMaterial} = useUpdateMaterial({
         mutation: {
@@ -131,86 +136,85 @@ function CreationDialog({
         }
     }
 
-    return <>
-        <Modal opened={opened} onClose={close}
-               title={editMode ? t('item:materialEditTitle') : t('item:materialCreationTitle')} maw={300}>
-            <form onSubmit={form.onSubmit(onSubmit)}>
-                <TextInput
-                    label={t('name')}
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
-                <Input.Label>
-                    {t('items')}
-                </Input.Label>
-                {form.getValues().items.length > 0 ? (
-                    <Group>
-                        <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
-                            {t('amount')}
-                        </Text>
-                        <Text fw={500} size="sm" pr={195}>
-                            {t('item')}
-                        </Text>
-                    </Group>
-                ) : (
-                    <Text c="dimmed" ta="center">
-                        {t('nothing-here')}
+    return <Modal
+        opened={opened}
+        onClose={close}
+        title={editMode ? t('item:materialEditTitle') : t('item:materialCreationTitle')}
+        maw={300}
+    >
+        <form onSubmit={form.onSubmit(onSubmit)}>
+            <TextInput
+                label={t('name')}
+                key={form.key('name')}
+                {...form.getInputProps('name')}
+            />
+            <Input.Label>
+                {t('items')}
+            </Input.Label>
+            {form.getValues().items.length > 0 ? (
+                <Group>
+                    <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
+                        {t('amount')}
                     </Text>
-                )}
-                <Stack gap="xs">
-                    {form.getValues().items.map((item, index) => {
-                        if (!item['key']) {
-                            item['key'] = randomId();
-                        }
-
-                        return <Group key={'item-' + item['key']} wrap="nowrap">
-                            <NumberInput
-                                key={form.key(`items.${index}.amount`)}
-                                {...form.getInputProps(`items.${index}.amount`)}
-                            />
-                            <ItemSelect
-                                key={form.key(`items.${index}.item`)}
-                                {...form.getInputProps(`items.${index}.item`)}
-                            />
-                            <ActionIcon
-                                variant="outline"
-                                color="red"
-                                size="input-sm"
-                                data-testid={'items-sub-' + index}
-                                onClick={() => form.removeListItem('items', index)}>
-                                <FaRegTrashCan/>
-                            </ActionIcon>
-                        </Group>;
-                    })}
-                </Stack>
-                <Tooltip label={form.errors['items']} disabled={!form.errors['items']}>
-                    <Button
-                        data-testid={'items-add'}
-                        onClick={() =>
-                            form.insertListItem('items', {
-                                amount: 0,
-                                item: null,
-                                key: randomId()
-                            } as MaterialItem)
-                        }
-                        mt="md"
-                        color={form.errors['items'] ? 'red' : undefined}
-                    >
-                        {t('item:addItem')}
-                    </Button>
-                </Tooltip>
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {editMode ? t('edit') : t('add')}
-                    </Button>
+                    <Text fw={500} size="sm" pr={195}>
+                        {t('item')}
+                    </Text>
                 </Group>
-            </form>
-        </Modal>
-        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
-            {editMode ? t('edit') : t('add')}
-        </Button>
-    </>;
+            ) : (
+                <Text c="dimmed" ta="center">
+                    {t('nothing-here')}
+                </Text>
+            )}
+            <Stack gap="xs">
+                {form.getValues().items.map((item, index) => {
+                    if (!item['key']) {
+                        item['key'] = randomId();
+                    }
+
+                    return <Group key={'item-' + item['key']} wrap="nowrap">
+                        <NumberInput
+                            key={form.key(`items.${index}.amount`)}
+                            {...form.getInputProps(`items.${index}.amount`)}
+                        />
+                        <ItemSelect
+                            key={form.key(`items.${index}.item`)}
+                            {...form.getInputProps(`items.${index}.item`)}
+                        />
+                        <ActionIcon
+                            variant="outline"
+                            color="red"
+                            size="input-sm"
+                            data-testid={'items-sub-' + index}
+                            onClick={() => form.removeListItem('items', index)}>
+                            <FaRegTrashCan/>
+                        </ActionIcon>
+                    </Group>;
+                })}
+            </Stack>
+            <Tooltip label={form.errors['items']} disabled={!form.errors['items']}>
+                <Button
+                    data-testid={'items-add'}
+                    onClick={() =>
+                        form.insertListItem('items', {
+                            amount: 0,
+                            item: null,
+                            key: randomId()
+                        } as MaterialItem)
+                    }
+                    mt="md"
+                    color={form.errors['items'] ? 'red' : undefined}
+                >
+                    {t('item:addItem')}
+                </Button>
+            </Tooltip>
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {editMode ? t('edit') : t('add')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }

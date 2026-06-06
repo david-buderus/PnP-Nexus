@@ -85,7 +85,7 @@ export function SpellCard({
             </Stack>
 
             <Divider mb="sm" mt="sm"/>
-            <Grid grow mb="md" gutter="xs">
+            <Grid grow mb="md">
                 <Stat label={t('spell:castTime')} value={spell.castTime}/>
                 <Stat label={t('spell:cooldown')} value={spell.cooldown}/>
                 {spell.cost.map((cost, index) =>

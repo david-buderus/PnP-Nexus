@@ -64,7 +64,7 @@ export function ItemCard({
             <Divider variant="dashed" mb="sm"/>
 
             {/* Primary Stats Grid */}
-            <Grid grow mb="md" gutter="xs">
+            <Grid grow mb="md">
                 <Stat label={t('armor')} value={item.armor}/>
                 <Stat label={t('protection')} value={item.protection}/>
                 <Stat label={t('weight')} value={item.weight}/>

@@ -1,10 +1,10 @@
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {TagRequirement, Upgrade} from '../../../api/model';
 import OverviewPage from '../../../components/OverviewPage';
 import {fetchAllUpgrades} from '../../../components/Database';
 import CurrencyCell from '../../../components/table/CurrencyCell';
-import {Button, Group, Modal, NumberInput, TextInput} from '@mantine/core';
+import {Button, Group, Modal, NumberInput, Stack, TextInput} from '@mantine/core';
 import {useUniverseContext} from '../../../components/PageBase';
 import {useForm} from '@mantine/form';
 import {useDisclosure} from '@mantine/hooks';
@@ -33,6 +33,9 @@ export function UpgradeOverview() {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
+
+    const [toEdit, setToEdit] = useState<Upgrade>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
 
     const {mutateAsync: deleteUpgrade} = useDeleteAllUpgrades({
         mutation: {
@@ -77,40 +80,41 @@ export function UpgradeOverview() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllUpgrades()}
-        columns={columns}
-        identifier="upgrades"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
-            <CreationDialog
-                editMode={editMode}
-                disabled={disabled}
-                getInitial={getInitial}
-            />}
-        deletionDialogTitle={t('upgrade:upgradeDeletionTitle')}
-        onDelete={(universe, upgrades) => deleteUpgrade({
-            universe: universe,
-            params: {ids: upgrades.map(upgrade => upgrade.id)}
-        })}
-        idKey="id"
-        viewModal={(upgrade, onClose) => <UpgradeCardModal upgrade={upgrade} onClose={onClose}/>}
-    />;
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllUpgrades()}
+            columns={columns}
+            idKey="id"
+            identifier="upgrades"
+            deletionDialogTitle={t('upgrade:upgradeDeletionTitle')}
+            onDelete={(universe, upgrades) => deleteUpgrade({
+                universe: universe,
+                params: {ids: upgrades.map(upgrade => upgrade.id)}
+            })}
+            viewModal={(upgrade, onClose) => <UpgradeCardModal upgrade={upgrade} onClose={onClose}/>}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} upgrade={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} upgrade={toEdit}/>
+    </Stack>;
 }
 
 function CreationDialog({
     editMode,
-    disabled,
-    getInitial
+    opened,
+    close,
+    upgrade
 }: {
     editMode: boolean,
-    disabled: boolean;
-    getInitial: () => Upgrade;
+    opened: boolean,
+    close: () => void
+    upgrade: Upgrade
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
     const {activeUniverse, currencySettings} = useUniverseContext();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Upgrade>({
         mode: 'controlled',
         initialValues: {
@@ -126,11 +130,12 @@ function CreationDialog({
     });
 
     useEffect(() => {
-        if (!editMode || !opened) {
+        if (!upgrade) {
             return;
         }
-        form.setValues(getInitial());
-    }, [opened, getInitial, editMode]);
+        form.setValues(upgrade);
+        form.setInitialValues(upgrade);
+    }, [upgrade]);
 
     const {mutateAsync: updateUpgrade} = useUpdateUpgrade({
         mutation: {
@@ -145,79 +150,78 @@ function CreationDialog({
         }
     });
 
-    function onSubmit(upgrade: Upgrade) {
+    function onSubmit(u: Upgrade) {
         if (editMode) {
             return updateUpgrade({
                 universe: activeUniverse.id,
-                id: upgrade.id,
-                data: upgrade
+                id: u.id,
+                data: u
             });
         } else {
             return insertUpgrades({
                 universe: activeUniverse.id,
-                data: [upgrade]
+                data: [u]
             });
         }
     }
 
-    return <>
-        <Modal opened={opened} onClose={close}
-               title={editMode ? t('upgrade:upgradeEditTitle') : t('upgrade:upgradeCreationTitle')} maw={300}>
-            <form onSubmit={form.onSubmit(onSubmit)}>
-                <TextInput
-                    label={t('name')}
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
-                <UpgradeRestrictionSelect
-                    key={form.key('restriction')}
-                    {...form.getInputProps('restriction')}
-                />
-                <TagRequirementsInput
-                    label={t('upgrade:tagRequirement')}
-                    tooltip={t('upgrade:tagRequirementTooltip')}
-                    noRequirementsText={t('upgrade:noRequirements')}
-                    addTagRequirementText={t('upgrade:addTagRequirement')}
-                    dataTestIdPrefix="tagRequirement."
-                    key={form.key('tagRequirement')}
-                    {...form.getInputProps('tagRequirement')}
-                />
+    return <Modal
+        opened={opened}
+        onClose={close}
+        title={editMode ? t('upgrade:upgradeEditTitle') : t('upgrade:upgradeCreationTitle')}
+        maw={300}
+    >
+        <form onSubmit={form.onSubmit(onSubmit)}>
+            <TextInput
+                label={t('name')}
+                key={form.key('name')}
+                {...form.getInputProps('name')}
+            />
+            <UpgradeRestrictionSelect
+                key={form.key('restriction')}
+                {...form.getInputProps('restriction')}
+            />
+            <TagRequirementsInput
+                label={t('upgrade:tagRequirement')}
+                tooltip={t('upgrade:tagRequirementTooltip')}
+                noRequirementsText={t('upgrade:noRequirements')}
+                addTagRequirementText={t('upgrade:addTagRequirement')}
+                dataTestIdPrefix="tagRequirement."
+                key={form.key('tagRequirement')}
+                {...form.getInputProps('tagRequirement')}
+            />
+            <NumberInput
+                label={t('upgrade:necessary-slots')}
+                key={form.key('slots')}
+                {...form.getInputProps('slots')}
+                allowDecimal={false}
+            />
+            <ItemEffectForm
+                form={form}
+                path="effects"
+                restrictions={[form.values.restriction]}
+            />
+            <Group grow align="flex-start">
                 <NumberInput
-                    label={t('upgrade:necessary-slots')}
-                    key={form.key('slots')}
-                    {...form.getInputProps('slots')}
+                    label={t('price')}
+                    key={form.key('vendorPrice')}
+                    {...form.getInputProps('vendorPrice')}
                     allowDecimal={false}
                 />
-                <ItemEffectForm
-                    form={form}
-                    path="effects"
-                    restrictions={[form.values.restriction]}
+                <TextInput
+                    label={t('resultingPrice')}
+                    readOnly
+                    value={currencyFormatter(currencySettings, form.getValues().vendorPrice)}
                 />
-                <Group grow align="flex-start">
-                    <NumberInput
-                        label={t('price')}
-                        key={form.key('vendorPrice')}
-                        {...form.getInputProps('vendorPrice')}
-                        allowDecimal={false}
-                    />
-                    <TextInput
-                        label={t('resultingPrice')}
-                        readOnly
-                        value={currencyFormatter(currencySettings, form.getValues().vendorPrice)}
-                    />
-                </Group>
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {editMode ? t('edit') : t('add')}
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
-        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
-            {editMode ? t('edit') : t('add')}
-        </Button>
-    </>;
+            </Group>
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {editMode ? t('edit') : t('add')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }

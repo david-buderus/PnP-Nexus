@@ -27,6 +27,9 @@ export function UserOverview() {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
 
+    const [toEdit, setToEdit] = useState<PnPUser>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
+
     const {data, isLoading} = useGetAllUsers();
     const users = data?.data ?? [];
 
@@ -53,37 +56,36 @@ export function UserOverview() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={[users, () => {
-        }, isLoading]}
-        columns={columns}
-        identifier="users"
-        manipulationDialog={(editMode, refreshCallback, disabled, getInitial) => {
-            if (editMode) {
-                return <EditDialog disabled={disabled} getInitial={getInitial}/>;
-            } else {
-                return <CreationDialog disabled={disabled}/>;
-            }
-        }}
-        deletionDialogTitle={t('user:confirmDeleteUser')}
-        onDelete={(_, usersToDelete) => deleteUsers({
-            params: {
-                usernames: usersToDelete.map(user => user.username)
-            }
-        })}
-        idKey="username"
-    />;
+    return <Stack>
+        <OverviewPage
+            fetchData={[users, () => {
+            }, isLoading]}
+            columns={columns}
+            idKey="username"
+            identifier="users"
+            deletionDialogTitle={t('user:confirmDeleteUser')}
+            onDelete={(_, usersToDelete) => deleteUsers({
+                params: {
+                    usernames: usersToDelete.map(user => user.username)
+                }
+            })}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog opened={openedAdd} close={closeAdd}/>
+        <EditDialog opened={toEdit !== null} close={() => setToEdit(null)} initial={toEdit}/>
+    </Stack>;
 }
 
 function CreationDialog({
-    disabled
+    opened, close
 }: {
-    disabled: boolean;
+    opened: boolean,
+    close: () => void
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<PnPUserCreation>({
         mode: 'controlled',
         initialValues: {
@@ -100,62 +102,58 @@ function CreationDialog({
         }
     });
 
-    return <>
-        <Modal opened={opened} onClose={close} title={t('user:createUser')} maw={300}>
-            <form onSubmit={form.onSubmit(user => createUser({data: user}))}
-            >
-                <TextInput
-                    label={t('username')}
-                    key={form.key('username')}
-                    {...form.getInputProps('username')}
-                />
-                <TextInput
-                    label={t('displayName')}
-                    key={form.key('displayName')}
-                    {...form.getInputProps('displayName')}
-                />
-                <TextInput
-                    label={t('email')}
-                    key={form.key('email')}
-                    {...form.getInputProps('email')}
-                />
-                <PasswordInput
-                    label={t('password')}
-                    key={form.key('password')}
-                    {...form.getInputProps('password')}
+    return <Modal opened={opened} onClose={close} title={t('user:createUser')} maw={300}>
+        <form onSubmit={form.onSubmit(user => createUser({data: user}))}
+        >
+            <TextInput
+                label={t('username')}
+                key={form.key('username')}
+                {...form.getInputProps('username')}
+            />
+            <TextInput
+                label={t('displayName')}
+                key={form.key('displayName')}
+                {...form.getInputProps('displayName')}
+            />
+            <TextInput
+                label={t('email')}
+                key={form.key('email')}
+                {...form.getInputProps('email')}
+            />
+            <PasswordInput
+                label={t('password')}
+                key={form.key('password')}
+                {...form.getInputProps('password')}
 
-                />
-                <PermissionManipulation
-                    authorities={form.getValues()?.authorities ?? []}
-                    setAuthorities={authorities => form.setFieldValue('authorities', authorities)}
-                />
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {t('add')}
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
-        <Button data-testid={'add'} onClick={open} disabled={disabled}>
-            {t('add')}
-        </Button>
-    </>;
+            />
+            <PermissionManipulation
+                authorities={form.getValues()?.authorities ?? []}
+                setAuthorities={authorities => form.setFieldValue('authorities', authorities)}
+            />
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {t('add')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }
 
 function EditDialog({
-    disabled,
-    getInitial
+    opened,
+    close,
+    initial
 }: {
-    disabled: boolean;
-    getInitial: () => PnPUser;
+    opened: boolean,
+    close: () => void
+    initial: PnPUser
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<PnPUser>({
         mode: 'controlled',
         initialValues: {
@@ -164,13 +162,13 @@ function EditDialog({
         }
     });
     const [authorities, setAuthorities] = useState([]);
-    const {data: permissionResponse} = useGetPermissions(getInitial()?.username, {
-        query: {enabled: Boolean(getInitial()?.username)}
+    const {data: permissionResponse} = useGetPermissions(initial?.username, {
+        query: {enabled: Boolean(initial?.username)}
     });
 
     const {mutate: updatePermissions} = useUpdatePermissions({
         mutation: {
-            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetPermissionsQueryKey(getInitial().username)}),
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetPermissionsQueryKey(initial.username)}),
             onError: handleValidationErrors(form.setErrors)
         }
     });
@@ -178,9 +176,9 @@ function EditDialog({
     const {mutate: updateUser} = useUpdateUser({
         mutation: {
             onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUsersQueryKey()})
-                .then(() => queryClient.invalidateQueries({queryKey: getGetUserQueryKey(getInitial().username)}))
+                .then(() => queryClient.invalidateQueries({queryKey: getGetUserQueryKey(initial.username)}))
                 .then(() => updatePermissions({
-                    username: getInitial().username,
+                    username: initial.username,
                     data: authorities
                 }))
                 .then(close),
@@ -189,44 +187,39 @@ function EditDialog({
     });
 
     useEffect(() => {
-        if (!opened) {
+        if (!initial) {
             return;
         }
-        form.setValues(getInitial());
+        form.setValues(initial);
         setAuthorities(permissionResponse?.data ?? []);
-    }, [opened, getInitial, permissionResponse]);
+    }, [initial, permissionResponse]);
 
-    return <>
-        <Modal opened={opened} onClose={close} title={t('user:editUser')} maw={300}>
-            <form onSubmit={form.onSubmit(user => updateUser({
-                username: user.username,
-                data: user
-            }))}>
-                <TextInput
-                    label={t('displayName')}
-                    key={form.key('displayName')}
-                    {...form.getInputProps('displayName')}
-                />
-                <TextInput
-                    label={t('email')}
-                    key={form.key('email')}
-                    {...form.getInputProps('email')}
-                />
-                <PermissionManipulation authorities={authorities} setAuthorities={setAuthorities}/>
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {t('edit')}
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
-        <Button data-testid={'edit'} onClick={open} disabled={disabled}>
-            {t('edit')}
-        </Button>
-    </>;
+    return <Modal opened={opened} onClose={close} title={t('user:editUser')} maw={300}>
+        <form onSubmit={form.onSubmit(user => updateUser({
+            username: user.username,
+            data: user
+        }))}>
+            <TextInput
+                label={t('displayName')}
+                key={form.key('displayName')}
+                {...form.getInputProps('displayName')}
+            />
+            <TextInput
+                label={t('email')}
+                key={form.key('email')}
+                {...form.getInputProps('email')}
+            />
+            <PermissionManipulation authorities={authorities} setAuthorities={setAuthorities}/>
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {t('edit')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }
 
 function PermissionManipulation({authorities, setAuthorities}: {

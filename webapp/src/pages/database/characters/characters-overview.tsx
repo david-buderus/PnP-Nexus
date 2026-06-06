@@ -3,7 +3,6 @@ import React, {useMemo, useState} from 'react';
 import OverviewPage from '../../../components/OverviewPage';
 import {CharacterDescription, Nation, PnPCharacterDTO, Species} from '../../../api/model';
 import {fetchAllCharacters} from '../../../components/Database';
-import {Button} from '@mantine/core';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {CharacterEdit} from '../../../components/character/CharacterEdit';
 import {useNavigate} from 'react-router-dom';
@@ -85,20 +84,10 @@ export function CharactersOverview() {
     return <OverviewPage
         fetchData={[allCharacters, refreshCharacters, loading]}
         columns={columns}
+        idKey="id"
         identifier="characters"
-        manipulationDialog={(editButton, _, disabled, getInitial) => {
-            if (editButton) {
-                return <Button
-                    disabled={disabled}
-                    onClick={() => navigate('/characters/' + getInitial().id + '?universe=' + activeUniverse.id)}
-                >
-                    {t('edit')}
-                </Button>;
-            }
-            return <Button onClick={() => setEditMode(true)} disabled={disabled}>
-                {t('add')}
-            </Button>;
-        }}
+        onAdd={() => setEditMode(true)}
+        onEdit={c => navigate('/characters/' + c.id + '?universe=' + activeUniverse.id)}
         deletionDialogTitle={t('spell:editTitle')}
         onDelete={(universe, characters) => deleteCharacters({
             universe: universe,
@@ -106,7 +95,6 @@ export function CharactersOverview() {
                 ids: characters.map(c => c.id)
             }
         })}
-        idKey="id"
         manipulationWithReadAccess={true}
     />;
 }

@@ -91,7 +91,7 @@ export function ItemStackCard({
             <Divider variant="dashed" mb="sm"/>
 
             {/* Dynamic Stats Grid - Using values from Stack, falling back to Item */}
-            <Grid grow mb="md" gutter="xs">
+            <Grid grow mb="md">
                 <Stat
                     label={t('armor')}
                     current={combItemStack.armor}
