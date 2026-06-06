@@ -27,8 +27,7 @@ public class DelegateMvc {
 
     private final ObjectMapper objectMapper;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public DelegateMvc(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
+    public DelegateMvc(@Autowired(required = false) MockMvc mockMvc, @Autowired ObjectMapper objectMapper) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
     }
