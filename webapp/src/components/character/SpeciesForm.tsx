@@ -1,7 +1,8 @@
 import {Button, Center, Group, Input, Stack, Switch, TextInput, Title} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
 import StarterKit from '@tiptap/starter-kit';
-import {BubbleMenu, useEditor} from '@tiptap/react';
+import {useEditor} from '@tiptap/react';
+import {BubbleMenu} from '@tiptap/react/menus';
 import {Link, RichTextEditor} from '@mantine/tiptap';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';

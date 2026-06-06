@@ -23,7 +23,7 @@ export type ICharacterTrait = (PrimaryStatTrait | SecondaryStatTrait | SimpleCha
 /** The props for the input */
 interface CharacterTraitInputProps {
     /** The form which controls the underlying object */
-    form: UseFormReturnType<any, (values: any) => any>;
+    form: UseFormReturnType<any, any>;
     /** Path to the list of character traits */
     path: string;
 }
