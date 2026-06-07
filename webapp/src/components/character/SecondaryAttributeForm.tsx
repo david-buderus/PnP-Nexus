@@ -26,7 +26,10 @@ import {
 } from '../Database';
 import {useUniverseContext} from '../PageBase';
 import {handleNetworkErrors, handleValidationErrors} from '../utils/ErrorUtils';
-import {useCalculateResults} from '../../api/binary-expression-tree-service/binary-expression-tree-service';
+import {
+    useCalculateResults,
+    useGetSupportedFunctions
+} from '../../api/binary-expression-tree-service/binary-expression-tree-service';
 import {
     getGetAllSimpleSecondaryAttributesQueryKey,
     useSetAllSimpleSecondaryAttributes
@@ -50,6 +53,7 @@ export function SecondaryAttributeForm({
     const [primaryAttributes] = fetchAllPrimaryAttributes();
     const [secondaryAttributes] = fetchAllSimpleSecondaryAttributes();
     const [supportedVariables] = fetchSupportedSecondaryAttributeVariables();
+    const supportedFunctions = useGetSupportedFunctions().data?.data ?? [];
     const [attributeInfos, setAttributeInfos] = useState<SecondaryAttributeInfo[]>([]);
 
     const [primaryValues, setPrimaryValues] = useState<Map<string, number>>(new Map<string, number>());
@@ -156,6 +160,11 @@ export function SecondaryAttributeForm({
                                         <List>
                                             {supportedVariables.map(v => <List.Item
                                                 key={'tooltip-supported-variables-' + index + '-' + v}>{v}</List.Item>)}
+                                        </List>
+                                        {t('character:calculationFormulaFunctionTooltip')}
+                                        <List>
+                                            {supportedFunctions.map(f => <List.Item
+                                                key={'tooltip-supported-function-' + index + '-' + f}>{f}</List.Item>)}
                                         </List>
                                     </>} key={form.key(`attributes.${index}.consumable`) + '-calculationFormula'}>
                                         <TextInput

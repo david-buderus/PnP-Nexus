@@ -219,9 +219,6 @@ function EquipmentSettingsCard() {
         <Title order={5} ta="center">
             {t('universe:equipmentSettings')}
         </Title>
-        <Text ta="left">
-            {t('universe:numberOfHandheldDescription', {'number': equipmentSettings?.numberOfHandheld})}
-        </Text>
         <Title order={6} ta="center" pt="md">
             {t('universe:jewelleryDefinitions')}
         </Title>

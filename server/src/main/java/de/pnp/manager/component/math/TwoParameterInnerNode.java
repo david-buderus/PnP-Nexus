@@ -3,6 +3,7 @@ package de.pnp.manager.component.math;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Sets;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -23,7 +24,7 @@ class TwoParameterInnerNode implements IBinaryExpressionTreeNode {
 
     @JsonCreator
     public TwoParameterInnerNode(EOperator operator, IBinaryExpressionTreeNode left,
-        IBinaryExpressionTreeNode right) {
+                                 IBinaryExpressionTreeNode right) {
         this.operator = operator;
         this.left = left;
         this.right = right;
@@ -55,7 +56,7 @@ class TwoParameterInnerNode implements IBinaryExpressionTreeNode {
     }
 
     private void buildChildString(StringBuilder builder, IBinaryExpressionTreeNode child) {
-        if (child instanceof TwoParameterInnerNode node && node.operator.getPrio() < operator.getPrio()) {
+        if (child instanceof TwoParameterInnerNode node && node.operator.getPriority() < operator.getPriority()) {
             builder.append("(");
             child.buildHumanReadableString(builder);
             builder.append(")");
@@ -73,8 +74,8 @@ class TwoParameterInnerNode implements IBinaryExpressionTreeNode {
             return false;
         }
         TwoParameterInnerNode that = (TwoParameterInnerNode) o;
-        return operator == that.operator && Objects.equals(left, that.left) && Objects.equals(right,
-            that.right);
+        return operator == that.operator && Objects.equals(left, that.left)
+                && Objects.equals(right, that.right);
     }
 
     @Override

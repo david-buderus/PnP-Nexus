@@ -115,6 +115,30 @@
         ]
       }
     },
+    "/api/expressions/functions": {
+      "get": {
+        "operationId": "getSupportedFunctions",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Returns human readable strings for all supported functions",
+        "tags": [
+          "binary-expression-tree-service"
+        ]
+      }
+    },
     "/api/expressions/human-readable": {
       "post": {
         "operationId": "toHumanReadableFormat",
@@ -6038,10 +6062,6 @@
             "items": {
               "$ref": "#/components/schemas/JewelleryDefinition"
             }
-          },
-          "numberOfHandheld": {
-            "type": "integer",
-            "format": "int32"
           }
         }
       },

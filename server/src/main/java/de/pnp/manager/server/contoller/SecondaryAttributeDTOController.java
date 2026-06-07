@@ -3,6 +3,7 @@ package de.pnp.manager.server.contoller;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttributeDTO;
 import de.pnp.manager.component.math.BinaryExpressionTree;
+import de.pnp.manager.component.math.EReservedVariables;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.component.math.IllegalFormulaException;
@@ -91,8 +92,10 @@ public class SecondaryAttributeDTOController {
      * Returns all supported variables of the given universe.
      */
     public List<String> getSupportedVariables(ObjectId universe) {
-        return Stream.concat(getPrimaryAttributeVariables(universe).stream().map(IExpressionVariable::getIdentifier),
-                IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream()).toList();
+        return Stream.concat(
+                getPrimaryAttributeVariables(universe).stream().map(IExpressionVariable::getIdentifier),
+                IsValidExpressionValidator.RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream().map(EReservedVariables::getConstant)
+        ).toList();
     }
 
     /**

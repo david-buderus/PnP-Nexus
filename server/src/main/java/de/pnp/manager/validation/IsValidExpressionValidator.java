@@ -2,6 +2,7 @@ package de.pnp.manager.validation;
 
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.math.BinaryExpressionTree;
+import de.pnp.manager.component.math.EReservedVariables;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
@@ -30,12 +31,15 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
     /**
      * All string variables allowed in {@link SecondaryAttribute}.
      */
-    public static final Set<String> ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES = Set.of("LVL");
+    public static final Set<EReservedVariables> RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES = Set.of(EReservedVariables.LEVEL, EReservedVariables.TIER);
 
-    @Autowired
-    private PrimaryAttributeRepository primaryAttributeRepository;
+    private final PrimaryAttributeRepository primaryAttributeRepository;
 
     private EExpressionType expressionType;
+
+    public IsValidExpressionValidator(@Autowired PrimaryAttributeRepository primaryAttributeRepository) {
+        this.primaryAttributeRepository = primaryAttributeRepository;
+    }
 
     @Override
     public void initialize(IsValidExpression constraintAnnotation) {
@@ -71,9 +75,8 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
 
         return expression.getVariables().stream()
                 .filter(StringVariable.class::isInstance)
-                .allMatch(v -> ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(
-                        ((StringVariable) v).variable()));
-
+                .allMatch(v -> RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES
+                        .contains(EReservedVariables.of(((StringVariable) v).variable()).orElse(null)));
     }
 
     private Set<IExpressionVariable> getPrimaryAttributeVariables(ObjectId universe) {

@@ -5,13 +5,22 @@
  * OpenAPI spec version: v0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import axios from 'axios';
@@ -27,6 +36,95 @@ import type {
 } from '.././model';
 
 
+
+
+
+/**
+ * @summary Returns human readable strings for all supported functions
+ */
+export const getSupportedFunctions = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<string[]>> => {
+    
+    
+    return axios.get(
+      `/api/expressions/functions`,options
+    );
+  }
+
+
+
+
+export const getGetSupportedFunctionsQueryKey = () => {
+    return [
+    `/api/expressions/functions`
+    ] as const;
+    }
+
+    
+export const getGetSupportedFunctionsQueryOptions = <TData = Awaited<ReturnType<typeof getSupportedFunctions>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportedFunctions>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetSupportedFunctionsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getSupportedFunctions>>> = ({ signal }) => getSupportedFunctions({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getSupportedFunctions>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetSupportedFunctionsQueryResult = NonNullable<Awaited<ReturnType<typeof getSupportedFunctions>>>
+export type GetSupportedFunctionsQueryError = AxiosError<unknown>
+
+
+export function useGetSupportedFunctions<TData = Awaited<ReturnType<typeof getSupportedFunctions>>, TError = AxiosError<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportedFunctions>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSupportedFunctions>>,
+          TError,
+          Awaited<ReturnType<typeof getSupportedFunctions>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSupportedFunctions<TData = Awaited<ReturnType<typeof getSupportedFunctions>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportedFunctions>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getSupportedFunctions>>,
+          TError,
+          Awaited<ReturnType<typeof getSupportedFunctions>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetSupportedFunctions<TData = Awaited<ReturnType<typeof getSupportedFunctions>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportedFunctions>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Returns human readable strings for all supported functions
+ */
+
+export function useGetSupportedFunctions<TData = Awaited<ReturnType<typeof getSupportedFunctions>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getSupportedFunctions>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetSupportedFunctionsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
 
 
 

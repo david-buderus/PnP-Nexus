@@ -8,5 +8,4 @@ import type { JewelleryDefinition } from './jewelleryDefinition';
 
 export interface EquipmentSettings {
   jewelleryDefinitions: JewelleryDefinition[];
-  numberOfHandheld?: number;
 }

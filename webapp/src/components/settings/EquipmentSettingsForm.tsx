@@ -66,12 +66,6 @@ export default function EquipmentSettingsForm({
             onSubmit={form.onSubmit(s => updateEquipmentSettings({universe: activeUniverse.id, data: s})
                 .then(onSave).catch(handleValidationErrors(form.setErrors)))}
         >
-            <NumberInput
-                label={t('universe:numberOfHandheld')}
-                key={form.key('numberOfHandheld')}
-                {...form.getInputProps('numberOfHandheld')}
-                allowDecimal={false}
-            />
             <Stack pt="lg">
                 <Title order={5} ta="center">
                     {t('universe:jewelleryDefinitions')}

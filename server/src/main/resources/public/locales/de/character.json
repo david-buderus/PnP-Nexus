@@ -7,6 +7,7 @@
   "consumableAttributeTooltip": "Typische Attribute, welche als Resource genutzt werden können, sind Lebenspunkte oder Mana",
   "calculationFormula": "Berechnungsformel",
   "calculationFormulaTooltip": "Die unterstützten Variablen sind:",
+  "calculationFormulaFunctionTooltip": "Die unterstützten Funktionen sind:",
   "secondaryAttributeCreationTitle": "Erstelle ein sekundäres Attribut",
   "secondaryAttributeEditTitle": "Bearbeite ein sekundäres Attribut",
   "secondaryAttributeDeletionTitle": "Willst du die ausgewählten sekundäre Attribute löschen?",

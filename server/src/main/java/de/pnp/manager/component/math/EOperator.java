@@ -12,14 +12,14 @@ enum EOperator {
     OPENING_BRACKET(0, "(", true),
     CLOSING_BRACKET(0, ")", false);
 
-    private final int prio;
-    
+    private final int priority;
+
     private final String humanReadableFormat;
 
     private final boolean needsToBeFollowedByConstant;
 
-    EOperator(int prio, String humanReadableFormat, boolean needsToBeFollowedByConstant) {
-        this.prio = prio;
+    EOperator(int priority, String humanReadableFormat, boolean needsToBeFollowedByConstant) {
+        this.priority = priority;
         this.humanReadableFormat = humanReadableFormat;
         this.needsToBeFollowedByConstant = needsToBeFollowedByConstant;
     }
@@ -41,8 +41,8 @@ enum EOperator {
         };
     }
 
-    public int getPrio() {
-        return prio;
+    public int getPriority() {
+        return priority;
     }
 
     public String getHumanReadableFormat() {
