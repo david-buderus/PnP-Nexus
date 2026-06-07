@@ -23,15 +23,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.pnp.manager.component.math.EReservedVariables.*;
+
 /**
  * Validator for {@link SecondaryAttribute}.
  */
 public class IsValidExpressionValidator implements ConstraintValidator<IsValidExpression, String> {
-
-    /**
-     * All string variables allowed in {@link SecondaryAttribute}.
-     */
-    public static final Set<EReservedVariables> RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES = Set.of(EReservedVariables.LEVEL, EReservedVariables.TIER);
 
     private final PrimaryAttributeRepository primaryAttributeRepository;
 
@@ -54,14 +51,11 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
         }
         try {
             ObjectId universe = getUniverse().orElse(null);
-            if (universe == null) {
-                // We don't have access to the universe
-                // We can only do a basic check
-                BinaryExpressionTree.from(value, Set.of());
-                return true;
-            }
+
             return switch (expressionType) {
                 case SECONDARY_ATTRIBUTE_EXPRESSION -> validateSecondaryAttributeExpression(universe, value);
+                case TIER_FORMULA -> validateExpression(value, RESERVED_TIER_STRING_VARIABLES);
+                case TALENT_POINT_FORMULA -> validateExpression(value, RESERVED_TALENT_STRING_VARIABLES);
             };
         } catch (IllegalFormulaException e) {
             return false;
@@ -70,6 +64,13 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
 
     private boolean validateSecondaryAttributeExpression(ObjectId universe, String formula)
             throws IllegalFormulaException {
+        if (universe == null) {
+            // We don't have access to the universe
+            // We can only do a basic check
+            BinaryExpressionTree.from(formula, Set.of());
+            return true;
+        }
+
         Set<IExpressionVariable> variables = getPrimaryAttributeVariables(universe);
         BinaryExpressionTree expression = BinaryExpressionTree.from(formula, variables);
 
@@ -77,6 +78,17 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
                 .filter(StringVariable.class::isInstance)
                 .allMatch(v -> RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES
                         .contains(EReservedVariables.of(((StringVariable) v).variable()).orElse(null)));
+    }
+
+    private boolean validateExpression(String formula, Set<EReservedVariables> reserved)
+            throws IllegalFormulaException {
+        BinaryExpressionTree expression = BinaryExpressionTree.from(formula, Set.of());
+
+        return expression.getVariables().stream()
+                .filter(StringVariable.class::isInstance)
+                .allMatch(v -> reserved.contains(
+                        EReservedVariables.of(((StringVariable) v).variable()).orElse(null))
+                );
     }
 
     private Set<IExpressionVariable> getPrimaryAttributeVariables(ObjectId universe) {

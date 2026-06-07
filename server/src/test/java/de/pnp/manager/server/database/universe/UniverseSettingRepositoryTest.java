@@ -1,6 +1,6 @@
 package de.pnp.manager.server.database.universe;
 
-import de.pnp.manager.component.universe.CharacterSettings;
+import de.pnp.manager.component.universe.ItemSettings;
 import de.pnp.manager.component.universe.SettingsBase;
 import de.pnp.manager.server.UniverseTestBase;
 import de.pnp.manager.utils.TestUtils;
@@ -25,12 +25,11 @@ class UniverseSettingRepositoryTest extends UniverseTestBase {
 
     @Test
     void testInsert() {
-        CharacterSettings settings = new CharacterSettings(2, 12,
-                50);
+        ItemSettings settings = new ItemSettings(10, false, true);
 
         settingsRepository.setSettings(getUniverseId(), settings);
 
-        assertThat(settingsRepository.getSettings(getUniverseId(), CharacterSettings.class)).isEqualTo(settings);
+        assertThat(settingsRepository.getSettings(getUniverseId(), ItemSettings.class)).isEqualTo(settings);
     }
 
     @ParameterizedTest

@@ -1,5 +1,6 @@
 package de.pnp.manager.component.universe;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.character.PnPCharacter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +23,7 @@ public class EquipmentSettings extends SettingsBase {
     @NotNull
     private final List<@Valid JewelleryDefinition> jewelleryDefinitions;
 
+    @JsonCreator
     public EquipmentSettings(List<@Valid JewelleryDefinition> jewelleryDefinitions) {
         this.jewelleryDefinitions = jewelleryDefinitions;
     }

@@ -4,12 +4,11 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { BinaryExpressionTree } from './binaryExpressionTree';
 
-export interface CharacterSettings {
+export interface CharacterSettingsDto {
   maxPrimaryAttributeSum?: number;
   maxPrimaryAttributeValue?: number;
   minPrimaryAttributeValue?: number;
-  talentPointFormula?: BinaryExpressionTree;
-  tierFormula?: BinaryExpressionTree;
+  talentPointFormula: string;
+  tierFormula: string;
 }

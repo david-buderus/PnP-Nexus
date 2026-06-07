@@ -38,6 +38,6 @@ public @interface IsValidExpression {
      * The different types of expressions.
      */
     enum EExpressionType {
-        SECONDARY_ATTRIBUTE_EXPRESSION
+        SECONDARY_ATTRIBUTE_EXPRESSION, TIER_FORMULA, TALENT_POINT_FORMULA
     }
 }

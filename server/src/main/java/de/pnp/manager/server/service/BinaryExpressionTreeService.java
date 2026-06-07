@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import static de.pnp.manager.validation.IsValidExpressionValidator.RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
+import static de.pnp.manager.component.math.EReservedVariables.RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
 
 
 /**

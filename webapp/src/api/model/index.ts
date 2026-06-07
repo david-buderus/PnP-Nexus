@@ -26,6 +26,7 @@ export * from './characterOrigin';
 export * from './characterResourceUsage';
 export * from './characterResourceUsageAllOf';
 export * from './characterSettings';
+export * from './characterSettingsDto';
 export * from './characterSheetSettings';
 export * from './characterStatsDto';
 export * from './characterStatsDtoPrimaryStats';

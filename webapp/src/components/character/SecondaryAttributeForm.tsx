@@ -3,7 +3,6 @@ import {
     Button,
     Grid,
     Group,
-    List,
     NumberInput,
     Paper,
     Stack,
@@ -37,6 +36,7 @@ import {
 import {useQueryClient} from '@tanstack/react-query';
 import {getGetAllSecondaryAttributesQueryKey} from '../../api/secondary-attribute-service/secondary-attribute-service';
 import {useGetSecondaryAttributeInfo} from '../../api/universe-creation-service/universe-creation-service';
+import FormularInput from '../input/FormularInput';
 
 /** A form to adjust all secondary attributes */
 export function SecondaryAttributeForm({
@@ -155,24 +155,13 @@ export function SecondaryAttributeForm({
                                     />
                                 </Table.Td>
                                 <Table.Td>
-                                    <Tooltip label={<>
-                                        {t('character:calculationFormulaTooltip')}
-                                        <List>
-                                            {supportedVariables.map(v => <List.Item
-                                                key={'tooltip-supported-variables-' + index + '-' + v}>{v}</List.Item>)}
-                                        </List>
-                                        {t('character:calculationFormulaFunctionTooltip')}
-                                        <List>
-                                            {supportedFunctions.map(f => <List.Item
-                                                key={'tooltip-supported-function-' + index + '-' + f}>{f}</List.Item>)}
-                                        </List>
-                                    </>} key={form.key(`attributes.${index}.consumable`) + '-calculationFormula'}>
-                                        <TextInput
-                                            key={form.key(`attributes.${index}.calculationFormula`)}
-                                            required
-                                            {...form.getInputProps(`attributes.${index}.calculationFormula`)}
-                                        />
-                                    </Tooltip>
+                                    <FormularInput
+                                        supportedVariables={supportedVariables}
+                                        supportedFunctions={supportedFunctions}
+                                        key={form.key(`attributes.${index}.calculationFormula`)}
+                                        required
+                                        {...form.getInputProps(`attributes.${index}.calculationFormula`)}
+                                    />
                                 </Table.Td>
                                 <Table.Td>
                                     <Tooltip label={t('character:consumableAttributeTooltip')}

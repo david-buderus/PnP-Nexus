@@ -2,17 +2,21 @@ import {ReactNode, useEffect} from 'react';
 import {useUniverseContext} from '../PageBase';
 import {useTranslation} from 'react-i18next';
 import {useForm} from '@mantine/form';
-import {CharacterSettings} from '../../api/model';
+import {CharacterSettingsDto} from '../../api/model';
 import {Button, Grid, Group, NumberInput, Stack, Text, Title} from '@mantine/core';
 import {numberFormatter, percentageFormatter} from '../utils/Formatters';
 import {handleValidationErrors} from '../utils/ErrorUtils';
 import {probabilityForSuccesfulThrows} from '../utils/DiceThrowUtils';
 import {fetchAllPrimaryAttributes} from '../Database';
 import {
-    getGetCharacterSheetSettingsQueryKey,
-    useUpdateCharacterSettings
+    getGetCharacterSettingsDtoQueryKey,
+    getGetCharacterSettingsQueryKey,
+    useGetCharacterSettingsDto,
+    useUpdateCharacterSettingsDto
 } from '../../api/universe-settings-service/universe-settings-service';
 import {useQueryClient} from '@tanstack/react-query';
+import {useGetSupportedFunctions} from '../../api/binary-expression-tree-service/binary-expression-tree-service';
+import FormularInput from '../input/FormularInput';
 
 /** Form for character settings */
 export default function CharacterSettingsForm({
@@ -24,20 +28,35 @@ export default function CharacterSettingsForm({
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
-    const {activeUniverse, characterSettings} = useUniverseContext();
-    const form = useForm<CharacterSettings>({
+    const {activeUniverse} = useUniverseContext();
+    const form = useForm<CharacterSettingsDto>({
         mode: 'controlled',
-        initialValues: characterSettings
+        initialValues: {
+            minPrimaryAttributeValue: 1,
+            maxPrimaryAttributeValue: 10,
+            maxPrimaryAttributeSum: 40,
+            tierFormula: '',
+            talentPointFormula: ''
+        }
     });
 
+    const characterSettings = useGetCharacterSettingsDto(activeUniverse?.id, {
+        query: {enabled: Boolean(activeUniverse?.id)}
+    }).data?.data;
+    const supportedFunctions = useGetSupportedFunctions().data?.data ?? [];
+
     useEffect(() => {
+        if (!characterSettings) {
+            return;
+        }
         form.setInitialValues(characterSettings);
         form.setValues(characterSettings);
     }, [characterSettings]);
 
-    const {mutateAsync: updateCharacterSettings} = useUpdateCharacterSettings({
+    const {mutateAsync: updateCharacterSettings} = useUpdateCharacterSettingsDto({
         mutation: {
-            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetCharacterSheetSettingsQueryKey(activeUniverse.id)})
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetCharacterSettingsQueryKey(activeUniverse.id)})
+                .then(() => queryClient.invalidateQueries({queryKey: getGetCharacterSettingsDtoQueryKey(activeUniverse.id)}))
         }
     });
 
@@ -52,26 +71,42 @@ export default function CharacterSettingsForm({
         <form onSubmit={form.onSubmit(s => updateCharacterSettings({universe: activeUniverse.id, data: s})
             .then(onSave).catch(handleValidationErrors(form.setErrors)))}
         >
-            <Grid columns={2} gutter="5vw">
+            <Grid columns={2}>
                 <Grid.Col span={1}>
-                    <NumberInput
-                        label={t('universe:minPrimaryAttributeValue')}
-                        key={form.key('minPrimaryAttributeValue')}
-                        {...form.getInputProps('minPrimaryAttributeValue')}
-                        allowDecimal={false}
-                    />
-                    <NumberInput
-                        label={t('universe:maxPrimaryAttributeValue')}
-                        key={form.key('maxPrimaryAttributeValue')}
-                        {...form.getInputProps('maxPrimaryAttributeValue')}
-                        allowDecimal={false}
-                    />
-                    <NumberInput
-                        label={t('universe:maxPrimaryAttributeSum')}
-                        key={form.key('maxPrimaryAttributeSum')}
-                        {...form.getInputProps('maxPrimaryAttributeSum')}
-                        allowDecimal={false}
-                    />
+                    <Stack gap="sm">
+                        <NumberInput
+                            label={t('universe:minPrimaryAttributeValue')}
+                            key={form.key('minPrimaryAttributeValue')}
+                            {...form.getInputProps('minPrimaryAttributeValue')}
+                            allowDecimal={false}
+                        />
+                        <NumberInput
+                            label={t('universe:maxPrimaryAttributeValue')}
+                            key={form.key('maxPrimaryAttributeValue')}
+                            {...form.getInputProps('maxPrimaryAttributeValue')}
+                            allowDecimal={false}
+                        />
+                        <NumberInput
+                            label={t('universe:maxPrimaryAttributeSum')}
+                            key={form.key('maxPrimaryAttributeSum')}
+                            {...form.getInputProps('maxPrimaryAttributeSum')}
+                            allowDecimal={false}
+                        />
+                        <FormularInput
+                            label={t('universe:tierFormula')}
+                            supportedVariables={['LVL']}
+                            supportedFunctions={supportedFunctions}
+                            key={form.key('tierFormula')}
+                            {...form.getInputProps('tierFormula')}
+                        />
+                        <FormularInput
+                            label={t('universe:talentPointFormula')}
+                            supportedVariables={['LVL', 'TIER']}
+                            supportedFunctions={supportedFunctions}
+                            key={form.key('talentPointFormula')}
+                            {...form.getInputProps('talentPointFormula')}
+                        />
+                    </Stack>
                 </Grid.Col>
                 <Grid.Col span={1}>
                     <Text ta="left">

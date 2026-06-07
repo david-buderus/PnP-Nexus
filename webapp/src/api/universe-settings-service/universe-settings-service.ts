@@ -32,6 +32,7 @@ import type {
 
 import type {
   CharacterSettings,
+  CharacterSettingsDto,
   CharacterSheetSettings,
   CurrencySettings,
   EquipmentSettings,
@@ -341,6 +342,157 @@ export const useUpdateCharacterSheetSettings = <TError = AxiosError<unknown>,
       > => {
 
       const mutationOptions = getUpdateCharacterSheetSettingsMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Get the settings
+ */
+export const getCharacterSettingsDto = (
+    universe: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<CharacterSettingsDto>> => {
+    
+    
+    return axios.get(
+      `/api/${universe}/universe-settings/character/dto`,options
+    );
+  }
+
+
+
+
+export const getGetCharacterSettingsDtoQueryKey = (universe?: string,) => {
+    return [
+    `/api/${universe}/universe-settings/character/dto`
+    ] as const;
+    }
+
+    
+export const getGetCharacterSettingsDtoQueryOptions = <TData = Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError = AxiosError<unknown>>(universe: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetCharacterSettingsDtoQueryKey(universe);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCharacterSettingsDto>>> = ({ signal }) => getCharacterSettingsDto(universe, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(universe), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetCharacterSettingsDtoQueryResult = NonNullable<Awaited<ReturnType<typeof getCharacterSettingsDto>>>
+export type GetCharacterSettingsDtoQueryError = AxiosError<unknown>
+
+
+export function useGetCharacterSettingsDto<TData = Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError = AxiosError<unknown>>(
+ universe: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCharacterSettingsDto>>,
+          TError,
+          Awaited<ReturnType<typeof getCharacterSettingsDto>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCharacterSettingsDto<TData = Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError = AxiosError<unknown>>(
+ universe: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCharacterSettingsDto>>,
+          TError,
+          Awaited<ReturnType<typeof getCharacterSettingsDto>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetCharacterSettingsDto<TData = Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError = AxiosError<unknown>>(
+ universe: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get the settings
+ */
+
+export function useGetCharacterSettingsDto<TData = Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError = AxiosError<unknown>>(
+ universe: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCharacterSettingsDto>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetCharacterSettingsDtoQueryOptions(universe,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * @summary Update the settings
+ */
+export const updateCharacterSettingsDto = (
+    universe: string,
+    characterSettingsDto: CharacterSettingsDto, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
+    
+    
+    return axios.put(
+      `/api/${universe}/universe-settings/character/dto`,
+      characterSettingsDto,options
+    );
+  }
+
+
+
+export const getUpdateCharacterSettingsDtoMutationOptions = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCharacterSettingsDto>>, TError,{universe: string;data: CharacterSettingsDto}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof updateCharacterSettingsDto>>, TError,{universe: string;data: CharacterSettingsDto}, TContext> => {
+
+const mutationKey = ['updateCharacterSettingsDto'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateCharacterSettingsDto>>, {universe: string;data: CharacterSettingsDto}> = (props) => {
+          const {universe,data} = props ?? {};
+
+          return  updateCharacterSettingsDto(universe,data,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateCharacterSettingsDtoMutationResult = NonNullable<Awaited<ReturnType<typeof updateCharacterSettingsDto>>>
+    export type UpdateCharacterSettingsDtoMutationBody = CharacterSettingsDto
+    export type UpdateCharacterSettingsDtoMutationError = AxiosError<unknown>
+
+    /**
+ * @summary Update the settings
+ */
+export const useUpdateCharacterSettingsDto = <TError = AxiosError<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateCharacterSettingsDto>>, TError,{universe: string;data: CharacterSettingsDto}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof updateCharacterSettingsDto>>,
+        TError,
+        {universe: string;data: CharacterSettingsDto},
+        TContext
+      > => {
+
+      const mutationOptions = getUpdateCharacterSettingsDtoMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

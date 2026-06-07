@@ -90,5 +90,7 @@
   "noEnemySheetDescription": "Derzeit ist kein Charakterbogen für Gegner ausgewählt.",
   "characterSheetSettingsModalDescription": "Wähle aus welcher Charakterbogen benutzt wird um Spieler und Gegner anzuzeigen.",
   "playerSheet": "Spieler Charakterbogen",
-  "enemySheet": "Gegner Charakterbogen"
+  "enemySheet": "Gegner Charakterbogen",
+  "tierFormula": "Formel zur Berechnung des Tiers des Charakters",
+  "talentPointFormula": "Formel zur Berechnung der maximalen Talentpunkte des Charakters"
 }
