@@ -37,6 +37,13 @@ public enum EReservedVariables {
     }
 
     /**
+     * As a {@link IExpressionVariable}
+     */
+    public IExpressionVariable asVariable() {
+        return new IExpressionVariable.StringVariable(constant);
+    }
+
+    /**
      * Returns the {@link EReservedVariables} matching the constant.
      */
     public static Optional<EReservedVariables> of(String constant) {

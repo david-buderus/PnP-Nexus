@@ -32,6 +32,8 @@ import type {
 
 import type {
   AddCharacterPermissionParams,
+  CalculateTalentPointsParams,
+  CalculateTierParams,
   DeleteAllCharactersParams,
   PnPCharacterDTO,
   RecalculateEntries,
@@ -320,6 +322,202 @@ export const useRecalculateEntries = <TError = AxiosError<unknown>,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Calculates the maximal number of talents of the user
+ */
+export const calculateTalentPoints = (
+    universe: string,
+    params: CalculateTalentPointsParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<number>> => {
+    
+    
+    return axios.get(
+      `/api/${universe}/characters/talents`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+
+export const getCalculateTalentPointsQueryKey = (universe?: string,
+    params?: CalculateTalentPointsParams,) => {
+    return [
+    `/api/${universe}/characters/talents`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getCalculateTalentPointsQueryOptions = <TData = Awaited<ReturnType<typeof calculateTalentPoints>>, TError = AxiosError<unknown>>(universe: string,
+    params: CalculateTalentPointsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTalentPoints>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCalculateTalentPointsQueryKey(universe,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof calculateTalentPoints>>> = ({ signal }) => calculateTalentPoints(universe,params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(universe), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof calculateTalentPoints>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CalculateTalentPointsQueryResult = NonNullable<Awaited<ReturnType<typeof calculateTalentPoints>>>
+export type CalculateTalentPointsQueryError = AxiosError<unknown>
+
+
+export function useCalculateTalentPoints<TData = Awaited<ReturnType<typeof calculateTalentPoints>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTalentPointsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTalentPoints>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof calculateTalentPoints>>,
+          TError,
+          Awaited<ReturnType<typeof calculateTalentPoints>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCalculateTalentPoints<TData = Awaited<ReturnType<typeof calculateTalentPoints>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTalentPointsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTalentPoints>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof calculateTalentPoints>>,
+          TError,
+          Awaited<ReturnType<typeof calculateTalentPoints>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCalculateTalentPoints<TData = Awaited<ReturnType<typeof calculateTalentPoints>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTalentPointsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTalentPoints>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Calculates the maximal number of talents of the user
+ */
+
+export function useCalculateTalentPoints<TData = Awaited<ReturnType<typeof calculateTalentPoints>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTalentPointsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTalentPoints>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCalculateTalentPointsQueryOptions(universe,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * @summary Calculates the tier of the user
+ */
+export const calculateTier = (
+    universe: string,
+    params: CalculateTierParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<number>> => {
+    
+    
+    return axios.get(
+      `/api/${universe}/characters/tier`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+
+export const getCalculateTierQueryKey = (universe?: string,
+    params?: CalculateTierParams,) => {
+    return [
+    `/api/${universe}/characters/tier`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getCalculateTierQueryOptions = <TData = Awaited<ReturnType<typeof calculateTier>>, TError = AxiosError<unknown>>(universe: string,
+    params: CalculateTierParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTier>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCalculateTierQueryKey(universe,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof calculateTier>>> = ({ signal }) => calculateTier(universe,params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(universe), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof calculateTier>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CalculateTierQueryResult = NonNullable<Awaited<ReturnType<typeof calculateTier>>>
+export type CalculateTierQueryError = AxiosError<unknown>
+
+
+export function useCalculateTier<TData = Awaited<ReturnType<typeof calculateTier>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTierParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTier>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof calculateTier>>,
+          TError,
+          Awaited<ReturnType<typeof calculateTier>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCalculateTier<TData = Awaited<ReturnType<typeof calculateTier>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTierParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTier>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof calculateTier>>,
+          TError,
+          Awaited<ReturnType<typeof calculateTier>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCalculateTier<TData = Awaited<ReturnType<typeof calculateTier>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTierParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTier>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Calculates the tier of the user
+ */
+
+export function useCalculateTier<TData = Awaited<ReturnType<typeof calculateTier>>, TError = AxiosError<unknown>>(
+ universe: string,
+    params: CalculateTierParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof calculateTier>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCalculateTierQueryOptions(universe,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
  * @summary Deletes an object from the database
  */
 export const deleteCharacter = (

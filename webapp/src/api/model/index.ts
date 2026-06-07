@@ -14,6 +14,8 @@ export * from './armorEquipment';
 export * from './armorEquipmentAllOf';
 export * from './binaryExpressionTree';
 export * from './binaryExpressionTreeRoot';
+export * from './calculateTalentPointsParams';
+export * from './calculateTierParams';
 export * from './calculationRequest';
 export * from './calculationRequestConstants';
 export * from './characterDescription';

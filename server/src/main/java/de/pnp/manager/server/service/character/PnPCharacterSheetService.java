@@ -22,6 +22,8 @@ import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.*;
+import de.pnp.manager.component.math.EReservedVariables;
+import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.spell.ECastingType;
 import de.pnp.manager.component.spell.Spell;
 import de.pnp.manager.component.universe.EquipmentSettings;
@@ -88,7 +90,10 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
                 secondaryAttributes.stream()
                         .collect(Collectors.toMap(SecondaryAttribute::getId, a -> new Stat(2)))
         );
-        stats.recalculateSecondaryStats(primaryAttributes, secondaryAttributes);
+        stats.recalculateSecondaryStats(primaryAttributes, secondaryAttributes, Map.of(
+                new IExpressionVariable.StringVariable(EReservedVariables.LEVEL.getConstant()), 1d,
+                new IExpressionVariable.StringVariable(EReservedVariables.TIER.getConstant()), 1d
+        ));
 
         Optional<Talent> talent = talents.stream().findFirst();
 

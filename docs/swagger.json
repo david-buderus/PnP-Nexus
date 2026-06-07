@@ -1671,6 +1671,88 @@
         ]
       }
     },
+    "/api/{universe}/characters/talents": {
+      "get": {
+        "operationId": "calculateTalentPoints",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Calculates the maximal number of talents of the user",
+        "tags": [
+          "pn-p-character-service"
+        ]
+      }
+    },
+    "/api/{universe}/characters/tier": {
+      "get": {
+        "operationId": "calculateTier",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "universe",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "summary": "Calculates the tier of the user",
+        "tags": [
+          "pn-p-character-service"
+        ]
+      }
+    },
     "/api/{universe}/characters/{id}": {
       "delete": {
         "operationId": "deleteCharacter",

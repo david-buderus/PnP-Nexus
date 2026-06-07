@@ -73,13 +73,18 @@ public class CharacterStats {
     /**
      * Recalculates the {@link Stat Secondary Stats} in place.
      */
-    public void recalculateSecondaryStats(Collection<PrimaryAttribute> primaryAttributes, Collection<SecondaryAttribute> secondaryAttributes) {
+    public void recalculateSecondaryStats(Collection<PrimaryAttribute> primaryAttributes,
+                                          Collection<SecondaryAttribute> secondaryAttributes,
+                                          Map<IExpressionVariable, Double> extraVariables) {
         Map<IExpressionVariable, Double> primaryAttributeVariables = primaryAttributes.stream()
                 .collect(Collectors.toMap(PrimaryAttributeVariable::new, e -> (double) get(e).getRawValue()));
+        Map<IExpressionVariable, Double> variables = new HashMap<>();
+        variables.putAll(extraVariables);
+        variables.putAll(primaryAttributeVariables);
 
         for (SecondaryAttribute secondaryAttribute : secondaryAttributes) {
             secondaryStats.put(secondaryAttribute.getId(), new Stat(
-                            (int) Math.round(secondaryAttribute.getCalculationFormula().calculate(primaryAttributeVariables)),
+                            (int) Math.round(secondaryAttribute.getCalculationFormula().calculate(variables)),
                             get(secondaryAttribute).getFlatModifier()
                     )
             );

@@ -3,6 +3,8 @@ package de.pnp.manager.server.service.character;
 import de.pnp.manager.component.character.PnPCharacter;
 import de.pnp.manager.component.character.dto.CharacterStatsDto;
 import de.pnp.manager.component.character.dto.PnPCharacterDTO;
+import de.pnp.manager.component.math.EReservedVariables;
+import de.pnp.manager.component.universe.CharacterSettings;
 import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
 import de.pnp.manager.component.user.UserDatabaseObjectPermissionDTO;
 import de.pnp.manager.security.*;
@@ -10,6 +12,7 @@ import de.pnp.manager.server.contoller.PnPCharacterDTOConverter;
 import de.pnp.manager.server.contoller.UserController;
 import de.pnp.manager.server.database.UserDetailsRepository;
 import de.pnp.manager.server.database.character.PnPCharacterRepository;
+import de.pnp.manager.server.database.universe.UniverseSettingsRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -46,15 +49,18 @@ public class PnPCharacterService {
     private final PnPCharacterRepository repository;
     private final UserDetailsRepository userDetailsRepository;
     private final UserController userController;
+    private final UniverseSettingsRepository settingsRepository;
 
     public PnPCharacterService(@Autowired PnPCharacterDTOConverter converter,
                                @Autowired PnPCharacterRepository repository,
                                @Autowired UserDetailsRepository userDetailsRepository,
-                               @Autowired UserController userController) {
+                               @Autowired UserController userController,
+                               @Autowired UniverseSettingsRepository settingsRepository) {
         this.converter = converter;
         this.repository = repository;
         this.userDetailsRepository = userDetailsRepository;
         this.userController = userController;
+        this.settingsRepository = settingsRepository;
     }
 
     @GetMapping
@@ -135,6 +141,40 @@ public class PnPCharacterService {
     public RecalculateEntries recalculateEntries(@PathVariable ObjectId universe, @RequestBody PnPCharacterDTO character) {
         PnPCharacterDTO dto = converter.recalculateEntries(universe, character);
         return new RecalculateEntries(dto.stats().primaryStats(), dto.stats().secondaryStats(), dto.talents());
+    }
+
+    @GetMapping("tier")
+    @UniverseRead
+    @Operation(summary = "Calculates the tier of the user", operationId = "calculateTier")
+    public int calculateTier(@PathVariable ObjectId universe, @RequestParam("level") int level) {
+        CharacterSettings settings = settingsRepository.getSettings(universe, CharacterSettings.class);
+        if (settings.getTierFormula() == null) {
+            return 1;
+        }
+        return (int) Math.round(settings.getTierFormula().calculate(Map.of(
+                EReservedVariables.LEVEL.asVariable(), (double) level
+        )));
+    }
+
+    @GetMapping("talents")
+    @UniverseRead
+    @Operation(summary = "Calculates the maximal number of talents of the user", operationId = "calculateTalentPoints")
+    public int calculateTalentPoints(@PathVariable ObjectId universe, @RequestParam("level") int level) {
+        CharacterSettings settings = settingsRepository.getSettings(universe, CharacterSettings.class);
+        if (settings.getTalentPointFormula() == null) {
+            return 0;
+        }
+
+        double tier = 1;
+        if (settings.getTierFormula() != null) {
+            tier = Math.round(settings.getTierFormula().calculate(Map.of(
+                    EReservedVariables.LEVEL.asVariable(), (double) level
+            )));
+        }
+        return (int) Math.round(settings.getTalentPointFormula().calculate(Map.of(
+                EReservedVariables.LEVEL.asVariable(), (double) level,
+                EReservedVariables.TIER.asVariable(), tier
+        )));
     }
 
     @GetMapping("{id}/permissions")
