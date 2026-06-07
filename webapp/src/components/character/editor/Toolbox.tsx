@@ -5,20 +5,23 @@ import {useUniverseContext} from '../../PageBase';
 import {SHOW_ALL_CURRENCIES} from './parts/items/CurrencyPart';
 import {PageElementData, PageElementLayout} from './parts/PageElement';
 import {EMPTY_TABLE_DEFINITION} from './parts/custom/CustomTable';
+import {ActiveDrop} from './PnPCharacterSheetEditor';
 
 /** Toolbox for the character sheet editor */
 export function Toolbox({
-    setActiveDropSettings
+    setActiveDrop
 }: {
-    setActiveDropSettings: (l: Partial<PageElementLayout>) => void,
+    setActiveDrop: (d: ActiveDrop) => void,
 }) {
     const {t} = useTranslation();
     const {equipmentSettings} = useUniverseContext();
 
     function createDragFunction(data: PageElementData, layout: Partial<PageElementLayout>) {
-        return (e: React.DragEvent) => {
-            e.dataTransfer.setData('design-element', JSON.stringify(data));
-            setActiveDropSettings(layout);
+        return () => {
+            setActiveDrop({
+                layout: layout,
+                data: data
+            });
         };
     }
 

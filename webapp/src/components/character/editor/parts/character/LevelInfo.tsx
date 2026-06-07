@@ -12,7 +12,7 @@ export function LevelInfo() {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
-    const tier = useCalculateTier(activeUniverse?.id, {level: characterForm.getValues().level.level}, {
+    const tier = useCalculateTier(activeUniverse?.id, {level: characterForm.getValues().level.level ?? 1}, {
         query: {enabled: Boolean(activeUniverse?.id)}
     }).data?.data ?? 1;
 

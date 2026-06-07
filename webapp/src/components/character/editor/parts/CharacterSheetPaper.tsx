@@ -4,6 +4,7 @@ import {PnPCharacterSheetContext} from '../../PnPCharacterSheetContext';
 import {Responsive, WidthProvider} from 'react-grid-layout';
 import {PageElement, PageElementData, PageElementLayout} from './PageElement';
 import {IconX} from '@tabler/icons-react';
+import {ActiveDrop} from '../PnPCharacterSheetEditor';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -21,12 +22,12 @@ export function CharacterSheetPaper({
     page,
     updatePage,
     pageNumber,
-    activeDropSettings
+    activeDrop
 }: {
     page: PnPCharacterSheetPage,
     updatePage: (page: Partial<PnPCharacterSheetPage>) => void,
     pageNumber: number,
-    activeDropSettings?: Partial<PageElementLayout>
+    activeDrop?: ActiveDrop
 }) {
     const {allowEdit} = useContext(PnPCharacterSheetContext);
 
@@ -71,21 +72,18 @@ export function CharacterSheetPaper({
                     draggableHandle={allowEdit ? '.drag-handle' : '.disabled-handle'}
                     draggableCancel={allowEdit ? '.no-drag' : null}
                     isDroppable={allowEdit}
-                    onDrop={(layouts: PageElementLayout[], layout: PageElementLayout, event: React.DragEvent) => {
-                        const dataString = event.dataTransfer.getData('design-element');
-                        const customData: PageElementData = JSON.parse(dataString);
-
+                    onDrop={(layouts: PageElementLayout[], layout: PageElementLayout) => {
                         updatePage({
                             layout: [...layouts.filter(l => l.i !== '__dropping-elem__'), {
                                 ...layout,
                                 i: Date.now().toString()
                             }],
-                            data: [...page.data, customData]
+                            data: [...page.data, activeDrop.data]
                         });
                     }}
-                    droppingItem={activeDropSettings ? {
+                    droppingItem={activeDrop?.layout ? {
                         i: '__dropping-elem__',
-                        ...activeDropSettings // Dynamically spreads w, h, minW, minH
+                        ...activeDrop.layout // Dynamically spreads w, h, minW, minH
                     } : null}
                     isDraggable={allowEdit}
                     isResizable={allowEdit}

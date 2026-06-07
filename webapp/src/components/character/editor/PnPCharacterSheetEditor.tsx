@@ -30,7 +30,7 @@ import ConfirmationDialog from '../../modal/ConfirmationDialog';
 import '/node_modules/react-grid-layout/css/styles.css';
 import '/node_modules/react-resizable/css/styles.css';
 import {Toolbox} from './Toolbox';
-import {PageElementLayout} from './parts/PageElement';
+import {PageElementData, PageElementLayout} from './parts/PageElement';
 import {loadCharacterSheet} from '../PnPCharacterView';
 import {useNavigate} from 'react-router-dom';
 import {
@@ -42,6 +42,11 @@ import {
     useUpdatePnPCharacterSheet
 } from '../../../api/pn-p-character-sheet-service/pn-p-character-sheet-service';
 import {useQueryClient} from '@tanstack/react-query';
+
+export type ActiveDrop = {
+    data: PageElementData,
+    layout: Partial<PageElementLayout>
+}
 
 /** Editor to create character sheets */
 export function PnPCharacterSheetEditor({
@@ -59,11 +64,14 @@ export function PnPCharacterSheetEditor({
 
     const [selectedPage, setSelectedPage] = useState(0);
     const [pages, setPages] = useListState<PnPCharacterSheetPage>([{data: [], layout: []}]);
-    const [activeDropSettings, setActiveDropSettings] = useState<Partial<PageElementLayout>>({
-        w: 4,
-        h: 2,
-        minW: 3,
-        minH: 2
+    const [activeDrop, setActiveDrop] = useState<ActiveDrop>({
+        data: null,
+        layout: {
+            w: 4,
+            h: 2,
+            minW: 3,
+            minH: 2
+        }
     });
     const {
         data: exampleResponse,
@@ -134,7 +142,7 @@ export function PnPCharacterSheetEditor({
                                                     page={page}
                                                     updatePage={p => updatePage(i, p)}
                                                     pageNumber={i}
-                                                    activeDropSettings={activeDropSettings}
+                                                    activeDrop={activeDrop}
                                                 />
                                             </Box>
                                         );
@@ -175,7 +183,7 @@ export function PnPCharacterSheetEditor({
                             </Stack>
                             <Stack w={300}>
                                 <Toolbox
-                                    setActiveDropSettings={setActiveDropSettings}
+                                    setActiveDrop={setActiveDrop}
                                 />
                                 <Divider/>
                                 <StorageModal
