@@ -99,8 +99,8 @@ export function UpgradeRecipeOverview() {
             onAdd={openAdd}
             onEdit={s => setToEdit(s)}
         />
-        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} recipe={null}/>
-        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} recipe={toEdit}/>
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} initial={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} initial={toEdit}/>
     </Stack>;
 }
 
@@ -108,12 +108,12 @@ function CreationDialog({
     editMode,
     opened,
     close,
-    recipe
+    initial
 }: {
     editMode: boolean,
     opened: boolean,
     close: () => void
-    recipe: UpgradeRecipe
+    initial: UpgradeRecipe
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
@@ -134,12 +134,12 @@ function CreationDialog({
     });
 
     useEffect(() => {
-        if (!recipe) {
+        if (!initial) {
             return;
         }
-        form.setValues(recipe);
-        form.setInitialValues(recipe);
-    }, [recipe]);
+        form.setValues(initial);
+        form.setInitialValues(initial);
+    }, [initial]);
 
     const {mutateAsync: updateRecipe} = useUpdateUpgradeRecipe({
         mutation: {

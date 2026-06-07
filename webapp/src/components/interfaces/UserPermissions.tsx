@@ -66,11 +66,12 @@ export function extractUserPermissions(permissions: any[], activeUniverse: Unive
 
     for (const permission of permissions) {
         switch (permission['@type']) {
-            case 'DatabaseObjectAuthority':
+            case 'DatabaseObjectAuthority': {
                 const objectPermission = permission as GrantedDatabaseObjectIdAuthorityDTO;
                 extractUniversePermissions(objectPermission, activeUniverse, userPermissions);
                 userPermissions.objectPermissions[objectPermission.id] = objectPermission.permission;
                 break;
+            }
             case 'Role':
                 extractRolePermissions(permission as RoleAuthorityDTO, userPermissions);
                 break;

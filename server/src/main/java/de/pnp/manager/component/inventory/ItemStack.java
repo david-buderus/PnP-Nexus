@@ -188,6 +188,9 @@ public class ItemStack<I extends Item> implements Cloneable {
         return item;
     }
 
+    /**
+     * @see #upgrades
+     */
     public Collection<Upgrade> getUpgrades() {
         return Collections.unmodifiableCollection(upgrades);
     }

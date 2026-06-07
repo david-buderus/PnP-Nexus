@@ -119,7 +119,7 @@ export function CharacterSheetPaper({
                                     data={item}
                                     setData={d => {
                                         updatePage({
-                                            data: page.data.map((item, i) => index !== i ? item : d),
+                                            data: page.data.map((e, i) => index !== i ? e : d),
                                         });
                                     }}
                                 />

@@ -87,8 +87,8 @@ export function TalentOverview() {
             onAdd={openAdd}
             onEdit={s => setToEdit(s)}
         />
-        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} talent={null}/>
-        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} talent={toEdit}/>
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} initial={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} initial={toEdit}/>
     </Stack>;
 }
 
@@ -96,12 +96,12 @@ function CreationDialog({
     editMode,
     opened,
     close,
-    talent
+    initial
 }: {
     editMode: boolean,
     opened: boolean,
     close: () => void
-    talent: Talent
+    initial: Talent
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
@@ -121,12 +121,12 @@ function CreationDialog({
     });
 
     useEffect(() => {
-        if (!talent) {
+        if (!initial) {
             return;
         }
-        form.setValues(talent);
-        form.setInitialValues(talent);
-    }, [talent]);
+        form.setValues(initial);
+        form.setInitialValues(initial);
+    }, [initial]);
 
     const {mutateAsync: updateTalent} = useUpdateTalent({
         mutation: {
@@ -141,17 +141,17 @@ function CreationDialog({
         }
     });
 
-    function onSubmit(t: Talent) {
+    function onSubmit(talent: Talent) {
         if (editMode) {
             return updateTalent({
                 universe: activeUniverse.id,
-                id: t.id,
-                data: t,
+                id: talent.id,
+                data: talent,
             });
         } else {
             return insertTalents({
                 universe: activeUniverse.id,
-                data: [t]
+                data: [talent]
             });
         }
     }

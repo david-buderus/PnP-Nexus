@@ -72,8 +72,8 @@ export function MaterialOverview() {
             onAdd={openAdd}
             onEdit={s => setToEdit(s)}
         />
-        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} material={null}/>
-        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} material={toEdit}/>
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} inital={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} inital={toEdit}/>
     </Stack>;
 }
 
@@ -81,12 +81,12 @@ function CreationDialog({
     editMode,
     opened,
     close,
-    material
+    inital
 }: {
     editMode: boolean,
     opened: boolean,
     close: () => void
-    material: Material
+    inital: Material
 }) {
     const {t} = useTranslation();
     const queryClient = useQueryClient();
@@ -101,12 +101,12 @@ function CreationDialog({
     });
 
     useEffect(() => {
-        if (!material) {
+        if (!inital) {
             return;
         }
-        form.setValues(material);
-        form.setInitialValues(material);
-    }, [material]);
+        form.setValues(inital);
+        form.setInitialValues(inital);
+    }, [inital]);
 
     const {mutateAsync: updateMaterial} = useUpdateMaterial({
         mutation: {
