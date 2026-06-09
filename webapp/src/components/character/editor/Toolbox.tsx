@@ -203,6 +203,16 @@ export function Toolbox({
                         >
                             {t('sheetEditor:talentGroup')}
                         </Button>
+                        <Button
+                            className="droppable-element"
+                            draggable={true}
+                            unselectable="on"
+                            onDragStart={createDragFunction({
+                                type: 'TALENT_OVERVIEW',
+                            }, {minW: 3, minH: 2, w: 6, h: 2})}
+                        >
+                            {t('sheetEditor:talentOverview')}
+                        </Button>
                     </Stack>
                 </Accordion.Panel>
             </Accordion.Item>

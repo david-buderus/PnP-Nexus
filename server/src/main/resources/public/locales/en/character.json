@@ -30,5 +30,6 @@
   "backstory": "Backstory",
   "level": "Level",
   "experiencePoints": "Experience Points",
-  "skillPoints": "Skill Points"
+  "skillPoints": "Skill Points",
+  "talentPoints": "Talent Points"
 }

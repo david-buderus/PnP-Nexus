@@ -17,6 +17,7 @@ import {TitlePart} from './other/TitlePart';
 import {CustomText} from './custom/CustomText';
 import {CustomTable, TableDefinition} from './custom/CustomTable';
 import {TitleOrder} from '@mantine/core';
+import {TalentOverview} from './talent/TalentOverview';
 
 /** Data of a page element */
 export type PageElementData = {
@@ -83,6 +84,8 @@ export type PageElementData = {
 } | {
     type: 'CUSTOM_TABLE';
     definition: TableDefinition;
+} | {
+    type: 'TALENT_OVERVIEW';
 }
 
 /** Layout of page element */
@@ -212,6 +215,8 @@ export function PageElement({
                 definition={data.definition}
                 setDefinition={d => setData({...data, definition: d})}
             />;
+        case 'TALENT_OVERVIEW':
+            return <TalentOverview/>;
         default:
             return <></>;
     }

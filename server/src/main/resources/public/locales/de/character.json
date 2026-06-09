@@ -30,5 +30,6 @@
   "backstory": "Hintergrundgeschichte",
   "level": "Level",
   "experiencePoints": "Erfahrungspunkte",
-  "skillPoints": "Skillpunkte"
+  "skillPoints": "Skillpunkte",
+  "talentPoints": "Talentpunkte"
 }

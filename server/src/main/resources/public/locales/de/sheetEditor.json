@@ -45,5 +45,6 @@
   "rows": "Zeilen",
   "asCustomFieldId": "Custom ID",
   "table": "Tabelle",
-  "deleteSheet": "Charakterbogen löschen"
+  "deleteSheet": "Charakterbogen löschen",
+  "talentOverview": "Talentübersicht"
 }

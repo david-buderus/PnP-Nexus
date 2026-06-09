@@ -45,5 +45,6 @@
   "rows": "Rows",
   "asCustomFieldId": "Custom ID",
   "table": "Table",
-  "deleteSheet": "Delete character sheet"
+  "deleteSheet": "Delete character sheet",
+  "talentOverview": "Talent Overview"
 }
