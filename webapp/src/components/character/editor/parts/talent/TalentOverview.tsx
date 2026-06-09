@@ -22,7 +22,9 @@ export function TalentOverview() {
 
     return <Stack justify="center" h="100%">
         <Text size="xl">
-            {t('character:talentPoints') + ': ' + sum + '/' + max}
+            {t('character:talentPoints') + ': '}
+            <Text span c={sum > max ? 'red' : undefined} inherit>{sum}</Text>
+            {'/' + max}
         </Text>
     </Stack>;
 }

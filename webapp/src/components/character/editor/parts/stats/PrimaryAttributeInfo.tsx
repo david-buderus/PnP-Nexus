@@ -29,6 +29,7 @@ export function PrimaryAttributeInfo({
 
     const sum = Object.values(characterForm.values.stats.primaryStats)
         .map(s => s.rawValue).reduce((a, b) => a + b, 0);
+    const max = characterSettings?.maxPrimaryAttributeSum ?? 0;
 
     return <>
         <Table
@@ -40,7 +41,9 @@ export function PrimaryAttributeInfo({
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
                     <Table.Th colSpan={2} style={TABLE_STYLE}>{t('primary-attributes')}</Table.Th>
                     <Table.Th style={TABLE_STYLE}>
-                        {`Min: ${characterSettings?.minPrimaryAttributeValue ?? 0} Max: ${sum} / ${characterSettings?.maxPrimaryAttributeValue ?? 0}`}
+                        {`Min: ${characterSettings?.minPrimaryAttributeValue ?? 0} Max: `}
+                        <span style={{color: sum > max ? 'var(--mantine-color-red-6)' : undefined}}>{sum}</span>
+                        {` / ${max}`}
                     </Table.Th>
                 </Table.Tr>
 

@@ -14,12 +14,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.HandlerMapping;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,7 +45,7 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
             return false;
         }
         try {
-            ObjectId universe = getUniverse().orElse(null);
+            ObjectId universe = ValidationUtils.getUniverse().orElse(null);
 
             return switch (expressionType) {
                 case SECONDARY_ATTRIBUTE_EXPRESSION -> validateSecondaryAttributeExpression(universe, value);
@@ -95,31 +90,5 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
         return primaryAttributeRepository.getAll(universe).stream()
                 .map(PrimaryAttributeVariable::new).collect(
                         Collectors.toSet());
-    }
-
-    /**
-     * Returns the corresponding universe for this validation.
-     */
-    private Optional<ObjectId> getUniverse() {
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-
-        if (attributes == null) {
-            return Optional.empty();
-        }
-
-        if (!(attributes.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE,
-                RequestAttributes.SCOPE_REQUEST) instanceof Map<?, ?> pathVariables)) {
-            return Optional.empty();
-        }
-
-        Object universePath = pathVariables.get("universe");
-        if (universePath instanceof ObjectId s) {
-            return Optional.of(s);
-        }
-        if (universePath instanceof String s && ObjectId.isValid(s)) {
-            return Optional.of(new ObjectId(s));
-        }
-
-        return Optional.empty();
     }
 }
