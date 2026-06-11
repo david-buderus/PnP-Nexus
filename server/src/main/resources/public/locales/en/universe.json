@@ -92,5 +92,8 @@
   "playerSheet": "Player Character Sheet",
   "enemySheet": "Enemy Character Sheet",
   "tierFormula": "Formula to calculate the character tier",
-  "talentPointFormula": "Formula to calculate the maximal starting talent points"
+  "talentPointFormula": "Formula to calculate the maximal starting talent points",
+  "inventorySizes": "Inventory Sizes",
+  "addInventoryType": "Add another inventory",
+  "backpackExample": "e.g. Backpack"
 }

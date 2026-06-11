@@ -164,6 +164,7 @@ export function Toolbox({
                                 type: 'INVENTORY',
                                 rows: 8,
                                 columns: 5,
+                                name: ''
                             }, {minW: 3, minH: 3, w: 12, h: 8})}
                         >
                             {t('inventory')}

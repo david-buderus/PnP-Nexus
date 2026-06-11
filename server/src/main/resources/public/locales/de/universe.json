@@ -92,5 +92,8 @@
   "playerSheet": "Spieler Charakterbogen",
   "enemySheet": "Gegner Charakterbogen",
   "tierFormula": "Formel zur Berechnung des Tiers des Charakters",
-  "talentPointFormula": "Formel zur Berechnung der maximalen Talentpunkte des Charakters"
+  "talentPointFormula": "Formel zur Berechnung der maximalen Talentpunkte des Charakters",
+  "inventorySizes": "Inventargrößen",
+  "addInventoryType": "Für ein weiteres Inventar hinzu",
+  "backpackExample": "bspw. Rucksack"
 }

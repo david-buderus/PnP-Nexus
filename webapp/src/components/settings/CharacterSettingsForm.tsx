@@ -110,18 +110,21 @@ export default function CharacterSettingsForm({
                         />
                         <Stack gap="xs" mt="md">
                             <Input.Label>
-                                {t('upgrade:inventorySizes')}
+                                {t('universe:inventorySizes')}
                             </Input.Label>
-                            {form.values.inventorySizes.map((entry, index) => (
+                            {form.values.inventorySizes.map((_, index) => (
                                 <Group key={index} align="flex-start" gap="xs">
                                     <TextInput
                                         flex={1}
+                                        placeholder={t('universe:backpackExample')}
+                                        key={form.key(`inventorySizes.${index}.name`)}
                                         {...form.getInputProps(`inventorySizes.${index}.name`)}
                                     />
                                     <NumberInput
                                         flex={1}
                                         allowDecimal={false}
                                         min={1}
+                                        key={form.key(`inventorySizes.${index}.size`)}
                                         {...form.getInputProps(`inventorySizes.${index}.size`)}
                                     />
                                     <ActionIcon

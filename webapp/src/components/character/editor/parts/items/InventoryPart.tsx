@@ -35,7 +35,9 @@ export function InventoryPart({name, rows, columns, setName, setRows, setColumns
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const {characterSettings} = useUniverseContext();
     const character = characterForm.getValues();
-    const inventorySize = useMemo(() => characterSettings.inventorySizes.filter(e => e.name === name)[0]?.size ?? 0, [characterSettings]);
+    const inventorySize = useMemo(() =>
+            characterSettings.inventorySizes.filter(e => e.name === name)[0]?.size ?? 0,
+        [characterSettings, name]);
 
     const [lastClicked, setLastClicked] = useState<SomeItemStack>(null);
 
