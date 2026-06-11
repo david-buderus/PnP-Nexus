@@ -26,6 +26,7 @@ import de.pnp.manager.component.math.EReservedVariables;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.spell.ECastingType;
 import de.pnp.manager.component.spell.Spell;
+import de.pnp.manager.component.universe.CharacterSettings;
 import de.pnp.manager.component.universe.EquipmentSettings;
 import de.pnp.manager.security.UniverseRead;
 import de.pnp.manager.server.contoller.PnPCharacterDTOConverter;
@@ -82,7 +83,8 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);
-        EquipmentSettings settings = universeSettingsRepository.getSettings(universe, EquipmentSettings.class);
+        CharacterSettings characterSettings = universeSettingsRepository.getSettings(universe, CharacterSettings.class);
+        EquipmentSettings equipmentSettings = universeSettingsRepository.getSettings(universe, EquipmentSettings.class);
 
         CharacterStats stats = new CharacterStats(
                 primaryAttributes.stream()
@@ -98,11 +100,19 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
         Optional<Talent> talent = talents.stream().findFirst();
 
         Map<String, List<JewelleryEquipment>> jewellery = new HashMap<>();
-        if (!settings.getJewelleryDefinitions().isEmpty()) {
-            EquipmentSettings.JewelleryDefinition definition = settings.getJewelleryDefinitions().getFirst();
+        if (!equipmentSettings.getJewelleryDefinitions().isEmpty()) {
+            EquipmentSettings.JewelleryDefinition definition = equipmentSettings.getJewelleryDefinitions().getFirst();
             jewellery.put(definition.name(), List.of(new JewelleryEquipment(1,
                     new Jewellery(null, "Jewellery", Set.of(Tag.from(definition.tag())), "", List.of(), ERarity.COMMON, 200, 1, "", "", null, 1, 1, 1)
             )));
+        }
+
+        Map<String, Inventory> inventories = new HashMap<>();
+        for (CharacterSettings.InventorySizeEntry entry : characterSettings.getInventorySizes()) {
+            inventories.put(entry.name(), new Inventory(entry.size(), List.of(
+                            new ItemStack<>(5, new Item(null, "Item", Set.of(), "", List.of(), ERarity.COMMON, 54, 2, "", "", 100, 0, 0))
+                    ))
+            );
         }
 
         return controller.convert(universe, new PnPCharacter(
@@ -129,9 +139,7 @@ public class PnPCharacterSheetService extends RepositoryServiceBase<PnPCharacter
                         Map.of(EArmorSlot.BODY, new ArmorEquipment(1, new Armor(null, "Body", Set.of(), "", List.of(), ERarity.COMMON, 100, 1, "", "", null, 1, EArmorSlot.BODY, 3, 2, 1, 1, 1), 0)),
                         jewellery
                 ),
-                new CharacterInventory(new Inventory(100, List.of(
-                        new ItemStack<>(5, new Item(null, "Item", Set.of(), "", List.of(), ERarity.COMMON, 54, 2, "", "", 100, 0, 0))
-                )), 52135),
+                new CharacterInventory(inventories, 52135),
                 List.of(
                         new Spell(null, "Spell", "Effect", List.of(new IResourceUsage.MaterialUsage(1, new Material(null, "Material", List.of()))), "Other Cost", 1, 1, EAction.ACTION, new Spell.TalentCast(talent.stream().toList()), EnumSet.of(ECastingType.SOMATIC), 2, Set.of(), "Counter")
                 ),

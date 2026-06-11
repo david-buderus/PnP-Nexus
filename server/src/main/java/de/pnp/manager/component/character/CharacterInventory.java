@@ -2,6 +2,7 @@ package de.pnp.manager.component.character;
 
 import de.pnp.manager.component.inventory.Inventory;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -9,21 +10,28 @@ import java.util.Objects;
  */
 public class CharacterInventory {
 
-    private final Inventory inventory;
+    private final Map<String, Inventory> inventories;
 
     private int coin;
 
-    public CharacterInventory(Inventory inventory, int coin) {
-        this.inventory = inventory;
+    public CharacterInventory(Map<String, Inventory> inventories, int coin) {
+        this.inventories = inventories;
         this.coin = coin;
     }
 
-    public Inventory getInventory() {
-        return inventory;
+    public Map<String, Inventory> getInventories() {
+        return inventories;
     }
 
     public int getCoin() {
         return coin;
+    }
+
+    /**
+     * Returns the inventory with the given name
+     */
+    public Inventory getInventory(String name) {
+        return inventories.get(name);
     }
 
     public void setCoin(int coin) {
@@ -36,11 +44,11 @@ public class CharacterInventory {
             return false;
         }
         CharacterInventory that = (CharacterInventory) o;
-        return coin == that.coin && Objects.equals(inventory, that.inventory);
+        return coin == that.coin && Objects.equals(inventories, that.inventories);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(inventory, coin);
+        return Objects.hash(inventories, coin);
     }
 }

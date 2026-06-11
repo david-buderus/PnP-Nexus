@@ -3,7 +3,7 @@ import {useUniverseContext} from '../PageBase';
 import {useTranslation} from 'react-i18next';
 import {useForm} from '@mantine/form';
 import {CharacterSettingsDto} from '../../api/model';
-import {Button, Grid, Group, NumberInput, Stack, Text, Title} from '@mantine/core';
+import {ActionIcon, Button, Grid, Group, Input, NumberInput, Stack, Text, TextInput, Title} from '@mantine/core';
 import {numberFormatter, percentageFormatter} from '../utils/Formatters';
 import {handleValidationErrors} from '../utils/ErrorUtils';
 import {probabilityForSuccesfulThrows} from '../utils/DiceThrowUtils';
@@ -17,6 +17,7 @@ import {
 import {useQueryClient} from '@tanstack/react-query';
 import {useGetSupportedFunctions} from '../../api/binary-expression-tree-service/binary-expression-tree-service';
 import FormularInput from '../input/FormularInput';
+import {FaRegTrashCan} from 'react-icons/fa6';
 
 /** Form for character settings */
 export default function CharacterSettingsForm({
@@ -36,7 +37,8 @@ export default function CharacterSettingsForm({
             maxPrimaryAttributeValue: 10,
             maxPrimaryAttributeSum: 40,
             tierFormula: '',
-            talentPointFormula: ''
+            talentPointFormula: '',
+            inventorySizes: []
         }
     });
 
@@ -106,6 +108,42 @@ export default function CharacterSettingsForm({
                             key={form.key('talentPointFormula')}
                             {...form.getInputProps('talentPointFormula')}
                         />
+                        <Stack gap="xs" mt="md">
+                            <Input.Label>
+                                {t('upgrade:inventorySizes')}
+                            </Input.Label>
+                            {form.values.inventorySizes.map((entry, index) => (
+                                <Group key={index} align="flex-start" gap="xs">
+                                    <TextInput
+                                        flex={1}
+                                        {...form.getInputProps(`inventorySizes.${index}.name`)}
+                                    />
+                                    <NumberInput
+                                        flex={1}
+                                        allowDecimal={false}
+                                        min={1}
+                                        {...form.getInputProps(`inventorySizes.${index}.size`)}
+                                    />
+                                    <ActionIcon
+                                        variant="outline"
+                                        size="lg"
+                                        color="red"
+                                        onClick={() => form.removeListItem('inventorySizes', index)}
+                                    >
+                                        <FaRegTrashCan size={16}/>
+                                    </ActionIcon>
+                                </Group>
+                            ))}
+                            <Button
+                                variant="outline"
+                                onClick={() => form.insertListItem('inventorySizes', {
+                                    name: '',
+                                    size: 20
+                                })}
+                            >
+                                {t('universe:addInventoryType')}
+                            </Button>
+                        </Stack>
                     </Stack>
                 </Grid.Col>
                 <Grid.Col span={1}>

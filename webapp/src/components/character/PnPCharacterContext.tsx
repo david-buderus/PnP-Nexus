@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {PnPCharacterDTO} from '../../api/model';
+import {Inventory, PnPCharacterDTO} from '../../api/model';
 import {UseFormReturnType} from '@mantine/form';
 import {useUniverseContext} from '../PageBase';
 import {fetchAllPrimaryAttributes} from '../Database';
@@ -48,10 +48,13 @@ export function useEmptyCharacter(): PnPCharacterDTO {
         },
         inventory: {
             coin: 0,
-            inventory: {
-                items: [],
-                maxSize: 100
-            },
+            inventories: characterSettings?.inventorySizes?.reduce((acc, curr) => {
+                acc[curr.name] = {
+                    items: [],
+                    maxSize: curr.size
+                };
+                return acc;
+            }, {} as Record<string, Inventory>) ?? {}
         },
         spells: [],
         stats: {

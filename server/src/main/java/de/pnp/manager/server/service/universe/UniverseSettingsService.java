@@ -64,7 +64,8 @@ public class UniverseSettingsService {
                     settings.maxPrimaryAttributeValue(),
                     settings.maxPrimaryAttributeSum(),
                     BinaryExpressionTree.from(settings.tierFormula(), Set.of()),
-                    BinaryExpressionTree.from(settings.talentPointFormula(), Set.of())
+                    BinaryExpressionTree.from(settings.talentPointFormula(), Set.of()),
+                    settings.inventorySizes()
             ));
         } catch (IllegalFormulaException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);

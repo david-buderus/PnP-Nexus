@@ -1,6 +1,6 @@
-import {ActionIcon, Group, NumberInput, Popover, Stack, Table, Text} from '@mantine/core';
+import {ActionIcon, Group, NumberInput, Popover, Select, Stack, Table, Text} from '@mantine/core';
 import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {PageElementSettings} from '../PageElementSettings';
@@ -15,29 +15,38 @@ import {
     useAddItemToInventory,
     useRemoveItemFromInventory
 } from '../../../../../api/inventory-service/inventory-service';
+import {useUniverseContext} from '../../../../PageBase';
 
+const CROSSED_CELL_BACKGROUND = `
+  linear-gradient(to top right, transparent calc(50% - 1px), var(--mantine-color-gray-4), transparent calc(50% + 1px)),
+  linear-gradient(to bottom right, transparent calc(50% - 1px), var(--mantine-color-gray-4), transparent calc(50% + 1px))
+`;
 
 /** Shows the inventory of the character */
-export function InventoryPart({rows, columns, setRows, setColumns}: {
+export function InventoryPart({name, rows, columns, setName, setRows, setColumns}: {
+    name: string;
     rows: number;
     columns: number;
+    setName: (n: string) => void;
     setRows: (n: number) => void;
     setColumns: (n: number) => void;
 }) {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {characterSettings} = useUniverseContext();
     const character = characterForm.getValues();
+    const inventorySize = useMemo(() => characterSettings.inventorySizes.filter(e => e.name === name)[0]?.size ?? 0, [characterSettings]);
 
     const [lastClicked, setLastClicked] = useState<SomeItemStack>(null);
 
     const {mutate: addItemStackToInventory} = useAddItemStackToInventory({
         mutation: {
-            onSuccess: response => characterForm.setFieldValue('inventory.inventory', response.data)
+            onSuccess: response => characterForm.setFieldValue(`inventory.inventories.${name}`, response.data)
         }
     });
     const {mutate: removeItemFromInventory} = useRemoveItemFromInventory({
         mutation: {
-            onSuccess: response => characterForm.setFieldValue('inventory.inventory', response.data)
+            onSuccess: response => characterForm.setFieldValue(`inventory.inventories.${name}`, response.data)
         }
     });
 
@@ -50,13 +59,27 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
         >
             <Table.Tbody>
                 <Table.Tr h={TABLE_ROW_HEIGHT}>
-                    <Table.Th style={TABLE_STYLE} colSpan={columns}>{t('inventory')}</Table.Th>
+                    <Table.Th style={TABLE_STYLE} colSpan={columns}>
+                        {name}
+                    </Table.Th>
                 </Table.Tr>
                 {Array.from({length: rows}, (_, rowIndex) =>
                     <Table.Tr h={TABLE_ROW_HEIGHT} key={rowIndex}>
                         {Array.from({length: columns}, (__, colIndex) => {
                             const itemIndex = rowIndex + colIndex * rows;
-                            const itemStack = character?.inventory.inventory.items[itemIndex];
+                            const itemStack = character?.inventory.inventories[name]?.items[itemIndex];
+
+                            if (itemIndex >= inventorySize) {
+                                return <Table.Td
+                                    style={{
+                                        width: `${100 / columns}%`,
+                                        backgroundImage: CROSSED_CELL_BACKGROUND,
+                                        backgroundSize: '100% 100%',
+                                        ...TABLE_STYLE
+                                    }}
+                                    key={colIndex}
+                                />;
+                            }
 
                             return <Table.Td
                                 style={{width: `${100 / columns}%`, ...TABLE_STYLE}}
@@ -82,7 +105,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                         >
                                             <UpgradePopover
                                                 item={itemStack}
-                                                onChange={i => characterForm.replaceListItem('inventory.inventory.items', itemIndex, i)}
+                                                onChange={i => characterForm.replaceListItem(`inventory.inventories.${name}.items`, itemIndex, i)}
                                             />
                                             <ActionIcon
                                                 variant="subtle"
@@ -90,7 +113,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 className="no-drag"
                                                 onClick={() => addItemStackToInventory({
                                                     data: {
-                                                        inventory: characterForm.values.inventory.inventory,
+                                                        inventory: characterForm.values.inventory.inventories[name],
                                                         itemStack: {
                                                             ...itemStack,
                                                             stackSize: 1
@@ -99,7 +122,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 })}
                                                 onContextMenu={() => addItemStackToInventory({
                                                     data: {
-                                                        inventory: characterForm.values.inventory.inventory,
+                                                        inventory: characterForm.values.inventory.inventories[name],
                                                         itemStack: {
                                                             ...itemStack,
                                                             stackSize: 5
@@ -115,7 +138,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 className="no-drag"
                                                 onClick={() => removeItemFromInventory({
                                                     data: {
-                                                        inventory: characterForm.values.inventory.inventory,
+                                                        inventory: characterForm.values.inventory.inventories[name],
                                                         itemStack: {
                                                             ...itemStack,
                                                             stackSize: 1
@@ -124,7 +147,7 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                                                 })}
                                                 onContextMenu={() => removeItemFromInventory({
                                                     data: {
-                                                        inventory: characterForm.values.inventory.inventory,
+                                                        inventory: characterForm.values.inventory.inventories[name],
                                                         itemStack: {
                                                             ...itemStack,
                                                             stackSize: 5
@@ -145,6 +168,12 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
         </Table>
         <PageElementSettings>
             <Stack>
+                <Select
+                    label={t('name')}
+                    value={name}
+                    onChange={setName}
+                    data={characterSettings.inventorySizes.map(s => s.name)}
+                />
                 <NumberInput
                     label={t('sheetEditor:numberOfRows')}
                     value={rows}
@@ -157,17 +186,17 @@ export function InventoryPart({rows, columns, setRows, setColumns}: {
                 />
             </Stack>
         </PageElementSettings>
-        <ItemAdditionPopover/>
+        <ItemAdditionPopover name={name}/>
         <ItemStackCardModal stack={lastClicked} onClose={() => setLastClicked(null)}/>
     </>;
 }
 
-function ItemAdditionPopover() {
+function ItemAdditionPopover({name}: { name: string }) {
     const {allowEdit, characterForm} = useContext(PnPCharacterContext);
     const [items] = fetchAllItems();
     const {mutate: addItemToInventory} = useAddItemToInventory({
         mutation: {
-            onSuccess: response => characterForm.setFieldValue('inventory.inventory', response.data)
+            onSuccess: response => characterForm.setFieldValue(`inventory.inventories.${name}`, response.data)
         }
     });
 
@@ -182,6 +211,7 @@ function ItemAdditionPopover() {
                     variant="subtle"
                     size="sm"
                     className="no-drag"
+                    disabled={!name}
                     style={{
                         position: 'absolute',
                         top: 2,
@@ -197,7 +227,7 @@ function ItemAdditionPopover() {
                     items={items}
                     onSelect={item => addItemToInventory({
                         data: {
-                            inventory: characterForm.values.inventory.inventory,
+                            inventory: characterForm.values.inventory.inventories[name],
                             item: item.item,
                             amount: item.amount,
                         }

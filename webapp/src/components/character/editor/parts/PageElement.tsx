@@ -52,6 +52,7 @@ export type PageElementData = {
     numberOfJewellery: Record<string, number>;
 } | {
     type: 'INVENTORY';
+    name: string;
     rows: number;
     columns: number;
 } | {
@@ -157,8 +158,10 @@ export function PageElement({
             />;
         case 'INVENTORY':
             return <InventoryPart
+                name={data.name}
                 rows={data.rows}
                 columns={data.columns}
+                setName={n => setData({...data, name: n})}
                 setRows={j => setData({...data, rows: j})}
                 setColumns={j => setData({...data, columns: j})}
             />;

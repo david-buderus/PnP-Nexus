@@ -12,7 +12,7 @@ import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
 public class WeaponEquipment extends DamageableEquipment<Weapon> implements
         IHandheldEquipment {
 
-    public WeaponEquipment(float stackSize, Weapon item, int wear) {
+    public WeaponEquipment(float stackSize, Weapon item, float wear) {
         super(stackSize, item, wear);
     }
 

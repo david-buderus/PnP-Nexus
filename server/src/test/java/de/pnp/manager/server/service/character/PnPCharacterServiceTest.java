@@ -429,7 +429,7 @@ public class PnPCharacterServiceTest extends UniverseTestBase {
                 ),
                 Map.of(),
                 new CharacterEquipment(List.of(), List.of(), List.of(), List.of(), Map.of(), Map.of()),
-                new CharacterInventory(new Inventory(20, List.of()), 200),
+                new CharacterInventory(Map.of("Backpack", new Inventory(20, List.of())), 200),
                 List.of(),
                 Map.of());
     }

@@ -5872,8 +5872,11 @@
             "type": "integer",
             "format": "int32"
           },
-          "inventory": {
-            "$ref": "#/components/schemas/Inventory"
+          "inventories": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Inventory"
+            }
           }
         }
       },
@@ -5934,6 +5937,12 @@
       "CharacterSettings": {
         "type": "object",
         "properties": {
+          "inventorySizes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventorySizeEntry"
+            }
+          },
           "maxPrimaryAttributeSum": {
             "type": "integer",
             "format": "int32"
@@ -5956,11 +5965,18 @@
       },
       "CharacterSettingsDto": {
         "required": [
+          "inventorySizes",
           "talentPointFormula",
           "tierFormula"
         ],
         "type": "object",
         "properties": {
+          "inventorySizes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InventorySizeEntry"
+            }
+          },
           "maxPrimaryAttributeSum": {
             "type": "integer",
             "format": "int32"
@@ -6367,6 +6383,21 @@
                 "$ref": "#/components/schemas/WeaponEquipment"
               }
             ]
+          }
+        }
+      },
+      "InventorySizeEntry": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

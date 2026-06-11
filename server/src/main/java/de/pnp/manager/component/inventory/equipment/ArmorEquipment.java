@@ -8,7 +8,7 @@ import de.pnp.manager.component.item.equipable.EArmorSlot;
  */
 public class ArmorEquipment extends DefensiveEquipment<Armor> {
 
-    public ArmorEquipment(float stackSize, Armor item, int wear) {
+    public ArmorEquipment(float stackSize, Armor item, float wear) {
         super(stackSize, item, wear);
     }
 

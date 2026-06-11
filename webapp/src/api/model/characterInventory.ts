@@ -4,9 +4,9 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { Inventory } from './inventory';
+import type { CharacterInventoryInventories } from './characterInventoryInventories';
 
 export interface CharacterInventory {
   coin?: number;
-  inventory?: Inventory;
+  inventories?: CharacterInventoryInventories;
 }

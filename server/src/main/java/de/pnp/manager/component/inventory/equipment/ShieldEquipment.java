@@ -9,7 +9,7 @@ import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
  */
 public class ShieldEquipment extends DefensiveEquipment<Shield> implements IHandheldEquipment {
 
-    public ShieldEquipment(float stackSize, Shield item, int wear) {
+    public ShieldEquipment(float stackSize, Shield item, float wear) {
         super(stackSize, item, wear);
     }
 

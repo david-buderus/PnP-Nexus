@@ -20,6 +20,7 @@ import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
 import de.pnp.manager.component.upgrade.effect.EquipmentItemEffect;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.util.*;
@@ -62,6 +63,7 @@ public class ItemStack<I extends Item> implements Cloneable {
     }
 
     @JsonCreator
+    @PersistenceCreator
     public ItemStack(float stackSize, I item, Collection<Upgrade> upgrades) {
         this.stackSize = stackSize;
         this.item = item;

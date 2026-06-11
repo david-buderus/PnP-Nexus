@@ -10,7 +10,7 @@ import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
  */
 public abstract class DefensiveEquipment<I extends EquipableItem & IDefensiveItem> extends DamageableEquipment<I> {
 
-    protected DefensiveEquipment(float stackSize, I item, int wear) {
+    protected DefensiveEquipment(float stackSize, I item, float wear) {
         super(stackSize, item, wear);
     }
 

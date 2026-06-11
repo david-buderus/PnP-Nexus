@@ -4,9 +4,11 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+import type { InventorySizeEntry } from './inventorySizeEntry';
 import type { BinaryExpressionTree } from './binaryExpressionTree';
 
 export interface CharacterSettings {
+  inventorySizes?: InventorySizeEntry[];
   maxPrimaryAttributeSum?: number;
   maxPrimaryAttributeValue?: number;
   minPrimaryAttributeValue?: number;

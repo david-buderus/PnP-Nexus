@@ -1,9 +1,13 @@
 package de.pnp.manager.component.universe;
 
 import de.pnp.manager.validation.IsValidExpression;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+
+import java.util.List;
 
 /**
  * DTO for {@link CharacterSettings}
@@ -13,7 +17,8 @@ public record CharacterSettingsDto(
         @Positive int maxPrimaryAttributeValue,
         @Positive int maxPrimaryAttributeSum,
         @NotNull @IsValidExpression(expressionType = IsValidExpression.EExpressionType.TIER_FORMULA) String tierFormula,
-        @NotNull @IsValidExpression(expressionType = IsValidExpression.EExpressionType.TALENT_POINT_FORMULA) String talentPointFormula
+        @NotNull @IsValidExpression(expressionType = IsValidExpression.EExpressionType.TALENT_POINT_FORMULA) String talentPointFormula,
+        @NotEmpty @Valid List<CharacterSettings.InventorySizeEntry> inventorySizes
 ) {
 
     /**
@@ -25,7 +30,8 @@ public record CharacterSettingsDto(
                 settings.getMaxPrimaryAttributeValue(),
                 settings.getMaxPrimaryAttributeSum(),
                 settings.getTierFormula() != null ? settings.getTierFormula().toHumanReadableString() : "",
-                settings.getTalentPointFormula() != null ? settings.getTalentPointFormula().toHumanReadableString() : ""
+                settings.getTalentPointFormula() != null ? settings.getTalentPointFormula().toHumanReadableString() : "",
+                settings.getInventorySizes() != null ? settings.getInventorySizes() : List.of()
         );
     }
 }

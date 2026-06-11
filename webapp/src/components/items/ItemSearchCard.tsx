@@ -39,33 +39,35 @@ export function ItemSearchCard({
                 />
             </Group>
             <ScrollArea.Autosize type="auto" mah={500}>
-                <Group mih={300} align="flex-start">
-                    {filteredItems.slice(0, 3).map(item => <ItemCard
-                        key={item.id}
-                        item={item}
-                        onClick={() => onSelect({amount: amount, item: item})}
-                    />)}
-                </Group>
-                {filteredItems.length > 3 ?
+                <Stack>
                     <Group mih={300} align="flex-start">
-                        {filteredItems.slice(3, 6).map(item => <ItemCard
+                        {filteredItems.slice(0, 3).map(item => <ItemCard
                             key={item.id}
                             item={item}
                             onClick={() => onSelect({amount: amount, item: item})}
                         />)}
                     </Group>
-                    : null
-                }
-                {filteredItems.length > 6 ?
-                    <Group mih={300} align="flex-start">
-                        {filteredItems.slice(6, 9).map(item => <ItemCard
-                            key={item.id}
-                            item={item}
-                            onClick={() => onSelect({amount: amount, item: item})}
-                        />)}
-                    </Group>
-                    : null
-                }
+                    {filteredItems.length > 3 ?
+                        <Group mih={300} align="flex-start">
+                            {filteredItems.slice(3, 6).map(item => <ItemCard
+                                key={item.id}
+                                item={item}
+                                onClick={() => onSelect({amount: amount, item: item})}
+                            />)}
+                        </Group>
+                        : null
+                    }
+                    {filteredItems.length > 6 ?
+                        <Group mih={300} align="flex-start">
+                            {filteredItems.slice(6, 9).map(item => <ItemCard
+                                key={item.id}
+                                item={item}
+                                onClick={() => onSelect({amount: amount, item: item})}
+                            />)}
+                        </Group>
+                        : null
+                    }
+                </Stack>
             </ScrollArea.Autosize>
         </Stack>
     </Card>;

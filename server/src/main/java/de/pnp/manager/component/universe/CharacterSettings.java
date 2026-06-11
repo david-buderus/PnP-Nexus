@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.character.PnPCharacter;
 import de.pnp.manager.component.math.BinaryExpressionTree;
 import de.pnp.manager.component.math.IllegalFormulaException;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,7 +20,7 @@ public final class CharacterSettings extends SettingsBase {
      * The default settings
      */
     public static final CharacterSettings DEFAULT = new CharacterSettings(
-            2, 12, 50, createFormula("ceil(LVL/5)"), createFormula("50"));
+            2, 12, 50, createFormula("ceil(LVL/5)"), createFormula("50"), List.of());
 
     private final int minPrimaryAttributeValue;
 
@@ -29,13 +32,18 @@ public final class CharacterSettings extends SettingsBase {
 
     private final BinaryExpressionTree talentPointFormula;
 
+    private final List<InventorySizeEntry> inventorySizes;
+
     @JsonCreator
-    public CharacterSettings(int minPrimaryAttributeValue, int maxPrimaryAttributeValue, int maxPrimaryAttributeSum, BinaryExpressionTree tierFormula, BinaryExpressionTree talentPointFormula) {
+    public CharacterSettings(int minPrimaryAttributeValue, int maxPrimaryAttributeValue, int maxPrimaryAttributeSum,
+                             BinaryExpressionTree tierFormula, BinaryExpressionTree talentPointFormula,
+                             List<InventorySizeEntry> inventorySizes) {
         this.minPrimaryAttributeValue = minPrimaryAttributeValue;
         this.maxPrimaryAttributeValue = maxPrimaryAttributeValue;
         this.maxPrimaryAttributeSum = maxPrimaryAttributeSum;
         this.tierFormula = tierFormula;
         this.talentPointFormula = talentPointFormula;
+        this.inventorySizes = inventorySizes;
     }
 
     public int getMinPrimaryAttributeValue() {
@@ -58,22 +66,27 @@ public final class CharacterSettings extends SettingsBase {
         return talentPointFormula;
     }
 
+    public List<InventorySizeEntry> getInventorySizes() {
+        return inventorySizes;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CharacterSettings that = (CharacterSettings) o;
-        return minPrimaryAttributeValue == that.minPrimaryAttributeValue
-                && maxPrimaryAttributeValue == that.maxPrimaryAttributeValue
-                && maxPrimaryAttributeSum == that.maxPrimaryAttributeSum
-                && Objects.equals(tierFormula, that.tierFormula)
-                && Objects.equals(talentPointFormula, that.talentPointFormula);
+        CharacterSettings settings = (CharacterSettings) o;
+        return minPrimaryAttributeValue == settings.minPrimaryAttributeValue
+                && maxPrimaryAttributeValue == settings.maxPrimaryAttributeValue
+                && maxPrimaryAttributeSum == settings.maxPrimaryAttributeSum
+                && Objects.equals(tierFormula, settings.tierFormula)
+                && Objects.equals(talentPointFormula, settings.talentPointFormula)
+                && Objects.equals(inventorySizes, settings.inventorySizes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(minPrimaryAttributeValue, maxPrimaryAttributeValue, maxPrimaryAttributeSum, tierFormula, talentPointFormula);
+        return Objects.hash(minPrimaryAttributeValue, maxPrimaryAttributeValue, maxPrimaryAttributeSum, tierFormula, talentPointFormula, inventorySizes);
     }
 
     private static BinaryExpressionTree createFormula(String formula) {
@@ -82,5 +95,11 @@ public final class CharacterSettings extends SettingsBase {
         } catch (IllegalFormulaException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    /**
+     * Entry for inventory sizes
+     */
+    public record InventorySizeEntry(@NotEmpty String name, @Positive int size) {
     }
 }
