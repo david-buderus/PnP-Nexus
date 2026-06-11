@@ -87,6 +87,7 @@ export type PageElementData = {
     definition: TableDefinition;
 } | {
     type: 'TALENT_OVERVIEW';
+    fontSize: string;
 }
 
 /** Layout of page element */
@@ -219,7 +220,10 @@ export function PageElement({
                 setDefinition={d => setData({...data, definition: d})}
             />;
         case 'TALENT_OVERVIEW':
-            return <TalentOverview/>;
+            return <TalentOverview
+                fontSize={data.fontSize}
+                setFontSize={s => setData({...data, fontSize: s})}
+            />;
         default:
             return <></>;
     }

@@ -18,9 +18,11 @@ export function FreeTextPart({
     const {t} = useTranslation();
 
     return <>
-        <Text size={fontSize}>
-            {text ? text : t('nothing-here')}
-        </Text>
+        <Stack justify="center" h="100%">
+            <Text size={fontSize}>
+                {text ? text : t('nothing-here')}
+            </Text>
+        </Stack>
         <PageElementSettings>
             <Stack>
                 <Textarea

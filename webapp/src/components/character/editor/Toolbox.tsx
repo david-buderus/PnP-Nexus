@@ -210,7 +210,8 @@ export function Toolbox({
                             unselectable="on"
                             onDragStart={createDragFunction({
                                 type: 'TALENT_OVERVIEW',
-                            }, {minW: 3, minH: 2, w: 6, h: 2})}
+                                fontSize: 'xl'
+                            }, {minW: 3, minH: 1, w: 6, h: 2})}
                         >
                             {t('sheetEditor:talentOverview')}
                         </Button>
