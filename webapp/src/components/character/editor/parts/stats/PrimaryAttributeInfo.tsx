@@ -56,8 +56,8 @@ export function PrimaryAttributeInfo({
                                 allowDecimal={false}
                                 allowNegative={false}
                                 readOnly={!allowEdit}
-                                min={characterSettings.minPrimaryAttributeValue}
-                                max={characterSettings.maxPrimaryAttributeValue}
+                                min={characterSettings?.minPrimaryAttributeValue ?? 0}
+                                max={characterSettings?.maxPrimaryAttributeValue ?? 1000}
                                 key={characterForm.key(`stats.primaryStats.${id}`)}
                                 {...characterForm.getInputProps(`stats.primaryStats.${id}`)}
                             />

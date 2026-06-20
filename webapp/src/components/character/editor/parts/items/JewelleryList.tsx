@@ -13,6 +13,7 @@ import {UpgradePopover} from '../../../../items/UpgradeControl';
 import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 import {useCreateJewellery} from '../../../../../api/item-stack-service/item-stack-service';
 import {handleNetworkErrors} from '../../../../utils/ErrorUtils';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 /** Shows jewellery of the character */
 export function JewelleryList({numberOfJewellery, setNumberOfJewellery}: {
@@ -71,6 +72,7 @@ function JewelleryLines({
     numberOfJewellery: Record<string, number>
 }) {
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showItems} = useContext(PnPCharacterPrintContext);
     const character = characterForm.getValues();
 
     const number = numberOfJewellery[definition.name];
@@ -97,10 +99,21 @@ function JewelleryLines({
                 h={TABLE_ROW_HEIGHT}
                 onClick={allowEdit ? () => setLastClicked(j ?? null) : null}
             >
-                <Table.Td style={TABLE_STYLE}>{definition.name + (number > 1 ? ` ${index + 1}` : '')}</Table.Td>
-                <Table.Td style={TABLE_STYLE}>{j?.item.name ?? ''}</Table.Td>
                 <Table.Td style={TABLE_STYLE}>
-                    <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                    {definition.name + (number > 1 ? ` ${index + 1}` : '')}
+                </Table.Td>
+                <Table.Td style={TABLE_STYLE}>
+                    <div className={!showItems ? 'no-print' : undefined}>
+                        {j?.item.name ?? ''}
+                    </div>
+                </Table.Td>
+                <Table.Td style={TABLE_STYLE}>
+                    <Group
+                        justify="space-between"
+                        wrap="nowrap"
+                        style={{width: '100%'}}
+                        className={!showItems ? 'no-print' : undefined}
+                    >
                         <Text
                             size={TABLE_STYLE.fontSize}
                             truncate="end"

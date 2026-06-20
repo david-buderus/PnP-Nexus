@@ -17,6 +17,7 @@ import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
 import {useCreateArmor, useCreateShield} from '../../../../../api/item-stack-service/item-stack-service';
 import {handleNetworkErrors} from '../../../../utils/ErrorUtils';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 /** Shows armor of the character */
 export function ArmorSlots({numberOfShieldRows, setNumberOfShieldRows}: {
@@ -100,6 +101,7 @@ function ArmorSlot({slot, setLastClicked}: {
 }) {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showItems} = useContext(PnPCharacterPrintContext);
     const character = characterForm.getValues();
     const {itemSettings} = useUniverseContext();
 
@@ -110,19 +112,43 @@ function ArmorSlot({slot, setLastClicked}: {
             h={TABLE_ROW_HEIGHT}
             onClick={allowEdit ? () => setLastClicked(armor ?? null) : null}
         >
-            <Table.Td style={TABLE_STYLE}>{t('enum:' + slot.toLowerCase())}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{armor?.item.name ?? ''}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{formatStat(armor?.armor, armor?.item.armor)}</Table.Td>
-            {itemSettings?.usingProtection ?
-                <Table.Td style={TABLE_STYLE}>{formatStat(armor?.protection, armor?.item.protection)}</Table.Td> : null
-            }
-            <Table.Td style={TABLE_STYLE}>{formatStat(armor?.weight, armor?.item.weight)}</Table.Td>
             <Table.Td style={TABLE_STYLE}>
-                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                {t('enum:' + slot.toLowerCase())}
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {armor?.item.name ?? ''}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(armor?.armor, armor?.item.armor)}
+                </div>
+            </Table.Td>
+            {itemSettings?.usingProtection ?
+                <Table.Td style={TABLE_STYLE}>
+                    <div className={!showItems ? 'no-print' : undefined}>
+                        {formatStat(armor?.protection, armor?.item.protection)}
+                    </div>
+                </Table.Td> : null
+            }
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(armor?.weight, armor?.item.weight)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <Group
+                    justify="space-between"
+                    wrap="nowrap"
+                    style={{width: '100%'}}
+                    className={!showItems ? 'no-print' : undefined}
+                >
                     <Text
                         size={TABLE_STYLE.fontSize}
                         truncate="end"
                         style={{flex: 1, minWidth: 0}}
+                        className={!showItems ? 'no-print' : undefined}
                     >
                         {armor?.item.effects.map(e => e.description).join(',') ?? ''}
                     </Text>
@@ -156,7 +182,9 @@ function ArmorSlot({slot, setLastClicked}: {
         </Table.Tr>
         <Table.Tr h={TABLE_ROW_HEIGHT}>
             <Table.Td style={TABLE_STYLE} colSpan={itemSettings?.usingProtection ? 6 : 5}>
-                {armor ? `${armor.remainingUpgradeSlots}/${armor.upgradeSlots} ${armor.upgrades.map(u => u.name).join(', ')}` : ''}
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {armor ? `${armor.remainingUpgradeSlots}/${armor.upgradeSlots} ${armor.upgrades.map(u => u.name).join(', ')}` : ''}
+                </div>
             </Table.Td>
         </Table.Tr>
     </>;

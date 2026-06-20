@@ -6,12 +6,14 @@ import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {TableNumberInput} from '../inputs/TableNumberInput';
 import {useCalculateTier} from '../../../../../api/pn-p-character-service/pn-p-character-service';
 import {useUniverseContext} from '../../../../PageBase';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 /** Shows level and co of the character */
 export function LevelInfo() {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showLevel} = useContext(PnPCharacterPrintContext);
     const tier = useCalculateTier(activeUniverse?.id, {level: characterForm.getValues().level.level ?? 1}, {
         query: {enabled: Boolean(activeUniverse?.id)}
     }).data?.data ?? 1;
@@ -26,6 +28,7 @@ export function LevelInfo() {
                 <Table.Th style={TABLE_STYLE}>{t('character:level') + ' / ' + t('tier')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>
                     <TableNumberInput
+                        className={!showLevel ? 'no-print' : undefined}
                         allowDecimal={false}
                         allowNegative={false}
                         readOnly={!allowEdit}
@@ -42,6 +45,7 @@ export function LevelInfo() {
                 <Table.Th style={TABLE_STYLE}>{t('character:experiencePoints')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>
                     <TableNumberInput
+                        className={!showLevel ? 'no-print' : undefined}
                         allowDecimal={false}
                         allowNegative={false}
                         readOnly={!allowEdit}
@@ -55,6 +59,7 @@ export function LevelInfo() {
                 <Table.Th style={TABLE_STYLE}>{t('character:skillPoints')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>
                     <TableNumberInput
+                        className={!showLevel ? 'no-print' : undefined}
                         allowDecimal={false}
                         allowNegative={false}
                         readOnly={!allowEdit}

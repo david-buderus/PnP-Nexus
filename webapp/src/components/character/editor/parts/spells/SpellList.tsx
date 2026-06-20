@@ -11,6 +11,7 @@ import {SpellSearchCard} from '../../../../spells/SpellSearchCard';
 import {IconCircleMinus, IconCirclePlus} from '@tabler/icons-react';
 import {Spell} from '../../../../../api/model';
 import {SpellCardModal} from '../../../../spells/SpellCard';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 
 /** Shows the spells of the character */
@@ -22,6 +23,7 @@ export function SpellList({
 }) {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showSpells} = useContext(PnPCharacterPrintContext);
     const character = characterForm.getValues();
     const spells = useMemo(() => resizeArray(character.spells, numberOfRows), [character.spells, numberOfRows]);
 
@@ -63,15 +65,38 @@ export function SpellList({
                         h={TABLE_ROW_HEIGHT}
                         onClick={allowEdit ? () => setLastClicked(spell) : null}
                     >
-                        <Table.Td style={TABLE_STYLE}>{spell.name}</Table.Td>
-                        <Table.Td style={TABLE_STYLE}>{spell.effect}</Table.Td>
-                        <Table.Td style={TABLE_STYLE}>{spell.castTime}</Table.Td>
-                        <Table.Td style={TABLE_STYLE}>{spell.cooldown}</Table.Td>
                         <Table.Td style={TABLE_STYLE}>
-                            {spell.cost?.map(resourceFormatter)?.join(', ') ?? ''}
+                            <div className={!showSpells ? 'no-print' : undefined}>
+                                {spell.name}
+                            </div>
                         </Table.Td>
                         <Table.Td style={TABLE_STYLE}>
-                            <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                            <div className={!showSpells ? 'no-print' : undefined}>
+                                {spell.effect}
+                            </div>
+                        </Table.Td>
+                        <Table.Td style={TABLE_STYLE}>
+                            <div className={!showSpells ? 'no-print' : undefined}>
+                                {spell.castTime}
+                            </div>
+                        </Table.Td>
+                        <Table.Td style={TABLE_STYLE}>
+                            <div className={!showSpells ? 'no-print' : undefined}>
+                                {spell.cooldown}
+                            </div>
+                        </Table.Td>
+                        <Table.Td style={TABLE_STYLE}>
+                            <div className={!showSpells ? 'no-print' : undefined}>
+                                {spell.cost?.map(resourceFormatter)?.join(', ') ?? ''}
+                            </div>
+                        </Table.Td>
+                        <Table.Td style={TABLE_STYLE}>
+                            <Group
+                                justify="space-between"
+                                wrap="nowrap"
+                                style={{width: '100%'}}
+                                className={!showSpells ? 'no-print' : undefined}
+                            >
                                 <Text
                                     size={TABLE_STYLE.fontSize}
                                     truncate="end"

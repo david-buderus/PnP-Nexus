@@ -11,6 +11,7 @@ import {AddableOrderModifier} from '../OrderModifier';
 import {TableTalentRollInput} from '../inputs/TableTalentRollInput';
 import {PageElementSettings} from '../PageElementSettings';
 import {TableTextInput} from '../inputs/TableTextInput';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 /** Props of the TalentGroup */
 export type TalentGroupProps = {
@@ -40,6 +41,7 @@ export function TalentGroup({
     setThirdAttributeId
 }: TalentGroupProps) {
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showTalents} = useContext(PnPCharacterPrintContext);
 
     const [primaryAttributes] = fetchAllPrimaryAttributes();
     const attributeMap = toIdMap(primaryAttributes);
@@ -100,7 +102,18 @@ export function TalentGroup({
                     <Table.Th style={{fontWeight: 'bold', textAlign: 'center', ...TABLE_STYLE}}>
                         {attributeString}
                     </Table.Th>
-                    <Table.Th style={{fontWeight: 'bold', textAlign: 'center', ...TABLE_STYLE}}/>
+                    <Table.Th style={{fontWeight: 'bold', textAlign: 'center', ...TABLE_STYLE}}>
+                        <TableTalentRollInput
+                            className={!showTalents ? 'no-print' : undefined}
+                            allowDecimal={false}
+                            allowNegative={false}
+                            readOnly={!allowEdit}
+                            disabled={!groupName}
+                            key={characterForm.key(`customFields.${groupName}`)}
+                            {...characterForm.getInputProps(`customFields.${groupName}`)}
+                            value={characterForm.getInputProps(`customFields.${groupName}`).value || ''}
+                        />
+                    </Table.Th>
                 </Table.Tr>
 
                 {talentOrder.map((talent, index) => {
@@ -118,6 +131,7 @@ export function TalentGroup({
                         <Table.Th style={{textAlign: 'center', ...TABLE_STYLE}}>
                             <TableTextInput
                                 styles={{input: {textAlign: 'right'}}}
+                                className={!showTalents ? 'no-print' : undefined}
                                 key={characterForm.key(`customFields.${talent.id}`)}
                                 {...characterForm.getInputProps(`customFields.${talent.id}`)}
                                 value={characterForm.getInputProps(`customFields.${talent.id}`).value || ''}
@@ -132,6 +146,7 @@ export function TalentGroup({
                         </Table.Td>
                         <Table.Td style={{textAlign: 'center', ...TABLE_STYLE}}>
                             <TableTalentRollInput
+                                className={!showTalents ? 'no-print' : undefined}
                                 allowDecimal={false}
                                 allowNegative={false}
                                 readOnly={!allowEdit}

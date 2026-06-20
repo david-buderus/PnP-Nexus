@@ -21,6 +21,7 @@ import {useQueryClient} from '@tanstack/react-query';
 import {notifications} from '@mantine/notifications';
 import {fetchAllCharacterSheets} from '../Database';
 import {getGetPermissionsQueryKey} from '../../api/user-service/user-service';
+import {PnPCharacterPrintContext, PnPCharacterPrintContextContent, PrintModal} from './PnPCharacterPrintContext';
 
 /** Allows to edit the given character */
 export function CharacterEdit({
@@ -47,6 +48,12 @@ export function CharacterEdit({
     const emptyCharacter = useEmptyCharacter();
     const [selectedSheet, setSelectedSheet] = useState<PnPCharacterSheet>(null);
     const [sheets] = fetchAllCharacterSheets();
+    const [printOptions, setPrintOptions] = useState<PnPCharacterPrintContextContent>({
+        showItems: true,
+        showSpells: true,
+        showTalents: true,
+        showLevel: true
+    });
 
     const sortedSheets = useMemo(() => [
         sheetSettings?.playerSheet,
@@ -170,11 +177,13 @@ export function CharacterEdit({
                 })}
             >
                 <Group wrap="nowrap" align="flex-start">
-                    <PnPCharacterView
-                        characterForm={form}
-                        allowEdit={true}
-                        sheet={selectedSheet}
-                    />
+                    <PnPCharacterPrintContext.Provider value={printOptions}>
+                        <PnPCharacterView
+                            characterForm={form}
+                            allowEdit={true}
+                            sheet={selectedSheet}
+                        />
+                    </PnPCharacterPrintContext.Provider>
                     <Stack>
                         <Select
                             data={sortedSheets.map(s => {
@@ -188,6 +197,7 @@ export function CharacterEdit({
                             onChange={v => setSelectedSheet(sortedSheets.find(s => s?.id === v) ?? null)}
                             searchable
                         />
+                        <PrintModal printOptions={printOptions} setPrintOptions={setPrintOptions}/>
                         <Button type="submit">
                             {t('save')}
                         </Button>

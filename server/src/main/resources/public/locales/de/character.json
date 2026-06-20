@@ -31,5 +31,9 @@
   "level": "Level",
   "experiencePoints": "Erfahrungspunkte",
   "skillPoints": "Skillpunkte",
-  "talentPoints": "Talentpunkte"
+  "talentPoints": "Talentpunkte",
+  "printItems": "Items mitdrucken",
+  "printSpells": "Zauber mitdrucken",
+  "printTalents": "Talente mitdrucken",
+  "printLevel": "Level mitdrucken"
 }

@@ -14,6 +14,7 @@ import {ItemStackCardModal} from '../../../../items/ItemStackCard';
 import {UpgradePopover} from '../../../../items/UpgradeControl';
 import {useCreateShield, useCreateWeapon} from '../../../../../api/item-stack-service/item-stack-service';
 import {handleNetworkErrors} from '../../../../utils/ErrorUtils';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 /** Shows weapons of the character */
 export function WeaponList({
@@ -220,6 +221,7 @@ function WeaponRow({
     highlightRow: boolean;
 }) {
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showItems} = useContext(PnPCharacterPrintContext);
 
     return [
         <Table.Tr
@@ -227,16 +229,43 @@ function WeaponRow({
             h={TABLE_ROW_HEIGHT}
             onClick={allowEdit ? () => setLastClicked(weapon) : null}
         >
-            <Table.Td style={TABLE_STYLE}>{weapon.item.name}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{weapon.item.tags.join(', ')}</Table.Td>
             <Table.Td style={TABLE_STYLE}>
-                {formatStat(weapon.initiative, weapon.item.initiative)}
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {weapon.item.name}
+                </div>
             </Table.Td>
-            <Table.Td style={TABLE_STYLE}>{formatStat(weapon.hit, weapon.item.hit)}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{diceFormatter(weapon.item.dice)}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{formatStat(weapon.damage, weapon.item.damage)}</Table.Td>
             <Table.Td style={TABLE_STYLE}>
-                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {weapon.item.tags.join(', ')}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(weapon.initiative, weapon.item.initiative)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(weapon.hit, weapon.item.hit)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {diceFormatter(weapon.item.dice)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(weapon.damage, weapon.item.damage)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <Group
+                    justify="space-between"
+                    wrap="nowrap"
+                    style={{width: '100%'}}
+                    className={!showItems ? 'no-print' : undefined}
+                >
                     <Text
                         size={TABLE_STYLE.fontSize}
                         truncate="end"
@@ -277,7 +306,9 @@ function WeaponRow({
             } : undefined}
         >
             <Table.Td colSpan={7} style={TABLE_STYLE}>
-                {`${weapon.remainingUpgradeSlots}/${weapon.upgradeSlots} ${weapon.upgrades.map(u => u.name).join(', ')}`}
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {`${weapon.remainingUpgradeSlots}/${weapon.upgradeSlots} ${weapon.upgrades.map(u => u.name).join(', ')}`}
+                </div>
             </Table.Td>
         </Table.Tr>
     ];
@@ -297,6 +328,7 @@ function ShieldRow({
     highlightRow: boolean;
 }) {
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showItems} = useContext(PnPCharacterPrintContext);
 
     return [
         <Table.Tr
@@ -304,15 +336,43 @@ function ShieldRow({
             key={'details-row-' + index}
             onClick={allowEdit ? () => setLastClicked(shield) : null}
         >
-            <Table.Td style={TABLE_STYLE}>{shield?.item.name ?? ''}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{shield?.item.tags.join(', ') ?? ''}</Table.Td>
-            <Table.Td
-                style={TABLE_STYLE}>{formatStat(shield?.initiative, shield?.item.initiative)}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{formatStat(shield?.hit, shield?.item.hit)}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{diceFormatter(shield?.item.dice)}</Table.Td>
-            <Table.Td style={TABLE_STYLE}>{formatStat(shield?.armor, shield?.item.armor)}</Table.Td>
             <Table.Td style={TABLE_STYLE}>
-                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {shield?.item.name ?? ''}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {shield?.item.tags.join(', ') ?? ''}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(shield?.initiative, shield?.item.initiative)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(shield?.hit, shield?.item.hit)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {diceFormatter(shield?.item.dice)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <div className={!showItems ? 'no-print' : undefined}>
+                    {formatStat(shield?.armor, shield?.item.armor)}
+                </div>
+            </Table.Td>
+            <Table.Td style={TABLE_STYLE}>
+                <Group
+                    justify="space-between"
+                    wrap="nowrap"
+                    style={{width: '100%'}}
+                    className={!showItems ? 'no-print' : undefined}
+                >
                     <Text
                         size={TABLE_STYLE.fontSize}
                         truncate="end"
@@ -357,6 +417,7 @@ function ShieldExtraLine({
 }) {
     const {t} = useTranslation();
     const {itemSettings} = useUniverseContext();
+    const {showItems} = useContext(PnPCharacterPrintContext);
 
     if (!shield) {
         return <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -380,7 +441,9 @@ function ShieldExtraLine({
         } : undefined}
     >
         <Table.Td colSpan={7} style={TABLE_STYLE}>
-            {description}
+            <div className={!showItems ? 'no-print' : undefined}>
+                {description}
+            </div>
         </Table.Td>
     </Table.Tr>;
 }

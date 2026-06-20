@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {FaMinus, FaPlus} from 'react-icons/fa6';
 import {PageElementSettings} from '../PageElementSettings';
+import {TableTextInput} from '../inputs/TableTextInput';
 
 type CellValues = {
     content: string;
@@ -62,8 +63,7 @@ export function CustomTable({
     definition: TableDefinition;
     setDefinition: (d: TableDefinition) => void;
 }) {
-    const {characterForm} = useContext(PnPCharacterContext);
-    const character = characterForm.getValues();
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
 
     return <>
         <Table
@@ -83,8 +83,18 @@ export function CustomTable({
                         {definition.columns.map((_, colIndex) => {
                             const cell = rowValue?.cellValues[colIndex];
 
+                            if (!cell?.isCustomId) {
+                                return <Table.Td style={TABLE_STYLE} key={colIndex}>
+                                    {cell?.content ?? ''}
+                                </Table.Td>;
+                            }
+
                             return <Table.Td style={TABLE_STYLE} key={colIndex}>
-                                {(cell?.isCustomId ? character?.customFields?.[cell?.content] : cell?.content) ?? ''}
+                                <TableTextInput
+                                    readOnly={!allowEdit}
+                                    key={characterForm.key(`customFields.${cell?.content}`)}
+                                    {...characterForm.getInputProps(`customFields.${cell?.content}`)}
+                                />
                             </Table.Td>;
                         })}
                     </Table.Tr>

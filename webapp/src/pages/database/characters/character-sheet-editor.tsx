@@ -48,6 +48,7 @@ function CharacterSheetView({
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const emptyCharacter = useEmptyCharacter();
+
     const form = useForm<PnPCharacterDTO>({
         initialValues: emptyCharacter
     });

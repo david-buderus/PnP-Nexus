@@ -16,6 +16,7 @@ import {
     useRemoveItemFromInventory
 } from '../../../../../api/inventory-service/inventory-service';
 import {useUniverseContext} from '../../../../PageBase';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 const CROSSED_CELL_BACKGROUND = `
   linear-gradient(to top right, transparent calc(50% - 1px), var(--mantine-color-gray-4), transparent calc(50% + 1px)),
@@ -33,6 +34,7 @@ export function InventoryPart({name, rows, columns, setName, setRows, setColumns
 }) {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
+    const {showItems} = useContext(PnPCharacterPrintContext);
     const {characterSettings} = useUniverseContext();
     const character = characterForm.getValues();
     const inventorySize = useMemo(() =>
@@ -88,7 +90,12 @@ export function InventoryPart({name, rows, columns, setName, setRows, setColumns
                                 key={colIndex}
                                 onClick={allowEdit ? () => setLastClicked(itemStack ?? null) : null}
                             >
-                                <Group justify="space-between" wrap="nowrap" style={{width: '100%'}}>
+                                <Group
+                                    justify="space-between"
+                                    wrap="nowrap"
+                                    style={{width: '100%'}}
+                                    className={!showItems ? 'no-print' : undefined}
+                                >
                                     {itemStack ? (
                                         <Text
                                             size={TABLE_STYLE.fontSize}

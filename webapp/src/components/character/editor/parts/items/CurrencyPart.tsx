@@ -7,6 +7,7 @@ import {useUniverseContext} from '../../../../PageBase';
 import {getCurrencyCalculationSteps, splitCurrency} from '../../../../utils/Utils';
 import {PageElementSettings} from '../PageElementSettings';
 import {TableNumberInput} from '../inputs/TableNumberInput';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 /** Constant to show all currencies */
 export const SHOW_ALL_CURRENCIES = '__ALL_CURRENCIES__';
@@ -108,6 +109,7 @@ function CurrencyOneLine({
     const {t} = useTranslation();
     const {currencySettings} = useUniverseContext();
     const {allowEdit} = useContext(PnPCharacterContext);
+    const {showItems} = useContext(PnPCharacterPrintContext);
 
     const reversedEntries = useMemo(() => {
             if (!currencySettings?.calculationEntries) {
@@ -129,6 +131,7 @@ function CurrencyOneLine({
                         wrap="nowrap"
                         grow
                         gap="xs"
+                        className={!showItems ? 'no-print' : undefined}
                     >
                         {reversedEntries.map((entry, index) => {
                             const coinIndex = totalEntriesCount - index;
@@ -185,6 +188,7 @@ function CurrencyMultiLine({
 }) {
     const {currencySettings} = useUniverseContext();
     const {allowEdit} = useContext(PnPCharacterContext);
+    const {showItems} = useContext(PnPCharacterPrintContext);
 
 
     if (showCurrency === SHOW_ALL_CURRENCIES) {
@@ -199,6 +203,7 @@ function CurrencyMultiLine({
                             onBlur={handleBlur}
                             rightSection={withoutLabel ? currencySettings.baseCurrencyShortForm : null}
                             readOnly={!allowEdit}
+                            className={!showItems ? 'no-print' : undefined}
                         />
                     </Table.Td>
                 </Table.Tr>
@@ -214,6 +219,7 @@ function CurrencyMultiLine({
                                     onBlur={handleBlur}
                                     rightSection={withoutLabel ? entry.currencyShortForm : null}
                                     readOnly={!allowEdit}
+                                    className={!showItems ? 'no-print' : undefined}
                                 />
                             </Table.Td>
                         </Table.Tr>
@@ -237,6 +243,7 @@ function CurrencyMultiLine({
                         onBlur={handleBlur}
                         rightSection={withoutLabel ? currencySettings.baseCurrencyShortForm : null}
                         readOnly={!allowEdit}
+                        className={!showItems ? 'no-print' : undefined}
                     />
                 </Table.Tr>
             </Table.Tbody>

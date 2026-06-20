@@ -31,5 +31,9 @@
   "level": "Level",
   "experiencePoints": "Experience Points",
   "skillPoints": "Skill Points",
-  "talentPoints": "Talent Points"
+  "talentPoints": "Talent Points",
+  "printItems": "Print Items",
+  "printSpells": "Print Spells",
+  "printTalents": "Print Talents",
+  "printLevel": "Print Level"
 }
