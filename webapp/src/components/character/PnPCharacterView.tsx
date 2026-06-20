@@ -1,15 +1,13 @@
-import {PnPCharacterDTO, PnPCharacterSheet} from '../../api';
+import {PnPCharacterDTO, PnPCharacterSheet} from '../../api/model';
 import {PnPCharacterContext} from './PnPCharacterContext';
 import {PnPCharacterSheetContext} from './PnPCharacterSheetContext';
 import React, {useEffect, useState} from 'react';
-import {ActionIcon, AspectRatio, Group, Paper, Skeleton, Stack} from '@mantine/core';
-import {Editor, Element, Frame, useEditor} from '@craftjs/core';
-import {StackPart} from './editor/parts/layout/StackPart';
-import {CharacterSheetPaper} from './editor/parts/CharacterSheetPaper';
+import {ActionIcon, AspectRatio, Box, Group, Paper, Skeleton, Stack} from '@mantine/core';
+import {CharacterSheetPaper, PnPCharacterSheetPage} from './editor/parts/CharacterSheetPaper';
 import {FaChevronLeft} from 'react-icons/fa';
 import {FaChevronRight} from 'react-icons/fa6';
-import {countPagesOfImport, RESOLVER} from './editor/PnPCharacterSheetEditor';
 import {UseFormReturnType} from '@mantine/form';
+import {useListState, UseListStateHandlers} from '@mantine/hooks';
 
 /** Shows the character with the help of the given sheet */
 export function PnPCharacterView({
@@ -21,10 +19,20 @@ export function PnPCharacterView({
     sheet: PnPCharacterSheet;
 }) {
     const [selectedPage, setSelectedPage] = useState(0);
-    const [pages, setPages] = useState(1);
+    const [pages, setPages] = useListState<PnPCharacterSheetPage>([{data: [], layout: []}]);
 
     if (!sheet) {
-        return <></>;
+        return <AspectRatio
+            ratio={1 / 1.4142}
+            w="800px"
+        >
+            <Paper
+                shadow="sm"
+                p="md"
+                withBorder
+                style={{overflow: 'hidden'}}
+            />
+        </AspectRatio>;
     }
 
     if (isLoading) {
@@ -38,75 +46,124 @@ export function PnPCharacterView({
                 withBorder
                 style={{overflow: 'hidden'}}
             >
-                <StackPart>
+                <Stack>
                     <Skeleton height={8} radius="xl"/>
                     <Skeleton height={8} mt={6} radius="xl"/>
                     <Skeleton height={8} mt={6} radius="xl"/>
                     <Skeleton height={8} mt={6} radius="xl"/>
                     <Skeleton height={8} mt={6} radius="xl"/>
                     <Skeleton height={8} mt={6} width="70%" radius="xl"/>
-                </StackPart>
+                </Stack>
             </Paper>
         </AspectRatio>;
     }
 
     return <PnPCharacterContext.Provider value={{characterForm, allowEdit}}>
-        <PnPCharacterSheetContext.Provider value={{selectedPage}}>
-            <Editor resolver={RESOLVER} enabled={false}>
-                <Stack>
-                    <Stack id="print-section">
-                        <Frame>
-                            <Element is={StackPart}>
-                                <Element is={CharacterSheetPaper} pageNumber={0} id="page-0" canvas/>
-                            </Element>
-                        </Frame>
-                    </Stack>
-                    <Group justify="space-around">
-                        <Group gap={0}>
-                            <ActionIcon
+        <PnPCharacterSheetContext.Provider value={{allowEdit: false}}>
+            <Stack>
+                <Box
+                    id="print-section"
+                    style={{
+                        position: 'relative',
+                        width: '100%',
+                        minHeight: '1150px' // Height of A4 to prevent layout collapse
+                    }}
+                >
+                    {pages.map((page, i) => {
+                        const isSelected = i === selectedPage;
+                        // Logic: Only show the current page and 2-3 pages "peeking" behind it
+                        const distance = i - selectedPage;
+                        const isBehind = distance > 0 && distance <= 2;
+
+                        return (
+                            <Box
+                                key={i}
+                                className="print-page-wrapper"
                                 style={{
-                                    borderTopRightRadius: 0,
-                                    borderBottomRightRadius: 0,
+                                    position: isSelected ? 'relative' : 'absolute',
+                                    top: isSelected ? 0 : (distance * 8), // 8px vertical offset
+                                    left: isSelected ? 0 : (distance * 4), // 4px horizontal offset
+                                    zIndex: 90 - i,
+
+                                    // Visual "Stack" feedback
+                                    opacity: isSelected ? 1 : (isBehind ? 0.7 : 0),
+                                    transition: 'all 0.3s ease-in-out',
+
+                                    // Interaction
+                                    pointerEvents: isSelected ? 'all' : 'none',
                                 }}
-                                disabled={selectedPage === 0}
-                                onClick={() => setSelectedPage(prev => prev - 1)}
                             >
-                                <FaChevronLeft/>
-                            </ActionIcon>
-                            <ActionIcon
-                                style={{
-                                    borderTopLeftRadius: 0,
-                                    borderBottomLeftRadius: 0,
-                                    borderLeft: 0
-                                }}
-                                disabled={selectedPage === pages - 1}
-                                onClick={() => setSelectedPage(prev => prev + 1)}
-                            >
-                                <FaChevronRight/>
-                            </ActionIcon>
-                        </Group>
+                                <CharacterSheetPaper
+                                    page={page}
+                                    updatePage={() => {
+                                        // Empty
+                                    }}
+                                    pageNumber={i}
+                                />
+                            </Box>
+                        );
+                    })}
+                </Box>
+                <Group justify="space-around">
+                    <Group gap={0}>
+                        <ActionIcon
+                            style={{
+                                borderTopRightRadius: 0,
+                                borderBottomRightRadius: 0,
+                            }}
+                            disabled={selectedPage === 0}
+                            onClick={() => setSelectedPage(prev => prev - 1)}
+                        >
+                            <FaChevronLeft/>
+                        </ActionIcon>
+                        <ActionIcon
+                            style={{
+                                borderTopLeftRadius: 0,
+                                borderBottomLeftRadius: 0,
+                                borderLeft: 0
+                            }}
+                            disabled={selectedPage === pages.length - 1}
+                            onClick={() => setSelectedPage(prev => prev + 1)}
+                        >
+                            <FaChevronRight/>
+                        </ActionIcon>
                     </Group>
-                    <Controls sheet={sheet} setPages={setPages}/>
-                </Stack>
-            </Editor>
+                </Group>
+                <Controls sheet={sheet} setPages={setPages}/>
+            </Stack>
         </PnPCharacterSheetContext.Provider>
     </PnPCharacterContext.Provider>;
 }
 
 function Controls({sheet, setPages}: {
     sheet?: PnPCharacterSheet;
-    setPages: (p: number) => void;
+    setPages: UseListStateHandlers<PnPCharacterSheetPage>;
 }) {
-    const {actions} = useEditor();
-
     useEffect(() => {
         if (!sheet || !sheet.sheet) {
             return;
         }
-        const json = atob(sheet.sheet);
-        actions.deserialize(json);
-        setPages(countPagesOfImport(JSON.parse(json)));
+        setPages.setState(loadCharacterSheet(sheet.sheet));
     }, [sheet]);
 
     return <></>;
+}
+
+/** Loads a character sheet from a stored string */
+export function loadCharacterSheet(sheet: string): PnPCharacterSheetPage[] {
+    const json = atob(sheet);
+    const pages = JSON.parse(json);
+    if (!isCharacterSheet(pages)) {
+        console.error('The given character sheet is malformed.');
+        return [{
+            data: [],
+            layout: []
+        }];
+    }
+    return pages;
+}
+
+function isCharacterSheet(sheet: any): sheet is PnPCharacterSheetPage[] {
+    return Array.isArray(sheet) &&
+        sheet.every(page => Array.isArray(page.data) && Array.isArray(page.layout));
 }

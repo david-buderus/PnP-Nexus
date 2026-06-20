@@ -1,4 +1,4 @@
-import {CurrencySettings, Dice, SpellCast, TagCast, TalentCast} from '../../api';
+import {CurrencySettings, Dice, ERarity, SpellCast, TagCast, TalentCast} from '../../api/model';
 import {IResourceUsage} from '../Database';
 import {TFunction} from 'i18next';
 import {splitCurrency} from './Utils';
@@ -99,5 +99,27 @@ export function spellCastFormatter(cast: SpellCast, t: TFunction<'translation', 
         return (cast as TalentCast).talents.map(o => o?.name ?? '-').join(', ');
     } else {
         return (cast as TagCast).tagRequirement.tagRequirements.map(tags => tags.join(', ')).join(' ' + t('or') + ' ');
+    }
+}
+
+/**
+ * Returns the color to display for the given rarity.
+ */
+export function getRarityColor(rarity: ERarity) {
+    switch (rarity) {
+        case ERarity.COMMON:
+            return 'gray';
+        case ERarity.UNCOMMON:
+            return 'green';
+        case ERarity.RARE:
+            return 'blue';
+        case ERarity.EPIC:
+            return 'purple';
+        case ERarity.LEGENDARY:
+            return 'orange';
+        case ERarity.GODLIKE:
+            return 'red';
+        default:
+            return 'white';
     }
 }

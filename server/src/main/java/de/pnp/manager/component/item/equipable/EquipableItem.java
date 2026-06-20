@@ -5,12 +5,14 @@ import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Item;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IEquipableItem;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import java.util.Objects;
-import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * A concrete item that can be equipped.
@@ -24,29 +26,16 @@ public abstract class EquipableItem extends Item implements IEquipableItem {
     @NotNull
     protected final Material material;
 
-    /**
-     * The amount of upgrades this item can hold.
-     */
-    @NotNull
-    @PositiveOrZero
-    protected final int upgradeSlots;
-
-    public EquipableItem(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement,
-        String effect,
-        ERarity rarity, int vendorPrice, int tier, String description, String note, Material material,
-        int upgradeSlots, int maximumStackSize, int minimumStackSize) {
-        super(id, name, tags, requirement, effect, rarity, vendorPrice, tier, description,
-            note, maximumStackSize, minimumStackSize);
+    public EquipableItem(ObjectId id, String name, Set<Tag> tags, String requirement, List<ItemEffect> effects,
+                         ERarity rarity, int vendorPrice, int tier, String description, String note, Material material,
+                         int upgradeSlots, int maximumStackSize, int minimumStackSize) {
+        super(id, name, tags, requirement, effects, rarity, vendorPrice, tier, description, note, maximumStackSize,
+                minimumStackSize, upgradeSlots);
         this.material = material;
-        this.upgradeSlots = upgradeSlots;
     }
 
     public Material getMaterial() {
         return material;
-    }
-
-    public int getUpgradeSlots() {
-        return upgradeSlots;
     }
 
     @Override
@@ -61,8 +50,7 @@ public abstract class EquipableItem extends Item implements IEquipableItem {
             return false;
         }
         EquipableItem that = (EquipableItem) o;
-        return getUpgradeSlots() == that.getUpgradeSlots() && Objects.equals(getMaterial(),
-            that.getMaterial());
+        return Objects.equals(getMaterial(), that.getMaterial());
     }
 
     @Override

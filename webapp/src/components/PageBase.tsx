@@ -13,22 +13,7 @@ import {
 } from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {Link, Outlet, useOutletContext} from 'react-router-dom';
-import {ReactElement, useEffect, useState} from 'react';
-import {
-    AuthenticationServiceApi,
-    CharacterSettings,
-    CharacterSheetSettings,
-    CurrencySettings,
-    EquipmentSettings,
-    ItemSettings,
-    PnPUser,
-    PnPUserPreference,
-    Universe,
-    UniverseServiceApi,
-    UniverseSettingsServiceApi,
-    UserServiceApi
-} from '../api';
-import {API_CONFIGURATION} from './Constants';
+import {ReactElement, useEffect, useMemo} from 'react';
 import i18n from '../i18n';
 import {extractUserPermissions, UserPermissions} from './interfaces/UserPermissions';
 import {useTranslation} from 'react-i18next';
@@ -55,135 +40,148 @@ import {PiPerson} from 'react-icons/pi';
 import {ErrorBoundary} from './ErrorBoundary';
 import {StringParam, useQueryParam, withDefault} from 'use-query-params';
 import {BsPersonVcard} from 'react-icons/bs';
+import {useGetAllUniverses} from '../api/universe-service/universe-service';
+import {useGetUsername} from '../api/authentication-service/authentication-service';
+import {
+    useGetCharacterSettings,
+    useGetCharacterSheetSettings,
+    useGetCurrencySettings,
+    useGetEquipmentSettings,
+    useGetItemSettings
+} from '../api/universe-settings-service/universe-settings-service';
+import {
+    getGetUserPreferencesQueryKey,
+    useGetPermissions,
+    useGetUser,
+    useGetUserPreferences,
+    useUpdateUserPreferences
+} from '../api/user-service/user-service';
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    CharacterSettings,
+    CharacterSheetSettings,
+    CurrencySettings,
+    EquipmentSettings,
+    ItemSettings,
+    PnPUser,
+    PnPUserPreference,
+    Universe
+} from '../api/model';
 
 type UniverseContext = {
     universes: Universe[];
     activeUniverse: Universe;
     setActiveUniverse: (activeUniverse: Universe) => void;
-    fetchUniverses: () => Promise<void>;
     currencySettings: CurrencySettings;
     itemSettings: ItemSettings;
     equipmentSettings: EquipmentSettings;
     characterSettings: CharacterSettings;
     sheetSettings: CharacterSheetSettings;
-    refreshSettings: () => void;
 };
 
 type UserContext = {
     userPermissions: UserPermissions,
     userPreferences: PnPUserPreference,
-    user: PnPUser,
-    refreshUser: () => void;
+    user: PnPUser
 };
-
-const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
-const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
-const AUTHENTICATION_API = new AuthenticationServiceApi(API_CONFIGURATION);
-const USER_API = new UserServiceApi(API_CONFIGURATION);
 
 /** Base of most pages in the webapp */
 export function PageBase() {
-    const [universes, setUniverses] = useState<Universe[]>([]);
+    const queryClient = useQueryClient();
     const [universeQuery, setUniverseQuery] = useQueryParam('universe', withDefault(StringParam, null));
-    const [activeUniverse, setActiveUniverse] = useState<Universe>(null);
-    const [currencySettings, setCurrencySettings] = useState<CurrencySettings>(null);
-    const [itemSettings, setItemSettings] = useState<ItemSettings>(null);
-    const [equipmentSettings, setEquipmentSettings] = useState<EquipmentSettings>(null);
-    const [characterSettings, setCharacterSettings] = useState<CharacterSettings>(null);
-    const [sheetSettings, setSheetSettings] = useState<CharacterSheetSettings>(null);
-    const [username, setUsername] = useState<string>(null);
-    const [user, setUser] = useState<PnPUser>(null);
-    const [userPreferences, setUserPreferences] = useState<PnPUserPreference>(null);
-    const [userPermissions, setUserPermissions] = useState<UserPermissions>({
-        isAdmin: false,
-        canCreateUniverses: false,
-        canReadActiveUniverse: false,
-        canWriteActiveUniverse: false,
-        isActiveUniverseOwner: false
-    });
-    const [opened, {toggle}] = useDisclosure();
 
-    async function fetchUniverses(): Promise<void> {
-        const response = await UNIVERSE_API.getAllUniverses();
-        setUniverses(response.data);
-        const paramUniverse = response.data.find(u => u.id === universeQuery);
-        if (paramUniverse !== undefined) {
-            setActiveUniverse(paramUniverse);
-            return;
-        }
-        // If no universe is selected, select the previous selected universe of the user
-        if (userPreferences) {
-            const prefUniverse = response.data.find(u => u.id === userPreferences.lastSelectedUniverse);
-            if (prefUniverse !== undefined) {
-                setActiveUniverse(prefUniverse);
-            }
-        }
+    const universes = useGetAllUniverses().data?.data ?? [];
+    if (!Array.isArray(universes)) {
+        location.reload();
+        return null;
     }
 
-    function refreshSettings() {
-        SETTINGS_API.getCurrencySettings(activeUniverse.id).then(response => setCurrencySettings(response.data));
-        SETTINGS_API.getItemSettings(activeUniverse.id).then(response => setItemSettings(response.data));
-        SETTINGS_API.getCharacterSettings(activeUniverse.id).then(response => setCharacterSettings(response.data));
-        SETTINGS_API.getEquipmentSettings(activeUniverse.id).then(response => setEquipmentSettings(response.data));
-        SETTINGS_API.getCharacterSheetSettings(activeUniverse.id).then(response => setSheetSettings(response.data));
-    }
-
-    const refreshUser = () => {
-        Promise.all([
-            USER_API.getUser(username).then(response => response.data),
-            USER_API.getUserPreferences(username).then(response => response.data)
-        ]).then(([newUser, newPref]) => {
-            setUser(newUser);
-            setUserPreferences(newPref);
-            if (newPref !== null && newPref.language !== null) {
-                i18n.changeLanguage(newPref.language);
-            }
-        });
-    };
-
+    const username = useGetUsername().data?.data ?? null;
+    const user = useGetUser(username, {query: {enabled: username !== null}}).data?.data ?? null;
+    const userPreferences = useGetUserPreferences(username, {
+        query: {enabled: username !== null},
+    }).data?.data;
     useEffect(() => {
-        fetchUniverses();
-        AUTHENTICATION_API.getUsername().then(response => {
-            setUsername(response.data);
-        });
-    }, []);
+        if (userPreferences && userPreferences.language !== null) {
+            i18n.changeLanguage(userPreferences.language);
+        }
+    }, [userPreferences, i18n]);
+
+    const activeUniverse = useMemo(() => {
+        if (!universes || universes.length === 0) {
+            return null;
+        }
+
+        const paramUniverse = universes.find(u => u.id === universeQuery);
+        if (paramUniverse) {
+            return paramUniverse;
+        }
+
+        if (userPreferences) {
+            const prefUniverse = universes.find(u => u.id === userPreferences.lastSelectedUniverse);
+            if (prefUniverse) {
+                return prefUniverse;
+            }
+        }
+
+        return null;
+    }, [universes, universeQuery, userPreferences]);
 
     useEffect(() => {
         if (!activeUniverse) {
             return;
         }
-        setUniverseQuery(activeUniverse.id);
-        refreshSettings();
-    }, [activeUniverse]);
-
-    useEffect(() => {
-        if (username === null) {
-            return;
+        if (universeQuery !== activeUniverse.id) {
+            setUniverseQuery(activeUniverse.id);
         }
-        USER_API.getPermissions(username).then(response => {
-            setUserPermissions(extractUserPermissions(response.data, activeUniverse));
-        });
-    }, [activeUniverse, username]);
+    }, [activeUniverse, universeQuery, setUniverseQuery]);
 
-    useEffect(() => {
-        if (username === null) {
-            return;
+    const {data: permissionsResponse} = useGetPermissions(username, {query: {enabled: username !== null}});
+    const userPermissions = useMemo(() => {
+        if (!permissionsResponse?.data) {
+            return {
+                isAdmin: false,
+                canCreateUniverses: false,
+                canReadActiveUniverse: false,
+                canWriteActiveUniverse: false,
+                isActiveUniverseOwner: false,
+                objectPermissions: {}
+            };
         }
-        refreshUser();
-    }, [username]);
+        return extractUserPermissions(permissionsResponse.data, activeUniverse);
+    }, [permissionsResponse, activeUniverse]);
 
+    const currencySettings = useGetCurrencySettings(activeUniverse?.id, {query: {enabled: activeUniverse !== null}}).data?.data ?? null;
+    const itemSettings = useGetItemSettings(activeUniverse?.id, {query: {enabled: activeUniverse !== null}}).data?.data ?? null;
+    const equipmentSettings = useGetEquipmentSettings(activeUniverse?.id, {query: {enabled: activeUniverse !== null}}).data?.data ?? null;
+    const characterSettings = useGetCharacterSettings(activeUniverse?.id, {query: {enabled: activeUniverse !== null}}).data?.data ?? null;
+    const sheetSettings = useGetCharacterSheetSettings(activeUniverse?.id, {query: {enabled: activeUniverse !== null}}).data?.data ?? null;
+
+    const {mutate: updateUserPreferences} = useUpdateUserPreferences({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetUserPreferencesQueryKey(username),
+            })
+        }
+    });
     useEffect(() => {
-        if (username === null || userPreferences === null || activeUniverse === null) {
+        if (!username || !userPreferences || !activeUniverse) {
             return;
         }
         if (userPreferences.lastSelectedUniverse === activeUniverse.id) {
             return;
         }
-        USER_API.updateUserPreferences(username, {
-            ...userPreferences,
-            lastSelectedUniverse: activeUniverse.id
+
+        updateUserPreferences({
+            username: username,
+            data: {
+                ...userPreferences,
+                lastSelectedUniverse: activeUniverse.id
+            }
         });
-    }, [activeUniverse, userPreferences]);
+    }, [activeUniverse, userPreferences, username, updateUserPreferences]);
+
+    const [opened, {toggle}] = useDisclosure();
 
     const searchParams = new URLSearchParams();
     if (universeQuery) {
@@ -221,7 +219,7 @@ export function PageBase() {
                         user={user}
                         universes={universes}
                         activeUniverse={activeUniverse}
-                        setActiveUniverse={setActiveUniverse}
+                        setActiveUniverse={u => setUniverseQuery(u?.id)}
                         searchParams={searchParams.toString()}
                     />
                 </Group>
@@ -244,8 +242,7 @@ export function PageBase() {
                     <Outlet context={{
                         universes: universes,
                         activeUniverse: activeUniverse,
-                        setActiveUniverse: setActiveUniverse,
-                        fetchUniverses: fetchUniverses,
+                        setActiveUniverse: (u: Universe) => setUniverseQuery(u?.id ?? null),
                         currencySettings: currencySettings,
                         itemSettings: itemSettings,
                         equipmentSettings: equipmentSettings,
@@ -253,9 +250,7 @@ export function PageBase() {
                         sheetSettings: sheetSettings,
                         userPermissions: userPermissions,
                         userPreferences: userPreferences,
-                        user: user,
-                        refreshUser: refreshUser,
-                        refreshSettings: refreshSettings
+                        user: user
                     }}/>
                 </ErrorBoundary>
             </AppShell.Main>
@@ -264,7 +259,7 @@ export function PageBase() {
 }
 
 /** Props for a navbar entry */
-interface NavbarEntryProps {
+type NavbarEntryProps = {
     /** The id of the entry */
     id: string;
     /** The label shown */
@@ -433,6 +428,7 @@ function UserMenu({user, activeUniverse, setActiveUniverse, universes, searchPar
                     disabled={universes.length === 0}
                     variant="unstyled"
                     searchable
+                    comboboxProps={{withinPortal: false}}
                 />
             </Menu.Item>
             <Menu.Label>{t('preferences')}</Menu.Label>

@@ -1,14 +1,14 @@
 package de.pnp.manager.component.inventory.equipment;
 
+import de.pnp.manager.component.ECalculation;
+import de.pnp.manager.component.item.equipable.Weapon;
+import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentItemEffect;
+import org.junit.jupiter.api.Test;
+
 import static de.pnp.manager.utils.TestItemBuilder.createItemBuilder;
 import static de.pnp.manager.utils.TestUpgradeBuilder.createUpgrade;
 import static org.assertj.core.api.Assertions.assertThat;
-
-import de.pnp.manager.component.ECalculation;
-import de.pnp.manager.component.item.equipable.Weapon;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
-import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
-import org.junit.jupiter.api.Test;
 
 /**
  * Tests for {@link WeaponEquipment}.
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 class WeaponEquipmentTest {
 
     private static final Weapon TEST_WEAPON = createItemBuilder().withDamage(5).withHit(2).withInitiative(1)
-        .withUpgradeSlots(2).buildWeapon();
+            .withUpgradeSlots(2).buildWeapon();
 
     @Test
     void testGetDamage() {
@@ -25,9 +25,9 @@ class WeaponEquipmentTest {
         assertThat(weapon.getMaxDamage()).isEqualTo(5);
 
         weapon.addUpgrade(
-            createUpgrade().addEffect(new EquipmentUpgradeEffect("", 2, EUpgradeEquipmentManipulator.DAMAGE,
-                    ECalculation.MULTIPLICATIVE))
-                .build());
+                createUpgrade().addEffect(new EquipmentItemEffect("", 2, EItemEquipmentManipulator.DAMAGE,
+                                ECalculation.MULTIPLICATIVE))
+                        .build());
         assertThat(weapon.getDamage()).isEqualTo(10);
         assertThat(weapon.getMaxDamage()).isEqualTo(10);
 
@@ -54,9 +54,9 @@ class WeaponEquipmentTest {
         assertThat(weapon.getHit()).isEqualTo(2);
 
         weapon.addUpgrade(
-            createUpgrade().addEffect(
-                    new EquipmentUpgradeEffect("", 1, EUpgradeEquipmentManipulator.HIT, ECalculation.ADDITIVE))
-                .build());
+                createUpgrade().addEffect(
+                                new EquipmentItemEffect("", 1, EItemEquipmentManipulator.HIT, ECalculation.ADDITIVE))
+                        .build());
         assertThat(weapon.getHit()).isEqualTo(3);
 
         // Check no other stat got changed due to the upgrade
@@ -70,9 +70,9 @@ class WeaponEquipmentTest {
         assertThat(weapon.getInitiative()).isEqualTo(1);
 
         weapon.addUpgrade(
-            createUpgrade().addEffect(new EquipmentUpgradeEffect("", 0.5F, EUpgradeEquipmentManipulator.INITIATIVE,
-                    ECalculation.ADDITIVE))
-                .build());
+                createUpgrade().addEffect(new EquipmentItemEffect("", 0.5F, EItemEquipmentManipulator.INITIATIVE,
+                                ECalculation.ADDITIVE))
+                        .build());
         assertThat(weapon.getInitiative()).isEqualTo(1.5F);
 
         // Check no other stat got changed due to the upgrade
@@ -86,13 +86,13 @@ class WeaponEquipmentTest {
         assertThat(weapon.getDamage()).isEqualTo(5);
 
         weapon.addUpgrade(
-            createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.DAMAGE,
-                ECalculation.ADDITIVE)).build());
+                createUpgrade().addEffect(new EquipmentItemEffect("", -3, EItemEquipmentManipulator.DAMAGE,
+                        ECalculation.ADDITIVE)).build());
         assertThat(weapon.getDamage()).isEqualTo(2);
 
         weapon.addUpgrade(
-            createUpgrade().addEffect(new EquipmentUpgradeEffect("", -3, EUpgradeEquipmentManipulator.DAMAGE,
-                ECalculation.ADDITIVE)).build());
+                createUpgrade().addEffect(new EquipmentItemEffect("", -3, EItemEquipmentManipulator.DAMAGE,
+                        ECalculation.ADDITIVE)).build());
         assertThat(weapon.getDamage()).isEqualTo(0);
     }
 }

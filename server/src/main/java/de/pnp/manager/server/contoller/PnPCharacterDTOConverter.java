@@ -9,9 +9,13 @@ import de.pnp.manager.component.character.Talent;
 import de.pnp.manager.component.character.dto.CharacterStatsDto;
 import de.pnp.manager.component.character.dto.PnPCharacterDTO;
 import de.pnp.manager.component.character.stats.Stat;
+import de.pnp.manager.component.math.EReservedVariables;
+import de.pnp.manager.component.math.IExpressionVariable;
+import de.pnp.manager.component.universe.CharacterSettings;
 import de.pnp.manager.server.database.TalentRepository;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
+import de.pnp.manager.server.database.universe.UniverseSettingsRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,13 +31,16 @@ public class PnPCharacterDTOConverter {
     private final PrimaryAttributeRepository primaryAttributeRepository;
     private final SecondaryAttributeRepository secondaryAttributeRepository;
     private final TalentRepository talentRepository;
+    private final UniverseSettingsRepository settingsRepository;
 
     public PnPCharacterDTOConverter(@Autowired PrimaryAttributeRepository primaryAttributeRepository,
                                     @Autowired SecondaryAttributeRepository secondaryAttributeRepository,
-                                    @Autowired TalentRepository talentRepository) {
+                                    @Autowired TalentRepository talentRepository,
+                                    @Autowired UniverseSettingsRepository settingsRepository) {
         this.primaryAttributeRepository = primaryAttributeRepository;
         this.secondaryAttributeRepository = secondaryAttributeRepository;
         this.talentRepository = talentRepository;
+        this.settingsRepository = settingsRepository;
     }
 
 
@@ -44,11 +51,12 @@ public class PnPCharacterDTOConverter {
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);
+        CharacterSettings settings = settingsRepository.getSettings(universe, CharacterSettings.class);
 
         List<PnPCharacter> characters = new ArrayList<>();
 
         for (PnPCharacterDTO character : characterDTOs) {
-            characters.add(convert(character, primaryAttributes, secondaryAttributes, talents));
+            characters.add(convert(character, primaryAttributes, secondaryAttributes, talents, settings));
         }
 
         return characters;
@@ -61,13 +69,16 @@ public class PnPCharacterDTOConverter {
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);
+        CharacterSettings settings = settingsRepository.getSettings(universe, CharacterSettings.class);
 
-        return convert(character, primaryAttributes, secondaryAttributes, talents);
+        return convert(character, primaryAttributes, secondaryAttributes, talents, settings);
     }
 
     private PnPCharacter convert(PnPCharacterDTO character, Collection<PrimaryAttribute> primaryAttributes,
-                                 Collection<SecondaryAttribute> secondaryAttributes,
-                                 Collection<Talent> talents) {
+                                 Collection<SecondaryAttribute> secondaryAttributes, Collection<Talent> talents,
+                                 CharacterSettings settings) {
+        Map<IExpressionVariable, Double> extraVariables = getExtraVariables(character, settings);
+
         return new PnPCharacter(
                 character.id(),
                 character.description(),
@@ -75,7 +86,7 @@ public class PnPCharacterDTOConverter {
                 character.origin(),
                 character.advantageTraits(),
                 character.disadvantageTraits(),
-                convert(character.stats(), primaryAttributes, secondaryAttributes),
+                convert(character.stats(), primaryAttributes, secondaryAttributes, extraVariables),
                 convert(character.talents(), talents),
                 character.equipment(),
                 character.inventory(),
@@ -85,27 +96,27 @@ public class PnPCharacterDTOConverter {
     }
 
     private CharacterStats convert(CharacterStatsDto characterStatsDto, Collection<PrimaryAttribute> primaryAttributes,
-                                   Collection<SecondaryAttribute> secondaryAttributes) {
-        Map<PrimaryAttribute, Stat> primaryStats = new HashMap<>();
-        Map<SecondaryAttribute, Stat> secondaryStats = new HashMap<>();
+                                   Collection<SecondaryAttribute> secondaryAttributes, Map<IExpressionVariable, Double> extraVariables) {
+        Map<ObjectId, Stat> primaryStats = new HashMap<>();
+        Map<ObjectId, Stat> secondaryStats = new HashMap<>();
 
         for (PrimaryAttribute primaryAttribute : primaryAttributes) {
             CharacterStatsDto.StatsDto stats = characterStatsDto.primaryStats().get(primaryAttribute.getId());
             if (stats == null) {
                 continue;
             }
-            primaryStats.put(primaryAttribute, new Stat(stats.rawValue(), stats.flatModifier()));
+            primaryStats.put(primaryAttribute.getId(), new Stat(stats.rawValue(), stats.flatModifier()));
         }
         for (SecondaryAttribute secondaryAttribute : secondaryAttributes) {
             CharacterStatsDto.StatsDto stats = characterStatsDto.secondaryStats().get(secondaryAttribute.getId());
             if (stats == null) {
                 continue;
             }
-            secondaryStats.put(secondaryAttribute, new Stat(stats.rawValue(), stats.flatModifier()));
+            secondaryStats.put(secondaryAttribute.getId(), new Stat(stats.rawValue(), stats.flatModifier()));
         }
 
         CharacterStats characterStats = new CharacterStats(primaryStats, secondaryStats);
-        characterStats.recalculateSecondaryStats(primaryAttributes, secondaryAttributes);
+        characterStats.recalculateSecondaryStats(primaryAttributes, secondaryAttributes, extraVariables);
         return characterStats;
     }
 
@@ -126,7 +137,7 @@ public class PnPCharacterDTOConverter {
     /**
      * Converts a {@link List} of {@link PnPCharacter} to a {@link List} of {@link PnPCharacterDTO}
      */
-    public List<PnPCharacterDTO> convert(ObjectId universe, List<PnPCharacter> characters) {
+    public List<PnPCharacterDTO> convert(ObjectId universe, Collection<PnPCharacter> characters) {
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);
@@ -203,7 +214,24 @@ public class PnPCharacterDTOConverter {
         Collection<PrimaryAttribute> primaryAttributes = primaryAttributeRepository.getAll(universe);
         Collection<SecondaryAttribute> secondaryAttributes = secondaryAttributeRepository.getAll(universe);
         Collection<Talent> talents = talentRepository.getAll(universe);
+        CharacterSettings settings = settingsRepository.getSettings(universe, CharacterSettings.class);
 
-        return convert(convert(character, primaryAttributes, secondaryAttributes, talents), primaryAttributes, secondaryAttributes, talents);
+        return convert(convert(character, primaryAttributes, secondaryAttributes, talents, settings), primaryAttributes, secondaryAttributes, talents);
+    }
+
+    private Map<IExpressionVariable, Double> getExtraVariables(PnPCharacterDTO character, CharacterSettings settings) {
+        double tier = 1;
+        if (settings.getTierFormula() != null) {
+            tier = Math.round(
+                    settings.getTierFormula().calculate(Map.of(
+                            EReservedVariables.LEVEL.asVariable(), (double) character.level().level()
+                    ))
+            );
+        }
+
+        return Map.of(
+                EReservedVariables.LEVEL.asVariable(), (double) character.level().level(),
+                EReservedVariables.TIER.asVariable(), tier
+        );
     }
 }

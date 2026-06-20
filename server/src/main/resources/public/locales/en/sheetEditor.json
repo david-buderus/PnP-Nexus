@@ -16,8 +16,10 @@
   "layout": "Layout",
   "premade": "Premade",
   "numberOfRows": "Number of Rows",
+  "numberOfColumns": "Number of Columns",
+  "numberOfFallbackRows": "Number of Fallback Rows",
+  "showShields": "Show Shields",
   "armorSlots": "Armor",
-  "withShield": "With Shield",
   "stats": "Stats",
   "textField": "Text Field",
   "jewelleryList": "Jewellery",
@@ -42,5 +44,7 @@
   "headers": "Headers",
   "rows": "Rows",
   "asCustomFieldId": "Custom ID",
-  "table": "Table"
+  "table": "Table",
+  "deleteSheet": "Delete character sheet",
+  "talentOverview": "Talent Overview"
 }

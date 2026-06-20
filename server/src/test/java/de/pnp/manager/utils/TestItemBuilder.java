@@ -8,6 +8,7 @@ import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.equipable.*;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
 import de.pnp.manager.component.universe.Universe;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
 import de.pnp.manager.server.database.MaterialRepository;
 import de.pnp.manager.server.database.item.ItemRepository;
 import jakarta.validation.constraints.NotNull;
@@ -58,7 +59,7 @@ public class TestItemBuilder {
     private String name;
     private final Set<Tag> tags;
     private String requirement;
-    private String effect;
+    private @NotNull List<ItemEffect> effect;
     private ERarity rarity;
     private int vendorPrice;
     private int tier;
@@ -90,7 +91,7 @@ public class TestItemBuilder {
         name = "name";
         tags = new HashSet<de.pnp.manager.@NotNull Tag>();
         requirement = "requirement";
-        effect = "effect";
+        effect = List.of();
         rarity = ERarity.COMMON;
         vendorPrice = 10;
         tier = 1;
@@ -232,9 +233,9 @@ public class TestItemBuilder {
     }
 
     /**
-     * @see Item#getEffect()
+     * @see Item#getEffects()
      */
-    public TestItemBuilder withEffect(String effect) {
+    public TestItemBuilder withEffect(@NotNull List<ItemEffect> effect) {
         this.effect = effect;
         return this;
     }
@@ -292,7 +293,7 @@ public class TestItemBuilder {
      */
     public Item buildItem() {
         Item item = new Item(null, name, tags, requirement, effect, rarity, vendorPrice, tier,
-                description, note, maximumStackSize, minimumStackSize);
+                description, note, maximumStackSize, minimumStackSize, upgradeSlots);
         if (shouldGetPersisted) {
             return itemRepository.insert(universe, item);
         }

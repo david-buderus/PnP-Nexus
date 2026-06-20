@@ -1,8 +1,9 @@
-import {Nation, NationServiceApi, Species, SpeciesServiceApi} from '../../../api';
+import {Nation, Species} from '../../../api/model';
 import {useTranslation} from 'react-i18next';
 import {useUniverseContext, useUserContext} from '../../../components/PageBase';
 import {useForm} from '@mantine/form';
-import {BubbleMenu, EditorContent, useEditor} from '@tiptap/react';
+import {EditorContent, useEditor} from '@tiptap/react';
+import {BubbleMenu} from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import {Link, RichTextEditor} from '@mantine/tiptap';
 import Underline from '@tiptap/extension-underline';
@@ -24,13 +25,24 @@ import {
 } from '@mantine/core';
 import ConfirmationDialog from '../../../components/modal/ConfirmationDialog';
 import {CharacterTraitInput} from '../../../components/input/CharacterTraitInput';
-import {API_CONFIGURATION} from '../../../components/Constants';
 import {BooleanParam, StringParam, useQueryParam, withDefault} from 'use-query-params';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-
-const SPECIES_API = new SpeciesServiceApi(API_CONFIGURATION);
-const NATION_API = new NationServiceApi(API_CONFIGURATION);
+import {
+    getGetAllSpeciessQueryKey,
+    getGetSpeciesQueryKey,
+    useGetSpecies,
+    useUpdateSpecies
+} from '../../../api/species-service/species-service';
+import {
+    getGetAllNationsQueryKey,
+    getGetNationQueryKey,
+    useDeleteNation,
+    useGetNation,
+    useInsertAllNations,
+    useUpdateNation
+} from '../../../api/nation-service/nation-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /** View for nations */
 export function NationView() {
@@ -40,21 +52,8 @@ export function NationView() {
     const [editMode, setEditMode] = useQueryParam('edit', withDefault(BooleanParam, false));
     const navigate = useNavigate();
 
-    const [species, setSpecies] = useState<Species>(null);
-    const [selected, setSelected] = useState<Nation>(null);
-
-    useEffect(() => {
-        if (selectedSpeciesQuery) {
-            SPECIES_API.getSpecies(activeUniverse.id, selectedSpeciesQuery).then(response => {
-                setSpecies(response.data);
-            });
-        }
-        if (nation) {
-            NATION_API.getNation(activeUniverse.id, nation).then(response => {
-                setSelected(response.data);
-            });
-        }
-    }, [nation, selectedSpeciesQuery, setSelected, setSpecies]);
+    const species = useGetSpecies(activeUniverse.id, selectedSpeciesQuery, {query: {enabled: Boolean(selectedSpeciesQuery)}}).data?.data ?? null;
+    const selected = useGetNation(activeUniverse.id, nation, {query: {enabled: Boolean(nation)}}).data?.data ?? null;
 
     function clearSelection() {
         navigate(`/species?universe=${activeUniverse.id}`);
@@ -75,9 +74,6 @@ export function NationView() {
             onSave={n => {
                 if (nation) {
                     setEditMode(false);
-                    NATION_API.getNation(activeUniverse.id, nation).then(response => {
-                        setSelected(response.data);
-                    });
                     return;
                 }
                 if (species) {
@@ -221,6 +217,7 @@ function NationEdit({
     onCancel: () => void;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
 
@@ -247,25 +244,65 @@ function NationEdit({
         }
     });
 
+    const {mutate: updateSpecies} = useUpdateSpecies({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)
+            }).then(() => queryClient.invalidateQueries({
+                queryKey: getGetSpeciesQueryKey(activeUniverse.id, selectedSpecies.id)
+            }))
+        }
+    });
+
+    const {mutate: updateNation} = useUpdateNation({
+        mutation: {
+            onSuccess: response => queryClient.invalidateQueries({
+                queryKey: getGetNationQueryKey(activeUniverse.id, response.data.id)
+            }).then(() => queryClient.invalidateQueries({
+                queryKey: getGetAllNationsQueryKey(activeUniverse.id)
+            })).then(() => onSave(response.data)),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+
+    const {mutate: deleteNation} = useDeleteNation({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetAllNationsQueryKey(activeUniverse.id)
+            }).then(onDelete)
+        }
+    });
+
+    const {mutate: insertNations} = useInsertAllNations({
+        mutation: {
+            onSuccess: response => queryClient.invalidateQueries({
+                queryKey: [
+                    getGetAllNationsQueryKey(activeUniverse.id)
+                ],
+            }).then(() => {
+                if (!selectedSpecies) {
+                    return;
+                }
+                updateSpecies({
+                    universe: activeUniverse.id,
+                    id: selectedSpecies.id,
+                    data: {
+                        ...selectedSpecies,
+                        nations: selectedSpecies.nations.concat(response.data),
+                    }
+                });
+            }).then(() => onSave(response.data[0])),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
     return <form
         data-testid="nation-form"
         onSubmit={form.onSubmit(nation => {
             if (nation.id) {
-                NATION_API.updateNation(activeUniverse.id, nation.id, nation)
-                    .then(response => onSave(response.data)).catch(handleValidationErrors(form.setErrors));
+                updateNation({universe: activeUniverse.id, id: nation.id, data: nation});
             } else {
-                NATION_API.insertAllNations(activeUniverse.id, [nation])
-                    .then(response => {
-                        if (!selectedSpecies) {
-                            return response.data[0];
-                        }
-                        SPECIES_API.updateSpecies(activeUniverse.id, selectedSpecies.id, {
-                            ...selectedSpecies,
-                            nations: selectedSpecies.nations.concat(response.data),
-                        });
-                        return response.data[0];
-                    })
-                    .then(n => onSave(n)).catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+                insertNations({universe: activeUniverse.id, data: [nation]});
             }
         })}
     >
@@ -284,9 +321,7 @@ function NationEdit({
                     {userPermissions?.canWriteActiveUniverse && initial?.id !== undefined ?
                         <ConfirmationDialog
                             title={t('species:deleteNation')}
-                            onConfirmation={() => {
-                                NATION_API.deleteNation(activeUniverse.id, initial.id).then(onDelete);
-                            }}
+                            onConfirmation={() => deleteNation({universe: activeUniverse.id, id: initial.id})}
                             openNode={open =>
                                 <Button variant="outline" color="red" onClick={open}>
                                     {t('delete')}

@@ -43,7 +43,7 @@ jobs:
       - name: Regenerate webapp API client
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: openApiGenerate
+          arguments: generateFrontendApi
 
       - name: Verify that webapp API client in git is up-to-date
         uses: tj-actions/verify-changed-files@v18
@@ -51,7 +51,6 @@ jobs:
         with:
           files: |
             webapp/src/api/*
-            !webapp/src/api/.openapi-generator/*
 
       - name: Alert that webapp API client changed
         if: steps.verify-webapp-api-client.outputs.files_changed == 'true'
@@ -78,7 +77,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18.x'
+          node-version: '22.x'
 
       - name: Start MongoDB
         uses: supercharge/mongodb-github-action@1.8.0

@@ -1,19 +1,25 @@
 import {Button, Center, Group, Input, Stack, Switch, TextInput, Title} from '@mantine/core';
 import {useTranslation} from 'react-i18next';
 import StarterKit from '@tiptap/starter-kit';
-import {BubbleMenu, useEditor} from '@tiptap/react';
+import {useEditor} from '@tiptap/react';
+import {BubbleMenu} from '@tiptap/react/menus';
 import {Link, RichTextEditor} from '@mantine/tiptap';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
-import {Species, SpeciesServiceApi} from '../../api';
+import {Species} from '../../api/model';
 import {useUniverseContext, useUserContext} from '../PageBase';
-import {API_CONFIGURATION} from '../Constants';
 import {useForm} from '@mantine/form';
 import {handleDatabaseInsertErrors, handleValidationErrors} from '../utils/ErrorUtils';
 import ConfirmationDialog from '../modal/ConfirmationDialog';
 import {CharacterTraitInput} from '../input/CharacterTraitInput';
-
-const SPECIES_API = new SpeciesServiceApi(API_CONFIGURATION);
+import {
+    getGetAllSpeciessQueryKey,
+    getGetSpeciesQueryKey,
+    useDeleteSpecies,
+    useInsertAllSpeciess,
+    useUpdateSpecies
+} from '../../api/species-service/species-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /**
  * A form to create/edit species
@@ -30,6 +36,7 @@ export function SpeciesForm({
     onCancel: () => void;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
 
@@ -57,16 +64,39 @@ export function SpeciesForm({
         }
     });
 
+    const {mutate: updateSpecies} = useUpdateSpecies({
+        mutation: {
+            onSuccess: response => queryClient.invalidateQueries({
+                queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)
+            }).then(() => queryClient.invalidateQueries({
+                queryKey: getGetSpeciesQueryKey(activeUniverse.id, form.values.id)
+            })).then(() => onSave(response.data)),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutate: insertSpecies} = useInsertAllSpeciess({
+        mutation: {
+            onSuccess: response => queryClient.invalidateQueries({
+                queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)
+            }).then(() => onSave(response.data[0])),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+    const {mutate: deleteSpecies} = useDeleteSpecies({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)
+            }).then(onDelete)
+        }
+    });
+
     return <form
         data-testid="species-form"
         onSubmit={form.onSubmit(species => {
             if (species.id) {
-                SPECIES_API.updateSpecies(activeUniverse.id, species.id, species)
-                    .then(response => onSave(response.data)).catch(handleValidationErrors(form.setErrors));
+                updateSpecies({universe: activeUniverse.id, id: species.id, data: species});
             } else {
-                SPECIES_API.insertAllSpeciess(activeUniverse.id, [species])
-                    .then(response => onSave(response.data[0]))
-                    .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+                insertSpecies({universe: activeUniverse.id, data: [species]});
             }
         })}
     >
@@ -85,9 +115,10 @@ export function SpeciesForm({
                     {userPermissions?.canWriteActiveUniverse && initial?.id !== undefined ?
                         <ConfirmationDialog
                             title={t('species:deleteSpecies')}
-                            onConfirmation={() => {
-                                SPECIES_API.deleteSpecies(activeUniverse.id, initial.id).then(onDelete);
-                            }}
+                            onConfirmation={() => deleteSpecies({
+                                universe: activeUniverse.id,
+                                id: initial.id
+                            })}
                             openNode={open =>
                                 <Button variant="outline" color="red" onClick={open}>
                                     {t('delete')}

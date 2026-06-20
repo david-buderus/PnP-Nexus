@@ -11,6 +11,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
  *
  * @see PnPUserDetails
  */
-public record PnPUser(@Id String username, @Indexed(unique = true) @NotNull @Size(min = 3) String displayName,
+public record PnPUser(@Id String username, @Indexed(unique = true) @NotNull @Size(min = 3, max = 30) String displayName,
                       @Email String email) {
 }

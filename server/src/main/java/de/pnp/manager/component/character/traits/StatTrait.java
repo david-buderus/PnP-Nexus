@@ -53,6 +53,18 @@ public sealed abstract class StatTrait<Attribute extends IUniquelyNamedDataObjec
         return value;
     }
 
+    public ECalculation getCalculation() {
+        return calculation;
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
     @Override
     public String getDescription() {
         if (!description.isBlank()) {

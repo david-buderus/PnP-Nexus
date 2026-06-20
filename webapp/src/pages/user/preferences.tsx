@@ -1,21 +1,21 @@
 import {useTranslation} from 'react-i18next';
 import {useUserContext} from '../../components/PageBase';
 import {useForm} from '@mantine/form';
-import {PnPUserPreference, UserServiceApi} from '../../api';
+import {PnPUserPreference} from '../../api/model';
 import {useEffect, useState} from 'react';
 import {Button, Group, Stack, Text} from '@mantine/core';
-import {API_CONFIGURATION} from '../../components/Constants';
 import {handleValidationErrors} from '../../components/utils/ErrorUtils';
 import LanguageSelect from '../../components/input/LanguageSelect';
-
-const USER_API = new UserServiceApi(API_CONFIGURATION);
+import {getGetUserPreferencesQueryKey, useUpdateUserPreferences} from '../../api/user-service/user-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /**
  * View to manipulate the preferences of the current logged-in user.
  */
 export function UserPreferences() {
     const {t} = useTranslation();
-    const {user, userPreferences, refreshUser} = useUserContext();
+    const queryClient = useQueryClient();
+    const {user, userPreferences} = useUserContext();
 
     const [editMode, setEditMode] = useState(false);
 
@@ -25,8 +25,18 @@ export function UserPreferences() {
     });
 
     useEffect(() => {
+        form.setInitialValues(userPreferences);
         form.setValues(userPreferences);
     }, [userPreferences]);
+
+    const {mutate: updateUserPreferences} = useUpdateUserPreferences({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetUserPreferencesQueryKey(user.username),
+            }).then(() => setEditMode(false)),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
 
     if (!user) {
         return <Text>
@@ -39,12 +49,10 @@ export function UserPreferences() {
         maw={300}
     >
         <form
-            onSubmit={form.onSubmit((editedPreferences) => USER_API.updateUserPreferences(user.username, editedPreferences)
-                .then(() => {
-                    setEditMode(false);
-                    refreshUser();
-                })
-                .catch(handleValidationErrors(form.setErrors)))}
+            onSubmit={form.onSubmit(editedPreferences => updateUserPreferences({
+                username: user.username,
+                data: editedPreferences
+            }))}
         >
             <LanguageSelect
                 key={form.key('language')}

@@ -33,6 +33,7 @@
   "weight": "Gewicht",
   "resultingPrice": "Resultierender Preis",
   "cancel": "Abbrechen",
+  "close": "Schließen",
   "confirm": "Bestätigen",
   "save": "Speichern",
   "permission": "Rechte",
@@ -101,5 +102,10 @@
   "coins": "Münzen",
   "saveAs": "Speichern unter...",
   "unsavedChangesTitle": "Ungespeicherte Änderungen",
-  "unsavedChangesDescription": "Du hast ungespeicherte Änderungen. Bist du sicher, dass du die Seite verlassen willst?"
+  "unsavedChangesDescription": "Du hast ungespeicherte Änderungen. Bist du sicher, dass du die Seite verlassen willst?",
+  "saveSuccessful": "Speichern Erfolgreich",
+  "saveSuccessfulMessage": "Der {{type}} wurde erfolgreich gespeichert.",
+  "showMore": "Mehr anzeigen...",
+  "showLess": "Weniger anzeigen...",
+  "durability": "Haltbarkeit"
 }

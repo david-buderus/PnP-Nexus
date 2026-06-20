@@ -1,8 +1,10 @@
 package de.pnp.manager.component.character.dto;
 
+import de.pnp.manager.component.IDTOWithId;
 import de.pnp.manager.component.character.*;
 import de.pnp.manager.component.character.traits.ICharacterTrait;
 import de.pnp.manager.component.spell.Spell;
+import de.pnp.manager.validation.ValidPnPCharacter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.bson.types.ObjectId;
@@ -13,6 +15,7 @@ import java.util.Map;
 /**
  * DTO for {@link PnPCharacter}
  */
+@ValidPnPCharacter
 public record PnPCharacterDTO(
         ObjectId id,
         @Valid @NotNull CharacterDescription description,
@@ -26,7 +29,7 @@ public record PnPCharacterDTO(
         @NotNull CharacterInventory inventory,
         @NotNull List<Spell> spells,
         @NotNull Map<String, String> customFields
-) {
+) implements IDTOWithId {
     /**
      * DTO for the stats of a talent roll
      */

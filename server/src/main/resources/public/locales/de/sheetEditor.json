@@ -16,8 +16,10 @@
   "layout": "Layout",
   "premade": "Vorgefertigt",
   "numberOfRows": "Anzahl an Zeilen",
+  "numberOfColumns": "Anzahl an Spalten",
+  "numberOfFallbackRows": "Anzahl an Ersatz Zeilen",
+  "showShields": "Schilde anzeigen",
   "armorSlots": "Rüstungen",
-  "withShield": "Mit Schild",
   "stats": "Status",
   "textField": "Textfeld",
   "jewelleryList": "Schmuck",
@@ -42,5 +44,7 @@
   "headers": "Überschriften",
   "rows": "Zeilen",
   "asCustomFieldId": "Custom ID",
-  "table": "Tabelle"
+  "table": "Tabelle",
+  "deleteSheet": "Charakterbogen löschen",
+  "talentOverview": "Talentübersicht"
 }

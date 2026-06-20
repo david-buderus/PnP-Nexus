@@ -4,8 +4,8 @@ import de.pnp.manager.component.TagRequirement;
 import de.pnp.manager.component.universe.Universe;
 import de.pnp.manager.component.upgrade.EUpgradeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
-import de.pnp.manager.component.upgrade.effect.UpgradeEffect;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
+import de.pnp.manager.component.upgrade.effect.SimpleItemEffect;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class TestUpgradeBuilder {
 
     private int vendorPrice;
 
-    private final Collection<UpgradeEffect> effects;
+    private final Collection<ItemEffect> effects;
 
     private boolean shouldGetPersisted;
 
@@ -110,7 +110,7 @@ public class TestUpgradeBuilder {
     /**
      * @see Upgrade#getEffects()
      */
-    public TestUpgradeBuilder addEffect(UpgradeEffect effect) {
+    public TestUpgradeBuilder addEffect(ItemEffect effect) {
         this.effects.add(effect);
         return this;
     }
@@ -128,7 +128,7 @@ public class TestUpgradeBuilder {
      */
     public Upgrade build() {
         if (effects.isEmpty()) {
-            effects.add(new SimpleUpgradeEffect("default effect"));
+            effects.add(new SimpleItemEffect("default effect"));
         }
         Upgrade upgrade = new Upgrade(null, name, restriction, tagRequirement, slots, vendorPrice, effects);
         if (shouldGetPersisted) {

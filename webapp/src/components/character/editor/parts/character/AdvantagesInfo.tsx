@@ -1,21 +1,24 @@
-import {useNode} from '@craftjs/core';
-import {List, NumberInput, Stack, Switch, Table, Text} from '@mantine/core';
+import {ActionIcon, Box, Group, List, Popover, Switch, Table, Text} from '@mantine/core';
 import React, {useContext, useMemo} from 'react';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
+import {PageElementSettings} from '../PageElementSettings';
+import {IconCircleMinus, IconCirclePlus, IconEditCircle} from '@tabler/icons-react';
+import {randomId} from '@mantine/hooks';
+import {SomeCharacterTrait} from '../../../../Constants';
+import {ICharacterTrait, SingleCharacterTraitInput} from '../../../../input/CharacterTraitInput';
+import {FormErrors} from '@mantine/form';
+import {ECalculation} from '../../../../../api/model';
 
 /** Part to show text */
-export const AdvantagesInfo = ({showsAdvantages, numberOfRows}: {
+export function AdvantagesInfo({showsAdvantages, setShowsAdvantages}: {
     showsAdvantages: boolean;
-    numberOfRows: number;
-}) => {
+    setShowsAdvantages: (b: boolean) => void;
+}) {
     const {t} = useTranslation();
-    const {characterForm} = useContext(PnPCharacterContext);
+    const {characterForm, allowEdit} = useContext(PnPCharacterContext);
     const character = characterForm.getValues();
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
 
     const entries = useMemo(() => {
         if (!character) {
@@ -28,67 +31,200 @@ export const AdvantagesInfo = ({showsAdvantages, numberOfRows}: {
         }
     }, [character, showsAdvantages]);
 
-    return <Table
-        withTableBorder
-        striped
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
-    >
-        <Table.Tbody>
-            <Table.Tr h={TABLE_ROW_HEIGHT + 3}>
-                <Table.Th style={TABLE_STYLE}>
-                    {showsAdvantages ? t('advantages') : t('disadvantages')}
-                </Table.Th>
-            </Table.Tr>
-            <Table.Tr h={TABLE_ROW_HEIGHT * numberOfRows}>
-                <Table.Td style={{whiteSpace: 'pre-line', textAlign: 'left', verticalAlign: 'top', ...TABLE_STYLE}}>
-                    <List size="sm">
-                        {entries.map((entry, index) => (
-                            <List.Item key={index}>
-                                <Text size="10px">
-                                    {entry.description}
+    const speciesTraits = (showsAdvantages ? character?.origin?.species?.advantageTraits : character?.origin?.species?.disadvantageTraits) ?? [];
+    const nationTraits = (showsAdvantages ? character?.origin?.nation?.advantageTraits : character?.origin?.nation?.disadvantageTraits) ?? [];
+    const path = showsAdvantages ? 'advantageTraits' : 'disadvantageTraits';
+
+    return <>
+        <Table
+            withTableBorder
+            striped
+            style={{height: '100%', tableLayout: 'fixed'}}
+        >
+            <Table.Tbody>
+                <Table.Tr h={TABLE_ROW_HEIGHT + 3}>
+                    <Table.Th style={TABLE_STYLE}>
+                        {showsAdvantages ? t('advantages') : t('disadvantages')}
+                    </Table.Th>
+                </Table.Tr>
+                <Table.Tr>
+                    <Table.Td
+                        style={{whiteSpace: 'pre-line', textAlign: 'left', verticalAlign: 'top', ...TABLE_STYLE}}>
+
+                        {speciesTraits.map((entry, index) =>
+                            <>
+                                <Text size="sm">
+                                    {t('species')}
                                 </Text>
-                            </List.Item>
-                        ))}
-                    </List>
-                </Table.Td>
-            </Table.Tr>
-        </Table.Tbody>
-    </Table>;
-};
+                                <List size="sm">
+                                    <List.Item key={'species-' + index}>
+                                        <Text
+                                            size="sm"
+                                            truncate="end"
+                                            style={{flex: 1, minWidth: 0}}
+                                        >
+                                            {entry.description}
+                                        </Text>
+                                    </List.Item>
+                                </List>
+                            </>
+                        )}
+                        {nationTraits.map((entry, index) =>
+                            <>
+                                <Text size="sm">
+                                    {t('nation')}
+                                </Text>
+                                <List size="sm">
+                                    <List.Item key={'nation-' + index}>
+                                        <Text
+                                            size="sm"
+                                            truncate="end"
+                                            style={{flex: 1, minWidth: 0}}
+                                        >
+                                            {entry.description}
+                                        </Text>
+                                    </List.Item>
+                                </List>
+                            </>
+                        )}
+                        {entries.length > 0 ?
+                            <Text size="sm">
+                                {t('character')}
+                            </Text> : null
+                        }
+                        <List size="sm">
+                            {entries.map((entry, index) => {
+                                const errors = hasErrors(path + '.' + index, characterForm.errors);
 
-const AdvantagesInfoSettings = () => {
-    const {t} = useTranslation();
-    const {actions: {setProp}, showsAdvantages, numberOfRows} = useNode(node => ({
-        showsAdvantages: node.data.props.showsAdvantages as boolean,
-        numberOfRows: node.data.props.numberOfRows
-    }));
+                                return <List.Item
+                                    key={'character-' + index}
+                                    styles={{
+                                        itemWrapper: {width: '100%', minWidth: 0},
+                                        itemLabel: {width: '100%', minWidth: 0}
+                                    }}
+                                >
+                                    <Group align="flex-start" wrap="nowrap" style={{width: '100%'}}>
+                                        <Text
+                                            size="sm"
+                                            truncate="end"
+                                            style={{flex: 1, minWidth: 0}}
+                                            c={errors ? 'red' : undefined}
+                                        >
+                                            {entry.description ? entry.description : t('nothing-here')}
+                                        </Text>
+                                        {allowEdit ?
+                                            <Group
+                                                wrap="nowrap"
+                                                gap={1}
+                                                style={{flexShrink: 0}}
+                                                onClick={e => e.stopPropagation()}
+                                            >
+                                                <TraitEditPopover
+                                                    showsAdvantages={showsAdvantages}
+                                                    index={index}
+                                                />
+                                                <ActionIcon
+                                                    variant="subtle"
+                                                    size={TABLE_ROW_HEIGHT - 8}
+                                                    className="no-drag"
+                                                    style={{flexShrink: 0}}
+                                                    onClick={() => characterForm.removeListItem(path, index)}
+                                                >
+                                                    <IconCircleMinus color="red" size={14}/>
+                                                </ActionIcon>
+                                            </Group> : null
+                                        }
+                                    </Group>
+                                </List.Item>;
+                            })}
+                        </List>
+                    </Table.Td>
+                </Table.Tr>
+            </Table.Tbody>
+        </Table>
+        <PageElementSettings>
+            <Switch
+                label={showsAdvantages ? t('advantages') : t('disadvantages')}
+                checked={showsAdvantages}
+                onChange={e => setShowsAdvantages(e.target.checked)}
+            />
+        </PageElementSettings>
+        <TraitAdditionPopover showsAdvantages={showsAdvantages}/>
+    </>;
+}
 
-    return <Stack>
-        <Switch
-            label={showsAdvantages ? t('advantages') : t('disadvantages')}
-            checked={showsAdvantages}
-            onChange={e => {
-                setProp(props => {
-                    props.showsAdvantages = e.target.checked;
-                });
-            }}
-        />
-        <NumberInput
-            value={numberOfRows}
-            onChange={e => {
-                setProp(props => {
-                    props.numberOfRows = Number(e);
-                });
-            }}
-            min={1}
-        />
-    </Stack>;
-};
+function TraitAdditionPopover({showsAdvantages}: { showsAdvantages: boolean }) {
+    const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const path = showsAdvantages ? 'advantageTraits' : 'disadvantageTraits';
 
-AdvantagesInfo.craft = {
-    name: 'advantages',
-    related: {
-        settings: AdvantagesInfoSettings
+    if (!allowEdit) {
+        return null;
     }
-};
+
+    return <ActionIcon
+        variant="subtle"
+        size="sm"
+        className="no-drag"
+        style={{
+            position: 'absolute',
+            top: 2,
+            right: 2,
+            zIndex: 10, // Ensure it stays above everything
+        }}
+        onClick={() => {
+            characterForm.insertListItem(path, {
+                '@type': 'SimpleCharacterTrait',
+                description: '',
+                attribute: null,
+                calculation: ECalculation.ADDITIVE,
+                rollModifier: 1,
+                talent: null,
+                key: randomId()
+            } as SomeCharacterTrait);
+        }}
+    >
+        <IconCirclePlus size={14}/>
+    </ActionIcon>;
+}
+
+function TraitEditPopover({showsAdvantages, index}: { showsAdvantages: boolean; index: number; }) {
+    const {allowEdit, characterForm} = useContext(PnPCharacterContext);
+    const path = showsAdvantages ? 'advantageTraits' : 'disadvantageTraits';
+    const trait = showsAdvantages ? characterForm.values.advantageTraits[index] : characterForm.values.disadvantageTraits[index];
+
+    if (!allowEdit) {
+        return null;
+    }
+
+    return <Popover
+        position="bottom"
+        withArrow
+        shadow="md"
+    >
+        <Popover.Target>
+            <ActionIcon
+                variant="subtle"
+                size={TABLE_ROW_HEIGHT - 8}
+                className="no-drag"
+            >
+                <IconEditCircle size={14}/>
+            </ActionIcon>
+        </Popover.Target>
+        <Popover.Dropdown>
+            <Box w={350}>
+                <SingleCharacterTraitInput
+                    trait={trait as ICharacterTrait}
+                    form={characterForm}
+                    path={path}
+                    index={index}
+                />
+            </Box>
+        </Popover.Dropdown>
+    </Popover>;
+}
+
+function hasErrors(path: string, errors: FormErrors) {
+    return Object.entries(errors).filter(([key]) =>
+        key === path || key.startsWith(`${path}.`)
+    ).length > 0;
+}

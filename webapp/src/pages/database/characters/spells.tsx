@@ -17,14 +17,26 @@ import {
 } from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {randomId, useDisclosure} from '@mantine/hooks';
-import {ReactNode, useEffect, useMemo} from 'react';
+import {ReactNode, useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {EAction, ECastingType, Spell, SpellCast, SpellServiceApi, TagCast, Talent, TalentCast} from '../../../api';
+import {
+    EAction,
+    ECastingType,
+    Spell,
+    SpellCast,
+    type SpellCostItem,
+    TagCast,
+    Talent,
+    TalentCast
+} from '../../../api/model';
 import {fetchAllSpells, fetchAllTags, fetchAllTalents, IResourceUsage} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ObjectMultiSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {addTypeAnnotationToUsage} from '../crafting/crafting-recipes';
@@ -33,12 +45,31 @@ import {resourceFormatter, spellCastFormatter} from '../../../components/utils/F
 import {ActionSelect, CastingTypeMultiSelect} from '../../../components/input/EnumSelect';
 import TagRequirementsInput from '../../../components/input/TagRequirementsInput';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllSpellsQueryKey,
+    useDeleteAllSpells,
+    useInsertAllSpells,
+    useUpdateSpell
+} from '../../../api/spell-service/spell-service';
+import {SpellCardModal} from '../../../components/spells/SpellCard';
 
-const SPELL_API = new SpellServiceApi(API_CONFIGURATION);
 
 /** Overview over all spells */
 export function SpellOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const [toEdit, setToEdit] = useState<Spell>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
+
+    const {mutateAsync: deleteSpells} = useDeleteAllSpells({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpellsQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<Spell, any>[]>(
         () => [
@@ -125,36 +156,38 @@ export function SpellOverview() {
             fetchData={fetchAllSpells()}
             columns={columns}
             identifier="spells"
-            manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
-                editMode={editMode}
-                refresh={refresh}
-                disabled={disabled}
-                getInitial={getInitial}
-            />}
             deletionDialogTitle={t('spell:editTitle')}
-            onDelete={(universe, spells) => SPELL_API.deleteAllSpells(universe, spells.map(spell => spell.id))}
+            onDelete={(universe, spells) => deleteSpells({
+                universe: universe,
+                params: {ids: spells.map(spell => spell.id)}
+            })}
             idKey="id"
+            viewModal={(spell, onClose) => <SpellCardModal spell={spell} onClose={onClose}/>}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
         />
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} spell={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} spell={toEdit}/>
     </Stack>;
 }
 
 function CreationDialog({
     editMode,
-    refresh,
-    disabled,
-    getInitial
+    opened,
+    close,
+    spell
 }: {
     editMode: boolean,
-    refresh: () => void;
-    disabled: boolean;
-    getInitial: () => Spell;
+    opened: boolean,
+    close: () => void
+    spell: Spell
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [talents] = fetchAllTalents();
     const [tags] = fetchAllTags();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<Spell>({
         mode: 'controlled',
         initialValues: {
@@ -165,7 +198,6 @@ function CreationDialog({
             effect: '',
             tags: [],
             cast: {
-                // @ts-ignore
                 '@type': 'TalentCast',
                 talents: [],
                 tagRequirement: {
@@ -173,7 +205,7 @@ function CreationDialog({
                 }
             } as TalentCast,
             tier: 1,
-            action: EAction.Action,
+            action: EAction.ACTION,
             castingTypes: [],
             countermeasures: '',
             cooldown: 1
@@ -182,210 +214,229 @@ function CreationDialog({
     const castType = form.getValues().cast?.['@type'] ?? 'TalentCast';
 
     useEffect(() => {
-        if (!editMode || !opened) {
+        if (!spell) {
             return;
         }
-        form.setValues({
-            ...getInitial(),
-            cast: getInitial().cast ?? ({
+        const withTypes = {
+            ...spell,
+            cast: spell.cast ?? ({
                 '@type': 'TalentCast',
                 talents: [],
                 tagRequirement: {
                     tagRequirements: []
                 }
-            } as TalentCast),
-        });
-    }, [opened, getInitial, editMode]);
+            } as TalentCast)
+        };
+        form.setValues(withTypes);
+        form.setInitialValues(withTypes);
+    }, [spell]);
 
-    function onSubmit(spell: Spell) {
+    const {mutateAsync: updateSpell} = useUpdateSpell({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpellsQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertSpells} = useInsertAllSpells({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllSpellsQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
+    function onSubmit(s: Spell) {
         if (editMode) {
-            SPELL_API.updateSpell(activeUniverse.id, spell.id, addTypeAnnotationToSpell(spell)).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateSpell({
+                universe: activeUniverse.id,
+                id: spell.id,
+                data: addTypeAnnotationToSpell(s)
+            });
         } else {
-            SPELL_API.insertAllSpells(activeUniverse.id, [addTypeAnnotationToSpell(spell)]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertSpells({
+                universe: activeUniverse.id,
+                data: [addTypeAnnotationToSpell(s)]
+            });
         }
     }
 
-    return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t('spell:editTitle') : t('spell:creationTitle')}
-               size="xl">
-            <form onSubmit={form.onSubmit(onSubmit)}>
-                <TextInput
-                    label={t('name')}
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
-                <Textarea
-                    label={t('effect')}
-                    key={form.key('effect')}
-                    {...form.getInputProps('effect')}
-                />
-                <Flex justify="center" align="flex-start" wrap="nowrap" gap="md">
-                    <Stack justify="flex-start" flex={1}>
-                        <Stack gap={0}>
-                            <Input.Label>
-                                {t('spell:cast')}
-                            </Input.Label>
-                            <Paper shadow="xs" p="sm">
-                                <Select
-                                    data={[
-                                        {value: 'TalentCast', label: t('talents')},
-                                        {value: 'TagCast', label: t('tags')}
-                                    ]}
-                                    key={form.key('cast.@type')}
-                                    {...form.getInputProps('cast.@type')}
+    return <Modal
+        opened={opened}
+        onClose={close}
+        title={editMode ? t('spell:editTitle') : t('spell:creationTitle')}
+        size="xl"
+    >
+        <form onSubmit={form.onSubmit(onSubmit)}>
+            <TextInput
+                label={t('name')}
+                key={form.key('name')}
+                {...form.getInputProps('name')}
+            />
+            <Textarea
+                label={t('effect')}
+                key={form.key('effect')}
+                {...form.getInputProps('effect')}
+            />
+            <Flex justify="center" align="flex-start" wrap="nowrap" gap="md">
+                <Stack justify="flex-start" flex={1}>
+                    <Stack gap={0}>
+                        <Input.Label>
+                            {t('spell:cast')}
+                        </Input.Label>
+                        <Paper shadow="xs" p="sm">
+                            <Select
+                                data={[
+                                    {value: 'TalentCast', label: t('talents')},
+                                    {value: 'TagCast', label: t('tags')}
+                                ]}
+                                key={form.key('cast.@type')}
+                                {...form.getInputProps('cast.@type')}
+                            />
+                            {castType === 'TalentCast' ?
+                                <ObjectMultiSelect<Talent>
+                                    label={t('talents')}
+                                    key={form.key('cast.talents')}
+                                    {...form.getInputProps('cast.talents')}
+                                    data={talents}
+                                    idKey="id"
+                                    labelKey="name"
+                                /> :
+                                <TagRequirementsInput
+                                    label={t('spell:tagRequirement')}
+                                    tooltip={t('spell:tagRequirementTooltip')}
+                                    noRequirementsText={t('spell:noRequirements')}
+                                    addTagRequirementText={t('spell:addTagRequirement')}
+                                    dataTestIdPrefix="cast.tagRequirement."
+                                    key={form.key('cast.tagRequirement')}
+                                    {...form.getInputProps('cast.tagRequirement')}
                                 />
-                                {castType === 'TalentCast' ?
-                                    <ObjectMultiSelect<Talent>
-                                        label={t('talents')}
-                                        key={form.key('cast.talents')}
-                                        {...form.getInputProps('cast.talents')}
-                                        data={talents}
-                                        idKey="id"
-                                        labelKey="name"
-                                    /> :
-                                    <TagRequirementsInput
-                                        label={t('spell:tagRequirement')}
-                                        tooltip={t('spell:tagRequirementTooltip')}
-                                        noRequirementsText={t('spell:noRequirements')}
-                                        addTagRequirementText={t('spell:addTagRequirement')}
-                                        dataTestIdPrefix="cast.tagRequirement."
-                                        key={form.key('cast.tagRequirement')}
-                                        {...form.getInputProps('cast.tagRequirement')}
-                                    />
-                                }
-                            </Paper>
-                        </Stack>
-                        <Group wrap="nowrap" grow>
-                            <NumberInput
-                                label={t('spell:castTime')}
-                                key={form.key('castTime')}
-                                {...form.getInputProps('castTime')}
-                                allowDecimal={false}
-                            />
-                            <NumberInput
-                                label={t('spell:cooldown')}
-                                key={form.key('cooldown')}
-                                {...form.getInputProps('cooldown')}
-                                allowDecimal={false}
-                            />
-                        </Group>
-                        <TextInput
-                            label={t('spell:countermeasures')}
-                            key={form.key('countermeasures')}
-                            {...form.getInputProps('countermeasures')}
-                        />
+                            }
+                        </Paper>
+                    </Stack>
+                    <Group wrap="nowrap" grow>
                         <NumberInput
-                            label={t('tier')}
-                            key={form.key('tier')}
-                            {...form.getInputProps('tier')}
+                            label={t('spell:castTime')}
+                            key={form.key('castTime')}
+                            {...form.getInputProps('castTime')}
                             allowDecimal={false}
                         />
-                        <TagsInput
-                            label={t('tags')}
-                            data={tags}
-                            clearable
-                            key={form.key('tags')}
-                            {...form.getInputProps('tags')}
+                        <NumberInput
+                            label={t('spell:cooldown')}
+                            key={form.key('cooldown')}
+                            {...form.getInputProps('cooldown')}
+                            allowDecimal={false}
                         />
-                    </Stack>
-                    <Stack justify="flex-start" flex={1}>
-                        <ActionSelect
-                            label={t('enum:action')}
-                            key={form.key('action')}
-                            {...form.getInputProps('action')}
-                        />
-                        <CastingTypeMultiSelect
-                            label={t('spell:castingTypes')}
-                            key={form.key('castingTypes')}
-                            {...form.getInputProps('castingTypes')}
-                        />
-                        <Stack gap={0}>
-                            <Input.Label>
-                                {t('spell:cost')}
-                            </Input.Label>
-                            <Paper shadow="md" p="xs">
-                                {form.getValues().cost.length > 0 ? (
-                                    <Group wrap="nowrap">
-                                        <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
-                                            {t('amount')}
-                                        </Text>
-                                        <Text fw={500} size="sm" pr={140}>
-                                            {t('crafting:resource')}
-                                        </Text>
-                                    </Group>
-                                ) : (
-                                    <Text c="dimmed" ta="center">
-                                        {t('nothing-here')}
+                    </Group>
+                    <TextInput
+                        label={t('spell:countermeasures')}
+                        key={form.key('countermeasures')}
+                        {...form.getInputProps('countermeasures')}
+                    />
+                    <NumberInput
+                        label={t('tier')}
+                        key={form.key('tier')}
+                        {...form.getInputProps('tier')}
+                        allowDecimal={false}
+                    />
+                    <TagsInput
+                        label={t('tags')}
+                        data={tags}
+                        clearable
+                        key={form.key('tags')}
+                        {...form.getInputProps('tags')}
+                    />
+                </Stack>
+                <Stack justify="flex-start" flex={1}>
+                    <ActionSelect
+                        label={t('enum:action')}
+                        key={form.key('action')}
+                        {...form.getInputProps('action')}
+                    />
+                    <CastingTypeMultiSelect
+                        label={t('spell:castingTypes')}
+                        key={form.key('castingTypes')}
+                        {...form.getInputProps('castingTypes')}
+                    />
+                    <Stack gap={0}>
+                        <Input.Label>
+                            {t('spell:cost')}
+                        </Input.Label>
+                        <Paper shadow="md" p="xs">
+                            {form.getValues().cost.length > 0 ? (
+                                <Group wrap="nowrap">
+                                    <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
+                                        {t('amount')}
                                     </Text>
-                                )}
-                                <Stack gap="xs">
-                                    {form.getValues().cost.map((usage, index) => {
-                                        if (!usage['key']) {
-                                            usage['key'] = randomId();
-                                        }
+                                    <Text fw={500} size="sm" pr={140}>
+                                        {t('crafting:resource')}
+                                    </Text>
+                                </Group>
+                            ) : (
+                                <Text c="dimmed" ta="center">
+                                    {t('nothing-here')}
+                                </Text>
+                            )}
+                            <Stack gap="xs">
+                                {form.getValues().cost.map((usage, index) => {
+                                    if (!usage['key']) {
+                                        usage['key'] = randomId();
+                                    }
 
-                                        return <Group key={'item-' + usage['key']} wrap="nowrap">
-                                            <NumberInput
-                                                key={form.key(`cost.${index}.amount`)}
-                                                {...form.getInputProps(`cost.${index}.amount`)}
-                                            />
-                                            <ResourceSelect
-                                                key={form.key(`cost.${index}.resource`)}
-                                                {...form.getInputProps(`cost.${index}.resource`)}
-                                            />
-                                            <ActionIcon
-                                                variant="outline"
-                                                color="red"
-                                                size="input-sm"
-                                                data-testid={'cost-sub-' + index}
-                                                onClick={() => form.removeListItem('cost', index)}
-                                            >
-                                                <FaRegTrashCan/>
-                                            </ActionIcon>
-                                        </Group>;
-                                    })}
-                                </Stack>
-                            </Paper>
-                        </Stack>
-                        <Tooltip label={form.errors.cost} disabled={!form.errors.cost}>
-                            <Button
-                                onClick={() =>
-                                    form.insertListItem('cost', {
-                                        amount: 0,
-                                        resource: null,
-                                        key: randomId()
-                                    })
-                                }
-                                mt="md"
-                                data-testid="cost-add"
-                                color={form.errors.cost ? 'red' : undefined}
-                            >
-                                {t('spell:addCost')}
-                            </Button>
-                        </Tooltip>
-                        <TextInput
-                            label={t('spell:additionalCost')}
-                            key={form.key('additionalCost')}
-                            {...form.getInputProps('additionalCost')}
-                        />
+                                    return <Group key={'item-' + usage['key']} wrap="nowrap">
+                                        <NumberInput
+                                            key={form.key(`cost.${index}.amount`)}
+                                            {...form.getInputProps(`cost.${index}.amount`)}
+                                        />
+                                        <ResourceSelect
+                                            key={form.key(`cost.${index}.resource`)}
+                                            {...form.getInputProps(`cost.${index}.resource`)}
+                                        />
+                                        <ActionIcon
+                                            variant="outline"
+                                            color="red"
+                                            size="input-sm"
+                                            data-testid={'cost-sub-' + index}
+                                            onClick={() => form.removeListItem('cost', index)}
+                                        >
+                                            <FaRegTrashCan/>
+                                        </ActionIcon>
+                                    </Group>;
+                                })}
+                            </Stack>
+                        </Paper>
                     </Stack>
-                </Flex>
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {editMode ? t('edit') : t('add')}
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
-        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
-            {editMode ? t('edit') : t('add')}
-        </Button>
-    </>;
+                    <Tooltip label={form.errors.cost} disabled={!form.errors.cost}>
+                        <Button
+                            onClick={() =>
+                                form.insertListItem('cost', {
+                                    amount: 0,
+                                    resource: null,
+                                    key: randomId()
+                                } as SpellCostItem)
+                            }
+                            mt="md"
+                            data-testid="cost-add"
+                            color={form.errors.cost ? 'red' : undefined}
+                        >
+                            {t('spell:addCost')}
+                        </Button>
+                    </Tooltip>
+                    <TextInput
+                        label={t('spell:additionalCost')}
+                        key={form.key('additionalCost')}
+                        {...form.getInputProps('additionalCost')}
+                    />
+                </Stack>
+            </Flex>
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {editMode ? t('edit') : t('add')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }
 
 function addTypeAnnotationToSpell(recipe: Spell): Spell {

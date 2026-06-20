@@ -48,8 +48,6 @@
   "maxPrimaryAttributeSum": "Maximal amount of primary attribute points.",
   "primaryAttributeDistributionExplanation": "On average, a primary attribute will have {{average}} points. Maximum {{max}} Attributes can have the maximum value. The average chance of a successful talent roll without talent points is {{averageChance}}%. The highest chance is {{highestChance}}% and the lowest is {{lowestChance}}%.",
   "equipmentSettings": "Equipment Settings",
-  "numberOfHandheld": "Number of pieces of equipment held in the hand",
-  "numberOfHandheldDescription": "A player can carry up to {{number}} items in their hands at the same time.",
   "jewelleryDefinitions": "Jewellery Definitions",
   "jewelleryDefinitionsExplanation": "Define which jewellery a player or enemy can wear.",
   "importDefaultJewelleryDefinitions": "Import recommended Jewellery Definitions.",
@@ -92,5 +90,10 @@
   "noEnemySheetDescription": "There is currently no sheet selected for enemies characters.",
   "characterSheetSettingsModalDescription": "Select which character sheet is used to display character and enemy characters.",
   "playerSheet": "Player Character Sheet",
-  "enemySheet": "Enemy Character Sheet"
+  "enemySheet": "Enemy Character Sheet",
+  "tierFormula": "Formula to calculate the character tier",
+  "talentPointFormula": "Formula to calculate the maximal starting talent points",
+  "inventorySizes": "Inventory Sizes",
+  "addInventoryType": "Add another inventory",
+  "backpackExample": "e.g. Backpack"
 }

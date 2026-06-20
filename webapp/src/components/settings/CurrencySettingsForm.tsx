@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useUniverseContext} from '../PageBase';
 import {useTranslation} from 'react-i18next';
 import {useForm} from '@mantine/form';
-import {CurrencySettings, UniverseSettingsServiceApi} from '../../api';
+import {CurrencyCalculationEntry, CurrencySettings} from '../../api/model';
 import {
     ActionIcon,
     Button,
@@ -19,12 +19,14 @@ import {
 import {currencyFormatter} from '../utils/Formatters';
 import {randomId} from '@mantine/hooks';
 import {FaRegTrashCan} from 'react-icons/fa6';
-import {API_CONFIGURATION} from '../Constants';
-import {handleNetworkErrors, handleValidationErrors} from '../utils/ErrorUtils';
+import {handleValidationErrors} from '../utils/ErrorUtils';
+import {
+    getGetCurrencySettingsQueryKey,
+    useUpdateCurrencySettings
+} from '../../api/universe-settings-service/universe-settings-service';
+import {useQueryClient} from '@tanstack/react-query';
 
-
-const SETTINGS_API = new UniverseSettingsServiceApi(API_CONFIGURATION);
-
+/** Form for currency settings */
 export default function CurrencySettingsForm({
     onSave, onSaveText
 }: {
@@ -32,7 +34,8 @@ export default function CurrencySettingsForm({
     onSaveText: string;
 }) {
     const {t} = useTranslation();
-    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+    const {activeUniverse, currencySettings} = useUniverseContext();
     const [priceExample, setPriceExample] = useState<string | number>(1234);
     const form = useForm<CurrencySettings>({
         mode: 'controlled',
@@ -44,12 +47,15 @@ export default function CurrencySettingsForm({
     });
 
     useEffect(() => {
-        if (!activeUniverse) {
-            return;
-        }
+        form.setInitialValues(currencySettings);
+        form.setValues(currencySettings);
+    }, [currencySettings]);
 
-        SETTINGS_API.getCurrencySettings(activeUniverse.id).then(response => form.setValues(response.data)).catch(handleNetworkErrors);
-    }, [activeUniverse]);
+    const {mutateAsync: updateCurrencySettings} = useUpdateCurrencySettings({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetCurrencySettingsQueryKey(activeUniverse.id)})
+        }
+    });
 
     return <Stack align="center">
         <Title order={3} ta="center">
@@ -58,8 +64,11 @@ export default function CurrencySettingsForm({
         <Grid columns={2} gutter="5vw">
             <Grid.Col span={1}>
                 <form
-                    onSubmit={form.onSubmit((settings) => SETTINGS_API.updateCurrencySettings(activeUniverse.id, settings).then(onSave)
-                        .catch(handleValidationErrors(form.setErrors)))}>
+                    onSubmit={form.onSubmit((settings) => updateCurrencySettings({
+                        universe: activeUniverse.id,
+                        data: settings
+                    }).then(onSave).catch(handleValidationErrors(form.setErrors)))}
+                >
                     <Grid columns={2}>
                         <Grid.Col span={1}>
                             <TextInput
@@ -134,7 +143,7 @@ export default function CurrencySettingsForm({
                                         currencyShortForm: '',
                                         factor: 10,
                                         key: randomId()
-                                    })
+                                    } as CurrencyCalculationEntry)
                                 }
                             >
                                 {t('universe:addAnotherCoin')}

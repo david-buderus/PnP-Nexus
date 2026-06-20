@@ -1,21 +1,21 @@
 import {useTranslation} from 'react-i18next';
 import {useUserContext} from '../../components/PageBase';
 import {useEffect, useState} from 'react';
-import {AuthenticationServiceApi, PasswordChange, PnPUser, UserServiceApi} from '../../api';
+import {PasswordChange, PnPUser} from '../../api/model';
 import {Button, Group, Modal, PasswordInput, Stack, Text, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
-import {API_CONFIGURATION} from '../../components/Constants';
 import {handleValidationErrors} from '../../components/utils/ErrorUtils';
 import ConfirmationDialog from '../../components/modal/ConfirmationDialog';
 import {useDisclosure} from '@mantine/hooks';
+import {useQueryClient} from '@tanstack/react-query';
+import {getGetUserQueryKey, useRemoveUser, useUpdateUser} from '../../api/user-service/user-service';
+import {useUpdatePassword} from '../../api/authentication-service/authentication-service';
 
-const USER_API = new UserServiceApi(API_CONFIGURATION);
-const AUTH_API = new AuthenticationServiceApi(API_CONFIGURATION);
-
-/** View to change data about the currently logged in user */
+/** View to change data about the currently logged-in user */
 export function User() {
     const {t} = useTranslation();
-    const {user, refreshUser} = useUserContext();
+    const queryClient = useQueryClient();
+    const {user} = useUserContext();
 
     const [editMode, setEditMode] = useState(false);
 
@@ -25,8 +25,24 @@ export function User() {
     });
 
     useEffect(() => {
+        form.setInitialValues(user);
         form.setValues(user);
     }, [user]);
+
+    const {mutate: updateUser} = useUpdateUser({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetUserQueryKey(user.username),
+            }).then(() => setEditMode(false)),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+
+    const {mutate: removeUser} = useRemoveUser({
+        mutation: {
+            onSuccess: () => window.location.reload()
+        }
+    });
 
     if (!user) {
         return <Text>
@@ -45,12 +61,7 @@ export function User() {
             readOnly
         />
         <form
-            onSubmit={form.onSubmit((editedUser) => USER_API.updateUser(user.username, editedUser)
-                .then(() => {
-                    setEditMode(false);
-                    refreshUser();
-                })
-                .catch(handleValidationErrors(form.setErrors)))}
+            onSubmit={form.onSubmit(editedUser => updateUser({username: user.username, data: editedUser}))}
         >
             <TextInput
                 label={t('displayName')}
@@ -97,7 +108,7 @@ export function User() {
         <ChangePasswordDialog/>
         <ConfirmationDialog
             title={t('user:confirmDeleteUser')}
-            onConfirmation={() => USER_API.removeUser(user.username).then(() => window.location.reload())}
+            onConfirmation={() => removeUser({username: user.username})}
             openNode={open =>
                 <Button
                     onClick={open}
@@ -124,6 +135,13 @@ function ChangePasswordDialog() {
     });
     const passwordNotMatching = confirmPassword !== form.getValues().newPassword;
 
+    const {mutate: updatePassword} = useUpdatePassword({
+        mutation: {
+            onSuccess: () => close(),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+
     return <>
         <Modal
             opened={opened}
@@ -133,8 +151,7 @@ function ChangePasswordDialog() {
             data-testid="change-password-dialog"
         >
             <form
-                onSubmit={form.onSubmit((change) => AUTH_API.updatePassword(change)
-                    .then(close).catch(handleValidationErrors(form.setErrors)))}
+                onSubmit={form.onSubmit(change => updatePassword({data: change}))}
             >
                 <PasswordInput
                     label={t('user:oldPassword')}

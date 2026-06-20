@@ -1,11 +1,9 @@
 package de.pnp.manager.server.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.pnp.manager.component.math.BinaryExpressionTree;
-import de.pnp.manager.component.math.IExpressionVariable;
+import de.pnp.manager.component.math.*;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
-import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -18,14 +16,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.pnp.manager.validation.IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
+import static de.pnp.manager.component.math.EReservedVariables.RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
+
 
 /**
  * Service to create and use {@link BinaryExpressionTree} in the front-end.
@@ -35,8 +31,11 @@ import static de.pnp.manager.validation.IsValidExpressionValidator.ALLOWED_SECON
 @RequestMapping("/api/expressions")
 public class BinaryExpressionTreeService {
 
-    @Autowired
-    private PrimaryAttributeRepository primaryAttributeRepository;
+    private final PrimaryAttributeRepository primaryAttributeRepository;
+
+    public BinaryExpressionTreeService(@Autowired PrimaryAttributeRepository primaryAttributeRepository) {
+        this.primaryAttributeRepository = primaryAttributeRepository;
+    }
 
     @PostMapping("secondary-attributes/{universe}")
     @Operation(summary = "Creates an expression for secondary attributes", operationId = "createExpressionForSecondaryAttributes")
@@ -51,7 +50,8 @@ public class BinaryExpressionTreeService {
         }
 
         if (tree.getVariables().stream().filter(StringVariable.class::isInstance)
-                .anyMatch(v -> !ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(((StringVariable) v).variable()))) {
+                .anyMatch(v -> !RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES
+                        .contains(EReservedVariables.of(((StringVariable) v).variable()).orElse(null)))) {
             throw createResponseException("expression.unknownVariable");
         }
 
@@ -84,6 +84,25 @@ public class BinaryExpressionTreeService {
             } else {
                 return "";
             }
+        }).toList();
+    }
+
+    @GetMapping("functions")
+    @Operation(summary = "Returns human readable strings for all supported functions", operationId = "getSupportedFunctions")
+    public List<String> getSupportedFunctions() {
+        return Arrays.stream(EFunction.values()).map(f -> {
+            StringBuilder builder = new StringBuilder();
+            builder.append(f.getHumanReadableFormat()).append('(');
+
+            char a = 'a';
+            for (int i = 0; i < f.getParameters(); i++) {
+                builder.append((Character.toString(a + i)));
+                if (i != f.getParameters() - 1) {
+                    builder.append(", ");
+                }
+            }
+
+            return builder.append(')').toString();
         }).toList();
     }
 

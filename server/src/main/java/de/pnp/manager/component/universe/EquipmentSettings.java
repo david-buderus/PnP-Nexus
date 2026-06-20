@@ -1,11 +1,12 @@
 package de.pnp.manager.component.universe;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import de.pnp.manager.component.character.PnPCharacter;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+
 import java.util.List;
 
 /**
@@ -16,22 +17,15 @@ public class EquipmentSettings extends SettingsBase {
     /**
      * The default settings
      */
-    public static final EquipmentSettings DEFAULT = new EquipmentSettings(2, List.of());
+    public static final EquipmentSettings DEFAULT = new EquipmentSettings(List.of());
 
-
-    @PositiveOrZero
-    private final int numberOfHandheld;
 
     @NotNull
     private final List<@Valid JewelleryDefinition> jewelleryDefinitions;
 
-    public EquipmentSettings(int numberOfHandheld, List<@Valid JewelleryDefinition> jewelleryDefinitions) {
-        this.numberOfHandheld = numberOfHandheld;
+    @JsonCreator
+    public EquipmentSettings(List<@Valid JewelleryDefinition> jewelleryDefinitions) {
         this.jewelleryDefinitions = jewelleryDefinitions;
-    }
-
-    public int getNumberOfHandheld() {
-        return numberOfHandheld;
     }
 
     public List<JewelleryDefinition> getJewelleryDefinitions() {
@@ -44,5 +38,4 @@ public class EquipmentSettings extends SettingsBase {
     public record JewelleryDefinition(@NotBlank String name, @NotNull String tag, @Positive int amount) {
 
     }
-
 }

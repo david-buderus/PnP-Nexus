@@ -4,9 +4,9 @@ import de.pnp.manager.component.ECalculation;
 import de.pnp.manager.component.TagRequirement;
 import de.pnp.manager.component.upgrade.EUpgradeRestriction;
 import de.pnp.manager.component.upgrade.Upgrade;
-import de.pnp.manager.component.upgrade.effect.EUpgradeEquipmentManipulator;
-import de.pnp.manager.component.upgrade.effect.EquipmentUpgradeEffect;
-import de.pnp.manager.component.upgrade.effect.SimpleUpgradeEffect;
+import de.pnp.manager.component.upgrade.effect.EItemEquipmentManipulator;
+import de.pnp.manager.component.upgrade.effect.EquipmentItemEffect;
+import de.pnp.manager.component.upgrade.effect.SimpleItemEffect;
 import de.pnp.manager.server.TestServer;
 import de.pnp.manager.server.configurator.EServerTestConfiguration;
 import de.pnp.manager.server.database.upgrade.UpgradeRepository;
@@ -45,9 +45,9 @@ public class UpgradePageTest extends RepositoryOverviewTestBase<Upgrade> {
     @Override
     protected Upgrade getCorrectObject() {
         return new Upgrade(null, "Shine 100", EUpgradeRestriction.WEAPON, TagRequirement.NO_REQUIREMENT, 1, 10,
-                List.of(new EquipmentUpgradeEffect("+100 Damage", 1, EUpgradeEquipmentManipulator.DAMAGE,
+                List.of(new EquipmentItemEffect("+100 Damage", 1, EItemEquipmentManipulator.DAMAGE,
                                 ECalculation.ADDITIVE),
-                        new SimpleUpgradeEffect("It shines")));
+                        new SimpleItemEffect("It shines")));
     }
 
     @Override

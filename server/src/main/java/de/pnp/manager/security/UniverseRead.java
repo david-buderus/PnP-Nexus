@@ -1,14 +1,14 @@
 package de.pnp.manager.security;
 
-import static de.pnp.manager.security.SecurityConstants.ADMIN;
-import static de.pnp.manager.security.SecurityConstants.READ_ACCESS;
-import static de.pnp.manager.security.SecurityConstants.UNIVERSE_TARGET_ID;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.springframework.security.access.prepost.PreAuthorize;
+
+import static de.pnp.manager.security.SecurityConstants.READ_ACCESS;
+import static de.pnp.manager.security.SecurityConstants.UNIVERSE_TARGET_ID;
 
 /**
  * Method marked with this interface needs universe read rights.
@@ -17,8 +17,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@PreAuthorize(
-    "hasRole('" + ADMIN + "') || hasPermission(#universe, '" + UNIVERSE_TARGET_ID + "', '" + READ_ACCESS + "')")
+@PreAuthorize(UniverseRead.AUTHORIZE_CONSTANT)
 public @interface UniverseRead {
 
+    /**
+     * The SpEL definition of this annotation
+     */
+    // language=SpEL prefix="@PreAuthorize('" suffix="')"
+    String AUTHORIZE_CONSTANT = AdminRights.AUTHORIZE_CONSTANT + " || hasPermission(#universe, \"" + UNIVERSE_TARGET_ID + "\", \"" + READ_ACCESS + "\")";
 }

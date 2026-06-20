@@ -13,30 +13,36 @@ import de.pnp.manager.component.item.equipable.Jewellery;
 import de.pnp.manager.component.item.equipable.Shield;
 import de.pnp.manager.component.item.equipable.Weapon;
 import de.pnp.manager.component.item.interfaces.IItem;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
 import de.pnp.manager.server.database.item.ItemRepository;
+import de.pnp.manager.validation.MatchingItemEffects;
 import de.pnp.manager.validation.MatchingStackSizes;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * A concrete item in the universe.
  */
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = Weapon.class, name = "Weapon"),
-    @JsonSubTypes.Type(value = Shield.class, name = "Shield"),
-    @JsonSubTypes.Type(value = Armor.class, name = "Armor"),
-    @JsonSubTypes.Type(value = Jewellery.class, name = "Jewellery"),
+        @JsonSubTypes.Type(value = Item.class, name = "Item"),
+        @JsonSubTypes.Type(value = Weapon.class, name = "Weapon"),
+        @JsonSubTypes.Type(value = Shield.class, name = "Shield"),
+        @JsonSubTypes.Type(value = Armor.class, name = "Armor"),
+        @JsonSubTypes.Type(value = Jewellery.class, name = "Jewellery"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @MatchingStackSizes
+@MatchingItemEffects
 @Document(ItemRepository.REPOSITORY_NAME)
 public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObject {
 
@@ -66,7 +72,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
      * The effect of this item.
      */
     @NotNull
-    protected final String effect;
+    protected final List<@NotNull ItemEffect> effects;
 
     /**
      * The rarity of this item.
@@ -116,15 +122,21 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     @PositiveOrZero
     protected final int minimumStackSize;
 
+    /**
+     * The amount of upgrades this item can hold.
+     */
+    @NotNull
+    @PositiveOrZero
+    protected final int upgradeSlots;
+
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public Item(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
-        ERarity rarity,
-        int vendorPrice, int tier, String description, String note, int maximumStackSize, int minimumStackSize) {
+    public Item(ObjectId id, String name, Set<Tag> tags, String requirement, List<ItemEffect> effects, ERarity rarity,
+                int vendorPrice, int tier, String description, String note, int maximumStackSize, int minimumStackSize, int upgradeSlots) {
         super(id);
         this.name = name;
         this.tags = tags;
         this.requirement = requirement;
-        this.effect = effect;
+        this.effects = effects;
         this.rarity = rarity;
         this.vendorPrice = vendorPrice;
         this.tier = tier;
@@ -132,6 +144,7 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         this.note = note;
         this.maximumStackSize = maximumStackSize;
         this.minimumStackSize = minimumStackSize;
+        this.upgradeSlots = upgradeSlots;
     }
 
     @Override
@@ -152,8 +165,8 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     }
 
     @Override
-    public String getEffect() {
-        return effect;
+    public @NotNull List<ItemEffect> getEffects() {
+        return effects;
     }
 
     @Override
@@ -192,6 +205,11 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
     }
 
     @Override
+    public int getUpgradeSlots() {
+        return upgradeSlots;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -201,35 +219,36 @@ public class Item extends DatabaseObject implements IItem, IUniquelyNamedDataObj
         }
         Item item = (Item) o;
         return getVendorPrice() == item.getVendorPrice() && getTier() == item.getTier()
-            && getMaximumStackSize() == item.getMaximumStackSize()
-            && getMinimumStackSize() == item.getMinimumStackSize()
-            && Objects.equals(getName(), item.getName()) && Objects.equals(getTags(), item.getTags())
-            && Objects.equals(getRequirement(), item.getRequirement()) && Objects.equals(getEffect(),
-            item.getEffect()) && getRarity() == item.getRarity() && Objects.equals(getDescription(),
-            item.getDescription()) && Objects.equals(getNote(), item.getNote());
+                && getMaximumStackSize() == item.getMaximumStackSize()
+                && getMinimumStackSize() == item.getMinimumStackSize()
+                && Objects.equals(getName(), item.getName()) && Objects.equals(getTags(), item.getTags())
+                && Objects.equals(getRequirement(), item.getRequirement()) && Objects.equals(getEffects(),
+                item.getEffects()) && getRarity() == item.getRarity() && Objects.equals(getDescription(),
+                item.getDescription()) && Objects.equals(getNote(), item.getNote())
+                && getUpgradeSlots() == item.getUpgradeSlots();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getTags(), getRequirement(), getEffect(), getRarity(), getVendorPrice(),
-            getTier(),
-            getDescription(), getNote(), getMaximumStackSize(), getMinimumStackSize());
+        return Objects.hash(getName(), getTags(), getRequirement(), getEffects(), getRarity(), getVendorPrice(),
+                getTier(), getDescription(), getNote(), getMaximumStackSize(), getMinimumStackSize());
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("name", name)
-            .add("tags", tags)
-            .add("requirement", requirement)
-            .add("effect", effect)
-            .add("rarity", rarity)
-            .add("vendorPrice", vendorPrice)
-            .add("tier", tier)
-            .add("description", description)
-            .add("note", note)
-            .add("maximumStackSize", maximumStackSize)
-            .add("minimumStackSize", minimumStackSize)
-            .toString();
+                .add("name", name)
+                .add("tags", tags)
+                .add("requirement", requirement)
+                .add("effects", effects)
+                .add("rarity", rarity)
+                .add("vendorPrice", vendorPrice)
+                .add("tier", tier)
+                .add("description", description)
+                .add("note", note)
+                .add("maximumStackSize", maximumStackSize)
+                .add("minimumStackSize", minimumStackSize)
+                .add("upgradeSlots", upgradeSlots)
+                .toString();
     }
 }

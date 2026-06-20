@@ -13,26 +13,46 @@ import {
 } from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {randomId, useDisclosure} from '@mantine/hooks';
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {Upgrade, UpgradeRecipe, UpgradeRecipeServiceApi} from '../../../api';
+import {Upgrade, UpgradeRecipe} from '../../../api/model';
 import {fetchAllUpgradeRecipes, fetchAllUpgrades, IResourceUsage} from '../../../components/Database';
 import OverviewPage from '../../../components/OverviewPage';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {FaRegTrashCan} from 'react-icons/fa6';
 import {ObjectMultiSelect, ObjectSelect, ResourceSelect} from '../../../components/input/ObjectSelect';
 import {resourceFormatter} from '../../../components/utils/Formatters';
 import {addTypeAnnotationToUsage} from './crafting-recipes';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
 import {filterMultiNamedCell, filterNamedCell, MultiNamedCell, NamedCell} from '../../../components/table/NamedCell';
-
-const UPGRADE_RECIPE_API = new UpgradeRecipeServiceApi(API_CONFIGURATION);
+import {useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllUpgradeRecipesQueryKey,
+    useDeleteAllUpgradeRecipes,
+    useInsertAllUpgradeRecipes,
+    useUpdateUpgradeRecipe
+} from '../../../api/upgrade-recipe-service/upgrade-recipe-service';
 
 /** Overview over all upgrade recipes */
 export function UpgradeRecipeOverview() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const [toEdit, setToEdit] = useState<UpgradeRecipe>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
+
+    const {mutateAsync: deleteRecipes} = useDeleteAllUpgradeRecipes({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradeRecipesQueryKey(activeUniverse.id)}),
+            onError: handleNetworkErrors
+        }
+    });
 
     const columns = useMemo<ExtendedColumnDef<UpgradeRecipe, any>[]>(
         () => [
@@ -65,39 +85,41 @@ export function UpgradeRecipeOverview() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllUpgradeRecipes()}
-        columns={columns}
-        identifier="upgrade-recipes"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) =>
-            <CreationDialog
-                editMode={editMode}
-                refresh={refresh}
-                disabled={disabled}
-                getInitial={getInitial}
-            />}
-        deletionDialogTitle={t('crafting:upgradeRecipeDeletionTitle')}
-        onDelete={(universe, recipes) => UPGRADE_RECIPE_API.deleteAllUpgradeRecipes(universe, recipes.map(recipe => recipe.id))}
-        idKey="id"
-    />;
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllUpgradeRecipes()}
+            idKey="id"
+            columns={columns}
+            identifier="upgrade-recipes"
+            deletionDialogTitle={t('crafting:upgradeRecipeDeletionTitle')}
+            onDelete={(universe, recipes) => deleteRecipes({
+                universe: universe,
+                params: {ids: recipes.map(recipe => recipe.id)}
+            })}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog editMode={false} opened={openedAdd} close={closeAdd} initial={null}/>
+        <CreationDialog editMode={true} opened={toEdit !== null} close={() => setToEdit(null)} initial={toEdit}/>
+    </Stack>;
 }
 
 function CreationDialog({
     editMode,
-    refresh,
-    disabled,
-    getInitial
+    opened,
+    close,
+    initial
 }: {
     editMode: boolean,
-    refresh: () => void;
-    disabled: boolean;
-    getInitial: () => UpgradeRecipe;
+    opened: boolean,
+    close: () => void
+    initial: UpgradeRecipe
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [upgrades] = fetchAllUpgrades();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<UpgradeRecipe>({
         mode: 'controlled',
         initialValues: {
@@ -112,123 +134,140 @@ function CreationDialog({
     });
 
     useEffect(() => {
-        if (!editMode || !opened) {
+        if (!initial) {
             return;
         }
-        form.setValues(getInitial());
-    }, [opened, getInitial, editMode]);
+        form.setValues(initial);
+        form.setInitialValues(initial);
+    }, [initial]);
+
+    const {mutateAsync: updateRecipe} = useUpdateUpgradeRecipe({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradeRecipesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertRecipes} = useInsertAllUpgradeRecipes({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({queryKey: getGetAllUpgradeRecipesQueryKey(activeUniverse.id)}).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
 
     function onSubmit(recipe: UpgradeRecipe) {
         if (editMode) {
-            UPGRADE_RECIPE_API.updateUpgradeRecipe(activeUniverse.id, recipe.id, addTypeAnnotationToRecipe(recipe)).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateRecipe({
+                universe: activeUniverse.id,
+                id: recipe.id,
+                data: addTypeAnnotationToRecipe(recipe)
+            });
         } else {
-            UPGRADE_RECIPE_API.insertAllUpgradeRecipes(activeUniverse.id, [addTypeAnnotationToRecipe(recipe)]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertRecipes({
+                universe: activeUniverse.id,
+                data: [addTypeAnnotationToRecipe(recipe)]
+            });
         }
     }
 
-    return <>
-        <Modal opened={opened} onClose={close}
-               title={editMode ? t('crafting:upgradeRecipeEditTitle') : t('crafting:upgradeRecipeCreationTitle')}
-               maw={300}>
-            <form onSubmit={form.onSubmit(onSubmit)}>
-                <ObjectSelect<Upgrade>
-                    label={t('upgrade')}
-                    key={form.key('upgrade')}
-                    {...form.getInputProps('upgrade')}
-                    data={upgrades}
-                    idKey="id"
-                    labelKey="name"
-                />
-                <TextInput
-                    label={t('crafting:requirement')}
-                    key={form.key('requirement')}
-                    {...form.getInputProps('requirement')}
-                />
-                <ObjectMultiSelect<Upgrade>
-                    label={t('crafting:requiredUpgrades')}
-                    key={form.key('requiredUpgrades')}
-                    {...form.getInputProps('requiredUpgrades')}
-                    data={upgrades}
-                    idKey="id"
-                    labelKey="name"
-                />
-                <Input.Label>
-                    {t('materials')}
-                </Input.Label>
-                <Paper shadow="md" p="sm">
-                    {form.getValues().materials.length > 0 ? (
-                        <Group>
-                            <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
-                                {t('amount')}
-                            </Text>
-                            <Text fw={500} size="sm" pr={160}>
-                                {t('crafting:resource')}
-                            </Text>
-                        </Group>
-                    ) : (
-                        <Text c="dimmed" ta="center">
-                            {t('nothing-here')}
+    return <Modal
+        opened={opened}
+        onClose={close}
+        title={editMode ? t('crafting:upgradeRecipeEditTitle') : t('crafting:upgradeRecipeCreationTitle')}
+        maw={300}
+    >
+        <form onSubmit={form.onSubmit(onSubmit)}>
+            <ObjectSelect<Upgrade>
+                label={t('upgrade')}
+                key={form.key('upgrade')}
+                {...form.getInputProps('upgrade')}
+                data={upgrades}
+                idKey="id"
+                labelKey="name"
+            />
+            <TextInput
+                label={t('crafting:requirement')}
+                key={form.key('requirement')}
+                {...form.getInputProps('requirement')}
+            />
+            <ObjectMultiSelect<Upgrade>
+                label={t('crafting:requiredUpgrades')}
+                key={form.key('requiredUpgrades')}
+                {...form.getInputProps('requiredUpgrades')}
+                data={upgrades}
+                idKey="id"
+                labelKey="name"
+            />
+            <Input.Label>
+                {t('materials')}
+            </Input.Label>
+            <Paper shadow="md" p="sm">
+                {form.getValues().materials.length > 0 ? (
+                    <Group>
+                        <Text fw={500} size="sm" style={{flex: 1}} pr={50}>
+                            {t('amount')}
                         </Text>
-                    )}
-                    <Stack gap="xs">
-                        {form.getValues().materials.map((resource, index) => {
-                            if (!resource['key']) {
-                                resource['key'] = randomId();
-                            }
+                        <Text fw={500} size="sm" pr={160}>
+                            {t('crafting:resource')}
+                        </Text>
+                    </Group>
+                ) : (
+                    <Text c="dimmed" ta="center">
+                        {t('nothing-here')}
+                    </Text>
+                )}
+                <Stack gap="xs">
+                    {form.getValues().materials.map((resource, index) => {
+                        if (!resource['key']) {
+                            resource['key'] = randomId();
+                        }
 
-                            return <Group key={'material-' + resource['key']} wrap="nowrap" align="flex-start">
-                                <NumberInput
-                                    key={form.key(`materials.${index}.amount`)}
-                                    {...form.getInputProps(`materials.${index}.amount`)}
-                                />
-                                <ResourceSelect
-                                    key={form.key(`materials.${index}.resource`)}
-                                    {...form.getInputProps(`materials.${index}.resource`)}
-                                />
-                                <ActionIcon
-                                    variant="outline"
-                                    color="red"
-                                    size="input-sm"
-                                    data-testid={'materials-sub-' + index}
-                                    onClick={() => form.removeListItem('materials', index)}>
-                                    <FaRegTrashCan/>
-                                </ActionIcon>
-                            </Group>;
-                        })}
-                    </Stack>
-                    <Tooltip label={form.errors['materials']} disabled={!form.errors['materials']}>
-                        <Button
-                            onClick={() =>
-                                form.insertListItem('materials', {
-                                    amount: 1,
-                                    resource: null,
-                                    key: randomId()
-                                })
-                            }
-                            mt="md"
-                            data-testid="materials-add"
-                            color={form.errors['materials'] ? 'red' : undefined}
-                        >
-                            {t('crafting:addResource')}
-                        </Button>
-                    </Tooltip>
-                </Paper>
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
+                        return <Group key={'material-' + resource['key']} wrap="nowrap" align="flex-start">
+                            <NumberInput
+                                key={form.key(`materials.${index}.amount`)}
+                                {...form.getInputProps(`materials.${index}.amount`)}
+                            />
+                            <ResourceSelect
+                                key={form.key(`materials.${index}.resource`)}
+                                {...form.getInputProps(`materials.${index}.resource`)}
+                            />
+                            <ActionIcon
+                                variant="outline"
+                                color="red"
+                                size="input-sm"
+                                data-testid={'materials-sub-' + index}
+                                onClick={() => form.removeListItem('materials', index)}>
+                                <FaRegTrashCan/>
+                            </ActionIcon>
+                        </Group>;
+                    })}
+                </Stack>
+                <Tooltip label={form.errors['materials']} disabled={!form.errors['materials']}>
+                    <Button
+                        onClick={() =>
+                            form.insertListItem('materials', {
+                                amount: 1,
+                                resource: null,
+                                key: randomId()
+                            })
+                        }
+                        mt="md"
+                        data-testid="materials-add"
+                        color={form.errors['materials'] ? 'red' : undefined}
+                    >
+                        {t('crafting:addResource')}
                     </Button>
-                    <Button type="submit">
-                        {editMode ? t('edit') : t('add')}
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
-        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
-            {editMode ? t('edit') : t('add')}
-        </Button>
-    </>;
+                </Tooltip>
+            </Paper>
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {editMode ? t('edit') : t('add')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }
 
 function addTypeAnnotationToRecipe(recipe: UpgradeRecipe): UpgradeRecipe {

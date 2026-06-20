@@ -1,27 +1,22 @@
-import {useNode} from '@craftjs/core';
 import {Combobox, ComboboxProps, InputBase, Table, useCombobox} from '@mantine/core';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {TableTextInput} from '../inputs/TableTextInput';
-import {CharacterOrigin} from '../../../../../api';
+import {CharacterOrigin} from '../../../../../api/model';
 import {fetchAllSpecies} from '../../../../Database';
+import {TableErrorIndicator} from '../inputs/TableErrorIndicator';
 
 /** Shows name and co of the character */
-export const CharacterInfo = () => {
+export function CharacterInfo() {
     const {t} = useTranslation();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
 
     return <Table
         variant="vertical"
         layout="fixed"
         withTableBorder
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>
@@ -40,8 +35,8 @@ export const CharacterInfo = () => {
                 <Table.Td style={TABLE_STYLE}>
                     <CharacterOriginSelect
                         readOnly={!allowEdit}
-                        key={characterForm.key('description.origin')}
-                        {...characterForm.getInputProps('description.origin')}
+                        key={characterForm.key('origin')}
+                        {...characterForm.getInputProps('origin')}
                     />
                 </Table.Td>
             </Table.Tr>
@@ -58,17 +53,14 @@ export const CharacterInfo = () => {
             </Table.Tr>
         </Table.Tbody>
     </Table>;
-};
-
-CharacterInfo.craft = {
-    name: 'sheetEditor:characterInfo'
-};
+}
 
 function CharacterOriginSelect(props: {
     value?: CharacterOrigin,
-    onChange?: (v: CharacterOrigin) => void
+    onChange?: (v: CharacterOrigin) => void,
+    error?: React.ReactNode,
 } & Omit<ComboboxProps, 'onChange' | 'value'>) {
-    const {value, onChange, readOnly, ...other} = props;
+    const {value, onChange, readOnly, error, ...other} = props;
     const [data] = fetchAllSpecies();
     const combobox = useCombobox({
         onDropdownClose: () => combobox.resetSelectedOption(),
@@ -94,7 +86,7 @@ function CharacterOriginSelect(props: {
         return null;
     };
 
-    return (
+    return <TableErrorIndicator label={error}>
         <Combobox
             store={combobox}
             onOptionSubmit={id => onChange(parse(id))}
@@ -137,7 +129,7 @@ function CharacterOriginSelect(props: {
                         value.nation ? (
                             `${value.species.name} / ${value.nation.name}`
                         ) : (
-                            value.species.name
+                            value.species?.name
                         )
                     ) : null}
                 </InputBase>
@@ -176,5 +168,5 @@ function CharacterOriginSelect(props: {
                 </Combobox.Options>
             </Combobox.Dropdown>
         </Combobox>
-    );
+    </TableErrorIndicator>;
 }

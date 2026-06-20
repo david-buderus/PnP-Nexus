@@ -27,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collection;
 import java.util.Objects;
 
+import static de.pnp.manager.security.SecurityConstants.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -43,14 +44,19 @@ public class UniverseService {
      */
     public static final String UNIVERSE_DOES_NOT_EXIST_EXCEPTION_MESSAGE = "Universe does not exist.";
 
-    @Autowired
-    private UniverseRepository universeRepository;
+    private final UniverseRepository universeRepository;
 
-    @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    private final UserDetailsRepository userDetailsRepository;
 
-    @Autowired
-    private UserController userController;
+    private final UserController userController;
+
+    public UniverseService(@Autowired UniverseRepository universeRepository,
+                           @Autowired UserDetailsRepository userDetailsRepository,
+                           @Autowired UserController userController) {
+        this.universeRepository = universeRepository;
+        this.userDetailsRepository = userDetailsRepository;
+        this.userController = userController;
+    }
 
     @GetMapping
     @PostFilter("hasRole('" + SecurityConstants.ADMIN + "') || hasPermission(filterObject, '"
@@ -95,11 +101,11 @@ public class UniverseService {
         return persistedUniverse;
     }
 
-    @PutMapping("{universe}")
-    @UniverseOwner
+    @PutMapping("{universeId}")
+    @PreAuthorize("hasRole('" + ADMIN + "') || hasPermission(#universeId, '" + UNIVERSE_TARGET_ID + "', '" + OWNER + "')")
     @Operation(summary = "Update a universe", operationId = "updateUniverse")
-    public Universe updateUniverse(@PathVariable ObjectId universe, @Valid @RequestBody Universe newUniverse) {
-        if (!Objects.equals(newUniverse.getId(), universe)) {
+    public Universe updateUniverse(@PathVariable ObjectId universeId, @Valid @RequestBody Universe newUniverse) {
+        if (!Objects.equals(newUniverse.getId(), universeId)) {
             throw new ResponseStatusException(BAD_REQUEST, "The universe path does not match the given universe name");
         }
         return universeRepository.update(newUniverse);

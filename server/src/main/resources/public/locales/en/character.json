@@ -7,6 +7,7 @@
   "consumableAttributeTooltip": "Typical attributes which can be used as a resource would be life points or mana",
   "calculationFormula": "Calculation Formula",
   "calculationFormulaTooltip": "The supported variables are:",
+  "calculationFormulaFunctionTooltip": "The supported functions are:",
   "secondaryAttributeCreationTitle": "Create a secondary attribute",
   "secondaryAttributeEditTitle": "Edit a secondary attribute",
   "secondaryAttributeDeletionTitle": "Do you want to delete the selected secondary attributes?",
@@ -29,5 +30,10 @@
   "backstory": "Backstory",
   "level": "Level",
   "experiencePoints": "Experience Points",
-  "skillPoints": "Skill Points"
+  "skillPoints": "Skill Points",
+  "talentPoints": "Talent Points",
+  "printItems": "Print Items",
+  "printSpells": "Print Spells",
+  "printTalents": "Print Talents",
+  "printLevel": "Print Level"
 }

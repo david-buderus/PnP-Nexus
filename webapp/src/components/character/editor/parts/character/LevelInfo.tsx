@@ -1,36 +1,42 @@
-import {useNode} from '@craftjs/core';
-import {Table} from '@mantine/core';
-import {getPartStyle, TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
+import {Box, Table} from '@mantine/core';
+import {TABLE_ROW_HEIGHT, TABLE_STYLE} from '../Constants';
 import React, {useContext} from 'react';
 import {useTranslation} from 'react-i18next';
 import {PnPCharacterContext} from '../../../PnPCharacterContext';
 import {TableNumberInput} from '../inputs/TableNumberInput';
+import {useCalculateTier} from '../../../../../api/pn-p-character-service/pn-p-character-service';
+import {useUniverseContext} from '../../../../PageBase';
+import {PnPCharacterPrintContext} from '../../../PnPCharacterPrintContext';
 
 /** Shows level and co of the character */
-export const LevelInfo = () => {
+export function LevelInfo() {
     const {t} = useTranslation();
+    const {activeUniverse} = useUniverseContext();
     const {characterForm, allowEdit} = useContext(PnPCharacterContext);
-    const {connectors: {connect, drag}, selected} = useNode((state => ({
-        selected: state.events.selected
-    })));
+    const {showLevel} = useContext(PnPCharacterPrintContext);
+    const tier = useCalculateTier(activeUniverse?.id, {level: characterForm.getValues().level.level ?? 1}, {
+        query: {enabled: Boolean(activeUniverse?.id)}
+    }).data?.data ?? 1;
 
     return <Table
         variant="vertical"
         layout="fixed"
         withTableBorder
-        ref={ref => connect(drag(ref))}
-        style={getPartStyle(selected)}
     >
         <Table.Tbody>
             <Table.Tr h={TABLE_ROW_HEIGHT}>
-                <Table.Th style={TABLE_STYLE}>{t('character:level')}</Table.Th>
+                <Table.Th style={TABLE_STYLE}>{t('character:level') + ' / ' + t('tier')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>
                     <TableNumberInput
+                        className={!showLevel ? 'no-print' : undefined}
                         allowDecimal={false}
                         allowNegative={false}
                         readOnly={!allowEdit}
                         key={characterForm.key('level.level')}
                         {...characterForm.getInputProps('level.level')}
+                        rightSection={<Box pl={5}>
+                            {'/ ' + tier}
+                        </Box>}
                     />
                 </Table.Td>
             </Table.Tr>
@@ -39,6 +45,7 @@ export const LevelInfo = () => {
                 <Table.Th style={TABLE_STYLE}>{t('character:experiencePoints')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>
                     <TableNumberInput
+                        className={!showLevel ? 'no-print' : undefined}
                         allowDecimal={false}
                         allowNegative={false}
                         readOnly={!allowEdit}
@@ -52,6 +59,7 @@ export const LevelInfo = () => {
                 <Table.Th style={TABLE_STYLE}>{t('character:skillPoints')}</Table.Th>
                 <Table.Td style={TABLE_STYLE}>
                     <TableNumberInput
+                        className={!showLevel ? 'no-print' : undefined}
                         allowDecimal={false}
                         allowNegative={false}
                         readOnly={!allowEdit}
@@ -62,8 +70,4 @@ export const LevelInfo = () => {
             </Table.Tr>
         </Table.Tbody>
     </Table>;
-};
-
-LevelInfo.craft = {
-    name: 'sheetEditor:levelInfo'
-};
+}

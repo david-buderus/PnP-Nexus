@@ -1,4 +1,4 @@
-import {Button, Group, Modal, Text} from '@mantine/core';
+import {Button, Group, Modal, Stack, Text} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import {ReactNode} from 'react';
 import {useTranslation} from 'react-i18next';
@@ -28,20 +28,22 @@ export default function ConfirmationDialog({
 
     return <>
         <Modal opened={opened} onClose={close} title={title} maw={300}>
-            <Text>
-                {text}
-            </Text>
-            <Group justify="flex-end">
-                <Button autoFocus variant="outline" onClick={close}>
-                    {t('cancel')}
-                </Button>
-                <Button type="submit" onClick={() => {
-                    onConfirmation();
-                    close();
-                }}>
-                    {t('confirm')}
-                </Button>
-            </Group>
+            <Stack>
+                <Text>
+                    {text}
+                </Text>
+                <Group justify="flex-end">
+                    <Button autoFocus variant="outline" onClick={close}>
+                        {t('cancel')}
+                    </Button>
+                    <Button type="submit" onClick={() => {
+                        onConfirmation();
+                        close();
+                    }}>
+                        {t('confirm')}
+                    </Button>
+                </Group>
+            </Stack>
         </Modal>
         {openNode(open)}
     </>;

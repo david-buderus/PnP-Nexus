@@ -5,6 +5,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
     id "org.springdoc.openapi-gradle-plugin" version "1.6.0"
     id "org.openapi.generator" version "7.10.0"
+    id 'com.github.node-gradle.node' version '7.1.0'
 }
 
 group = 'de.pnp.manager'
@@ -52,6 +53,10 @@ jar {
     }
 }
 
+node {
+    nodeProjectDir = file("${projectDir}/../webapp")
+}
+
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
@@ -82,11 +87,27 @@ openApi {
     }
 }
 
-openApiGenerate {
-    generatorName.set("typescript-axios")
-    outputDir.set("$rootDir/webapp/src/api")
-    inputSpec.set("$rootDir/docs/swagger.json")
-    typeMappings.set(Map.of("set", "Array"))
+tasks.register('generateFrontendApi', NpmTask) {
+    args = ['run', 'orval']
+    dependsOn npmInstall
+}
+
+tasks.register('generateAllOpenApi') {
+    group = 'openapi'
+    description = 'Forces regeneration of OpenAPI docs and generates the client/server code.'
+
+    dependsOn 'generateOpenApiDocs'
+    dependsOn 'generateFrontendApi'
+}
+
+project.afterEvaluate {
+    tasks.named('generateFrontendApi').configure {
+        mustRunAfter 'generateOpenApiDocs'
+    }
+
+    tasks.named('generateOpenApiDocs').configure {
+        outputs.upToDateWhen { false }
+    }
 }
 
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask

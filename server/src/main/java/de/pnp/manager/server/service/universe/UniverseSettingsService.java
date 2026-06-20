@@ -1,5 +1,7 @@
 package de.pnp.manager.server.service.universe;
 
+import de.pnp.manager.component.math.BinaryExpressionTree;
+import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.component.universe.*;
 import de.pnp.manager.security.UniverseOwner;
 import de.pnp.manager.security.UniverseRead;
@@ -11,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Set;
 
 /**
  * Service to access {@link UniverseSettingsRepository}.
@@ -20,8 +25,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/{universe}/universe-settings")
 public class UniverseSettingsService {
 
-    @Autowired
-    private UniverseSettingsRepository settingsRepository;
+    private final UniverseSettingsRepository settingsRepository;
+
+    public UniverseSettingsService(@Autowired UniverseSettingsRepository settingsRepository) {
+        this.settingsRepository = settingsRepository;
+    }
 
     @GetMapping("character")
     @UniverseRead
@@ -36,6 +44,32 @@ public class UniverseSettingsService {
     @Operation(summary = "Update the settings", operationId = "updateCharacterSettings")
     public void updateCharacterSettings(@PathVariable ObjectId universe, @Valid @RequestBody CharacterSettings settings) {
         settingsRepository.setSettings(universe, settings);
+    }
+
+    @GetMapping("character/dto")
+    @UniverseRead
+    @Operation(summary = "Get the settings", operationId = "getCharacterSettingsDto")
+    public CharacterSettingsDto getCharacterSettingsDto(@PathVariable ObjectId universe) {
+        return CharacterSettingsDto.from(settingsRepository.getSettings(universe, CharacterSettings.class));
+    }
+
+    @PutMapping("character/dto")
+    @UniverseOwner
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @Operation(summary = "Update the settings", operationId = "updateCharacterSettingsDto")
+    public void updateCharacterSettingsDto(@PathVariable ObjectId universe, @Valid @RequestBody CharacterSettingsDto settings) {
+        try {
+            settingsRepository.setSettings(universe, new CharacterSettings(
+                    settings.minPrimaryAttributeValue(),
+                    settings.maxPrimaryAttributeValue(),
+                    settings.maxPrimaryAttributeSum(),
+                    BinaryExpressionTree.from(settings.tierFormula(), Set.of()),
+                    BinaryExpressionTree.from(settings.talentPointFormula(), Set.of()),
+                    settings.inventorySizes()
+            ));
+        } catch (IllegalFormulaException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
     }
 
     @GetMapping("currency")

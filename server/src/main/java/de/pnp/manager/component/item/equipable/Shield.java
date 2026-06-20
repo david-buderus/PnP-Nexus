@@ -5,11 +5,14 @@ import de.pnp.manager.component.Dice;
 import de.pnp.manager.component.item.ERarity;
 import de.pnp.manager.component.item.Material;
 import de.pnp.manager.component.item.interfaces.IDefensiveItem;
+import de.pnp.manager.component.upgrade.effect.ItemEffect;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.bson.types.ObjectId;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.bson.types.ObjectId;
 
 /**
  * A concrete shield in the universe.
@@ -37,13 +40,12 @@ public class Shield extends HandheldEquipableItem implements IDefensiveItem {
     @PositiveOrZero
     protected final float weight;
 
-    public Shield(ObjectId id, String name, Set<@NotNull Tag> tags, String requirement, String effect,
-        ERarity rarity,
-        int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
-        float initiative, int hit, Dice dice, float weight, int armor, int protection,
-        int maximumStackSize, int minimumStackSize) {
-        super(id, name, tags, requirement, effect, rarity, vendorPrice, tier, description, note, material,
-            upgradeSlots, initiative, hit, dice, maximumStackSize, minimumStackSize);
+    public Shield(ObjectId id, String name, Set<Tag> tags, String requirement, List<ItemEffect> effects,
+                  ERarity rarity, int vendorPrice, int tier, String description, String note, Material material, int upgradeSlots,
+                  float initiative, int hit, Dice dice, float weight, int armor, int protection,
+                  int maximumStackSize, int minimumStackSize) {
+        super(id, name, tags, requirement, effects, rarity, vendorPrice, tier, description, note, material,
+                upgradeSlots, initiative, hit, dice, maximumStackSize, minimumStackSize);
         this.weight = weight;
         this.armor = armor;
         this.protection = protection;
@@ -74,7 +76,7 @@ public class Shield extends HandheldEquipableItem implements IDefensiveItem {
         }
         Shield that = (Shield) o;
         return Double.compare(that.getWeight(), getWeight()) == 0
-            && getArmor() == that.getArmor() && getProtection() == that.getProtection();
+                && getArmor() == that.getArmor() && getProtection() == that.getProtection();
     }
 
     @Override

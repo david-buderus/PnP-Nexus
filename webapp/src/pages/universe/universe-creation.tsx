@@ -1,8 +1,7 @@
 import {Button, Grid, Group, List, ListItem, Stack, Stepper, Text, Textarea, TextInput, Title} from '@mantine/core';
 import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {API_CONFIGURATION} from '../../components/Constants';
-import {Universe, UniverseCreationServiceApi, UniverseServiceApi} from '../../api';
+import {Universe} from '../../api/model';
 import {useForm} from '@mantine/form';
 import {useUniverseContext, useUserContext} from '../../components/PageBase';
 import {handleValidationErrors} from '../../components/utils/ErrorUtils';
@@ -14,9 +13,9 @@ import {PrimaryAttributeForm} from '../../components/character/PrimaryAttributeF
 import {SecondaryAttributeForm} from '../../components/character/SecondaryAttributeForm';
 import EquipmentSettingsForm from '../../components/settings/EquipmentSettingsForm';
 import {Link} from 'react-router-dom';
-
-const UNIVERSE_API = new UniverseServiceApi(API_CONFIGURATION);
-const UNIVERSE_CREATION_API = new UniverseCreationServiceApi(API_CONFIGURATION);
+import {useQueryClient} from '@tanstack/react-query';
+import {getGetAllUniversesQueryKey, useCreateUniverse} from '../../api/universe-service/universe-service';
+import {useCreateDefaultMaterials} from '../../api/universe-creation-service/universe-creation-service';
 
 /** The props needed for a universe creation step */
 export interface UniverseCreationStepProps {
@@ -146,6 +145,9 @@ export default function UniverseCreation() {
 
 function UniverseCreationStep({nextStep}: UniverseCreationStepProps) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
+    const {setActiveUniverse} = useUniverseContext();
+
     const form = useForm<Universe>({
         mode: 'uncontrolled',
         initialValues: {
@@ -155,15 +157,23 @@ function UniverseCreationStep({nextStep}: UniverseCreationStepProps) {
             description: ''
         }
     });
-    const {setActiveUniverse, fetchUniverses} = useUniverseContext();
+
+    const {mutateAsync: createUniverse} = useCreateUniverse({
+        mutation: {
+            onSuccess: response =>
+                queryClient.invalidateQueries({queryKey: getGetAllUniversesQueryKey()})
+                    .then(() => setActiveUniverse(response.data))
+        }
+    });
 
     return <Stack align="center">
         <Title order={3} ta="center">
             {t('universe:createUniverse')}
         </Title>
-        <form onSubmit={form.onSubmit((universe) => UNIVERSE_API.createUniverse(universe)
-            .then(response => fetchUniverses().then(() => setActiveUniverse(response.data)).then(nextStep)
-            ).catch(handleValidationErrors(form.setErrors)))}>
+        <form
+            onSubmit={form.onSubmit(universe => createUniverse({data: universe}).then(nextStep)
+                .catch(handleValidationErrors(form.setErrors)))}
+        >
             <Grid columns={2}>
                 <Grid.Col span={2}>
                     <TextInput
@@ -212,6 +222,12 @@ function ItemImporStep({nextStep, prevStep}: UniverseCreationStepProps) {
     const [language, setLanguage] = useState<string>(userPreferences?.language ?? null);
     const [importedMaterials, setImportedMaterials] = useState(false);
 
+    const {mutate: createDefaultMaterials} = useCreateDefaultMaterials({
+        mutation: {
+            onSuccess: () => setImportedMaterials(true)
+        }
+    });
+
     return <Stack align="center" maw={500}>
         <Title order={3} ta="center">
             {t('universe:importDefaultsStep')}
@@ -226,10 +242,9 @@ function ItemImporStep({nextStep, prevStep}: UniverseCreationStepProps) {
         <Text ta="left">
             {t('universe:defaultMaterialsExplanation')}
         </Text>
-        <Button color="success" variant="outlined" disabled={importedMaterials || language === null} onClick={() => {
-            setImportedMaterials(true);
-            UNIVERSE_CREATION_API.createDefaultMaterials(activeUniverse.id, language);
-        }}>
+        <Button color="success" variant="outlined" disabled={importedMaterials || language === null} onClick={() =>
+            createDefaultMaterials({universe: activeUniverse.id, params: {language: language}})
+        }>
             {importedMaterials ? t('universe:successfullyImported') : t('universe:importMaterials')}
         </Button>
 

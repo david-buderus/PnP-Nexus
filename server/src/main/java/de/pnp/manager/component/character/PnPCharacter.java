@@ -10,8 +10,11 @@ import de.pnp.manager.component.character.traits.StatTrait.PrimaryStatTrait;
 import de.pnp.manager.component.character.traits.StatTrait.SecondaryStatTrait;
 import de.pnp.manager.component.character.traits.TalentCharacterTrait;
 import de.pnp.manager.component.spell.Spell;
+import de.pnp.manager.server.database.character.PnPCharacterRepository;
+import jakarta.validation.constraints.NotNull;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Map;
@@ -19,24 +22,34 @@ import java.util.Map;
 /**
  * A character in the universe.
  */
+@Document(PnPCharacterRepository.REPOSITORY_NAME)
 public class PnPCharacter extends DatabaseObject {
 
+    @NotNull
     private final CharacterDescription description;
 
+    @NotNull
     private final CharacterLevel level;
 
+    @NotNull
     private final CharacterOrigin origin;
 
+    @NotNull
     private final List<ICharacterTrait> advantageTraits;
 
+    @NotNull
     private final List<ICharacterTrait> disadvantageTraits;
 
+    @NotNull
     private final CharacterStats stats;
 
+    @NotNull
     private final CharacterTalents talents;
 
+    @NotNull
     private final CharacterEquipment equipment;
 
+    @NotNull
     private final CharacterInventory inventory;
 
     @DBRef
@@ -88,7 +101,12 @@ public class PnPCharacter extends DatabaseObject {
     public List<ICharacterTrait> getAllTraits() {
         Builder<ICharacterTrait> builder = ImmutableList.builder();
         builder.addAll(advantageTraits).addAll(disadvantageTraits);
-        builder.addAll(origin.species().getAdvantageTraits()).addAll(origin.species().getDisadvantageTraits());
+        if (origin == null) {
+            return builder.build();
+        }
+        if (origin.species() != null) {
+            builder.addAll(origin.species().getAdvantageTraits()).addAll(origin.species().getDisadvantageTraits());
+        }
         if (origin.nation() != null) {
             builder.addAll(origin.nation().getAdvantageTraits()).addAll(origin.nation().getDisadvantageTraits());
         }

@@ -3,10 +3,9 @@ import {useUniverseContext, useUserContext} from './PageBase';
 import {Box, Button, Checkbox, Group, Menu, Paper, rem, Stack, Table, Text, TextInput} from '@mantine/core';
 import {useLocalStorage} from '@mantine/hooks';
 import ConfirmationDialog from './modal/ConfirmationDialog';
-import {AxiosResponse} from 'axios';
-import {handleNetworkErrors} from './utils/ErrorUtils';
 import React, {ReactNode, useState} from 'react';
 import {
+    Column,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
@@ -18,10 +17,14 @@ import {ExtendedColumnDef} from './table/SortableTable';
 import {
     IconAdjustmentsHorizontal,
     IconArrowsSort,
+    IconEdit,
     IconSearch,
     IconSortAscending,
-    IconSortDescending
+    IconSortDescending,
+    IconTrash
 } from '@tabler/icons-react';
+import {ContextMenuItemOptions, useContextMenu} from 'mantine-contextmenu';
+import {hasOwnerRights, hasWriteRights} from './interfaces/UserPermissions';
 
 /** Props of the overview */
 export interface OverviewPageProps<T> {
@@ -31,30 +34,45 @@ export interface OverviewPageProps<T> {
     fetchData: [T[], () => void, boolean];
     /** The columns */
     columns: ExtendedColumnDef<T, any>[];
-    /** Callback to create dialogs to create or edit objects */
-    manipulationDialog: (editMode: boolean, refresh: () => void, disabled: boolean, getInitial: () => T) => ReactNode;
     /** The title of the deletion dialog */
     deletionDialogTitle: string;
     /** Callback for the deletion */
-    onDelete: (universe: string, objects: T[]) => Promise<AxiosResponse<void>>;
+    onDelete: (universe: string, objects: T[]) => void;
+    /** Callback for the deletion */
+    onEdit: (object: T) => void;
+    /** Callback for the deletion */
+    onAdd: () => void;
     /** The key to get the id of the object */
     idKey: keyof T;
+    /** Modal to show if a row is clicked */
+    viewModal?: (value: T, onClose: () => void) => ReactNode;
+    /** If read access to the universe is enough to edit objects */
+    manipulationWithObjectsRights?: boolean;
+    /** Extra entries that should be shown in the context menu */
+    additionalContextMenuEntries?: (data: T) => ContextMenuItemOptions[];
 }
 
+/** A table with add- and edit-button */
 export default function OverviewPage<T>({
     identifier,
     fetchData,
     columns,
-    manipulationDialog,
     deletionDialogTitle,
     onDelete,
-    idKey
+    onEdit,
+    onAdd,
+    idKey,
+    viewModal = () => null,
+    manipulationWithObjectsRights = false,
+    additionalContextMenuEntries = () => []
 }: OverviewPageProps<T>) {
     const {t} = useTranslation();
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
-    const [data, refresh, loading] = fetchData;
+    const {showContextMenu} = useContextMenu();
+    const [data] = fetchData;
 
+    const [lastClicked, setLastClicked] = useState<T>(null);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [rowSelection, setRowSelection] = useState({});
@@ -72,11 +90,11 @@ export default function OverviewPage<T>({
         columns: [
             {
                 id: 'select',
-                header: ({table}) => (
+                header: ({table: ta}) => (
                     <Checkbox
-                        checked={table.getIsAllRowsSelected()}
-                        indeterminate={table.getIsSomeRowsSelected()}
-                        onChange={table.getToggleAllRowsSelectedHandler()}
+                        checked={ta.getIsAllRowsSelected()}
+                        indeterminate={ta.getIsSomeRowsSelected()}
+                        onChange={ta.getToggleAllRowsSelectedHandler()}
                     />
                 ),
                 cell: ({row}) => (
@@ -84,6 +102,7 @@ export default function OverviewPage<T>({
                         checked={row.getIsSelected()}
                         disabled={!row.getCanSelect()}
                         onChange={row.getToggleSelectedHandler()}
+                        onClick={e => e.stopPropagation()}
                     />
                 ),
             },
@@ -102,6 +121,23 @@ export default function OverviewPage<T>({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        globalFilterFn: (row, _, filterValue, addMeta) => {
+            const searchableColumns: Column<T>[] = table.getAllColumns();
+
+            return searchableColumns.some(column => {
+                const columnFilterFn = column.columnDef.filterFn;
+                const value = row.getValue(column.id);
+
+                if (typeof columnFilterFn === 'function') {
+                    return columnFilterFn(row, column.id, filterValue, addMeta);
+                }
+
+                // Fallback for columns without a custom filterFn
+                return String(value)
+                    .toLowerCase()
+                    .includes(String(filterValue).toLowerCase());
+            });
+        }
     });
 
     return <Stack>
@@ -185,6 +221,23 @@ export default function OverviewPage<T>({
                                         key={row.id}
                                         data-testid={row.original[idKey]}
                                         bg={row.getIsSelected() ? 'var(--mantine-color-blue-light)' : undefined}
+                                        onClick={() => setLastClicked(row.original)}
+                                        onContextMenu={showContextMenu([
+                                            {
+                                                key: 'edit',
+                                                icon: <IconEdit size={16}/>,
+                                                title: t('edit'),
+                                                onClick: () => onEdit(row.original),
+                                                disabled: !((manipulationWithObjectsRights && hasWriteRights(userPermissions, row.original[idKey] as string)) || userPermissions.canWriteActiveUniverse)
+                                            }, {
+                                                key: 'delete',
+                                                icon: <IconTrash size={16} color="red"/>,
+                                                title: t('delete'),
+                                                onClick: () => onDelete(activeUniverse?.id, [row.original]),
+                                                disabled: !((manipulationWithObjectsRights && hasOwnerRights(userPermissions, row.original[idKey] as string)) || userPermissions.canWriteActiveUniverse)
+                                            },
+                                            ...additionalContextMenuEntries(row.original)
+                                        ])}
                                     >
                                         {row.getVisibleCells().map((cell) => (
                                             <Table.Td
@@ -210,21 +263,35 @@ export default function OverviewPage<T>({
                 </Table.ScrollContainer>
             </Stack>
         </Paper>
-        {userPermissions.canWriteActiveUniverse && <Group justify="flex-end">
-            {manipulationDialog(false, refresh, false, () => undefined)}
-            {manipulationDialog(true, refresh, table.getSelectedRowModel().flatRows.length !== 1, () => table.getSelectedRowModel().flatRows[0].original)}
-            <ConfirmationDialog
-                title={deletionDialogTitle}
-                onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))
-                    .then(refresh).catch(handleNetworkErrors)}
-                openNode={(open) => <Button
-                    data-testid="delete"
-                    disabled={table.getSelectedRowModel().flatRows.length === 0}
-                    onClick={open}
+        {(manipulationWithObjectsRights && userPermissions.canReadActiveUniverse) || userPermissions.canWriteActiveUniverse ?
+            <Group justify="flex-end">
+                <Button
+                    data-testid={'add'}
+                    onClick={onAdd}
                 >
-                    {t('delete')}
-                </Button>}
-            />
-        </Group>}
+                    {t('add')}
+                </Button>
+                <Button
+                    data-testid={'edit'}
+                    onClick={() => onEdit(table.getSelectedRowModel().flatRows[0]?.original)}
+                    disabled={table.getSelectedRowModel().flatRows.length !== 1 ||
+                        (manipulationWithObjectsRights && !hasWriteRights(userPermissions, table.getSelectedRowModel().flatRows[0].original[idKey] as string))}
+                >
+                    {t('edit')}
+                </Button>
+                <ConfirmationDialog
+                    title={deletionDialogTitle}
+                    onConfirmation={() => onDelete(activeUniverse?.id, table.getSelectedRowModel().flatRows.map(row => row.original))}
+                    openNode={(open) => <Button
+                        data-testid="delete"
+                        disabled={table.getSelectedRowModel().flatRows.length === 0 ||
+                            (manipulationWithObjectsRights && table.getSelectedRowModel().flatRows.some(v => !hasOwnerRights(userPermissions, v.original[idKey] as string)))}
+                        onClick={open}
+                    >
+                        {t('delete')}
+                    </Button>}
+                />
+            </Group> : null}
+        {viewModal(lastClicked, () => setLastClicked(null))}
     </Stack>;
 }

@@ -44,4 +44,9 @@ public abstract class SecurityConstants {
      * Identifier for permission targeted at universes.
      */
     public static final String UNIVERSE_TARGET_ID = "UNIVERSE";
+
+    /**
+     * Identifier for permission targeted at database objects.
+     */
+    public static final String DATABASE_OBJECT_TARGET_ID = "DATABASE_OBJECT";
 }

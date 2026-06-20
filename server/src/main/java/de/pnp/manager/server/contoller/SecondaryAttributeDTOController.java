@@ -3,12 +3,12 @@ package de.pnp.manager.server.contoller;
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.attributes.SecondaryAttributeDTO;
 import de.pnp.manager.component.math.BinaryExpressionTree;
+import de.pnp.manager.component.math.EReservedVariables;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.component.math.IllegalFormulaException;
 import de.pnp.manager.server.database.attributes.PrimaryAttributeRepository;
 import de.pnp.manager.server.database.attributes.SecondaryAttributeRepository;
-import de.pnp.manager.validation.IsValidExpressionValidator;
 import org.bson.types.ObjectId;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static de.pnp.manager.component.math.EReservedVariables.RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES;
 
 /**
  * A controller to convert {@link SecondaryAttributeDTO} and {@link SecondaryAttribute}.
@@ -91,8 +93,10 @@ public class SecondaryAttributeDTOController {
      * Returns all supported variables of the given universe.
      */
     public List<String> getSupportedVariables(ObjectId universe) {
-        return Stream.concat(getPrimaryAttributeVariables(universe).stream().map(IExpressionVariable::getIdentifier),
-                IsValidExpressionValidator.ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream()).toList();
+        return Stream.concat(
+                getPrimaryAttributeVariables(universe).stream().map(IExpressionVariable::getIdentifier),
+                RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.stream().map(EReservedVariables::getConstant)
+        ).toList();
     }
 
     /**

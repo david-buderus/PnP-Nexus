@@ -2,30 +2,35 @@ package de.pnp.manager.component.character;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.inventory.equipment.ArmorEquipment;
-import de.pnp.manager.component.inventory.equipment.Equipment;
+import de.pnp.manager.component.inventory.equipment.JewelleryEquipment;
 import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 import de.pnp.manager.component.item.equipable.EArmorSlot;
-import de.pnp.manager.component.item.equipable.Jewellery;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
- * The {@link Equipment} of a {@link PnPCharacter}.
+ * The equipment of a {@link PnPCharacter}.
  */
 public class CharacterEquipment {
 
     @NotNull
-    @JsonProperty("weaponEquipments")
-    private final List<WeaponEquipment> weaponEquipments;
+    @JsonProperty("weapons")
+    private final List<WeaponEquipment> weapons;
+
 
     @NotNull
-    @JsonProperty("shieldEquipment")
-    private final ShieldEquipment shieldEquipment;
+    @JsonProperty("fallbackWeapons")
+    private final List<WeaponEquipment> fallbackWeapons;
+
+    @NotNull
+    @JsonProperty("shields")
+    private final List<ShieldEquipment> shields;
+
+    @NotNull
+    @JsonProperty("fallbackShields")
+    private final List<ShieldEquipment> fallbackShields;
 
     @NotNull
     @JsonProperty("armor")
@@ -33,29 +38,62 @@ public class CharacterEquipment {
 
     @NotNull
     @JsonProperty("jewellery")
-    private final Map<String, List<Equipment<Jewellery>>> jewellery;
+    private final Map<String, List<JewelleryEquipment>> jewellery;
 
-    public CharacterEquipment(List<WeaponEquipment> weaponEquipments, ShieldEquipment shieldEquipment, Map<EArmorSlot, ArmorEquipment> armor,
-                              Map<String, List<Equipment<Jewellery>>> jewellery) {
-        this.weaponEquipments = weaponEquipments;
-        this.shieldEquipment = shieldEquipment;
+    public CharacterEquipment(List<WeaponEquipment> weapons, List<WeaponEquipment> fallbackWeapons,
+                              List<ShieldEquipment> shields, List<ShieldEquipment> fallbackShields,
+                              Map<EArmorSlot, ArmorEquipment> armor, Map<String, List<JewelleryEquipment>> jewellery) {
+        this.weapons = weapons;
+        this.fallbackWeapons = fallbackWeapons;
+        this.shields = shields;
+        this.fallbackShields = fallbackShields;
         this.armor = armor;
         this.jewellery = jewellery;
     }
 
-    public List<WeaponEquipment> getWeaponEquipments() {
-        return weaponEquipments;
+    public List<WeaponEquipment> getWeapons() {
+        return weapons;
     }
 
-    public ShieldEquipment getShieldEquipment() {
-        return shieldEquipment;
+    public List<WeaponEquipment> getFallbackWeapons() {
+        return fallbackWeapons;
     }
 
+    public List<ShieldEquipment> getShields() {
+        return shields;
+    }
+
+    public List<ShieldEquipment> getFallbackShields() {
+        return fallbackShields;
+    }
+
+    /**
+     * Returns the equipped armor for the given slot.
+     */
     public Optional<ArmorEquipment> getArmor(EArmorSlot slot) {
         return Optional.ofNullable(armor.get(slot));
     }
 
-    public List<Equipment<Jewellery>> getJewellery(String slot) {
+    /**
+     * Returns the equipped jewellery for the given slot.
+     */
+    public List<JewelleryEquipment> getJewellery(String slot) {
         return jewellery.putIfAbsent(slot, new ArrayList<>());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CharacterEquipment that = (CharacterEquipment) o;
+        return Objects.equals(weapons, that.weapons) && Objects.equals(fallbackWeapons, that.fallbackWeapons)
+                && Objects.equals(shields, that.shields) && Objects.equals(fallbackShields, that.fallbackShields)
+                && Objects.equals(armor, that.armor) && Objects.equals(jewellery, that.jewellery);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(weapons, fallbackWeapons, shields, fallbackShields, armor, jewellery);
     }
 }

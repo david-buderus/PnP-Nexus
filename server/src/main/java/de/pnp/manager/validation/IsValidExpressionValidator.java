@@ -2,6 +2,7 @@ package de.pnp.manager.validation;
 
 import de.pnp.manager.component.attributes.SecondaryAttribute;
 import de.pnp.manager.component.math.BinaryExpressionTree;
+import de.pnp.manager.component.math.EReservedVariables;
 import de.pnp.manager.component.math.IExpressionVariable;
 import de.pnp.manager.component.math.IExpressionVariable.PrimaryAttributeVariable;
 import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
@@ -13,29 +14,24 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.servlet.HandlerMapping;
 
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static de.pnp.manager.component.math.EReservedVariables.*;
 
 /**
  * Validator for {@link SecondaryAttribute}.
  */
 public class IsValidExpressionValidator implements ConstraintValidator<IsValidExpression, String> {
 
-    /**
-     * All string variables allowed in {@link SecondaryAttribute}.
-     */
-    public static final Set<String> ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES = Set.of("LVL");
-
-    @Autowired
-    private PrimaryAttributeRepository primaryAttributeRepository;
+    private final PrimaryAttributeRepository primaryAttributeRepository;
 
     private EExpressionType expressionType;
+
+    public IsValidExpressionValidator(@Autowired PrimaryAttributeRepository primaryAttributeRepository) {
+        this.primaryAttributeRepository = primaryAttributeRepository;
+    }
 
     @Override
     public void initialize(IsValidExpression constraintAnnotation) {
@@ -49,15 +45,12 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
             return false;
         }
         try {
-            ObjectId universe = getUniverse().orElse(null);
-            if (universe == null) {
-                // We don't have access to the universe
-                // We can only do a basic check
-                BinaryExpressionTree.from(value, Set.of());
-                return true;
-            }
+            ObjectId universe = ValidationUtils.getUniverse().orElse(null);
+
             return switch (expressionType) {
                 case SECONDARY_ATTRIBUTE_EXPRESSION -> validateSecondaryAttributeExpression(universe, value);
+                case TIER_FORMULA -> validateExpression(value, RESERVED_TIER_STRING_VARIABLES);
+                case TALENT_POINT_FORMULA -> validateExpression(value, RESERVED_TALENT_STRING_VARIABLES);
             };
         } catch (IllegalFormulaException e) {
             return false;
@@ -66,45 +59,36 @@ public class IsValidExpressionValidator implements ConstraintValidator<IsValidEx
 
     private boolean validateSecondaryAttributeExpression(ObjectId universe, String formula)
             throws IllegalFormulaException {
+        if (universe == null) {
+            // We don't have access to the universe
+            // We can only do a basic check
+            BinaryExpressionTree.from(formula, Set.of());
+            return true;
+        }
+
         Set<IExpressionVariable> variables = getPrimaryAttributeVariables(universe);
         BinaryExpressionTree expression = BinaryExpressionTree.from(formula, variables);
 
         return expression.getVariables().stream()
                 .filter(StringVariable.class::isInstance)
-                .allMatch(v -> ALLOWED_SECONDARY_ATTRIBUTE_STRING_VARIABLES.contains(
-                        ((StringVariable) v).variable()));
+                .allMatch(v -> RESERVED_SECONDARY_ATTRIBUTE_STRING_VARIABLES
+                        .contains(EReservedVariables.of(((StringVariable) v).variable()).orElse(null)));
+    }
 
+    private boolean validateExpression(String formula, Set<EReservedVariables> reserved)
+            throws IllegalFormulaException {
+        BinaryExpressionTree expression = BinaryExpressionTree.from(formula, Set.of());
+
+        return expression.getVariables().stream()
+                .filter(StringVariable.class::isInstance)
+                .allMatch(v -> reserved.contains(
+                        EReservedVariables.of(((StringVariable) v).variable()).orElse(null))
+                );
     }
 
     private Set<IExpressionVariable> getPrimaryAttributeVariables(ObjectId universe) {
         return primaryAttributeRepository.getAll(universe).stream()
                 .map(PrimaryAttributeVariable::new).collect(
                         Collectors.toSet());
-    }
-
-    /**
-     * Returns the corresponding universe for this validation.
-     */
-    private Optional<ObjectId> getUniverse() {
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-
-        if (attributes == null) {
-            return Optional.empty();
-        }
-
-        if (!(attributes.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE,
-                RequestAttributes.SCOPE_REQUEST) instanceof Map<?, ?> pathVariables)) {
-            return Optional.empty();
-        }
-
-        Object universePath = pathVariables.get("universe");
-        if (universePath instanceof ObjectId s) {
-            return Optional.of(s);
-        }
-        if (universePath instanceof String s && ObjectId.isValid(s)) {
-            return Optional.of(new ObjectId(s));
-        }
-
-        return Optional.empty();
     }
 }

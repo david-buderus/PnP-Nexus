@@ -1,7 +1,5 @@
 package de.pnp.manager.server.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import de.pnp.manager.component.DatabaseObject;
 import de.pnp.manager.component.user.GrantedDatabaseObjectAuthority;
 import de.pnp.manager.component.user.PnPUserCreation;
@@ -25,13 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
@@ -42,9 +37,10 @@ import java.util.List;
 
 import static de.pnp.manager.server.service.ServiceTestUtils.assertForbidden;
 import static org.assertj.core.api.Assertions.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+/**
+ * Base class to test {@link RepositoryServiceBase}
+ */
 @ManipulatesMetadata
 @AutoConfigureMockMvc
 public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo extends RepositoryBase<Obj>,
@@ -70,10 +66,7 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
     protected final String basePath;
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private DelegateMvc delegateMvc;
 
     @Autowired
     private TestItemBuilderFactory itemBuilder;
@@ -451,91 +444,44 @@ public abstract class RepositoryServiceBaseTest<Obj extends DatabaseObject, Repo
         if (ids != null) {
             map.addAll("ids", ids.stream().map(ObjectId::toHexString).toList());
         }
-        MockHttpServletResponse response = mockMvc.perform(get(basePath, universe).queryParams(map))
-                .andReturn().getResponse();
-
-        if (response.getStatus() >= 300) {
-            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
-        }
-
-        return objectMapper.readerForListOf(objClass).readValue(response.getContentAsString());
+        return delegateMvc.getList(objClass, basePath, map, universe);
     }
 
     /**
      * Wraps {@link RepositoryServiceBase#insertAll(ObjectId, List)} in a REST call.
      */
     protected List<Obj> insertAll(ObjectId universe, List<Obj> objects) throws Exception {
-        CollectionType collectionType = objectMapper.getTypeFactory().constructCollectionType(List.class, objClass);
-
-        MockHttpServletResponse response = mockMvc.perform(
-                        post(basePath, universe).with(csrf()).contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writerFor(collectionType).writeValueAsString(objects)))
-                .andReturn().getResponse();
-
-        if (response.getStatus() >= 300) {
-            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
-        }
-
-        return objectMapper.readerForListOf(objClass).readValue(response.getContentAsString());
+        return delegateMvc.insertList(objClass, basePath, objects, universe);
     }
 
     /**
      * Wraps {@link RepositoryServiceBase#deleteAll(ObjectId, List)} in a REST call.
      */
     protected void deleteAll(ObjectId universe, List<ObjectId> ids) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(delete(basePath, universe).with(csrf())
-                        .queryParam("ids", ids.stream().map(ObjectId::toHexString).toArray(String[]::new)))
-                .andReturn().getResponse();
-
-        if (response.getStatus() >= 300) {
-            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
-        }
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.put("ids", ids.stream().map(ObjectId::toHexString).toList());
+        delegateMvc.deleteObjects(basePath, map, universe);
     }
 
     /**
      * Wraps {@link RepositoryServiceBase#get(ObjectId, ObjectId)} in a REST call.
      */
     protected Obj getOne(ObjectId universe, ObjectId id) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get(basePath + "/{id}", universe, id.toHexString()))
-                .andReturn().getResponse();
-
-        if (response.getStatus() >= 300) {
-            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
-        }
-
-        return objectMapper.readValue(response.getContentAsString(), objClass);
+        return delegateMvc.getOne(objClass, basePath + "/{id}", universe, id.toHexString());
     }
 
     /**
      * Wraps {@link RepositoryServiceBase#update(ObjectId, ObjectId, DatabaseObject)} in a REST call.
      */
     protected Obj update(ObjectId universe, ObjectId id, Obj obj) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(
-                        put(basePath + "/{id}", universe, id.toHexString()).with(csrf())
-                                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(obj)))
-                .andReturn().getResponse();
-
-        if (response.getStatus() >= 300) {
-            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
-        }
-        return objectMapper.readValue(response.getContentAsString(), objClass);
+        return delegateMvc.update(objClass, basePath + "/{id}", obj, universe, id.toHexString());
     }
 
     /**
      * Wraps {@link RepositoryServiceBase#delete(ObjectId, ObjectId)} in a REST call.
      */
     protected void deleteOne(ObjectId universe, ObjectId id) throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(
-                        delete(basePath + "/{id}", universe, id.toHexString()).with(csrf()))
-                .andReturn().getResponse();
-
-        if (response.getStatus() >= 300) {
-            throw new ResponseStatusException(HttpStatus.valueOf(response.getStatus()));
-        }
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        delegateMvc.deleteObjects(basePath + "/{id}", universe, id.toHexString());
     }
 
     /**

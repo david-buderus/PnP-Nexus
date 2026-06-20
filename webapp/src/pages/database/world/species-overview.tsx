@@ -6,7 +6,7 @@ import {useUniverseContext, useUserContext} from '../../../components/PageBase';
 import {Link, useNavigate} from 'react-router-dom';
 import {SpeciesForm} from '../../../components/character/SpeciesForm';
 import {BooleanParam, useQueryParam, withDefault} from 'use-query-params';
-import {Nation, Species} from '../../../api';
+import {Nation, Species} from '../../../api/model';
 
 /** Overview over all species */
 export function SpeciesOverview() {
@@ -16,7 +16,7 @@ export function SpeciesOverview() {
     const {activeUniverse} = useUniverseContext();
     const [editMode, setEditMode] = useQueryParam('edit', withDefault(BooleanParam, false));
 
-    const [species, refresh] = fetchAllSpecies();
+    const [species] = fetchAllSpecies();
     const [nations] = fetchAllNations();
 
     const playableSpecies = useMemo(() => species.filter(s => s.playable), [species]);
@@ -41,7 +41,6 @@ export function SpeciesOverview() {
             }}
             onDelete={() => {
                 setEditMode(false);
-                refresh();
             }}
             onCancel={() => setEditMode(false)}
         />;

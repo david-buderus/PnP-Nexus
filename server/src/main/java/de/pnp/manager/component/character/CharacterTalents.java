@@ -1,5 +1,7 @@
 package de.pnp.manager.component.character;
 
+import org.bson.types.ObjectId;
+
 import java.util.Map;
 
 /**
@@ -7,17 +9,17 @@ import java.util.Map;
  */
 public class CharacterTalents {
 
-    private final Map<Talent, Integer> talents;
+    private final Map<ObjectId, Integer> talents;
 
-    public CharacterTalents(Map<Talent, Integer> talents) {
+    public CharacterTalents(Map<ObjectId, Integer> talents) {
         this.talents = talents;
     }
 
     public int getRoll(Talent talent) {
-        return talents.getOrDefault(talent, 0);
+        return talents.getOrDefault(talent.getId(), 0);
     }
 
     public void setRoll(Talent talent, int roll) {
-        talents.put(talent, roll);
+        talents.put(talent.getId(), roll);
     }
 }

@@ -1,5 +1,5 @@
 import {NumberInput, NumberInputProps} from '@mantine/core';
-import {TalentRollDto} from '../../../../../api';
+import {TalentRollDto} from '../../../../../api/model';
 import {TableNumberInput} from './TableNumberInput';
 
 /**
@@ -12,6 +12,8 @@ export function TableTalentRollInput(props: {
 } & Omit<NumberInputProps, 'value' | 'onChange' | 'defaultValue'>) {
     const {value, onChange, defaultValue, ...rest} = props;
 
+    const totalDisplay = value?.totalValue !== undefined && value?.rawValue !== value?.totalValue ? ` (${value.totalValue})` : '';
+
     return <TableNumberInput
         value={value?.rawValue}
         defaultValue={defaultValue?.rawValue}
@@ -19,6 +21,24 @@ export function TableTalentRollInput(props: {
             ...value,
             rawValue: Number(n),
         })}
+        rightSection={
+            <span style={{
+                opacity: 0.7,
+                paddingLeft: '4px',
+                pointerEvents: 'none',
+                whiteSpace: 'nowrap'
+            }}>
+                {totalDisplay}
+            </span>
+        }
+        rightSectionProps={{
+            style: {
+                position: 'static',
+                width: 'auto',
+                display: 'inline-flex',
+                alignItems: 'center'
+            }
+        }}
         {...rest}
     />;
 }

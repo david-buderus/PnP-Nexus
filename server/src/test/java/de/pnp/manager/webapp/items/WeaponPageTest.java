@@ -56,7 +56,7 @@ public class WeaponPageTest extends UniquelyNamedOverviewTestBase<Item, ItemRepo
     @Override
     protected Weapon getEditedObject() {
         Weapon weapon = (Weapon) getOriginalModifyObject();
-        return new Weapon(null, "Greatsword", weapon.getTags(), weapon.getRequirement(), weapon.getEffect(),
+        return new Weapon(null, "Greatsword", weapon.getTags(), weapon.getRequirement(), weapon.getEffects(),
                 weapon.getRarity(), 302, weapon.getTier(), "A big weapon", weapon.getNote(),
                 weapon.getMaterial(), weapon.getUpgradeSlots(), weapon.getInitiative(), weapon.getHit(),
                 weapon.getDamage(), weapon.getDice(), weapon.getMaximumStackSize(), weapon.getMinimumStackSize());

@@ -1,4 +1,4 @@
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {
     fetchAllArmor,
     fetchAllItems,
@@ -11,14 +11,18 @@ import {
 import OverviewPage from '../../../components/OverviewPage';
 import {useTranslation} from 'react-i18next';
 import TagCell, {filterTagCell} from '../../../components/table/TagCell';
-import {Armor, ERarity, Item, ItemServiceApi, Jewellery, Material, Shield, Weapon} from '../../../api';
+import {Armor, ERarity, Item, Jewellery, Material, Shield, Universe, Weapon} from '../../../api/model';
 import CurrencyCell from '../../../components/table/CurrencyCell';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {ItemClass} from '../../../components/Constants';
 import {useDisclosure} from '@mantine/hooks';
-import {Button, Group, Modal, NumberInput, Select, TagsInput, Textarea, TextInput} from '@mantine/core';
+import {Button, Group, Modal, NumberInput, Select, Stack, TagsInput, Textarea, TextInput} from '@mantine/core';
 import {useForm} from '@mantine/form';
 import {useUniverseContext} from '../../../components/PageBase';
-import {handleDatabaseInsertErrors, handleValidationErrors} from '../../../components/utils/ErrorUtils';
+import {
+    handleDatabaseInsertErrors,
+    handleNetworkErrors,
+    handleValidationErrors
+} from '../../../components/utils/ErrorUtils';
 import {ObjectSelect} from '../../../components/input/ObjectSelect';
 import {ArmorSlotSelect, RaritySelect} from '../../../components/input/EnumSelect';
 import DiceInput from '../../../components/input/DiceInput';
@@ -26,13 +30,31 @@ import {currencyFormatter} from '../../../components/utils/Formatters';
 import DiceCell from '../../../components/table/DiceCell';
 import {filterNamedCell, NamedCell} from '../../../components/table/NamedCell';
 import {ExtendedColumnDef} from '../../../components/table/SortableTable';
+import {ItemCardModal} from '../../../components/items/ItemCard';
+import {filterItemEffectsCell, ItemEffectsCell} from '../../../components/table/ItemEffectsCell';
+import {ItemEffectForm} from '../../../components/input/ItemEffectForm';
+import {getPossibleUpgradeRestriction} from '../../../components/utils/UpgradeUtils';
+import {QueryClient, useQueryClient} from '@tanstack/react-query';
+import {
+    getGetAllArmorQueryKey,
+    getGetAllItemsQueryKey,
+    getGetAllJewelleryQueryKey,
+    getGetAllShieldsQueryKey,
+    getGetAllWeaponsQueryKey,
+    useDeleteAllItems,
+    useInsertAllItems,
+    useUpdateItem
+} from '../../../api/item-service/item-service';
 
-const ITEM_API = new ItemServiceApi(API_CONFIGURATION);
-type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
+/** Combination of all items */
+export type ItemCombination = Item & Partial<Weapon> & Partial<Shield> & Partial<Armor> & Partial<Jewellery>;
 
 /** Overview over all items */
 export function Items() {
     const {t} = useTranslation();
+
+    const [toEdit, setToEdit] = useState<Item>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
 
     const columns = useMemo<ExtendedColumnDef<Item, any>[]>(
         () => [
@@ -43,7 +65,7 @@ export function Items() {
             {
                 accessorKey: 'tags',
                 header: t('tags'),
-                Cell: TagCell,
+                cell: TagCell,
                 filterFn: filterTagCell
             },
             {
@@ -51,13 +73,15 @@ export function Items() {
                 header: t('requirement'),
             },
             {
-                accessorKey: 'effect',
-                header: t('effect'),
+                accessorKey: 'effects',
+                header: t('upgrade:effects'),
+                cell: ItemEffectsCell,
+                filterFn: filterItemEffectsCell
             },
             {
                 accessorKey: 'rarity',
                 header: t('rarity'),
-                cell: cell => t('enum:' + cell.cell.getValue().toLowerCase())
+                cell: cell => t('enum:' + cell.cell.getValue()?.toLowerCase())
             },
             {
                 accessorKey: 'vendorPrice',
@@ -71,6 +95,10 @@ export function Items() {
             {
                 accessorKey: 'description',
                 header: t('description'),
+            },
+            {
+                accessorKey: 'upgradeSlots',
+                header: t('upgradeSlots'),
             },
             {
                 accessorKey: 'note',
@@ -89,26 +117,35 @@ export function Items() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllItems()}
-        columns={columns}
-        identifier="items"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
-            initialType="Item"
-            editMode={editMode}
-            refresh={refresh}
-            disabled={disabled}
-            getInitial={getInitial}
-        />}
-        deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
-        idKey="id"
-    />;
+    const deleteItems = useDeleteItems();
+
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllItems()}
+            columns={columns}
+            idKey="id"
+            identifier="items"
+            deletionDialogTitle={t('item:confirmDeletionTitle')}
+            onDelete={(universe, items) => deleteItems({
+                universe: universe,
+                params: {ids: items.map(item => item.id)}
+            })}
+            viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog initialType="Item" editMode={false} opened={openedAdd} close={closeAdd} item={null}/>
+        <CreationDialog initialType="Item" editMode={true} opened={toEdit !== null} close={() => setToEdit(null)}
+                        item={toEdit}/>
+    </Stack>;
 }
 
 /** Overview over all weapons */
 export function Weapons() {
     const {t} = useTranslation();
+
+    const [toEdit, setToEdit] = useState<Weapon>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
 
     const columns = useMemo<ExtendedColumnDef<Weapon, any>[]>(
         () => [
@@ -192,27 +229,36 @@ export function Weapons() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllWeapons()}
-        columns={columns}
-        identifier="weapons"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
-            initialType="Weapon"
-            editMode={editMode}
-            refresh={refresh}
-            disabled={disabled}
-            getInitial={getInitial}
-        />}
-        deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
-        idKey="id"
-    />;
+    const deleteItems = useDeleteItems();
+
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllWeapons()}
+            columns={columns}
+            idKey="id"
+            identifier="weapons"
+            deletionDialogTitle={t('item:confirmDeletionTitle')}
+            onDelete={(universe, items) => deleteItems({
+                universe: universe,
+                params: {ids: items.map(item => item.id)}
+            })}
+            viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog initialType="Weapon" editMode={false} opened={openedAdd} close={closeAdd} item={null}/>
+        <CreationDialog initialType="Weapon" editMode={true} opened={toEdit !== null} close={() => setToEdit(null)}
+                        item={toEdit}/>
+    </Stack>;
 }
 
 /** Overview over all shields */
 export function Shields() {
     const {t} = useTranslation();
     const {itemSettings} = useUniverseContext();
+
+    const [toEdit, setToEdit] = useState<Shield>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
 
     const columns = useMemo<ExtendedColumnDef<Shield, any>[]>(
         () => {
@@ -314,27 +360,36 @@ export function Shields() {
             return c;
         }, []);
 
-    return <OverviewPage
-        fetchData={fetchAllShields()}
-        columns={columns}
-        identifier="shields"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
-            initialType="Shield"
-            editMode={editMode}
-            refresh={refresh}
-            disabled={disabled}
-            getInitial={getInitial}
-        />}
-        deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
-        idKey="id"
-    />;
+    const deleteItems = useDeleteItems();
+
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllShields()}
+            columns={columns}
+            idKey="id"
+            identifier="shields"
+            deletionDialogTitle={t('item:confirmDeletionTitle')}
+            onDelete={(universe, items) => deleteItems({
+                universe: universe,
+                params: {ids: items.map(item => item.id)}
+            })}
+            viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog initialType="Shield" editMode={false} opened={openedAdd} close={closeAdd} item={null}/>
+        <CreationDialog initialType="Shield" editMode={true} opened={toEdit !== null} close={() => setToEdit(null)}
+                        item={toEdit}/>
+    </Stack>;
 }
 
 /** Overview over all shields */
 export function ArmorOverview() {
     const {t} = useTranslation();
     const {itemSettings} = useUniverseContext();
+
+    const [toEdit, setToEdit] = useState<Armor>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
 
     const columns = useMemo<ExtendedColumnDef<Armor, any>[]>(
         () => {
@@ -425,26 +480,35 @@ export function ArmorOverview() {
             return c;
         }, []);
 
-    return <OverviewPage
-        fetchData={fetchAllArmor()}
-        columns={columns}
-        identifier="armor"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
-            initialType="Armor"
-            editMode={editMode}
-            refresh={refresh}
-            disabled={disabled}
-            getInitial={getInitial}
-        />}
-        deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
-        idKey="id"
-    />;
+    const deleteItems = useDeleteItems();
+
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllArmor()}
+            columns={columns}
+            idKey="id"
+            identifier="armor"
+            deletionDialogTitle={t('item:confirmDeletionTitle')}
+            onDelete={(universe, items) => deleteItems({
+                universe: universe,
+                params: {ids: items.map(item => item.id)}
+            })}
+            viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog initialType="Armor" editMode={false} opened={openedAdd} close={closeAdd} item={null}/>
+        <CreationDialog initialType="Armor" editMode={true} opened={toEdit !== null} close={() => setToEdit(null)}
+                        item={toEdit}/>
+    </Stack>;
 }
 
 /** Overview over all jewellery */
 export function JewelleryOverview() {
     const {t} = useTranslation();
+
+    const [toEdit, setToEdit] = useState<Jewellery>(null);
+    const [openedAdd, {open: openAdd, close: closeAdd}] = useDisclosure(false);
 
     const columns = useMemo<ExtendedColumnDef<Jewellery, any>[]>(
         () => [
@@ -511,55 +575,61 @@ export function JewelleryOverview() {
             }
         ], []);
 
-    return <OverviewPage
-        fetchData={fetchAllJewllery()}
-        columns={columns}
-        identifier="jewellery"
-        manipulationDialog={(editMode, refresh, disabled, getInitial) => <CreationDialog
-            initialType="Jewellery"
-            editMode={editMode}
-            refresh={refresh}
-            disabled={disabled}
-            getInitial={getInitial}
-        />}
-        deletionDialogTitle={t('item:confirmDeletionTitle')}
-        onDelete={(universe, items) => ITEM_API.deleteAllItems(universe, items.map(item => item.id))}
-        idKey="id"
-    />;
+    const deleteItems = useDeleteItems();
+
+    return <Stack>
+        <OverviewPage
+            fetchData={fetchAllJewllery()}
+            columns={columns}
+            idKey="id"
+            identifier="jewellery"
+            deletionDialogTitle={t('item:confirmDeletionTitle')}
+            onDelete={(universe, items) => deleteItems({
+                universe: universe,
+                params: {ids: items.map(item => item.id)}
+            })}
+            viewModal={(item, onClose) => <ItemCardModal item={item} onClose={onClose}/>}
+            onAdd={openAdd}
+            onEdit={s => setToEdit(s)}
+        />
+        <CreationDialog initialType="Jewellery" editMode={false} opened={openedAdd} close={closeAdd} item={null}/>
+        <CreationDialog initialType="Jewellery" editMode={true} opened={toEdit !== null} close={() => setToEdit(null)}
+                        item={toEdit}/>
+    </Stack>;
 }
 
 function CreationDialog({
     initialType,
     editMode,
-    refresh,
-    disabled,
-    getInitial
+    opened,
+    close,
+    item
 }: {
-    initialType: string;
+    initialType: ItemClass;
     editMode: boolean,
-    refresh: () => void;
-    disabled: boolean;
-    getInitial: () => Item;
+    opened: boolean,
+    close: () => void
+    item: ItemCombination
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse, itemSettings, currencySettings} = useUniverseContext();
     const [tags] = fetchAllTags();
     const [materials] = fetchAllMaterials();
 
-    const [opened, {open, close}] = useDisclosure(false);
     const form = useForm<ItemCombination & {
-        '@type': string;
+        '@type': ItemClass;
     }>({
         mode: 'controlled',
         initialValues: {
             '@type': initialType,
             description: '',
-            effect: '',
+            effects: [],
             maximumStackSize: initialType === 'Item' ? 100 : 1,
             minimumStackSize: initialType === 'Item' ? 0 : 1,
             name: '',
             note: '',
-            rarity: ERarity.Common,
+            rarity: ERarity.COMMON,
             requirement: '',
             tags: [],
             tier: 1,
@@ -573,210 +643,249 @@ function CreationDialog({
             dice: {dices: []}
         }
     });
-    const itemType = form.getValues()['@type'];
+    const itemType = form.values['@type'];
 
     useEffect(() => {
-        if (!editMode || !opened) {
+        if (!item) {
             return;
         }
-        form.setValues(getInitial());
-    }, [opened, getInitial, editMode]);
+        form.setValues(item);
+        form.setInitialValues({
+            ...item,
+            '@type': initialType,
+        });
+    }, [item, initialType]);
 
-    function onSubmit(item: ItemCombination) {
+    const {mutateAsync: updateItem} = useUpdateItem({
+        mutation: {
+            onSuccess: () => createInvalidateQueries(queryClient, activeUniverse).then(close),
+            onError: handleValidationErrors(form.setErrors)
+        }
+    });
+    const {mutateAsync: insertItems} = useInsertAllItems({
+        mutation: {
+            onSuccess: () => createInvalidateQueries(queryClient, activeUniverse).then(close),
+            onError: handleValidationErrors(handleDatabaseInsertErrors(form.setErrors))
+        }
+    });
+
+    function onSubmit(i: ItemCombination) {
         if (editMode) {
-            ITEM_API.updateItem(activeUniverse.id, item.id, item).then(refresh).then(close)
-                .catch(handleValidationErrors(form.setErrors));
+            return updateItem({
+                universe: activeUniverse.id,
+                id: i.id,
+                data: i
+            });
         } else {
-            ITEM_API.insertAllItems(activeUniverse.id, [item]).then(refresh).then(close)
-                .catch(handleValidationErrors(handleDatabaseInsertErrors(form.setErrors)));
+            return insertItems({
+                universe: activeUniverse.id,
+                data: [i]
+            });
         }
     }
 
-    return <>
-        <Modal opened={opened} onClose={close} title={editMode ? t('item:editTitle') : t('item:creationTitle')}
-               maw={300}>
-            <form onSubmit={form.onSubmit(onSubmit)}>
-                {!editMode ? <Select
-                    data={[
-                        {value: 'Item', label: t('item')},
-                        {value: 'Weapon', label: t('weapon')},
-                        {value: 'Shield', label: t('shield')},
-                        {value: 'Armor', label: t('armor')},
-                        {value: 'Jewellery', label: t('jewellery')}
-                    ]}
-                    key={form.key('@type')}
-                    {...form.getInputProps('@type')}
+    return <Modal opened={opened} onClose={close} title={editMode ? t('item:editTitle') : t('item:creationTitle')}
+                  maw={300}>
+        <form onSubmit={form.onSubmit(onSubmit)}>
+            {!editMode ? <Select
+                data={[
+                    {value: 'Item', label: t('item')},
+                    {value: 'Weapon', label: t('weapon')},
+                    {value: 'Shield', label: t('shield')},
+                    {value: 'Armor', label: t('armor')},
+                    {value: 'Jewellery', label: t('jewellery')}
+                ]}
+                key={form.key('@type')}
+                {...form.getInputProps('@type')}
+            /> : null}
+            <TextInput
+                label={t('name')}
+                key={form.key('name')}
+                {...form.getInputProps('name')}
+            />
+            <TagsInput
+                label={t('tags')}
+                data={tags}
+                clearable
+                key={form.key('tags')}
+                {...form.getInputProps('tags')}
+            />
+            {['Weapon', 'Shield', 'Armor', 'Jewellery'].includes(itemType) ?
+                <ObjectSelect<Material>
+                    idKey="id"
+                    labelKey="name"
+                    label={t('material')}
+                    data={materials}
+                    searchable
+                    key={form.key('material')}
+                    {...form.getInputProps('material')} /> : null}
+            {itemType === 'Armor' ?
+                <ArmorSlotSelect
+                    key={form.key('armorSlot')}
+                    {...form.getInputProps('armorSlot')}
                 /> : null}
-                <TextInput
-                    label={t('name')}
-                    key={form.key('name')}
-                    {...form.getInputProps('name')}
-                />
-                <TagsInput
-                    label={t('tags')}
-                    data={tags}
-                    clearable
-                    key={form.key('tags')}
-                    {...form.getInputProps('tags')}
-                />
-                {['Weapon', 'Shield', 'Armor', 'Jewellery'].includes(itemType) ?
-                    <ObjectSelect<Material>
-                        idKey="id"
-                        labelKey="name"
-                        label={t('material')}
-                        data={materials}
-                        searchable
-                        key={form.key('material')}
-                        {...form.getInputProps('material')} /> : null}
-                {itemType === 'Armor' ?
-                    <ArmorSlotSelect
-                        key={form.key('armorSlot')}
-                        {...form.getInputProps('armorSlot')}
-                    /> : null}
-                {['Shield', 'Armor'].includes(itemType) ?
-                    <Group grow align="flex-start">
-                        <NumberInput
-                            label={t('armor')}
-                            key={form.key('armor')}
-                            {...form.getInputProps('armor')}
-                            allowDecimal={false}
-                        />
-                        <NumberInput
-                            label={t('weight')}
-                            key={form.key('weight')}
-                            {...form.getInputProps('weight')}
-                        />
-                    </Group> : null}
-                {itemType === 'Armor' && itemSettings?.usingProtection ?
+            {['Shield', 'Armor'].includes(itemType) ?
+                <Group grow align="flex-start">
                     <NumberInput
-                        label={t('protection')}
-                        key={form.key('protection')}
-                        {...form.getInputProps('protection')}
+                        label={t('armor')}
+                        key={form.key('armor')}
+                        {...form.getInputProps('armor')}
                         allowDecimal={false}
-                    /> : null}
-                {itemType === 'Shield' && (itemSettings?.shieldUsingDice || itemSettings?.usingProtection) ?
-                    <Group grow align="flex-start">
-                        {itemSettings?.shieldUsingDice ?
-                            <DiceInput
-                                label={t('dice')}
-                                key={form.key('dice')}
-                                {...form.getInputProps('dice')}
-                            /> : null}
-                        {itemSettings?.usingProtection ?
-                            <NumberInput
-                                label={t('protection')}
-                                key={form.key('protection')}
-                                {...form.getInputProps('protection')}
-                                allowDecimal={false}
-                            /> : null}
-                    </Group> : null}
-                {itemType === 'Weapon' ?
-                    <Group grow align="flex-start">
-                        <NumberInput
-                            label={t('damage')}
-                            key={form.key('damage')}
-                            {...form.getInputProps('damage')}
-                            allowDecimal={false}
-                        />
+                    />
+                    <NumberInput
+                        label={t('weight')}
+                        key={form.key('weight')}
+                        {...form.getInputProps('weight')}
+                    />
+                </Group> : null}
+            {itemType === 'Armor' && itemSettings?.usingProtection ?
+                <NumberInput
+                    label={t('protection')}
+                    key={form.key('protection')}
+                    {...form.getInputProps('protection')}
+                    allowDecimal={false}
+                /> : null}
+            {itemType === 'Shield' && (itemSettings?.shieldUsingDice || itemSettings?.usingProtection) ?
+                <Group grow align="flex-start">
+                    {itemSettings?.shieldUsingDice ?
                         <DiceInput
                             label={t('dice')}
                             key={form.key('dice')}
                             {...form.getInputProps('dice')}
-                        />
-                    </Group> : null}
-                {['Shield', 'Weapon'].includes(itemType) ?
-                    <Group grow align="flex-start">
+                        /> : null}
+                    {itemSettings?.usingProtection ?
                         <NumberInput
-                            label={t('hit')}
-                            key={form.key('hit')}
-                            {...form.getInputProps('hit')}
+                            label={t('protection')}
+                            key={form.key('protection')}
+                            {...form.getInputProps('protection')}
                             allowDecimal={false}
-                        />
-                        <NumberInput
-                            label={t('initiative')}
-                            key={form.key('initiative')}
-                            {...form.getInputProps('initiative')}
-                        />
-                    </Group> : null}
-                <Textarea
-                    label={t('effect')}
-                    key={form.key('effect')}
-                    {...form.getInputProps('effect')}
-                />
-                <Textarea
-                    label={t('description')}
-                    key={form.key('description')}
-                    {...form.getInputProps('description')}
-                />
-                {['Weapon', 'Shield', 'Armor', 'Jewellery'].includes(itemType) ?
-                    <NumberInput
-                        label={t('upgradeSlots')}
-                        key={form.key('upgradeSlots')}
-                        {...form.getInputProps('upgradeSlots')}
-                        allowDecimal={false}
-                    /> : null}
+                        /> : null}
+                </Group> : null}
+            {itemType === 'Weapon' ?
                 <Group grow align="flex-start">
-                    <RaritySelect
-                        label={t('rarity')}
-                        key={form.key('rarity')}
-                        {...form.getInputProps('rarity')}
-                    />
                     <NumberInput
-                        label={t('tier')}
-                        key={form.key('tier')}
-                        {...form.getInputProps('tier')}
+                        label={t('damage')}
+                        key={form.key('damage')}
+                        {...form.getInputProps('damage')}
                         allowDecimal={false}
                     />
-                </Group>
+                    <DiceInput
+                        label={t('dice')}
+                        key={form.key('dice')}
+                        {...form.getInputProps('dice')}
+                    />
+                </Group> : null}
+            {['Shield', 'Weapon'].includes(itemType) ?
+                <Group grow align="flex-start">
+                    <NumberInput
+                        label={t('hit')}
+                        key={form.key('hit')}
+                        {...form.getInputProps('hit')}
+                        allowDecimal={false}
+                    />
+                    <NumberInput
+                        label={t('initiative')}
+                        key={form.key('initiative')}
+                        {...form.getInputProps('initiative')}
+                    />
+                </Group> : null}
+            <ItemEffectForm
+                form={form}
+                path="effects"
+                restrictions={getPossibleUpgradeRestriction(itemType)}
+            />
+            <Textarea
+                label={t('description')}
+                key={form.key('description')}
+                {...form.getInputProps('description')}
+            />
+            <NumberInput
+                label={t('upgradeSlots')}
+                key={form.key('upgradeSlots')}
+                {...form.getInputProps('upgradeSlots')}
+                allowDecimal={false}
+            />
+            <Group grow align="flex-start">
+                <RaritySelect
+                    label={t('rarity')}
+                    key={form.key('rarity')}
+                    {...form.getInputProps('rarity')}
+                />
+                <NumberInput
+                    label={t('tier')}
+                    key={form.key('tier')}
+                    {...form.getInputProps('tier')}
+                    allowDecimal={false}
+                />
+            </Group>
+            <TextInput
+                label={t('requirement')}
+                key={form.key('requirement')}
+                {...form.getInputProps('requirement')}
+            />
+            <Group grow align="flex-start">
+                <NumberInput
+                    label={t('price')}
+                    key={form.key('vendorPrice')}
+                    {...form.getInputProps('vendorPrice')}
+                    allowDecimal={false}
+                />
                 <TextInput
-                    label={t('requirement')}
-                    key={form.key('requirement')}
-                    {...form.getInputProps('requirement')}
+                    label={t('resultingPrice')}
+                    readOnly
+                    value={currencyFormatter(currencySettings, form.getValues().vendorPrice)}
                 />
-                <Group grow align="flex-start">
-                    <NumberInput
-                        label={t('price')}
-                        key={form.key('vendorPrice')}
-                        {...form.getInputProps('vendorPrice')}
-                        allowDecimal={false}
-                    />
-                    <TextInput
-                        label={t('resultingPrice')}
-                        readOnly
-                        value={currencyFormatter(currencySettings, form.getValues().vendorPrice)}
-                    />
-                </Group>
-                <Group grow align="flex-start">
-                    <NumberInput
-                        label={t('item:minStackSize')}
-                        key={form.key('minimumStackSize')}
-                        {...form.getInputProps('minimumStackSize')}
-                        allowDecimal={false}
-                    />
-                    <NumberInput
-                        label={t('item:maxStackSize')}
-                        key={form.key('maximumStackSize')}
-                        {...form.getInputProps('maximumStackSize')}
-                        allowDecimal={false}
-                    />
-                </Group>
-                <TextInput
-                    label={t('note')}
-                    key={form.key('note')}
-                    {...form.getInputProps('note')}
+            </Group>
+            <Group grow align="flex-start">
+                <NumberInput
+                    label={t('item:minStackSize')}
+                    key={form.key('minimumStackSize')}
+                    {...form.getInputProps('minimumStackSize')}
+                    allowDecimal={false}
                 />
-                <Group justify="flex-end" mt="md">
-                    <Button autoFocus variant="outline" onClick={close}>
-                        {t('cancel')}
-                    </Button>
-                    <Button type="submit">
-                        {editMode ? t('edit') : t('add')}
-                    </Button>
-                </Group>
-            </form>
-        </Modal>
-        <Button data-testid={editMode ? 'edit' : 'add'} onClick={open} disabled={disabled}>
-            {editMode ? t('edit') : t('add')}
-        </Button>
-    </>;
+                <NumberInput
+                    label={t('item:maxStackSize')}
+                    key={form.key('maximumStackSize')}
+                    {...form.getInputProps('maximumStackSize')}
+                    allowDecimal={false}
+                />
+            </Group>
+            <TextInput
+                label={t('note')}
+                key={form.key('note')}
+                {...form.getInputProps('note')}
+            />
+            <Group justify="flex-end" mt="md">
+                <Button autoFocus variant="outline" onClick={close}>
+                    {t('cancel')}
+                </Button>
+                <Button type="submit">
+                    {editMode ? t('edit') : t('add')}
+                </Button>
+            </Group>
+        </form>
+    </Modal>;
 }
+
+function useDeleteItems() {
+    const {activeUniverse} = useUniverseContext();
+    const queryClient = useQueryClient();
+
+    const {mutate} = useDeleteAllItems({
+        mutation: {
+            onSuccess: () => createInvalidateQueries(queryClient, activeUniverse),
+            onError: handleNetworkErrors
+        }
+    });
+
+    return mutate;
+}
+
+async function createInvalidateQueries(queryClient: QueryClient, activeUniverse: Universe): Promise<void> {
+    await queryClient.invalidateQueries({queryKey: getGetAllItemsQueryKey(activeUniverse.id)});
+    await queryClient.invalidateQueries({queryKey: getGetAllWeaponsQueryKey(activeUniverse.id)});
+    await queryClient.invalidateQueries({queryKey: getGetAllShieldsQueryKey(activeUniverse.id)});
+    await queryClient.invalidateQueries({queryKey: getGetAllArmorQueryKey(activeUniverse.id)});
+    return queryClient.invalidateQueries({queryKey: getGetAllJewelleryQueryKey(activeUniverse.id)});
+}
+

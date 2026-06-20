@@ -5,14 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.pnp.manager.component.math.IExpressionVariable.StringVariable;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A binary tree which represents a formula.
@@ -93,11 +89,11 @@ public class BinaryExpressionTree {
      * Creates a {@link BinaryExpressionTree} from the given formula and variable transformations.
      */
     public static BinaryExpressionTree from(String formula, Set<IExpressionVariable> knownVariables)
-        throws IllegalFormulaException {
+            throws IllegalFormulaException {
         Deque<EOperator> ops = new ArrayDeque<>();
         Deque<IBinaryExpressionTreeNode> stack = new ArrayDeque<>();
         Map<String, IExpressionVariable> variableTransformer = knownVariables.stream()
-            .collect(Collectors.toMap(IExpressionVariable::getIdentifier, v -> v));
+                .collect(Collectors.toMap(IExpressionVariable::getIdentifier, v -> v));
 
         boolean needsToBeFollowedByConstant = true;
 
@@ -115,13 +111,16 @@ public class BinaryExpressionTree {
                 i += 1;
             } else {
                 String constant = parseConstant(formula, i);
+                EFunction function = EFunction.from(constant);
                 i += constant.length();
 
                 if (NumberUtils.isCreatable(constant)) {
                     stack.push(new ConstantNode(NumberUtils.createDouble(constant)));
+                } else if (function != null) {
+                    i += handleFunction(stack, function, formula, i, knownVariables);
                 } else {
-                    stack.push(
-                        new VariableNode(variableTransformer.getOrDefault(constant, new StringVariable(constant))));
+                    IExpressionVariable variable = variableTransformer.getOrDefault(constant, new StringVariable(constant));
+                    stack.push(new VariableNode(variable));
                 }
                 needsToBeFollowedByConstant = false;
             }
@@ -153,7 +152,7 @@ public class BinaryExpressionTree {
     }
 
     private static void handleOperator(Deque<EOperator> ops, Deque<IBinaryExpressionTreeNode> stack,
-        EOperator operator, boolean needsToBeFollowedByConstant) throws IllegalFormulaException {
+                                       EOperator operator, boolean needsToBeFollowedByConstant) throws IllegalFormulaException {
         if (needsToBeFollowedByConstant) {
             if (operator == EOperator.SUB) {
                 operator = EOperator.NEGATE;
@@ -173,7 +172,7 @@ public class BinaryExpressionTree {
                 ops.pop();
             }
             default -> {
-                while (!ops.isEmpty() && ops.peek().getPrio() >= operator.getPrio()) {
+                while (!ops.isEmpty() && ops.peek().getPriority() >= operator.getPriority()) {
                     combine(ops, stack);
                 }
 
@@ -183,7 +182,7 @@ public class BinaryExpressionTree {
     }
 
     private static void combine(Deque<EOperator> ops, Deque<IBinaryExpressionTreeNode> stack)
-        throws IllegalFormulaException {
+            throws IllegalFormulaException {
         if (ops.isEmpty()) {
             throw new IllegalFormulaException();
         }
@@ -203,5 +202,48 @@ public class BinaryExpressionTree {
             IBinaryExpressionTreeNode left = stack.pop();
             stack.push(new TwoParameterInnerNode(operator, left, right));
         }
+    }
+
+    private static int handleFunction(Deque<IBinaryExpressionTreeNode> stack, EFunction function, String formula, int offset,
+                                      Set<IExpressionVariable> knownVariables) throws IllegalFormulaException {
+        if (formula.length() <= offset || formula.charAt(offset) != '(') {
+            throw new IllegalFormulaException();
+        }
+        int depths = 0;
+        int lastOpen = offset + 1;
+        int closed = -1;
+        List<String> parameterFormulas = new ArrayList<>();
+        for (int j = offset + 1; j < formula.length(); j++) {
+            switch (formula.charAt(j)) {
+                case '(':
+                    depths++;
+                    break;
+                case ')':
+                    if (depths == 0) {
+                        closed = j;
+                        parameterFormulas.add(formula.substring(lastOpen, j));
+                        break;
+                    }
+                    depths--;
+                    break;
+                case ',':
+                    if (depths == 0) {
+                        parameterFormulas.add(formula.substring(lastOpen, j));
+                        lastOpen = j + 1;
+                        break;
+                    }
+            }
+        }
+        if (closed == -1 || parameterFormulas.size() != function.getParameters()) {
+            throw new IllegalFormulaException();
+        }
+
+        List<IBinaryExpressionTreeNode> parameters = new ArrayList<>();
+        for (String parameterFormula : parameterFormulas) {
+            parameters.add(BinaryExpressionTree.from(parameterFormula, knownVariables).root);
+        }
+
+        stack.push(new FunctionNode(function, parameters));
+        return closed - offset + 1;
     }
 }

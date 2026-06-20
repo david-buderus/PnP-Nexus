@@ -1,12 +1,36 @@
-import { Item, Weapon, Shield, Armor, Jewellery, Configuration } from "../api";
+import {
+    Armor,
+    ArmorEquipment,
+    EquipmentItemEffect,
+    Item,
+    ItemEffect,
+    ItemStack,
+    Jewellery,
+    JewelleryEquipment,
+    PrimaryStatTrait,
+    SecondaryStatTrait,
+    Shield,
+    ShieldEquipment,
+    SimpleCharacterTrait,
+    TalentCharacterTrait,
+    Weapon,
+    WeaponEquipment
+} from '../api/model';
 
 /** The possible identifier for each item class */
-export type ItemClass = "Item" | "Weapon" | "Shield" | "Armor" | "Jewellery";
+export type ItemClass = 'Item' | 'Weapon' | 'Shield' | 'Armor' | 'Jewellery';
 
 /** All possible item classes */
 export type SomeItem = Item | Weapon | Shield | Armor | Jewellery;
 
-/** The api configration which should be used by all APIs */
-export const API_CONFIGURATION = new Configuration({
-    basePath: window.location.origin
-});
+/** All possible item stack classes */
+export type SomeItemStack = ArmorEquipment | JewelleryEquipment | ItemStack | ShieldEquipment | WeaponEquipment;
+
+/** All item effect classes */
+export type SomeItemEffect = ItemEffect | EquipmentItemEffect;
+
+/** All equipment classes */
+export type SomeEquipment = ArmorEquipment | JewelleryEquipment | ShieldEquipment | WeaponEquipment;
+
+/** All character trait classes */
+export type SomeCharacterTrait = PrimaryStatTrait | SecondaryStatTrait | SimpleCharacterTrait | TalentCharacterTrait;

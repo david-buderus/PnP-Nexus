@@ -1,6 +1,5 @@
 import {fetchAllNations} from '../../../components/Database';
-import {Nation, Species, SpeciesServiceApi} from '../../../api';
-import {API_CONFIGURATION} from '../../../components/Constants';
+import {Nation, Species} from '../../../api/model';
 import {useEffect, useMemo, useState} from 'react';
 import {
     Anchor,
@@ -29,8 +28,13 @@ import {ObjectMultiSelect, ObjectSelect} from '../../../components/input/ObjectS
 import {Link, useNavigate, useParams} from 'react-router-dom';
 import {BooleanParam, useQueryParam, withDefault} from 'use-query-params';
 import {SpeciesForm} from '../../../components/character/SpeciesForm';
-
-const SPECIES_API = new SpeciesServiceApi(API_CONFIGURATION);
+import {
+    getGetAllSpeciessQueryKey,
+    getGetSpeciesQueryKey,
+    useGetSpecies,
+    useUpdateSpecies
+} from '../../../api/species-service/species-service';
+import {useQueryClient} from '@tanstack/react-query';
 
 /** Detail view for a single species */
 export function SpeciesDetail() {
@@ -40,8 +44,7 @@ export function SpeciesDetail() {
     const {activeUniverse} = useUniverseContext();
     const {userPermissions} = useUserContext();
     const [editMode, setEditMode] = useQueryParam('edit', withDefault(BooleanParam, false));
-
-    const [selected, setSelected] = useState<Species>(null);
+    const selected = useGetSpecies(activeUniverse.id, species).data?.data;
 
     const editor = useEditor({
         extensions: [
@@ -54,19 +57,12 @@ export function SpeciesDetail() {
         editable: false
     });
 
-    useEffect(() => {
-        SPECIES_API.getSpecies(activeUniverse.id, species).then(response => {
-            setSelected(response.data);
-            editor.commands.setContent(response.data.description);
-        });
-    }, []);
 
-    function refresh() {
-        SPECIES_API.getSpecies(activeUniverse.id, species).then(response => {
-            setSelected(response.data);
-            editor.commands.setContent(response.data.description);
-        });
-    }
+    useEffect(() => {
+        if (selected) {
+            editor.commands.setContent(selected.description);
+        }
+    }, [selected]);
 
     const [openedAddition, {open: openAddition, close: closeAddition}] = useDisclosure(false);
     const [openedDeletion, {open: openDeletion, close: closeDeletion}] = useDisclosure(false);
@@ -74,10 +70,7 @@ export function SpeciesDetail() {
     if (editMode) {
         return <SpeciesForm
             initial={selected}
-            onSave={() => {
-                setEditMode(false);
-                refresh();
-            }}
+            onSave={() => setEditMode(false)}
             onDelete={() => {
                 navigate('/species?universe=' + activeUniverse.id);
             }}
@@ -202,14 +195,8 @@ export function SpeciesDetail() {
                 </Stack>
             </Paper>
         </Stack>
-        <AddNationDialog species={selected} opened={openedAddition} close={() => {
-            refresh();
-            closeAddition();
-        }}/>
-        <DeletionNationDialog species={selected} opened={openedDeletion} close={() => {
-            refresh();
-            closeDeletion();
-        }}/>
+        <AddNationDialog species={selected} opened={openedAddition} close={() => closeAddition()}/>
+        <DeletionNationDialog species={selected} opened={openedDeletion} close={() => closeDeletion()}/>
     </Center>;
 }
 
@@ -223,6 +210,7 @@ function AddNationDialog({
     close: () => void;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [nations] = fetchAllNations();
     const [nation, setNation] = useState<Nation>(null);
@@ -231,6 +219,16 @@ function AddNationDialog({
         () => nations.filter(n => !species.nations.some(sn => sn.id === n.id)),
         [nations, species]
     );
+
+    const {mutate: updateSpecies} = useUpdateSpecies({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetSpeciesQueryKey(activeUniverse.id, species.id)
+            }).then(() => queryClient.invalidateQueries({
+                queryKey: getGetAllSpeciessQueryKey(activeUniverse.id)
+            })).then(close)
+        }
+    });
 
     return <Modal opened={opened} onClose={close} title={t('species:addExistingNation')} maw={300}>
         <ObjectSelect<Nation>
@@ -247,10 +245,14 @@ function AddNationDialog({
             </Button>
             <Button
                 onClick={() => {
-                    SPECIES_API.updateSpecies(activeUniverse.id, species.id, {
-                        ...species,
-                        nations: species.nations.concat([nation]),
-                    }).then(close);
+                    updateSpecies({
+                        universe: activeUniverse.id,
+                        id: species.id,
+                        data: {
+                            ...species,
+                            nations: species.nations.concat([nation])
+                        }
+                    });
                 }}
                 disabled={nation === null}
                 type="submit"
@@ -271,8 +273,17 @@ function DeletionNationDialog({
     close: () => void;
 }) {
     const {t} = useTranslation();
+    const queryClient = useQueryClient();
     const {activeUniverse} = useUniverseContext();
     const [nations, setNations] = useState<Nation[]>([]);
+
+    const {mutate: updateSpecies} = useUpdateSpecies({
+        mutation: {
+            onSuccess: () => queryClient.invalidateQueries({
+                queryKey: getGetSpeciesQueryKey(activeUniverse.id, species.id),
+            }).then(close).then(() => setNations([]))
+        }
+    });
 
     return <Modal opened={opened} onClose={close} title={t('species:removeNation')} maw={300}>
         <ObjectMultiSelect<Nation>
@@ -288,12 +299,16 @@ function DeletionNationDialog({
                 {t('cancel')}
             </Button>
             <Button
-                onClick={() => {
-                    SPECIES_API.updateSpecies(activeUniverse.id, species.id, {
-                        ...species,
-                        nations: species.nations.filter(n => !nations.some(sn => sn.id === n.id)),
-                    }).then(close).then(() => setNations([]));
-                }}
+                onClick={() =>
+                    updateSpecies({
+                        universe: activeUniverse.id,
+                        id: species.id,
+                        data: {
+                            ...species,
+                            nations: species.nations.filter(n => !nations.some(sn => sn.id === n.id)),
+                        }
+                    })
+                }
                 disabled={nations.length === 0}
                 type="submit"
             >

@@ -47,9 +47,9 @@ public class ItemPageTest extends UniquelyNamedOverviewTestBase<Item, ItemReposi
     @Override
     protected Item getEditedObject() {
         Item item = getOriginalModifyObject();
-        return new Item(null, item.getName(), item.getTags(), item.getRequirement(), item.getEffect(),
+        return new Item(null, item.getName(), item.getTags(), item.getRequirement(), item.getEffects(),
                 item.getRarity(), 302, item.getTier(), "A raw piece of wood", item.getNote(),
-                item.getMaximumStackSize(), item.getMinimumStackSize());
+                item.getMaximumStackSize(), item.getMinimumStackSize(), 0);
     }
 
     @Override

@@ -6,14 +6,14 @@ import de.pnp.manager.component.inventory.equipment.ShieldEquipment;
 import de.pnp.manager.component.inventory.equipment.WeaponEquipment;
 
 /**
- * Represents {@link IEquipment} that can be held in hand.
+ * Represents equipment that can be held in hand.
  */
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ShieldEquipment.class, name = "ShieldEquipment"),
         @JsonSubTypes.Type(value = WeaponEquipment.class, name = "WeaponEquipment"),
 })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-public interface IHandheldEquipment extends IDamageableEquipment {
+public interface IHandheldEquipment {
 
     /**
      * The hit modifier of the underlying item.

@@ -55,7 +55,7 @@ public class JewelleryPageTest extends UniquelyNamedOverviewTestBase<Item, ItemR
     @Override
     protected Jewellery getEditedObject() {
         Jewellery jewellery = (Jewellery) getOriginalModifyObject();
-        return new Jewellery(null, "Another Ring", jewellery.getTags(), jewellery.getRequirement(), jewellery.getEffect(),
+        return new Jewellery(null, "Another Ring", jewellery.getTags(), jewellery.getRequirement(), jewellery.getEffects(),
                 jewellery.getRarity(), 302, jewellery.getTier(), "Just another ring", jewellery.getNote(),
                 jewellery.getMaterial(), jewellery.getUpgradeSlots(), jewellery.getMaximumStackSize(),
                 jewellery.getMinimumStackSize());

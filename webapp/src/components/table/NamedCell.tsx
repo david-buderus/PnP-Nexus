@@ -15,7 +15,7 @@ export function NamedCell<T>(cell: CellContext<T, NamedObject>): ReactNode {
 
 /** Filter function for NamedCells */
 export function filterNamedCell(row: Row<any>, id: string, filterValue: any) {
-    return row.getValue<NamedObject>(id)?.name?.includes(filterValue);
+    return row.getValue<NamedObject>(id)?.name?.toLowerCase()?.includes(String(filterValue).toLowerCase());
 }
 
 /** Renders multi objects with a name as a cell */
@@ -25,5 +25,5 @@ export function MultiNamedCell<T>(cell: CellContext<T, NamedObject[]>): ReactNod
 
 /** Filter function for MultiNamedCell */
 export function filterMultiNamedCell(row: Row<any>, id: string, filterValue: any) {
-    return row.getValue<NamedObject[]>(id)?.some(o => o?.name?.includes(filterValue));
+    return row.getValue<NamedObject[]>(id)?.some(o => o?.name?.toLowerCase()?.includes(String(filterValue).toLowerCase()));
 }
